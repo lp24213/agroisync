@@ -68,7 +68,7 @@ exports.handler = async event => {
     // Verificar idempotência - evitar processamento duplicado
     const eventId = stripeEvent.id;
     const existingEvent = await db.collection('webhook_events').findOne({ eventId });
-    
+
     if (existingEvent) {
       console.log(`Evento já processado: ${eventId}`);
       return {
@@ -233,7 +233,7 @@ async function handleCheckoutSessionCompleted(db, session) {
     console.log(`Plano ${planType} ativado para usuário ${cognitoSub} - Sessão: ${session.id}`);
   } catch (error) {
     console.error('Erro ao processar checkout.session.completed:', error);
-    
+
     // Registrar erro
     await db.collection('payment_logs').insertOne({
       userId: cognitoSub,

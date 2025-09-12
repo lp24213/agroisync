@@ -8,13 +8,13 @@ const redis = new Redis({
   port: process.env.REDIS_PORT || 6379,
   password: process.env.REDIS_PASSWORD,
   retryDelayOnFailover: 100,
-  maxRetriesPerRequest: 3,
+  maxRetriesPerRequest: 3
 });
 
 // Rate limiter geral
 export const generalLimiter = rateLimit({
   store: new RedisStore({
-    sendCommand: (...args) => redis.call(...args),
+    sendCommand: (...args) => redis.call(...args)
   }),
   windowMs: 15 * 60 * 1000, // 15 minutos
   max: 100, // máximo 100 requests por IP por janela
@@ -25,7 +25,7 @@ export const generalLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  skip: (req) => {
+  skip: req => {
     // Pular rate limiting para IPs confiáveis (admin, etc.)
     const trustedIPs = process.env.TRUSTED_IPS?.split(',') || [];
     return trustedIPs.includes(req.ip);
@@ -35,7 +35,7 @@ export const generalLimiter = rateLimit({
 // Rate limiter para autenticação
 export const authLimiter = rateLimit({
   store: new RedisStore({
-    sendCommand: (...args) => redis.call(...args),
+    sendCommand: (...args) => redis.call(...args)
   }),
   windowMs: 15 * 60 * 1000, // 15 minutos
   max: 5, // máximo 5 tentativas de login por IP por janela
@@ -47,7 +47,7 @@ export const authLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   skipSuccessfulRequests: true, // Não contar requests bem-sucedidos
-  keyGenerator: (req) => {
+  keyGenerator: req => {
     // Usar email + IP para rate limiting de auth
     const email = req.body?.email || req.body?.username || 'unknown';
     return `auth:${req.ip}:${email}`;
@@ -57,7 +57,7 @@ export const authLimiter = rateLimit({
 // Rate limiter para admin
 export const adminLimiter = rateLimit({
   store: new RedisStore({
-    sendCommand: (...args) => redis.call(...args),
+    sendCommand: (...args) => redis.call(...args)
   }),
   windowMs: 5 * 60 * 1000, // 5 minutos
   max: 10, // máximo 10 requests admin por IP por janela
@@ -73,7 +73,7 @@ export const adminLimiter = rateLimit({
 // Rate limiter para API pública
 export const apiLimiter = rateLimit({
   store: new RedisStore({
-    sendCommand: (...args) => redis.call(...args),
+    sendCommand: (...args) => redis.call(...args)
   }),
   windowMs: 1 * 60 * 1000, // 1 minuto
   max: 60, // máximo 60 requests por IP por minuto
@@ -89,7 +89,7 @@ export const apiLimiter = rateLimit({
 // Rate limiter para uploads
 export const uploadLimiter = rateLimit({
   store: new RedisStore({
-    sendCommand: (...args) => redis.call(...args),
+    sendCommand: (...args) => redis.call(...args)
   }),
   windowMs: 60 * 60 * 1000, // 1 hora
   max: 10, // máximo 10 uploads por IP por hora
@@ -105,7 +105,7 @@ export const uploadLimiter = rateLimit({
 // Rate limiter para mensagens
 export const messageLimiter = rateLimit({
   store: new RedisStore({
-    sendCommand: (...args) => redis.call(...args),
+    sendCommand: (...args) => redis.call(...args)
   }),
   windowMs: 1 * 60 * 1000, // 1 minuto
   max: 30, // máximo 30 mensagens por IP por minuto
@@ -121,7 +121,7 @@ export const messageLimiter = rateLimit({
 // Rate limiter para contato
 export const contactLimiter = rateLimit({
   store: new RedisStore({
-    sendCommand: (...args) => redis.call(...args),
+    sendCommand: (...args) => redis.call(...args)
   }),
   windowMs: 60 * 60 * 1000, // 1 hora
   max: 5, // máximo 5 mensagens de contato por IP por hora

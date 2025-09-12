@@ -15,7 +15,7 @@ router.use(apiLimiter);
 // Validação para criação/atualização de parceiros
 const validatePartnerData = (req, res, next) => {
   const { name, description, category, industry, contact } = req.body;
-  
+
   if (!name || !description || !category) {
     return res.status(400).json({
       success: false,
@@ -39,7 +39,15 @@ const validatePartnerData = (req, res, next) => {
   }
 
   // Validar categoria
-  const validCategories = ['technology', 'agriculture', 'finance', 'logistics', 'marketing', 'research', 'other'];
+  const validCategories = [
+    'technology',
+    'agriculture',
+    'finance',
+    'logistics',
+    'marketing',
+    'research',
+    'other'
+  ];
   if (!validCategories.includes(category)) {
     return res.status(400).json({
       success: false,
@@ -70,16 +78,22 @@ router.get('/', async (req, res) => {
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     const query = {};
-    
+
     // Filtrar por categoria
-    if (category) query.category = category;
-    
+    if (category) {
+      query.category = category;
+    }
+
     // Filtrar por status
-    if (status) query.status = status;
-    
+    if (status) {
+      query.status = status;
+    }
+
     // Filtrar por destaque
-    if (featured === 'true') query.isFeatured = true;
-    
+    if (featured === 'true') {
+      query.isFeatured = true;
+    }
+
     // Busca por texto
     if (search) {
       query.$or = [
@@ -148,7 +162,7 @@ router.get('/featured', async (req, res) => {
 router.get('/categories', async (req, res) => {
   try {
     const categories = await Partner.distinct('category');
-    
+
     res.json({
       success: true,
       data: { categories }
@@ -228,16 +242,20 @@ router.post('/', authenticateToken, requireAdmin, validatePartnerData, async (re
       industry: industry ? sanitizeInput(industry) : undefined,
       founded: founded ? parseInt(founded) : undefined,
       employees: employees || undefined,
-      location: location ? {
-        country: sanitizeInput(location.country || 'Brasil'),
-        state: location.state ? sanitizeInput(location.state) : undefined,
-        city: location.city ? sanitizeInput(location.city) : undefined
-      } : undefined,
-      contact: contact ? {
-        email: contact.email ? sanitizeInput(contact.email).toLowerCase() : undefined,
-        phone: contact.phone ? sanitizeInput(contact.phone) : undefined,
-        contactPerson: contact.contactPerson ? sanitizeInput(contact.contactPerson) : undefined
-      } : undefined,
+      location: location
+        ? {
+            country: sanitizeInput(location.country || 'Brasil'),
+            state: location.state ? sanitizeInput(location.state) : undefined,
+            city: location.city ? sanitizeInput(location.city) : undefined
+          }
+        : undefined,
+      contact: contact
+        ? {
+            email: contact.email ? sanitizeInput(contact.email).toLowerCase() : undefined,
+            phone: contact.phone ? sanitizeInput(contact.phone) : undefined,
+            contactPerson: contact.contactPerson ? sanitizeInput(contact.contactPerson) : undefined
+          }
+        : undefined,
       services: services ? services.map(service => sanitizeInput(service)) : [],
       certifications: certifications || [],
       partnershipLevel: partnershipLevel || 'bronze',
@@ -250,10 +268,17 @@ router.post('/', authenticateToken, requireAdmin, validatePartnerData, async (re
     await partner.save();
 
     // Log de segurança
-    await createSecurityLog('data_modification', 'medium', 'Admin created partner', req, req.user.userId, {
-      partnerId: partner._id,
-      partnerName: partner.name
-    });
+    await createSecurityLog(
+      'data_modification',
+      'medium',
+      'Admin created partner',
+      req,
+      req.user.userId,
+      {
+        partnerId: partner._id,
+        partnerName: partner.name
+      }
+    );
 
     res.status(201).json({
       success: true,
@@ -262,9 +287,15 @@ router.post('/', authenticateToken, requireAdmin, validatePartnerData, async (re
     });
   } catch (error) {
     console.error('Error creating partner:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error creating partner: ${error.message}`, req, req.user?.userId);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error creating partner: ${error.message}`,
+      req,
+      req.user?.userId
+    );
+
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -287,14 +318,26 @@ router.put('/:id', authenticateToken, requireAdmin, validatePartnerData, async (
     }
 
     // Sanitizar e atualizar campos
-    if (updateData.name) partner.name = sanitizeInput(updateData.name);
-    if (updateData.description) partner.description = sanitizeInput(updateData.description);
-    if (updateData.website !== undefined) partner.website = updateData.website ? sanitizeInput(updateData.website) : undefined;
-    if (updateData.logo !== undefined) partner.logo = updateData.logo ? sanitizeInput(updateData.logo) : undefined;
-    if (updateData.category) partner.category = sanitizeInput(updateData.category);
-    if (updateData.industry !== undefined) partner.industry = updateData.industry ? sanitizeInput(updateData.industry) : undefined;
-    if (updateData.founded !== undefined) partner.founded = updateData.founded ? parseInt(updateData.founded) : undefined;
-    if (updateData.employees !== undefined) partner.employees = updateData.employees;
+    if (updateData.name) {
+      partner.name = sanitizeInput(updateData.name);
+    }
+    if (updateData.description) {
+      partner.description = sanitizeInput(updateData.description);
+    }
+    if (updateData.website !== undefined) {
+    {partner.website = updateData.website ? sanitizeInput(updateData.website) : undefined;}
+    if (updateData.logo !== undefined) {
+    {partner.logo = updateData.logo ? sanitizeInput(updateData.logo) : undefined;}
+    if (updateData.category) {
+      partner.category = sanitizeInput(updateData.category);
+    }
+    if (updateData.industry !== undefined) {
+    {partner.industry = updateData.industry ? sanitizeInput(updateData.industry) : undefined;}
+    if (updateData.founded !== undefined) {
+    {partner.founded = updateData.founded ? parseInt(updateData.founded) : undefined;}
+    if (updateData.employees !== undefined) {
+      partner.employees = updateData.employees;
+    }
     if (updateData.location) {
       partner.location = {
         country: sanitizeInput(updateData.location.country || 'Brasil'),
@@ -304,24 +347,43 @@ router.put('/:id', authenticateToken, requireAdmin, validatePartnerData, async (
     }
     if (updateData.contact) {
       partner.contact = {
-        email: updateData.contact.email ? sanitizeInput(updateData.contact.email).toLowerCase() : undefined,
+        email: updateData.contact.email
+          ? sanitizeInput(updateData.contact.email).toLowerCase()
+          : undefined,
         phone: updateData.contact.phone ? sanitizeInput(updateData.contact.phone) : undefined,
-        contactPerson: updateData.contact.contactPerson ? sanitizeInput(updateData.contact.contactPerson) : undefined
+        contactPerson: updateData.contact.contactPerson
+          ? sanitizeInput(updateData.contact.contactPerson)
+          : undefined
       };
     }
-    if (updateData.services) partner.services = updateData.services.map(service => sanitizeInput(service));
-    if (updateData.certifications) partner.certifications = updateData.certifications;
-    if (updateData.partnershipLevel) partner.partnershipLevel = updateData.partnershipLevel;
-    if (updateData.status) partner.status = updateData.status;
-    if (updateData.notes !== undefined) partner.notes = updateData.notes ? sanitizeInput(updateData.notes) : undefined;
+    if (updateData.services) {
+    {partner.services = updateData.services.map(service => sanitizeInput(service));}
+    if (updateData.certifications) {
+      partner.certifications = updateData.certifications;
+    }
+    if (updateData.partnershipLevel) {
+      partner.partnershipLevel = updateData.partnershipLevel;
+    }
+    if (updateData.status) {
+      partner.status = updateData.status;
+    }
+    if (updateData.notes !== undefined) {
+    {partner.notes = updateData.notes ? sanitizeInput(updateData.notes) : undefined;}
 
     await partner.save();
 
     // Log de segurança
-    await createSecurityLog('data_modification', 'medium', 'Admin updated partner', req, req.user.userId, {
-      partnerId: partner._id,
-      partnerName: partner.name
-    });
+    await createSecurityLog(
+      'data_modification',
+      'medium',
+      'Admin updated partner',
+      req,
+      req.user.userId,
+      {
+        partnerId: partner._id,
+        partnerName: partner.name
+      }
+    );
 
     res.json({
       success: true,
@@ -330,9 +392,15 @@ router.put('/:id', authenticateToken, requireAdmin, validatePartnerData, async (
     });
   } catch (error) {
     console.error('Error updating partner:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error updating partner: ${error.message}`, req, req.user?.userId);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error updating partner: ${error.message}`,
+      req,
+      req.user?.userId
+    );
+
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -358,10 +426,17 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
     await partner.save();
 
     // Log de segurança
-    await createSecurityLog('data_modification', 'medium', 'Admin deactivated partner', req, req.user.userId, {
-      partnerId: partner._id,
-      partnerName: partner.name
-    });
+    await createSecurityLog(
+      'data_modification',
+      'medium',
+      'Admin deactivated partner',
+      req,
+      req.user.userId,
+      {
+        partnerId: partner._id,
+        partnerName: partner.name
+      }
+    );
 
     res.json({
       success: true,
@@ -369,9 +444,15 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
     });
   } catch (error) {
     console.error('Error deactivating partner:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error deactivating partner: ${error.message}`, req, req.user?.userId);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error deactivating partner: ${error.message}`,
+      req,
+      req.user?.userId
+    );
+
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -396,11 +477,18 @@ router.put('/:id/feature', authenticateToken, requireAdmin, async (req, res) => 
     await partner.save();
 
     // Log de segurança
-    await createSecurityLog('data_modification', 'low', `Admin toggled partner featured status`, req, req.user.userId, {
-      partnerId: partner._id,
-      partnerName: partner.name,
-      isFeatured: partner.isFeatured
-    });
+    await createSecurityLog(
+      'data_modification',
+      'low',
+      'Admin toggled partner featured status',
+      req,
+      req.user.userId,
+      {
+        partnerId: partner._id,
+        partnerName: partner.name,
+        isFeatured: partner.isFeatured
+      }
+    );
 
     res.json({
       success: true,
@@ -449,11 +537,18 @@ router.put('/:id/level', authenticateToken, requireAdmin, async (req, res) => {
     await partner.save();
 
     // Log de segurança
-    await createSecurityLog('data_modification', 'medium', 'Admin updated partner level', req, req.user.userId, {
-      partnerId: partner._id,
-      partnerName: partner.name,
-      newLevel: partnershipLevel
-    });
+    await createSecurityLog(
+      'data_modification',
+      'medium',
+      'Admin updated partner level',
+      req,
+      req.user.userId,
+      {
+        partnerId: partner._id,
+        partnerName: partner.name,
+        newLevel: partnershipLevel
+      }
+    );
 
     res.json({
       success: true,

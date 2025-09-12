@@ -228,43 +228,43 @@ router.get('/v1', (req, res) => {
           'PUT /subscriptions - Update subscription preferences'
         ]
       },
-                notifications: {
-            base: '/v1/notifications',
-            routes: [
-              'GET / - List user notifications',
-              'GET /unread/count - Get unread count',
-              'GET /:id - Get notification by ID',
-              'PATCH /:id/read - Mark as read',
-              'PATCH /:id/archive - Archive notification',
-              'PATCH /read-all - Mark all as read',
-              'DELETE /:id - Delete notification',
-              'DELETE /clear-read - Clear read notifications',
-              'GET /stats/overview - Get notification stats',
-              'GET /admin/all - List all notifications (admin)',
-              'POST /admin/send - Send manual notification (admin)',
-              'GET /admin/stats - Get general stats (admin)',
-              'POST /admin/cleanup - Manual cleanup (admin)'
-            ]
-          },
-          escrow: {
-            base: '/v1/escrow',
-            routes: [
-              'GET / - List user escrow transactions',
-              'GET /:id - Get escrow transaction by ID',
-              'POST / - Create new escrow transaction',
-              'PATCH /:id/fund - Mark as funded',
-              'PATCH /:id/deliver - Mark as delivered',
-              'PATCH /:id/confirm - Confirm receipt',
-              'PATCH /:id/release - Release funds to seller',
-              'PATCH /:id/refund - Request refund',
-              'POST /:id/dispute - Create dispute',
-              'PATCH /:id/dispute/:disputeId/resolve - Resolve dispute (admin)',
-              'GET /stats/overview - Get escrow stats',
-              'GET /admin/all - List all escrow transactions (admin)',
-              'POST /admin/auto-release - Process auto-releases (admin)',
-              'GET /admin/stats - Get general escrow stats (admin)'
-            ]
-          }
+      notifications: {
+        base: '/v1/notifications',
+        routes: [
+          'GET / - List user notifications',
+          'GET /unread/count - Get unread count',
+          'GET /:id - Get notification by ID',
+          'PATCH /:id/read - Mark as read',
+          'PATCH /:id/archive - Archive notification',
+          'PATCH /read-all - Mark all as read',
+          'DELETE /:id - Delete notification',
+          'DELETE /clear-read - Clear read notifications',
+          'GET /stats/overview - Get notification stats',
+          'GET /admin/all - List all notifications (admin)',
+          'POST /admin/send - Send manual notification (admin)',
+          'GET /admin/stats - Get general stats (admin)',
+          'POST /admin/cleanup - Manual cleanup (admin)'
+        ]
+      },
+      escrow: {
+        base: '/v1/escrow',
+        routes: [
+          'GET / - List user escrow transactions',
+          'GET /:id - Get escrow transaction by ID',
+          'POST / - Create new escrow transaction',
+          'PATCH /:id/fund - Mark as funded',
+          'PATCH /:id/deliver - Mark as delivered',
+          'PATCH /:id/confirm - Confirm receipt',
+          'PATCH /:id/release - Release funds to seller',
+          'PATCH /:id/refund - Request refund',
+          'POST /:id/dispute - Create dispute',
+          'PATCH /:id/dispute/:disputeId/resolve - Resolve dispute (admin)',
+          'GET /stats/overview - Get escrow stats',
+          'GET /admin/all - List all escrow transactions (admin)',
+          'POST /admin/auto-release - Process auto-releases (admin)',
+          'GET /admin/stats - Get general escrow stats (admin)'
+        ]
+      }
     },
     documentation: 'API documentation available at /docs (when implemented)',
     support: 'For support, contact: luispaulodeoliveira@agrotm.com.br'

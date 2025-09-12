@@ -22,12 +22,14 @@ const createRateLimit = (options = {}) => {
     standardHeaders: true, // Retorna `RateLimit-*` headers
     legacyHeaders: false, // Retorna `X-RateLimit-*` headers
     handler: (req, res) => {
-      res.status(429).json(options.message || {
-        success: false,
-        message: 'Muitas requisições. Tente novamente mais tarde.'
-      });
+      res.status(429).json(
+        options.message || {
+          success: false,
+          message: 'Muitas requisições. Tente novamente mais tarde.'
+        }
+      );
     },
-    skip: (req) => {
+    skip: req => {
       // Pular rate limiting para IPs locais em desenvolvimento
       if (process.env.NODE_ENV === 'development') {
         const localIPs = ['127.0.0.1', '::1', 'localhost'];
@@ -35,7 +37,7 @@ const createRateLimit = (options = {}) => {
       }
       return false;
     },
-    keyGenerator: (req) => {
+    keyGenerator: req => {
       // Usar IP do cliente ou user ID se autenticado
       return req.user ? req.user.userId : req.ip;
     }
@@ -130,15 +132,10 @@ const webhookLimiter = createRateLimit({
     success: false,
     message: 'Limite de webhooks atingido.'
   },
-  skip: (req) => {
+  skip: req => {
     // Pular rate limiting para webhooks de serviços confiáveis
-    const trustedWebhooks = [
-      'stripe.com',
-      'github.com',
-      'gitlab.com',
-      'bitbucket.org'
-    ];
-    
+    const trustedWebhooks = ['stripe.com', 'github.com', 'gitlab.com', 'bitbucket.org'];
+
     const origin = req.get('Origin') || req.get('User-Agent') || '';
     return trustedWebhooks.some(trusted => origin.includes(trusted));
   }
@@ -154,7 +151,7 @@ const adminLimiter = createRateLimit({
     success: false,
     message: 'Limite de requisições admin atingido.'
   },
-  skip: (req) => {
+  skip: req => {
     // Pular rate limiting para usuários admin
     return req.user && req.user.role === 'admin';
   }
@@ -170,7 +167,7 @@ const premiumLimiter = createRateLimit({
     success: false,
     message: 'Limite de requisições atingido para usuários premium.'
   },
-  skip: (req) => {
+  skip: req => {
     // Pular rate limiting para usuários premium
     return req.user && req.user.isPaid && req.user.planActive;
   }
@@ -186,7 +183,7 @@ const devLimiter = createRateLimit({
     success: false,
     message: 'Limite de requisições atingido em desenvolvimento.'
   },
-  skip: (req) => {
+  skip: req => {
     // Pular rate limiting em desenvolvimento
     return process.env.NODE_ENV === 'development';
   }
@@ -199,7 +196,7 @@ const headerBasedLimiter = (headerName, maxRequests) => {
   return createRateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutos
     max: maxRequests,
-    keyGenerator: (req) => {
+    keyGenerator: req => {
       return req.get(headerName) || req.ip;
     },
     message: {
@@ -221,7 +218,7 @@ const userTypeLimiter = {
       message: 'Limite de requisições para visitantes atingido. Faça login para aumentar o limite.'
     }
   }),
-  
+
   basic: createRateLimit({
     windowMs: 15 * 60 * 1000,
     max: 150,
@@ -230,7 +227,7 @@ const userTypeLimiter = {
       message: 'Limite de requisições para usuários básicos atingido.'
     }
   }),
-  
+
   premium: createRateLimit({
     windowMs: 15 * 60 * 1000,
     max: 300,
@@ -239,7 +236,7 @@ const userTypeLimiter = {
       message: 'Limite de requisições para usuários premium atingido.'
     }
   }),
-  
+
   admin: createRateLimit({
     windowMs: 15 * 60 * 1000,
     max: 500,
@@ -255,7 +252,7 @@ const userTypeLimiter = {
  */
 const applyUserTypeLimiting = (req, res, next) => {
   let limiter;
-  
+
   if (!req.user) {
     limiter = userTypeLimiter.guest;
   } else if (req.user.role === 'admin') {
@@ -265,7 +262,7 @@ const applyUserTypeLimiting = (req, res, next) => {
   } else {
     limiter = userTypeLimiter.basic;
   }
-  
+
   limiter(req, res, next);
 };
 

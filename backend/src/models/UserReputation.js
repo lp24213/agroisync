@@ -65,62 +65,66 @@ const userReputationSchema = new mongoose.Schema({
   },
 
   // Badges e conquistas
-  badges: [{
-    id: {
-      type: String,
-      required: true
-    },
-    name: {
-      type: String,
-      required: true
-    },
-    description: String,
-    icon: String,
-    category: {
-      type: String,
-      enum: ['TRANSACTION', 'PRODUCT', 'FREIGHT', 'COMMUNITY', 'SPECIAL'],
-      required: true
-    },
-    earnedAt: {
-      type: Date,
-      default: Date.now
-    },
-    rarity: {
-      type: String,
-      enum: ['COMMON', 'RARE', 'EPIC', 'LEGENDARY'],
-      default: 'COMMON'
+  badges: [
+    {
+      id: {
+        type: String,
+        required: true
+      },
+      name: {
+        type: String,
+        required: true
+      },
+      description: String,
+      icon: String,
+      category: {
+        type: String,
+        enum: ['TRANSACTION', 'PRODUCT', 'FREIGHT', 'COMMUNITY', 'SPECIAL'],
+        required: true
+      },
+      earnedAt: {
+        type: Date,
+        default: Date.now
+      },
+      rarity: {
+        type: String,
+        enum: ['COMMON', 'RARE', 'EPIC', 'LEGENDARY'],
+        default: 'COMMON'
+      }
     }
-  }],
+  ],
 
   // Histórico de pontuação
-  scoreHistory: [{
-    action: {
-      type: String,
-      required: true,
-      enum: [
-        'TRANSACTION_COMPLETED',
-        'PRODUCT_CREATED',
-        'FREIGHT_CREATED',
-        'POSITIVE_REVIEW',
-        'NEGATIVE_REVIEW',
-        'COMMUNITY_HELP',
-        'REFERRAL',
-        'DAILY_LOGIN',
-        'WEEKLY_ACTIVITY',
-        'MONTHLY_ACTIVITY'
-      ]
-    },
-    points: {
-      type: Number,
-      required: true
-    },
-    description: String,
-    metadata: mongoose.Schema.Types.Mixed,
-    earnedAt: {
-      type: Date,
-      default: Date.now
+  scoreHistory: [
+    {
+      action: {
+        type: String,
+        required: true,
+        enum: [
+          'TRANSACTION_COMPLETED',
+          'PRODUCT_CREATED',
+          'FREIGHT_CREATED',
+          'POSITIVE_REVIEW',
+          'NEGATIVE_REVIEW',
+          'COMMUNITY_HELP',
+          'REFERRAL',
+          'DAILY_LOGIN',
+          'WEEKLY_ACTIVITY',
+          'MONTHLY_ACTIVITY'
+        ]
+      },
+      points: {
+        type: Number,
+        required: true
+      },
+      description: String,
+      metadata: mongoose.Schema.Types.Mixed,
+      earnedAt: {
+        type: Date,
+        default: Date.now
+      }
     }
-  }],
+  ],
 
   // Rankings
   rankings: {
@@ -155,21 +159,21 @@ const userReputationSchema = new mongoose.Schema({
 });
 
 // Middleware para atualizar updatedAt
-userReputationSchema.pre('save', function(next) {
+userReputationSchema.pre('save', function (next) {
   this.updatedAt = new Date();
   next();
 });
 
 // Método para calcular XP necessário para o próximo nível
-userReputationSchema.methods.calculateExperienceToNextLevel = function() {
+userReputationSchema.methods.calculateExperienceToNextLevel = function () {
   return Math.floor(100 * Math.pow(1.5, this.level - 1));
 };
 
 // Método para adicionar pontos e verificar level up
-userReputationSchema.methods.addPoints = function(points, action, description, metadata = {}) {
+userReputationSchema.methods.addPoints = function (points, action, description, metadata = {}) {
   this.totalScore += points;
   this.experience += points;
-  
+
   // Adicionar ao histórico
   this.scoreHistory.push({
     action,
@@ -191,12 +195,14 @@ userReputationSchema.methods.addPoints = function(points, action, description, m
 };
 
 // Método para calcular badge baseado em estatísticas
-userReputationSchema.methods.calculateBadges = function() {
+userReputationSchema.methods.calculateBadges = function () {
   const newBadges = [];
-  
+
   // Badge de Primeira Transação
-  if (this.transactionStats.totalTransactions >= 1 && 
-      !this.badges.find(b => b.id === 'FIRST_TRANSACTION')) {
+  if (
+    this.transactionStats.totalTransactions >= 1 &&
+    !this.badges.find(b => b.id === 'FIRST_TRANSACTION')
+  ) {
     newBadges.push({
       id: 'FIRST_TRANSACTION',
       name: 'Primeira Transação',
@@ -208,8 +214,7 @@ userReputationSchema.methods.calculateBadges = function() {
   }
 
   // Badge de Vendedor Ativo
-  if (this.productStats.totalProducts >= 10 && 
-      !this.badges.find(b => b.id === 'ACTIVE_SELLER')) {
+  if (this.productStats.totalProducts >= 10 && !this.badges.find(b => b.id === 'ACTIVE_SELLER')) {
     newBadges.push({
       id: 'ACTIVE_SELLER',
       name: 'Vendedor Ativo',
@@ -221,8 +226,7 @@ userReputationSchema.methods.calculateBadges = function() {
   }
 
   // Badge de Transportador
-  if (this.freightStats.completedFreights >= 5 && 
-      !this.badges.find(b => b.id === 'TRANSPORTER')) {
+  if (this.freightStats.completedFreights >= 5 && !this.badges.find(b => b.id === 'TRANSPORTER')) {
     newBadges.push({
       id: 'TRANSPORTER',
       name: 'Transportador',
@@ -234,9 +238,11 @@ userReputationSchema.methods.calculateBadges = function() {
   }
 
   // Badge de Confiável
-  if (this.transactionStats.averageRating >= 4.5 && 
-      this.transactionStats.successfulTransactions >= 20 && 
-      !this.badges.find(b => b.id === 'TRUSTED_USER')) {
+  if (
+    this.transactionStats.averageRating >= 4.5 &&
+    this.transactionStats.successfulTransactions >= 20 &&
+    !this.badges.find(b => b.id === 'TRUSTED_USER')
+  ) {
     newBadges.push({
       id: 'TRUSTED_USER',
       name: 'Usuário Confiável',
@@ -248,9 +254,11 @@ userReputationSchema.methods.calculateBadges = function() {
   }
 
   // Badge de Top Vendedor
-  if (this.transactionStats.totalVolume >= 10000 && 
-      this.transactionStats.successfulTransactions >= 50 && 
-      !this.badges.find(b => b.id === 'TOP_SELLER')) {
+  if (
+    this.transactionStats.totalVolume >= 10000 &&
+    this.transactionStats.successfulTransactions >= 50 &&
+    !this.badges.find(b => b.id === 'TOP_SELLER')
+  ) {
     newBadges.push({
       id: 'TOP_SELLER',
       name: 'Top Vendedor',

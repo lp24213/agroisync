@@ -10,9 +10,9 @@ export const notifyNewTransaction = async (req, res, next) => {
   try {
     // Salvar a resposta original
     const originalJson = res.json;
-    
+
     // Sobrescrever o método json para interceptar a resposta
-    res.json = function(data) {
+    res.json = function (data) {
       // Se a transação foi criada com sucesso, disparar notificação
       if (data.success && data.data && data.data._id) {
         // Disparar notificação de forma assíncrona (não bloquear a resposta)
@@ -24,12 +24,12 @@ export const notifyNewTransaction = async (req, res, next) => {
           }
         });
       }
-      
+
       // Restaurar o método original e chamar
       res.json = originalJson;
       return originalJson.call(this, data);
     };
-    
+
     next();
   } catch (error) {
     console.error('Erro no middleware de notificação de transação:', error);
@@ -41,8 +41,8 @@ export const notifyNewTransaction = async (req, res, next) => {
 export const notifyNewMessage = async (req, res, next) => {
   try {
     const originalJson = res.json;
-    
-    res.json = function(data) {
+
+    res.json = function (data) {
       if (data.success && data.data && data.data._id) {
         setImmediate(async () => {
           try {
@@ -52,11 +52,11 @@ export const notifyNewMessage = async (req, res, next) => {
           }
         });
       }
-      
+
       res.json = originalJson;
       return originalJson.call(this, data);
     };
-    
+
     next();
   } catch (error) {
     console.error('Erro no middleware de notificação de mensagem:', error);
@@ -68,8 +68,8 @@ export const notifyNewMessage = async (req, res, next) => {
 export const notifyStatusChange = async (req, res, next) => {
   try {
     const originalJson = res.json;
-    
-    res.json = function(data) {
+
+    res.json = function (data) {
       if (data.success && data.data && data.data.oldStatus && data.data.newStatus) {
         setImmediate(async () => {
           try {
@@ -83,11 +83,11 @@ export const notifyStatusChange = async (req, res, next) => {
           }
         });
       }
-      
+
       res.json = originalJson;
       return originalJson.call(this, data);
     };
-    
+
     next();
   } catch (error) {
     console.error('Erro no middleware de notificação de mudança de status:', error);
@@ -99,8 +99,8 @@ export const notifyStatusChange = async (req, res, next) => {
 export const notifyPaymentReceived = async (req, res, next) => {
   try {
     const originalJson = res.json;
-    
-    res.json = function(data) {
+
+    res.json = function (data) {
       if (data.success && data.data && data.data.status === 'COMPLETED') {
         setImmediate(async () => {
           try {
@@ -110,11 +110,11 @@ export const notifyPaymentReceived = async (req, res, next) => {
           }
         });
       }
-      
+
       res.json = originalJson;
       return originalJson.call(this, data);
     };
-    
+
     next();
   } catch (error) {
     console.error('Erro no middleware de notificação de pagamento:', error);
@@ -126,8 +126,8 @@ export const notifyPaymentReceived = async (req, res, next) => {
 export const notifyPaymentFailed = async (req, res, next) => {
   try {
     const originalJson = res.json;
-    
-    res.json = function(data) {
+
+    res.json = function (data) {
       if (data.success && data.data && data.data.status === 'FAILED') {
         setImmediate(async () => {
           try {
@@ -137,11 +137,11 @@ export const notifyPaymentFailed = async (req, res, next) => {
           }
         });
       }
-      
+
       res.json = originalJson;
       return originalJson.call(this, data);
     };
-    
+
     next();
   } catch (error) {
     console.error('Erro no middleware de notificação de falha no pagamento:', error);
@@ -153,9 +153,14 @@ export const notifyPaymentFailed = async (req, res, next) => {
 export const notifyWelcome = async (req, res, next) => {
   try {
     const originalJson = res.json;
-    
-    res.json = function(data) {
-      if (data.success && data.data && data.data.user && data.data.requiresEmailVerification === false) {
+
+    res.json = function (data) {
+      if (
+        data.success &&
+        data.data &&
+        data.data.user &&
+        data.data.requiresEmailVerification === false
+      ) {
         setImmediate(async () => {
           try {
             await notificationService.notifyWelcome(data.data.user);
@@ -164,11 +169,11 @@ export const notifyWelcome = async (req, res, next) => {
           }
         });
       }
-      
+
       res.json = originalJson;
       return originalJson.call(this, data);
     };
-    
+
     next();
   } catch (error) {
     console.error('Erro no middleware de notificação de boas-vindas:', error);
@@ -180,25 +185,22 @@ export const notifyWelcome = async (req, res, next) => {
 export const notifyVerificationRequired = async (req, res, next) => {
   try {
     const originalJson = res.json;
-    
-    res.json = function(data) {
+
+    res.json = function (data) {
       if (data.success && data.data && data.data.requiresEmailVerification === true) {
         setImmediate(async () => {
           try {
-            await notificationService.notifyVerificationRequired(
-              data.data.user,
-              'email'
-            );
+            await notificationService.notifyVerificationRequired(data.data.user, 'email');
           } catch (error) {
             console.error('Erro ao disparar notificação de verificação necessária:', error);
           }
         });
       }
-      
+
       res.json = originalJson;
       return originalJson.call(this, data);
     };
-    
+
     next();
   } catch (error) {
     console.error('Erro no middleware de notificação de verificação necessária:', error);
@@ -224,10 +226,9 @@ export const checkExpiringPlansJob = async () => {
     // Esta função deve ser executada diariamente via cron job
     // para verificar usuários com planos expirando
     console.log('Verificando planos expirando...');
-    
+
     // Implementar lógica para buscar usuários com planos expirando
     // e disparar notificações apropriadas
-    
   } catch (error) {
     console.error('Erro ao verificar planos expirando:', error);
   }

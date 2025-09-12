@@ -15,7 +15,7 @@ router.use(apiLimiter);
 // Validação para mensagens de contato
 const validateContactMessage = (req, res, next) => {
   const { name, email, subject, message, phone, company, category } = req.body;
-  
+
   if (!name || !email || !subject || !message) {
     return res.status(400).json({
       success: false,
@@ -68,8 +68,18 @@ const validateContactMessage = (req, res, next) => {
 
 // Validação para mensagens de parceria
 const validatePartnershipMessage = (req, res, next) => {
-  const { company, contactPerson, email, partnershipType, description, phone, website, budget, timeline } = req.body;
-  
+  const {
+    company,
+    contactPerson,
+    email,
+    partnershipType,
+    description,
+    phone,
+    website,
+    budget,
+    timeline
+  } = req.body;
+
   if (!company || !contactPerson || !email || !partnershipType || !description) {
     return res.status(400).json({
       success: false,
@@ -109,7 +119,14 @@ const validatePartnershipMessage = (req, res, next) => {
   }
 
   // Validar tipo de parceria
-  const validPartnershipTypes = ['technology', 'distribution', 'marketing', 'research', 'investment', 'other'];
+  const validPartnershipTypes = [
+    'technology',
+    'distribution',
+    'marketing',
+    'research',
+    'investment',
+    'other'
+  ];
   if (!validPartnershipTypes.includes(partnershipType)) {
     return res.status(400).json({
       success: false,
@@ -119,7 +136,14 @@ const validatePartnershipMessage = (req, res, next) => {
 
   // Validar orçamento se fornecido
   if (budget) {
-    const validBudgets = ['under_10k', '10k_50k', '50k_100k', '100k_500k', 'over_500k', 'negotiable'];
+    const validBudgets = [
+      'under_10k',
+      '10k_50k',
+      '50k_100k',
+      '100k_500k',
+      'over_500k',
+      'negotiable'
+    ];
     if (!validBudgets.includes(budget)) {
       return res.status(400).json({
         success: false,
@@ -180,9 +204,14 @@ router.post('/', validateContactMessage, async (req, res) => {
     });
   } catch (error) {
     console.error('Error sending contact message:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error sending contact message: ${error.message}`, req);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error sending contact message: ${error.message}`,
+      req
+    );
+
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -193,7 +222,18 @@ router.post('/', validateContactMessage, async (req, res) => {
 // POST /api/contact/partnership - Enviar solicitação de parceria
 router.post('/partnership', validatePartnershipMessage, async (req, res) => {
   try {
-    const { company, contactPerson, email, partnershipType, description, phone, website, budget, timeline, goals } = req.body;
+    const {
+      company,
+      contactPerson,
+      email,
+      partnershipType,
+      description,
+      phone,
+      website,
+      budget,
+      timeline,
+      goals
+    } = req.body;
 
     // Sanitizar inputs
     const sanitizedData = {
@@ -230,9 +270,14 @@ router.post('/partnership', validatePartnershipMessage, async (req, res) => {
     });
   } catch (error) {
     console.error('Error sending partnership inquiry:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error sending partnership inquiry: ${error.message}`, req);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error sending partnership inquiry: ${error.message}`,
+      req
+    );
+
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -250,9 +295,15 @@ router.get('/admin/messages', async (req, res) => {
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     const query = {};
-    if (status) query.status = status;
-    if (category) query.category = category;
-    if (priority) query.priority = priority;
+    if (status) {
+      query.status = status;
+    }
+    if (category) {
+      query.category = category;
+    }
+    if (priority) {
+      query.priority = priority;
+    }
 
     const messages = await ContactMessage.find(query)
       .sort({ createdAt: -1 })
@@ -290,9 +341,15 @@ router.get('/admin/partnerships', async (req, res) => {
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     const query = {};
-    if (status) query.status = status;
-    if (partnershipType) query.partnershipType = partnershipType;
-    if (budget) query.budget = budget;
+    if (status) {
+      query.status = status;
+    }
+    if (partnershipType) {
+      query.partnershipType = partnershipType;
+    }
+    if (budget) {
+      query.budget = budget;
+    }
 
     const messages = await PartnershipMessage.find(query)
       .sort({ createdAt: -1 })
@@ -390,9 +447,15 @@ router.put('/admin/messages/:id/status', async (req, res) => {
     }
 
     // Atualizar campos
-    if (status) message.status = status;
-    if (adminNotes) message.adminNotes = adminNotes;
-    if (assignedTo) message.assignedTo = assignedTo;
+    if (status) {
+      message.status = status;
+    }
+    if (adminNotes) {
+      message.adminNotes = adminNotes;
+    }
+    if (assignedTo) {
+      message.assignedTo = assignedTo;
+    }
 
     // Atualizar timestamps específicos
     if (status === 'read' && !message.isRead) {
@@ -435,9 +498,15 @@ router.put('/admin/partnerships/:id/status', async (req, res) => {
     }
 
     // Atualizar campos
-    if (status) message.status = status;
-    if (adminNotes) message.adminNotes = adminNotes;
-    if (assignedTo) message.assignedTo = assignedTo;
+    if (status) {
+      message.status = status;
+    }
+    if (adminNotes) {
+      message.adminNotes = adminNotes;
+    }
+    if (assignedTo) {
+      message.assignedTo = assignedTo;
+    }
 
     // Atualizar timestamps específicos
     if (status === 'read' && !message.isRead) {

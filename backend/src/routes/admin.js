@@ -11,7 +11,7 @@ import AuditLog from '../models/AuditLog.js';
 import { requireAdmin, validateAdminAction } from '../middleware/adminAuth.js';
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET;
+const { JWT_SECRET } = process.env;
 
 // Credenciais fixas do admin
 const ADMIN_EMAIL = 'luispaulodeoliveira@agrotm.com.br';
@@ -21,7 +21,7 @@ const ADMIN_PASSWORD = 'Th@ys15221008';
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    
+
     if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
       await AuditLog.logAction({
         userId: 'unknown',
@@ -34,22 +34,22 @@ router.post('/login', async (req, res) => {
         isSuspicious: true,
         riskLevel: 'HIGH'
       });
-      
-      return res.status(401).json({ 
-        error: 'Credenciais inválidas.' 
+
+      return res.status(401).json({
+        error: 'Credenciais inválidas.'
       });
     }
-    
+
     const adminToken = jwt.sign(
-      { 
-        email: ADMIN_EMAIL, 
+      {
+        email: ADMIN_EMAIL,
         role: 'admin',
         timestamp: Date.now()
-      }, 
-      JWT_SECRET, 
+      },
+      JWT_SECRET,
       { expiresIn: '24h' }
     );
-    
+
     await AuditLog.logAction({
       userId: 'admin',
       userEmail: ADMIN_EMAIL,
@@ -61,11 +61,11 @@ router.post('/login', async (req, res) => {
       isSuspicious: false,
       riskLevel: 'LOW'
     });
-    
-    res.json({ 
-      success: true, 
+
+    res.json({
+      success: true,
       adminToken,
-      message: 'Login administrativo realizado com sucesso.' 
+      message: 'Login administrativo realizado com sucesso.'
     });
   } catch (error) {
     console.error('Erro no login admin:', error);
@@ -77,18 +77,18 @@ router.post('/login', async (req, res) => {
 router.get('/dashboard', requireAdmin, async (req, res) => {
   try {
     const stats = await AuditLog.getStats();
-    
+
     const totalUsers = await User.countDocuments();
     const totalProducts = await Product.countDocuments();
     const totalFreights = await Freight.countDocuments();
     const totalConversations = await Conversation.countDocuments();
     const totalMessages = await Message.countDocuments();
-    
+
     const recentAuditLogs = await AuditLog.find()
       .sort({ createdAt: -1 })
       .limit(10)
       .select('action userEmail ip createdAt riskLevel');
-    
+
     res.json({
       stats: {
         totalUsers,
@@ -113,7 +113,7 @@ router.get('/conversations', requireAdmin, async (req, res) => {
       .populate('participants', 'name email')
       .populate('lastMessage')
       .sort({ lastMessageAt: -1 });
-    
+
     res.json({ conversations });
   } catch (error) {
     console.error('Erro ao listar conversas:', error);
@@ -127,7 +127,7 @@ router.get('/users', requireAdmin, async (req, res) => {
     const users = await User.find()
       .select('name email phone createdAt lastLogin ipAddress')
       .sort({ createdAt: -1 });
-    
+
     res.json({ users });
   } catch (error) {
     console.error('Erro ao listar usuários:', error);
@@ -138,10 +138,8 @@ router.get('/users', requireAdmin, async (req, res) => {
 // Listar todos os produtos (protegido)
 router.get('/products', requireAdmin, async (req, res) => {
   try {
-    const products = await Product.find()
-      .populate('owner', 'name email')
-      .sort({ createdAt: -1 });
-    
+    const products = await Product.find().populate('owner', 'name email').sort({ createdAt: -1 });
+
     res.json({ products });
   } catch (error) {
     console.error('Erro ao listar produtos:', error);
@@ -152,10 +150,8 @@ router.get('/products', requireAdmin, async (req, res) => {
 // Listar todos os fretes (protegido)
 router.get('/freights', requireAdmin, async (req, res) => {
   try {
-    const freights = await Freight.find()
-      .populate('owner', 'name email')
-      .sort({ createdAt: -1 });
-    
+    const freights = await Freight.find().populate('owner', 'name email').sort({ createdAt: -1 });
+
     res.json({ freights });
   } catch (error) {
     console.error('Erro ao listar fretes:', error);
@@ -166,10 +162,8 @@ router.get('/freights', requireAdmin, async (req, res) => {
 // Listar todos os pagamentos (protegido)
 router.get('/payments', requireAdmin, async (req, res) => {
   try {
-    const payments = await Payment.find()
-      .populate('userId', 'name email')
-      .sort({ createdAt: -1 });
-    
+    const payments = await Payment.find().populate('userId', 'name email').sort({ createdAt: -1 });
+
     res.json({ payments });
   } catch (error) {
     console.error('Erro ao listar pagamentos:', error);
@@ -181,20 +175,24 @@ router.get('/payments', requireAdmin, async (req, res) => {
 router.get('/auditlogs', requireAdmin, async (req, res) => {
   try {
     const { page = 1, limit = 50, riskLevel, action } = req.query;
-    
+
     const filter = {};
-    if (riskLevel) filter.riskLevel = riskLevel;
-    if (action) filter.action = action;
-    
+    if (riskLevel) {
+      filter.riskLevel = riskLevel;
+    }
+    if (action) {
+      filter.action = action;
+    }
+
     const auditLogs = await AuditLog.find(filter)
       .sort({ createdAt: -1 })
       .limit(limit * 1)
       .skip((page - 1) * limit);
-    
+
     const total = await AuditLog.countDocuments(filter);
-    
-    res.json({ 
-      auditLogs, 
+
+    res.json({
+      auditLogs,
       totalPages: Math.ceil(total / limit),
       currentPage: page,
       total
@@ -209,7 +207,7 @@ router.get('/auditlogs', requireAdmin, async (req, res) => {
 router.post('/export', requireAdmin, validateAdminAction, async (req, res) => {
   try {
     const { action, reason } = req.adminAction;
-    
+
     await AuditLog.logAction({
       userId: req.admin.email,
       userEmail: req.admin.email,
@@ -221,9 +219,9 @@ router.post('/export', requireAdmin, validateAdminAction, async (req, res) => {
       isSuspicious: false,
       riskLevel: 'LOW'
     });
-    
+
     // Aqui você pode implementar a lógica de exportação
-    res.json({ 
+    res.json({
       message: 'Exportação solicitada com sucesso.',
       action,
       reason

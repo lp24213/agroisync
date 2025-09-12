@@ -7,7 +7,7 @@ const partnershipMessageSchema = new mongoose.Schema({
     ref: 'Partner',
     required: true
   },
-  
+
   // Informações da Mensagem
   subject: {
     type: String,
@@ -15,29 +15,36 @@ const partnershipMessageSchema = new mongoose.Schema({
     trim: true,
     maxlength: 200
   },
-  
+
   content: {
     type: String,
     required: true,
     trim: true,
     maxlength: 5000
   },
-  
+
   // Tipo e Categoria
   messageType: {
     type: String,
     required: true,
-    enum: ['partnership_request', 'business_proposal', 'collaboration', 'support', 'general', 'urgent'],
+    enum: [
+      'partnership_request',
+      'business_proposal',
+      'collaboration',
+      'support',
+      'general',
+      'urgent'
+    ],
     default: 'general'
   },
-  
+
   category: {
     type: String,
     required: true,
     enum: ['agriculture', 'technology', 'finance', 'logistics', 'marketing', 'research', 'other'],
     default: 'other'
   },
-  
+
   // Status e Prioridade
   status: {
     type: String,
@@ -45,34 +52,34 @@ const partnershipMessageSchema = new mongoose.Schema({
     enum: ['new', 'read', 'in_progress', 'replied', 'closed', 'archived'],
     default: 'new'
   },
-  
+
   priority: {
     type: String,
     required: true,
     enum: ['low', 'normal', 'high', 'urgent'],
     default: 'normal'
   },
-  
+
   // Rastreamento de Leitura e Resposta
   isRead: {
     type: Boolean,
     default: false
   },
-  
+
   readAt: Date,
-  
+
   readBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
-  
+
   repliedAt: Date,
-  
+
   repliedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
-  
+
   // Resposta da Administração
   adminReply: {
     content: {
@@ -80,29 +87,29 @@ const partnershipMessageSchema = new mongoose.Schema({
       trim: true,
       maxlength: 5000
     },
-    
+
     adminId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User'
     },
-    
+
     repliedAt: Date
   },
-  
+
   // Atribuição e Notas
   assignedTo: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
-  
+
   assignedAt: Date,
-  
+
   adminNotes: {
     type: String,
     trim: true,
     maxlength: 1000
   },
-  
+
   // Anexos
   attachments: [
     {
@@ -111,36 +118,36 @@ const partnershipMessageSchema = new mongoose.Schema({
         required: true,
         trim: true
       },
-      
+
       originalName: {
         type: String,
         required: true,
         trim: true
       },
-      
+
       mimeType: {
         type: String,
         required: true
       },
-      
+
       size: {
         type: Number,
         required: true,
         min: 0
       },
-      
+
       url: {
         type: String,
         required: true
       },
-      
+
       uploadedAt: {
         type: Date,
         default: Date.now
       }
     }
   ],
-  
+
   // Tags e Metadados
   tags: [
     {
@@ -149,31 +156,31 @@ const partnershipMessageSchema = new mongoose.Schema({
       maxlength: 50
     }
   ],
-  
+
   // Sinalização e Moderação
   isFlagged: {
     type: Boolean,
     default: false
   },
-  
+
   flagReason: {
     type: String,
     trim: true
   },
-  
+
   flaggedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
-  
+
   flaggedAt: Date,
-  
+
   // Timestamps
   createdAt: {
     type: Date,
     default: Date.now
   },
-  
+
   updatedAt: {
     type: Date,
     default: Date.now
@@ -200,12 +207,13 @@ partnershipMessageSchema.pre('save', function (next) {
   if (this.attachments && this.attachments.length > 10) {
     return next(new Error('Máximo de 10 anexos permitidos'));
   }
-  
+
   const totalSize = this.attachments.reduce((sum, att) => sum + att.size, 0);
-  if (totalSize > 50 * 1024 * 1024) { // 50MB
+  if (totalSize > 50 * 1024 * 1024) {
+    // 50MB
     return next(new Error('Tamanho total dos anexos excede 50MB'));
   }
-  
+
   next();
 });
 

@@ -52,7 +52,7 @@ const auth = async (req, res, next) => {
         message: 'Token inválido'
       });
     }
-    
+
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({
         success: false,
@@ -94,14 +94,14 @@ const planAuth = async (req, res, next) => {
   try {
     await auth(req, res, async () => {
       const user = await User.findById(req.user.id);
-      
+
       if (!user.isPaid) {
         return res.status(403).json({
           success: false,
           message: 'Plano ativo necessário para acessar este recurso'
         });
       }
-      
+
       next();
     });
   } catch (error) {
@@ -117,7 +117,7 @@ const planAuth = async (req, res, next) => {
 const optionalAuth = async (req, res, next) => {
   try {
     const authHeader = req.header('Authorization');
-    
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       req.user = null;
       return next();

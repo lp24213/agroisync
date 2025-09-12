@@ -16,7 +16,7 @@ const authLimiter = rateLimit({
     retryAfter: 15 * 60
   },
   standardHeaders: true,
-  legacyHeaders: false,
+  legacyHeaders: false
 });
 
 /**
@@ -53,96 +53,94 @@ const authLimiter = rateLimit({
  *       409:
  *         description: E-mail já cadastrado
  */
-router.post('/register', [
-  body('name')
-    .trim()
-    .isLength({ min: 2, max: 100 })
-    .withMessage('Nome deve ter entre 2 e 100 caracteres'),
-  body('email')
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('E-mail inválido'),
-  body('password')
-    .isLength({ min: 6 })
-    .withMessage('Senha deve ter pelo menos 6 caracteres'),
-  body('businessType')
-    .optional()
-    .isIn(['producer', 'buyer', 'transporter', 'all'])
-    .withMessage('Tipo de negócio inválido')
-], async (req, res) => {
-  try {
-    // Validar dados
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        message: 'Dados inválidos',
-        errors: errors.array()
-      });
-    }
-
-    const { name, email, password, businessType = 'all' } = req.body;
-
-    // Verificar se usuário já existe
-    const existingUser = await User.findByEmail(email);
-    if (existingUser) {
-      return res.status(409).json({
-        success: false,
-        message: 'E-mail já cadastrado'
-      });
-    }
-
-    // Criar usuário
-    const user = new User({
-      name,
-      email,
-      password,
-      businessType,
-      lgpdConsent: true,
-      lgpdConsentDate: new Date(),
-      dataProcessingConsent: true,
-      marketingConsent: false
-    });
-
-    await user.save();
-
-    // Gerar token de verificação de e-mail
-    const emailToken = user.generateEmailVerificationToken();
-    await user.save();
-
-    // TODO: Enviar e-mail de verificação
-
-    // Gerar token de autenticação
-    const token = user.generateAuthToken();
-
-    logger.info(`Novo usuário registrado: ${email}`);
-
-    res.status(201).json({
-      success: true,
-      message: 'Usuário registrado com sucesso',
-      data: {
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          businessType: user.businessType,
-          isEmailVerified: user.isEmailVerified,
-          role: user.role,
-          isAdmin: user.isAdmin
-        },
-        token,
-        requiresEmailVerification: !user.isEmailVerified
+router.post(
+  '/register',
+  [
+    body('name')
+      .trim()
+      .isLength({ min: 2, max: 100 })
+      .withMessage('Nome deve ter entre 2 e 100 caracteres'),
+    body('email').isEmail().normalizeEmail().withMessage('E-mail inválido'),
+    body('password').isLength({ min: 6 }).withMessage('Senha deve ter pelo menos 6 caracteres'),
+    body('businessType')
+      .optional()
+      .isIn(['producer', 'buyer', 'transporter', 'all'])
+      .withMessage('Tipo de negócio inválido')
+  ],
+  async (req, res) => {
+    try {
+      // Validar dados
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Dados inválidos',
+          errors: errors.array()
+        });
       }
-    });
 
-  } catch (error) {
-    logger.error('Erro no registro:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
+      const { name, email, password, businessType = 'all' } = req.body;
+
+      // Verificar se usuário já existe
+      const existingUser = await User.findByEmail(email);
+      if (existingUser) {
+        return res.status(409).json({
+          success: false,
+          message: 'E-mail já cadastrado'
+        });
+      }
+
+      // Criar usuário
+      const user = new User({
+        name,
+        email,
+        password,
+        businessType,
+        lgpdConsent: true,
+        lgpdConsentDate: new Date(),
+        dataProcessingConsent: true,
+        marketingConsent: false
+      });
+
+      await user.save();
+
+      // Gerar token de verificação de e-mail
+      const emailToken = user.generateEmailVerificationToken();
+      await user.save();
+
+      // TODO: Enviar e-mail de verificação
+
+      // Gerar token de autenticação
+      const token = user.generateAuthToken();
+
+      logger.info(`Novo usuário registrado: ${email}`);
+
+      res.status(201).json({
+        success: true,
+        message: 'Usuário registrado com sucesso',
+        data: {
+          user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            businessType: user.businessType,
+            isEmailVerified: user.isEmailVerified,
+            role: user.role,
+            isAdmin: user.isAdmin
+          },
+          token,
+          requiresEmailVerification: !user.isEmailVerified
+        }
+      });
+    } catch (error) {
+      logger.error('Erro no registro:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erro interno do servidor'
+      });
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -172,114 +170,111 @@ router.post('/register', [
  *       429:
  *         description: Muitas tentativas
  */
-router.post('/login', authLimiter, [
-  body('email')
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('E-mail inválido'),
-  body('password')
-    .notEmpty()
-    .withMessage('Senha é obrigatória')
-], async (req, res) => {
-  try {
-    // Validar dados
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        message: 'Dados inválidos',
-        errors: errors.array()
-      });
-    }
+router.post(
+  '/login',
+  authLimiter,
+  [
+    body('email').isEmail().normalizeEmail().withMessage('E-mail inválido'),
+    body('password').notEmpty().withMessage('Senha é obrigatória')
+  ],
+  async (req, res) => {
+    try {
+      // Validar dados
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Dados inválidos',
+          errors: errors.array()
+        });
+      }
 
-    const { email, password } = req.body;
+      const { email, password } = req.body;
 
-    // Buscar usuário
-    const user = await User.findByEmail(email).select('+password');
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: 'Credenciais inválidas'
-      });
-    }
+      // Buscar usuário
+      const user = await User.findByEmail(email).select('+password');
+      if (!user) {
+        return res.status(401).json({
+          success: false,
+          message: 'Credenciais inválidas'
+        });
+      }
 
-    // Verificar se conta está ativa
-    if (!user.isActive || user.isBlocked) {
-      return res.status(401).json({
-        success: false,
-        message: 'Conta desativada ou bloqueada'
-      });
-    }
+      // Verificar se conta está ativa
+      if (!user.isActive || user.isBlocked) {
+        return res.status(401).json({
+          success: false,
+          message: 'Conta desativada ou bloqueada'
+        });
+      }
 
-    // Verificar senha
-    const isPasswordValid = await user.comparePassword(password);
-    if (!isPasswordValid) {
-      return res.status(401).json({
-        success: false,
-        message: 'Credenciais inválidas'
-      });
-    }
+      // Verificar senha
+      const isPasswordValid = await user.comparePassword(password);
+      if (!isPasswordValid) {
+        return res.status(401).json({
+          success: false,
+          message: 'Credenciais inválidas'
+        });
+      }
 
-    // Verificar se 2FA está habilitado
-    if (user.twoFactorEnabled) {
-      // Gerar token temporário para 2FA
-      const tempToken = jwt.sign(
-        { userId: user._id, temp: true },
-        process.env.JWT_SECRET,
-        { expiresIn: '5m' }
-      );
+      // Verificar se 2FA está habilitado
+      if (user.twoFactorEnabled) {
+        // Gerar token temporário para 2FA
+        const tempToken = jwt.sign({ userId: user._id, temp: true }, process.env.JWT_SECRET, {
+          expiresIn: '5m'
+        });
 
-      return res.status(200).json({
+        return res.status(200).json({
+          success: true,
+          message: '2FA necessário',
+          data: {
+            requires2FA: true,
+            tempToken,
+            userId: user._id
+          }
+        });
+      }
+
+      // Atualizar última atividade
+      user.lastLoginAt = new Date();
+      user.lastActivityAt = new Date();
+      await user.save();
+
+      // Gerar token de autenticação
+      const token = user.generateAuthToken();
+      const refreshToken = user.generateRefreshToken();
+
+      logger.info(`Login realizado: ${email}`);
+
+      res.status(200).json({
         success: true,
-        message: '2FA necessário',
+        message: 'Login realizado com sucesso',
         data: {
-          requires2FA: true,
-          tempToken,
-          userId: user._id
+          user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            businessType: user.businessType,
+            role: user.role,
+            isAdmin: user.isAdmin,
+            isPaid: user.isPaid,
+            plan: user.plan,
+            avatar: user.avatar
+          },
+          token,
+          refreshToken,
+          requires2FA: false
         }
       });
+    } catch (error) {
+      logger.error('Erro no login:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erro interno do servidor'
+      });
     }
-
-    // Atualizar última atividade
-    user.lastLoginAt = new Date();
-    user.lastActivityAt = new Date();
-    await user.save();
-
-    // Gerar token de autenticação
-    const token = user.generateAuthToken();
-    const refreshToken = user.generateRefreshToken();
-
-    logger.info(`Login realizado: ${email}`);
-
-    res.status(200).json({
-      success: true,
-      message: 'Login realizado com sucesso',
-      data: {
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          businessType: user.businessType,
-          role: user.role,
-          isAdmin: user.isAdmin,
-          isPaid: user.isPaid,
-          plan: user.plan,
-          avatar: user.avatar
-        },
-        token,
-        refreshToken,
-        requires2FA: false
-      }
-    });
-
-  } catch (error) {
-    logger.error('Erro no login:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
   }
-});
+);
 
 /**
  * @swagger
@@ -307,84 +302,85 @@ router.post('/login', authLimiter, [
  *       400:
  *         description: Código inválido
  */
-router.post('/verify-otp', [
-  body('userId')
-    .isMongoId()
-    .withMessage('ID de usuário inválido'),
-  body('otpCode')
-    .isLength({ min: 6, max: 6 })
-    .isNumeric()
-    .withMessage('Código OTP deve ter 6 dígitos')
-], async (req, res) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        message: 'Dados inválidos',
-        errors: errors.array()
-      });
-    }
-
-    const { userId, otpCode } = req.body;
-
-    // Buscar usuário
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'Usuário não encontrado'
-      });
-    }
-
-    // TODO: Implementar verificação real do OTP com speakeasy
-    // Por enquanto, aceitar qualquer código de 6 dígitos
-    if (otpCode.length !== 6 || !/^\d{6}$/.test(otpCode)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Código OTP inválido'
-      });
-    }
-
-    // Atualizar última atividade
-    user.lastLoginAt = new Date();
-    user.lastActivityAt = new Date();
-    await user.save();
-
-    // Gerar token de autenticação
-    const token = user.generateAuthToken();
-    const refreshToken = user.generateRefreshToken();
-
-    logger.info(`2FA verificado para usuário: ${user.email}`);
-
-    res.status(200).json({
-      success: true,
-      message: '2FA verificado com sucesso',
-      data: {
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          businessType: user.businessType,
-          role: user.role,
-          isAdmin: user.isAdmin,
-          isPaid: user.isPaid,
-          plan: user.plan,
-          avatar: user.avatar
-        },
-        token,
-        refreshToken
+router.post(
+  '/verify-otp',
+  [
+    body('userId').isMongoId().withMessage('ID de usuário inválido'),
+    body('otpCode')
+      .isLength({ min: 6, max: 6 })
+      .isNumeric()
+      .withMessage('Código OTP deve ter 6 dígitos')
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Dados inválidos',
+          errors: errors.array()
+        });
       }
-    });
 
-  } catch (error) {
-    logger.error('Erro na verificação 2FA:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
+      const { userId, otpCode } = req.body;
+
+      // Buscar usuário
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'Usuário não encontrado'
+        });
+      }
+
+      // TODO: Implementar verificação real do OTP com speakeasy
+      // Por enquanto, aceitar qualquer código de 6 dígitos
+      if (otpCode.length !== 6 || !/^\d{6}$/.test(otpCode)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Código OTP inválido'
+        });
+      }
+
+      // Atualizar última atividade
+      user.lastLoginAt = new Date();
+      user.lastActivityAt = new Date();
+      await user.save();
+
+      // Gerar token de autenticação
+      const token = user.generateAuthToken();
+      const refreshToken = user.generateRefreshToken();
+
+      logger.info(`2FA verificado para usuário: ${user.email}`);
+
+      res.status(200).json({
+        success: true,
+        message: '2FA verificado com sucesso',
+        data: {
+          user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            businessType: user.businessType,
+            role: user.role,
+            isAdmin: user.isAdmin,
+            isPaid: user.isPaid,
+            plan: user.plan,
+            avatar: user.avatar
+          },
+          token,
+          refreshToken
+        }
+      });
+    } catch (error) {
+      logger.error('Erro na verificação 2FA:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erro interno do servidor'
+      });
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -428,7 +424,6 @@ router.get('/verify', auth, async (req, res) => {
         }
       }
     });
-
   } catch (error) {
     logger.error('Erro na verificação de token:', error);
     res.status(500).json({
@@ -461,53 +456,51 @@ router.get('/verify', auth, async (req, res) => {
  *       404:
  *         description: E-mail não encontrado
  */
-router.post('/forgot-password', [
-  body('email')
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('E-mail inválido')
-], async (req, res) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
+router.post(
+  '/forgot-password',
+  [body('email').isEmail().normalizeEmail().withMessage('E-mail inválido')],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Dados inválidos',
+          errors: errors.array()
+        });
+      }
+
+      const { email } = req.body;
+
+      const user = await User.findByEmail(email);
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'E-mail não encontrado'
+        });
+      }
+
+      // Gerar token de reset
+      const resetToken = user.generatePasswordResetToken();
+      await user.save();
+
+      // TODO: Enviar e-mail com link de reset
+
+      logger.info(`Reset de senha solicitado para: ${email}`);
+
+      res.status(200).json({
+        success: true,
+        message: 'E-mail de redefinição enviado'
+      });
+    } catch (error) {
+      logger.error('Erro no reset de senha:', error);
+      res.status(500).json({
         success: false,
-        message: 'Dados inválidos',
-        errors: errors.array()
+        message: 'Erro interno do servidor'
       });
     }
-
-    const { email } = req.body;
-
-    const user = await User.findByEmail(email);
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'E-mail não encontrado'
-      });
-    }
-
-    // Gerar token de reset
-    const resetToken = user.generatePasswordResetToken();
-    await user.save();
-
-    // TODO: Enviar e-mail com link de reset
-
-    logger.info(`Reset de senha solicitado para: ${email}`);
-
-    res.status(200).json({
-      success: true,
-      message: 'E-mail de redefinição enviado'
-    });
-
-  } catch (error) {
-    logger.error('Erro no reset de senha:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
   }
-});
+);
 
 /**
  * @swagger
@@ -535,59 +528,58 @@ router.post('/forgot-password', [
  *       400:
  *         description: Token inválido ou expirado
  */
-router.post('/reset-password', [
-  body('token')
-    .notEmpty()
-    .withMessage('Token é obrigatório'),
-  body('password')
-    .isLength({ min: 6 })
-    .withMessage('Senha deve ter pelo menos 6 caracteres')
-], async (req, res) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
+router.post(
+  '/reset-password',
+  [
+    body('token').notEmpty().withMessage('Token é obrigatório'),
+    body('password').isLength({ min: 6 }).withMessage('Senha deve ter pelo menos 6 caracteres')
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Dados inválidos',
+          errors: errors.array()
+        });
+      }
+
+      const { token, password } = req.body;
+
+      const user = await User.findOne({
+        passwordResetToken: token,
+        passwordResetExpires: { $gt: Date.now() }
+      });
+
+      if (!user) {
+        return res.status(400).json({
+          success: false,
+          message: 'Token inválido ou expirado'
+        });
+      }
+
+      // Atualizar senha
+      user.password = password;
+      user.passwordResetToken = undefined;
+      user.passwordResetExpires = undefined;
+      await user.save();
+
+      logger.info(`Senha redefinida para usuário: ${user.email}`);
+
+      res.status(200).json({
+        success: true,
+        message: 'Senha redefinida com sucesso'
+      });
+    } catch (error) {
+      logger.error('Erro na redefinição de senha:', error);
+      res.status(500).json({
         success: false,
-        message: 'Dados inválidos',
-        errors: errors.array()
+        message: 'Erro interno do servidor'
       });
     }
-
-    const { token, password } = req.body;
-
-    const user = await User.findOne({
-      passwordResetToken: token,
-      passwordResetExpires: { $gt: Date.now() }
-    });
-
-    if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: 'Token inválido ou expirado'
-      });
-    }
-
-    // Atualizar senha
-    user.password = password;
-    user.passwordResetToken = undefined;
-    user.passwordResetExpires = undefined;
-    await user.save();
-
-    logger.info(`Senha redefinida para usuário: ${user.email}`);
-
-    res.status(200).json({
-      success: true,
-      message: 'Senha redefinida com sucesso'
-    });
-
-  } catch (error) {
-    logger.error('Erro na redefinição de senha:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
   }
-});
+);
 
 /**
  * @swagger
@@ -604,14 +596,13 @@ router.post('/reset-password', [
 router.post('/logout', auth, async (req, res) => {
   try {
     // TODO: Implementar blacklist de tokens se necessário
-    
+
     logger.info(`Logout realizado para usuário: ${req.user.email}`);
 
     res.status(200).json({
       success: true,
       message: 'Logout realizado com sucesso'
     });
-
   } catch (error) {
     logger.error('Erro no logout:', error);
     res.status(500).json({

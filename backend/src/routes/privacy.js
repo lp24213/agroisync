@@ -7,7 +7,11 @@ import {
   updatePrivacyPreferences,
   recordGDPRConsent
 } from '../middleware/privacyMiddleware.js';
-import { auditDataExport, auditDataDeletion, auditUserAction } from '../middleware/auditMiddleware.js';
+import {
+  auditDataExport,
+  auditDataDeletion,
+  auditUserAction
+} from '../middleware/auditMiddleware.js';
 
 const router = express.Router();
 
@@ -25,7 +29,12 @@ router.get('/status', authenticateToken, getPrivacyStatus);
  * @desc    Registrar consentimento LGPD
  * @access  Private
  */
-router.post('/consent', authenticateToken, auditUserAction('GDPR_CONSENT', 'user_privacy'), recordGDPRConsent);
+router.post(
+  '/consent',
+  authenticateToken,
+  auditUserAction('GDPR_CONSENT', 'user_privacy'),
+  recordGDPRConsent
+);
 
 /**
  * @route   POST /api/privacy/preferences
@@ -140,32 +149,20 @@ router.get('/cookies', (req, res) => {
         essential: {
           name: 'Cookies Essenciais',
           description: 'Necessários para o funcionamento da plataforma',
-          examples: [
-            'Sessão de usuário',
-            'Preferências de idioma',
-            'Token de autenticação'
-          ],
+          examples: ['Sessão de usuário', 'Preferências de idioma', 'Token de autenticação'],
           duration: 'Sessão ou 1 ano'
         },
         analytics: {
           name: 'Cookies Analíticos',
           description: 'Ajudam a entender como a plataforma é utilizada',
-          examples: [
-            'Google Analytics',
-            'Estatísticas de uso',
-            'Métricas de performance'
-          ],
+          examples: ['Google Analytics', 'Estatísticas de uso', 'Métricas de performance'],
           duration: '2 anos',
           optional: true
         },
         marketing: {
           name: 'Cookies de Marketing',
           description: 'Utilizados para publicidade personalizada',
-          examples: [
-            'Anúncios direcionados',
-            'Redes sociais',
-            'Parceiros de marketing'
-          ],
+          examples: ['Anúncios direcionados', 'Redes sociais', 'Parceiros de marketing'],
           duration: '1 ano',
           optional: true
         }
@@ -214,7 +211,7 @@ router.get('/contact', (req, res) => {
 router.post('/request', authenticateToken, async (req, res) => {
   try {
     const { requestType, description, urgency } = req.body;
-    
+
     if (!requestType || !description) {
       return res.status(400).json({
         success: false,
@@ -253,25 +250,18 @@ router.post('/request', authenticateToken, async (req, res) => {
     };
 
     // Log da solicitação
-    await createAuditLog(
-      'PRIVACY_REQUEST_CREATED',
-      'user_privacy',
-      req,
-      req.user.userId,
-      {
-        requestType,
-        description,
-        urgency,
-        requestId: request.id
-      }
-    );
+    await createAuditLog('PRIVACY_REQUEST_CREATED', 'user_privacy', req, req.user.userId, {
+      requestType,
+      description,
+      urgency,
+      requestId: request.id
+    });
 
     res.json({
       success: true,
       message: 'Solicitação de privacidade criada com sucesso',
       request
     });
-
   } catch (error) {
     console.error('Erro ao criar solicitação de privacidade:', error);
     return res.status(500).json({

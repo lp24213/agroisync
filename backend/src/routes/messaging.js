@@ -17,7 +17,7 @@ router.use(apiLimiter);
 // GET /api/messaging/conversations - Get user's conversations
 router.get('/conversations', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     // Check if user has any active plan
     const user = await User.findById(userId);
@@ -80,8 +80,8 @@ router.get('/conversations', authenticateToken, async (req, res) => {
 // GET /api/messaging/conversation/:otherUserId - Get conversation with specific user
 router.get('/conversation/:otherUserId', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
-    const otherUserId = req.params.otherUserId;
+    const { userId } = req.user;
+    const { otherUserId } = req.params;
 
     // Check if user has any active plan
     const user = await User.findById(userId);
@@ -110,7 +110,7 @@ router.get('/conversation/:otherUserId', authenticateToken, async (req, res) => 
 // POST /api/messaging/send - Send private message
 router.post('/send', authenticateToken, validateMessage, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const { receiverId, subject, content, messageType, relatedProduct, relatedFreight } = req.body;
 
     // Check if user has any active plan
@@ -167,7 +167,7 @@ router.post('/send', authenticateToken, validateMessage, async (req, res) => {
 // PUT /api/messaging/:messageId/read - Mark message as read
 router.put('/:messageId/read', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const { messageId } = req.params;
 
     // Check if user has any active plan
@@ -213,7 +213,7 @@ router.put('/:messageId/read', authenticateToken, async (req, res) => {
 // GET /api/messaging/unread - Get unread messages count
 router.get('/unread', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     // Check if user has any active plan
     const user = await User.findById(userId);
@@ -349,7 +349,9 @@ router.get('/admin/contact', authenticateToken, async (req, res) => {
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     const query = {};
-    if (status) query.status = status;
+    if (status) {
+      query.status = status;
+    }
 
     const messages = await ContactMessage.find(query)
       .sort({ createdAt: -1 })
@@ -395,7 +397,9 @@ router.get('/admin/partnership', authenticateToken, async (req, res) => {
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     const query = {};
-    if (status) query.status = status;
+    if (status) {
+      query.status = status;
+    }
 
     const messages = await PartnershipMessage.find(query)
       .sort({ createdAt: -1 })
@@ -441,7 +445,9 @@ router.get('/admin/private', authenticateToken, async (req, res) => {
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     const query = {};
-    if (status) query.status = status;
+    if (status) {
+      query.status = status;
+    }
 
     const messages = await PrivateMessage.find(query)
       .sort({ createdAt: -1 })

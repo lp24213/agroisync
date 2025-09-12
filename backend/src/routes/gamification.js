@@ -18,10 +18,12 @@ router.use(authenticateToken);
 // GET /api/gamification/profile - Obter perfil de reputação do usuário
 router.get('/profile', async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
-    let userReputation = await UserReputation.findOne({ userId })
-      .populate('userId', 'name email avatar');
+    let userReputation = await UserReputation.findOne({ userId }).populate(
+      'userId',
+      'name email avatar'
+    );
 
     if (!userReputation) {
       // Criar perfil de reputação se não existir
@@ -33,7 +35,6 @@ router.get('/profile', async (req, res) => {
       success: true,
       data: userReputation
     });
-
   } catch (error) {
     console.error('Erro ao buscar perfil de reputação:', error);
     res.status(500).json({
@@ -55,8 +56,8 @@ router.get('/leaderboard', async (req, res) => {
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
-    let query = {};
-    
+    const query = {};
+
     // Filtrar por região se especificado
     if (region && category === 'regional') {
       query['userId.region'] = region;
@@ -83,7 +84,6 @@ router.get('/leaderboard', async (req, res) => {
         }
       }
     });
-
   } catch (error) {
     console.error('Erro ao buscar ranking:', error);
     res.status(500).json({
@@ -96,7 +96,7 @@ router.get('/leaderboard', async (req, res) => {
 // GET /api/gamification/badges - Obter badges disponíveis
 router.get('/badges', async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const userReputation = await UserReputation.findOne({ userId });
     if (!userReputation) {
@@ -108,7 +108,7 @@ router.get('/badges', async (req, res) => {
 
     // Calcular novos badges
     const newBadges = userReputation.calculateBadges();
-    
+
     // Adicionar novos badges se houver
     if (newBadges.length > 0) {
       userReputation.badges.push(...newBadges);
@@ -119,10 +119,9 @@ router.get('/badges', async (req, res) => {
       success: true,
       data: {
         earnedBadges: userReputation.badges,
-        newBadges: newBadges
+        newBadges
       }
     });
-
   } catch (error) {
     console.error('Erro ao buscar badges:', error);
     res.status(500).json({
@@ -135,7 +134,7 @@ router.get('/badges', async (req, res) => {
 // POST /api/gamification/points - Adicionar pontos (para ações do usuário)
 router.post('/points', async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const { action, points, description, metadata } = req.body;
 
     if (!action || !points || !description) {
@@ -166,11 +165,10 @@ router.post('/points', async (req, res) => {
       data: {
         newScore: userReputation.totalScore,
         newLevel: userReputation.level,
-        newBadges: newBadges,
+        newBadges,
         levelUp: newBadges.length > 0
       }
     });
-
   } catch (error) {
     console.error('Erro ao adicionar pontos:', error);
     res.status(500).json({
@@ -183,7 +181,7 @@ router.post('/points', async (req, res) => {
 // GET /api/gamification/stats - Obter estatísticas do usuário
 router.get('/stats', async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const userReputation = await UserReputation.findOne({ userId });
     if (!userReputation) {
@@ -199,14 +197,20 @@ router.get('/stats', async (req, res) => {
       progressToNextLevel: {
         current: userReputation.experience,
         required: userReputation.experienceToNextLevel,
-        percentage: Math.round((userReputation.experience / userReputation.experienceToNextLevel) * 100)
+        percentage: Math.round(
+          (userReputation.experience / userReputation.experienceToNextLevel) * 100
+        )
       },
       ranking: {
-        global: await UserReputation.countDocuments({ totalScore: { $gt: userReputation.totalScore } }) + 1,
-        regional: await UserReputation.countDocuments({ 
-          totalScore: { $gt: userReputation.totalScore },
-          'userId.region': userReputation.userId?.region 
-        }) + 1
+        global:
+          (await UserReputation.countDocuments({
+            totalScore: { $gt: userReputation.totalScore }
+          })) + 1,
+        regional:
+          (await UserReputation.countDocuments({
+            totalScore: { $gt: userReputation.totalScore },
+            'userId.region': userReputation.userId?.region
+          })) + 1
       }
     };
 
@@ -214,7 +218,6 @@ router.get('/stats', async (req, res) => {
       success: true,
       data: stats
     });
-
   } catch (error) {
     console.error('Erro ao buscar estatísticas:', error);
     res.status(500).json({
@@ -227,7 +230,7 @@ router.get('/stats', async (req, res) => {
 // PUT /api/gamification/notifications - Atualizar configurações de notificações
 router.put('/notifications', async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const { notifications } = req.body;
 
     if (!notifications || typeof notifications !== 'object') {
@@ -257,7 +260,6 @@ router.put('/notifications', async (req, res) => {
       success: true,
       data: userReputation.notifications
     });
-
   } catch (error) {
     console.error('Erro ao atualizar notificações:', error);
     res.status(500).json({
@@ -327,7 +329,6 @@ router.get('/achievements', async (req, res) => {
       success: true,
       data: achievements
     });
-
   } catch (error) {
     console.error('Erro ao buscar conquistas:', error);
     res.status(500).json({

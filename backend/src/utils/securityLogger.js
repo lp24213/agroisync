@@ -12,7 +12,14 @@ import { getClientIP } from './ipUtils.js';
  * @param {string} userId - ID do usuário (opcional)
  * @param {Object} additionalData - Dados adicionais (opcional)
  */
-export const createSecurityLog = async (eventType, severity, description, req, userId = null, additionalData = {}) => {
+export const createSecurityLog = async (
+  eventType,
+  severity,
+  description,
+  req,
+  userId = null,
+  additionalData = {}
+) => {
   try {
     // Validar parâmetros
     if (!eventType || !severity || !description) {
@@ -28,14 +35,16 @@ export const createSecurityLog = async (eventType, severity, description, req, u
     }
 
     // Obter informações da requisição
-    const requestInfo = req ? {
-      method: req.method,
-      url: req.originalUrl,
-      headers: sanitizeHeaders(req.headers),
-      userAgent: req.get('User-Agent'),
-      ipAddress: getClientIP(req),
-      timestamp: new Date()
-    } : null;
+    const requestInfo = req
+      ? {
+        method: req.method,
+        url: req.originalUrl,
+        headers: sanitizeHeaders(req.headers),
+        userAgent: req.get('User-Agent'),
+        ipAddress: getClientIP(req),
+        timestamp: new Date()
+      }
+      : null;
 
     // Criar log de segurança
     const securityLog = new SecurityLog({
@@ -62,12 +71,13 @@ export const createSecurityLog = async (eventType, severity, description, req, u
     if (process.env.NODE_ENV === 'development') {
       console.log(`🔒 Security Log [${severity.toUpperCase()}]: ${eventType} - ${description}`);
     }
-
   } catch (error) {
     console.error('Error creating security log:', error);
-    
+
     // Fallback: log no console se não conseguir salvar no banco
-    console.error(`🔒 SECURITY LOG ERROR [${severity?.toUpperCase()}]: ${eventType} - ${description}`);
+    console.error(
+      `🔒 SECURITY LOG ERROR [${severity?.toUpperCase()}]: ${eventType} - ${description}`
+    );
     console.error('Additional data:', additionalData);
     console.error('Error:', error.message);
   }
@@ -80,7 +90,12 @@ export const createSecurityLog = async (eventType, severity, description, req, u
  * @param {string} description - Descrição do evento
  * @param {Object} additionalData - Dados adicionais
  */
-export const createSystemSecurityLog = async (eventType, severity, description, additionalData = {}) => {
+export const createSystemSecurityLog = async (
+  eventType,
+  severity,
+  description,
+  additionalData = {}
+) => {
   try {
     const securityLog = new SecurityLog({
       eventType,
@@ -103,12 +118,15 @@ export const createSystemSecurityLog = async (eventType, severity, description, 
     await securityLog.save();
 
     if (process.env.NODE_ENV === 'development') {
-      console.log(`🔒 System Security Log [${severity.toUpperCase()}]: ${eventType} - ${description}`);
+      console.log(
+        `🔒 System Security Log [${severity.toUpperCase()}]: ${eventType} - ${description}`
+      );
     }
-
   } catch (error) {
     console.error('Error creating system security log:', error);
-    console.error(`🔒 SYSTEM SECURITY LOG ERROR [${severity?.toUpperCase()}]: ${eventType} - ${description}`);
+    console.error(
+      `🔒 SYSTEM SECURITY LOG ERROR [${severity?.toUpperCase()}]: ${eventType} - ${description}`
+    );
   }
 };
 
@@ -147,7 +165,6 @@ export const createAuditLog = async (action, resource, req, userId, changes = {}
     if (process.env.NODE_ENV === 'development') {
       console.log(`📋 Audit Log: ${action} em ${resource} por usuário ${userId}`);
     }
-
   } catch (error) {
     console.error('Error creating audit log:', error);
   }
@@ -182,7 +199,6 @@ export const createAccessLog = async (resource, req, userId, metadata = {}) => {
     });
 
     await accessLog.save();
-
   } catch (error) {
     console.error('Error creating access log:', error);
   }
@@ -223,7 +239,6 @@ export const createDataModificationLog = async (resource, action, req, userId, c
     if (process.env.NODE_ENV === 'development') {
       console.log(`✏️ Data Modification Log: ${action} em ${resource} por usuário ${userId}`);
     }
-
   } catch (error) {
     console.error('Error creating data modification log:', error);
   }
@@ -236,24 +251,18 @@ export const createDataModificationLog = async (resource, action, req, userId, c
  * @param {Object} headers - Headers da requisição
  * @returns {Object} Headers sanitizados
  */
-const sanitizeHeaders = (headers) => {
+const sanitizeHeaders = headers => {
   const sanitized = { ...headers };
-  
+
   // Remover headers sensíveis
-  const sensitiveHeaders = [
-    'authorization',
-    'cookie',
-    'x-api-key',
-    'x-auth-token',
-    'x-csrf-token'
-  ];
-  
+  const sensitiveHeaders = ['authorization', 'cookie', 'x-api-key', 'x-auth-token', 'x-csrf-token'];
+
   sensitiveHeaders.forEach(header => {
     if (sanitized[header]) {
       sanitized[header] = '[REDACTED]';
     }
   });
-  
+
   return sanitized;
 };
 
@@ -262,7 +271,7 @@ const sanitizeHeaders = (headers) => {
  * @param {Object} req - Objeto de requisição
  * @returns {Object} Informações de geolocalização
  */
-const getGeolocation = (req) => {
+const getGeolocation = req => {
   return {
     country: req.headers['cf-ipcountry'] || req.headers['x-forwarded-country'] || 'Unknown',
     region: req.headers['cf-ipregion'] || req.headers['x-forwarded-region'] || 'Unknown',
@@ -276,7 +285,7 @@ const getGeolocation = (req) => {
  * @param {Object} req - Objeto de requisição
  * @returns {Object} Informações do Cloudflare
  */
-const getCloudflareInfo = (req) => {
+const getCloudflareInfo = req => {
   return {
     rayId: req.headers['cf-ray'] || null,
     country: req.headers['cf-ipcountry'] || null,
@@ -295,11 +304,19 @@ const getCloudflareInfo = (req) => {
 export const getSecurityLogStats = async (filters = {}) => {
   try {
     const matchStage = {};
-    
-    if (filters.eventType) matchStage.eventType = filters.eventType;
-    if (filters.severity) matchStage.severity = filters.severity;
-    if (filters.userId) matchStage.userId = filters.userId;
-    if (filters.startDate) matchStage.createdAt = { $gte: new Date(filters.startDate) };
+
+    if (filters.eventType) {
+      matchStage.eventType = filters.eventType;
+    }
+    if (filters.severity) {
+      matchStage.severity = filters.severity;
+    }
+    if (filters.userId) {
+      matchStage.userId = filters.userId;
+    }
+    if (filters.startDate) {
+      matchStage.createdAt = { $gte: new Date(filters.startDate) };
+    }
     if (filters.endDate) {
       if (matchStage.createdAt) {
         matchStage.createdAt.$lte = new Date(filters.endDate);
@@ -391,5 +408,3 @@ export default {
   getSecurityLogStats,
   cleanupOldLogs
 };
-
-

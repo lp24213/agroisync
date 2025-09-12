@@ -1,13 +1,13 @@
-import express from "express";
-import { authenticateToken } from "../middleware/auth.js";
-import { requirePaidAccess } from "../middleware/requirePaidAccess.js";
-import { rateLimiter } from "../middleware/rateLimiter.js";
-import AuditLog from "../models/AuditLog.js";
-import Message from "../models/Message.js";
-import User from "../models/User.js";
-import Product from "../models/Product.js";
-import Freight from "../models/Freight.js";
-import Payment from "../models/Payment.js";
+import express from 'express';
+import { authenticateToken } from '../middleware/auth.js';
+import { requirePaidAccess } from '../middleware/requirePaidAccess.js';
+import { rateLimiter } from '../middleware/rateLimiter.js';
+import AuditLog from '../models/AuditLog.js';
+import Message from '../models/Message.js';
+import User from '../models/User.js';
+import Product from '../models/Product.js';
+import Freight from '../models/Freight.js';
+import Payment from '../models/Payment.js';
 
 const router = express.Router();
 
@@ -15,28 +15,28 @@ const router = express.Router();
 const checkMessagingAccess = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    
+
     // Verificar se o usuário tem plano ativo
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "Usuário não encontrado"
+        message: 'Usuário não encontrado'
       });
     }
 
     // Verificar se tem plano ativo ou pagamento recente
-    const hasActivePlan = user.subscriptions && (
-      (user.subscriptions.store && user.subscriptions.store.status === 'active') ||
-      (user.subscriptions.agroconecta && user.subscriptions.agroconecta.status === 'active')
-    );
+    const hasActivePlan =
+      user.subscriptions &&
+      ((user.subscriptions.store && user.subscriptions.store.status === 'active') ||
+        (user.subscriptions.agroconecta && user.subscriptions.agroconecta.status === 'active'));
 
     // Verificar pagamentos recentes (últimos 30 dias)
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    
+
     const recentPayment = await Payment.findOne({
-      userId: userId,
+      userId,
       status: 'completed',
       createdAt: { $gte: thirtyDaysAgo }
     });
@@ -44,11 +44,11 @@ const checkMessagingAccess = async (req, res, next) => {
     if (!hasActivePlan && !recentPayment) {
       return res.status(403).json({
         success: false,
-        message: "🔒 Para acessar esta mensageria, finalize o pagamento de sua assinatura.",
+        message: '🔒 Para acessar esta mensageria, finalize o pagamento de sua assinatura.',
         requiresPayment: true,
         plans: {
-          store: "R$25/mês - Mensageria de Produtos",
-          agroconecta: "R$50/mês - Mensageria de Fretes"
+          store: 'R$25/mês - Mensageria de Produtos',
+          agroconecta: 'R$50/mês - Mensageria de Fretes'
         }
       });
     }
@@ -59,7 +59,7 @@ const checkMessagingAccess = async (req, res, next) => {
     console.error('Erro ao verificar acesso à mensageria:', error);
     return res.status(500).json({
       success: false,
-      message: "Erro interno do servidor"
+      message: 'Erro interno do servidor'
     });
   }
 };
@@ -67,7 +67,7 @@ const checkMessagingAccess = async (req, res, next) => {
 // ===== ROTAS DE MENSAGERIA =====
 
 // POST /api/messages - Enviar mensagem
-router.post("/", authenticateToken, checkMessagingAccess, async (req, res) => {
+router.post('/', authenticateToken, checkMessagingAccess, async (req, res) => {
   try {
     const { destinatarioId, tipo, servicoId, conteudo } = req.body;
     const remetenteId = req.user.id;
@@ -76,7 +76,7 @@ router.post("/", authenticateToken, checkMessagingAccess, async (req, res) => {
     if (!destinatarioId || !tipo || !servicoId || !conteudo) {
       return res.status(400).json({
         success: false,
-        message: "Todos os campos são obrigatórios"
+        message: 'Todos os campos são obrigatórios'
       });
     }
 
@@ -90,7 +90,7 @@ router.post("/", authenticateToken, checkMessagingAccess, async (req, res) => {
     if (conteudo.trim().length === 0 || conteudo.length > 2000) {
       return res.status(400).json({
         success: false,
-        message: "Conteúdo deve ter entre 1 e 2000 caracteres"
+        message: 'Conteúdo deve ter entre 1 e 2000 caracteres'
       });
     }
 
@@ -99,7 +99,7 @@ router.post("/", authenticateToken, checkMessagingAccess, async (req, res) => {
     if (!destinatario) {
       return res.status(404).json({
         success: false,
-        message: "Destinatário não encontrado"
+        message: 'Destinatário não encontrado'
       });
     }
 
@@ -114,7 +114,7 @@ router.post("/", authenticateToken, checkMessagingAccess, async (req, res) => {
     if (!servico) {
       return res.status(404).json({
         success: false,
-        message: "Serviço não encontrado"
+        message: 'Serviço não encontrado'
       });
     }
 
@@ -122,14 +122,14 @@ router.post("/", authenticateToken, checkMessagingAccess, async (req, res) => {
     if (tipo === 'product' && servico.ownerId.toString() !== destinatarioId.toString()) {
       return res.status(403).json({
         success: false,
-        message: "Sem permissão para enviar mensagem para este produto"
+        message: 'Sem permissão para enviar mensagem para este produto'
       });
     }
 
     if (tipo === 'freight' && servico.ownerId.toString() !== destinatarioId.toString()) {
       return res.status(403).json({
         success: false,
-        message: "Sem permissão para enviar mensagem para este frete"
+        message: 'Sem permissão para enviar mensagem para este frete'
       });
     }
 
@@ -149,9 +149,9 @@ router.post("/", authenticateToken, checkMessagingAccess, async (req, res) => {
       remetente: remetenteId,
       destinatario: destinatarioId,
       conteudo: conteudo.trim(),
-      tipo: tipo,
+      tipo,
       servico_id: servicoId,
-      metadata: metadata,
+      metadata,
       ipAddress: req.ip,
       userAgent: req.get('User-Agent')
     });
@@ -176,13 +176,12 @@ router.post("/", authenticateToken, checkMessagingAccess, async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "Mensagem enviada com sucesso",
+      message: 'Mensagem enviada com sucesso',
       data: message
     });
-
   } catch (error) {
     console.error('Erro ao enviar mensagem:', error);
-    
+
     await AuditLog.logAction({
       userId: req.user.id,
       userEmail: req.user.email,
@@ -197,24 +196,21 @@ router.post("/", authenticateToken, checkMessagingAccess, async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: "Erro interno do servidor"
+      message: 'Erro interno do servidor'
     });
   }
 });
 
 // GET /api/messages - Listar mensagens do usuário
-router.get("/", authenticateToken, checkMessagingAccess, async (req, res) => {
+router.get('/', authenticateToken, checkMessagingAccess, async (req, res) => {
   try {
     const userId = req.user.id;
     const { tipo, servicoId, page = 1, limit = 50 } = req.query;
     const skip = (page - 1) * limit;
 
     // Construir query
-    let query = {
-      $or: [
-        { remetente: userId },
-        { destinatario: userId }
-      ],
+    const query = {
+      $or: [{ remetente: userId }, { destinatario: userId }],
       deletedAt: { $exists: false }
     };
 
@@ -239,7 +235,7 @@ router.get("/", authenticateToken, checkMessagingAccess, async (req, res) => {
 
     // Log da ação
     await AuditLog.logAction({
-      userId: userId,
+      userId,
       userEmail: req.user.email,
       action: 'MESSAGES_LISTED',
       resource: 'message',
@@ -260,10 +256,9 @@ router.get("/", authenticateToken, checkMessagingAccess, async (req, res) => {
         }
       }
     });
-
   } catch (error) {
     console.error('Erro ao listar mensagens:', error);
-    
+
     await AuditLog.logAction({
       userId: req.user.id,
       userEmail: req.user.email,
@@ -278,13 +273,13 @@ router.get("/", authenticateToken, checkMessagingAccess, async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: "Erro interno do servidor"
+      message: 'Erro interno do servidor'
     });
   }
 });
 
 // GET /api/messages/conversations - Listar conversas do usuário
-router.get("/conversations", authenticateToken, checkMessagingAccess, async (req, res) => {
+router.get('/conversations', authenticateToken, checkMessagingAccess, async (req, res) => {
   try {
     const userId = req.user.id;
     const { tipo, page = 1, limit = 20 } = req.query;
@@ -294,21 +289,14 @@ router.get("/conversations", authenticateToken, checkMessagingAccess, async (req
     const conversations = await Message.aggregate([
       {
         $match: {
-          $or: [
-            { remetente: userId },
-            { destinatario: userId }
-          ],
+          $or: [{ remetente: userId }, { destinatario: userId }],
           deletedAt: { $exists: false }
         }
       },
       {
         $addFields: {
           otherUser: {
-            $cond: [
-              { $eq: ['$remetente', userId] },
-              '$destinatario',
-              '$remetente'
-            ]
+            $cond: [{ $eq: ['$remetente', userId] }, '$destinatario', '$remetente']
           }
         }
       },
@@ -349,7 +337,7 @@ router.get("/conversations", authenticateToken, checkMessagingAccess, async (req
     ]);
 
     // Populate dados dos usuários e serviços
-    for (let conv of conversations) {
+    for (const conv of conversations) {
       const otherUser = await User.findById(conv._id.otherUser).select('name email');
       conv.otherUser = otherUser;
 
@@ -357,7 +345,9 @@ router.get("/conversations", authenticateToken, checkMessagingAccess, async (req
         const product = await Product.findById(conv._id.servico_id).select('title price images');
         conv.service = product;
       } else {
-        const freight = await Freight.findById(conv._id.servico_id).select('origin destination price');
+        const freight = await Freight.findById(conv._id.servico_id).select(
+          'origin destination price'
+        );
         conv.service = freight;
       }
     }
@@ -366,21 +356,14 @@ router.get("/conversations", authenticateToken, checkMessagingAccess, async (req
     const totalConversations = await Message.aggregate([
       {
         $match: {
-          $or: [
-            { remetente: userId },
-            { destinatario: userId }
-          ],
+          $or: [{ remetente: userId }, { destinatario: userId }],
           deletedAt: { $exists: false }
         }
       },
       {
         $addFields: {
           otherUser: {
-            $cond: [
-              { $eq: ['$remetente', userId] },
-              '$destinatario',
-              '$remetente'
-            ]
+            $cond: [{ $eq: ['$remetente', userId] }, '$destinatario', '$remetente']
           }
         }
       },
@@ -412,10 +395,9 @@ router.get("/conversations", authenticateToken, checkMessagingAccess, async (req
         }
       }
     });
-
   } catch (error) {
     console.error('Erro ao listar conversas:', error);
-    
+
     await AuditLog.logAction({
       userId: req.user.id,
       userEmail: req.user.email,
@@ -430,100 +412,104 @@ router.get("/conversations", authenticateToken, checkMessagingAccess, async (req
 
     res.status(500).json({
       success: false,
-      message: "Erro interno do servidor"
+      message: 'Erro interno do servidor'
     });
   }
 });
 
 // GET /api/messages/conversation/:otherUserId/:tipo/:servicoId - Obter conversa específica
-router.get("/conversation/:otherUserId/:tipo/:servicoId", authenticateToken, checkMessagingAccess, async (req, res) => {
-  try {
-    const { otherUserId, tipo, servicoId } = req.params;
-    const userId = req.user.id;
-    const { page = 1, limit = 100 } = req.query;
-    const skip = (page - 1) * limit;
+router.get(
+  '/conversation/:otherUserId/:tipo/:servicoId',
+  authenticateToken,
+  checkMessagingAccess,
+  async (req, res) => {
+    try {
+      const { otherUserId, tipo, servicoId } = req.params;
+      const userId = req.user.id;
+      const { page = 1, limit = 100 } = req.query;
+      const skip = (page - 1) * limit;
 
-    // Verificar se o outro usuário existe
-    const otherUser = await User.findById(otherUserId);
-    if (!otherUser) {
-      return res.status(404).json({
+      // Verificar se o outro usuário existe
+      const otherUser = await User.findById(otherUserId);
+      if (!otherUser) {
+        return res.status(404).json({
+          success: false,
+          message: 'Usuário não encontrado'
+        });
+      }
+
+      // Buscar mensagens da conversa
+      const messages = await Message.findConversation(userId, otherUserId, tipo, servicoId)
+        .populate('remetente', 'name email')
+        .populate('destinatario', 'name email')
+        .skip(skip)
+        .limit(parseInt(limit));
+
+      // Contar total
+      const total = await Message.countDocuments({
+        $or: [
+          { remetente: userId, destinatario: otherUserId },
+          { remetente: otherUserId, destinatario: userId }
+        ],
+        tipo,
+        servico_id: servicoId,
+        deletedAt: { $exists: false }
+      });
+
+      // Marcar mensagens como lidas
+      await Message.updateMany(
+        {
+          destinatario: userId,
+          remetente: otherUserId,
+          tipo,
+          servico_id: servicoId,
+          status: { $in: ['sent', 'delivered'] }
+        },
+        { status: 'read' }
+      );
+
+      res.json({
+        success: true,
+        data: {
+          messages,
+          otherUser: {
+            id: otherUser._id,
+            name: otherUser.name,
+            email: otherUser.email
+          },
+          pagination: {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            total,
+            pages: Math.ceil(total / parseInt(limit))
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Erro ao buscar conversa:', error);
+
+      await AuditLog.logAction({
+        userId: req.user.id,
+        userEmail: req.user.email,
+        action: 'CONVERSATION_FETCH_ERROR',
+        resource: 'message',
+        details: `Error fetching conversation: ${error.message}`,
+        ip: req.ip,
+        userAgent: req.get('User-Agent'),
+        errorCode: 'FETCH_ERROR',
+        errorMessage: error.message
+      });
+
+      res.status(500).json({
         success: false,
-        message: "Usuário não encontrado"
+        message: 'Erro interno do servidor'
       });
     }
-
-    // Buscar mensagens da conversa
-    const messages = await Message.findConversation(userId, otherUserId, tipo, servicoId)
-      .populate('remetente', 'name email')
-      .populate('destinatario', 'name email')
-      .skip(skip)
-      .limit(parseInt(limit));
-
-    // Contar total
-    const total = await Message.countDocuments({
-      $or: [
-        { remetente: userId, destinatario: otherUserId },
-        { remetente: otherUserId, destinatario: userId }
-      ],
-      tipo: tipo,
-      servico_id: servicoId,
-      deletedAt: { $exists: false }
-    });
-
-    // Marcar mensagens como lidas
-    await Message.updateMany(
-      {
-        destinatario: userId,
-        remetente: otherUserId,
-        tipo: tipo,
-        servico_id: servicoId,
-        status: { $in: ['sent', 'delivered'] }
-      },
-      { status: 'read' }
-    );
-
-    res.json({
-      success: true,
-      data: {
-        messages,
-        otherUser: {
-          id: otherUser._id,
-          name: otherUser.name,
-          email: otherUser.email
-        },
-        pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
-          total,
-          pages: Math.ceil(total / parseInt(limit))
-        }
-      }
-    });
-
-  } catch (error) {
-    console.error('Erro ao buscar conversa:', error);
-    
-    await AuditLog.logAction({
-      userId: req.user.id,
-      userEmail: req.user.email,
-      action: 'CONVERSATION_FETCH_ERROR',
-      resource: 'message',
-      details: `Error fetching conversation: ${error.message}`,
-      ip: req.ip,
-      userAgent: req.get('User-Agent'),
-      errorCode: 'FETCH_ERROR',
-      errorMessage: error.message
-    });
-
-    res.status(500).json({
-      success: false,
-      message: "Erro interno do servidor"
-    });
   }
-});
+);
 
 // PUT /api/messages/:messageId/read - Marcar mensagem como lida
-router.put("/:messageId/read", authenticateToken, checkMessagingAccess, async (req, res) => {
+router.put('/:messageId/read', authenticateToken, checkMessagingAccess, async (req, res) => {
   try {
     const { messageId } = req.params;
     const userId = req.user.id;
@@ -532,7 +518,7 @@ router.put("/:messageId/read", authenticateToken, checkMessagingAccess, async (r
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: "Mensagem não encontrada"
+        message: 'Mensagem não encontrada'
       });
     }
 
@@ -540,7 +526,7 @@ router.put("/:messageId/read", authenticateToken, checkMessagingAccess, async (r
     if (message.destinatario.toString() !== userId) {
       return res.status(403).json({
         success: false,
-        message: "Sem permissão para marcar esta mensagem como lida"
+        message: 'Sem permissão para marcar esta mensagem como lida'
       });
     }
 
@@ -548,20 +534,19 @@ router.put("/:messageId/read", authenticateToken, checkMessagingAccess, async (r
 
     res.json({
       success: true,
-      message: "Mensagem marcada como lida"
+      message: 'Mensagem marcada como lida'
     });
-
   } catch (error) {
     console.error('Erro ao marcar mensagem como lida:', error);
     res.status(500).json({
       success: false,
-      message: "Erro interno do servidor"
+      message: 'Erro interno do servidor'
     });
   }
 });
 
 // DELETE /api/messages/:messageId - Deletar mensagem (soft delete)
-router.delete("/:messageId", authenticateToken, checkMessagingAccess, async (req, res) => {
+router.delete('/:messageId', authenticateToken, checkMessagingAccess, async (req, res) => {
   try {
     const { messageId } = req.params;
     const userId = req.user.id;
@@ -570,7 +555,7 @@ router.delete("/:messageId", authenticateToken, checkMessagingAccess, async (req
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: "Mensagem não encontrada"
+        message: 'Mensagem não encontrada'
       });
     }
 
@@ -578,7 +563,7 @@ router.delete("/:messageId", authenticateToken, checkMessagingAccess, async (req
     if (message.remetente.toString() !== userId && message.destinatario.toString() !== userId) {
       return res.status(403).json({
         success: false,
-        message: "Sem permissão para deletar esta mensagem"
+        message: 'Sem permissão para deletar esta mensagem'
       });
     }
 
@@ -586,7 +571,7 @@ router.delete("/:messageId", authenticateToken, checkMessagingAccess, async (req
 
     // Log da ação
     await AuditLog.logAction({
-      userId: userId,
+      userId,
       userEmail: req.user.email,
       action: 'MESSAGE_DELETED',
       resource: 'message',
@@ -598,20 +583,19 @@ router.delete("/:messageId", authenticateToken, checkMessagingAccess, async (req
 
     res.json({
       success: true,
-      message: "Mensagem deletada com sucesso"
+      message: 'Mensagem deletada com sucesso'
     });
-
   } catch (error) {
     console.error('Erro ao deletar mensagem:', error);
     res.status(500).json({
       success: false,
-      message: "Erro interno do servidor"
+      message: 'Erro interno do servidor'
     });
   }
 });
 
 // POST /api/messages/:messageId/report - Reportar mensagem
-router.post("/:messageId/report", authenticateToken, checkMessagingAccess, async (req, res) => {
+router.post('/:messageId/report', authenticateToken, checkMessagingAccess, async (req, res) => {
   try {
     const { messageId } = req.params;
     const { reason } = req.body;
@@ -620,7 +604,7 @@ router.post("/:messageId/report", authenticateToken, checkMessagingAccess, async
     if (!reason || reason.trim().length < 10) {
       return res.status(400).json({
         success: false,
-        message: "Motivo deve ter pelo menos 10 caracteres"
+        message: 'Motivo deve ter pelo menos 10 caracteres'
       });
     }
 
@@ -628,7 +612,7 @@ router.post("/:messageId/report", authenticateToken, checkMessagingAccess, async
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: "Mensagem não encontrada"
+        message: 'Mensagem não encontrada'
       });
     }
 
@@ -636,7 +620,7 @@ router.post("/:messageId/report", authenticateToken, checkMessagingAccess, async
     if (message.destinatario.toString() !== userId) {
       return res.status(403).json({
         success: false,
-        message: "Sem permissão para reportar esta mensagem"
+        message: 'Sem permissão para reportar esta mensagem'
       });
     }
 
@@ -644,7 +628,7 @@ router.post("/:messageId/report", authenticateToken, checkMessagingAccess, async
 
     // Log da ação
     await AuditLog.logAction({
-      userId: userId,
+      userId,
       userEmail: req.user.email,
       action: 'MESSAGE_REPORTED',
       resource: 'message',
@@ -656,20 +640,19 @@ router.post("/:messageId/report", authenticateToken, checkMessagingAccess, async
 
     res.json({
       success: true,
-      message: "Mensagem reportada com sucesso"
+      message: 'Mensagem reportada com sucesso'
     });
-
   } catch (error) {
     console.error('Erro ao reportar mensagem:', error);
     res.status(500).json({
       success: false,
-      message: "Erro interno do servidor"
+      message: 'Erro interno do servidor'
     });
   }
 });
 
 // GET /api/messages/stats - Estatísticas das mensagens do usuário
-router.get("/stats", authenticateToken, checkMessagingAccess, async (req, res) => {
+router.get('/stats', authenticateToken, checkMessagingAccess, async (req, res) => {
   try {
     const userId = req.user.id;
 
@@ -679,12 +662,11 @@ router.get("/stats", authenticateToken, checkMessagingAccess, async (req, res) =
       success: true,
       data: stats
     });
-
   } catch (error) {
     console.error('Erro ao buscar estatísticas:', error);
     res.status(500).json({
       success: false,
-      message: "Erro interno do servidor"
+      message: 'Erro interno do servidor'
     });
   }
 });

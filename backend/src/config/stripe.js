@@ -2,10 +2,14 @@ import Stripe from 'stripe';
 import { createSecurityLog } from '../utils/securityLogger.js';
 
 // Configuração do Stripe
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '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', {
-  apiVersion: '2024-06-20',
-  typescript: true
-});
+const stripe = new Stripe(
+  process.env.STRIPE_SECRET_KEY ||
+    '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',
+  {
+    apiVersion: '2024-06-20',
+    typescript: true
+  }
+);
 
 // ===== CONFIGURAÇÃO DE PREÇOS =====
 
@@ -23,14 +27,25 @@ export const STRIPE_PRICE_CONFIG = {
       amount: 5000, // R$ 50,00 em centavos
       currency: 'brl',
       maxAds: 10,
-      features: ['Anúncios premium', 'Suporte prioritário', 'Analytics básico', 'Relatórios avançados']
+      features: [
+        'Anúncios premium',
+        'Suporte prioritário',
+        'Analytics básico',
+        'Relatórios avançados'
+      ]
     },
     enterprise: {
       priceId: process.env.STRIPE_STORE_ENTERPRISE_PRICE_ID || 'price_store_enterprise',
       amount: 10000, // R$ 100,00 em centavos
       currency: 'brl',
       maxAds: 50,
-      features: ['Anúncios ilimitados', 'Suporte 24/7', 'Analytics avançado', 'API access', 'Integração personalizada']
+      features: [
+        'Anúncios ilimitados',
+        'Suporte 24/7',
+        'Analytics avançado',
+        'API access',
+        'Integração personalizada'
+      ]
     }
   },
   freight: {
@@ -46,14 +61,25 @@ export const STRIPE_PRICE_CONFIG = {
       amount: 14900, // R$ 149,00 em centavos
       currency: 'brl',
       maxFreights: 30,
-      features: ['Fretes premium', 'Suporte prioritário', 'Rastreamento GPS', 'Relatórios de entrega']
+      features: [
+        'Fretes premium',
+        'Suporte prioritário',
+        'Rastreamento GPS',
+        'Relatórios de entrega'
+      ]
     },
     enterprise: {
       priceId: process.env.STRIPE_FREIGHT_ENTERPRISE_PRICE_ID || 'price_freight_enterprise',
       amount: 29900, // R$ 299,00 em centavos
       currency: 'brl',
       maxFreights: 100,
-      features: ['Fretes ilimitados', 'Suporte 24/7', 'Rastreamento em tempo real', 'API completo', 'Integração ERP']
+      features: [
+        'Fretes ilimitados',
+        'Suporte 24/7',
+        'Rastreamento em tempo real',
+        'API completo',
+        'Integração ERP'
+      ]
     }
   }
 };
@@ -163,7 +189,7 @@ export const cancelSubscription = async (subscriptionId, reason = 'customer_requ
 };
 
 // Obter Subscription
-export const getSubscription = async (subscriptionId) => {
+export const getSubscription = async subscriptionId => {
   try {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
       expand: ['customer', 'latest_invoice', 'latest_invoice.payment_intent']
@@ -177,7 +203,7 @@ export const getSubscription = async (subscriptionId) => {
 };
 
 // Obter Customer
-export const getCustomer = async (customerId) => {
+export const getCustomer = async customerId => {
   try {
     const customer = await stripe.customers.retrieve(customerId, {
       expand: ['subscriptions', 'invoices']
@@ -191,7 +217,7 @@ export const getCustomer = async (customerId) => {
 };
 
 // Obter PaymentIntent
-export const getPaymentIntent = async (paymentIntentId) => {
+export const getPaymentIntent = async paymentIntentId => {
   try {
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId, {
       expand: ['customer', 'payment_method']
@@ -254,31 +280,31 @@ export const processWebhookEvent = async (event, req) => {
       case 'payment_intent.succeeded':
         await handlePaymentSuccess(event.data.object, req);
         break;
-      
+
       case 'payment_intent.payment_failed':
         await handlePaymentFailure(event.data.object, req);
         break;
-      
+
       case 'customer.subscription.created':
         await handleSubscriptionCreated(event.data.object, req);
         break;
-      
+
       case 'customer.subscription.updated':
         await handleSubscriptionUpdated(event.data.object, req);
         break;
-      
+
       case 'customer.subscription.deleted':
         await handleSubscriptionDeleted(event.data.object, req);
         break;
-      
+
       case 'invoice.payment_succeeded':
         await handleInvoicePaymentSuccess(event.data.object, req);
         break;
-      
+
       case 'invoice.payment_failed':
         await handleInvoicePaymentFailure(event.data.object, req);
         break;
-      
+
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }
@@ -292,12 +318,19 @@ export const processWebhookEvent = async (event, req) => {
 
 const handlePaymentSuccess = async (paymentIntent, req) => {
   try {
-    await createSecurityLog('payment_success', 'low', 'Stripe payment succeeded via webhook', req, null, {
-      paymentIntentId: paymentIntent.id,
-      amount: paymentIntent.amount,
-      currency: paymentIntent.currency,
-      customerId: paymentIntent.customer
-    });
+    await createSecurityLog(
+      'payment_success',
+      'low',
+      'Stripe payment succeeded via webhook',
+      req,
+      null,
+      {
+        paymentIntentId: paymentIntent.id,
+        amount: paymentIntent.amount,
+        currency: paymentIntent.currency,
+        customerId: paymentIntent.customer
+      }
+    );
   } catch (error) {
     console.error('Error handling payment success:', error);
   }
@@ -305,13 +338,20 @@ const handlePaymentSuccess = async (paymentIntent, req) => {
 
 const handlePaymentFailure = async (paymentIntent, req) => {
   try {
-    await createSecurityLog('payment_failure', 'medium', 'Stripe payment failed via webhook', req, null, {
-      paymentIntentId: paymentIntent.id,
-      amount: paymentIntent.amount,
-      currency: paymentIntent.currency,
-      customerId: paymentIntent.customer,
-      failureReason: paymentIntent.last_payment_error?.message
-    });
+    await createSecurityLog(
+      'payment_failure',
+      'medium',
+      'Stripe payment failed via webhook',
+      req,
+      null,
+      {
+        paymentIntentId: paymentIntent.id,
+        amount: paymentIntent.amount,
+        currency: paymentIntent.currency,
+        customerId: paymentIntent.customer,
+        failureReason: paymentIntent.last_payment_error?.message
+      }
+    );
   } catch (error) {
     console.error('Error handling payment failure:', error);
   }
@@ -319,12 +359,19 @@ const handlePaymentFailure = async (paymentIntent, req) => {
 
 const handleSubscriptionCreated = async (subscription, req) => {
   try {
-    await createSecurityLog('subscription_created', 'low', 'Stripe subscription created via webhook', req, null, {
-      subscriptionId: subscription.id,
-      customerId: subscription.customer,
-      status: subscription.status,
-      currentPeriodEnd: subscription.current_period_end
-    });
+    await createSecurityLog(
+      'subscription_created',
+      'low',
+      'Stripe subscription created via webhook',
+      req,
+      null,
+      {
+        subscriptionId: subscription.id,
+        customerId: subscription.customer,
+        status: subscription.status,
+        currentPeriodEnd: subscription.current_period_end
+      }
+    );
   } catch (error) {
     console.error('Error handling subscription created:', error);
   }
@@ -332,12 +379,19 @@ const handleSubscriptionCreated = async (subscription, req) => {
 
 const handleSubscriptionUpdated = async (subscription, req) => {
   try {
-    await createSecurityLog('subscription_updated', 'low', 'Stripe subscription updated via webhook', req, null, {
-      subscriptionId: subscription.id,
-      customerId: subscription.customer,
-      status: subscription.status,
-      currentPeriodEnd: subscription.current_period_end
-    });
+    await createSecurityLog(
+      'subscription_updated',
+      'low',
+      'Stripe subscription updated via webhook',
+      req,
+      null,
+      {
+        subscriptionId: subscription.id,
+        customerId: subscription.customer,
+        status: subscription.status,
+        currentPeriodEnd: subscription.current_period_end
+      }
+    );
   } catch (error) {
     console.error('Error handling subscription updated:', error);
   }
@@ -345,12 +399,19 @@ const handleSubscriptionUpdated = async (subscription, req) => {
 
 const handleSubscriptionDeleted = async (subscription, req) => {
   try {
-    await createSecurityLog('subscription_deleted', 'medium', 'Stripe subscription deleted via webhook', req, null, {
-      subscriptionId: subscription.id,
-      customerId: subscription.customer,
-      status: subscription.status,
-      canceledAt: subscription.canceled_at
-    });
+    await createSecurityLog(
+      'subscription_deleted',
+      'medium',
+      'Stripe subscription deleted via webhook',
+      req,
+      null,
+      {
+        subscriptionId: subscription.id,
+        customerId: subscription.customer,
+        status: subscription.status,
+        canceledAt: subscription.canceled_at
+      }
+    );
   } catch (error) {
     console.error('Error handling subscription deleted:', error);
   }
@@ -358,13 +419,20 @@ const handleSubscriptionDeleted = async (subscription, req) => {
 
 const handleInvoicePaymentSuccess = async (invoice, req) => {
   try {
-    await createSecurityLog('invoice_payment_success', 'low', 'Stripe invoice payment succeeded via webhook', req, null, {
-      invoiceId: invoice.id,
-      customerId: invoice.customer,
-      amount: invoice.amount_paid,
-      currency: invoice.currency,
-      subscriptionId: invoice.subscription
-    });
+    await createSecurityLog(
+      'invoice_payment_success',
+      'low',
+      'Stripe invoice payment succeeded via webhook',
+      req,
+      null,
+      {
+        invoiceId: invoice.id,
+        customerId: invoice.customer,
+        amount: invoice.amount_paid,
+        currency: invoice.currency,
+        subscriptionId: invoice.subscription
+      }
+    );
   } catch (error) {
     console.error('Error handling invoice payment success:', error);
   }
@@ -372,14 +440,21 @@ const handleInvoicePaymentSuccess = async (invoice, req) => {
 
 const handleInvoicePaymentFailure = async (invoice, req) => {
   try {
-    await createSecurityLog('invoice_payment_failure', 'medium', 'Stripe invoice payment failed via webhook', req, null, {
-      invoiceId: invoice.id,
-      customerId: invoice.customer,
-      amount: invoice.amount_due,
-      currency: invoice.currency,
-      subscriptionId: invoice.subscription,
-      attemptCount: invoice.attempt_count
-    });
+    await createSecurityLog(
+      'invoice_payment_failure',
+      'medium',
+      'Stripe invoice payment failed via webhook',
+      req,
+      null,
+      {
+        invoiceId: invoice.id,
+        customerId: invoice.customer,
+        amount: invoice.amount_due,
+        currency: invoice.currency,
+        subscriptionId: invoice.subscription,
+        attemptCount: invoice.attempt_count
+      }
+    );
   } catch (error) {
     console.error('Error handling invoice payment failure:', error);
   }
@@ -388,12 +463,12 @@ const handleInvoicePaymentFailure = async (invoice, req) => {
 // ===== UTILIDADES =====
 
 // Converter valor para centavos
-export const toCents = (amount) => {
+export const toCents = amount => {
   return Math.round(amount * 100);
 };
 
 // Converter centavos para valor
-export const fromCents = (cents) => {
+export const fromCents = cents => {
   return cents / 100;
 };
 
@@ -404,7 +479,7 @@ export const formatAmount = (amount, currency = 'brl') => {
     style: 'currency',
     currency: currency.toUpperCase()
   });
-  
+
   return formatter.format(value);
 };
 

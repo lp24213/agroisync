@@ -29,7 +29,7 @@ const clientSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  
+
   // Address Information (via API IBGE/Baidu)
   address: {
     street: {

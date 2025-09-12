@@ -5,11 +5,11 @@
  * @param {string} input - The input string to sanitize
  * @returns {string} - The sanitized string
  */
-export const sanitizeInput = (input) => {
+export const sanitizeInput = input => {
   if (typeof input !== 'string') {
     return input;
   }
-  
+
   return input
     .trim()
     .replace(/[<>]/g, '') // Remove < and > to prevent HTML injection
@@ -23,11 +23,11 @@ export const sanitizeInput = (input) => {
  * @param {string} email - The email to sanitize
  * @returns {string} - The sanitized email
  */
-export const sanitizeEmail = (email) => {
+export const sanitizeEmail = email => {
   if (typeof email !== 'string') {
     return '';
   }
-  
+
   return email.trim().toLowerCase();
 };
 
@@ -36,11 +36,11 @@ export const sanitizeEmail = (email) => {
  * @param {string} phone - The phone number to sanitize
  * @returns {string} - The sanitized phone number
  */
-export const sanitizePhone = (phone) => {
+export const sanitizePhone = phone => {
   if (typeof phone !== 'string') {
     return '';
   }
-  
+
   return phone.replace(/\D/g, ''); // Keep only digits
 };
 
@@ -49,18 +49,18 @@ export const sanitizePhone = (phone) => {
  * @param {string} url - The URL to sanitize
  * @returns {string} - The sanitized URL
  */
-export const sanitizeUrl = (url) => {
+export const sanitizeUrl = url => {
   if (typeof url !== 'string') {
     return '';
   }
-  
+
   const trimmed = url.trim();
-  
+
   // Only allow http and https protocols
   if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
     return '';
   }
-  
+
   return trimmed;
 };
 
@@ -69,19 +69,19 @@ export const sanitizeUrl = (url) => {
  * @param {Object} obj - The object to sanitize
  * @returns {Object} - The sanitized object
  */
-export const sanitizeObject = (obj) => {
+export const sanitizeObject = obj => {
   if (obj === null || obj === undefined) {
     return obj;
   }
-  
+
   if (typeof obj === 'string') {
     return sanitizeInput(obj);
   }
-  
+
   if (Array.isArray(obj)) {
     return obj.map(item => sanitizeObject(item));
   }
-  
+
   if (typeof obj === 'object') {
     const sanitized = {};
     for (const [key, value] of Object.entries(obj)) {
@@ -89,6 +89,6 @@ export const sanitizeObject = (obj) => {
     }
     return sanitized;
   }
-  
+
   return obj;
 };

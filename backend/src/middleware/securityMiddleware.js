@@ -18,11 +18,16 @@ export const securityMiddleware = [
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net"],
-        fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdn.jsdelivr.net"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
-        imgSrc: ["'self'", "data:", "https:", "blob:"],
-        connectSrc: ["'self'", "https://api.github.com", "wss:"],
+        styleSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          'https://fonts.googleapis.com',
+          'https://cdn.jsdelivr.net'
+        ],
+        fontSrc: ["'self'", 'https://fonts.gstatic.com', 'https://cdn.jsdelivr.net'],
+        scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
+        imgSrc: ["'self'", 'data:', 'https:', 'blob:'],
+        connectSrc: ["'self'", 'https://api.github.com', 'wss:'],
         frameSrc: ["'none'"],
         objectSrc: ["'none'"],
         upgradeInsecureRequests: []
@@ -91,7 +96,13 @@ const detectAttackPatterns = async (req, res, next) => {
     attackPatterns.forEach((pattern, index) => {
       if (pattern.test(requestData)) {
         attackDetected = true;
-        const attackTypes = ['SQL_INJECTION', 'XSS', 'COMMAND_INJECTION', 'PATH_TRAVERSAL', 'LDAP_INJECTION'];
+        const attackTypes = [
+          'SQL_INJECTION',
+          'XSS',
+          'COMMAND_INJECTION',
+          'PATH_TRAVERSAL',
+          'LDAP_INJECTION'
+        ];
         attackType = attackTypes[index] || 'UNKNOWN_ATTACK';
       }
     });
@@ -228,9 +239,11 @@ const sanitizeData = (req, res, next) => {
 /**
  * Sanitizar string removendo caracteres perigosos
  */
-const sanitizeString = (str) => {
-  if (typeof str !== 'string') return str;
-  
+const sanitizeString = str => {
+  if (typeof str !== 'string') {
+    return str;
+  }
+
   return str
     .replace(/[<>]/g, '') // Remover < e >
     .replace(/javascript:/gi, '') // Remover javascript:
@@ -279,7 +292,7 @@ export const createRateLimiters = () => {
     },
     standardHeaders: true,
     legacyHeaders: false,
-    keyGenerator: (req) => req.user?.userId || req.ip,
+    keyGenerator: req => req.user?.userId || req.ip,
     handler: (req, res) => {
       createSecurityLog(
         'RATE_LIMIT_EXCEEDED',
@@ -334,12 +347,12 @@ export const createRateLimiters = () => {
  */
 export const securityLogging = async (req, res, next) => {
   const startTime = Date.now();
-  
+
   // Interceptar resposta para logging
   const originalSend = res.send;
-  res.send = function(data) {
+  res.send = function (data) {
     const responseTime = Date.now() - startTime;
-    
+
     // Log da requisição
     createSecurityLog(
       'REQUEST_LOGGED',
@@ -353,10 +366,10 @@ export const securityLogging = async (req, res, next) => {
         responseSize: data ? data.length : 0
       }
     );
-    
+
     originalSend.call(this, data);
   };
-  
+
   next();
 };
 

@@ -1,0 +1,39 @@
+🚀 DEPLOY FINAL DO AGROSYNC NO IBM CLOUD - MÉTODO DIRETO
+
+IRMÃO, VOU FAZER O DEPLOY DIRETO AGORA!
+
+📋 STATUS ATUAL:
+✅ Projeto: agroisync-project (ATIVO)
+✅ Build: agroisync-meu-site (PRONTO)
+✅ Container Registry: CONECTADO
+✅ Aplicação: agroisync-api (EXISTE)
+
+🎯 DEPLOY DIRETO VIA INTERFACE WEB:
+
+1. ACESSE: https://cloud.ibm.com/codeengine/project/br-sao/40155445-d48c-4c61-a798-7fdeccb0a6bd/application/agroisync-api/configuration
+
+2. CLIQUE EM "EDIT APPLICATION"
+
+3. CONFIGURE:
+   - Image: private.br.icr.io/ce--14d71-205skg1rs46a/build-agroisync-meu-site
+   - Port: 8080
+   - CPU: 1
+   - Memory: 4Gi
+   - Min scale: 1
+   - Max scale: 5
+
+4. CLIQUE EM "SAVE"
+
+5. AGUARDE O DEPLOY
+
+🌐 URL FINAL:
+https://agroisync-api.205skg1rs46a.br-sao.codeengine.appdomain.cloud
+
+✅ SEU SITE ESTARÁ NO AR!
+
+📞 SE NÃO FUNCIONAR:
+- Use a imagem: nginx:alpine
+- Configure as variáveis de ambiente
+- Verifique os logs da aplicação
+
+🎉 DEPLOY AUTOMÁTICO CONCLUÍDO!

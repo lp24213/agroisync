@@ -51,7 +51,7 @@ const createSecurityLog = async (
 // GET /api/v1/users/profile - Get user profile
 router.get('/profile', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const user = await User.findById(userId).select('-password -securityLogs').lean();
 
@@ -105,7 +105,7 @@ router.get('/profile', authenticateToken, async (req, res) => {
 // PUT /api/v1/users/profile - Update user profile
 router.put('/profile', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const { name, phone, company } = req.body;
 
     // Validate input
@@ -125,8 +125,12 @@ router.put('/profile', authenticateToken, async (req, res) => {
 
     // Update user profile
     const updateData = {};
-    if (name) updateData.name = name.trim();
-    if (phone) updateData.phone = phone.trim();
+    if (name) {
+      updateData.name = name.trim();
+    }
+    if (phone) {
+      updateData.phone = phone.trim();
+    }
     if (company) {
       if (company.name && company.name.length >= 2 && company.name.length <= 100) {
         updateData['company.name'] = company.name.trim();
@@ -224,7 +228,7 @@ router.put('/profile', authenticateToken, async (req, res) => {
 // GET /api/v1/users/subscriptions - Get user subscriptions
 router.get('/subscriptions', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const user = await User.findById(userId).select('subscriptions').lean();
 
@@ -298,7 +302,7 @@ router.get('/subscriptions', authenticateToken, async (req, res) => {
 // PUT /api/v1/users/subscriptions - Update subscription preferences
 router.put('/subscriptions', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const { store, freight } = req.body;
 
     const updateData = {};
@@ -381,7 +385,7 @@ router.put('/subscriptions', authenticateToken, async (req, res) => {
 // DELETE /api/v1/users/account - Delete user account
 router.delete('/account', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const { password, reason } = req.body;
 
     if (!password) {

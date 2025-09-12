@@ -10,7 +10,7 @@ const JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
 /**
  * Gera um token JWT de acesso
  */
-export const generateAccessToken = (payload) => {
+export const generateAccessToken = payload => {
   return jwt.sign(payload, JWT_SECRET, {
     expiresIn: JWT_EXPIRES_IN,
     issuer: 'agroisync',
@@ -21,7 +21,7 @@ export const generateAccessToken = (payload) => {
 /**
  * Gera um token JWT de refresh
  */
-export const generateRefreshToken = (payload) => {
+export const generateRefreshToken = payload => {
   return jwt.sign(payload, JWT_REFRESH_SECRET, {
     expiresIn: JWT_REFRESH_EXPIRES_IN,
     issuer: 'agroisync',
@@ -39,7 +39,7 @@ export const generateSecureRefreshToken = () => {
 /**
  * Verifica e decodifica um token de acesso
  */
-export const verifyAccessToken = (token) => {
+export const verifyAccessToken = token => {
   try {
     return jwt.verify(token, JWT_SECRET, {
       issuer: 'agroisync',
@@ -53,7 +53,7 @@ export const verifyAccessToken = (token) => {
 /**
  * Verifica e decodifica um token de refresh
  */
-export const verifyRefreshToken = (token) => {
+export const verifyRefreshToken = token => {
   try {
     return jwt.verify(token, JWT_REFRESH_SECRET, {
       issuer: 'agroisync',
@@ -67,7 +67,7 @@ export const verifyRefreshToken = (token) => {
 /**
  * Cria um novo par de tokens (acesso + refresh)
  */
-export const createTokenPair = async (user) => {
+export const createTokenPair = async user => {
   const payload = {
     userId: user._id,
     email: user.email,
@@ -150,7 +150,7 @@ export const refreshAccessToken = async (refreshToken, userAgent, ipAddress) => 
 /**
  * Revoga um refresh token
  */
-export const revokeRefreshToken = async (refreshToken) => {
+export const revokeRefreshToken = async refreshToken => {
   try {
     await RefreshToken.findOneAndUpdate(
       { token: refreshToken },
@@ -164,7 +164,7 @@ export const revokeRefreshToken = async (refreshToken) => {
 /**
  * Revoga todos os refresh tokens de um usuário
  */
-export const revokeAllUserTokens = async (userId) => {
+export const revokeAllUserTokens = async userId => {
   try {
     await RefreshToken.updateMany(
       { userId, isActive: true },
@@ -186,7 +186,7 @@ export const cleanupExpiredTokens = async () => {
         { isActive: false, revokedAt: { $lt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } } // Remove tokens revogados há mais de 30 dias
       ]
     });
-    
+
     console.log(`Limpeza de tokens: ${result.deletedCount} tokens removidos`);
     return result.deletedCount;
   } catch (error) {
@@ -198,7 +198,7 @@ export const cleanupExpiredTokens = async () => {
 /**
  * Obtém informações de um token
  */
-export const getTokenInfo = async (refreshToken) => {
+export const getTokenInfo = async refreshToken => {
   try {
     const token = await RefreshToken.findOne({
       token: refreshToken,

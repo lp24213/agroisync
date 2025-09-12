@@ -42,7 +42,7 @@ const SENSITIVE_ACTIONS = [
   'wallet.connect',
   'wallet.disconnect',
   'transaction.send',
-  'transaction.approve',
+  'transaction.approve'
 ];
 
 // Admin actions that require special logging
@@ -53,7 +53,7 @@ const ADMIN_ACTIONS = [
   'admin.emergency_stop',
   'admin.user_management',
   'admin.fund_management',
-  'admin.security_audit',
+  'admin.security_audit'
 ];
 
 // Audit middleware
@@ -71,7 +71,7 @@ export const auditLog = (action: string, resource: string) => {
       userAgent: req.get('User-Agent') || 'unknown',
       method: req.method,
       path: req.path,
-      requestBody: SENSITIVE_ACTIONS.includes(action) ? req.body : undefined,
+      requestBody: SENSITIVE_ACTIONS.includes(action) ? req.body : undefined
     };
 
     // Add user info if available
@@ -83,7 +83,7 @@ export const auditLog = (action: string, resource: string) => {
     // Override res.send to capture response
     res.send = function (body: any) {
       const duration = Date.now() - startTime;
-      const statusCode = res.statusCode;
+      const { statusCode } = res;
       const success = statusCode >= 200 && statusCode < 300;
 
       const completeAuditLog: AuditLog = {
@@ -92,7 +92,7 @@ export const auditLog = (action: string, resource: string) => {
         responseBody: SENSITIVE_ACTIONS.includes(action) ? body : undefined,
         duration,
         success,
-        error: !success ? body : undefined,
+        error: !success ? body : undefined
       } as AuditLog;
 
       // Log based on action type
@@ -118,7 +118,7 @@ export const securityEventLog = (event: string, details: any) => {
     event,
     timestamp: new Date().toISOString(),
     details,
-    severity: 'HIGH',
+    severity: 'HIGH'
   });
 };
 
@@ -131,7 +131,7 @@ export const failedAuthLog = (req: Request, reason: string) => {
     path: req.path,
     method: req.method,
     reason,
-    severity: 'MEDIUM',
+    severity: 'MEDIUM'
   });
 };
 
@@ -139,7 +139,7 @@ export const failedAuthLog = (req: Request, reason: string) => {
 export const suspiciousActivityLog = (
   req: Request,
   activity: string,
-  details: any,
+  details: any
 ) => {
   logger.error('SUSPICIOUS ACTIVITY:', {
     timestamp: new Date().toISOString(),
@@ -149,7 +149,7 @@ export const suspiciousActivityLog = (
     method: req.method,
     activity,
     details,
-    severity: 'HIGH',
+    severity: 'HIGH'
   });
 };
 
@@ -157,7 +157,7 @@ export const suspiciousActivityLog = (
 export const performanceLog = (
   req: Request,
   duration: number,
-  statusCode: number,
+  statusCode: number
 ) => {
   if (duration > 5000) {
     // Log slow requests (>5s)
@@ -168,7 +168,7 @@ export const performanceLog = (
       method: req.method,
       duration,
       statusCode,
-      severity: 'MEDIUM',
+      severity: 'MEDIUM'
     });
   }
 };
@@ -179,7 +179,7 @@ export const dbOperationLog = (
   collection: string,
   duration: number,
   success: boolean,
-  error?: any,
+  error?: any
 ) => {
   const logData = {
     timestamp: new Date().toISOString(),
@@ -187,7 +187,7 @@ export const dbOperationLog = (
     collection,
     duration,
     success,
-    error: error?.message || error,
+    error: error?.message || error
   };
 
   if (!success) {
@@ -206,7 +206,7 @@ export const web3TransactionLog = (
   operation: string,
   walletAddress: string,
   success: boolean,
-  error?: any,
+  error?: any
 ) => {
   const logData = {
     timestamp: new Date().toISOString(),
@@ -215,7 +215,7 @@ export const web3TransactionLog = (
     walletAddress,
     success,
     error: error?.message || error,
-    network: process.env.SOLANA_NETWORK || 'devnet',
+    network: process.env.SOLANA_NETWORK || 'devnet'
   };
 
   if (!success) {

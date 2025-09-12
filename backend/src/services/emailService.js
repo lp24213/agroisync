@@ -21,7 +21,7 @@ const createTransporter = () => {
 const emailTemplates = {
   welcome: {
     subject: 'Bem-vindo ao AgroSync!',
-    html: (userName) => `
+    html: userName => `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background: linear-gradient(135deg, #00ffbf, #00aaff); padding: 20px; text-align: center;">
           <h1 style="color: white; margin: 0;">AgroSync</h1>
@@ -117,7 +117,7 @@ const emailTemplates = {
 
   contactForm: {
     subject: 'Nova Mensagem de Contato - AgroSync',
-    html: (contactData) => `
+    html: contactData => `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background: linear-gradient(135deg, #00ffbf, #00aaff); padding: 20px; text-align: center;">
           <h1 style="color: white; margin: 0;">AgroSync</h1>
@@ -325,22 +325,21 @@ export class EmailService {
     try {
       const transporter = createTransporter();
       const emailTemplate = emailTemplates[template];
-      
+
       if (!emailTemplate) {
         throw new Error(`Template de email '${template}' não encontrado`);
       }
 
       const mailOptions = {
         from: `"AgroSync" <${process.env.SMTP_USER || 'contact@agroisync.com'}>`,
-        to: to,
+        to,
         subject: emailTemplate.subject,
-        html: typeof emailTemplate.html === 'function' 
-          ? emailTemplate.html(data) 
-          : emailTemplate.html
+        html:
+          typeof emailTemplate.html === 'function' ? emailTemplate.html(data) : emailTemplate.html
       };
 
       const result = await transporter.sendMail(mailOptions);
-      
+
       // Log do envio
       await AuditLog.logAction({
         userId: data.userId || 'system',
@@ -356,7 +355,7 @@ export class EmailService {
       return { success: true, messageId: result.messageId };
     } catch (error) {
       console.error('Erro ao enviar email:', error);
-      
+
       // Log do erro
       await AuditLog.logAction({
         userId: data.userId || 'system',
@@ -416,7 +415,7 @@ export class EmailService {
   static async sendContactConfirmationEmail(userEmail, userName) {
     const confirmationTemplate = {
       subject: 'Mensagem Recebida - AgroSync',
-      html: (userName) => `
+      html: userName => `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #00ffbf, #00aaff); padding: 20px; text-align: center;">
             <h1 style="color: white; margin: 0;">AgroSync</h1>

@@ -14,7 +14,7 @@ router.use(apiLimiter);
 router.get('/baidu', async (req, res) => {
   try {
     const { query, lat, lng, type = 'geocoding' } = req.query;
-    
+
     if (!query && !lat && !lng) {
       return res.status(400).json({
         success: false,
@@ -66,7 +66,7 @@ router.get('/baidu', async (req, res) => {
 router.get('/receita/validate', async (req, res) => {
   try {
     const { cnpj, cpf, ie } = req.query;
-    
+
     if (!cnpj && !cpf && !ie) {
       return res.status(400).json({
         success: false,
@@ -108,7 +108,7 @@ router.get('/receita/validate', async (req, res) => {
 router.get('/receita/company/:cnpj', async (req, res) => {
   try {
     const { cnpj } = req.params;
-    
+
     if (!cnpj) {
       return res.status(400).json({
         success: false,
@@ -145,7 +145,7 @@ router.get('/receita/company/:cnpj', async (req, res) => {
 router.get('/ibge', async (req, res) => {
   try {
     const { cep, uf, municipio } = req.query;
-    
+
     if (!cep && !uf && !municipio) {
       return res.status(400).json({
         success: false,
@@ -218,7 +218,7 @@ router.get('/ibge/estados', async (req, res) => {
 router.get('/ibge/estados/:uf/municipios', async (req, res) => {
   try {
     const { uf } = req.params;
-    
+
     if (!uf) {
       return res.status(400).json({
         success: false,
@@ -268,7 +268,11 @@ router.get('/status', async (req, res) => {
       ibge: {
         status: 'operational',
         lastCheck: new Date().toISOString(),
-        endpoints: ['/api/mirror/ibge', '/api/mirror/ibge/estados', '/api/mirror/ibge/estados/:uf/municipios']
+        endpoints: [
+          '/api/mirror/ibge',
+          '/api/mirror/ibge/estados',
+          '/api/mirror/ibge/estados/:uf/municipios'
+        ]
       }
     };
 

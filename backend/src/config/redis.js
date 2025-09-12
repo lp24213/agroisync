@@ -3,7 +3,7 @@ const logger = require('../utils/logger');
 
 const redisClient = redis.createClient({
   url: process.env.REDIS_URL || 'redis://localhost:6379',
-  retry_strategy: (options) => {
+  retry_strategy: options => {
     if (options.error && options.error.code === 'ECONNREFUSED') {
       logger.error('Redis server connection refused');
       return new Error('Redis server connection refused');
@@ -25,7 +25,7 @@ redisClient.on('connect', () => {
   logger.info('Redis conectado');
 });
 
-redisClient.on('error', (err) => {
+redisClient.on('error', err => {
   logger.error('Erro Redis:', err);
 });
 

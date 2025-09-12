@@ -23,7 +23,7 @@ const verifyAuth = event => {
   }
 
   const cognitoSub = decodedToken.sub;
-  const email = decodedToken.email;
+  const { email } = decodedToken;
 
   if (!cognitoSub || !email) {
     return { error: 'INVALID_TOKEN_DATA', message: 'Dados do token inválidos' };
@@ -345,27 +345,29 @@ exports.handler = async event => {
       };
 
       if (requestBody.public) {
-        if (requestBody.public.routeFrom)
-          updateData['public.routeFrom'] = requestBody.public.routeFrom.trim();
-        if (requestBody.public.routeTo)
-          updateData['public.routeTo'] = requestBody.public.routeTo.trim();
-        if (requestBody.public.estimatedDays)
-          updateData['public.estimatedDays'] = parseInt(requestBody.public.estimatedDays);
+        if (requestBody.public.routeFrom) {
+        {updateData['public.routeFrom'] = requestBody.public.routeFrom.trim();}
+        if (requestBody.public.routeTo) {
+        {updateData['public.routeTo'] = requestBody.public.routeTo.trim();}
+        if (requestBody.public.estimatedDays) {
+        {updateData['public.estimatedDays'] = parseInt(requestBody.public.estimatedDays);}
       }
 
       if (requestBody.private) {
-        if (requestBody.private.freightPrice)
-          updateData['private.freightPrice'] = parseFloat(requestBody.private.freightPrice);
-        if (requestBody.private.weightKg)
-          updateData['private.weightKg'] = parseFloat(requestBody.private.weightKg);
-        if (requestBody.private.nfNumber !== undefined)
-          updateData['private.nfNumber'] = requestBody.private.nfNumber
-            ? requestBody.private.nfNumber.trim()
-            : '';
-        if (requestBody.private.notes !== undefined)
-          updateData['private.notes'] = requestBody.private.notes
-            ? requestBody.private.notes.trim()
-            : '';
+        if (requestBody.private.freightPrice) {
+        {updateData['private.freightPrice'] = parseFloat(requestBody.private.freightPrice);}
+        if (requestBody.private.weightKg) {
+        {updateData['private.weightKg'] = parseFloat(requestBody.private.weightKg);}
+        if (requestBody.private.nfNumber !== undefined) {
+        {updateData['private.nfNumber'] = requestBody.private.nfNumber
+          ? requestBody.private.nfNumber.trim()
+          : '';
+        }
+        if (requestBody.private.notes !== undefined) {
+        {updateData['private.notes'] = requestBody.private.notes
+          ? requestBody.private.notes.trim()
+          : '';
+        }
       }
 
       // Atualizar frete

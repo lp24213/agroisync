@@ -32,12 +32,20 @@ router.get('/', async (req, res) => {
     // Build query
     const query = { status: 'active' };
 
-    if (category) query.category = category;
-    if (subcategory) query.subcategory = subcategory;
+    if (category) {
+      query.category = category;
+    }
+    if (subcategory) {
+      query.subcategory = subcategory;
+    }
     if (minPrice || maxPrice) {
       query.price = {};
-      if (minPrice) query.price.$gte = parseFloat(minPrice);
-      if (maxPrice) query.price.$lte = parseFloat(maxPrice);
+      if (minPrice) {
+        query.price.$gte = parseFloat(minPrice);
+      }
+      if (maxPrice) {
+        query.price.$lte = parseFloat(maxPrice);
+      }
     }
     if (location) {
       query['location.city'] = { $regex: location, $options: 'i' };
@@ -173,7 +181,7 @@ router.get('/:id', async (req, res) => {
 // POST /api/products - Create new product (requires authentication and active store plan)
 router.post('/', authenticateToken, validateProduct, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     // Check if user has active store plan
     const user = await User.findById(userId);
@@ -240,7 +248,7 @@ router.post('/', authenticateToken, validateProduct, async (req, res) => {
 router.put('/:id', authenticateToken, validateProduct, async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const product = await Product.findById(id);
     if (!product) {
@@ -280,7 +288,7 @@ router.put('/:id', authenticateToken, validateProduct, async (req, res) => {
 router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const product = await Product.findById(id);
     if (!product) {
@@ -319,7 +327,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 router.post('/:id/favorite', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const product = await Product.findById(id);
     if (!product) {
@@ -356,7 +364,7 @@ router.post('/:id/favorite', authenticateToken, async (req, res) => {
 router.delete('/:id/favorite', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const product = await Product.findById(id);
     if (!product) {
@@ -385,7 +393,7 @@ router.delete('/:id/favorite', authenticateToken, async (req, res) => {
 // GET /api/products/user/favorites - Get user's favorite products
 router.get('/user/favorites', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const { page = 1, limit = 20 } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
@@ -428,12 +436,14 @@ router.get('/user/favorites', authenticateToken, async (req, res) => {
 // GET /api/products/seller/my-products - Get seller's own products
 router.get('/seller/my-products', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const { page = 1, limit = 20, status } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     const query = { sellerId: userId };
-    if (status) query.status = status;
+    if (status) {
+      query.status = status;
+    }
 
     const products = await Product.find(query)
       .sort({ createdAt: -1 })
@@ -468,7 +478,7 @@ router.get('/seller/my-products', authenticateToken, async (req, res) => {
 router.post('/:id/contact', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const { message } = req.body;
 
     if (!message || message.trim().length < 10) {

@@ -7,7 +7,10 @@ import Product from '../models/Product.js';
 import Freight from '../models/Freight.js';
 import AuditLog from '../models/AuditLog.js';
 import { authenticateToken } from '../middleware/auth.js';
-import { requireProductMessagingAccess, requireFreightMessagingAccess } from '../middleware/requirePaidAccess.js';
+import {
+  requireProductMessagingAccess,
+  requireFreightMessagingAccess
+} from '../middleware/requirePaidAccess.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
 import { createSecurityLog } from '../utils/securityLogger.js';
 
@@ -20,7 +23,7 @@ router.use(apiLimiter);
 
 const validateConversationData = (req, res, next) => {
   const { serviceType, serviceId, participants } = req.body;
-  
+
   if (!serviceType || !['product', 'freight'].includes(serviceType)) {
     return res.status(400).json({
       ok: false,
@@ -59,7 +62,7 @@ const validateConversationData = (req, res, next) => {
 
 const validateMessageData = (req, res, next) => {
   const { content } = req.body;
-  
+
   if (!content || content.trim().length === 0) {
     return res.status(400).json({
       ok: false,
@@ -84,11 +87,11 @@ const validateMessageData = (req, res, next) => {
 // GET /api/conversations - Listar conversas do usuário
 router.get('/', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const { serviceType, page = 1, limit = 20, status } = req.query;
-    
+
     const skip = (parseInt(page) - 1) * parseInt(limit);
-    
+
     // Construir query
     const query = {
       participants: userId,
@@ -117,7 +120,7 @@ router.get('/', authenticateToken, async (req, res) => {
 
     // Log de acesso
     await AuditLog.log({
-      userId: userId,
+      userId,
       userEmail: req.user.email,
       action: 'conversations_listed',
       resource: 'conversation',
@@ -142,9 +145,15 @@ router.get('/', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.error('Error listing conversations:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error listing conversations: ${error.message}`, req, req.user?.userId);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error listing conversations: ${error.message}`,
+      req,
+      req.user?.userId
+    );
+
     res.status(500).json({
       ok: false,
       error: 'internal_error',
@@ -156,7 +165,7 @@ router.get('/', authenticateToken, async (req, res) => {
 // POST /api/conversations - Criar nova conversa
 router.post('/', authenticateToken, validateConversationData, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const { serviceType, serviceId, participants, title } = req.body;
 
     // Verificar se o serviço existe
@@ -177,9 +186,9 @@ router.post('/', authenticateToken, validateConversationData, async (req, res) =
 
     // Verificar se já existe conversa entre estes usuários para este serviço
     const existingConversation = await Conversation.findBetweenUsers(
-      participants[0], 
-      participants[1], 
-      serviceId, 
+      participants[0],
+      participants[1],
+      serviceId,
       serviceType
     );
 
@@ -208,7 +217,7 @@ router.post('/', authenticateToken, validateConversationData, async (req, res) =
 
     // Log de criação
     await AuditLog.log({
-      userId: userId,
+      userId,
       userEmail: req.user.email,
       action: 'conversation_created',
       resource: 'conversation',
@@ -227,9 +236,15 @@ router.post('/', authenticateToken, validateConversationData, async (req, res) =
     });
   } catch (error) {
     console.error('Error creating conversation:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error creating conversation: ${error.message}`, req, req.user?.userId);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error creating conversation: ${error.message}`,
+      req,
+      req.user?.userId
+    );
+
     res.status(500).json({
       ok: false,
       error: 'internal_error',
@@ -241,7 +256,7 @@ router.post('/', authenticateToken, validateConversationData, async (req, res) =
 // GET /api/conversations/:id - Obter conversa específica
 router.get('/:id', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const conversationId = req.params.id;
 
     if (!mongoose.Types.ObjectId.isValid(conversationId)) {
@@ -267,8 +282,14 @@ router.get('/:id', authenticateToken, async (req, res) => {
 
     // Verificar se o usuário é participante
     if (!conversation.participants.some(p => p._id.toString() === userId)) {
-      await createSecurityLog('unauthorized_access', 'medium', 'User attempted to access conversation they don\'t participate in', req, userId);
-      
+      await createSecurityLog(
+        'unauthorized_access',
+        'medium',
+        "User attempted to access conversation they don't participate in",
+        req,
+        userId
+      );
+
       return res.status(403).json({
         ok: false,
         error: 'access_denied',
@@ -278,7 +299,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
 
     // Log de acesso
     await AuditLog.log({
-      userId: userId,
+      userId,
       userEmail: req.user.email,
       action: 'conversation_accessed',
       resource: 'conversation',
@@ -295,9 +316,15 @@ router.get('/:id', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching conversation:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error fetching conversation: ${error.message}`, req, req.user?.userId);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error fetching conversation: ${error.message}`,
+      req,
+      req.user?.userId
+    );
+
     res.status(500).json({
       ok: false,
       error: 'internal_error',
@@ -309,7 +336,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
 // PUT /api/conversations/:id - Atualizar conversa
 router.put('/:id', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const conversationId = req.params.id;
     const { title, status } = req.body;
 
@@ -333,8 +360,14 @@ router.put('/:id', authenticateToken, async (req, res) => {
 
     // Verificar se o usuário é participante
     if (!conversation.participants.includes(userId)) {
-      await createSecurityLog('unauthorized_access', 'medium', 'User attempted to update conversation they don\'t participate in', req, userId);
-      
+      await createSecurityLog(
+        'unauthorized_access',
+        'medium',
+        "User attempted to update conversation they don't participate in",
+        req,
+        userId
+      );
+
       return res.status(403).json({
         ok: false,
         error: 'access_denied',
@@ -343,7 +376,9 @@ router.put('/:id', authenticateToken, async (req, res) => {
     }
 
     // Atualizar campos permitidos
-    if (title !== undefined) conversation.title = title;
+    if (title !== undefined) {
+      conversation.title = title;
+    }
     if (status !== undefined && ['active', 'archived', 'closed'].includes(status)) {
       conversation.status = status;
     }
@@ -352,7 +387,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
 
     // Log de atualização
     await AuditLog.log({
-      userId: userId,
+      userId,
       userEmail: req.user.email,
       action: 'conversation_updated',
       resource: 'conversation',
@@ -371,9 +406,15 @@ router.put('/:id', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.error('Error updating conversation:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error updating conversation: ${error.message}`, req, req.user?.userId);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error updating conversation: ${error.message}`,
+      req,
+      req.user?.userId
+    );
+
     res.status(500).json({
       ok: false,
       error: 'internal_error',
@@ -387,10 +428,10 @@ router.put('/:id', authenticateToken, async (req, res) => {
 // GET /api/conversations/:id/messages - Listar mensagens de uma conversa
 router.get('/:id/messages', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const conversationId = req.params.id;
     const { page = 1, limit = 50 } = req.query;
-    
+
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     if (!mongoose.Types.ObjectId.isValid(conversationId)) {
@@ -403,7 +444,7 @@ router.get('/:id/messages', authenticateToken, async (req, res) => {
 
     // Verificar se a conversa existe e se o usuário é participante
     const conversation = await Conversation.findById(conversationId);
-    
+
     if (!conversation) {
       return res.status(404).json({
         ok: false,
@@ -413,8 +454,14 @@ router.get('/:id/messages', authenticateToken, async (req, res) => {
     }
 
     if (!conversation.participants.includes(userId)) {
-      await createSecurityLog('unauthorized_access', 'medium', 'User attempted to access messages from conversation they don\'t participate in', req, userId);
-      
+      await createSecurityLog(
+        'unauthorized_access',
+        'medium',
+        "User attempted to access messages from conversation they don't participate in",
+        req,
+        userId
+      );
+
       return res.status(403).json({
         ok: false,
         error: 'access_denied',
@@ -424,7 +471,7 @@ router.get('/:id/messages', authenticateToken, async (req, res) => {
 
     // Buscar mensagens
     const messages = await Message.find({
-      conversationId: conversationId,
+      conversationId,
       status: { $ne: 'deleted' }
     })
       .sort({ createdAt: -1 })
@@ -435,13 +482,13 @@ router.get('/:id/messages', authenticateToken, async (req, res) => {
 
     // Contar total
     const total = await Message.countDocuments({
-      conversationId: conversationId,
+      conversationId,
       status: { $ne: 'deleted' }
     });
 
     // Marcar mensagens como lidas se o usuário for o destinatário
-    const unreadMessages = messages.filter(msg => 
-      msg.receiverId._id.toString() === userId && !msg.isRead
+    const unreadMessages = messages.filter(
+      msg => msg.receiverId._id.toString() === userId && !msg.isRead
     );
 
     if (unreadMessages.length > 0) {
@@ -453,7 +500,7 @@ router.get('/:id/messages', authenticateToken, async (req, res) => {
 
     // Log de acesso
     await AuditLog.log({
-      userId: userId,
+      userId,
       userEmail: req.user.email,
       action: 'messages_accessed',
       resource: 'conversation',
@@ -479,9 +526,15 @@ router.get('/:id/messages', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching messages:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error fetching messages: ${error.message}`, req, req.user?.userId);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error fetching messages: ${error.message}`,
+      req,
+      req.user?.userId
+    );
+
     res.status(500).json({
       ok: false,
       error: 'internal_error',
@@ -493,7 +546,7 @@ router.get('/:id/messages', authenticateToken, async (req, res) => {
 // POST /api/conversations/:id/messages - Enviar mensagem
 router.post('/:id/messages', authenticateToken, validateMessageData, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const conversationId = req.params.id;
     const { content, attachments = [] } = req.body;
 
@@ -507,7 +560,7 @@ router.post('/:id/messages', authenticateToken, validateMessageData, async (req,
 
     // Verificar se a conversa existe e se o usuário é participante
     const conversation = await Conversation.findById(conversationId);
-    
+
     if (!conversation) {
       return res.status(404).json({
         ok: false,
@@ -517,8 +570,14 @@ router.post('/:id/messages', authenticateToken, validateMessageData, async (req,
     }
 
     if (!conversation.participants.includes(userId)) {
-      await createSecurityLog('unauthorized_access', 'medium', 'User attempted to send message to conversation they don\'t participate in', req, userId);
-      
+      await createSecurityLog(
+        'unauthorized_access',
+        'medium',
+        "User attempted to send message to conversation they don't participate in",
+        req,
+        userId
+      );
+
       return res.status(403).json({
         ok: false,
         error: 'access_denied',
@@ -540,11 +599,11 @@ router.post('/:id/messages', authenticateToken, validateMessageData, async (req,
 
     // Criar mensagem
     const message = new Message({
-      conversationId: conversationId,
+      conversationId,
       senderId: userId,
       receiverId: recipientId,
       content: content.trim(),
-      attachments: attachments,
+      attachments,
       messageType: conversation.serviceType === 'product' ? 'product_inquiry' : 'freight_request',
       messagingCategory: conversation.serviceType === 'product' ? 'products' : 'freights'
     });
@@ -564,7 +623,7 @@ router.post('/:id/messages', authenticateToken, validateMessageData, async (req,
 
     // Log de envio
     await AuditLog.log({
-      userId: userId,
+      userId,
       userEmail: req.user.email,
       action: 'message_sent',
       resource: 'conversation',
@@ -573,7 +632,11 @@ router.post('/:id/messages', authenticateToken, validateMessageData, async (req,
       details: 'Sent message in conversation',
       ip: req.ip,
       userAgent: req.get('User-Agent'),
-      metadata: { messageId: message._id, contentLength: content.length, attachmentsCount: attachments.length }
+      metadata: {
+        messageId: message._id,
+        contentLength: content.length,
+        attachmentsCount: attachments.length
+      }
     });
 
     res.status(201).json({
@@ -583,9 +646,15 @@ router.post('/:id/messages', authenticateToken, validateMessageData, async (req,
     });
   } catch (error) {
     console.error('Error sending message:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error sending message: ${error.message}`, req, req.user?.userId);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error sending message: ${error.message}`,
+      req,
+      req.user?.userId
+    );
+
     res.status(500).json({
       ok: false,
       error: 'internal_error',
@@ -599,7 +668,7 @@ router.post('/:id/messages', authenticateToken, validateMessageData, async (req,
 // GET /api/conversations/stats - Estatísticas das conversas
 router.get('/stats/summary', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const stats = await Conversation.getStats(userId);
 
@@ -609,9 +678,15 @@ router.get('/stats/summary', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching conversation stats:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error fetching conversation stats: ${error.message}`, req, req.user?.userId);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error fetching conversation stats: ${error.message}`,
+      req,
+      req.user?.userId
+    );
+
     res.status(500).json({
       ok: false,
       error: 'internal_error',

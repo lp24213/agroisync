@@ -54,52 +54,51 @@ async function createAdminUser() {
 
     // Verificar se o usuário admin já existe
     const existingAdmin = await User.findOne({ email: ADMIN_USER.email });
-    
+
     if (existingAdmin) {
       console.log('⚠️  Usuário admin já existe!');
-      
+
       // Atualizar para garantir que tem todas as permissões
       if (!existingAdmin.isAdmin) {
         existingAdmin.isAdmin = true;
         existingAdmin.userType = 'admin';
         existingAdmin.isActive = true;
         existingAdmin.isVerified = true;
-        
+
         // Atualizar senha se necessário
         const isPasswordValid = await bcrypt.compare(ADMIN_USER.password, existingAdmin.password);
         if (!isPasswordValid) {
           const saltRounds = 12;
           existingAdmin.password = await bcrypt.hash(ADMIN_USER.password, saltRounds);
         }
-        
+
         await existingAdmin.save();
         console.log('✅ Usuário admin atualizado com sucesso!');
       } else {
         console.log('✅ Usuário admin já está configurado corretamente!');
       }
-      
+
       console.log('📋 Dados do usuário admin:');
       console.log(`   Nome: ${existingAdmin.name}`);
       console.log(`   Email: ${existingAdmin.email}`);
       console.log(`   Admin: ${existingAdmin.isAdmin}`);
       console.log(`   Ativo: ${existingAdmin.isActive}`);
       console.log(`   Verificado: ${existingAdmin.isVerified}`);
-      
     } else {
       console.log('👤 Criando usuário admin...');
-      
+
       // Criptografar senha
       const saltRounds = 12;
       const hashedPassword = await bcrypt.hash(ADMIN_USER.password, saltRounds);
-      
+
       // Criar usuário admin
       const adminUser = new User({
         ...ADMIN_USER,
         password: hashedPassword
       });
-      
+
       await adminUser.save();
-      
+
       console.log('✅ Usuário admin criado com sucesso!');
       console.log('📋 Dados do usuário admin:');
       console.log(`   Nome: ${adminUser.name}`);
@@ -108,12 +107,11 @@ async function createAdminUser() {
       console.log(`   Ativo: ${adminUser.isActive}`);
       console.log(`   Verificado: ${adminUser.isVerified}`);
     }
-    
+
     console.log('\n🔐 Credenciais de acesso:');
     console.log(`   Email: ${ADMIN_USER.email}`);
     console.log(`   Senha: ${ADMIN_USER.password}`);
     console.log('\n⚠️  IMPORTANTE: Guarde essas credenciais em local seguro!');
-    
   } catch (error) {
     console.error('❌ Erro ao criar usuário admin:', error);
     process.exit(1);

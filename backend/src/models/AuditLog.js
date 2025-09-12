@@ -23,28 +23,54 @@ const auditLogSchema = new mongoose.Schema({
     required: true,
     enum: [
       // Ações de autenticação
-      'login', 'logout', 'register', 'password_change', 'password_reset',
-      
+      'login',
+      'logout',
+      'register',
+      'password_change',
+      'password_reset',
+
       // Ações de mensageria
-      'message_sent', 'message_read', 'conversation_created', 'conversation_archived',
-      
+      'message_sent',
+      'message_read',
+      'conversation_created',
+      'conversation_archived',
+
       // Ações de produtos
-      'product_created', 'product_updated', 'product_deleted', 'product_viewed',
-      
+      'product_created',
+      'product_updated',
+      'product_deleted',
+      'product_viewed',
+
       // Ações de fretes
-      'freight_created', 'freight_updated', 'freight_deleted', 'freight_viewed',
-      
+      'freight_created',
+      'freight_updated',
+      'freight_deleted',
+      'freight_viewed',
+
       // Ações de pagamento
-      'payment_initiated', 'payment_completed', 'payment_failed', 'subscription_activated',
-      
+      'payment_initiated',
+      'payment_completed',
+      'payment_failed',
+      'subscription_activated',
+
       // Ações administrativas
-      'admin_login', 'admin_action', 'user_banned', 'user_unbanned', 'content_moderated',
-      
+      'admin_login',
+      'admin_action',
+      'user_banned',
+      'user_unbanned',
+      'content_moderated',
+
       // Ações de segurança
-      'failed_login', 'suspicious_activity', 'rate_limit_exceeded', 'ip_blocked',
-      
+      'failed_login',
+      'suspicious_activity',
+      'rate_limit_exceeded',
+      'ip_blocked',
+
       // Ações gerais
-      'profile_updated', 'settings_changed', 'data_exported', 'data_deleted'
+      'profile_updated',
+      'settings_changed',
+      'data_exported',
+      'data_deleted'
     ],
     index: true
   },
@@ -54,8 +80,16 @@ const auditLogSchema = new mongoose.Schema({
     type: String,
     required: true,
     enum: [
-      'user', 'message', 'conversation', 'product', 'freight', 
-      'payment', 'subscription', 'admin', 'system', 'security'
+      'user',
+      'message',
+      'conversation',
+      'product',
+      'freight',
+      'payment',
+      'subscription',
+      'admin',
+      'system',
+      'security'
     ]
   },
 
@@ -146,7 +180,7 @@ auditLogSchema.index({ ip: 1, createdAt: -1 });
 auditLogSchema.index({ isSuspicious: 1, createdAt: -1 });
 
 // Middleware para definir expiração (opcional - 1 ano)
-auditLogSchema.pre('save', function(next) {
+auditLogSchema.pre('save', function (next) {
   if (!this.expiresAt) {
     this.expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 1 ano
   }
@@ -154,7 +188,7 @@ auditLogSchema.pre('save', function(next) {
 });
 
 // Método estático para criar log de auditoria
-auditLogSchema.statics.log = function(data) {
+auditLogSchema.statics.log = function (data) {
   return this.create({
     userId: data.userId,
     userEmail: data.userEmail,
@@ -178,13 +212,21 @@ auditLogSchema.statics.log = function(data) {
 };
 
 // Método estático para buscar logs de um usuário
-auditLogSchema.statics.findByUser = function(userId, options = {}) {
-  const query = { userId: userId };
-  
-  if (options.action) query.action = options.action;
-  if (options.resource) query.resource = options.resource;
-  if (options.startDate) query.createdAt = { $gte: options.startDate };
-  if (options.endDate) query.createdAt = { $lte: options.endDate };
+auditLogSchema.statics.findByUser = function (userId, options = {}) {
+  const query = { userId };
+
+  if (options.action) {
+    query.action = options.action;
+  }
+  if (options.resource) {
+    query.resource = options.resource;
+  }
+  if (options.startDate) {
+    query.createdAt = { $gte: options.startDate };
+  }
+  if (options.endDate) {
+    query.createdAt = { $lte: options.endDate };
+  }
 
   return this.find(query)
     .sort({ createdAt: -1 })
@@ -193,12 +235,18 @@ auditLogSchema.statics.findByUser = function(userId, options = {}) {
 };
 
 // Método estático para buscar logs suspeitos
-auditLogSchema.statics.findSuspicious = function(options = {}) {
+auditLogSchema.statics.findSuspicious = function (options = {}) {
   const query = { isSuspicious: true };
-  
-  if (options.riskLevel) query.riskLevel = options.riskLevel;
-  if (options.startDate) query.createdAt = { $gte: options.startDate };
-  if (options.endDate) query.createdAt = { $lte: options.endDate };
+
+  if (options.riskLevel) {
+    query.riskLevel = options.riskLevel;
+  }
+  if (options.startDate) {
+    query.createdAt = { $gte: options.startDate };
+  }
+  if (options.endDate) {
+    query.createdAt = { $lte: options.endDate };
+  }
 
   return this.find(query)
     .sort({ createdAt: -1 })
@@ -207,11 +255,15 @@ auditLogSchema.statics.findSuspicious = function(options = {}) {
 };
 
 // Método estático para buscar logs por IP
-auditLogSchema.statics.findByIP = function(ip, options = {}) {
-  const query = { ip: ip };
-  
-  if (options.startDate) query.createdAt = { $gte: options.startDate };
-  if (options.endDate) query.createdAt = { $lte: options.endDate };
+auditLogSchema.statics.findByIP = function (ip, options = {}) {
+  const query = { ip };
+
+  if (options.startDate) {
+    query.createdAt = { $gte: options.startDate };
+  }
+  if (options.endDate) {
+    query.createdAt = { $lte: options.endDate };
+  }
 
   return this.find(query)
     .sort({ createdAt: -1 })
@@ -220,12 +272,18 @@ auditLogSchema.statics.findByIP = function(ip, options = {}) {
 };
 
 // Método estático para obter estatísticas
-auditLogSchema.statics.getStats = async function(options = {}) {
+auditLogSchema.statics.getStats = async function (options = {}) {
   const matchStage = {};
-  
-  if (options.userId) matchStage.userId = mongoose.Types.ObjectId(options.userId);
-  if (options.startDate) matchStage.createdAt = { $gte: options.startDate };
-  if (options.endDate) matchStage.createdAt = { $lte: options.endDate };
+
+  if (options.userId) {
+    matchStage.userId = mongoose.Types.ObjectId(options.userId);
+  }
+  if (options.startDate) {
+    matchStage.createdAt = { $gte: options.startDate };
+  }
+  if (options.endDate) {
+    matchStage.createdAt = { $lte: options.endDate };
+  }
 
   const stats = await this.aggregate([
     { $match: matchStage },
@@ -263,9 +321,9 @@ auditLogSchema.statics.getStats = async function(options = {}) {
 };
 
 // Método estático para limpar logs antigos
-auditLogSchema.statics.cleanOldLogs = async function(daysToKeep = 365) {
+auditLogSchema.statics.cleanOldLogs = async function (daysToKeep = 365) {
   const cutoffDate = new Date(Date.now() - daysToKeep * 24 * 60 * 60 * 1000);
-  
+
   const result = await this.deleteMany({
     createdAt: { $lt: cutoffDate }
   });

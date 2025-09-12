@@ -1,122 +1,127 @@
 import mongoose from 'mongoose';
 
-const messageSchema = new mongoose.Schema({
-  // Conversa à qual a mensagem pertence
-  conversation: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Conversation',
-    required: true,
-    index: true
+const messageSchema = new mongoose.Schema(
+  {
+    // Conversa à qual a mensagem pertence
+    conversation: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Conversation',
+      required: true,
+      index: true
+    },
+
+    // Remetente da mensagem
+    sender: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+      index: true
+    },
+
+    // Conteúdo da mensagem
+    content: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: [5000, 'Mensagem não pode ter mais de 5000 caracteres']
+    },
+
+    // Tipo de mensagem
+    type: {
+      type: String,
+      enum: ['text', 'file', 'image', 'system'],
+      default: 'text'
+    },
+
+    // Arquivo anexado (se aplicável)
+    file: {
+      name: String,
+      size: Number,
+      type: String,
+      url: String,
+      thumbnail: String,
+      uploadedAt: {
+        type: Date,
+        default: Date.now
+      }
+    },
+
+    // Metadados da mensagem
+    metadata: {
+      type: Map,
+      of: mongoose.Schema.Types.Mixed
+    },
+
+    // Status da mensagem
+    status: {
+      type: String,
+      enum: ['sent', 'delivered', 'read', 'failed'],
+      default: 'sent'
+    },
+
+    // Usuários que leram a mensagem
+    readBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      }
+    ],
+
+    // Timestamps
+    deliveredAt: Date,
+    readAt: Date,
+    failedAt: Date,
+    deletedAt: Date
   },
-
-  // Remetente da mensagem
-  sender: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-    index: true
-  },
-
-  // Conteúdo da mensagem
-  content: {
-    type: String,
-    required: true,
-    trim: true,
-    maxlength: [5000, 'Mensagem não pode ter mais de 5000 caracteres']
-  },
-
-  // Tipo de mensagem
-  type: {
-    type: String,
-    enum: ['text', 'file', 'image', 'system'],
-    default: 'text'
-  },
-
-  // Arquivo anexado (se aplicável)
-  file: {
-    name: String,
-    size: Number,
-    type: String,
-    url: String,
-    thumbnail: String,
-    uploadedAt: {
-      type: Date,
-      default: Date.now
-    }
-  },
-
-  // Metadados da mensagem
-  metadata: {
-    type: Map,
-    of: mongoose.Schema.Types.Mixed
-  },
-
-  // Status da mensagem
-  status: {
-    type: String,
-    enum: ['sent', 'delivered', 'read', 'failed'],
-    default: 'sent'
-  },
-
-  // Usuários que leram a mensagem
-  readBy: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }],
-
-  // Timestamps
-  deliveredAt: Date,
-  readAt: Date,
-  failedAt: Date,
-  deletedAt: Date
-}, {
-  timestamps: true,
-  toJSON: { virtuals: true },
-  toObject: { virtuals: true }
-});
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+  }
+);
 
 // Índices para performance
 messageSchema.index({ conversation: 1, createdAt: -1 });
 messageSchema.index({ sender: 1, createdAt: -1 });
 messageSchema.index({ type: 1, createdAt: -1 });
 messageSchema.index({ status: 1, createdAt: -1 });
-messageSchema.index({ 'readBy': 1 });
+messageSchema.index({ readBy: 1 });
 
 // Virtual para verificar se mensagem foi lida
-messageSchema.virtual('isRead').get(function() {
+messageSchema.virtual('isRead').get(function () {
   return this.readBy.length > 0;
 });
 
 // Virtual para verificar se mensagem foi entregue
-messageSchema.virtual('isDelivered').get(function() {
+messageSchema.virtual('isDelivered').get(function () {
   return this.status === 'delivered' || this.status === 'read';
 });
 
 // Virtual para verificar se mensagem falhou
-messageSchema.virtual('isFailed').get(function() {
+messageSchema.virtual('isFailed').get(function () {
   return this.status === 'failed';
 });
 
 // Virtual para verificar se mensagem tem arquivo
-messageSchema.virtual('hasFile').get(function() {
+messageSchema.virtual('hasFile').get(function () {
   return this.type === 'file' && this.file && this.file.url;
 });
 
 // Virtual para verificar se mensagem tem imagem
-messageSchema.virtual('hasImage').get(function() {
+messageSchema.virtual('hasImage').get(function () {
   return this.type === 'image' && this.file && this.file.url;
 });
 
 // Virtual para verificar se mensagem é do sistema
-messageSchema.virtual('isSystem').get(function() {
+messageSchema.virtual('isSystem').get(function () {
   return this.type === 'system';
 });
 
 // Middleware para atualizar timestamps baseado no status
-messageSchema.pre('save', function(next) {
+messageSchema.pre('save', function (next) {
   if (this.isModified('status')) {
     const now = new Date();
-    
+
     switch (this.status) {
       case 'delivered':
         this.deliveredAt = now;
@@ -133,14 +138,14 @@ messageSchema.pre('save', function(next) {
 });
 
 // Método para marcar como entregue
-messageSchema.methods.markAsDelivered = function() {
+messageSchema.methods.markAsDelivered = function () {
   this.status = 'delivered';
   this.deliveredAt = new Date();
   return this.save();
 };
 
 // Método para marcar como lida por um usuário
-messageSchema.methods.markAsRead = function(userId) {
+messageSchema.methods.markAsRead = function (userId) {
   if (!this.readBy.includes(userId)) {
     this.readBy.push(userId);
     this.status = 'read';
@@ -150,7 +155,7 @@ messageSchema.methods.markAsRead = function(userId) {
 };
 
 // Método para marcar como falhou
-messageSchema.methods.markAsFailed = function(reason) {
+messageSchema.methods.markAsFailed = function (reason) {
   this.status = 'failed';
   this.failedAt = new Date();
   if (reason) {
@@ -160,12 +165,12 @@ messageSchema.methods.markAsFailed = function(reason) {
 };
 
 // Método para verificar se usuário leu a mensagem
-messageSchema.methods.isReadBy = function(userId) {
+messageSchema.methods.isReadBy = function (userId) {
   return this.readBy.some(id => id.toString() === userId.toString());
 };
 
 // Método para obter dados públicos da mensagem
-messageSchema.methods.getPublicData = function() {
+messageSchema.methods.getPublicData = function () {
   return {
     id: this._id,
     content: this.content,
@@ -177,7 +182,7 @@ messageSchema.methods.getPublicData = function() {
 };
 
 // Método para obter dados completos da mensagem
-messageSchema.methods.getFullData = function(userId) {
+messageSchema.methods.getFullData = function (userId) {
   const data = {
     ...this.getPublicData(),
     conversation: this.conversation,
@@ -192,12 +197,12 @@ messageSchema.methods.getFullData = function(userId) {
 
   // Adicionar informações de leitura específicas do usuário
   data.isReadByUser = this.isReadBy(userId);
-  
+
   return data;
 };
 
 // Método para obter dados da mensagem para exibição
-messageSchema.methods.getDisplayData = function(currentUserId) {
+messageSchema.methods.getDisplayData = function (currentUserId) {
   const data = {
     id: this._id,
     content: this.content,
@@ -233,7 +238,7 @@ messageSchema.methods.getDisplayData = function(currentUserId) {
 };
 
 // Método estático para buscar mensagens de uma conversa
-messageSchema.statics.findByConversation = function(conversationId, options = {}) {
+messageSchema.statics.findByConversation = function (conversationId, options = {}) {
   const query = { conversation: conversationId };
 
   if (options.type) {
@@ -261,9 +266,9 @@ messageSchema.statics.findByConversation = function(conversationId, options = {}
 };
 
 // Método estático para buscar mensagens não lidas de um usuário
-messageSchema.statics.findUnreadByUser = function(userId, conversationId = null) {
+messageSchema.statics.findUnreadByUser = function (userId, conversationId = null) {
   const query = {
-    'readBy': { $ne: userId },
+    readBy: { $ne: userId },
     sender: { $ne: userId } // Não incluir mensagens próprias
   };
 
@@ -278,7 +283,7 @@ messageSchema.statics.findUnreadByUser = function(userId, conversationId = null)
 };
 
 // Método estático para buscar mensagens de um usuário
-messageSchema.statics.findByUser = function(userId, options = {}) {
+messageSchema.statics.findByUser = function (userId, options = {}) {
   const query = { sender: userId };
 
   if (options.conversation) {
@@ -306,9 +311,11 @@ messageSchema.statics.findByUser = function(userId, options = {}) {
 };
 
 // Método estático para estatísticas de mensagens
-messageSchema.statics.getStats = async function(userId = null) {
+messageSchema.statics.getStats = async function (userId = null) {
   const match = {};
-  if (userId) match.sender = userId;
+  if (userId) {
+    match.sender = userId;
+  }
 
   const stats = await this.aggregate([
     { $match: match },
@@ -344,21 +351,23 @@ messageSchema.statics.getStats = async function(userId = null) {
     }
   ]);
 
-  return stats[0] || {
-    totalMessages: 0,
-    textMessages: 0,
-    fileMessages: 0,
-    imageMessages: 0,
-    systemMessages: 0,
-    sentMessages: 0,
-    deliveredMessages: 0,
-    readMessages: 0,
-    failedMessages: 0
-  };
+  return (
+    stats[0] || {
+      totalMessages: 0,
+      textMessages: 0,
+      fileMessages: 0,
+      imageMessages: 0,
+      systemMessages: 0,
+      sentMessages: 0,
+      deliveredMessages: 0,
+      readMessages: 0,
+      failedMessages: 0
+    }
+  );
 };
 
 // Método estático para buscar mensagens por período
-messageSchema.statics.findByPeriod = function(startDate, endDate, userId = null) {
+messageSchema.statics.findByPeriod = function (startDate, endDate, userId = null) {
   const query = {
     createdAt: {
       $gte: startDate,
@@ -377,14 +386,14 @@ messageSchema.statics.findByPeriod = function(startDate, endDate, userId = null)
 };
 
 // Método estático para criar mensagem do sistema
-messageSchema.statics.createSystemMessage = function(conversationId, content, metadata = {}) {
+messageSchema.statics.createSystemMessage = function (conversationId, content, metadata = {}) {
   return this.create({
     conversation: conversationId,
     sender: null, // Mensagem do sistema não tem remetente
-    content: content,
+    content,
     type: 'system',
     status: 'delivered',
-    metadata: metadata
+    metadata
   });
 };
 

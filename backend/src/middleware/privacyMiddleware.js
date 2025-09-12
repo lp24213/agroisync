@@ -71,22 +71,16 @@ export const recordGDPRConsent = async (req, res, next) => {
     user.gdprConsentDate = new Date();
     user.gdprConsentExpiry = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 1 ano
     user.gdprPreferences = preferences || {};
-    
+
     await user.save();
 
     // Log do consentimento
-    await createAuditLog(
-      'GDPR_CONSENT_GIVEN',
-      'user_privacy',
-      req,
-      req.user.userId,
-      {
-        consent,
-        preferences,
-        ipAddress: req.ip,
-        userAgent: req.get('User-Agent')
-      }
-    );
+    await createAuditLog('GDPR_CONSENT_GIVEN', 'user_privacy', req, req.user.userId, {
+      consent,
+      preferences,
+      ipAddress: req.ip,
+      userAgent: req.get('User-Agent')
+    });
 
     next();
   } catch (error) {
@@ -101,7 +95,7 @@ export const recordGDPRConsent = async (req, res, next) => {
 /**
  * Middleware para verificar se dados podem ser processados
  */
-export const canProcessData = (dataType) => {
+export const canProcessData = dataType => {
   return async (req, res, next) => {
     try {
       if (!req.user) {
@@ -112,7 +106,7 @@ export const canProcessData = (dataType) => {
       }
 
       const user = await User.findById(req.user.userId);
-      
+
       // Verificar se usuário deu consentimento para o tipo de dado
       if (!user.gdprConsent || !user.gdprPreferences[dataType]) {
         return res.status(403).json({
@@ -141,17 +135,17 @@ export const canProcessData = (dataType) => {
  */
 export const exportUserData = async (req, res) => {
   try {
-    const userId = req.user.userId;
-    
+    const { userId } = req.user;
+
     // Buscar todos os dados do usuário
     const user = await User.findById(userId).select('-password -resetToken -resetTokenExpiry');
     const products = await Product.find({ seller: userId });
     const freights = await Freight.find({ carrier: userId });
-    const messages = await Message.find({ 
-      $or: [{ sender: userId }, { recipient: userId }] 
+    const messages = await Message.find({
+      $or: [{ sender: userId }, { recipient: userId }]
     });
-    const transactions = await Transaction.find({ 
-      $or: [{ buyer: userId }, { seller: userId }] 
+    const transactions = await Transaction.find({
+      $or: [{ buyer: userId }, { seller: userId }]
     });
     const payments = await Payment.find({ userId });
 
@@ -227,23 +221,16 @@ export const exportUserData = async (req, res) => {
     };
 
     // Log da exportação
-    await createAuditLog(
-      'DATA_EXPORT_REQUESTED',
-      'user_data',
-      req,
-      userId,
-      {
-        dataTypes: exportData.exportInfo.dataTypes,
-        exportFormat: 'JSON'
-      }
-    );
+    await createAuditLog('DATA_EXPORT_REQUESTED', 'user_data', req, userId, {
+      dataTypes: exportData.exportInfo.dataTypes,
+      exportFormat: 'JSON'
+    });
 
     res.json({
       success: true,
       message: 'Dados exportados com sucesso',
       data: exportData
     });
-
   } catch (error) {
     console.error('Erro na exportação de dados:', error);
     return res.status(500).json({
@@ -258,7 +245,7 @@ export const exportUserData = async (req, res) => {
  */
 export const deleteUserData = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const { dataTypes, reason } = req.body;
 
     if (!dataTypes || !Array.isArray(dataTypes)) {
@@ -291,16 +278,16 @@ export const deleteUserData = async (req, res) => {
 
     // Excluir mensagens
     if (dataTypes.includes('messages')) {
-      const result = await Message.deleteMany({ 
-        $or: [{ sender: userId }, { recipient: userId }] 
+      const result = await Message.deleteMany({
+        $or: [{ sender: userId }, { recipient: userId }]
       });
       deletionResults.messages = result.deletedCount;
     }
 
     // Excluir transações
     if (dataTypes.includes('transactions')) {
-      const result = await Transaction.deleteMany({ 
-        $or: [{ buyer: userId }, { seller: userId }] 
+      const result = await Transaction.deleteMany({
+        $or: [{ buyer: userId }, { seller: userId }]
       });
       deletionResults.transactions = result.deletedCount;
     }
@@ -328,19 +315,13 @@ export const deleteUserData = async (req, res) => {
     }
 
     // Log da exclusão
-    await createAuditLog(
-      'DATA_DELETION_REQUESTED',
-      'user_data',
-      req,
-      userId,
-      {
-        dataTypes,
-        reason,
-        deletionResults,
-        ipAddress: req.ip,
-        userAgent: req.get('User-Agent')
-      }
-    );
+    await createAuditLog('DATA_DELETION_REQUESTED', 'user_data', req, userId, {
+      dataTypes,
+      reason,
+      deletionResults,
+      ipAddress: req.ip,
+      userAgent: req.get('User-Agent')
+    });
 
     res.json({
       success: true,
@@ -348,7 +329,6 @@ export const deleteUserData = async (req, res) => {
       deletionResults,
       dataTypes
     });
-
   } catch (error) {
     console.error('Erro na exclusão de dados:', error);
     return res.status(500).json({
@@ -363,8 +343,10 @@ export const deleteUserData = async (req, res) => {
  */
 export const getPrivacyStatus = async (req, res) => {
   try {
-    const userId = req.user.userId;
-    const user = await User.findById(userId).select('gdprConsent gdprConsentDate gdprConsentExpiry gdprPreferences dataDeletedAt');
+    const { userId } = req.user;
+    const user = await User.findById(userId).select(
+      'gdprConsent gdprConsentDate gdprConsentExpiry gdprPreferences dataDeletedAt'
+    );
 
     const privacyStatus = {
       hasConsent: !!user.gdprConsent,
@@ -387,7 +369,6 @@ export const getPrivacyStatus = async (req, res) => {
       success: true,
       privacyStatus
     });
-
   } catch (error) {
     console.error('Erro ao obter status de privacidade:', error);
     return res.status(500).json({
@@ -402,7 +383,7 @@ export const getPrivacyStatus = async (req, res) => {
  */
 export const updatePrivacyPreferences = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const { preferences } = req.body;
 
     if (!preferences || typeof preferences !== 'object') {
@@ -436,22 +417,15 @@ export const updatePrivacyPreferences = async (req, res) => {
     });
 
     // Log da atualização
-    await createAuditLog(
-      'PRIVACY_PREFERENCES_UPDATED',
-      'user_privacy',
-      req,
-      userId,
-      {
-        preferences: validatedPreferences
-      }
-    );
+    await createAuditLog('PRIVACY_PREFERENCES_UPDATED', 'user_privacy', req, userId, {
+      preferences: validatedPreferences
+    });
 
     res.json({
       success: true,
       message: 'Preferências de privacidade atualizadas',
       preferences: validatedPreferences
     });
-
   } catch (error) {
     console.error('Erro ao atualizar preferências de privacidade:', error);
     return res.status(500).json({

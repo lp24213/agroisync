@@ -54,7 +54,7 @@ export const SUPPORTED_NETWORKS = {
 // ===== FUNÇÕES DE VALIDAÇÃO =====
 
 // Validar endereço Ethereum
-export const isValidEthereumAddress = (address) => {
+export const isValidEthereumAddress = address => {
   try {
     return ethers.isAddress(address);
   } catch (error) {
@@ -73,7 +73,7 @@ export const isValidSignature = (message, signature, address) => {
 };
 
 // Validar hash de transação
-export const isValidTransactionHash = (hash) => {
+export const isValidTransactionHash = hash => {
   try {
     return ethers.isHexString(hash, 32);
   } catch (error) {
@@ -87,7 +87,7 @@ export const isValidTransactionHash = (hash) => {
 export const generateAuthMessage = (address, nonce) => {
   const timestamp = Date.now();
   const message = `AGROTM Authentication\n\nAddress: ${address}\nNonce: ${nonce}\nTimestamp: ${timestamp}\n\nPlease sign this message to authenticate with AGROTM.`;
-  
+
   return {
     message,
     timestamp,
@@ -140,7 +140,12 @@ export const verifyMetamaskAuth = async (address, signature, nonce, timestamp) =
 // ===== FUNÇÕES DE PAGAMENTO =====
 
 // Criar transação de pagamento
-export const createPaymentTransaction = async (fromAddress, toAddress, amount, network = 'ethereum') => {
+export const createPaymentTransaction = async (
+  fromAddress,
+  toAddress,
+  amount,
+  network = 'ethereum'
+) => {
   try {
     const networkConfig = SUPPORTED_NETWORKS[network];
     if (!networkConfig) {
@@ -149,18 +154,18 @@ export const createPaymentTransaction = async (fromAddress, toAddress, amount, n
 
     // Conectar ao provedor
     const provider = new ethers.JsonRpcProvider(networkConfig.rpcUrl);
-    
+
     // Obter nonce atual
     const nonce = await provider.getTransactionCount(fromAddress);
-    
+
     // Obter preço do gas
     const gasPrice = await provider.getFeeData();
-    
+
     // Criar transação
     const transaction = {
       to: toAddress,
       value: ethers.parseEther(amount.toString()),
-      nonce: nonce,
+      nonce,
       gasLimit: 21000, // Gas limit padrão para transferências
       gasPrice: gasPrice.gasPrice
     };
@@ -185,10 +190,10 @@ export const checkTransactionStatus = async (txHash, network = 'ethereum') => {
     }
 
     const provider = new ethers.JsonRpcProvider(networkConfig.rpcUrl);
-    
+
     // Obter receita da transação
     const receipt = await provider.getTransactionReceipt(txHash);
-    
+
     if (!receipt) {
       return {
         status: 'pending',
@@ -226,7 +231,7 @@ export const getWalletBalance = async (address, network = 'ethereum') => {
 
     const provider = new ethers.JsonRpcProvider(networkConfig.rpcUrl);
     const balance = await provider.getBalance(address);
-    
+
     return {
       address,
       network: networkConfig.name,
@@ -249,27 +254,27 @@ export const getTransactionHistory = async (address, network = 'ethereum', limit
     }
 
     const provider = new ethers.JsonRpcProvider(networkConfig.rpcUrl);
-    
+
     // Obter bloco atual
     const currentBlock = await provider.getBlockNumber();
-    
+
     // Buscar transações (limitado pela API)
     const transactions = [];
-    
+
     // Buscar transações de entrada
     const incomingTxs = await provider.getLogs({
-      address: address,
+      address,
       fromBlock: currentBlock - 10000, // Últimos 10k blocos
       toBlock: currentBlock,
       topics: [
         null, // Qualquer evento
-        '0x000000000000000000000000' + address.slice(2) // Para endereço
+        `0x000000000000000000000000${address.slice(2)}` // Para endereço
       ]
     });
 
     // Buscar transações de saída
     const outgoingTxs = await provider.getLogs({
-      address: address,
+      address,
       fromBlock: currentBlock - 10000,
       toBlock: currentBlock,
       topics: [
@@ -281,13 +286,13 @@ export const getTransactionHistory = async (address, network = 'ethereum', limit
     // Combinar e ordenar transações
     const allTxs = [...incomingTxs, ...outgoingTxs];
     allTxs.sort((a, b) => b.blockNumber - a.blockNumber);
-    
+
     // Limitar resultados
     return allTxs.slice(0, limit).map(tx => ({
       hash: tx.transactionHash,
       blockNumber: tx.blockNumber,
       from: tx.address,
-      to: tx.topics[1] ? '0x' + tx.topics[1].slice(26) : null,
+      to: tx.topics[1] ? `0x${tx.topics[1].slice(26)}` : null,
       value: ethers.formatEther(tx.data || '0'),
       timestamp: Date.now() // Seria melhor obter do bloco
     }));
@@ -324,7 +329,7 @@ export const getTokenInfo = async (tokenAddress, network = 'ethereum') => {
 
     const provider = new ethers.JsonRpcProvider(networkConfig.rpcUrl);
     const contract = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
-    
+
     const [name, symbol, decimals, totalSupply] = await Promise.all([
       contract.name(),
       contract.symbol(),
@@ -356,7 +361,7 @@ export const getTokenBalance = async (tokenAddress, walletAddress, network = 'et
 
     const provider = new ethers.JsonRpcProvider(networkConfig.rpcUrl);
     const contract = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
-    
+
     const [balance, decimals, symbol] = await Promise.all([
       contract.balanceOf(walletAddress),
       contract.decimals(),
@@ -384,9 +389,9 @@ export const isAddressWhitelisted = (address, whitelist) => {
   if (!whitelist || !Array.isArray(whitelist)) {
     return false;
   }
-  
-  return whitelist.some(whitelistedAddress => 
-    whitelistedAddress.toLowerCase() === address.toLowerCase()
+
+  return whitelist.some(
+    whitelistedAddress => whitelistedAddress.toLowerCase() === address.toLowerCase()
   );
 };
 
@@ -400,7 +405,7 @@ export const isContractAddress = async (address, network = 'ethereum') => {
 
     const provider = new ethers.JsonRpcProvider(networkConfig.rpcUrl);
     const code = await provider.getCode(address);
-    
+
     return code !== '0x';
   } catch (error) {
     console.error('Error checking if address is contract:', error);
@@ -433,7 +438,7 @@ export const formatAddress = (address, start = 6, end = 4) => {
   if (!address || address.length < start + end) {
     return address;
   }
-  
+
   return `${address.slice(0, start)}...${address.slice(-end)}`;
 };
 
@@ -464,10 +469,10 @@ export const connectWallet = async () => {
       throw new Error('Metamask not available');
     }
 
-    const accounts = await window.ethereum.request({ 
-      method: 'eth_requestAccounts' 
+    const accounts = await window.ethereum.request({
+      method: 'eth_requestAccounts'
     });
-    
+
     return accounts[0] || null;
   } catch (error) {
     console.error('Error connecting wallet:', error);
@@ -476,7 +481,7 @@ export const connectWallet = async () => {
 };
 
 // Trocar rede
-export const switchNetwork = async (chainId) => {
+export const switchNetwork = async chainId => {
   try {
     if (!isMetamaskAvailable()) {
       throw new Error('Metamask not available');
@@ -486,7 +491,7 @@ export const switchNetwork = async (chainId) => {
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: `0x${chainId.toString(16)}` }]
     });
-    
+
     return true;
   } catch (error) {
     console.error('Error switching network:', error);

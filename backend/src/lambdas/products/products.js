@@ -23,7 +23,7 @@ const verifyAuth = event => {
   }
 
   const cognitoSub = decodedToken.sub;
-  const email = decodedToken.email;
+  const { email } = decodedToken;
 
   if (!cognitoSub || !email) {
     return { error: 'INVALID_TOKEN_DATA', message: 'Dados do token inválidos' };
@@ -101,7 +101,7 @@ exports.handler = async event => {
       const search = queryStringParameters?.search || '';
       const category = queryStringParameters?.category;
 
-      let filter = { status: 'active' };
+      const filter = { status: 'active' };
 
       if (search) {
         filter.$text = { $search: search };
@@ -347,12 +347,20 @@ exports.handler = async event => {
         updatedAt: new Date()
       };
 
-      if (requestBody.name) updateData.name = requestBody.name.trim();
-      if (requestBody.specs) updateData.specs = requestBody.specs.trim();
-      if (requestBody.images)
-        updateData.images = Array.isArray(requestBody.images) ? requestBody.images : [];
-      if (requestBody.priceBRL) updateData.priceBRL = parseFloat(requestBody.priceBRL);
-      if (requestBody.status) updateData.status = requestBody.status;
+      if (requestBody.name) {
+        updateData.name = requestBody.name.trim();
+      }
+      if (requestBody.specs) {
+        updateData.specs = requestBody.specs.trim();
+      }
+      if (requestBody.images) {
+      {updateData.images = Array.isArray(requestBody.images) ? requestBody.images : [];}
+      if (requestBody.priceBRL) {
+        updateData.priceBRL = parseFloat(requestBody.priceBRL);
+      }
+      if (requestBody.status) {
+        updateData.status = requestBody.status;
+      }
 
       // Atualizar produto
       const result = await db

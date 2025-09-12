@@ -36,8 +36,8 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
-    methods: ["GET", "POST"]
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    methods: ['GET', 'POST']
   }
 });
 
@@ -76,34 +76,40 @@ const swaggerOptions = {
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 // Middleware de segurança
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
-    },
-  },
-}));
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:', 'https:']
+      }
+    }
+  })
+);
 
 // Middleware de compressão
 app.use(compression());
 
 // Middleware de CORS
-app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  })
+);
 
 // Middleware de logging
-app.use(morgan('combined', {
-  stream: {
-    write: (message) => logger.info(message.trim())
-  }
-}));
+app.use(
+  morgan('combined', {
+    stream: {
+      write: message => logger.info(message.trim())
+    }
+  })
+);
 
 // Rate limiting
 const limiter = rateLimit({
@@ -114,7 +120,7 @@ const limiter = rateLimit({
     retryAfter: 15 * 60
   },
   standardHeaders: true,
-  legacyHeaders: false,
+  legacyHeaders: false
 });
 
 // Slow down
@@ -160,25 +166,25 @@ app.use('/api/crypto', cryptoRoutes);
 app.use('/api/analytics', analyticsRoutes);
 
 // WebSocket para mensageria em tempo real
-io.on('connection', (socket) => {
+io.on('connection', socket => {
   logger.info(`Usuário conectado: ${socket.id}`);
 
   // Entrar em uma sala de conversa
-  socket.on('join-conversation', (conversationId) => {
+  socket.on('join-conversation', conversationId => {
     socket.join(`conversation-${conversationId}`);
     logger.info(`Usuário ${socket.id} entrou na conversa ${conversationId}`);
   });
 
   // Sair de uma sala de conversa
-  socket.on('leave-conversation', (conversationId) => {
+  socket.on('leave-conversation', conversationId => {
     socket.leave(`conversation-${conversationId}`);
     logger.info(`Usuário ${socket.id} saiu da conversa ${conversationId}`);
   });
 
   // Enviar mensagem
-  socket.on('send-message', (data) => {
+  socket.on('send-message', data => {
     const { conversationId, message, senderId } = data;
-    
+
     // Emitir mensagem para todos os usuários na conversa
     io.to(`conversation-${conversationId}`).emit('new-message', {
       id: Date.now(),
@@ -193,7 +199,7 @@ io.on('connection', (socket) => {
   });
 
   // Notificações em tempo real
-  socket.on('subscribe-notifications', (userId) => {
+  socket.on('subscribe-notifications', userId => {
     socket.join(`notifications-${userId}`);
     logger.info(`Usuário ${userId} inscrito em notificações`);
   });
@@ -226,12 +232,12 @@ server.listen(PORT, () => {
 });
 
 // Tratamento de erros não capturados
-process.on('uncaughtException', (err) => {
+process.on('uncaughtException', err => {
   logger.error('Erro não capturado:', err);
   process.exit(1);
 });
 
-process.on('unhandledRejection', (err) => {
+process.on('unhandledRejection', err => {
   logger.error('Promise rejeitada não tratada:', err);
   process.exit(1);
 });

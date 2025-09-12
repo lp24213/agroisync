@@ -78,11 +78,16 @@ export const securityConfig = {
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net"],
-        fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdn.jsdelivr.net"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
-        imgSrc: ["'self'", "data:", "https:", "blob:"],
-        connectSrc: ["'self'", "https://api.github.com", "wss:"],
+        styleSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          'https://fonts.googleapis.com',
+          'https://cdn.jsdelivr.net'
+        ],
+        fontSrc: ["'self'", 'https://fonts.gstatic.com', 'https://cdn.jsdelivr.net'],
+        scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
+        imgSrc: ["'self'", 'data:', 'https:', 'blob:'],
+        connectSrc: ["'self'", 'https://api.github.com', 'wss:'],
         frameSrc: ["'none'"],
         objectSrc: ["'none'"],
         upgradeInsecureRequests: []
@@ -111,16 +116,7 @@ export const securityConfig = {
     enabled: true,
     logLevel: process.env.AUDIT_LOG_LEVEL || 'info',
     retentionDays: 90,
-    sensitiveFields: [
-      'password',
-      'token',
-      'secret',
-      'key',
-      'creditCard',
-      'ssn',
-      'cpf',
-      'cnpj'
-    ]
+    sensitiveFields: ['password', 'token', 'secret', 'key', 'creditCard', 'ssn', 'cpf', 'cnpj']
   },
 
   // Configurações de LGPD

@@ -6,13 +6,20 @@ import { authenticateToken } from '../middleware/auth.js';
 import { requireAdmin } from '../middleware/adminAuth.js';
 import { getClientIP } from '../utils/ipUtils.js';
 import { createSecurityLog } from '../utils/securityLogger.js';
-import { validateReceitaFederal, validateAddressIBGE, validateRequiredDocuments } from '../middleware/documentValidation.js';
+import {
+  validateReceitaFederal,
+  validateAddressIBGE,
+  validateRequiredDocuments
+} from '../middleware/documentValidation.js';
 
 const router = express.Router();
 
 // Middleware de validação para criação/atualização de cliente
 const validateClientData = [
-  body('name').trim().isLength({ min: 2, max: 100 }).withMessage('Nome deve ter entre 2 e 100 caracteres'),
+  body('name')
+    .trim()
+    .isLength({ min: 2, max: 100 })
+    .withMessage('Nome deve ter entre 2 e 100 caracteres'),
   body('email').isEmail().normalizeEmail().withMessage('Email inválido'),
   body('cpfCnpj').trim().isLength({ min: 11, max: 18 }).withMessage('CPF/CNPJ inválido'),
   body('phone').trim().isLength({ min: 10, max: 15 }).withMessage('Telefone inválido'),
@@ -26,8 +33,8 @@ const validateClientData = [
 // GET /api/clients - Listar clientes (admin vê todos, usuário vê apenas os seus)
 router.get('/', authenticateToken, async (req, res) => {
   try {
-    let query = {};
-    
+    const query = {};
+
     // Se não for admin, só mostra os clientes do usuário
     if (!req.user.isAdmin) {
       query.userId = req.user._id;
@@ -54,8 +61,7 @@ router.get('/', authenticateToken, async (req, res) => {
 // GET /api/clients/:id - Obter cliente específico
 router.get('/:id', authenticateToken, async (req, res) => {
   try {
-    const client = await Client.findById(req.params.id)
-      .populate('userId', 'name email');
+    const client = await Client.findById(req.params.id).populate('userId', 'name email');
 
     if (!client) {
       return res.status(404).json({
@@ -86,99 +92,26 @@ router.get('/:id', authenticateToken, async (req, res) => {
 });
 
 // POST /api/clients - Criar novo cliente
-router.post('/', authenticateToken, validateClientData, validateReceitaFederal, validateAddressIBGE, validateRequiredDocuments, async (req, res) => {
-  try {
-    // Verificar erros de validação
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        message: 'Dados inválidos',
-        errors: errors.array()
-      });
-    }
+router.post(
+  '/',
+  authenticateToken,
+  validateClientData,
+  validateReceitaFederal,
+  validateAddressIBGE,
+  validateRequiredDocuments,
+  async (req, res) => {
+    try {
+      // Verificar erros de validação
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Dados inválidos',
+          errors: errors.array()
+        });
+      }
 
-    // Verificar se CPF/CNPJ já existe
-    const existingClient = await Client.findOne({ cpfCnpj: req.body.cpfCnpj });
-    if (existingClient) {
-      return res.status(400).json({
-        success: false,
-        message: 'CPF/CNPJ já cadastrado'
-      });
-    }
-
-    // Verificar se email já existe
-    const existingEmail = await Client.findOne({ email: req.body.email });
-    if (existingEmail) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email já cadastrado'
-      });
-    }
-
-    // Criar cliente
-    const clientData = {
-      ...req.body,
-      userId: req.user._id
-    };
-
-    const client = new Client(clientData);
-    await client.save();
-
-    // Log de segurança
-    await logSecurityEvent(
-      'client_created',
-      req.user._id,
-      getClientIP(req),
-      req.headers['user-agent'],
-      { clientId: client._id }
-    );
-
-    res.status(201).json({
-      success: true,
-      message: 'Cliente criado com sucesso',
-      data: client
-    });
-  } catch (error) {
-    console.error('Erro ao criar cliente:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-});
-
-// PUT /api/clients/:id - Atualizar cliente
-router.put('/:id', authenticateToken, validateClientData, validateReceitaFederal, validateAddressIBGE, validateRequiredDocuments, async (req, res) => {
-  try {
-    // Verificar erros de validação
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        message: 'Dados inválidos',
-        errors: errors.array()
-      });
-    }
-
-    const client = await Client.findById(req.params.id);
-    if (!client) {
-      return res.status(404).json({
-        success: false,
-        message: 'Cliente não encontrado'
-      });
-    }
-
-    // Verificar se usuário tem permissão para editar este cliente
-    if (!req.user.isAdmin && client.userId.toString() !== req.user._id.toString()) {
-      return res.status(403).json({
-        success: false,
-        message: 'Acesso negado'
-      });
-    }
-
-    // Verificar se CPF/CNPJ já existe em outro cliente
-    if (req.body.cpfCnpj && req.body.cpfCnpj !== client.cpfCnpj) {
+      // Verificar se CPF/CNPJ já existe
       const existingClient = await Client.findOne({ cpfCnpj: req.body.cpfCnpj });
       if (existingClient) {
         return res.status(400).json({
@@ -186,10 +119,8 @@ router.put('/:id', authenticateToken, validateClientData, validateReceitaFederal
           message: 'CPF/CNPJ já cadastrado'
         });
       }
-    }
 
-    // Verificar se email já existe em outro cliente
-    if (req.body.email && req.body.email !== client.email) {
+      // Verificar se email já existe
       const existingEmail = await Client.findOne({ email: req.body.email });
       if (existingEmail) {
         return res.status(400).json({
@@ -197,37 +128,127 @@ router.put('/:id', authenticateToken, validateClientData, validateReceitaFederal
           message: 'Email já cadastrado'
         });
       }
+
+      // Criar cliente
+      const clientData = {
+        ...req.body,
+        userId: req.user._id
+      };
+
+      const client = new Client(clientData);
+      await client.save();
+
+      // Log de segurança
+      await logSecurityEvent(
+        'client_created',
+        req.user._id,
+        getClientIP(req),
+        req.headers['user-agent'],
+        { clientId: client._id }
+      );
+
+      res.status(201).json({
+        success: true,
+        message: 'Cliente criado com sucesso',
+        data: client
+      });
+    } catch (error) {
+      console.error('Erro ao criar cliente:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erro interno do servidor'
+      });
     }
-
-    // Atualizar cliente
-    const updatedClient = await Client.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
-
-    // Log de segurança
-    await logSecurityEvent(
-      'client_updated',
-      req.user._id,
-      getClientIP(req),
-      req.headers['user-agent'],
-      { clientId: client._id }
-    );
-
-    res.json({
-      success: true,
-      message: 'Cliente atualizado com sucesso',
-      data: updatedClient
-    });
-  } catch (error) {
-    console.error('Erro ao atualizar cliente:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
   }
-});
+);
+
+// PUT /api/clients/:id - Atualizar cliente
+router.put(
+  '/:id',
+  authenticateToken,
+  validateClientData,
+  validateReceitaFederal,
+  validateAddressIBGE,
+  validateRequiredDocuments,
+  async (req, res) => {
+    try {
+      // Verificar erros de validação
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Dados inválidos',
+          errors: errors.array()
+        });
+      }
+
+      const client = await Client.findById(req.params.id);
+      if (!client) {
+        return res.status(404).json({
+          success: false,
+          message: 'Cliente não encontrado'
+        });
+      }
+
+      // Verificar se usuário tem permissão para editar este cliente
+      if (!req.user.isAdmin && client.userId.toString() !== req.user._id.toString()) {
+        return res.status(403).json({
+          success: false,
+          message: 'Acesso negado'
+        });
+      }
+
+      // Verificar se CPF/CNPJ já existe em outro cliente
+      if (req.body.cpfCnpj && req.body.cpfCnpj !== client.cpfCnpj) {
+        const existingClient = await Client.findOne({ cpfCnpj: req.body.cpfCnpj });
+        if (existingClient) {
+          return res.status(400).json({
+            success: false,
+            message: 'CPF/CNPJ já cadastrado'
+          });
+        }
+      }
+
+      // Verificar se email já existe em outro cliente
+      if (req.body.email && req.body.email !== client.email) {
+        const existingEmail = await Client.findOne({ email: req.body.email });
+        if (existingEmail) {
+          return res.status(400).json({
+            success: false,
+            message: 'Email já cadastrado'
+          });
+        }
+      }
+
+      // Atualizar cliente
+      const updatedClient = await Client.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true
+      });
+
+      // Log de segurança
+      await logSecurityEvent(
+        'client_updated',
+        req.user._id,
+        getClientIP(req),
+        req.headers['user-agent'],
+        { clientId: client._id }
+      );
+
+      res.json({
+        success: true,
+        message: 'Cliente atualizado com sucesso',
+        data: updatedClient
+      });
+    } catch (error) {
+      console.error('Erro ao atualizar cliente:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erro interno do servidor'
+      });
+    }
+  }
+);
 
 // DELETE /api/clients/:id - Deletar cliente
 router.delete('/:id', authenticateToken, async (req, res) => {
@@ -314,7 +335,10 @@ router.patch('/:id/verify-payment', adminAuth, async (req, res) => {
   try {
     const { paymentStatus, transactionId } = req.body;
 
-    if (!paymentStatus || !['pending', 'approved', 'rejected', 'cancelled'].includes(paymentStatus)) {
+    if (
+      !paymentStatus ||
+      !['pending', 'approved', 'rejected', 'cancelled'].includes(paymentStatus)
+    ) {
       return res.status(400).json({
         success: false,
         message: 'Status de pagamento inválido'

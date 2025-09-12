@@ -1,10 +1,10 @@
-import express from "express";
-import { authenticateToken } from "../middleware/auth.js";
-import { apiRateLimiter } from "../middleware/rateLimiter.js";
-import AuditLog from "../models/AuditLog.js";
-import User from "../models/User.js";
-import Payment from "../models/Payment.js";
-import stripe from "stripe";
+import express from 'express';
+import { authenticateToken } from '../middleware/auth.js';
+import { apiRateLimiter } from '../middleware/rateLimiter.js';
+import AuditLog from '../models/AuditLog.js';
+import User from '../models/User.js';
+import Payment from '../models/Payment.js';
+import stripe from 'stripe';
 
 const router = express.Router();
 
@@ -14,38 +14,38 @@ const stripeClient = new stripe(process.env.STRIPE_SECRET_KEY);
 // ===== VERIFICAÇÃO DE PAGAMENTO =====
 
 // GET /api/payment-verification/status - Verificar status do pagamento do usuário
-router.get("/status", authenticateToken, async (req, res) => {
+router.get('/status', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
-    
+
     // Buscar usuário
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "Usuário não encontrado"
+        message: 'Usuário não encontrado'
       });
     }
 
     // Verificar planos ativos
-    const hasActivePlan = user.subscriptions && (
-      (user.subscriptions.store && user.subscriptions.store.status === 'active') ||
-      (user.subscriptions.agroconecta && user.subscriptions.agroconecta.status === 'active')
-    );
+    const hasActivePlan =
+      user.subscriptions &&
+      ((user.subscriptions.store && user.subscriptions.store.status === 'active') ||
+        (user.subscriptions.agroconecta && user.subscriptions.agroconecta.status === 'active'));
 
     // Verificar pagamentos recentes (últimos 30 dias)
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    
+
     const recentPayments = await Payment.find({
-      userId: userId,
+      userId,
       status: 'completed',
       createdAt: { $gte: thirtyDaysAgo }
     }).sort({ createdAt: -1 });
 
     // Verificar pagamentos pendentes
     const pendingPayments = await Payment.find({
-      userId: userId,
+      userId,
       status: { $in: ['pending', 'processing'] }
     }).sort({ createdAt: -1 });
 
@@ -61,7 +61,7 @@ router.get("/status", authenticateToken, async (req, res) => {
 
     // Log da verificação
     await AuditLog.logAction({
-      userId: userId,
+      userId,
       userEmail: req.user.email,
       action: 'PAYMENT_STATUS_CHECKED',
       resource: 'payment_verification',
@@ -74,10 +74,9 @@ router.get("/status", authenticateToken, async (req, res) => {
       success: true,
       data: paymentStatus
     });
-
   } catch (error) {
     console.error('Erro ao verificar status do pagamento:', error);
-    
+
     await AuditLog.logAction({
       userId: req.user.id,
       userEmail: req.user.email,
@@ -92,13 +91,13 @@ router.get("/status", authenticateToken, async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: "Erro interno do servidor"
+      message: 'Erro interno do servidor'
     });
   }
 });
 
 // POST /api/payment-verification/verify-stripe - Verificar pagamento Stripe
-router.post("/verify-stripe", authenticateToken, async (req, res) => {
+router.post('/verify-stripe', authenticateToken, async (req, res) => {
   try {
     const { paymentIntentId } = req.body;
     const userId = req.user.id;
@@ -106,22 +105,22 @@ router.post("/verify-stripe", authenticateToken, async (req, res) => {
     if (!paymentIntentId) {
       return res.status(400).json({
         success: false,
-        message: "ID do pagamento é obrigatório"
+        message: 'ID do pagamento é obrigatório'
       });
     }
 
     // Verificar pagamento no Stripe
     const paymentIntent = await stripeClient.paymentIntents.retrieve(paymentIntentId);
-    
+
     if (paymentIntent.status === 'succeeded') {
       // Buscar ou criar registro de pagamento
-      let payment = await Payment.findOne({ 
-        stripePaymentIntentId: paymentIntentId 
+      let payment = await Payment.findOne({
+        stripePaymentIntentId: paymentIntentId
       });
 
       if (!payment) {
         payment = new Payment({
-          userId: userId,
+          userId,
           amount: paymentIntent.amount / 100, // Stripe usa centavos
           currency: paymentIntent.currency,
           status: 'completed',
@@ -146,7 +145,7 @@ router.post("/verify-stripe", authenticateToken, async (req, res) => {
 
       // Log do pagamento verificado
       await AuditLog.logAction({
-        userId: userId,
+        userId,
         userEmail: req.user.email,
         action: 'STRIPE_PAYMENT_VERIFIED',
         resource: 'payment_verification',
@@ -158,27 +157,25 @@ router.post("/verify-stripe", authenticateToken, async (req, res) => {
 
       res.json({
         success: true,
-        message: "Pagamento verificado com sucesso",
+        message: 'Pagamento verificado com sucesso',
         data: {
           payment,
           canAccessMessaging: true
         }
       });
-
     } else {
       return res.status(400).json({
         success: false,
-        message: "Pagamento não foi concluído com sucesso",
+        message: 'Pagamento não foi concluído com sucesso',
         data: {
           status: paymentIntent.status,
           canAccessMessaging: false
         }
       });
     }
-
   } catch (error) {
     console.error('Erro ao verificar pagamento Stripe:', error);
-    
+
     await AuditLog.logAction({
       userId: req.user.id,
       userEmail: req.user.email,
@@ -193,13 +190,13 @@ router.post("/verify-stripe", authenticateToken, async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: "Erro ao verificar pagamento"
+      message: 'Erro ao verificar pagamento'
     });
   }
 });
 
 // POST /api/payment-verification/verify-metamask - Verificar pagamento Metamask
-router.post("/verify-metamask", authenticateToken, async (req, res) => {
+router.post('/verify-metamask', authenticateToken, async (req, res) => {
   try {
     const { transactionHash, amount, currency, network } = req.body;
     const userId = req.user.id;
@@ -207,35 +204,35 @@ router.post("/verify-metamask", authenticateToken, async (req, res) => {
     if (!transactionHash || !amount || !currency || !network) {
       return res.status(400).json({
         success: false,
-        message: "Todos os campos são obrigatórios"
+        message: 'Todos os campos são obrigatórios'
       });
     }
 
     // Verificar se já existe pagamento com este hash
-    let payment = await Payment.findOne({ 
-      metamaskTransactionHash: transactionHash 
+    let payment = await Payment.findOne({
+      metamaskTransactionHash: transactionHash
     });
 
     if (payment) {
       return res.status(400).json({
         success: false,
-        message: "Transação já foi verificada"
+        message: 'Transação já foi verificada'
       });
     }
 
     // Aqui você implementaria a verificação real da transação na blockchain
     // Por enquanto, vamos assumir que é válida se os dados estão corretos
-    
+
     // Criar registro de pagamento
     payment = new Payment({
-      userId: userId,
+      userId,
       amount: parseFloat(amount),
-      currency: currency,
+      currency,
       status: 'completed',
       provider: 'metamask',
       metamaskTransactionHash: transactionHash,
       metadata: {
-        network: network,
+        network,
         verifiedAt: new Date()
       }
     });
@@ -251,7 +248,7 @@ router.post("/verify-metamask", authenticateToken, async (req, res) => {
 
     // Log do pagamento verificado
     await AuditLog.logAction({
-      userId: userId,
+      userId,
       userEmail: req.user.email,
       action: 'METAMASK_PAYMENT_VERIFIED',
       resource: 'payment_verification',
@@ -263,16 +260,15 @@ router.post("/verify-metamask", authenticateToken, async (req, res) => {
 
     res.json({
       success: true,
-      message: "Pagamento Metamask verificado com sucesso",
+      message: 'Pagamento Metamask verificado com sucesso',
       data: {
         payment,
         canAccessMessaging: true
       }
     });
-
   } catch (error) {
     console.error('Erro ao verificar pagamento Metamask:', error);
-    
+
     await AuditLog.logAction({
       userId: req.user.id,
       userEmail: req.user.email,
@@ -287,19 +283,19 @@ router.post("/verify-metamask", authenticateToken, async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: "Erro ao verificar pagamento Metamask"
+      message: 'Erro ao verificar pagamento Metamask'
     });
   }
 });
 
 // GET /api/payment-verification/plans - Obter planos disponíveis
-router.get("/plans", authenticateToken, async (req, res) => {
+router.get('/plans', authenticateToken, async (req, res) => {
   try {
     const plans = {
       store: {
         id: 'store',
         name: 'Loja',
-        price: 25.00,
+        price: 25.0,
         currency: 'BRL',
         interval: 'month',
         features: [
@@ -313,7 +309,7 @@ router.get("/plans", authenticateToken, async (req, res) => {
       agroconecta: {
         id: 'agroconecta',
         name: 'AgroConecta',
-        price: 50.00,
+        price: 50.0,
         currency: 'BRL',
         interval: 'month',
         features: [
@@ -327,7 +323,7 @@ router.get("/plans", authenticateToken, async (req, res) => {
       agroconectaPro: {
         id: 'agroconecta-pro',
         name: 'AgroConecta Pro',
-        price: 149.00,
+        price: 149.0,
         currency: 'BRL',
         interval: 'month',
         features: [
@@ -345,18 +341,17 @@ router.get("/plans", authenticateToken, async (req, res) => {
       success: true,
       data: plans
     });
-
   } catch (error) {
     console.error('Erro ao buscar planos:', error);
     res.status(500).json({
       success: false,
-      message: "Erro interno do servidor"
+      message: 'Erro interno do servidor'
     });
   }
 });
 
 // POST /api/payment-verification/create-stripe-session - Criar sessão de pagamento Stripe
-router.post("/create-stripe-session", authenticateToken, async (req, res) => {
+router.post('/create-stripe-session', authenticateToken, async (req, res) => {
   try {
     const { planId, successUrl, cancelUrl } = req.body;
     const userId = req.user.id;
@@ -364,7 +359,7 @@ router.post("/create-stripe-session", authenticateToken, async (req, res) => {
     if (!planId || !successUrl || !cancelUrl) {
       return res.status(400).json({
         success: false,
-        message: "Todos os campos são obrigatórios"
+        message: 'Todos os campos são obrigatórios'
       });
     }
 
@@ -373,7 +368,7 @@ router.post("/create-stripe-session", authenticateToken, async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "Usuário não encontrado"
+        message: 'Usuário não encontrado'
       });
     }
 
@@ -392,7 +387,7 @@ router.post("/create-stripe-session", authenticateToken, async (req, res) => {
       default:
         return res.status(400).json({
           success: false,
-          message: "Plano inválido"
+          message: 'Plano inválido'
         });
     }
 
@@ -406,25 +401,25 @@ router.post("/create-stripe-session", authenticateToken, async (req, res) => {
             currency: 'brl',
             product_data: {
               name: `Plano ${planId}`,
-              description: `Assinatura mensal do plano ${planId}`,
+              description: `Assinatura mensal do plano ${planId}`
             },
-            unit_amount: price,
+            unit_amount: price
           },
-          quantity: 1,
-        },
+          quantity: 1
+        }
       ],
       mode: 'subscription',
       success_url: successUrl,
       cancel_url: cancelUrl,
       metadata: {
-        userId: userId,
-        planId: planId
+        userId,
+        planId
       }
     });
 
     // Log da criação da sessão
     await AuditLog.logAction({
-      userId: userId,
+      userId,
       userEmail: user.email,
       action: 'STRIPE_SESSION_CREATED',
       resource: 'payment_verification',
@@ -440,10 +435,9 @@ router.post("/create-stripe-session", authenticateToken, async (req, res) => {
         url: session.url
       }
     });
-
   } catch (error) {
     console.error('Erro ao criar sessão do Stripe:', error);
-    
+
     await AuditLog.logAction({
       userId: req.user.id,
       userEmail: req.user.email,
@@ -458,7 +452,7 @@ router.post("/create-stripe-session", authenticateToken, async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: "Erro ao criar sessão de pagamento"
+      message: 'Erro ao criar sessão de pagamento'
     });
   }
 });

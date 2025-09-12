@@ -38,26 +38,26 @@ class ExternalAPIService {
       baseURL: API_CONFIG.viacep.baseURL,
       timeout: API_CONFIG.viacep.timeout
     });
-    
+
     this.ibgeClient = axios.create({
       baseURL: API_CONFIG.ibge.baseURL,
       timeout: API_CONFIG.ibge.timeout
     });
-    
+
     this.weatherClient = axios.create({
       baseURL: API_CONFIG.openweather.baseURL,
       timeout: API_CONFIG.openweather.timeout
     });
-    
+
     this.receitaClient = axios.create({
       baseURL: API_CONFIG.receitaFederal.baseURL,
       timeout: API_CONFIG.receitaFederal.timeout,
       headers: {
-        'Authorization': `Bearer ${API_CONFIG.receitaFederal.apiKey}`,
+        Authorization: `Bearer ${API_CONFIG.receitaFederal.apiKey}`,
         'Content-Type': 'application/json'
       }
     });
-    
+
     this.baiduClient = axios.create({
       baseURL: API_CONFIG.baiduMaps.baseURL,
       timeout: API_CONFIG.baiduMaps.timeout
@@ -65,7 +65,7 @@ class ExternalAPIService {
   }
 
   // ===== SISTEMA DE CACHE =====
-  
+
   /**
    * Obter item do cache
    * @param {string} key - Chave do cache
@@ -73,16 +73,18 @@ class ExternalAPIService {
    */
   getFromCache(key) {
     const item = CACHE.get(key);
-    if (!item) return null;
-    
+    if (!item) {
+      return null;
+    }
+
     if (Date.now() > item.expiresAt) {
       CACHE.delete(key);
       return null;
     }
-    
+
     return item.data;
   }
-  
+
   /**
    * Salvar item no cache
    * @param {string} key - Chave do cache
@@ -95,7 +97,7 @@ class ExternalAPIService {
       expiresAt: Date.now() + ttl
     });
   }
-  
+
   /**
    * Limpar cache expirado
    */
@@ -109,7 +111,7 @@ class ExternalAPIService {
   }
 
   // ===== SERVIÇOS DE CEP E ENDEREÇO =====
-  
+
   /**
    * Consultar CEP via ViaCEP
    * @param {string} cep - CEP a ser consultado
@@ -118,17 +120,17 @@ class ExternalAPIService {
   async consultarCEP(cep) {
     try {
       const cleanCEP = cep.replace(/\D/g, '');
-      
+
       if (cleanCEP.length !== 8) {
         throw new Error('CEP deve ter 8 dígitos');
       }
-      
+
       const response = await this.viacepClient.get(`/${cleanCEP}/json/`);
-      
+
       if (response.data.erro) {
         throw new Error('CEP não encontrado');
       }
-      
+
       return {
         success: true,
         data: {
@@ -162,7 +164,7 @@ class ExternalAPIService {
   async buscarMunicipiosPorEstado(uf) {
     try {
       const response = await this.ibgeClient.get(`/localidades/estados/${uf}/municipios`);
-      
+
       return {
         success: true,
         data: response.data.map(municipio => ({
@@ -189,7 +191,7 @@ class ExternalAPIService {
   async buscarEstados() {
     try {
       const response = await this.ibgeClient.get('/localidades/estados');
-      
+
       return {
         success: true,
         data: response.data.map(estado => ({
@@ -216,7 +218,7 @@ class ExternalAPIService {
   async buscarRegioes() {
     try {
       const response = await this.ibgeClient.get('/localidades/regioes');
-      
+
       return {
         success: true,
         data: response.data.map(regiao => ({
@@ -236,7 +238,7 @@ class ExternalAPIService {
   }
 
   // ===== SERVIÇOS DE CLIMA =====
-  
+
   /**
    * Obter clima por coordenadas
    * @param {number} lat - Latitude
@@ -250,7 +252,7 @@ class ExternalAPIService {
       if (!API_CONFIG.openweather.apiKey) {
         throw new Error('API key do OpenWeather não configurada');
       }
-      
+
       const response = await this.weatherClient.get('/weather', {
         params: {
           lat,
@@ -260,7 +262,7 @@ class ExternalAPIService {
           lang
         }
       });
-      
+
       return {
         success: true,
         data: {
@@ -309,13 +311,13 @@ class ExternalAPIService {
     try {
       // Primeiro, obter coordenadas pelo IP
       const geoResponse = await this.obterCoordenadasPorIP(ip);
-      
+
       if (!geoResponse.success) {
         throw new Error('Não foi possível obter localização pelo IP');
       }
-      
+
       const { lat, lon } = geoResponse.data;
-      
+
       // Depois, obter clima pelas coordenadas
       return await this.obterClimaPorCoordenadas(lat, lon, units, lang);
     } catch (error) {
@@ -339,11 +341,11 @@ class ExternalAPIService {
       const response = await axios.get(`http://ip-api.com/json/${ip}`, {
         timeout: 10000
       });
-      
+
       if (response.data.status === 'fail') {
         throw new Error('Não foi possível obter localização pelo IP');
       }
-      
+
       return {
         success: true,
         data: {
@@ -366,9 +368,9 @@ class ExternalAPIService {
   }
 
   // ===== SERVIÇOS DA RECEITA FEDERAL =====
-  
+
   // ===== SERVIÇOS DO BAIDU MAPS =====
-  
+
   /**
    * Geocoding: converter endereço em coordenadas
    * @param {string} address - Endereço para geocodificar
@@ -381,13 +383,15 @@ class ExternalAPIService {
       if (!API_CONFIG.baiduMaps.apiKey) {
         throw new Error('API key do Baidu Maps não configurada');
       }
-      
+
       const cacheKey = `geocode:${address}:${city}:${region}`;
       const cached = this.getFromCache(cacheKey);
-      if (cached) return cached;
-      
+      if (cached) {
+        return cached;
+      }
+
       const fullAddress = [address, city, region].filter(Boolean).join(', ');
-      
+
       const response = await this.baiduClient.get('/geocoding/v3/', {
         params: {
           address: fullAddress,
@@ -397,14 +401,14 @@ class ExternalAPIService {
           region: region || undefined
         }
       });
-      
+
       if (response.data.status !== 0) {
         throw new Error(`Erro do Baidu Maps: ${response.data.message}`);
       }
-      
-      const result = response.data.result;
-      const location = result.location;
-      
+
+      const { result } = response.data;
+      const { location } = result;
+
       const geocodeResult = {
         success: true,
         data: {
@@ -419,10 +423,9 @@ class ExternalAPIService {
           precise: result.precise
         }
       };
-      
+
       this.setCache(cacheKey, geocodeResult, 10 * 60 * 1000); // 10 minutos para geocoding
       return geocodeResult;
-      
     } catch (error) {
       console.error('Erro no geocoding:', error);
       return {
@@ -432,7 +435,7 @@ class ExternalAPIService {
       };
     }
   }
-  
+
   /**
    * Reverse geocoding: converter coordenadas em endereço
    * @param {number} lat - Latitude
@@ -444,11 +447,13 @@ class ExternalAPIService {
       if (!API_CONFIG.baiduMaps.apiKey) {
         throw new Error('API key do Baidu Maps não configurada');
       }
-      
+
       const cacheKey = `reverse_geocode:${lat}:${lng}`;
       const cached = this.getFromCache(cacheKey);
-      if (cached) return cached;
-      
+      if (cached) {
+        return cached;
+      }
+
       const response = await this.baiduClient.get('/reverse_geocoding/v3/', {
         params: {
           location: `${lat},${lng}`,
@@ -457,14 +462,14 @@ class ExternalAPIService {
           coordtype: 'wgs84ll'
         }
       });
-      
+
       if (response.data.status !== 0) {
         throw new Error(`Erro do Baidu Maps: ${response.data.message}`);
       }
-      
-      const result = response.data.result;
-      const addressComponent = result.addressComponent;
-      
+
+      const { result } = response.data;
+      const { addressComponent } = result;
+
       const reverseGeocodeResult = {
         success: true,
         data: {
@@ -482,10 +487,9 @@ class ExternalAPIService {
           level: result.level
         }
       };
-      
+
       this.setCache(cacheKey, reverseGeocodeResult, 10 * 60 * 1000); // 10 minutos
       return reverseGeocodeResult;
-      
     } catch (error) {
       console.error('Erro no reverse geocoding:', error);
       return {
@@ -495,7 +499,7 @@ class ExternalAPIService {
       };
     }
   }
-  
+
   /**
    * Calcular rota entre dois pontos
    * @param {Object} origin - Coordenadas de origem {lat, lng}
@@ -508,11 +512,13 @@ class ExternalAPIService {
       if (!API_CONFIG.baiduMaps.apiKey) {
         throw new Error('API key do Baidu Maps não configurada');
       }
-      
+
       const cacheKey = `route:${origin.lat}:${origin.lng}:${destination.lat}:${destination.lng}:${mode}`;
       const cached = this.getFromCache(cacheKey);
-      if (cached) return cached;
-      
+      if (cached) {
+        return cached;
+      }
+
       const response = await this.baiduClient.get('/routematrix/v2/', {
         params: {
           origins: `${origin.lat},${origin.lng}`,
@@ -521,15 +527,15 @@ class ExternalAPIService {
           output: 'json'
         }
       });
-      
+
       if (response.data.status !== 0) {
         throw new Error(`Erro do Baidu Maps: ${response.data.message}`);
       }
-      
-      const result = response.data.result;
+
+      const { result } = response.data;
       const routeInfo = result.distance[0][0];
       const durationInfo = result.duration[0][0];
-      
+
       const routeResult = {
         success: true,
         data: {
@@ -547,10 +553,9 @@ class ExternalAPIService {
           }
         }
       };
-      
+
       this.setCache(cacheKey, routeResult, 5 * 60 * 1000); // 5 minutos para rotas
       return routeResult;
-      
     } catch (error) {
       console.error('Erro ao calcular rota:', error);
       return {
@@ -562,7 +567,7 @@ class ExternalAPIService {
   }
 
   // ===== SERVIÇOS DA RECEITA FEDERAL =====
-  
+
   /**
    * Consultar CNPJ na Receita Federal
    * @param {string} cnpj - CNPJ a ser consultado
@@ -573,13 +578,13 @@ class ExternalAPIService {
       if (!API_CONFIG.receitaFederal.apiKey) {
         throw new Error('API key da Receita Federal não configurada');
       }
-      
+
       const cleanCNPJ = cnpj.replace(/\D/g, '');
-      
+
       if (cleanCNPJ.length !== 14) {
         throw new Error('CNPJ deve ter 14 dígitos');
       }
-      
+
       // Aqui você implementaria a chamada real para a API da Receita Federal
       // Por enquanto, retornamos dados simulados
       return {
@@ -593,7 +598,7 @@ class ExternalAPIService {
           tipo: 'MATRIZ',
           porte: 'MEDIO PORTE',
           naturezaJuridica: '206-2 - LTDA',
-          capitalSocial: 100000.00,
+          capitalSocial: 100000.0,
           endereco: {
             logradouro: 'Rua Exemplo',
             numero: '123',
@@ -604,9 +609,7 @@ class ExternalAPIService {
             cep: '01234-567'
           },
           atividadePrincipal: '4751-2/01 - Comércio varejista de informática',
-          atividadesSecundarias: [
-            '6201-5/01 - Desenvolvimento de sistemas'
-          ]
+          atividadesSecundarias: ['6201-5/01 - Desenvolvimento de sistemas']
         }
       };
     } catch (error) {
@@ -629,13 +632,13 @@ class ExternalAPIService {
       if (!API_CONFIG.receitaFederal.apiKey) {
         throw new Error('API key da Receita Federal não configurada');
       }
-      
+
       const cleanCPF = cpf.replace(/\D/g, '');
-      
+
       if (cleanCPF.length !== 11) {
         throw new Error('CPF deve ter 11 dígitos');
       }
-      
+
       // Aqui você implementaria a chamada real para a API da Receita Federal
       // Por enquanto, retornamos dados simulados
       return {
@@ -660,7 +663,7 @@ class ExternalAPIService {
   }
 
   // ===== SERVIÇOS DE VALIDAÇÃO =====
-  
+
   /**
    * Validar endereço completo
    * @param {Object} endereco - Dados do endereço
@@ -669,11 +672,11 @@ class ExternalAPIService {
   async validarEndereco(endereco) {
     try {
       let enderecoValidado = { ...endereco };
-      
+
       // Se tem CEP, consultar para complementar dados
       if (endereco.cep) {
         const cepResponse = await this.consultarCEP(endereco.cep);
-        
+
         if (cepResponse.success) {
           enderecoValidado = {
             ...enderecoValidado,
@@ -685,11 +688,11 @@ class ExternalAPIService {
           };
         }
       }
-      
+
       // Validar se todos os campos obrigatórios estão preenchidos
       const camposObrigatorios = ['logradouro', 'numero', 'bairro', 'cidade', 'estado', 'cep'];
       const camposFaltando = camposObrigatorios.filter(campo => !enderecoValidado[campo]);
-      
+
       if (camposFaltando.length > 0) {
         return {
           success: false,
@@ -697,7 +700,7 @@ class ExternalAPIService {
           camposFaltando
         };
       }
-      
+
       return {
         success: true,
         data: enderecoValidado
@@ -713,7 +716,7 @@ class ExternalAPIService {
   }
 
   // ===== SERVIÇOS DO BAIDU MAPS =====
-  
+
   /**
    * Buscar coordenadas por endereço (geocoding)
    * @param {string} address - Endereço para buscar
@@ -724,7 +727,7 @@ class ExternalAPIService {
       if (!API_CONFIG.baiduMaps.apiKey) {
         throw new Error('API key do Baidu Maps não configurada');
       }
-      
+
       // Verificar cache primeiro
       const cacheKey = `baidu_geocoding_${address}`;
       const cached = this.getFromCache(cacheKey);
@@ -735,20 +738,20 @@ class ExternalAPIService {
           cached: true
         };
       }
-      
+
       const response = await this.baiduClient.get('/geocoding/v3/', {
         params: {
-          address: address,
+          address,
           output: 'json',
           ak: API_CONFIG.baiduMaps.apiKey
         }
       });
-      
+
       if (response.data.status !== 0) {
         throw new Error(`Erro do Baidu Maps: ${response.data.message}`);
       }
-      
-      const result = response.data.result;
+
+      const { result } = response.data;
       const data = {
         address: result.formatted_address,
         coordinates: {
@@ -759,13 +762,13 @@ class ExternalAPIService {
         confidence: result.confidence,
         level: result.level
       };
-      
+
       // Salvar no cache por 10 minutos
       this.setCache(cacheKey, data, 10 * 60 * 1000);
-      
+
       return {
         success: true,
-        data: data
+        data
       };
     } catch (error) {
       console.error('Erro ao buscar coordenadas Baidu:', error);
@@ -788,7 +791,7 @@ class ExternalAPIService {
       if (!API_CONFIG.baiduMaps.apiKey) {
         throw new Error('API key do Baidu Maps não configurada');
       }
-      
+
       // Verificar cache primeiro
       const cacheKey = `baidu_reverse_${lat}_${lng}`;
       const cached = this.getFromCache(cacheKey);
@@ -799,7 +802,7 @@ class ExternalAPIService {
           cached: true
         };
       }
-      
+
       const response = await this.baiduClient.get('/reverse_geocoding/v3/', {
         params: {
           location: `${lat},${lng}`,
@@ -807,28 +810,28 @@ class ExternalAPIService {
           ak: API_CONFIG.baiduMaps.apiKey
         }
       });
-      
+
       if (response.data.status !== 0) {
         throw new Error(`Erro do Baidu Maps: ${response.data.message}`);
       }
-      
-      const result = response.data.result;
+
+      const { result } = response.data;
       const data = {
         address: result.formatted_address,
         coordinates: {
-          lat: lat,
-          lng: lng
+          lat,
+          lng
         },
         components: result.address_components,
         confidence: result.confidence
       };
-      
+
       // Salvar no cache por 10 minutos
       this.setCache(cacheKey, data, 10 * 60 * 1000);
-      
+
       return {
         success: true,
-        data: data
+        data
       };
     } catch (error) {
       console.error('Erro ao buscar endereço Baidu:', error);
@@ -850,7 +853,7 @@ class ExternalAPIService {
       if (!API_CONFIG.baiduMaps.apiKey) {
         throw new Error('API key do Baidu Maps não configurada');
       }
-      
+
       // Verificar cache primeiro
       const cacheKey = `baidu_search_${query}`;
       const cached = this.getFromCache(cacheKey);
@@ -861,21 +864,21 @@ class ExternalAPIService {
           cached: true
         };
       }
-      
+
       const response = await this.baiduClient.get('/place/v2/search', {
         params: {
-          query: query,
+          query,
           output: 'json',
           ak: API_CONFIG.baiduMaps.apiKey,
           scope: 2,
           page_size: 20
         }
       });
-      
+
       if (response.data.status !== 0) {
         throw new Error(`Erro do Baidu Maps: ${response.data.message}`);
       }
-      
+
       const result = response.data.results;
       const data = result.map(place => ({
         name: place.name,
@@ -887,13 +890,13 @@ class ExternalAPIService {
         type: place.type,
         uid: place.uid
       }));
-      
+
       // Salvar no cache por 10 minutos
       this.setCache(cacheKey, data, 10 * 60 * 1000);
-      
+
       return {
         success: true,
-        data: data
+        data
       };
     } catch (error) {
       console.error('Erro ao buscar lugares Baidu:', error);
@@ -906,7 +909,7 @@ class ExternalAPIService {
   }
 
   // ===== SERVIÇOS DA RECEITA FEDERAL =====
-  
+
   /**
    * Validar CNPJ
    * @param {string} cnpj - CNPJ a ser validado
@@ -915,11 +918,11 @@ class ExternalAPIService {
   async validarCNPJ(cnpj) {
     try {
       const cleanCNPJ = cnpj.replace(/\D/g, '');
-      
+
       if (cleanCNPJ.length !== 14) {
         throw new Error('CNPJ deve ter 14 dígitos');
       }
-      
+
       // Verificar cache primeiro (24 horas)
       const cacheKey = `receita_cnpj_${cleanCNPJ}`;
       const cached = this.getFromCache(cacheKey);
@@ -930,7 +933,7 @@ class ExternalAPIService {
           cached: true
         };
       }
-      
+
       // Aqui você implementaria a chamada real para a API da Receita Federal
       // Por enquanto, retornamos dados simulados
       const data = {
@@ -942,7 +945,7 @@ class ExternalAPIService {
         tipo: 'MATRIZ',
         porte: 'MEDIO PORTE',
         naturezaJuridica: '206-2 - LTDA',
-        capitalSocial: 100000.00,
+        capitalSocial: 100000.0,
         endereco: {
           logradouro: 'Rua Exemplo',
           numero: '123',
@@ -953,17 +956,15 @@ class ExternalAPIService {
           cep: '01234-567'
         },
         atividadePrincipal: '4751-2/01 - Comércio varejista de informática',
-        atividadesSecundarias: [
-          '6201-5/01 - Desenvolvimento de sistemas'
-        ]
+        atividadesSecundarias: ['6201-5/01 - Desenvolvimento de sistemas']
       };
-      
+
       // Salvar no cache por 24 horas
       this.setCache(cacheKey, data, 24 * 60 * 60 * 1000);
-      
+
       return {
         success: true,
-        data: data
+        data
       };
     } catch (error) {
       console.error('Erro ao validar CNPJ:', error);
@@ -983,11 +984,11 @@ class ExternalAPIService {
   async validarCPF(cpf) {
     try {
       const cleanCPF = cpf.replace(/\D/g, '');
-      
+
       if (cleanCPF.length !== 11) {
         throw new Error('CPF deve ter 11 dígitos');
       }
-      
+
       // Verificar cache primeiro (24 horas)
       const cacheKey = `receita_cpf_${cleanCPF}`;
       const cached = this.getFromCache(cacheKey);
@@ -998,7 +999,7 @@ class ExternalAPIService {
           cached: true
         };
       }
-      
+
       // Aqui você implementaria a chamada real para a API da Receita Federal
       // Por enquanto, retornamos dados simulados
       const data = {
@@ -1009,13 +1010,13 @@ class ExternalAPIService {
         dataInscricao: '2020-01-01',
         digitoVerificador: '00'
       };
-      
+
       // Salvar no cache por 24 horas
       this.setCache(cacheKey, data, 24 * 60 * 60 * 1000);
-      
+
       return {
         success: true,
-        data: data
+        data
       };
     } catch (error) {
       console.error('Erro ao validar CPF:', error);
@@ -1035,11 +1036,11 @@ class ExternalAPIService {
   async validarIE(ie) {
     try {
       const cleanIE = ie.replace(/\D/g, '');
-      
+
       if (cleanIE.length < 8 || cleanIE.length > 12) {
         throw new Error('IE deve ter entre 8 e 12 dígitos');
       }
-      
+
       // Verificar cache primeiro (24 horas)
       const cacheKey = `receita_ie_${cleanIE}`;
       const cached = this.getFromCache(cacheKey);
@@ -1050,7 +1051,7 @@ class ExternalAPIService {
           cached: true
         };
       }
-      
+
       // Aqui você implementaria a chamada real para a API da Receita Federal
       // Por enquanto, retornamos dados simulados
       const data = {
@@ -1060,13 +1061,13 @@ class ExternalAPIService {
         dataInscricao: '2020-01-01',
         contribuinte: 'CONTRIBUINTE'
       };
-      
+
       // Salvar no cache por 24 horas
       this.setCache(cacheKey, data, 24 * 60 * 60 * 1000);
-      
+
       return {
         success: true,
-        data: data
+        data
       };
     } catch (error) {
       console.error('Erro ao validar IE:', error);
@@ -1086,11 +1087,11 @@ class ExternalAPIService {
   async obterDadosEmpresa(cnpj) {
     try {
       const cleanCNPJ = cnpj.replace(/\D/g, '');
-      
+
       if (cleanCNPJ.length !== 14) {
         throw new Error('CNPJ deve ter 14 dígitos');
       }
-      
+
       // Verificar cache primeiro (24 horas)
       const cacheKey = `receita_empresa_${cleanCNPJ}`;
       const cached = this.getFromCache(cacheKey);
@@ -1101,7 +1102,7 @@ class ExternalAPIService {
           cached: true
         };
       }
-      
+
       // Aqui você implementaria a chamada real para a API da Receita Federal
       // Por enquanto, retornamos dados simulados
       const data = {
@@ -1113,7 +1114,7 @@ class ExternalAPIService {
         tipo: 'MATRIZ',
         porte: 'MEDIO PORTE',
         naturezaJuridica: '206-2 - LTDA',
-        capitalSocial: 100000.00,
+        capitalSocial: 100000.0,
         endereco: {
           logradouro: 'Rua Exemplo',
           numero: '123',
@@ -1124,9 +1125,7 @@ class ExternalAPIService {
           cep: '01234-567'
         },
         atividadePrincipal: '4751-2/01 - Comércio varejista de informática',
-        atividadesSecundarias: [
-          '6201-5/01 - Desenvolvimento de sistemas'
-        ],
+        atividadesSecundarias: ['6201-5/01 - Desenvolvimento de sistemas'],
         quadroSocios: [
           {
             nome: 'SÓCIO EXEMPLO',
@@ -1138,13 +1137,13 @@ class ExternalAPIService {
         email: 'contato@empresaexemplo.com.br',
         site: 'www.empresaexemplo.com.br'
       };
-      
+
       // Salvar no cache por 24 horas
       this.setCache(cacheKey, data, 24 * 60 * 60 * 1000);
-      
+
       return {
         success: true,
-        data: data
+        data
       };
     } catch (error) {
       console.error('Erro ao obter dados da empresa:', error);

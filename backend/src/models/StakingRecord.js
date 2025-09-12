@@ -78,11 +78,11 @@ stakingRecordSchema.methods.calculateRewards = function () {
   if (!this.isActive || this.status !== 'active') {
     return 0;
   }
-  
+
   const now = new Date();
   const stakedTime = (now - this.stakedAt) / (1000 * 60 * 60 * 24 * 365); // em anos
   const rewards = this.amount * (this.apyAtStake / 100) * stakedTime;
-  
+
   this.rewards = Math.max(0, rewards);
   return this.rewards;
 };
@@ -92,7 +92,7 @@ stakingRecordSchema.methods.startUnstaking = function () {
   if (this.status !== 'active') {
     throw new Error('Staking não está ativo');
   }
-  
+
   this.status = 'unstaking';
   this.unstakedAt = new Date();
   return this.save();
@@ -103,7 +103,7 @@ stakingRecordSchema.methods.completeUnstaking = function () {
   if (this.status !== 'unstaking') {
     throw new Error('Unstaking não foi iniciado');
   }
-  
+
   this.status = 'completed';
   this.isActive = false;
   return this.save();
@@ -112,11 +112,11 @@ stakingRecordSchema.methods.completeUnstaking = function () {
 // Método para obter registros de staking de um usuário
 stakingRecordSchema.statics.findByUser = function (userId, status = null) {
   const query = { user: userId };
-  if (status) query.status = status;
-  
-  return this.find(query)
-    .populate('pool', 'name apy token')
-    .sort({ stakedAt: -1 });
+  if (status) {
+    query.status = status;
+  }
+
+  return this.find(query).populate('pool', 'name apy token').sort({ stakedAt: -1 });
 };
 
 // Método para obter registros ativos de um pool

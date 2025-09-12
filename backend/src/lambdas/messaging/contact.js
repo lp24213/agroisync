@@ -24,7 +24,7 @@ const verifyAuth = event => {
   }
 
   const cognitoSub = decodedToken.sub;
-  const email = decodedToken.email;
+  const { email } = decodedToken;
 
   if (!cognitoSub || !email) {
     return { error: 'INVALID_TOKEN_DATA', message: 'Dados do token inválidos' };
@@ -222,7 +222,7 @@ exports.handler = async event => {
       const limit = parseInt(queryStringParameters?.limit) || 20;
       const status = queryStringParameters?.status;
 
-      let filter = {};
+      const filter = {};
       if (status) {
         filter.status = status;
       }
@@ -283,7 +283,7 @@ exports.handler = async event => {
       const limit = parseInt(queryStringParameters?.limit) || 20;
       const status = queryStringParameters?.status;
 
-      let filter = {};
+      const filter = {};
       if (status) {
         filter.status = status;
       }
@@ -384,7 +384,7 @@ exports.handler = async event => {
         { _id: new ObjectId(id) },
         {
           $set: {
-            status: status,
+            status,
             updatedAt: new Date()
           }
         }
@@ -478,7 +478,7 @@ exports.handler = async event => {
         { _id: new ObjectId(id) },
         {
           $set: {
-            status: status,
+            status,
             updatedAt: new Date()
           }
         }

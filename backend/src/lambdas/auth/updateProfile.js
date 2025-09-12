@@ -73,7 +73,7 @@ exports.handler = async event => {
     }
 
     const cognitoSub = decodedToken.sub;
-    const email = decodedToken.email;
+    const { email } = decodedToken;
 
     if (!cognitoSub || !email) {
       return {

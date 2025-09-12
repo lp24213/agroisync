@@ -16,33 +16,22 @@ router.use(authenticateToken);
 // GET /api/notifications - Listar notificações do usuário
 router.get('/', async (req, res) => {
   try {
-    const {
-      page = 1,
-      limit = 20,
-      read,
-      archived = false,
+    const { page = 1, limit = 20, read, archived = false, type, category } = req.query;
+
+    const result = await notificationService.getUserNotifications(req.user.userId, {
+      page: parseInt(page),
+      limit: parseInt(limit),
+      read: read === 'true' ? true : read === 'false' ? false : null,
+      archived: archived === 'true',
       type,
       category
-    } = req.query;
-
-    const result = await notificationService.getUserNotifications(
-      req.user.userId,
-      {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        read: read === 'true' ? true : read === 'false' ? false : null,
-        archived: archived === 'true',
-        type,
-        category
-      }
-    );
+    });
 
     if (result.success) {
       res.json(result);
     } else {
       res.status(400).json(result);
     }
-
   } catch (error) {
     console.error('Erro ao buscar notificações:', error);
     res.status(500).json({
@@ -55,10 +44,11 @@ router.get('/', async (req, res) => {
 // GET /api/notifications/unread - Contar notificações não lidas
 router.get('/unread/count', async (req, res) => {
   try {
-    const result = await notificationService.getUserNotifications(
-      req.user.userId,
-      { read: false, archived: false, limit: 1 }
-    );
+    const result = await notificationService.getUserNotifications(req.user.userId, {
+      read: false,
+      archived: false,
+      limit: 1
+    });
 
     if (result.success) {
       res.json({
@@ -68,7 +58,6 @@ router.get('/unread/count', async (req, res) => {
     } else {
       res.status(400).json(result);
     }
-
   } catch (error) {
     console.error('Erro ao contar notificações não lidas:', error);
     res.status(500).json({
@@ -82,7 +71,7 @@ router.get('/unread/count', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     // Buscar notificação específica do usuário
     const result = await notificationService.getUserNotifications(userId, {
@@ -94,7 +83,7 @@ router.get('/:id', async (req, res) => {
     }
 
     const notification = result.data.notifications.find(n => n._id.toString() === id);
-    
+
     if (!notification) {
       return res.status(404).json({
         success: false,
@@ -106,7 +95,6 @@ router.get('/:id', async (req, res) => {
       success: true,
       data: notification
     });
-
   } catch (error) {
     console.error('Erro ao buscar notificação:', error);
     res.status(500).json({
@@ -120,7 +108,7 @@ router.get('/:id', async (req, res) => {
 router.patch('/:id/read', async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const result = await notificationService.markAsRead(id, userId);
 
@@ -129,7 +117,6 @@ router.patch('/:id/read', async (req, res) => {
     } else {
       res.status(400).json(result);
     }
-
   } catch (error) {
     console.error('Erro ao marcar como lida:', error);
     res.status(500).json({
@@ -143,7 +130,7 @@ router.patch('/:id/read', async (req, res) => {
 router.patch('/:id/archive', async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const result = await notificationService.archiveNotification(id, userId);
 
@@ -152,7 +139,6 @@ router.patch('/:id/archive', async (req, res) => {
     } else {
       res.status(400).json(result);
     }
-
   } catch (error) {
     console.error('Erro ao arquivar notificação:', error);
     res.status(500).json({
@@ -165,7 +151,7 @@ router.patch('/:id/archive', async (req, res) => {
 // PATCH /api/notifications/read-all - Marcar todas como lidas
 router.patch('/read-all', async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     // Buscar todas as notificações não lidas
     const result = await notificationService.getUserNotifications(userId, {
@@ -179,10 +165,8 @@ router.patch('/read-all', async (req, res) => {
     }
 
     // Marcar todas como lidas
-    const notifications = result.data.notifications;
-    const updatePromises = notifications.map(notification => 
-      notification.markAsRead()
-    );
+    const { notifications } = result.data;
+    const updatePromises = notifications.map(notification => notification.markAsRead());
 
     await Promise.all(updatePromises);
 
@@ -191,7 +175,6 @@ router.patch('/read-all', async (req, res) => {
       message: `${notifications.length} notificações marcadas como lidas`,
       count: notifications.length
     });
-
   } catch (error) {
     console.error('Erro ao marcar todas como lidas:', error);
     res.status(500).json({
@@ -205,7 +188,7 @@ router.patch('/read-all', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     // Buscar notificação
     const result = await notificationService.getUserNotifications(userId, {
@@ -217,7 +200,7 @@ router.delete('/:id', async (req, res) => {
     }
 
     const notification = result.data.notifications.find(n => n._id.toString() === id);
-    
+
     if (!notification) {
       return res.status(404).json({
         success: false,
@@ -232,7 +215,6 @@ router.delete('/:id', async (req, res) => {
       success: true,
       message: 'Notificação deletada com sucesso'
     });
-
   } catch (error) {
     console.error('Erro ao deletar notificação:', error);
     res.status(500).json({
@@ -245,7 +227,7 @@ router.delete('/:id', async (req, res) => {
 // DELETE /api/notifications/clear-read - Limpar notificações lidas
 router.delete('/clear-read', async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     // Buscar todas as notificações lidas
     const result = await notificationService.getUserNotifications(userId, {
@@ -259,10 +241,8 @@ router.delete('/clear-read', async (req, res) => {
     }
 
     // Deletar todas as lidas
-    const notifications = result.data.notifications;
-    const deletePromises = notifications.map(notification => 
-      notification.deleteOne()
-    );
+    const { notifications } = result.data;
+    const deletePromises = notifications.map(notification => notification.deleteOne());
 
     await Promise.all(deletePromises);
 
@@ -271,7 +251,6 @@ router.delete('/clear-read', async (req, res) => {
       message: `${notifications.length} notificações lidas removidas`,
       count: notifications.length
     });
-
   } catch (error) {
     console.error('Erro ao limpar notificações lidas:', error);
     res.status(500).json({
@@ -284,7 +263,7 @@ router.delete('/clear-read', async (req, res) => {
 // GET /api/notifications/stats - Estatísticas das notificações
 router.get('/stats/overview', async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const result = await notificationService.getNotificationStats(userId);
 
@@ -293,7 +272,6 @@ router.get('/stats/overview', async (req, res) => {
     } else {
       res.status(400).json(result);
     }
-
   } catch (error) {
     console.error('Erro ao obter estatísticas:', error);
     res.status(500).json({
@@ -319,24 +297,27 @@ const adminAuth = (req, res, next) => {
 // GET /api/notifications/admin/all - Listar todas as notificações (admin)
 router.get('/admin/all', adminAuth, async (req, res) => {
   try {
-    const {
-      page = 1,
-      limit = 50,
-      userId,
-      type,
-      category,
-      status
-    } = req.query;
+    const { page = 1, limit = 50, userId, type, category, status } = req.query;
 
     // Construir query
     const query = {};
-    if (userId) query.userId = userId;
-    if (type) query.type = type;
-    if (category) query.category = category;
+    if (userId) {
+      query.userId = userId;
+    }
+    if (type) {
+      query.type = type;
+    }
+    if (category) {
+      query.category = category;
+    }
     if (status) {
-      if (status === 'read') query.read = true;
-      else if (status === 'unread') query.read = false;
-      else if (status === 'archived') query.archived = true;
+      if (status === 'read') {
+        query.read = true;
+      } else if (status === 'unread') {
+        query.read = false;
+      } else if (status === 'archived') {
+        query.archived = true;
+      }
     }
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -350,7 +331,7 @@ router.get('/admin/all', adminAuth, async (req, res) => {
       return res.status(400).json(notifications);
     }
 
-    const total = notifications.data.pagination.total;
+    const { total } = notifications.data.pagination;
 
     res.json({
       success: true,
@@ -364,7 +345,6 @@ router.get('/admin/all', adminAuth, async (req, res) => {
         }
       }
     });
-
   } catch (error) {
     console.error('Erro ao buscar todas as notificações:', error);
     res.status(500).json({
@@ -377,17 +357,7 @@ router.get('/admin/all', adminAuth, async (req, res) => {
 // POST /api/notifications/admin/send - Enviar notificação manual (admin)
 router.post('/admin/send', adminAuth, async (req, res) => {
   try {
-    const {
-      userId,
-      type,
-      title,
-      body,
-      channels,
-      priority,
-      category,
-      data,
-      metadata
-    } = req.body;
+    const { userId, type, title, body, channels, priority, category, data, metadata } = req.body;
 
     if (!userId || !type || !title || !body) {
       return res.status(400).json({
@@ -413,7 +383,6 @@ router.post('/admin/send', adminAuth, async (req, res) => {
     } else {
       res.status(400).json(result);
     }
-
   } catch (error) {
     console.error('Erro ao enviar notificação manual:', error);
     res.status(500).json({
@@ -433,7 +402,6 @@ router.get('/admin/stats', adminAuth, async (req, res) => {
     } else {
       res.status(400).json(result);
     }
-
   } catch (error) {
     console.error('Erro ao obter estatísticas gerais:', error);
     res.status(500).json({
@@ -453,7 +421,6 @@ router.post('/admin/cleanup', adminAuth, async (req, res) => {
     } else {
       res.status(400).json(result);
     }
-
   } catch (error) {
     console.error('Erro ao fazer limpeza manual:', error);
     res.status(500).json({

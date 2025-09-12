@@ -25,11 +25,11 @@ router.get('/', async (req, res) => {
       type = 'all' // 'all', 'payer', 'payee'
     } = req.query;
 
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     // Construir query baseada no tipo
-    let query = {};
+    const query = {};
     if (type === 'payer') {
       query.payerId = userId;
     } else if (type === 'payee') {
@@ -65,7 +65,6 @@ router.get('/', async (req, res) => {
         }
       }
     });
-
   } catch (error) {
     console.error('Erro ao buscar transações de escrow:', error);
     res.status(500).json({
@@ -79,16 +78,16 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const escrowTransaction = await EscrowTransaction.findOne({
       _id: id,
       $or: [{ payerId: userId }, { payeeId: userId }]
     })
-    .populate('payerId', 'name email phone')
-    .populate('payeeId', 'name email phone')
-    .populate('transactionId', 'type status itemDetails total shipping')
-    .populate('disputes.raisedBy', 'name email');
+      .populate('payerId', 'name email phone')
+      .populate('payeeId', 'name email phone')
+      .populate('transactionId', 'type status itemDetails total shipping')
+      .populate('disputes.raisedBy', 'name email');
 
     if (!escrowTransaction) {
       return res.status(404).json({
@@ -101,7 +100,6 @@ router.get('/:id', async (req, res) => {
       success: true,
       data: escrowTransaction
     });
-
   } catch (error) {
     console.error('Erro ao buscar transação de escrow:', error);
     res.status(500).json({
@@ -123,7 +121,7 @@ router.post('/', async (req, res) => {
       disputePeriod = 3
     } = req.body;
 
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     // Validar dados obrigatórios
     if (!transactionId || !amount || !paymentMethod) {
@@ -196,7 +194,6 @@ router.post('/', async (req, res) => {
       message: 'Transação de escrow criada com sucesso',
       data: escrowTransaction
     });
-
   } catch (error) {
     console.error('Erro ao criar transação de escrow:', error);
     res.status(500).json({
@@ -210,7 +207,7 @@ router.post('/', async (req, res) => {
 router.patch('/:id/fund', async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const escrowTransaction = await EscrowTransaction.findOne({
       _id: id,
@@ -233,7 +230,6 @@ router.patch('/:id/fund', async (req, res) => {
       message: 'Escrow marcado como fundado',
       data: escrowTransaction
     });
-
   } catch (error) {
     console.error('Erro ao marcar como fundado:', error);
     res.status(500).json({
@@ -248,7 +244,7 @@ router.patch('/:id/deliver', async (req, res) => {
   try {
     const { id } = req.params;
     const { trackingCode, carrier } = req.body;
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const escrowTransaction = await EscrowTransaction.findOne({
       _id: id,
@@ -278,7 +274,6 @@ router.patch('/:id/deliver', async (req, res) => {
       message: 'Escrow marcado como entregue',
       data: escrowTransaction
     });
-
   } catch (error) {
     console.error('Erro ao marcar como entregue:', error);
     res.status(500).json({
@@ -292,7 +287,7 @@ router.patch('/:id/deliver', async (req, res) => {
 router.patch('/:id/confirm', async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const escrowTransaction = await EscrowTransaction.findOne({
       _id: id,
@@ -315,7 +310,6 @@ router.patch('/:id/confirm', async (req, res) => {
       message: 'Recebimento confirmado',
       data: escrowTransaction
     });
-
   } catch (error) {
     console.error('Erro ao confirmar recebimento:', error);
     res.status(500).json({
@@ -330,7 +324,7 @@ router.patch('/:id/release', async (req, res) => {
   try {
     const { id } = req.params;
     const { reason } = req.body;
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const escrowTransaction = await EscrowTransaction.findOne({
       _id: id,
@@ -353,7 +347,6 @@ router.patch('/:id/release', async (req, res) => {
       message: 'Valor liberado para o vendedor',
       data: escrowTransaction
     });
-
   } catch (error) {
     console.error('Erro ao liberar valor:', error);
     res.status(500).json({
@@ -368,7 +361,7 @@ router.patch('/:id/refund', async (req, res) => {
   try {
     const { id } = req.params;
     const { reason } = req.body;
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const escrowTransaction = await EscrowTransaction.findOne({
       _id: id,
@@ -391,7 +384,6 @@ router.patch('/:id/refund', async (req, res) => {
       message: 'Reembolso solicitado',
       data: escrowTransaction
     });
-
   } catch (error) {
     console.error('Erro ao solicitar reembolso:', error);
     res.status(500).json({
@@ -406,7 +398,7 @@ router.post('/:id/dispute', async (req, res) => {
   try {
     const { id } = req.params;
     const { reason, description, evidence } = req.body;
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     // Validar dados obrigatórios
     if (!reason || !description) {
@@ -450,7 +442,6 @@ router.post('/:id/dispute', async (req, res) => {
       message: 'Disputa criada com sucesso',
       data: escrowTransaction
     });
-
   } catch (error) {
     console.error('Erro ao criar disputa:', error);
     res.status(500).json({
@@ -465,7 +456,7 @@ router.patch('/:id/dispute/:disputeId/resolve', async (req, res) => {
   try {
     const { id, disputeId } = req.params;
     const { resolution, adminNotes } = req.body;
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     // Verificar se é admin
     const user = await User.findById(userId);
@@ -500,7 +491,6 @@ router.patch('/:id/dispute/:disputeId/resolve', async (req, res) => {
       message: 'Disputa resolvida com sucesso',
       data: escrowTransaction
     });
-
   } catch (error) {
     console.error('Erro ao resolver disputa:', error);
     res.status(500).json({
@@ -513,7 +503,7 @@ router.patch('/:id/dispute/:disputeId/resolve', async (req, res) => {
 // GET /api/escrow/stats/overview - Estatísticas do escrow
 router.get('/stats/overview', async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     // Estatísticas por status
     const stats = await EscrowTransaction.aggregate([
@@ -568,7 +558,6 @@ router.get('/stats/overview', async (req, res) => {
       success: true,
       data: result
     });
-
   } catch (error) {
     console.error('Erro ao obter estatísticas:', error);
     res.status(500).json({
@@ -594,18 +583,15 @@ const adminAuth = (req, res, next) => {
 // GET /api/escrow/admin/all - Listar todas as transações de escrow (admin)
 router.get('/admin/all', adminAuth, async (req, res) => {
   try {
-    const {
-      page = 1,
-      limit = 50,
-      status,
-      userId
-    } = req.query;
+    const { page = 1, limit = 50, status, userId } = req.query;
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     // Construir query
     const query = {};
-    if (status) query.status = status;
+    if (status) {
+      query.status = status;
+    }
     if (userId) {
       query.$or = [{ payerId: userId }, { payeeId: userId }];
     }
@@ -633,7 +619,6 @@ router.get('/admin/all', adminAuth, async (req, res) => {
         }
       }
     });
-
   } catch (error) {
     console.error('Erro ao buscar todas as transações de escrow:', error);
     res.status(500).json({
@@ -664,7 +649,6 @@ router.post('/admin/auto-release', adminAuth, async (req, res) => {
       message: `${processed} transações processadas para liberação automática`,
       processed
     });
-
   } catch (error) {
     console.error('Erro ao processar liberações automáticas:', error);
     res.status(500).json({
@@ -715,7 +699,6 @@ router.get('/admin/stats', adminAuth, async (req, res) => {
       success: true,
       data: result
     });
-
   } catch (error) {
     console.error('Erro ao obter estatísticas gerais:', error);
     res.status(500).json({

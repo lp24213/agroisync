@@ -24,7 +24,7 @@ const verifyAuth = event => {
   }
 
   const cognitoSub = decodedToken.sub;
-  const email = decodedToken.email;
+  const { email } = decodedToken;
 
   if (!cognitoSub || !email) {
     return { error: 'INVALID_TOKEN_DATA', message: 'Dados do token inválidos' };
@@ -213,7 +213,7 @@ exports.handler = async event => {
       const role = queryStringParameters?.role;
       const planStatus = queryStringParameters?.planStatus;
 
-      let filter = {};
+      const filter = {};
 
       if (search) {
         filter.$or = [
@@ -381,7 +381,7 @@ exports.handler = async event => {
       const status = queryStringParameters?.status;
       const method = queryStringParameters?.method;
 
-      let filter = {};
+      const filter = {};
 
       if (status) {
         filter.status = status;
@@ -426,7 +426,7 @@ exports.handler = async event => {
       const status = queryStringParameters?.status;
       const search = queryStringParameters?.search || '';
 
-      let filter = {};
+      const filter = {};
 
       if (status) {
         filter.status = status;
@@ -513,7 +513,7 @@ exports.handler = async event => {
       const limit = parseInt(queryStringParameters?.limit) || 20;
       const search = queryStringParameters?.search || '';
 
-      let filter = {};
+      const filter = {};
 
       if (search) {
         filter.$or = [

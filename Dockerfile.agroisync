@@ -1,16 +1,16 @@
 FROM nginx:alpine
 
-# Remover conteúdo padrão do nginx
+# Remove a página padrão do nginx
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copiar nosso build do AgroSync
+# Copia os arquivos do build do React
 COPY build/ /usr/share/nginx/html/
 
-# Copiar configuração customizada do nginx
+# Copia configuração customizada do nginx
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Expor porta 80
+# Expõe a porta 80
 EXPOSE 80
 
-# Comando para iniciar nginx
+# Comando para iniciar o nginx
 CMD ["nginx", "-g", "daemon off;"]

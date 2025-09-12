@@ -33,17 +33,33 @@ router.get('/', async (req, res) => {
     // Build query
     const query = { status: 'active' };
 
-    if (originCity) query['origin.city'] = { $regex: originCity, $options: 'i' };
-    if (originState) query['origin.state'] = { $regex: originState, $options: 'i' };
-    if (destCity) query['destination.city'] = { $regex: destCity, $options: 'i' };
-    if (destState) query['destination.state'] = { $regex: destState, $options: 'i' };
-    if (cargoType) query.cargoType = cargoType;
+    if (originCity) {
+      query['origin.city'] = { $regex: originCity, $options: 'i' };
+    }
+    if (originState) {
+      query['origin.state'] = { $regex: originState, $options: 'i' };
+    }
+    if (destCity) {
+      query['destination.city'] = { $regex: destCity, $options: 'i' };
+    }
+    if (destState) {
+      query['destination.state'] = { $regex: destState, $options: 'i' };
+    }
+    if (cargoType) {
+      query.cargoType = cargoType;
+    }
     if (minWeight || maxWeight) {
       query.weight = {};
-      if (minWeight) query.weight.min = { $gte: parseFloat(minWeight) };
-      if (maxWeight) query.weight.max = { $lte: parseFloat(maxWeight) };
+      if (minWeight) {
+        query.weight.min = { $gte: parseFloat(minWeight) };
+      }
+      if (maxWeight) {
+        query.weight.max = { $lte: parseFloat(maxWeight) };
+      }
     }
-    if (maxPrice) query.price = { $lte: parseFloat(maxPrice) };
+    if (maxPrice) {
+      query.price = { $lte: parseFloat(maxPrice) };
+    }
 
     // Build sort
     const sort = {};
@@ -147,15 +163,33 @@ router.get('/available', async (req, res) => {
     } = req.query;
 
     const filters = {};
-    if (originCity) filters.originCity = originCity;
-    if (originState) filters.originState = originState;
-    if (destCity) filters.destCity = destCity;
-    if (destState) filters.destState = destState;
-    if (cargoType) filters.cargoType = cargoType;
-    if (minWeight) filters.minWeight = parseFloat(minWeight);
-    if (maxWeight) filters.maxWeight = parseFloat(maxWeight);
-    if (maxPrice) filters.maxPrice = parseFloat(maxPrice);
-    if (vehicleType) filters.vehicleType = vehicleType;
+    if (originCity) {
+      filters.originCity = originCity;
+    }
+    if (originState) {
+      filters.originState = originState;
+    }
+    if (destCity) {
+      filters.destCity = destCity;
+    }
+    if (destState) {
+      filters.destState = destState;
+    }
+    if (cargoType) {
+      filters.cargoType = cargoType;
+    }
+    if (minWeight) {
+      filters.minWeight = parseFloat(minWeight);
+    }
+    if (maxWeight) {
+      filters.maxWeight = parseFloat(maxWeight);
+    }
+    if (maxPrice) {
+      filters.maxPrice = parseFloat(maxPrice);
+    }
+    if (vehicleType) {
+      filters.vehicleType = vehicleType;
+    }
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
@@ -163,12 +197,24 @@ router.get('/available', async (req, res) => {
 
     // Get total count
     const totalQuery = { status: 'active' };
-    if (originCity) totalQuery['origin.city'] = { $regex: originCity, $options: 'i' };
-    if (originState) totalQuery['origin.state'] = { $regex: originState, $options: 'i' };
-    if (destCity) totalQuery['destination.city'] = { $regex: destCity, $options: 'i' };
-    if (destState) totalQuery['destination.state'] = { $regex: destState, $options: 'i' };
-    if (cargoType) totalQuery.cargoType = cargoType;
-    if (vehicleType) totalQuery.vehicleType = vehicleType;
+    if (originCity) {
+      totalQuery['origin.city'] = { $regex: originCity, $options: 'i' };
+    }
+    if (originState) {
+      totalQuery['origin.state'] = { $regex: originState, $options: 'i' };
+    }
+    if (destCity) {
+      totalQuery['destination.city'] = { $regex: destCity, $options: 'i' };
+    }
+    if (destState) {
+      totalQuery['destination.state'] = { $regex: destState, $options: 'i' };
+    }
+    if (cargoType) {
+      totalQuery.cargoType = cargoType;
+    }
+    if (vehicleType) {
+      totalQuery.vehicleType = vehicleType;
+    }
 
     const total = await Freight.countDocuments(totalQuery);
 
@@ -235,7 +281,7 @@ router.get('/:id', async (req, res) => {
 // POST /api/freights - Create new freight (requires authentication and active freight plan)
 router.post('/', authenticateToken, requireActivePlan, validateFreight, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     // Check if user has active freight plan
     const user = await User.findById(userId);
@@ -302,7 +348,7 @@ router.post('/', authenticateToken, requireActivePlan, validateFreight, async (r
 router.put('/:id', authenticateToken, validateFreight, async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const freight = await Freight.findById(id);
     if (!freight) {
@@ -342,7 +388,7 @@ router.put('/:id', authenticateToken, validateFreight, async (req, res) => {
 router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
     const freight = await Freight.findById(id);
     if (!freight) {
@@ -381,7 +427,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 router.post('/:id/inquiry', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const { message } = req.body;
 
     if (!message || message.trim().length < 10) {
@@ -478,12 +524,14 @@ router.put('/:id/inquiry/:inquiryId/respond', authenticateToken, async (req, res
 // GET /api/freights/provider/my-freights - Get provider's own freights
 router.get('/provider/my-freights', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const { userId } = req.user;
     const { page = 1, limit = 20, status } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     const query = { providerId: userId };
-    if (status) query.status = status;
+    if (status) {
+      query.status = status;
+    }
 
     const freights = await Freight.find(query)
       .sort({ createdAt: -1 })

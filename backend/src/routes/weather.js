@@ -5,7 +5,7 @@ const { rateLimit } = require('../middleware/rateLimit');
 const router = express.Router();
 
 // Configurações
-const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
+const { OPENWEATHER_API_KEY } = process.env;
 const IP_API_URL = 'https://ipapi.co/json/';
 const IPINFO_URL = 'https://ipinfo.io/json';
 
@@ -16,11 +16,12 @@ router.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 })); // 100 requests p
 router.get('/', async (req, res) => {
   try {
     // Obter IP do usuário
-    const clientIP = req.ip || 
-                    req.connection.remoteAddress || 
-                    req.socket.remoteAddress ||
-                    req.headers['x-forwarded-for']?.split(',')[0] ||
-                    req.headers['x-real-ip'];
+    const clientIP =
+      req.ip ||
+      req.connection.remoteAddress ||
+      req.socket.remoteAddress ||
+      req.headers['x-forwarded-for']?.split(',')[0] ||
+      req.headers['x-real-ip'];
 
     let locationData;
     let weatherData;
@@ -57,8 +58,8 @@ router.get('/', async (req, res) => {
             city: ipinfoResponse.data.city,
             state: ipinfoResponse.data.region,
             country: ipinfoResponse.data.country,
-            lat: lat,
-            lon: lon,
+            lat,
+            lon,
             timezone: ipinfoResponse.data.timezone
           };
         }
@@ -159,10 +160,9 @@ router.get('/', async (req, res) => {
       };
 
       res.json(response);
-
     } catch (locationError) {
       console.error('Erro ao obter localização:', locationError);
-      
+
       // Fallback com dados padrão
       const fallbackResponse = {
         success: true,
@@ -202,7 +202,6 @@ router.get('/', async (req, res) => {
 
       res.json(fallbackResponse);
     }
-
   } catch (error) {
     console.error('Erro no endpoint de clima:', error);
     res.status(500).json({
@@ -266,10 +265,10 @@ router.get('/forecast', async (req, res) => {
     const dailyForecast = {};
     forecast.list.forEach(item => {
       const date = new Date(item.dt * 1000).toLocaleDateString('pt-BR');
-      
+
       if (!dailyForecast[date]) {
         dailyForecast[date] = {
-          date: date,
+          date,
           temperatures: [],
           conditions: [],
           humidity: [],
@@ -285,18 +284,22 @@ router.get('/forecast', async (req, res) => {
 
     // Calcular médias e extremos
     const formattedForecast = Object.values(dailyForecast).map(day => {
-      const avgTemp = Math.round(day.temperatures.reduce((a, b) => a + b, 0) / day.temperatures.length);
+      const avgTemp = Math.round(
+        day.temperatures.reduce((a, b) => a + b, 0) / day.temperatures.length
+      );
       const minTemp = Math.round(Math.min(...day.temperatures));
       const maxTemp = Math.round(Math.max(...day.temperatures));
       const avgHumidity = Math.round(day.humidity.reduce((a, b) => a + b, 0) / day.humidity.length);
-      const avgWindSpeed = Math.round(day.wind_speed.reduce((a, b) => a + b, 0) / day.wind_speed.length);
+      const avgWindSpeed = Math.round(
+        day.wind_speed.reduce((a, b) => a + b, 0) / day.wind_speed.length
+      );
 
       // Condição mais frequente
       const conditionCounts = {};
       day.conditions.forEach(condition => {
         conditionCounts[condition] = (conditionCounts[condition] || 0) + 1;
       });
-      const mostFrequentCondition = Object.keys(conditionCounts).reduce((a, b) => 
+      const mostFrequentCondition = Object.keys(conditionCounts).reduce((a, b) =>
         conditionCounts[a] > conditionCounts[b] ? a : b
       );
 
@@ -332,7 +335,6 @@ router.get('/forecast', async (req, res) => {
       forecast: formattedForecast,
       timestamp: new Date().toISOString()
     });
-
   } catch (error) {
     console.error('Erro ao obter previsão:', error);
     res.status(500).json({
@@ -346,21 +348,21 @@ router.get('/forecast', async (req, res) => {
 // Função auxiliar para descrições em português
 function getConditionDescription(condition) {
   const descriptions = {
-    'Clear': 'céu limpo',
-    'Clouds': 'nublado',
-    'Rain': 'chuva',
-    'Drizzle': 'chuvisco',
-    'Thunderstorm': 'tempestade',
-    'Snow': 'neve',
-    'Mist': 'névoa',
-    'Smoke': 'fumaça',
-    'Haze': 'névoa seca',
-    'Dust': 'poeira',
-    'Fog': 'névoa',
-    'Sand': 'areia',
-    'Ash': 'cinzas',
-    'Squall': 'rajada',
-    'Tornado': 'tornado'
+    Clear: 'céu limpo',
+    Clouds: 'nublado',
+    Rain: 'chuva',
+    Drizzle: 'chuvisco',
+    Thunderstorm: 'tempestade',
+    Snow: 'neve',
+    Mist: 'névoa',
+    Smoke: 'fumaça',
+    Haze: 'névoa seca',
+    Dust: 'poeira',
+    Fog: 'névoa',
+    Sand: 'areia',
+    Ash: 'cinzas',
+    Squall: 'rajada',
+    Tornado: 'tornado'
   };
 
   return descriptions[condition] || condition;

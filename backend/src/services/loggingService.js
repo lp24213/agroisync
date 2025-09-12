@@ -15,12 +15,9 @@ const logger = winston.createLogger({
   transports: [
     // Console transport
     new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple()
-      )
+      format: winston.format.combine(winston.format.colorize(), winston.format.simple())
     }),
-    
+
     // File transports
     new winston.transports.File({
       filename: 'logs/error.log',
@@ -39,15 +36,17 @@ const logger = winston.createLogger({
 // Adicionar transport para MongoDB em produção
 if (process.env.NODE_ENV === 'production') {
   const MongoDBTransport = require('winston-mongodb').MongoDB;
-  
-  logger.add(new MongoDBTransport({
-    db: process.env.MONGODB_URI,
-    collection: 'logs',
-    options: {
-      useUnifiedTopology: true
-    },
-    level: 'info'
-  }));
+
+  logger.add(
+    new MongoDBTransport({
+      db: process.env.MONGODB_URI,
+      collection: 'logs',
+      options: {
+        useUnifiedTopology: true
+      },
+      level: 'info'
+    })
+  );
 }
 
 export class LoggingService {
@@ -65,11 +64,13 @@ export class LoggingService {
   static error(message, error = null, meta = {}) {
     const errorMeta = {
       ...meta,
-      error: error ? {
-        message: error.message,
-        stack: error.stack,
-        name: error.name
-      } : null
+      error: error
+        ? {
+          message: error.message,
+          stack: error.stack,
+          name: error.name
+        }
+        : null
     };
     logger.error(message, errorMeta);
   }
@@ -322,7 +323,15 @@ export class LoggingService {
   }
 
   // Log de API externa
-  static logExternalApi(service, endpoint, method, statusCode, responseTime, success, details = {}) {
+  static logExternalApi(
+    service,
+    endpoint,
+    method,
+    statusCode,
+    responseTime,
+    success,
+    details = {}
+  ) {
     const logData = {
       service,
       endpoint,
@@ -393,10 +402,7 @@ export class LoggingService {
         query.level = level;
       }
 
-      const logs = await AuditLog.find(query)
-        .sort({ timestamp: -1 })
-        .limit(limit)
-        .lean();
+      const logs = await AuditLog.find(query).sort({ timestamp: -1 }).limit(limit).lean();
 
       return logs;
     } catch (error) {

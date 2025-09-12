@@ -18,7 +18,7 @@ router.use(apiLimiter);
 // Validação para mensagens de parceiros
 const validatePartnershipMessage = (req, res, next) => {
   const { partnerId, subject, content, messageType, category, priority } = req.body;
-  
+
   if (!partnerId || !subject || !content) {
     return res.status(400).json({
       success: false,
@@ -48,7 +48,14 @@ const validatePartnershipMessage = (req, res, next) => {
   }
 
   // Validar tipo de mensagem
-  const validMessageTypes = ['partnership_request', 'business_proposal', 'collaboration', 'support', 'general', 'urgent'];
+  const validMessageTypes = [
+    'partnership_request',
+    'business_proposal',
+    'collaboration',
+    'support',
+    'general',
+    'urgent'
+  ];
   if (messageType && !validMessageTypes.includes(messageType)) {
     return res.status(400).json({
       success: false,
@@ -57,7 +64,15 @@ const validatePartnershipMessage = (req, res, next) => {
   }
 
   // Validar categoria
-  const validCategories = ['agriculture', 'technology', 'finance', 'logistics', 'marketing', 'research', 'other'];
+  const validCategories = [
+    'agriculture',
+    'technology',
+    'finance',
+    'logistics',
+    'marketing',
+    'research',
+    'other'
+  ];
   if (category && !validCategories.includes(category)) {
     return res.status(400).json({
       success: false,
@@ -86,13 +101,23 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     const query = {};
-    
+
     // Filtros
-    if (status) query.status = status;
-    if (priority) query.priority = priority;
-    if (category) query.category = category;
-    if (partnerId) query.partnerId = partnerId;
-    if (assignedTo) query.assignedTo = assignedTo;
+    if (status) {
+      query.status = status;
+    }
+    if (priority) {
+      query.priority = priority;
+    }
+    if (category) {
+      query.category = category;
+    }
+    if (partnerId) {
+      query.partnerId = partnerId;
+    }
+    if (assignedTo) {
+      query.assignedTo = assignedTo;
+    }
 
     const messages = await PartnershipMessage.find(query)
       .sort({ createdAt: -1 })
@@ -106,7 +131,13 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
     const total = await PartnershipMessage.countDocuments(query);
 
     // Log de acesso
-    await createSecurityLog('admin_action', 'low', 'Admin accessed partnership messages', req, req.user.userId);
+    await createSecurityLog(
+      'admin_action',
+      'low',
+      'Admin accessed partnership messages',
+      req,
+      req.user.userId
+    );
 
     res.json({
       success: true,
@@ -122,9 +153,15 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching partnership messages:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error fetching partnership messages: ${error.message}`, req, req.user?.userId);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error fetching partnership messages: ${error.message}`,
+      req,
+      req.user?.userId
+    );
+
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -136,7 +173,8 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
 router.post('/', authenticateToken, requireAdmin, validatePartnershipMessage, async (req, res) => {
   try {
     const adminId = req.user.userId;
-    const { partnerId, subject, content, messageType, category, priority, tags, assignedTo } = req.body;
+    const { partnerId, subject, content, messageType, category, priority, tags, assignedTo } =
+      req.body;
 
     // Verificar se o parceiro existe
     const partner = await Partner.findById(partnerId);
@@ -168,11 +206,18 @@ router.post('/', authenticateToken, requireAdmin, validatePartnershipMessage, as
     ]);
 
     // Log de criação
-    await createSecurityLog('admin_action', 'medium', 'Admin created partnership message', req, adminId, {
-      partnerId,
-      messageId: message._id,
-      messageType
-    });
+    await createSecurityLog(
+      'admin_action',
+      'medium',
+      'Admin created partnership message',
+      req,
+      adminId,
+      {
+        partnerId,
+        messageId: message._id,
+        messageType
+      }
+    );
 
     res.status(201).json({
       success: true,
@@ -181,9 +226,15 @@ router.post('/', authenticateToken, requireAdmin, validatePartnershipMessage, as
     });
   } catch (error) {
     console.error('Error creating partnership message:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error creating partnership message: ${error.message}`, req, req.user?.userId);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error creating partnership message: ${error.message}`,
+      req,
+      req.user?.userId
+    );
+
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -218,9 +269,16 @@ router.get('/:id', authenticateToken, requireAdmin, async (req, res) => {
     }
 
     // Log de acesso
-    await createSecurityLog('admin_action', 'low', 'Admin accessed specific partnership message', req, req.user.userId, {
-      messageId
-    });
+    await createSecurityLog(
+      'admin_action',
+      'low',
+      'Admin accessed specific partnership message',
+      req,
+      req.user.userId,
+      {
+        messageId
+      }
+    );
 
     res.json({
       success: true,
@@ -228,9 +286,15 @@ router.get('/:id', authenticateToken, requireAdmin, async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching partnership message:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error fetching partnership message: ${error.message}`, req, req.user?.userId);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error fetching partnership message: ${error.message}`,
+      req,
+      req.user?.userId
+    );
+
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -243,7 +307,8 @@ router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const adminId = req.user.userId;
     const messageId = req.params.id;
-    const { subject, content, messageType, category, priority, tags, adminNotes, assignedTo } = req.body;
+    const { subject, content, messageType, category, priority, tags, adminNotes, assignedTo } =
+      req.body;
 
     if (!mongoose.Types.ObjectId.isValid(messageId)) {
       return res.status(400).json({
@@ -261,22 +326,45 @@ router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
     }
 
     // Atualizar campos permitidos
-    if (subject) message.subject = sanitizeInput(subject.trim());
-    if (content) message.content = sanitizeInput(content.trim());
-    if (messageType) message.messageType = messageType;
-    if (category) message.category = category;
-    if (priority) message.priority = priority;
-    if (tags) message.tags = tags;
-    if (adminNotes) message.adminNotes = sanitizeInput(adminNotes.trim());
-    if (assignedTo) message.assignedTo = assignedTo;
+    if (subject) {
+      message.subject = sanitizeInput(subject.trim());
+    }
+    if (content) {
+      message.content = sanitizeInput(content.trim());
+    }
+    if (messageType) {
+      message.messageType = messageType;
+    }
+    if (category) {
+      message.category = category;
+    }
+    if (priority) {
+      message.priority = priority;
+    }
+    if (tags) {
+      message.tags = tags;
+    }
+    if (adminNotes) {
+      message.adminNotes = sanitizeInput(adminNotes.trim());
+    }
+    if (assignedTo) {
+      message.assignedTo = assignedTo;
+    }
 
     await message.save();
 
     // Log de atualização
-    await createSecurityLog('admin_action', 'medium', 'Admin updated partnership message', req, adminId, {
-      messageId,
-      updatedFields: Object.keys(req.body)
-    });
+    await createSecurityLog(
+      'admin_action',
+      'medium',
+      'Admin updated partnership message',
+      req,
+      adminId,
+      {
+        messageId,
+        updatedFields: Object.keys(req.body)
+      }
+    );
 
     res.json({
       success: true,
@@ -285,9 +373,15 @@ router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
     });
   } catch (error) {
     console.error('Error updating partnership message:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error updating partnership message: ${error.message}`, req, req.user?.userId);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error updating partnership message: ${error.message}`,
+      req,
+      req.user?.userId
+    );
+
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -360,11 +454,18 @@ router.put('/:id/status', authenticateToken, requireAdmin, async (req, res) => {
     }
 
     // Log de ação
-    await createSecurityLog('admin_action', 'medium', `Admin performed action on partnership message: ${action}`, req, adminId, {
-      messageId,
-      action,
-      newStatus: message.status
-    });
+    await createSecurityLog(
+      'admin_action',
+      'medium',
+      `Admin performed action on partnership message: ${action}`,
+      req,
+      adminId,
+      {
+        messageId,
+        action,
+        newStatus: message.status
+      }
+    );
 
     res.json({
       success: true,
@@ -373,9 +474,15 @@ router.put('/:id/status', authenticateToken, requireAdmin, async (req, res) => {
     });
   } catch (error) {
     console.error('Error updating partnership message status:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error updating partnership message status: ${error.message}`, req, req.user?.userId);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error updating partnership message status: ${error.message}`,
+      req,
+      req.user?.userId
+    );
+
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -411,9 +518,16 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
     await message.save();
 
     // Log de exclusão
-    await createSecurityLog('admin_action', 'medium', 'Admin archived partnership message', req, adminId, {
-      messageId
-    });
+    await createSecurityLog(
+      'admin_action',
+      'medium',
+      'Admin archived partnership message',
+      req,
+      adminId,
+      {
+        messageId
+      }
+    );
 
     res.json({
       success: true,
@@ -421,9 +535,15 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
     });
   } catch (error) {
     console.error('Error archiving partnership message:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error archiving partnership message: ${error.message}`, req, req.user?.userId);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error archiving partnership message: ${error.message}`,
+      req,
+      req.user?.userId
+    );
+
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -435,7 +555,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
 router.get('/stats/overview', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const stats = await PartnershipMessage.getMessageStats();
-    
+
     // Contar mensagens por prioridade
     const priorityStats = await PartnershipMessage.aggregate([
       {
@@ -463,7 +583,13 @@ router.get('/stats/overview', authenticateToken, requireAdmin, async (req, res) 
     });
 
     // Log de acesso às estatísticas
-    await createSecurityLog('admin_action', 'low', 'Admin accessed partnership messages statistics', req, req.user.userId);
+    await createSecurityLog(
+      'admin_action',
+      'low',
+      'Admin accessed partnership messages statistics',
+      req,
+      req.user.userId
+    );
 
     res.json({
       success: true,
@@ -482,9 +608,15 @@ router.get('/stats/overview', authenticateToken, requireAdmin, async (req, res) 
     });
   } catch (error) {
     console.error('Error fetching partnership messages stats:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error fetching partnership messages stats: ${error.message}`, req, req.user?.userId);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error fetching partnership messages stats: ${error.message}`,
+      req,
+      req.user?.userId
+    );
+
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -510,9 +642,16 @@ router.get('/search/:term', authenticateToken, requireAdmin, async (req, res) =>
     const total = messages.length;
 
     // Log de busca
-    await createSecurityLog('admin_action', 'low', 'Admin searched partnership messages', req, req.user.userId, {
-      searchTerm
-    });
+    await createSecurityLog(
+      'admin_action',
+      'low',
+      'Admin searched partnership messages',
+      req,
+      req.user.userId,
+      {
+        searchTerm
+      }
+    );
 
     res.json({
       success: true,
@@ -528,9 +667,15 @@ router.get('/search/:term', authenticateToken, requireAdmin, async (req, res) =>
     });
   } catch (error) {
     console.error('Error searching partnership messages:', error);
-    
-    await createSecurityLog('system_error', 'high', `Error searching partnership messages: ${error.message}`, req, req.user?.userId);
-    
+
+    await createSecurityLog(
+      'system_error',
+      'high',
+      `Error searching partnership messages: ${error.message}`,
+      req,
+      req.user?.userId
+    );
+
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

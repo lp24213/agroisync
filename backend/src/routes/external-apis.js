@@ -15,7 +15,7 @@ router.get('/cep/:cep', async (req, res) => {
   try {
     const { cep } = req.params;
     const result = await externalAPIService.consultarCEP(cep);
-    
+
     if (result.success) {
       res.json(result);
     } else {
@@ -79,21 +79,21 @@ router.get('/regioes', async (req, res) => {
 router.get('/clima/coordenadas', async (req, res) => {
   try {
     const { lat, lon, units = 'metric', lang = 'pt' } = req.query;
-    
+
     if (!lat || !lon) {
       return res.status(400).json({
         success: false,
         message: 'Latitude e longitude são obrigatórios'
       });
     }
-    
+
     const result = await externalAPIService.obterClimaPorCoordenadas(
       parseFloat(lat),
       parseFloat(lon),
       units,
       lang
     );
-    
+
     if (result.success) {
       res.json(result);
     } else {
@@ -113,9 +113,9 @@ router.get('/clima/ip', async (req, res) => {
   try {
     const { units = 'metric', lang = 'pt' } = req.query;
     const clientIP = getClientIP(req);
-    
+
     const result = await externalAPIService.obterClimaPorIP(clientIP, units, lang);
-    
+
     if (result.success) {
       res.json(result);
     } else {
@@ -135,9 +135,9 @@ router.get('/clima/ip/:ip', async (req, res) => {
   try {
     const { ip } = req.params;
     const { units = 'metric', lang = 'pt' } = req.query;
-    
+
     const result = await externalAPIService.obterClimaPorIP(ip, units, lang);
-    
+
     if (result.success) {
       res.json(result);
     } else {
@@ -158,14 +158,14 @@ router.get('/clima/ip/:ip', async (req, res) => {
 router.get('/baidu/geocode', async (req, res) => {
   try {
     const { address, city, region } = req.query;
-    
+
     if (!address) {
       return res.status(400).json({
         success: false,
         message: 'Endereço é obrigatório'
       });
     }
-    
+
     const result = await externalAPIService.geocodeAddress(address, city, region);
     res.json(result);
   } catch (error) {
@@ -181,14 +181,14 @@ router.get('/baidu/geocode', async (req, res) => {
 router.get('/baidu/reverse-geocode', async (req, res) => {
   try {
     const { lat, lng } = req.query;
-    
+
     if (!lat || !lng) {
       return res.status(400).json({
         success: false,
         message: 'Latitude e longitude são obrigatórios'
       });
     }
-    
+
     const result = await externalAPIService.reverseGeocode(parseFloat(lat), parseFloat(lng));
     res.json(result);
   } catch (error) {
@@ -204,17 +204,17 @@ router.get('/baidu/reverse-geocode', async (req, res) => {
 router.get('/baidu/route', async (req, res) => {
   try {
     const { originLat, originLng, destLat, destLng, mode = 'driving' } = req.query;
-    
+
     if (!originLat || !originLng || !destLat || !destLng) {
       return res.status(400).json({
         success: false,
         message: 'Coordenadas de origem e destino são obrigatórias'
       });
     }
-    
+
     const origin = { lat: parseFloat(originLat), lng: parseFloat(originLng) };
     const destination = { lat: parseFloat(destLat), lng: parseFloat(destLng) };
-    
+
     const result = await externalAPIService.calculateRoute(origin, destination, mode);
     res.json(result);
   } catch (error) {
@@ -233,7 +233,7 @@ router.get('/receita/cnpj/:cnpj', async (req, res) => {
   try {
     const { cnpj } = req.params;
     const result = await externalAPIService.consultarCNPJ(cnpj);
-    
+
     if (result.success) {
       res.json(result);
     } else {
@@ -253,7 +253,7 @@ router.get('/receita/cpf/:cpf', async (req, res) => {
   try {
     const { cpf } = req.params;
     const result = await externalAPIService.consultarCPF(cpf);
-    
+
     if (result.success) {
       res.json(result);
     } else {
@@ -274,14 +274,14 @@ router.get('/receita/cpf/:cpf', async (req, res) => {
 router.post('/validar/endereco', async (req, res) => {
   try {
     const { endereco } = req.body;
-    
+
     if (!endereco) {
       return res.status(400).json({
         success: false,
         message: 'Dados do endereço são obrigatórios'
       });
     }
-    
+
     const result = await externalAPIService.validarEndereco(endereco);
     res.json(result);
   } catch (error) {
@@ -300,7 +300,7 @@ router.get('/geo/ip/:ip', async (req, res) => {
   try {
     const { ip } = req.params;
     const result = await externalAPIService.obterCoordenadasPorIP(ip);
-    
+
     if (result.success) {
       res.json(result);
     } else {
@@ -320,7 +320,7 @@ router.get('/geo/ip', async (req, res) => {
   try {
     const clientIP = getClientIP(req);
     const result = await externalAPIService.obterCoordenadasPorIP(clientIP);
-    
+
     if (result.success) {
       res.json(result);
     } else {
@@ -373,7 +373,7 @@ router.get('/status', async (req, res) => {
         }
       }
     };
-    
+
     res.json(status);
   } catch (error) {
     console.error('Erro ao verificar status das APIs:', error);

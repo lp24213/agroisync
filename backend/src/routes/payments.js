@@ -19,7 +19,7 @@ router.use(authenticateToken);
 router.post('/commission/calculate', async (req, res) => {
   try {
     const { transactionAmount, transactionType } = req.body;
-    
+
     if (!transactionAmount || transactionAmount <= 0) {
       return res.status(400).json({
         success: false,
@@ -29,7 +29,7 @@ router.post('/commission/calculate', async (req, res) => {
 
     // Calcular comissão baseada no tipo de transação
     let commissionRate = COMMISSION_RATE;
-    
+
     switch (transactionType) {
       case 'product_sale':
         commissionRate = 0.05; // 5% para vendas de produtos
@@ -38,7 +38,7 @@ router.post('/commission/calculate', async (req, res) => {
         commissionRate = 0.03; // 3% para serviços de frete
         break;
       case 'premium_plan':
-        commissionRate = 0.10; // 10% para planos premium
+        commissionRate = 0.1; // 10% para planos premium
         break;
       default:
         commissionRate = COMMISSION_RATE;
@@ -55,7 +55,6 @@ router.post('/commission/calculate', async (req, res) => {
       netAmount,
       ownerWallet: OWNER_WALLET
     });
-
   } catch (error) {
     console.error('Erro ao calcular comissão:', error);
     res.status(500).json({
@@ -69,7 +68,7 @@ router.post('/commission/calculate', async (req, res) => {
 router.post('/commission/process', async (req, res) => {
   try {
     const { transactionId, amount, paymentMethod, userWallet } = req.body;
-    
+
     if (!transactionId || !amount || !paymentMethod) {
       return res.status(400).json({
         success: false,
@@ -110,7 +109,6 @@ router.post('/commission/process', async (req, res) => {
       message: 'Comissão processada com sucesso',
       ownerWallet: OWNER_WALLET
     });
-
   } catch (error) {
     console.error('Erro ao processar comissão:', error);
     res.status(500).json({
@@ -124,11 +122,11 @@ router.post('/commission/process', async (req, res) => {
 router.get('/status', async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('isPaid planActive planType planExpiry');
-    
+
     if (!user) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'Usuário não encontrado' 
+      return res.status(404).json({
+        success: false,
+        error: 'Usuário não encontrado'
       });
     }
 
@@ -139,12 +137,11 @@ router.get('/status', async (req, res) => {
       planType: user.planType || null,
       planExpiry: user.planExpiry || null
     });
-
   } catch (error) {
     console.error('Erro ao verificar status de pagamento:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Erro interno do servidor' 
+    res.status(500).json({
+      success: false,
+      error: 'Erro interno do servidor'
     });
   }
 });
@@ -153,11 +150,11 @@ router.get('/status', async (req, res) => {
 router.post('/stripe/create-session', async (req, res) => {
   try {
     const { planId, planData } = req.body;
-    
+
     if (!planId || !planData) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Dados do plano são obrigatórios' 
+      return res.status(400).json({
+        success: false,
+        error: 'Dados do plano são obrigatórios'
       });
     }
 
@@ -171,9 +168,9 @@ router.post('/stripe/create-session', async (req, res) => {
 
     const plan = validPlans[planId];
     if (!plan) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Plano inválido' 
+      return res.status(400).json({
+        success: false,
+        error: 'Plano inválido'
       });
     }
 
@@ -186,12 +183,12 @@ router.post('/stripe/create-session', async (req, res) => {
             currency: 'brl',
             product_data: {
               name: plan.name,
-              description: `Plano ${plan.name} - AgroSync`,
+              description: `Plano ${plan.name} - AgroSync`
             },
-            unit_amount: plan.price, // em centavos
+            unit_amount: plan.price // em centavos
           },
-          quantity: 1,
-        },
+          quantity: 1
+        }
       ],
       mode: 'subscription',
       success_url: `${process.env.FRONTEND_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
@@ -199,7 +196,7 @@ router.post('/stripe/create-session', async (req, res) => {
       customer_email: req.user.email,
       metadata: {
         userId: req.user.id,
-        planId: planId,
+        planId,
         planName: plan.name
       }
     });
@@ -209,12 +206,11 @@ router.post('/stripe/create-session', async (req, res) => {
       sessionId: session.id,
       url: session.url
     });
-
   } catch (error) {
     console.error('Erro ao criar sessão Stripe:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Erro ao processar pagamento' 
+    res.status(500).json({
+      success: false,
+      error: 'Erro ao processar pagamento'
     });
   }
 });
@@ -237,17 +233,17 @@ router.post('/stripe/webhook', express.raw({ type: 'application/json' }), async 
         const session = event.data.object;
         await handleStripePaymentSuccess(session);
         break;
-      
+
       case 'invoice.payment_succeeded':
         const invoice = event.data.object;
         await handleStripeSubscriptionRenewal(invoice);
         break;
-      
+
       case 'customer.subscription.deleted':
         const subscription = event.data.object;
         await handleStripeSubscriptionCancellation(subscription);
         break;
-      
+
       default:
         console.log(`Evento não tratado: ${event.type}`);
     }
@@ -263,11 +259,11 @@ router.post('/stripe/webhook', express.raw({ type: 'application/json' }), async 
 router.post('/crypto/verify', async (req, res) => {
   try {
     const { planId, planData, transactionHash, amount, walletAddress } = req.body;
-    
+
     if (!planId || !transactionHash || !amount || !walletAddress) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Dados da transação são obrigatórios' 
+      return res.status(400).json({
+        success: false,
+        error: 'Dados da transação são obrigatórios'
       });
     }
 
@@ -281,27 +277,31 @@ router.post('/crypto/verify', async (req, res) => {
 
     const plan = validPlans[planId];
     if (!plan) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Plano inválido' 
+      return res.status(400).json({
+        success: false,
+        error: 'Plano inválido'
       });
     }
 
     // Verificar se o valor está correto
     if (parseFloat(amount) < plan.price) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Valor insuficiente para o plano selecionado' 
+      return res.status(400).json({
+        success: false,
+        error: 'Valor insuficiente para o plano selecionado'
       });
     }
 
     // Verificar transação na blockchain (simulado)
-    const transactionValid = await verifyBlockchainTransaction(transactionHash, amount, walletAddress);
-    
+    const transactionValid = await verifyBlockchainTransaction(
+      transactionHash,
+      amount,
+      walletAddress
+    );
+
     if (!transactionValid) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Transação inválida ou não confirmada' 
+      return res.status(400).json({
+        success: false,
+        error: 'Transação inválida ou não confirmada'
       });
     }
 
@@ -322,16 +322,16 @@ router.post('/crypto/verify', async (req, res) => {
     // Salvar registro de pagamento
     const payment = new Payment({
       userId: req.user.id,
-      planId: planId,
+      planId,
       planName: plan.name,
-      amount: amount,
+      amount,
       currency: 'ETH',
       paymentMethod: 'crypto',
-      transactionHash: transactionHash,
-      walletAddress: walletAddress,
+      transactionHash,
+      walletAddress,
       status: 'completed',
       metadata: {
-        planData: planData,
+        planData,
         verificationSource: 'blockchain'
       }
     });
@@ -348,12 +348,11 @@ router.post('/crypto/verify', async (req, res) => {
         planExpiry: user.planExpiry
       }
     });
-
   } catch (error) {
     console.error('Erro ao verificar pagamento crypto:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Erro interno do servidor' 
+    res.status(500).json({
+      success: false,
+      error: 'Erro interno do servidor'
     });
   }
 });
@@ -362,32 +361,31 @@ router.post('/crypto/verify', async (req, res) => {
 router.get('/verify/:paymentId', async (req, res) => {
   try {
     const payment = await Payment.findById(req.params.paymentId);
-    
+
     if (!payment) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'Pagamento não encontrado' 
+      return res.status(404).json({
+        success: false,
+        error: 'Pagamento não encontrado'
       });
     }
 
     // Verificar se o usuário tem acesso ao pagamento
     if (payment.userId.toString() !== req.user.id && !req.user.isAdmin) {
-      return res.status(403).json({ 
-        success: false, 
-        error: 'Acesso negado' 
+      return res.status(403).json({
+        success: false,
+        error: 'Acesso negado'
       });
     }
 
     res.json({
       success: true,
-      payment: payment
+      payment
     });
-
   } catch (error) {
     console.error('Erro ao verificar pagamento:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Erro interno do servidor' 
+    res.status(500).json({
+      success: false,
+      error: 'Erro interno do servidor'
     });
   }
 });
@@ -396,18 +394,18 @@ router.get('/verify/:paymentId', async (req, res) => {
 router.post('/cancel', async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    
+
     if (!user) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'Usuário não encontrado' 
+      return res.status(404).json({
+        success: false,
+        error: 'Usuário não encontrado'
       });
     }
 
     if (!user.isPaid) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Usuário não possui plano ativo' 
+      return res.status(400).json({
+        success: false,
+        error: 'Usuário não possui plano ativo'
       });
     }
 
@@ -428,7 +426,7 @@ router.post('/cancel', async (req, res) => {
     user.planType = null;
     user.planExpiry = null;
     user.cancellationDate = new Date();
-    
+
     await user.save();
 
     res.json({
@@ -441,12 +439,11 @@ router.post('/cancel', async (req, res) => {
         planExpiry: user.planExpiry
       }
     });
-
   } catch (error) {
     console.error('Erro ao cancelar assinatura:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Erro interno do servidor' 
+    res.status(500).json({
+      success: false,
+      error: 'Erro interno do servidor'
     });
   }
 });
@@ -454,20 +451,17 @@ router.post('/cancel', async (req, res) => {
 // Histórico de pagamentos
 router.get('/history', async (req, res) => {
   try {
-    const payments = await Payment.find({ userId: req.user.id })
-      .sort({ createdAt: -1 })
-      .limit(20);
+    const payments = await Payment.find({ userId: req.user.id }).sort({ createdAt: -1 }).limit(20);
 
     res.json({
       success: true,
-      payments: payments
+      payments
     });
-
   } catch (error) {
     console.error('Erro ao buscar histórico:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Erro interno do servidor' 
+    res.status(500).json({
+      success: false,
+      error: 'Erro interno do servidor'
     });
   }
 });
@@ -475,9 +469,9 @@ router.get('/history', async (req, res) => {
 // Funções auxiliares
 async function handleStripePaymentSuccess(session) {
   try {
-    const userId = session.metadata.userId;
-    const planId = session.metadata.planId;
-    const planName = session.metadata.planName;
+    const { userId } = session.metadata;
+    const { planId } = session.metadata;
+    const { planName } = session.metadata;
 
     // Atualizar usuário
     await User.findByIdAndUpdate(userId, {
@@ -493,9 +487,9 @@ async function handleStripePaymentSuccess(session) {
 
     // Salvar registro de pagamento
     const payment = new Payment({
-      userId: userId,
-      planId: planId,
-      planName: planName,
+      userId,
+      planId,
+      planName,
       amount: session.amount_total / 100, // Converter de centavos
       currency: 'BRL',
       paymentMethod: 'stripe',
@@ -518,7 +512,7 @@ async function handleStripePaymentSuccess(session) {
 async function handleStripeSubscriptionRenewal(invoice) {
   try {
     const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
-    const userId = subscription.metadata.userId;
+    const { userId } = subscription.metadata;
 
     if (userId) {
       await User.findByIdAndUpdate(userId, {
@@ -535,7 +529,7 @@ async function handleStripeSubscriptionRenewal(invoice) {
 
 async function handleStripeSubscriptionCancellation(subscription) {
   try {
-    const userId = subscription.metadata.userId;
+    const { userId } = subscription.metadata;
 
     if (userId) {
       await User.findByIdAndUpdate(userId, {
@@ -559,11 +553,11 @@ async function handleStripeSubscriptionCancellation(subscription) {
 router.post('/metamask/create-invoice', async (req, res) => {
   try {
     const { planId, planData } = req.body;
-    
+
     if (!planId || !planData) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Dados do plano são obrigatórios' 
+      return res.status(400).json({
+        success: false,
+        error: 'Dados do plano são obrigatórios'
       });
     }
 
@@ -577,9 +571,9 @@ router.post('/metamask/create-invoice', async (req, res) => {
 
     const plan = validPlans[planId];
     if (!plan) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Plano inválido' 
+      return res.status(400).json({
+        success: false,
+        error: 'Plano inválido'
       });
     }
 
@@ -588,19 +582,18 @@ router.post('/metamask/create-invoice', async (req, res) => {
 
     res.json({
       success: true,
-      invoiceId: invoiceId,
-      plan: plan,
+      invoiceId,
+      plan,
       amount: plan.price,
       currency: 'ETH',
       expiresAt: new Date(Date.now() + 30 * 60 * 1000), // 30 minutos
-      instructions: 'Envie exatamente ' + plan.price + ' ETH para a carteira especificada'
+      instructions: `Envie exatamente ${plan.price} ETH para a carteira especificada`
     });
-
   } catch (error) {
     console.error('Erro ao criar fatura MetaMask:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Erro interno do servidor' 
+    res.status(500).json({
+      success: false,
+      error: 'Erro interno do servidor'
     });
   }
 });
@@ -609,11 +602,11 @@ router.post('/metamask/create-invoice', async (req, res) => {
 router.post('/metamask/verify', async (req, res) => {
   try {
     const { planId, planData, transactionHash, amount, walletAddress } = req.body;
-    
+
     if (!planId || !transactionHash || !amount || !walletAddress) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Dados da transação são obrigatórios' 
+      return res.status(400).json({
+        success: false,
+        error: 'Dados da transação são obrigatórios'
       });
     }
 
@@ -627,27 +620,31 @@ router.post('/metamask/verify', async (req, res) => {
 
     const plan = validPlans[planId];
     if (!plan) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Plano inválido' 
+      return res.status(400).json({
+        success: false,
+        error: 'Plano inválido'
       });
     }
 
     // Verificar se o valor está correto
     if (parseFloat(amount) < plan.price) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Valor insuficiente para o plano selecionado' 
+      return res.status(400).json({
+        success: false,
+        error: 'Valor insuficiente para o plano selecionado'
       });
     }
 
     // Verificar transação na blockchain (simulado)
-    const transactionValid = await verifyBlockchainTransaction(transactionHash, amount, walletAddress);
-    
+    const transactionValid = await verifyBlockchainTransaction(
+      transactionHash,
+      amount,
+      walletAddress
+    );
+
     if (!transactionValid) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Transação inválida ou não confirmada' 
+      return res.status(400).json({
+        success: false,
+        error: 'Transação inválida ou não confirmada'
       });
     }
 
@@ -668,16 +665,16 @@ router.post('/metamask/verify', async (req, res) => {
     // Salvar registro de pagamento
     const payment = new Payment({
       userId: req.user.id,
-      planId: planId,
+      planId,
       planName: plan.name,
-      amount: amount,
+      amount,
       currency: 'ETH',
       paymentMethod: 'metamask',
-      transactionHash: transactionHash,
-      walletAddress: walletAddress,
+      transactionHash,
+      walletAddress,
       status: 'completed',
       metadata: {
-        planData: planData,
+        planData,
         verificationSource: 'blockchain'
       }
     });
@@ -694,12 +691,11 @@ router.post('/metamask/verify', async (req, res) => {
         planExpiry: user.planExpiry
       }
     });
-
   } catch (error) {
     console.error('Erro ao verificar pagamento MetaMask:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Erro interno do servidor' 
+    res.status(500).json({
+      success: false,
+      error: 'Erro interno do servidor'
     });
   }
 });
@@ -708,33 +704,32 @@ router.post('/metamask/verify', async (req, res) => {
 router.get('/metamask/balance/:address', async (req, res) => {
   try {
     const { address } = req.params;
-    
+
     if (!address || !ethers.utils.isAddress(address)) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Endereço de carteira inválido' 
+      return res.status(400).json({
+        success: false,
+        error: 'Endereço de carteira inválido'
       });
     }
 
     // Em produção, usar provider real
     // const provider = new ethers.providers.JsonRpcProvider(WEB3_PROVIDER);
     // const balance = await provider.getBalance(address);
-    
+
     // Por enquanto, simular saldo
     const balance = '0.0'; // Simulado
 
     res.json({
       success: true,
-      address: address,
-      balance: balance,
+      address,
+      balance,
       currency: 'ETH'
     });
-
   } catch (error) {
     console.error('Erro ao obter saldo MetaMask:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Erro interno do servidor' 
+    res.status(500).json({
+      success: false,
+      error: 'Erro interno do servidor'
     });
   }
 });
@@ -744,11 +739,11 @@ router.get('/metamask/transactions/:address', async (req, res) => {
   try {
     const { address } = req.params;
     const { limit = 10, offset = 0 } = req.query;
-    
+
     if (!address || !ethers.utils.isAddress(address)) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Endereço de carteira inválido' 
+      return res.status(400).json({
+        success: false,
+        error: 'Endereço de carteira inválido'
       });
     }
 
@@ -758,20 +753,19 @@ router.get('/metamask/transactions/:address', async (req, res) => {
 
     res.json({
       success: true,
-      address: address,
-      transactions: transactions,
+      address,
+      transactions,
       pagination: {
         limit: parseInt(limit),
         offset: parseInt(offset),
         total: 0
       }
     });
-
   } catch (error) {
     console.error('Erro ao obter transações MetaMask:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Erro interno do servidor' 
+    res.status(500).json({
+      success: false,
+      error: 'Erro interno do servidor'
     });
   }
 });
@@ -783,10 +777,10 @@ async function verifyBlockchainTransaction(transactionHash, amount, walletAddres
     // Em produção, usar provider real (Infura, Alchemy, etc.)
     // const provider = new ethers.providers.JsonRpcProvider(WEB3_PROVIDER);
     // const tx = await provider.getTransaction(transactionHash);
-    
+
     // Por enquanto, simular verificação
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     // Simular verificação bem-sucedida
     return true;
   } catch (error) {

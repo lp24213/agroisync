@@ -11,17 +11,17 @@ const REFRESH_TOKEN_EXPIRES_IN = process.env.REFRESH_TOKEN_EXPIRES_IN || '7d';
 // ===== FUNÇÕES DE AUTENTICAÇÃO =====
 
 // Gerar token JWT
-export const generateToken = (payload) => {
+export const generateToken = payload => {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 };
 
 // Gerar refresh token
-export const generateRefreshToken = (payload) => {
+export const generateRefreshToken = payload => {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: REFRESH_TOKEN_EXPIRES_IN });
 };
 
 // Verificar token JWT
-export const verifyToken = async (token) => {
+export const verifyToken = async token => {
   try {
     const payload = jwt.verify(token, JWT_SECRET);
     return {
@@ -42,7 +42,7 @@ export const verifyToken = async (token) => {
 };
 
 // Hash de senha
-export const hashPassword = async (password) => {
+export const hashPassword = async password => {
   const saltRounds = 12;
   return await bcrypt.hash(password, saltRounds);
 };
@@ -53,38 +53,48 @@ export const verifyPassword = async (password, hashedPassword) => {
 };
 
 // Verificar se usuário é admin
-export const isAdmin = (groups) => {
+export const isAdmin = groups => {
   return groups && groups.includes('admin');
 };
 
 // Verificar se usuário tem plano ativo
 export const hasActivePlan = (user, module) => {
-  if (!user || !user.subscriptions) return false;
-  
-  const subscription = user.subscriptions[module];
-  if (!subscription) return false;
+  if (!user || !user.subscriptions) {
+    return false;
+  }
 
-  return subscription.status === 'active' && 
-         subscription.endDate && 
-         new Date(subscription.endDate) > new Date();
+  const subscription = user.subscriptions[module];
+  if (!subscription) {
+    return false;
+  }
+
+  return (
+    subscription.status === 'active' &&
+    subscription.endDate &&
+    new Date(subscription.endDate) > new Date()
+  );
 };
 
 // Verificar permissões para mensagens privadas
-export const canAccessPrivateMessages = (user) => {
+export const canAccessPrivateMessages = user => {
   // Usuários com plano ativo podem acessar mensagens privadas
   return hasActivePlan(user, 'store') || hasActivePlan(user, 'freight');
 };
 
 // Verificar permissões para criar anúncios
-export const canCreateAds = (user) => {
-  return hasActivePlan(user, 'store') && 
-         user.subscriptions.store.currentAds < user.subscriptions.store.maxAds;
+export const canCreateAds = user => {
+  return (
+    hasActivePlan(user, 'store') &&
+    user.subscriptions.store.currentAds < user.subscriptions.store.maxAds
+  );
 };
 
 // Verificar permissões para criar fretes
-export const canCreateFreights = (user) => {
-  return hasActivePlan(user, 'freight') && 
-         user.subscriptions.freight.currentFreights < user.subscriptions.freight.maxFreights;
+export const canCreateFreights = user => {
+  return (
+    hasActivePlan(user, 'freight') &&
+    user.subscriptions.freight.currentFreights < user.subscriptions.freight.maxFreights
+  );
 };
 
 // ===== MIDDLEWARE DE AUTENTICAÇÃO =====
@@ -92,7 +102,7 @@ export const canCreateFreights = (user) => {
 export const authenticateToken = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({
         success: false,
@@ -113,7 +123,7 @@ export const authenticateToken = async (req, res, next) => {
     // Adicionar informações do usuário ao request
     req.user = verification;
     req.userId = verification.userId;
-    
+
     next();
   } catch (error) {
     console.error('Error in token authentication:', error);
@@ -152,7 +162,7 @@ export const requireAdmin = async (req, res, next) => {
 };
 
 // Middleware para verificar plano ativo
-export const requireActivePlan = (module) => {
+export const requireActivePlan = module => {
   return async (req, res, next) => {
     try {
       if (!req.user) {
@@ -220,7 +230,7 @@ export const generateVerificationCode = (length = 6) => {
 };
 
 // Gerar token de reset de senha
-export const generatePasswordResetToken = (userId) => {
+export const generatePasswordResetToken = userId => {
   const payload = {
     userId,
     type: 'password_reset',
@@ -230,7 +240,7 @@ export const generatePasswordResetToken = (userId) => {
 };
 
 // Verificar token de reset de senha
-export const verifyPasswordResetToken = (token) => {
+export const verifyPasswordResetToken = token => {
   try {
     const payload = jwt.verify(token, JWT_SECRET);
     if (payload.type !== 'password_reset') {
@@ -261,7 +271,7 @@ export const generateEmailVerificationToken = (userId, email) => {
 };
 
 // Verificar token de verificação de email
-export const verifyEmailVerificationToken = (token) => {
+export const verifyEmailVerificationToken = token => {
   try {
     const payload = jwt.verify(token, JWT_SECRET);
     if (payload.type !== 'email_verification') {

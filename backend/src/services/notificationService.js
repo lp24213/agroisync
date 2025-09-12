@@ -13,10 +13,7 @@ const emailTransporter = nodemailer.createTransporter({
 });
 
 // Configuração SMS (usando Twilio)
-const twilioClient = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
+const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 class NotificationService {
   constructor() {
@@ -37,8 +34,8 @@ class NotificationService {
     try {
       const mailOptions = {
         from: `"${this.fromName}" <${this.fromEmail}>`,
-        to: to,
-        subject: subject,
+        to,
+        subject,
         html: htmlBody
       };
 
@@ -47,7 +44,7 @@ class NotificationService {
       }
 
       const result = await emailTransporter.sendMail(mailOptions);
-      
+
       console.log(`✅ Email enviado com sucesso para ${to}:`, result.messageId);
 
       return {
@@ -76,15 +73,15 @@ class NotificationService {
     try {
       // Formatar número de telefone para E.164 se necessário
       const formattedPhone = this.formatPhoneNumber(phoneNumber);
-      
+
       const result = await twilioClient.messages.create({
         body: message,
         from: this.twilioPhoneNumber,
         to: formattedPhone
       });
-      
+
       console.log(`✅ SMS enviado com sucesso para ${formattedPhone}:`, result.sid);
-      
+
       return {
         success: true,
         messageId: result.sid,
@@ -92,7 +89,7 @@ class NotificationService {
       };
     } catch (error) {
       console.error(`❌ Erro ao enviar SMS para ${phoneNumber}:`, error);
-      
+
       return {
         success: false,
         error: error.message,
@@ -110,9 +107,9 @@ class NotificationService {
    */
   async sendPasswordResetEmail(to, resetToken, userName) {
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
-    
+
     const subject = 'Redefinição de Senha - AgroSync';
-    
+
     const htmlBody = `
       <!DOCTYPE html>
       <html lang="pt-BR">
@@ -173,7 +170,7 @@ class NotificationService {
       </body>
       </html>
     `;
-    
+
     const textBody = `
       Redefinição de Senha - AgroSync
       
@@ -196,7 +193,7 @@ class NotificationService {
       
       ${process.env.FRONTEND_URL}
     `;
-    
+
     return await this.sendEmail(to, subject, htmlBody, textBody);
   }
 
@@ -209,9 +206,9 @@ class NotificationService {
    */
   async sendEmailVerification(to, verificationToken, userName) {
     const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
-    
+
     const subject = 'Verifique sua Conta - AgroSync';
-    
+
     const htmlBody = `
       <!DOCTYPE html>
       <html lang="pt-BR">
@@ -260,7 +257,7 @@ class NotificationService {
       </body>
       </html>
     `;
-    
+
     const textBody = `
       Verificação de Conta - AgroSync
       
@@ -276,7 +273,7 @@ class NotificationService {
       
       ${process.env.FRONTEND_URL}
     `;
-    
+
     return await this.sendEmail(to, subject, htmlBody, textBody);
   }
 
@@ -289,7 +286,7 @@ class NotificationService {
    */
   async sendOTPSMS(phoneNumber, otpCode, userName) {
     const message = `AgroSync: Olá ${userName}! Seu código de verificação é: ${otpCode}. Expira em 5 minutos. Não compartilhe com ninguém.`;
-    
+
     return await this.sendSMS(phoneNumber, message);
   }
 
@@ -301,7 +298,7 @@ class NotificationService {
    */
   async sendWelcomeSMS(phoneNumber, userName) {
     const message = `AgroSync: Bem-vindo ${userName}! Sua conta foi criada com sucesso. Acesse ${process.env.FRONTEND_URL} para começar.`;
-    
+
     return await this.sendSMS(phoneNumber, message);
   }
 
@@ -313,19 +310,19 @@ class NotificationService {
   formatPhoneNumber(phoneNumber) {
     // Remove todos os caracteres não numéricos
     let cleaned = phoneNumber.replace(/\D/g, '');
-    
+
     // Se começa com 0, remove
     if (cleaned.startsWith('0')) {
       cleaned = cleaned.substring(1);
     }
-    
+
     // Se não tem código do país, adiciona +55 (Brasil)
     if (!cleaned.startsWith('55')) {
-      cleaned = '55' + cleaned;
+      cleaned = `55${cleaned}`;
     }
-    
+
     // Adiciona o + no início
-    return '+' + cleaned;
+    return `+${cleaned}`;
   }
 
   /**
@@ -340,7 +337,11 @@ class NotificationService {
         user: process.env.SMTP_USER || 'Not configured'
       },
       sms: {
-        configured: !!(process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER),
+        configured: !!(
+          process.env.TWILIO_ACCOUNT_SID &&
+          process.env.TWILIO_AUTH_TOKEN &&
+          process.env.TWILIO_PHONE_NUMBER
+        ),
         phoneNumber: process.env.TWILIO_PHONE_NUMBER || 'Not configured'
       }
     };

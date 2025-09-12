@@ -10,7 +10,7 @@ const connectDB = async () => {
       serverSelectionTimeoutMS: 5000, // Manter tentando enviar operações por 5 segundos
       socketTimeoutMS: 45000, // Fechar sockets após 45 segundos de inatividade
       bufferMaxEntries: 0, // Desabilitar mongoose buffering
-      bufferCommands: false, // Desabilitar mongoose buffering
+      bufferCommands: false // Desabilitar mongoose buffering
     });
 
     logger.info(`MongoDB conectado: ${conn.connection.host}`);
@@ -20,7 +20,7 @@ const connectDB = async () => {
       logger.info('Mongoose conectado ao MongoDB');
     });
 
-    mongoose.connection.on('error', (err) => {
+    mongoose.connection.on('error', err => {
       logger.error('Erro na conexão MongoDB:', err);
     });
 
@@ -34,7 +34,6 @@ const connectDB = async () => {
       logger.info('Conexão MongoDB fechada devido ao encerramento da aplicação');
       process.exit(0);
     });
-
   } catch (error) {
     logger.error('Erro ao conectar ao MongoDB:', error);
     process.exit(1);

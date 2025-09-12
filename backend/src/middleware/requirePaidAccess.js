@@ -3,11 +3,11 @@ import AuditLog from '../models/AuditLog.js';
 import { createSecurityLog } from '../utils/securityLogger.js';
 
 // Middleware para verificar se o usuário tem acesso pago
-const requirePaidAccess = (serviceType) => {
+const requirePaidAccess = serviceType => {
   return async (req, res, next) => {
     try {
       const userId = req.user.id;
-      
+
       // Verificar se o usuário existe
       const user = await User.findById(userId);
       if (!user) {
@@ -18,24 +18,25 @@ const requirePaidAccess = (serviceType) => {
       }
 
       // Verificar se tem plano ativo
-      const hasActivePlan = user.subscriptions && (
-        (user.subscriptions.store && user.subscriptions.store.status === 'active') ||
-        (user.subscriptions.agroconecta && user.subscriptions.agroconecta.status === 'active')
-      );
+      const hasActivePlan =
+        user.subscriptions &&
+        ((user.subscriptions.store && user.subscriptions.store.status === 'active') ||
+          (user.subscriptions.agroconecta && user.subscriptions.agroconecta.status === 'active'));
 
       // Verificar se tem pagamento recente (últimos 30 dias)
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      
-      const recentPayment = user.payments && user.payments.some(payment => 
-        payment.status === 'completed' && 
-        new Date(payment.createdAt) >= thirtyDaysAgo
-      );
+
+      const recentPayment =
+        user.payments &&
+        user.payments.some(
+          payment => payment.status === 'completed' && new Date(payment.createdAt) >= thirtyDaysAgo
+        );
 
       if (!hasActivePlan && !recentPayment) {
         // Log da tentativa de acesso sem pagamento
         await AuditLog.logAction({
-          userId: userId,
+          userId,
           userEmail: user.email,
           action: 'PAID_ACCESS_DENIED',
           resource: req.originalUrl,
@@ -51,15 +52,15 @@ const requirePaidAccess = (serviceType) => {
           message: '🔒 Para acessar este serviço, finalize o pagamento de sua assinatura.',
           requiresPayment: true,
           plans: {
-            store: "R$25/mês - Mensageria de Produtos",
-            agroconecta: "R$50/mês - Mensageria de Fretes"
+            store: 'R$25/mês - Mensageria de Produtos',
+            agroconecta: 'R$50/mês - Mensageria de Fretes'
           }
         });
       }
 
       // Log do acesso bem-sucedido
       await AuditLog.logAction({
-        userId: userId,
+        userId,
         userEmail: user.email,
         action: 'PAID_ACCESS_GRANTED',
         resource: req.originalUrl,
@@ -72,7 +73,7 @@ const requirePaidAccess = (serviceType) => {
       next();
     } catch (error) {
       console.error('Erro ao verificar acesso pago:', error);
-      
+
       // Log do erro
       await AuditLog.logAction({
         userId: req.user?.id || 'unknown',

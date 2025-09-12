@@ -21,16 +21,8 @@ router.use(authenticateToken);
 // POST / - Criar nova transação de intermediação
 router.post('/', async (req, res) => {
   try {
-    const {
-      type,
-      itemId,
-      itemModel,
-      total,
-      shipping,
-      paymentMethods,
-      deliveryOptions,
-      notes
-    } = req.body;
+    const { type, itemId, itemModel, total, shipping, paymentMethods, deliveryOptions, notes } =
+      req.body;
 
     const buyerId = req.user.userId;
 
@@ -60,7 +52,7 @@ router.post('/', async (req, res) => {
 
     // Buscar o item para obter sellerId e detalhes
     let item, sellerId;
-    
+
     switch (itemModel) {
       case 'Product':
         item = await Product.findById(itemId);
@@ -72,7 +64,7 @@ router.post('/', async (req, res) => {
         }
         sellerId = item.seller;
         break;
-        
+
       case 'Freight':
         item = await Freight.findById(itemId);
         if (!item) {
@@ -83,7 +75,7 @@ router.post('/', async (req, res) => {
         }
         sellerId = item.carrier;
         break;
-        
+
       default:
         return res.status(400).json({
           success: false,
@@ -166,7 +158,6 @@ router.post('/', async (req, res) => {
         negotiationDeadline: transaction.negotiationDeadline
       }
     });
-
   } catch (error) {
     console.error('Erro ao criar transação:', error);
     res.status(500).json({
@@ -177,22 +168,23 @@ router.post('/', async (req, res) => {
   }
 });
 
-  // GET / - Listar transações do usuário
-  router.get('/', async (req, res) => {
-    try {
-      const userId = req.user.userId;
+// GET / - Listar transações do usuário
+router.get('/', async (req, res) => {
+  try {
+    const { userId } = req.user;
     const { type, status, page = 1, limit = 20 } = req.query;
 
     // Construir filtros
     const filters = {
-      $or: [
-        { buyerId: userId },
-        { sellerId: userId }
-      ]
+      $or: [{ buyerId: userId }, { sellerId: userId }]
     };
 
-    if (type) filters.type = type;
-    if (status) filters.status = status;
+    if (type) {
+      filters.type = type;
+    }
+    if (status) {
+      filters.status = status;
+    }
 
     // Paginação
     const skip = (page - 1) * limit;
@@ -226,7 +218,6 @@ router.post('/', async (req, res) => {
         }
       }
     });
-
   } catch (error) {
     console.error('Erro ao buscar transações:', error);
     res.status(500).json({
@@ -236,11 +227,11 @@ router.post('/', async (req, res) => {
   }
 });
 
-  // GET /:id - Buscar transação por ID
-  router.get('/:id', async (req, res) => {
-    try {
-      const { id } = req.params;
-      const userId = req.user.userId;
+// GET /:id - Buscar transação por ID
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.user;
 
     const transaction = await Transaction.findById(id)
       .populate('buyerId', 'name email phone')
@@ -254,8 +245,10 @@ router.post('/', async (req, res) => {
     }
 
     // Verificar se o usuário tem acesso a esta transação
-    if (transaction.buyerId._id.toString() !== userId && 
-        transaction.sellerId._id.toString() !== userId) {
+    if (
+      transaction.buyerId._id.toString() !== userId &&
+      transaction.sellerId._id.toString() !== userId
+    ) {
       return res.status(403).json({
         success: false,
         message: 'Acesso negado a esta transação'
@@ -266,7 +259,6 @@ router.post('/', async (req, res) => {
       success: true,
       transaction
     });
-
   } catch (error) {
     console.error('Erro ao buscar transação:', error);
     res.status(500).json({
@@ -276,498 +268,503 @@ router.post('/', async (req, res) => {
   }
 });
 
-  // PUT /:id/status - Atualizar status da transação
-  router.put('/:id/status', async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { newStatus, reason, notes } = req.body;
-      const userId = req.user.userId;
+// PUT /:id/status - Atualizar status da transação
+router.put('/:id/status', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { newStatus, reason, notes } = req.body;
+    const { userId } = req.user;
 
-      // Buscar transação
-      const transaction = await Transaction.findById(id);
-      if (!transaction) {
-        return res.status(404).json({
-          success: false,
-          message: 'Transação não encontrada'
-        });
-      }
-
-      // Verificar permissões
-      if (transaction.buyerId.toString() !== userId && transaction.sellerId.toString() !== userId) {
-        return res.status(403).json({
-          success: false,
-          message: 'Sem permissão para alterar esta transação'
-        });
-      }
-
-      // Verificar se a mudança de status é válida
-      if (!transaction.canChangeToStatus(newStatus)) {
-        return res.status(400).json({
-          success: false,
-          message: `Mudança de status inválida: ${transaction.status} → ${newStatus}`
-        });
-      }
-
-      // Salvar status anterior
-      const oldStatus = transaction.status;
-
-      // Atualizar status
-      transaction.status = newStatus;
-      
-      // Adicionar ao histórico
-      await transaction.addStatusHistory(newStatus, userId, reason, notes);
-
-      // Atualizar campos relacionados ao escrow se necessário
-      if (newStatus.startsWith('ESCROW_')) {
-        transaction.usesEscrow = true;
-        transaction.escrowStatus = newStatus.replace('ESCROW_', '');
-      }
-
-      // Salvar transação
-      await transaction.save();
-
-      // Buscar transação atualizada com populações
-      const updatedTransaction = await Transaction.findById(id)
-        .populate('buyerId', 'name email')
-        .populate('sellerId', 'name email')
-        .populate('itemId')
-        .populate('escrowTransactionId');
-
-      res.json({
-        success: true,
-        message: 'Status da transação atualizado com sucesso',
-        data: {
-          transaction: updatedTransaction,
-          oldStatus,
-          newStatus,
-          escrowBadge: updatedTransaction.getEscrowBadge(),
-          timeRemaining: updatedTransaction.getTimeRemaining()
-        }
-      });
-
-    } catch (error) {
-      console.error('Erro ao atualizar status da transação:', error);
-      res.status(500).json({
+    // Buscar transação
+    const transaction = await Transaction.findById(id);
+    if (!transaction) {
+      return res.status(404).json({
         success: false,
-        message: 'Erro interno do servidor'
+        message: 'Transação não encontrada'
       });
     }
-  });
 
-  // POST /:id/escrow/enable - Habilitar escrow para transação
-  router.post('/:id/escrow/enable', async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { autoReleaseDays, requiresConfirmation, allowDisputes, maxDisputeDays } = req.body;
-      const userId = req.user.userId;
+    // Verificar permissões
+    if (transaction.buyerId.toString() !== userId && transaction.sellerId.toString() !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: 'Sem permissão para alterar esta transação'
+      });
+    }
 
-      // Buscar transação
-      const transaction = await Transaction.findById(id);
-      if (!transaction) {
-        return res.status(404).json({
-          success: false,
-          message: 'Transação não encontrada'
-        });
-      }
+    // Verificar se a mudança de status é válida
+    if (!transaction.canChangeToStatus(newStatus)) {
+      return res.status(400).json({
+        success: false,
+        message: `Mudança de status inválida: ${transaction.status} → ${newStatus}`
+      });
+    }
 
-      // Verificar permissões (apenas comprador pode habilitar escrow)
-      if (transaction.buyerId.toString() !== userId) {
-        return res.status(403).json({
-          success: false,
-          message: 'Apenas o comprador pode habilitar escrow'
-        });
-      }
+    // Salvar status anterior
+    const oldStatus = transaction.status;
 
-      // Verificar se já tem escrow habilitado
-      if (transaction.usesEscrow) {
-        return res.status(400).json({
-          success: false,
-          message: 'Escrow já está habilitado para esta transação'
-        });
-      }
+    // Atualizar status
+    transaction.status = newStatus;
 
-      // Verificar se o status permite habilitar escrow
-      if (!['PENDING', 'NEGOTIATING', 'AGREED'].includes(transaction.status)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Status da transação não permite habilitar escrow'
-        });
-      }
+    // Adicionar ao histórico
+    await transaction.addStatusHistory(newStatus, userId, reason, notes);
 
-      // Atualizar configurações de escrow
+    // Atualizar campos relacionados ao escrow se necessário
+    if (newStatus.startsWith('ESCROW_')) {
       transaction.usesEscrow = true;
-      transaction.escrowSettings = {
-        enabled: true,
-        autoReleaseDays: autoReleaseDays || 7,
-        requiresConfirmation: requiresConfirmation !== false,
-        allowDisputes: allowDisputes !== false,
-        maxDisputeDays: maxDisputeDays || 3
+      transaction.escrowStatus = newStatus.replace('ESCROW_', '');
+    }
+
+    // Salvar transação
+    await transaction.save();
+
+    // Buscar transação atualizada com populações
+    const updatedTransaction = await Transaction.findById(id)
+      .populate('buyerId', 'name email')
+      .populate('sellerId', 'name email')
+      .populate('itemId')
+      .populate('escrowTransactionId');
+
+    res.json({
+      success: true,
+      message: 'Status da transação atualizado com sucesso',
+      data: {
+        transaction: updatedTransaction,
+        oldStatus,
+        newStatus,
+        escrowBadge: updatedTransaction.getEscrowBadge(),
+        timeRemaining: updatedTransaction.getTimeRemaining()
+      }
+    });
+  } catch (error) {
+    console.error('Erro ao atualizar status da transação:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// POST /:id/escrow/enable - Habilitar escrow para transação
+router.post('/:id/escrow/enable', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { autoReleaseDays, requiresConfirmation, allowDisputes, maxDisputeDays } = req.body;
+    const { userId } = req.user;
+
+    // Buscar transação
+    const transaction = await Transaction.findById(id);
+    if (!transaction) {
+      return res.status(404).json({
+        success: false,
+        message: 'Transação não encontrada'
+      });
+    }
+
+    // Verificar permissões (apenas comprador pode habilitar escrow)
+    if (transaction.buyerId.toString() !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: 'Apenas o comprador pode habilitar escrow'
+      });
+    }
+
+    // Verificar se já tem escrow habilitado
+    if (transaction.usesEscrow) {
+      return res.status(400).json({
+        success: false,
+        message: 'Escrow já está habilitado para esta transação'
+      });
+    }
+
+    // Verificar se o status permite habilitar escrow
+    if (!['PENDING', 'NEGOTIATING', 'AGREED'].includes(transaction.status)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Status da transação não permite habilitar escrow'
+      });
+    }
+
+    // Atualizar configurações de escrow
+    transaction.usesEscrow = true;
+    transaction.escrowSettings = {
+      enabled: true,
+      autoReleaseDays: autoReleaseDays || 7,
+      requiresConfirmation: requiresConfirmation !== false,
+      allowDisputes: allowDisputes !== false,
+      maxDisputeDays: maxDisputeDays || 3
+    };
+
+    // Mudar status para ESCROW_PENDING
+    transaction.status = 'ESCROW_PENDING';
+    transaction.escrowStatus = 'PENDING';
+
+    // Adicionar ao histórico
+    await transaction.addStatusHistory(
+      'ESCROW_PENDING',
+      userId,
+      'Escrow habilitado',
+      'Escrow habilitado pelo comprador'
+    );
+
+    // Salvar transação
+    await transaction.save();
+
+    // Buscar transação atualizada
+    const updatedTransaction = await Transaction.findById(id)
+      .populate('buyerId', 'name email')
+      .populate('sellerId', 'name email')
+      .populate('itemId');
+
+    res.json({
+      success: true,
+      message: 'Escrow habilitado com sucesso',
+      data: {
+        transaction: updatedTransaction,
+        escrowBadge: updatedTransaction.getEscrowBadge(),
+        escrowSettings: updatedTransaction.escrowSettings
+      }
+    });
+  } catch (error) {
+    console.error('Erro ao habilitar escrow:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// POST /:id/escrow/disable - Desabilitar escrow para transação
+router.post('/:id/escrow/disable', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { reason } = req.body;
+    const { userId } = req.user;
+
+    // Buscar transação
+    const transaction = await Transaction.findById(id);
+    if (!transaction) {
+      return res.status(404).json({
+        success: false,
+        message: 'Transação não encontrada'
+      });
+    }
+
+    // Verificar permissões (apenas comprador pode desabilitar escrow)
+    if (transaction.buyerId.toString() !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: 'Apenas o comprador pode desabilitar escrow'
+      });
+    }
+
+    // Verificar se escrow está habilitado
+    if (!transaction.usesEscrow) {
+      return res.status(400).json({
+        success: false,
+        message: 'Escrow não está habilitado para esta transação'
+      });
+    }
+
+    // Verificar se pode desabilitar (apenas se ainda não foi fundado)
+    if (
+      ['FUNDED', 'IN_TRANSIT', 'DELIVERED', 'CONFIRMED', 'DISPUTED', 'RELEASED'].includes(
+        transaction.escrowStatus
+      )
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: 'Não é possível desabilitar escrow após o valor ser depositado'
+      });
+    }
+
+    // Desabilitar escrow
+    transaction.usesEscrow = false;
+    transaction.escrowSettings.enabled = false;
+    transaction.escrowStatus = 'NONE';
+
+    // Voltar para status anterior
+    if (transaction.status.startsWith('ESCROW_')) {
+      transaction.status = 'AGREED';
+    }
+
+    // Adicionar ao histórico
+    await transaction.addStatusHistory(
+      'AGREED',
+      userId,
+      'Escrow desabilitado',
+      reason || 'Escrow desabilitado pelo comprador'
+    );
+
+    // Salvar transação
+    await transaction.save();
+
+    // Buscar transação atualizada
+    const updatedTransaction = await Transaction.findById(id)
+      .populate('buyerId', 'name email')
+      .populate('sellerId', 'name email')
+      .populate('itemId');
+
+    res.json({
+      success: true,
+      message: 'Escrow desabilitado com sucesso',
+      data: {
+        transaction: updatedTransaction,
+        escrowBadge: updatedTransaction.getEscrowBadge()
+      }
+    });
+  } catch (error) {
+    console.error('Erro ao desabilitar escrow:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// GET /:id/escrow/status - Obter status detalhado do escrow
+router.get('/:id/escrow/status', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.user;
+
+    // Buscar transação
+    const transaction = await Transaction.findById(id)
+      .populate('buyerId', 'name email')
+      .populate('sellerId', 'name email')
+      .populate('itemId')
+      .populate('escrowTransactionId');
+
+    if (!transaction) {
+      return res.status(404).json({
+        success: false,
+        message: 'Transação não encontrada'
+      });
+    }
+
+    // Verificar permissões
+    if (
+      transaction.buyerId._id.toString() !== userId &&
+      transaction.sellerId._id.toString() !== userId
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: 'Sem permissão para visualizar esta transação'
+      });
+    }
+
+    // Verificar se escrow está habilitado
+    if (!transaction.usesEscrow) {
+      return res.status(400).json({
+        success: false,
+        message: 'Escrow não está habilitado para esta transação'
+      });
+    }
+
+    // Preparar dados de resposta
+    const escrowData = {
+      enabled: transaction.usesEscrow,
+      status: transaction.escrowStatus,
+      statusText: transaction.getEscrowStatusText(),
+      badge: transaction.getEscrowBadge(),
+      settings: transaction.escrowSettings,
+      timeRemaining: transaction.getTimeRemaining(),
+      isOverdue: transaction.isOverdue()
+    };
+
+    // Adicionar dados da transação de escrow se existir
+    if (transaction.escrowTransactionId) {
+      escrowData.escrowTransaction = {
+        id: transaction.escrowTransactionId._id,
+        amount: transaction.escrowTransactionId.amount,
+        currency: transaction.escrowTransactionId.currency,
+        fee: transaction.escrowTransactionId.fee,
+        totalAmount: transaction.escrowTransactionId.totalAmount,
+        fundedAt: transaction.escrowTransactionId.fundedAt,
+        deliveredAt: transaction.escrowTransactionId.deliveredAt,
+        confirmedAt: transaction.escrowTransactionId.confirmedAt,
+        releasedAt: transaction.escrowTransactionId.releasedAt
       };
+    }
 
-      // Mudar status para ESCROW_PENDING
-      transaction.status = 'ESCROW_PENDING';
-      transaction.escrowStatus = 'PENDING';
+    res.json({
+      success: true,
+      data: escrowData
+    });
+  } catch (error) {
+    console.error('Erro ao obter status do escrow:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
 
-      // Adicionar ao histórico
-      await transaction.addStatusHistory('ESCROW_PENDING', userId, 'Escrow habilitado', 'Escrow habilitado pelo comprador');
+// GET /:id/messages - Buscar mensagens da transação
+router.get('/:id/messages', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.user;
 
-      // Salvar transação
+    const transaction = await Transaction.findById(id);
+
+    if (!transaction) {
+      return res.status(404).json({
+        success: false,
+        message: 'Transação não encontrada'
+      });
+    }
+
+    // Verificar se o usuário tem acesso a esta transação
+    if (transaction.buyerId.toString() !== userId && transaction.sellerId.toString() !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: 'Acesso negado a esta transação'
+      });
+    }
+
+    // Buscar mensagens da transação
+    const messages = await TransactionMessage.findByTransaction(id, {
+      limit: 100,
+      sort: { createdAt: 1 }
+    });
+
+    // Marcar mensagens como lidas se o usuário for o destinatário
+    const unreadMessages = messages.filter(
+      msg => msg.to.toString() === userId && msg.status !== 'read'
+    );
+
+    if (unreadMessages.length > 0) {
+      await Promise.all(unreadMessages.map(msg => msg.markAsRead(userId)));
+    }
+
+    res.json({
+      success: true,
+      messages: messages.map(msg => msg.getDisplayData(userId)),
+      transactionId: id
+    });
+  } catch (error) {
+    console.error('Erro ao buscar mensagens:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// POST /:id/messages - Adicionar mensagem à transação
+router.post('/:id/messages', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { message, attachments, type = 'text', metadata } = req.body;
+    const { userId } = req.user;
+
+    const transaction = await Transaction.findById(id);
+
+    if (!transaction) {
+      return res.status(404).json({
+        success: false,
+        message: 'Transação não encontrada'
+      });
+    }
+
+    // Verificar se o usuário tem acesso a esta transação
+    if (transaction.buyerId.toString() !== userId && transaction.sellerId.toString() !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: 'Acesso negado a esta transação'
+      });
+    }
+
+    // Verificar se a transação não está cancelada ou concluída
+    if (['CANCELLED', 'COMPLETED'].includes(transaction.status)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Não é possível enviar mensagens para transações canceladas ou concluídas'
+      });
+    }
+
+    // Se for a primeira mensagem e o status for PENDING, mudar para NEGOTIATING
+    if (transaction.status === 'PENDING') {
+      transaction.status = 'NEGOTIATING';
+      transaction.updatedBy = userId;
       await transaction.save();
-
-      // Buscar transação atualizada
-      const updatedTransaction = await Transaction.findById(id)
-        .populate('buyerId', 'name email')
-        .populate('sellerId', 'name email')
-        .populate('itemId');
-
-      res.json({
-        success: true,
-        message: 'Escrow habilitado com sucesso',
-        data: {
-          transaction: updatedTransaction,
-          escrowBadge: updatedTransaction.getEscrowBadge(),
-          escrowSettings: updatedTransaction.escrowSettings
-        }
-      });
-
-    } catch (error) {
-      console.error('Erro ao habilitar escrow:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Erro interno do servidor'
-      });
     }
-  });
 
-  // POST /:id/escrow/disable - Desabilitar escrow para transação
-  router.post('/:id/escrow/disable', async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { reason } = req.body;
-      const userId = req.user.userId;
+    // Determinar destinatário
+    const toUserId =
+      transaction.buyerId.toString() === userId ? transaction.sellerId : transaction.buyerId;
 
-      // Buscar transação
-      const transaction = await Transaction.findById(id);
-      if (!transaction) {
-        return res.status(404).json({
-          success: false,
-          message: 'Transação não encontrada'
-        });
-      }
+    // Criar mensagem
+    const newMessage = new TransactionMessage({
+      transactionId: id,
+      from: userId,
+      to: toUserId,
+      body: message,
+      type,
+      attachments: attachments || [],
+      metadata: metadata || {}
+    });
 
-      // Verificar permissões (apenas comprador pode desabilitar escrow)
-      if (transaction.buyerId.toString() !== userId) {
-        return res.status(403).json({
-          success: false,
-          message: 'Apenas o comprador pode desabilitar escrow'
-        });
-      }
+    await newMessage.save();
 
-      // Verificar se escrow está habilitado
-      if (!transaction.usesEscrow) {
-        return res.status(400).json({
-          success: false,
-          message: 'Escrow não está habilitado para esta transação'
-        });
-      }
+    // Marcar como entregue
+    await newMessage.markAsDelivered();
 
-      // Verificar se pode desabilitar (apenas se ainda não foi fundado)
-      if (['FUNDED', 'IN_TRANSIT', 'DELIVERED', 'CONFIRMED', 'DISPUTED', 'RELEASED'].includes(transaction.escrowStatus)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Não é possível desabilitar escrow após o valor ser depositado'
-        });
-      }
+    // Populate dados para resposta
+    await newMessage.populate([
+      { path: 'from', select: 'name email phone' },
+      { path: 'to', select: 'name email phone' }
+    ]);
 
-      // Desabilitar escrow
-      transaction.usesEscrow = false;
-      transaction.escrowSettings.enabled = false;
-      transaction.escrowStatus = 'NONE';
+    res.json({
+      success: true,
+      message: 'Mensagem enviada com sucesso',
+      data: newMessage.getDisplayData(userId)
+    });
+  } catch (error) {
+    console.error('Erro ao enviar mensagem:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
 
-      // Voltar para status anterior
-      if (transaction.status.startsWith('ESCROW_')) {
-        transaction.status = 'AGREED';
-      }
+// GET /conversations - Buscar conversas ativas do usuário
+router.get('/conversations', async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const { limit = 20 } = req.query;
 
-      // Adicionar ao histórico
-      await transaction.addStatusHistory('AGREED', userId, 'Escrow desabilitado', reason || 'Escrow desabilitado pelo comprador');
+    // Buscar conversas ativas
+    const conversations = await TransactionMessage.findActiveConversations(userId, parseInt(limit));
 
-      // Salvar transação
-      await transaction.save();
+    res.json({
+      success: true,
+      conversations: conversations.map(conv => ({
+        transactionId: conv._id,
+        transaction: conv.transaction,
+        lastMessage: conv.lastMessage,
+        messageCount: conv.messageCount,
+        unreadCount: conv.unreadCount,
+        fromUser: conv.fromUser,
+        toUser: conv.toUser
+      }))
+    });
+  } catch (error) {
+    console.error('Erro ao buscar conversas:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
 
-      // Buscar transação atualizada
-      const updatedTransaction = await Transaction.findById(id)
-        .populate('buyerId', 'name email')
-        .populate('sellerId', 'name email')
-        .populate('itemId');
-
-      res.json({
-        success: true,
-        message: 'Escrow desabilitado com sucesso',
-        data: {
-          transaction: updatedTransaction,
-          escrowBadge: updatedTransaction.getEscrowBadge()
-        }
-      });
-
-    } catch (error) {
-      console.error('Erro ao desabilitar escrow:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Erro interno do servidor'
-      });
-    }
-  });
-
-  // GET /:id/escrow/status - Obter status detalhado do escrow
-  router.get('/:id/escrow/status', async (req, res) => {
-    try {
-      const { id } = req.params;
-      const userId = req.user.userId;
-
-      // Buscar transação
-      const transaction = await Transaction.findById(id)
-        .populate('buyerId', 'name email')
-        .populate('sellerId', 'name email')
-        .populate('itemId')
-        .populate('escrowTransactionId');
-
-      if (!transaction) {
-        return res.status(404).json({
-          success: false,
-          message: 'Transação não encontrada'
-        });
-      }
-
-      // Verificar permissões
-      if (transaction.buyerId._id.toString() !== userId && transaction.sellerId._id.toString() !== userId) {
-        return res.status(403).json({
-          success: false,
-          message: 'Sem permissão para visualizar esta transação'
-        });
-      }
-
-      // Verificar se escrow está habilitado
-      if (!transaction.usesEscrow) {
-        return res.status(400).json({
-          success: false,
-          message: 'Escrow não está habilitado para esta transação'
-        });
-      }
-
-      // Preparar dados de resposta
-      const escrowData = {
-        enabled: transaction.usesEscrow,
-        status: transaction.escrowStatus,
-        statusText: transaction.getEscrowStatusText(),
-        badge: transaction.getEscrowBadge(),
-        settings: transaction.escrowSettings,
-        timeRemaining: transaction.getTimeRemaining(),
-        isOverdue: transaction.isOverdue()
-      };
-
-      // Adicionar dados da transação de escrow se existir
-      if (transaction.escrowTransactionId) {
-        escrowData.escrowTransaction = {
-          id: transaction.escrowTransactionId._id,
-          amount: transaction.escrowTransactionId.amount,
-          currency: transaction.escrowTransactionId.currency,
-          fee: transaction.escrowTransactionId.fee,
-          totalAmount: transaction.escrowTransactionId.totalAmount,
-          fundedAt: transaction.escrowTransactionId.fundedAt,
-          deliveredAt: transaction.escrowTransactionId.deliveredAt,
-          confirmedAt: transaction.escrowTransactionId.confirmedAt,
-          releasedAt: transaction.escrowTransactionId.releasedAt
-        };
-      }
-
-      res.json({
-        success: true,
-        data: escrowData
-      });
-
-    } catch (error) {
-      console.error('Erro ao obter status do escrow:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Erro interno do servidor'
-      });
-    }
-  });
-
-  // GET /:id/messages - Buscar mensagens da transação
-  router.get('/:id/messages', async (req, res) => {
-    try {
-      const { id } = req.params;
-      const userId = req.user.userId;
-
-      const transaction = await Transaction.findById(id);
-
-      if (!transaction) {
-        return res.status(404).json({
-          success: false,
-          message: 'Transação não encontrada'
-        });
-      }
-
-      // Verificar se o usuário tem acesso a esta transação
-      if (transaction.buyerId.toString() !== userId && 
-          transaction.sellerId.toString() !== userId) {
-        return res.status(403).json({
-          success: false,
-          message: 'Acesso negado a esta transação'
-        });
-      }
-
-      // Buscar mensagens da transação
-      const messages = await TransactionMessage.findByTransaction(id, {
-        limit: 100,
-        sort: { createdAt: 1 }
-      });
-
-      // Marcar mensagens como lidas se o usuário for o destinatário
-      const unreadMessages = messages.filter(msg => 
-        msg.to.toString() === userId && msg.status !== 'read'
-      );
-
-      if (unreadMessages.length > 0) {
-        await Promise.all(
-          unreadMessages.map(msg => msg.markAsRead(userId))
-        );
-      }
-
-      res.json({
-        success: true,
-        messages: messages.map(msg => msg.getDisplayData(userId)),
-        transactionId: id
-      });
-
-    } catch (error) {
-      console.error('Erro ao buscar mensagens:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Erro interno do servidor'
-      });
-    }
-  });
-
-  // POST /:id/messages - Adicionar mensagem à transação
-  router.post('/:id/messages', async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { message, attachments, type = 'text', metadata } = req.body;
-      const userId = req.user.userId;
-
-      const transaction = await Transaction.findById(id);
-
-      if (!transaction) {
-        return res.status(404).json({
-          success: false,
-          message: 'Transação não encontrada'
-        });
-      }
-
-      // Verificar se o usuário tem acesso a esta transação
-      if (transaction.buyerId.toString() !== userId && 
-          transaction.sellerId.toString() !== userId) {
-        return res.status(403).json({
-          success: false,
-          message: 'Acesso negado a esta transação'
-        });
-      }
-
-      // Verificar se a transação não está cancelada ou concluída
-      if (['CANCELLED', 'COMPLETED'].includes(transaction.status)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Não é possível enviar mensagens para transações canceladas ou concluídas'
-        });
-      }
-
-      // Se for a primeira mensagem e o status for PENDING, mudar para NEGOTIATING
-      if (transaction.status === 'PENDING') {
-        transaction.status = 'NEGOTIATING';
-        transaction.updatedBy = userId;
-        await transaction.save();
-      }
-
-      // Determinar destinatário
-      const toUserId = transaction.buyerId.toString() === userId 
-        ? transaction.sellerId 
-        : transaction.buyerId;
-
-      // Criar mensagem
-      const newMessage = new TransactionMessage({
-        transactionId: id,
-        from: userId,
-        to: toUserId,
-        body: message,
-        type: type,
-        attachments: attachments || [],
-        metadata: metadata || {}
-      });
-
-      await newMessage.save();
-
-      // Marcar como entregue
-      await newMessage.markAsDelivered();
-
-      // Populate dados para resposta
-      await newMessage.populate([
-        { path: 'from', select: 'name email phone' },
-        { path: 'to', select: 'name email phone' }
-      ]);
-
-      res.json({
-        success: true,
-        message: 'Mensagem enviada com sucesso',
-        data: newMessage.getDisplayData(userId)
-      });
-
-    } catch (error) {
-      console.error('Erro ao enviar mensagem:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Erro interno do servidor'
-      });
-    }
-  });
-
-  // GET /conversations - Buscar conversas ativas do usuário
-  router.get('/conversations', async (req, res) => {
-    try {
-      const userId = req.user.userId;
-      const { limit = 20 } = req.query;
-
-      // Buscar conversas ativas
-      const conversations = await TransactionMessage.findActiveConversations(userId, parseInt(limit));
-
-      res.json({
-        success: true,
-        conversations: conversations.map(conv => ({
-          transactionId: conv._id,
-          transaction: conv.transaction,
-          lastMessage: conv.lastMessage,
-          messageCount: conv.messageCount,
-          unreadCount: conv.unreadCount,
-          fromUser: conv.fromUser,
-          toUser: conv.toUser
-        }))
-      });
-
-    } catch (error) {
-      console.error('Erro ao buscar conversas:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Erro interno do servidor'
-      });
-    }
-  });
-
-  // GET /stats - Estatísticas das transações
-  router.get('/stats', async (req, res) => {
-    try {
-      const userId = req.user.userId;
+// GET /stats - Estatísticas das transações
+router.get('/stats', async (req, res) => {
+  try {
+    const { userId } = req.user;
 
     // Estatísticas gerais
     const totalTransactions = await Transaction.countDocuments({
@@ -815,7 +812,6 @@ router.post('/', async (req, res) => {
         totalValue: totalValue[0]?.total || 0
       }
     });
-
   } catch (error) {
     console.error('Erro ao buscar estatísticas:', error);
     res.status(500).json({
@@ -833,8 +829,12 @@ router.get('/admin/all', requireRole('admin'), async (req, res) => {
     const { page = 1, limit = 50, status, type } = req.query;
 
     const filters = {};
-    if (status) filters.status = status;
-    if (type) filters.type = type;
+    if (status) {
+      filters.status = status;
+    }
+    if (type) {
+      filters.type = type;
+    }
 
     const skip = (page - 1) * limit;
 
@@ -859,7 +859,6 @@ router.get('/admin/all', requireRole('admin'), async (req, res) => {
         }
       }
     });
-
   } catch (error) {
     console.error('Erro ao buscar transações (admin):', error);
     res.status(500).json({
@@ -901,7 +900,6 @@ router.patch('/admin/:id/status', requireRole('admin'), async (req, res) => {
       message: 'Status atualizado com sucesso (admin)',
       transaction
     });
-
   } catch (error) {
     console.error('Erro ao atualizar status (admin):', error);
     res.status(500).json({

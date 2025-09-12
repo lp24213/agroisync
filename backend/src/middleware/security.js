@@ -8,15 +8,15 @@ export const securityHeaders = helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      imgSrc: ["'self'", "data:", "https:"],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+      imgSrc: ["'self'", 'data:', 'https:'],
       scriptSrc: ["'self'"],
-      connectSrc: ["'self'", "https://api.stripe.com"],
-      frameSrc: ["'self'", "https://js.stripe.com"],
+      connectSrc: ["'self'", 'https://api.stripe.com'],
+      frameSrc: ["'self'", 'https://js.stripe.com'],
       objectSrc: ["'none'"],
-      upgradeInsecureRequests: [],
-    },
+      upgradeInsecureRequests: []
+    }
   },
   crossOriginEmbedderPolicy: false,
   hsts: {
@@ -28,7 +28,7 @@ export const securityHeaders = helmet({
 
 // Configuração CORS
 export const corsOptions = {
-  origin: function (origin, callback) {
+  origin(origin, callback) {
     const allowedOrigins = [
       'http://localhost:3000',
       'https://agroisync.com',
@@ -38,7 +38,9 @@ export const corsOptions = {
     ].filter(Boolean);
 
     // Permitir requests sem origin (mobile apps, Postman, etc.)
-    if (!origin) return callback(null, true);
+    if (!origin) {
+      return callback(null, true);
+    }
 
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
@@ -66,34 +68,33 @@ export const validateInput = (req, res, next) => {
 
 // Validações comuns
 export const commonValidations = {
-  email: body('email')
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('Email inválido'),
-  
+  email: body('email').isEmail().normalizeEmail().withMessage('Email inválido'),
+
   password: body('password')
     .isLength({ min: 8 })
     .withMessage('Senha deve ter pelo menos 8 caracteres')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/)
-    .withMessage('Senha deve conter pelo menos: 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial'),
-  
+    .withMessage(
+      'Senha deve conter pelo menos: 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial'
+    ),
+
   name: body('name')
     .trim()
     .isLength({ min: 2, max: 100 })
     .withMessage('Nome deve ter entre 2 e 100 caracteres')
     .matches(/^[a-zA-ZÀ-ÿ\s]+$/)
     .withMessage('Nome deve conter apenas letras e espaços'),
-  
+
   phone: body('phone')
     .optional()
     .matches(/^\(\d{2}\)\s\d{4,5}-\d{4}$/)
     .withMessage('Telefone deve estar no formato (XX) XXXXX-XXXX'),
-  
+
   cpf: body('cpf')
     .optional()
     .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)
     .withMessage('CPF deve estar no formato XXX.XXX.XXX-XX'),
-  
+
   cnpj: body('cnpj')
     .optional()
     .matches(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/)
@@ -103,8 +104,10 @@ export const commonValidations = {
 // Middleware de sanitização
 export const sanitizeInput = (req, res, next) => {
   // Sanitizar strings removendo caracteres perigosos
-  const sanitizeString = (str) => {
-    if (typeof str !== 'string') return str;
+  const sanitizeString = str => {
+    if (typeof str !== 'string') {
+      return str;
+    }
     return str
       .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
       .replace(/javascript:/gi, '')
@@ -150,8 +153,10 @@ export const detectAttacks = async (req, res, next) => {
     /expression\s*\(/i
   ];
 
-  const checkString = (str) => {
-    if (typeof str !== 'string') return false;
+  const checkString = str => {
+    if (typeof str !== 'string') {
+      return false;
+    }
     return suspiciousPatterns.some(pattern => pattern.test(str));
   };
 
@@ -177,17 +182,13 @@ export const detectAttacks = async (req, res, next) => {
         riskLevel = 'MEDIUM';
         break;
       }
-      }
     }
-    
-    // Verificar headers suspeitos
-    const suspiciousHeaders = [
-      'x-forwarded-for',
-      'x-real-ip',
-    'x-cluster-client-ip'
-    ];
-    
-    for (const header of suspiciousHeaders) {
+  }
+
+  // Verificar headers suspeitos
+  const suspiciousHeaders = ['x-forwarded-for', 'x-real-ip', 'x-cluster-client-ip'];
+
+  for (const header of suspiciousHeaders) {
     if (req.headers[header] && checkString(req.headers[header])) {
       isSuspicious = true;
       riskLevel = 'HIGH';
@@ -206,19 +207,19 @@ export const detectAttacks = async (req, res, next) => {
       ip: req.ip,
       userAgent: req.get('User-Agent'),
       isSuspicious: true,
-      riskLevel: riskLevel
+      riskLevel
     });
 
     // Bloquear requests de alto risco
     if (riskLevel === 'HIGH') {
-        return res.status(403).json({
-          success: false,
+      return res.status(403).json({
+        success: false,
         message: 'Atividade suspeita detectada. Acesso negado.'
-        });
-      }
+      });
     }
-    
-    next();
+  }
+
+  next();
 };
 
 // Middleware de validação de Stripe webhook
@@ -267,7 +268,7 @@ export const requestTimeout = (timeout = 30000) => {
         success: false,
         message: 'Request timeout'
       });
-      });
+    });
     next();
   };
 };

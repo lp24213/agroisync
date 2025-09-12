@@ -322,17 +322,18 @@ router.get('/featured', async (req, res) => {
 // Configurações
 const RSS_URLS = {
   'globo-rural': 'https://g1.globo.com/rss/g1/economia/agronegocios/',
-  'agrolink': 'https://www.agrolink.com.br/rss/noticias',
+  agrolink: 'https://www.agrolink.com.br/rss/noticias',
   'canal-rural': 'https://www.canalrural.com.br/rss/noticias'
 };
 
 // GET /api/news/globo-rural - Obter notícias do Globo Rural
-router.get('/globo-rural', 
+router.get(
+  '/globo-rural',
   apiLimiter, // Use the existing apiLimiter
   async (req, res) => {
     try {
       const rssUrl = RSS_URLS['globo-rural'];
-      
+
       // Fazer requisição para o RSS
       const response = await axios.get(rssUrl, {
         timeout: 10000,
@@ -343,17 +344,16 @@ router.get('/globo-rural',
 
       // Parsear o XML RSS (simplificado)
       const rssData = parseRSSXML(response.data);
-      
+
       res.json({
         success: true,
         source: 'Globo Rural',
         lastUpdated: new Date().toISOString(),
         items: rssData.items || []
       });
-
     } catch (error) {
       console.error('Erro ao obter notícias do Globo Rural:', error);
-      
+
       // Retornar dados de fallback
       res.json({
         success: true,
@@ -366,12 +366,13 @@ router.get('/globo-rural',
 );
 
 // GET /api/news/agrolink - Obter notícias do Agrolink
-router.get('/agrolink',
+router.get(
+  '/agrolink',
   apiLimiter, // Use the existing apiLimiter
   async (req, res) => {
     try {
       const rssUrl = RSS_URLS['agrolink'];
-      
+
       const response = await axios.get(rssUrl, {
         timeout: 10000,
         headers: {
@@ -380,17 +381,16 @@ router.get('/agrolink',
       });
 
       const rssData = parseRSSXML(response.data);
-      
+
       res.json({
         success: true,
         source: 'Agrolink',
         lastUpdated: new Date().toISOString(),
         items: rssData.items || []
       });
-
     } catch (error) {
       console.error('Erro ao obter notícias do Agrolink:', error);
-      
+
       res.json({
         success: true,
         source: 'Agrolink (Fallback)',
@@ -402,12 +402,13 @@ router.get('/agrolink',
 );
 
 // GET /api/news/canal-rural - Obter notícias do Canal Rural
-router.get('/canal-rural',
+router.get(
+  '/canal-rural',
   apiLimiter, // Use the existing apiLimiter
   async (req, res) => {
     try {
       const rssUrl = RSS_URLS['canal-rural'];
-      
+
       const response = await axios.get(rssUrl, {
         timeout: 10000,
         headers: {
@@ -416,17 +417,16 @@ router.get('/canal-rural',
       });
 
       const rssData = parseRSSXML(response.data);
-      
+
       res.json({
         success: true,
         source: 'Canal Rural',
         lastUpdated: new Date().toISOString(),
         items: rssData.items || []
       });
-
     } catch (error) {
       console.error('Erro ao obter notícias do Canal Rural:', error);
-      
+
       res.json({
         success: true,
         source: 'Canal Rural (Fallback)',
@@ -438,7 +438,8 @@ router.get('/canal-rural',
 );
 
 // GET /api/news/all - Obter notícias de todas as fontes
-router.get('/all',
+router.get(
+  '/all',
   apiLimiter, // Use the existing apiLimiter
   async (req, res) => {
     try {
@@ -472,15 +473,14 @@ router.get('/all',
 
       res.json({
         success: true,
-        sources: sources,
+        sources,
         lastUpdated: new Date().toISOString(),
         totalItems: sortedNews.length,
         items: sortedNews
       });
-
     } catch (error) {
       console.error('Erro ao obter notícias de todas as fontes:', error);
-      
+
       res.json({
         success: true,
         sources: ['Fallback'],
@@ -497,20 +497,20 @@ function parseRSSXML(xmlString) {
   try {
     // Parse básico do XML RSS
     const items = [];
-    
+
     // Extrair itens do RSS
     const itemRegex = /<item>([\s\S]*?)<\/item>/g;
     let match;
-    
+
     while ((match = itemRegex.exec(xmlString)) !== null) {
       const itemContent = match[1];
-      
+
       const title = extractTag(itemContent, 'title');
       const description = extractTag(itemContent, 'description');
       const link = extractTag(itemContent, 'link');
       const pubDate = extractTag(itemContent, 'pubDate');
       const guid = extractTag(itemContent, 'guid');
-      
+
       if (title && link) {
         items.push({
           title: decodeXMLEntities(title),
@@ -521,7 +521,7 @@ function parseRSSXML(xmlString) {
         });
       }
     }
-    
+
     return { items };
   } catch (error) {
     console.error('Erro ao parsear XML RSS:', error);
@@ -538,8 +538,10 @@ function extractTag(content, tagName) {
 
 // Função para decodificar entidades XML
 function decodeXMLEntities(text) {
-  if (!text) return '';
-  
+  if (!text) {
+    return '';
+  }
+
   return text
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
@@ -554,35 +556,40 @@ function getFallbackNews(limit = 10) {
   const fallbackNews = [
     {
       title: 'Mercado agrícola em alta com forte demanda internacional',
-      description: 'Commodities agrícolas brasileiras registram alta expressiva com forte demanda de países asiáticos.',
+      description:
+        'Commodities agrícolas brasileiras registram alta expressiva com forte demanda de países asiáticos.',
       link: 'https://g1.globo.com/economia/agronegocios/',
       pubDate: new Date().toISOString(),
       guid: 'fallback-1'
     },
     {
       title: 'Tecnologia revoluciona agricultura brasileira',
-      description: 'Novas tecnologias como drones e IoT aumentam produtividade no campo brasileiro.',
+      description:
+        'Novas tecnologias como drones e IoT aumentam produtividade no campo brasileiro.',
       link: 'https://g1.globo.com/economia/agronegocios/',
       pubDate: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
       guid: 'fallback-2'
     },
     {
       title: 'Clima favorável para safra de grãos 2024',
-      description: 'Previsões climáticas indicam condições favoráveis para a próxima safra de grãos.',
+      description:
+        'Previsões climáticas indicam condições favoráveis para a próxima safra de grãos.',
       link: 'https://g1.globo.com/economia/agronegocios/',
       pubDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
       guid: 'fallback-3'
     },
     {
       title: 'Exportação de carne bovina atinge recorde',
-      description: 'Setor de carne bovina brasileiro registra recorde de exportações para mercados internacionais.',
+      description:
+        'Setor de carne bovina brasileiro registra recorde de exportações para mercados internacionais.',
       link: 'https://g1.globo.com/economia/agronegocios/',
       pubDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
       guid: 'fallback-4'
     },
     {
       title: 'Investimentos em agricultura sustentável crescem',
-      description: 'Produtores rurais investem cada vez mais em práticas sustentáveis e certificações ambientais.',
+      description:
+        'Produtores rurais investem cada vez mais em práticas sustentáveis e certificações ambientais.',
       link: 'https://g1.globo.com/economia/agronegocios/',
       pubDate: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
       guid: 'fallback-5'
