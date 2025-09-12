@@ -24,7 +24,7 @@ import AgroConecta from './pages/AgroConecta';
 import IntermediationSystem from './components/IntermediationSystem';
 import Crypto from './pages/Crypto';
 import Messaging from './pages/Messaging';
-import Dashboard from './pages/dashboard';
+import Dashboard from './pages/Dashboard';
 import AdminPanel from './pages/AdminPanel';
 import Plans from './pages/Plans';
 import Login from './pages/Login';
