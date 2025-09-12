@@ -42,7 +42,7 @@
     "type-check": "tsc --noEmit",
     "precommit": "npm run lint && npm run test:ci",
     "prebuild": "echo 'Skipping lint for Cloudflare build'",
-    "postbuild": "echo 'Build completed successfully!' && echo 'Build size:' && du -sh build/",
+    "postbuild": "echo 'Build completed successfully!'",
     "eject": "react-scripts eject",
     "health-check": "curl -f http://localhost:3000 || exit 1"
   },
