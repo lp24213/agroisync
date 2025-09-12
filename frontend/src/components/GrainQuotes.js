@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Circle, Square, Triangle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useTheme } from '../contexts/ThemeContext';
+// import { useTheme } from '../contexts/ThemeContext'; // Removido para evitar warning
 
 const GrainQuotes = () => {
   const [quotes, setQuotes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { t } = useLanguage();
-  const { isDarkMode } = useTheme();
+  // const { isDarkMode } = useTheme(); // Removido para evitar warning
 
   useEffect(() => {
     // Dados mockados de grãos (em produção, usar API de cotações)

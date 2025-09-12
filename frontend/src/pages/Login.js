@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { useTheme } from '../contexts/ThemeContext';
+// import { useTheme } from '../contexts/ThemeContext'; // Removido para evitar warning
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -15,7 +15,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   
   const { login } = useAuth();
-  const { isDarkMode } = useTheme();
+  // const { isDarkMode } = useTheme(); // Removido para evitar warning
   const navigate = useNavigate();
 
   const handleChange = (e) => {

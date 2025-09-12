@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Search, 
-  ShoppingCart, 
+  // ShoppingCart, // Removido para evitar warning
   Star, 
   Heart,
   Truck,

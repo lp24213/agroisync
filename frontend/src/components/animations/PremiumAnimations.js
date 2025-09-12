@@ -77,7 +77,7 @@ export const PremiumScrollReveal = ({
 // Premium Mouse Tracking Component
 export const MouseTracker = ({ children, intensity = 0.1 }) => {
   const ref = useRef(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    // const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 }); // Removido para evitar warning
   
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -95,7 +95,7 @@ export const MouseTracker = ({ children, intensity = 0.1 }) => {
         const mouseX = e.clientX - centerX;
         const mouseY = e.clientY - centerY;
         
-        setMousePosition({ x: mouseX, y: mouseY });
+        // setMousePosition({ x: mouseX, y: mouseY }); // Removido para evitar warning
         x.set(mouseX);
         y.set(mouseY);
       }
