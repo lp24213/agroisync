@@ -12,8 +12,9 @@ import {
   User
 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useTheme } from '../contexts/ThemeContext';
 import useStore from '../store/useStore';
+import '../styles/modern-neutral-theme.css';
+import '../styles/premium-futuristic.css';
 
 const ChatbotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,7 +25,6 @@ const ChatbotWidget = () => {
   const messagesEndRef = useRef(null);
   
   const { t } = useLanguage();
-  const { isDarkMode } = useTheme();
   const { chatbotOpen, toggleChatbot, chatHistory, addChatMessage } = useStore();
 
   const scrollToBottom = () => {
@@ -122,7 +122,7 @@ const ChatbotWidget = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => toggleChatbot()}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 bg-primary shadow-lg hover:bg-primary-hover"
+        className="fixed bottom-8 right-8 z-50 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 bg-gradient-to-r from-gray-800 to-black shadow-2xl hover:shadow-glow border border-white/20 backdrop-blur-xl"
       >
         <AnimatePresence mode="wait">
           {isOpen ? (
@@ -153,11 +153,11 @@ const ChatbotWidget = () => {
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="chatbot-widget fixed bottom-24 right-6 z-40 w-80 h-96 rounded-lg shadow-xl flex flex-col"
+            className="chatbot-widget fixed bottom-32 right-8 z-40 w-96 h-[500px] rounded-2xl shadow-2xl flex flex-col bg-gradient-to-b from-gray-900 to-black border border-white/20 backdrop-blur-2xl"
           >
             <div className="flex items-center justify-between p-4 border-b border-gray-600">
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center">
                   <Bot className="w-4 h-4 text-white" />
                 </div>
                 <div>

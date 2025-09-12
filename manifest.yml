@@ -1,0 +1,14 @@
+---
+applications:
+- name: agroisync-backend
+  memory: 512M
+  instances: 1
+  path: backend
+  buildpack: nodejs_buildpack
+  env:
+    NODE_ENV: production
+    MONGODB_URI: mongodb://ibm_cloud_a5228c28_d6e9_444d_a05b_d2db0b92f2ab:LKehxs0J5sPnhnOmbMZ2EsOCnDjq1VoB@33b64d60-3f7e-4ae5-95ba-7ebef9cfcf66-0.c38qvnlz04atmdpus310.databases.appdomain.cloud:30109,33b64d60-3f7e-4ae5-95ba-7ebef9cfcf66-1.c38qvnlz04atmdpus310.databases.appdomain.cloud:30109,33b64d60-3f7e-4ae5-95ba-7ebef9cfcf66-2.c38qvnlz04atmdpus310.databases.appdomain.cloud:30109/ibmclouddb?authSource=admin&replicaSet=replset&tls=true
+    JWT_SECRET: agroisync-super-secret-jwt-key-2024
+  services:
+    - agroisync-mongodb
+    - agroisync-redis

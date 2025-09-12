@@ -1,14 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Amplify } from 'aws-amplify';
-import { getCurrentUser, signIn, signUp, signOut, confirmSignUp, resendSignUpCode } from 'aws-amplify/auth';
-import { fetchAuthSession } from 'aws-amplify/auth';
 import useStore from '../store/useStore';
-import awsconfig from '../aws-exports';
+import axios from 'axios';
 
-// Configurar Amplify
-Amplify.configure(awsconfig);
-
-// const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 const AuthContext = createContext();
 
@@ -34,23 +28,33 @@ export const AuthProvider = ({ children }) => {
   const checkAuthState = async () => {
     try {
       setIsLoading(true);
-      const currentUser = await getCurrentUser();
-      const session = await fetchAuthSession();
+      const token = localStorage.getItem('authToken');
       
-      if (currentUser && session) {
-        const userData = {
-          id: currentUser.userId,
-          username: currentUser.username,
-          email: currentUser.signInDetails?.loginId,
-          attributes: currentUser.signInDetails?.loginId ? { email: currentUser.signInDetails.loginId } : {},
-          session: session
-        };
+      if (token) {
+        // Verificar se o token ainda é válido fazendo uma chamada para o backend
+        const response = await axios.get(`${API_BASE_URL}/auth/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
         
-        setUser(userData);
-        setStoreUser(userData);
+        if (response.data.success) {
+          const userData = response.data.user;
+          setUser(userData);
+          setStoreUser(userData);
+        } else {
+          // Token inválido, remover do localStorage
+          localStorage.removeItem('authToken');
+          setUser(null);
+          setStoreUser(null);
+        }
+      } else {
+        setUser(null);
+        setStoreUser(null);
       }
     } catch (error) {
       console.log('No authenticated user:', error);
+      localStorage.removeItem('authToken');
       setUser(null);
       setStoreUser(null);
     } finally {
@@ -64,24 +68,24 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(true);
       setError(null);
       
-      const result = await signIn({
-        username: email,
-        password: password
+      const response = await axios.post(`${API_BASE_URL}/auth/login`, {
+        email,
+        password
       });
       
-      if (result.isSignedIn) {
-        await checkAuthState();
+      if (response.data.success) {
+        const { token, user } = response.data;
+        localStorage.setItem('authToken', token);
+        setUser(user);
+        setStoreUser(user);
         return { success: true };
-      } else if (result.nextStep) {
-        return { 
-          success: false, 
-          requiresConfirmation: true,
-          nextStep: result.nextStep
-        };
+      } else {
+        return { success: false, error: response.data.message };
       }
     } catch (error) {
-      setError(error.message);
-      return { success: false, error: error.message };
+      const errorMessage = error.response?.data?.message || error.message;
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
     } finally {
       setIsLoading(false);
     }
@@ -92,25 +96,25 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(true);
       setError(null);
       
-      const result = await signUp({
-        username: email,
-        password: password,
-        options: {
-          userAttributes: {
-            email: email,
-            ...userAttributes
-          }
-        }
+      const response = await axios.post(`${API_BASE_URL}/auth/register`, {
+        email,
+        password,
+        ...userAttributes
       });
       
-      return { 
-        success: true, 
-        requiresConfirmation: true,
-        userId: result.userId
-      };
+      if (response.data.success) {
+        return { 
+          success: true, 
+          requiresConfirmation: response.data.requiresConfirmation || false,
+          userId: response.data.userId
+        };
+      } else {
+        return { success: false, error: response.data.message };
+      }
     } catch (error) {
-      setError(error.message);
-      return { success: false, error: error.message };
+      const errorMessage = error.response?.data?.message || error.message;
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
     } finally {
       setIsLoading(false);
     }
@@ -121,15 +125,20 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(true);
       setError(null);
       
-      await confirmSignUp({
-        username: email,
-        confirmationCode: confirmationCode
+      const response = await axios.post(`${API_BASE_URL}/auth/confirm`, {
+        email,
+        confirmationCode
       });
       
-      return { success: true };
+      if (response.data.success) {
+        return { success: true };
+      } else {
+        return { success: false, error: response.data.message };
+      }
     } catch (error) {
-      setError(error.message);
-      return { success: false, error: error.message };
+      const errorMessage = error.response?.data?.message || error.message;
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
     } finally {
       setIsLoading(false);
     }
@@ -137,18 +146,42 @@ export const AuthProvider = ({ children }) => {
 
   const resendConfirmationCode = async (email) => {
     try {
-      await resendSignUpCode({ username: email });
-      return { success: true };
+      const response = await axios.post(`${API_BASE_URL}/auth/resend-confirmation`, {
+        email
+      });
+      
+      if (response.data.success) {
+        return { success: true };
+      } else {
+        return { success: false, error: response.data.message };
+      }
     } catch (error) {
-      setError(error.message);
-      return { success: false, error: error.message };
+      const errorMessage = error.response?.data?.message || error.message;
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
     }
   };
 
   const logout = async () => {
     try {
       setIsLoading(true);
-      await signOut();
+      
+      // Chamar endpoint de logout no backend (opcional)
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        try {
+          await axios.post(`${API_BASE_URL}/auth/logout`, {}, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+        } catch (error) {
+          // Ignorar erros de logout no backend
+          console.log('Logout error:', error);
+        }
+      }
+      
+      localStorage.removeItem('authToken');
       setUser(null);
       setStoreUser(null);
       return { success: true };
@@ -165,15 +198,19 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(true);
       setError(null);
       
-      // Implementar reset de senha
-      // TODO: Implementar lógica de reset de senha com AWS Amplify
-      // Por enquanto, simula uma operação assíncrona
-      await new Promise(resolve => setTimeout(resolve, 100));
+      const response = await axios.post(`${API_BASE_URL}/auth/reset-password`, {
+        email
+      });
       
-      return { success: true };
+      if (response.data.success) {
+        return { success: true };
+      } else {
+        return { success: false, error: response.data.message };
+      }
     } catch (error) {
-      setError(error.message);
-      return { success: false, error: error.message };
+      const errorMessage = error.response?.data?.message || error.message;
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
     } finally {
       setIsLoading(false);
     }
@@ -184,15 +221,22 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(true);
       setError(null);
       
-      // Implementar 2FA
-      // TODO: Implementar lógica de 2FA com AWS Amplify
-      // Por enquanto, simula uma operação assíncrona
-      await new Promise(resolve => setTimeout(resolve, 100));
+      const token = localStorage.getItem('authToken');
+      const response = await axios.post(`${API_BASE_URL}/auth/enable-2fa`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       
-      return { success: true };
+      if (response.data.success) {
+        return { success: true, qrCode: response.data.qrCode };
+      } else {
+        return { success: false, error: response.data.message };
+      }
     } catch (error) {
-      setError(error.message);
-      return { success: false, error: error.message };
+      const errorMessage = error.response?.data?.message || error.message;
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
     } finally {
       setIsLoading(false);
     }

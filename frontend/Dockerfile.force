@@ -1,0 +1,16 @@
+FROM nginx:alpine
+
+# Remove a página padrão do nginx
+RUN rm /usr/share/nginx/html/index.html
+
+# Copia nosso conteúdo personalizado
+COPY build/index.html /usr/share/nginx/html/index.html
+
+# Copia configuração do nginx
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Expõe porta 8080
+EXPOSE 8080
+
+# Inicia nginx
+CMD ["nginx", "-g", "daemon off;"]

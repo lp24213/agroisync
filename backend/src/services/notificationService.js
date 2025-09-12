@@ -1,454 +1,230 @@
-import Notification from '../models/Notification.js';
-import User from '../models/User.js';
-import awsService from './awsService.js';
+import nodemailer from 'nodemailer';
+import twilio from 'twilio';
 
-// Configurações de notificação
-const NOTIFICATION_CONFIG = {
-  // Templates de notificação por tipo
-  templates: {
-    NEW_TRANSACTION: {
-      title: 'Nova Transação',
-      body: 'Você tem uma nova transação pendente de {itemType}',
-      priority: 'HIGH',
-      channels: ['EMAIL', 'IN_APP'],
-      category: 'TRANSACTION'
-    },
-    NEW_MESSAGE: {
-      title: 'Nova Mensagem',
-      body: 'Você recebeu uma nova mensagem de {senderName}',
-      priority: 'NORMAL',
-      channels: ['EMAIL', 'PUSH', 'IN_APP'],
-      category: 'MESSAGE'
-    },
-    STATUS_CHANGED: {
-      title: 'Status Alterado',
-      body: 'O status da sua transação foi alterado para {newStatus}',
-      priority: 'NORMAL',
-      channels: ['EMAIL', 'IN_APP'],
-      category: 'TRANSACTION'
-    },
-    PAYMENT_RECEIVED: {
-      title: 'Pagamento Recebido',
-      body: 'Seu pagamento de R$ {amount} foi processado com sucesso',
-      priority: 'HIGH',
-      channels: ['EMAIL', 'SMS', 'PUSH', 'IN_APP'],
-      category: 'PAYMENT'
-    },
-    PAYMENT_FAILED: {
-      title: 'Falha no Pagamento',
-      body: 'Houve uma falha no processamento do seu pagamento. Tente novamente.',
-      priority: 'URGENT',
-      channels: ['EMAIL', 'SMS', 'IN_APP'],
-      category: 'PAYMENT'
-    },
-    PLAN_EXPIRING: {
-      title: 'Plano Expirando',
-      body: 'Seu plano {planName} expira em {daysLeft} dias. Renove agora!',
-      priority: 'HIGH',
-      channels: ['EMAIL', 'PUSH', 'IN_APP'],
-      category: 'SYSTEM'
-    },
-    PLAN_EXPIRED: {
-      title: 'Plano Expirado',
-      body: 'Seu plano {planName} expirou. Renove para continuar usando todos os recursos.',
-      priority: 'URGENT',
-      channels: ['EMAIL', 'SMS', 'PUSH', 'IN_APP'],
-      category: 'SYSTEM'
-    },
-    SYSTEM_ALERT: {
-      title: 'Alerta do Sistema',
-      body: '{message}',
-      priority: 'HIGH',
-      channels: ['EMAIL', 'IN_APP'],
-      category: 'SYSTEM'
-    },
-    SECURITY_ALERT: {
-      title: 'Alerta de Segurança',
-      body: '{message}',
-      priority: 'URGENT',
-      channels: ['EMAIL', 'SMS', 'IN_APP'],
-      category: 'SECURITY'
-    },
-    WELCOME: {
-      title: 'Bem-vindo ao AgroSync!',
-      body: 'Sua conta foi criada com sucesso. Comece a usar todos os recursos da plataforma.',
-      priority: 'NORMAL',
-      channels: ['EMAIL', 'IN_APP'],
-      category: 'MARKETING'
-    },
-    VERIFICATION_REQUIRED: {
-      title: 'Verificação Necessária',
-      body: 'Por favor, verifique seu {verificationType} para continuar.',
-      priority: 'HIGH',
-      channels: ['EMAIL', 'SMS', 'IN_APP'],
-      category: 'SYSTEM'
-    }
-  },
-
-  // Configurações de canal
-  channels: {
-    EMAIL: {
-      enabled: true,
-      priority: 1,
-      maxRetries: 3,
-      retryDelay: 300000 // 5 minutos
-    },
-    SMS: {
-      enabled: true,
-      priority: 2,
-      maxRetries: 2,
-      retryDelay: 600000 // 10 minutos
-    },
-    PUSH: {
-      enabled: true,
-      priority: 3,
-      maxRetries: 2,
-      retryDelay: 300000 // 5 minutos
-    },
-    IN_APP: {
-      enabled: true,
-      priority: 4,
-      maxRetries: 0,
-      retryDelay: 0
-    }
+// Configuração de email (usando SMTP genérico)
+const emailTransporter = nodemailer.createTransporter({
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: process.env.SMTP_PORT || 587,
+  secure: false, // true para 465, false para outras portas
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
   }
-};
+});
+
+// Configuração SMS (usando Twilio)
+const twilioClient = twilio(
+  process.env.TWILIO_ACCOUNT_SID,
+  process.env.TWILIO_AUTH_TOKEN
+);
 
 class NotificationService {
   constructor() {
-    this.processingQueue = [];
-    this.isProcessing = false;
+    this.fromEmail = process.env.FROM_EMAIL || 'noreply@agrosync.com';
+    this.fromName = process.env.FROM_NAME || 'AgroSync';
+    this.twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
   }
 
   /**
-   * Criar e enviar notificação
-   * @param {Object} options - Opções da notificação
-   * @returns {Promise<Object>} Resultado da operação
+   * Enviar email via SMTP
+   * @param {string} to - Email do destinatário
+   * @param {string} subject - Assunto do email
+   * @param {string} htmlBody - Corpo HTML do email
+   * @param {string} textBody - Corpo texto do email (opcional)
+   * @returns {Promise<Object>} - Resultado do envio
    */
-  async createAndSendNotification(options) {
+  async sendEmail(to, subject, htmlBody, textBody = null) {
     try {
-      const {
-        userId,
-        type,
-        data = {},
-        channels = null,
-        priority = null,
-        category = null,
-        metadata = {}
-      } = options;
-
-      // Verificar se o usuário existe
-      const user = await User.findById(userId);
-      if (!user) {
-        throw new Error('Usuário não encontrado');
-      }
-
-      // Obter template da notificação
-      const template = NOTIFICATION_CONFIG.templates[type];
-      if (!template) {
-        throw new Error(`Tipo de notificação inválido: ${type}`);
-      }
-
-      // Preparar dados da notificação
-      const notificationData = {
-        userId,
-        type,
-        title: this.interpolateTemplate(template.title, data),
-        body: this.interpolateTemplate(template.body, data),
-        channels: channels || template.channels,
-        priority: priority || template.priority,
-        category: category || template.category,
-        data,
-        metadata: {
-          ...metadata,
-          source: 'agrosync',
-          trigger: type
-        }
+      const mailOptions = {
+        from: `"${this.fromName}" <${this.fromEmail}>`,
+        to: to,
+        subject: subject,
+        html: htmlBody
       };
 
-      // Criar notificação no banco
-      const notification = new Notification(notificationData);
-      await notification.save();
+      if (textBody) {
+        mailOptions.text = textBody;
+      }
 
-      // Adicionar à fila de processamento
-      this.addToProcessingQueue(notification);
-
-      console.log(`Notificação ${notification.id} criada para usuário ${userId}`);
+      const result = await emailTransporter.sendMail(mailOptions);
+      
+      console.log(`✅ Email enviado com sucesso para ${to}:`, result.messageId);
 
       return {
         success: true,
-        notificationId: notification.id,
-        message: 'Notificação criada e adicionada à fila de processamento'
+        messageId: result.messageId,
+        message: 'Email enviado com sucesso'
       };
-
     } catch (error) {
-      console.error('Erro ao criar notificação:', error);
+      console.error(`❌ Erro ao enviar email para ${to}:`, error);
+
       return {
         success: false,
-        error: error.message
+        error: error.message,
+        code: error.code
       };
     }
   }
 
   /**
-   * Interpolar template com dados
-   * @param {string} template - Template da mensagem
-   * @param {Object} data - Dados para interpolação
-   * @returns {string} Mensagem interpolada
+   * Enviar SMS via Twilio
+   * @param {string} phoneNumber - Número do telefone (formato E.164)
+   * @param {string} message - Mensagem do SMS
+   * @returns {Promise<Object>} - Resultado do envio
    */
-  interpolateTemplate(template, data) {
-    return template.replace(/\{(\w+)\}/g, (match, key) => {
-      return data[key] || match;
-    });
+  async sendSMS(phoneNumber, message) {
+    try {
+      // Formatar número de telefone para E.164 se necessário
+      const formattedPhone = this.formatPhoneNumber(phoneNumber);
+      
+      const result = await twilioClient.messages.create({
+        body: message,
+        from: this.twilioPhoneNumber,
+        to: formattedPhone
+      });
+      
+      console.log(`✅ SMS enviado com sucesso para ${formattedPhone}:`, result.sid);
+      
+      return {
+        success: true,
+        messageId: result.sid,
+        message: 'SMS enviado com sucesso'
+      };
+    } catch (error) {
+      console.error(`❌ Erro ao enviar SMS para ${phoneNumber}:`, error);
+      
+      return {
+        success: false,
+        error: error.message,
+        code: error.code
+      };
+    }
   }
 
   /**
-   * Adicionar notificação à fila de processamento
-   * @param {Notification} notification - Notificação para processar
+   * Enviar email de recuperação de senha
+   * @param {string} to - Email do usuário
+   * @param {string} resetToken - Token de redefinição
+   * @param {string} userName - Nome do usuário
+   * @returns {Promise<Object>} - Resultado do envio
    */
-  addToProcessingQueue(notification) {
-    this.processingQueue.push(notification);
+  async sendPasswordResetEmail(to, resetToken, userName) {
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
     
-    if (!this.isProcessing) {
-      this.processQueue();
-    }
-  }
-
-  /**
-   * Processar fila de notificações
-   */
-  async processQueue() {
-    if (this.isProcessing || this.processingQueue.length === 0) {
-      return;
-    }
-
-    this.isProcessing = true;
-
-    try {
-      while (this.processingQueue.length > 0) {
-        const notification = this.processingQueue.shift();
-        await this.processNotification(notification);
-      }
-    } catch (error) {
-      console.error('Erro ao processar fila de notificações:', error);
-    } finally {
-      this.isProcessing = false;
-    }
-  }
-
-  /**
-   * Processar notificação individual
-   * @param {Notification} notification - Notificação para processar
-   */
-  async processNotification(notification) {
-    try {
-      console.log(`Processando notificação ${notification.id}`);
-
-      // Processar cada canal configurado
-      for (const channel of notification.channels) {
-        if (NOTIFICATION_CONFIG.channels[channel]?.enabled) {
-          await this.sendToChannel(notification, channel);
-        }
-      }
-
-      // Marcar como processada
-      notification.processed = true;
-      notification.processedAt = new Date();
-      await notification.save();
-
-      console.log(`Notificação ${notification.id} processada com sucesso`);
-
-    } catch (error) {
-      console.error(`Erro ao processar notificação ${notification.id}:`, error);
-      
-      // Marcar como falha
-      notification.processed = true;
-      notification.processedAt = new Date();
-      await notification.save();
-    }
-  }
-
-  /**
-   * Enviar notificação para canal específico
-   * @param {Notification} notification - Notificação para enviar
-   * @param {string} channel - Canal de envio
-   */
-  async sendToChannel(notification, channel) {
-    try {
-      const channelConfig = NOTIFICATION_CONFIG.channels[channel];
-      
-      if (!channelConfig?.enabled) {
-        return;
-      }
-
-      // Verificar se já foi enviada
-      if (notification.deliveryStatus[channel]?.status !== 'PENDING') {
-        return;
-      }
-
-      // Marcar como enviando
-      notification.deliveryStatus[channel].status = 'SENT';
-      notification.deliveryStatus[channel].sentAt = new Date();
-      await notification.save();
-
-      // Enviar baseado no canal
-      let result;
-      switch (channel) {
-        case 'EMAIL':
-          result = await this.sendEmail(notification);
-          break;
-        case 'SMS':
-          result = await this.sendSMS(notification);
-          break;
-        case 'PUSH':
-          result = await this.sendPush(notification);
-          break;
-        case 'IN_APP':
-          result = await this.sendInApp(notification);
-          break;
-        default:
-          throw new Error(`Canal não suportado: ${channel}`);
-      }
-
-      if (result.success) {
-        // Marcar como entregue
-        await notification.markAsDelivered(channel);
-      } else {
-        // Marcar como falha
-        await notification.markAsFailed(channel, result.error);
-      }
-
-    } catch (error) {
-      console.error(`Erro ao enviar para canal ${channel}:`, error);
-      await notification.markAsFailed(channel, error.message);
-    }
-  }
-
-  /**
-   * Enviar notificação por email
-   * @param {Notification} notification - Notificação para enviar
-   * @returns {Promise<Object>} Resultado do envio
-   */
-  async sendEmail(notification) {
-    try {
-      const user = await User.findById(notification.userId);
-      if (!user?.email) {
-        throw new Error('Usuário não tem email válido');
-      }
-
-      const emailResult = await awsService.sendEmail(
-        user.email,
-        notification.title,
-        this.generateEmailHTML(notification),
-        notification.body
-      );
-
-      return emailResult;
-
-    } catch (error) {
-      console.error('Erro ao enviar email:', error);
-      return {
-        success: false,
-        error: error.message
-      };
-    }
-  }
-
-  /**
-   * Enviar notificação por SMS
-   * @param {Notification} notification - Notificação para enviar
-   * @returns {Promise<Object>} Resultado do envio
-   */
-  async sendSMS(notification) {
-    try {
-      const user = await User.findById(notification.userId);
-      if (!user?.phone) {
-        throw new Error('Usuário não tem telefone válido');
-      }
-
-      const smsResult = await awsService.sendSMS(
-        user.phone,
-        `${notification.title}: ${notification.body}`
-      );
-
-      return smsResult;
-
-    } catch (error) {
-      console.error('Erro ao enviar SMS:', error);
-      return {
-        success: false,
-        error: error.message
-      };
-    }
-  }
-
-  /**
-   * Enviar notificação push
-   * @param {Notification} notification - Notificação para enviar
-   * @returns {Promise<Object>} Resultado do envio
-   */
-  async sendPush(notification) {
-    try {
-      // Em produção, implementar FCM ou AWS SNS
-      // Por enquanto, simular sucesso
-      console.log(`Push notification enviado para usuário ${notification.userId}`);
-      
-      return {
-        success: true,
-        message: 'Push notification enviado'
-      };
-
-    } catch (error) {
-      console.error('Erro ao enviar push:', error);
-      return {
-        success: false,
-        error: error.message
-      };
-    }
-  }
-
-  /**
-   * Enviar notificação in-app
-   * @param {Notification} notification - Notificação para enviar
-   * @returns {Promise<Object>} Resultado do envio
-   */
-  async sendInApp(notification) {
-    try {
-      // Notificação in-app é automaticamente "entregue" quando salva no banco
-      console.log(`Notificação in-app criada para usuário ${notification.userId}`);
-      
-      return {
-        success: true,
-        message: 'Notificação in-app criada'
-      };
-
-    } catch (error) {
-      console.error('Erro ao criar notificação in-app:', error);
-      return {
-        success: false,
-        error: error.message
-      };
-    }
-  }
-
-  /**
-   * Gerar HTML para email
-   * @param {Notification} notification - Notificação para gerar HTML
-   * @returns {string} HTML do email
-   */
-  generateEmailHTML(notification) {
-    return `
+    const subject = 'Redefinição de Senha - AgroSync';
+    
+    const htmlBody = `
       <!DOCTYPE html>
       <html lang="pt-BR">
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>${notification.title}</title>
+        <title>Redefinição de Senha - AgroSync</title>
         <style>
           body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
           .container { max-width: 600px; margin: 0 auto; padding: 20px; }
           .header { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
           .content { background: #f8fafc; padding: 30px; border-radius: 0 0 10px 10px; }
+          .button { display: inline-block; background: #1e293b; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0; }
+          .footer { text-align: center; margin-top: 30px; color: #64748b; font-size: 14px; }
+          .warning { background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 8px; margin: 20px 0; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🌾 AgroSync</h1>
+            <p>Plataforma de Agronegócio</p>
+          </div>
+          
+          <div class="content">
+            <h2>Olá, ${userName}!</h2>
+            
+            <p>Recebemos uma solicitação para redefinir sua senha na plataforma AgroSync.</p>
+            
+            <p>Se você não fez essa solicitação, ignore este email. Caso contrário, clique no botão abaixo para criar uma nova senha:</p>
+            
+            <div style="text-align: center;">
+              <a href="${resetUrl}" class="button">🔐 Redefinir Senha</a>
+            </div>
+            
+            <div class="warning">
+              <strong>⚠️ Importante:</strong>
+              <ul>
+                <li>Este link expira em 15 minutos</li>
+                <li>Não compartilhe este email com ninguém</li>
+                <li>Se o botão não funcionar, copie e cole este link: ${resetUrl}</li>
+              </ul>
+            </div>
+            
+            <p>Após redefinir sua senha, você poderá fazer login normalmente na plataforma.</p>
+            
+            <p>Se tiver alguma dúvida, entre em contato conosco através do suporte.</p>
+            
+            <p>Atenciosamente,<br>
+            <strong>Equipe AgroSync</strong></p>
+          </div>
+          
+          <div class="footer">
+            <p>Este email foi enviado automaticamente. Não responda a esta mensagem.</p>
+            <p>&copy; 2024 AgroSync. Todos os direitos reservados.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+    
+    const textBody = `
+      Redefinição de Senha - AgroSync
+      
+      Olá, ${userName}!
+      
+      Recebemos uma solicitação para redefinir sua senha na plataforma AgroSync.
+      
+      Para redefinir sua senha, acesse: ${resetUrl}
+      
+      IMPORTANTE:
+      - Este link expira em 15 minutos
+      - Não compartilhe este email com ninguém
+      
+      Se você não fez essa solicitação, ignore este email.
+      
+      Após redefinir sua senha, você poderá fazer login normalmente.
+      
+      Atenciosamente,
+      Equipe AgroSync
+      
+      ${process.env.FRONTEND_URL}
+    `;
+    
+    return await this.sendEmail(to, subject, htmlBody, textBody);
+  }
+
+  /**
+   * Enviar email de verificação de conta
+   * @param {string} to - Email do usuário
+   * @param {string} verificationToken - Token de verificação
+   * @param {string} userName - Nome do usuário
+   * @returns {Promise<Object>} - Resultado do envio
+   */
+  async sendEmailVerification(to, verificationToken, userName) {
+    const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
+    
+    const subject = 'Verifique sua Conta - AgroSync';
+    
+    const htmlBody = `
+      <!DOCTYPE html>
+      <html lang="pt-BR">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Verificação de Conta - AgroSync</title>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+          .content { background: #f0fdf4; padding: 30px; border-radius: 0 0 10px 10px; }
+          .button { display: inline-block; background: #059669; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0; }
           .footer { text-align: center; margin-top: 30px; color: #64748b; font-size: 14px; }
         </style>
       </head>
@@ -460,231 +236,119 @@ class NotificationService {
           </div>
           
           <div class="content">
-            <h2>${notification.title}</h2>
-            <p>${notification.body}</p>
+            <h2>Bem-vindo ao AgroSync, ${userName}!</h2>
             
-            <p>Acesse sua conta para mais detalhes.</p>
+            <p>Obrigado por se cadastrar em nossa plataforma. Para ativar sua conta, clique no botão abaixo:</p>
+            
+            <div style="text-align: center;">
+              <a href="${verificationUrl}" class="button">✅ Verificar Conta</a>
+            </div>
+            
+            <p>Após verificar sua conta, você terá acesso completo a todos os recursos da plataforma.</p>
+            
+            <p>Se o botão não funcionar, copie e cole este link: ${verificationUrl}</p>
+            
+            <p>Atenciosamente,<br>
+            <strong>Equipe AgroSync</strong></p>
           </div>
           
           <div class="footer">
+            <p>Este email foi enviado automaticamente. Não responda a esta mensagem.</p>
             <p>&copy; 2024 AgroSync. Todos os direitos reservados.</p>
           </div>
         </div>
       </body>
       </html>
     `;
-  }
-
-  /**
-   * Buscar notificações do usuário
-   * @param {string} userId - ID do usuário
-   * @param {Object} options - Opções de busca
-   * @returns {Promise<Object>} Notificações encontradas
-   */
-  async getUserNotifications(userId, options = {}) {
-    try {
-      const {
-        page = 1,
-        limit = 20,
-        read = null,
-        archived = false,
-        type = null,
-        category = null
-      } = options;
-
-      const skip = (page - 1) * limit;
-      const query = { userId, archived };
-
-      if (read !== null) {
-        query.read = read;
-      }
-
-      if (type) {
-        query.type = type;
-      }
-
-      if (category) {
-        query.category = category;
-      }
-
-      const notifications = await Notification.find(query)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit);
-
-      const total = await Notification.countDocuments(query);
-
-      return {
-        success: true,
-        data: {
-          notifications,
-          pagination: {
-            page,
-            limit,
-            total,
-            pages: Math.ceil(total / limit)
-          }
-        }
-      };
-
-    } catch (error) {
-      console.error('Erro ao buscar notificações:', error);
-      return {
-        success: false,
-        error: error.message
-      };
-    }
-  }
-
-  /**
-   * Marcar notificação como lida
-   * @param {string} notificationId - ID da notificação
-   * @param {string} userId - ID do usuário
-   * @returns {Promise<Object>} Resultado da operação
-   */
-  async markAsRead(notificationId, userId) {
-    try {
-      const notification = await Notification.findOne({
-        _id: notificationId,
-        userId
-      });
-
-      if (!notification) {
-        throw new Error('Notificação não encontrada');
-      }
-
-      await notification.markAsRead();
-
-      return {
-        success: true,
-        message: 'Notificação marcada como lida'
-      };
-
-    } catch (error) {
-      console.error('Erro ao marcar como lida:', error);
-      return {
-        success: false,
-        error: error.message
-      };
-    }
-  }
-
-  /**
-   * Arquivar notificação
-   * @param {string} notificationId - ID da notificação
-   * @param {string} userId - ID do usuário
-   * @returns {Promise<Object>} Resultado da operação
-   */
-  async archiveNotification(notificationId, userId) {
-    try {
-      const notification = await Notification.findOne({
-        _id: notificationId,
-        userId
-      });
-
-      if (!notification) {
-        throw new Error('Notificação não encontrada');
-      }
-
-      await notification.archive();
-
-      return {
-        success: true,
-        message: 'Notificação arquivada'
-      };
-
-    } catch (error) {
-      console.error('Erro ao arquivar notificação:', error);
-      return {
-        success: false,
-        error: error.message
-      };
-    }
-  }
-
-  /**
-   * Limpar notificações expiradas
-   * @returns {Promise<Object>} Resultado da operação
-   */
-  async cleanupExpiredNotifications() {
-    try {
-      const result = await Notification.cleanupExpired();
+    
+    const textBody = `
+      Verificação de Conta - AgroSync
       
-      console.log(`${result.deletedCount} notificações expiradas removidas`);
-
-      return {
-        success: true,
-        deletedCount: result.deletedCount,
-        message: 'Limpeza de notificações concluída'
-      };
-
-    } catch (error) {
-      console.error('Erro ao limpar notificações:', error);
-      return {
-        success: false,
-        error: error.message
-      };
-    }
+      Bem-vindo ao AgroSync, ${userName}!
+      
+      Obrigado por se cadastrar em nossa plataforma. Para ativar sua conta, acesse:
+      ${verificationUrl}
+      
+      Após verificar sua conta, você terá acesso completo a todos os recursos.
+      
+      Atenciosamente,
+      Equipe AgroSync
+      
+      ${process.env.FRONTEND_URL}
+    `;
+    
+    return await this.sendEmail(to, subject, htmlBody, textBody);
   }
 
   /**
-   * Obter estatísticas de notificações
-   * @param {string} userId - ID do usuário (opcional)
-   * @returns {Promise<Object>} Estatísticas
+   * Enviar SMS com código OTP
+   * @param {string} phoneNumber - Número do telefone
+   * @param {string} otpCode - Código OTP de 6 dígitos
+   * @param {string} userName - Nome do usuário
+   * @returns {Promise<Object>} - Resultado do envio
    */
-  async getNotificationStats(userId = null) {
-    try {
-      const query = userId ? { userId } : {};
+  async sendOTPSMS(phoneNumber, otpCode, userName) {
+    const message = `AgroSync: Olá ${userName}! Seu código de verificação é: ${otpCode}. Expira em 5 minutos. Não compartilhe com ninguém.`;
+    
+    return await this.sendSMS(phoneNumber, message);
+  }
 
-      const stats = await Notification.aggregate([
-        { $match: query },
-        {
-          $group: {
-            _id: null,
-            total: { $sum: 1 },
-            unread: { $sum: { $cond: ['$read', 0, 1] } },
-            read: { $sum: { $cond: ['$read', 1, 0] } },
-            archived: { $sum: { $cond: ['$archived', 1, 0] } },
-            byType: {
-              $push: {
-                type: '$type',
-                category: '$category',
-                priority: '$priority'
-              }
-            }
-          }
-        }
-      ]);
+  /**
+   * Enviar SMS de boas-vindas
+   * @param {string} phoneNumber - Número do telefone
+   * @param {string} userName - Nome do usuário
+   * @returns {Promise<Object>} - Resultado do envio
+   */
+  async sendWelcomeSMS(phoneNumber, userName) {
+    const message = `AgroSync: Bem-vindo ${userName}! Sua conta foi criada com sucesso. Acesse ${process.env.FRONTEND_URL} para começar.`;
+    
+    return await this.sendSMS(phoneNumber, message);
+  }
 
-      const result = stats[0] || {
-        total: 0,
-        unread: 0,
-        read: 0,
-        archived: 0,
-        byType: []
-      };
-
-      return {
-        success: true,
-        data: result
-      };
-
-    } catch (error) {
-      console.error('Erro ao obter estatísticas:', error);
-      return {
-        success: false,
-        error: error.message
-      };
+  /**
+   * Formatar número de telefone para formato E.164
+   * @param {string} phoneNumber - Número do telefone
+   * @returns {string} - Número formatado
+   */
+  formatPhoneNumber(phoneNumber) {
+    // Remove todos os caracteres não numéricos
+    let cleaned = phoneNumber.replace(/\D/g, '');
+    
+    // Se começa com 0, remove
+    if (cleaned.startsWith('0')) {
+      cleaned = cleaned.substring(1);
     }
+    
+    // Se não tem código do país, adiciona +55 (Brasil)
+    if (!cleaned.startsWith('55')) {
+      cleaned = '55' + cleaned;
+    }
+    
+    // Adiciona o + no início
+    return '+' + cleaned;
+  }
+
+  /**
+   * Verificar configuração do serviço
+   * @returns {Promise<Object>} - Status da configuração
+   */
+  async checkConfiguration() {
+    const config = {
+      email: {
+        configured: !!(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS),
+        host: process.env.SMTP_HOST || 'Not configured',
+        user: process.env.SMTP_USER || 'Not configured'
+      },
+      sms: {
+        configured: !!(process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER),
+        phoneNumber: process.env.TWILIO_PHONE_NUMBER || 'Not configured'
+      }
+    };
+
+    return config;
   }
 }
 
-// Instância única do serviço
 const notificationService = new NotificationService();
-
-// Limpar cache expirado diariamente
-setInterval(() => {
-  notificationService.clearExpiredCache();
-}, 24 * 60 * 60 * 1000); // Diariamente
 
 export default notificationService;

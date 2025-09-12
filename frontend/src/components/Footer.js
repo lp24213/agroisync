@@ -42,7 +42,7 @@ const Footer = () => {
                 </div>
               <div className="contact-item">
                 <MapPin size={16} />
-E                <span>Sinop - MT, Brasil</span>
+                <span>Sinop - MT, Brasil</span>
                 </div>
               </div>
             </motion.div>

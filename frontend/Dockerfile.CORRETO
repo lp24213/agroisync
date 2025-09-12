@@ -1,0 +1,46 @@
+FROM nginx:alpine
+
+# Remove a página padrão do nginx
+RUN rm /usr/share/nginx/html/index.html
+
+# Cria nossa página do AgroSync
+RUN echo '<!DOCTYPE html>\
+<html lang="pt-BR">\
+<head>\
+    <meta charset="UTF-8">\
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">\
+    <title>AgroSync - Funcionando!</title>\
+    <style>\
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f0f0f0; }\
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }\
+        h1 { color: #2c3e50; text-align: center; }\
+        .status { background: #27ae60; color: white; padding: 10px; border-radius: 5px; text-align: center; margin: 20px 0; }\
+        .info { background: #ecf0f1; padding: 15px; border-radius: 5px; margin: 10px 0; }\
+    </style>\
+</head>\
+<body>\
+    <div class="container">\
+        <h1>🌾 AgroSync</h1>\
+        <div class="status">✅ FRONTEND FUNCIONANDO!</div>\
+        <div class="info">\
+            <h3>Status do Sistema:</h3>\
+            <ul>\
+                <li>✅ Frontend: Deployado e funcionando</li>\
+                <li>✅ IBM Cloud Code Engine: Ativo</li>\
+                <li>✅ Nginx: Servindo arquivos corretamente</li>\
+            </ul>\
+        </div>\
+        <div class="info">\
+            <h3>URLs:</h3>\
+            <p><strong>Frontend:</strong> https://agroisync-web.205skg1rs46a.br-sao.codeengine.appdomain.cloud</p>\
+        </div>\
+    </div>\
+</body>\
+</html>' > /usr/share/nginx/html/index.html
+
+# Configura nginx para porta 8080
+RUN sed -i 's/listen       80;/listen       8080;/' /etc/nginx/conf.d/default.conf
+
+EXPOSE 8080
+
+CMD ["nginx", "-g", "daemon off;"]

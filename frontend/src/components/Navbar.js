@@ -37,8 +37,8 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar bg-nav-bg border-light">
-      <div className="navbar-container">
+    <nav className="navbar nav-premium bg-black/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50">
+      <div className="navbar-container container-premium">
         {/* Logo */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}

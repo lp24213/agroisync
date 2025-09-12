@@ -40,8 +40,7 @@
     "express",
     "mongodb",
     "blockchain",
-    "stripe",
-    "aws"
+    "stripe"
   ],
   "author": "AgroSync Team",
   "license": "MIT",
@@ -78,8 +77,7 @@
     "swagger-jsdoc": "^6.2.8",
     "winston": "^3.11.0",
     "winston-daily-rotate-file": "^4.7.1",
-    "newrelic": "^11.0.0",
-    "sentry": "^7.81.1"
+    "newrelic": "^11.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.2",

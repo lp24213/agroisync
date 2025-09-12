@@ -14,6 +14,8 @@ import WeatherWidget from './components/WeatherWidget';
 
 // Importar theme global
 import './styles/theme.css';
+import './styles/modern-neutral-theme.css';
+import './styles/premium-futuristic.css';
 
 // Pages
 import Home from './pages/Home';
@@ -22,7 +24,7 @@ import AgroConecta from './pages/AgroConecta';
 import IntermediationSystem from './components/IntermediationSystem';
 import Crypto from './pages/Crypto';
 import Messaging from './pages/Messaging';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/dashboard';
 import AdminPanel from './pages/AdminPanel';
 import Plans from './pages/Plans';
 import Login from './pages/Login';
@@ -63,6 +65,9 @@ function App() {
           <LanguageProvider>
             <Router>
               <div className="App">
+                {/* Cosmic Background with Animated Starfield */}
+                <div className="cosmic-bg"></div>
+                
                 {/* Ticker fixo no topo */}
                 <Ticker />
                 

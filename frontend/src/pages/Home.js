@@ -13,6 +13,15 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import Noticias from '../components/Noticias';
+import { 
+  PremiumScrollReveal, 
+  PremiumFloatingCard, 
+  Premium3DButton, 
+  PremiumStaggeredContainer,
+  PremiumGradientText,
+  PremiumRevealText,
+  MouseTracker
+} from '../components/animations/PremiumAnimations';
 
 const Home = () => {
   const { isDarkMode } = useTheme();
@@ -79,98 +88,77 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section - Centralizado e Premium */}
-      <section className="py-20 bg-gradient-hero">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center max-w-5xl mx-auto"
-          >
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-5xl md:text-7xl font-bold mb-8 leading-tight text-primary"
-            >
-              O Futuro do{' '}
-              <span className="text-gradient">Agronegócio</span>{' '}
-              é <span className="text-gradient">Agora</span>
-            </motion.h1>
-            
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="text-xl md:text-2xl mb-12 max-w-4xl mx-auto leading-relaxed text-muted"
-            >
-              A plataforma mais futurista e sofisticada do mundo para conectar produtores, 
-              compradores e transportadores. Design premium, tecnologia de ponta e 
-              performance excepcional.
-            </motion.p>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="flex flex-col sm:flex-row gap-6 justify-center items-center"
-            >
-              <Link
-                to="/register"
-                className="btn-premium px-8 py-4 text-lg font-semibold flex items-center gap-3"
+      {/* Hero Section - Premium Futuristic */}
+      <section className="py-32 relative min-h-screen flex items-center">
+        <div className="container-premium">
+          <PremiumScrollReveal delay={0.2} parallax={true}>
+            <div className="text-center max-w-6xl mx-auto">
+              <PremiumRevealText 
+                text="O Futuro do Agronegócio é Agora"
+                className="text-6xl md:text-8xl font-bold mb-8 leading-tight"
+                delay={0.5}
+              />
+              
+              <PremiumGradientText 
+                className="text-2xl md:text-3xl mb-12 max-w-5xl mx-auto leading-relaxed"
+                gradient="metallic"
               >
-                Começar Agora
-                <ArrowRight size={20} />
-              </Link>
-              <Link
-                to="/about"
-                className="btn-premium-secondary px-8 py-4 text-lg font-semibold"
-              >
-                Saiba Mais
-              </Link>
-            </motion.div>
-          </motion.div>
+                A plataforma mais futurista e sofisticada do mundo para conectar produtores, 
+                compradores e transportadores. Design premium, tecnologia de ponta e 
+                performance excepcional.
+              </PremiumGradientText>
+              
+              <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <MouseTracker intensity={0.1}>
+                  <Premium3DButton variant="primary" size="lg" className="px-10 py-5 text-xl font-semibold">
+                    Começar Agora
+                    <ArrowRight size={24} className="ml-3" />
+                  </Premium3DButton>
+                </MouseTracker>
+                <MouseTracker intensity={0.1}>
+                  <Premium3DButton variant="secondary" size="lg" className="px-10 py-5 text-xl font-semibold">
+                    Ver Demonstração
+                  </Premium3DButton>
+                </MouseTracker>
+              </div>
+            </div>
+          </PremiumScrollReveal>
         </div>
       </section>
 
-      {/* Stats Section - Cards Organizados em Grid */}
-      <section className="py-20 bg-panel">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-primary">
-              Nossos <span className="text-gradient">Números</span>
-            </h2>
-            <p className="text-xl max-w-3xl mx-auto text-muted">
-              Resultados que comprovam nossa excelência e impacto no agronegócio
-            </p>
-          </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="text-center p-8 rounded-2xl shadow-lg hover:scale-105 transition-transform card-premium"
+      {/* Stats Section - Premium Cards */}
+      <section className="py-32 relative">
+        <div className="container-premium">
+          <PremiumScrollReveal delay={0.2}>
+            <div className="text-center mb-20">
+              <PremiumGradientText 
+                className="text-5xl md:text-6xl font-bold mb-8"
+                gradient="cosmic"
               >
-                <div className="text-4xl md:text-5xl font-extrabold text-gradient mb-4">
-                  {stat.number}
-                </div>
-                <div className="font-semibold text-lg text-muted">
-                  {stat.label}
-                </div>
-              </motion.div>
+                Nossos Números
+              </PremiumGradientText>
+              <p className="text-xl max-w-4xl mx-auto text-pearl">
+                Resultados que comprovam nossa excelência e impacto no agronegócio
+              </p>
+            </div>
+          </PremiumScrollReveal>
+          
+          <PremiumStaggeredContainer staggerDelay={0.2} className="grid-premium grid-4">
+            {stats.map((stat, index) => (
+              <MouseTracker key={stat.label} intensity={0.05}>
+                <PremiumFloatingCard delay={index * 0.1} className="text-center">
+                  <div className="text-5xl md:text-6xl font-bold mb-4">
+                    <PremiumGradientText gradient="metallic">
+                      {stat.number}
+                    </PremiumGradientText>
+                  </div>
+                  <div className="font-semibold text-lg text-pearl">
+                    {stat.label}
+                  </div>
+                </PremiumFloatingCard>
+              </MouseTracker>
             ))}
-          </div>
+          </PremiumStaggeredContainer>
         </div>
       </section>
 

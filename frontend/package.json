@@ -3,10 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@aws-amplify/ui-react": "^6.1.1",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
-    "aws-amplify": "^6.0.1",
     "framer-motion": "^10.16.4",
     "i18next": "^23.7.6",
     "i18next-browser-languagedetector": "^7.2.0",
@@ -46,8 +44,6 @@
     "prebuild": "npm run lint && npm run test:ci",
     "postbuild": "echo 'Build completed successfully!' && echo 'Build size:' && du -sh build/",
     "eject": "react-scripts eject",
-    "deploy:staging": "npm run build:production && aws s3 sync build/ s3://agrosync-staging --delete",
-    "deploy:production": "npm run build:production && aws s3 sync build/ s3://agrosync-production --delete",
     "health-check": "curl -f http://localhost:3000 || exit 1"
   },
   "eslintConfig": {
