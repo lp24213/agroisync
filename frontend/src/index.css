@@ -9,6 +9,9 @@
 /* Import Ultra Premium Theme */
 @import './styles/txc-premium-theme.css';
 
+/* FORÇA VISUAL PREMIUM - APLICAÇÃO IMEDIATA */
+@import './styles/force-premium-visual.css';
+
 /* EXECUÇÃO IMEDIATA - CSS FORÇADO */
 @import './styles/execute-immediate.css';
 

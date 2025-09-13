@@ -10,14 +10,7 @@ const PremiumHome = () => {
   const { t } = useTranslation();
   // Removed unused state and scroll variables
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  // Removed unused scroll effect
 
 
   const heroVariants = {
