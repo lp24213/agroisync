@@ -6,19 +6,20 @@ import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/Layout';
+import TXCHeader from './components/TXCHeader';
+import TXCFooter from './components/TXCFooter';
+import CustomCursor from './components/CustomCursor';
 import ChatbotWidget from './components/ChatbotWidget';
 import Ticker from './components/Ticker';
 import GrainQuotes from './components/GrainQuotes';
 import WeatherWidget from './components/WeatherWidget';
 // import NewsFeed from './components/NewsFeed'; // Removido do topo, agora está no Home
 
-// Importar theme global
-import './styles/theme.css';
-import './styles/modern-neutral-theme.css';
-import './styles/premium-futuristic.css';
+// Importar theme global TXC
+import './styles/txc-modern-theme.css';
 
 // Pages
-import Home from './pages/Home';
+import Home from './pages/TXCHome';
 import Marketplace from './pages/Marketplace';
 import AgroConecta from './pages/AgroConecta';
 import IntermediationSystem from './components/IntermediationSystem';
@@ -65,15 +66,18 @@ function App() {
           <LanguageProvider>
             <Router>
               <div className="App">
-                {/* Cosmic Background with Animated Starfield */}
-                <div className="cosmic-bg"></div>
+                {/* Custom Cursor */}
+                <CustomCursor />
+                
+                {/* TXC Header */}
+                <TXCHeader />
                 
                 {/* Ticker fixo no topo */}
                 <Ticker />
                 
                 {/* Barra de Informações - Apenas cotações e clima */}
                 <div className="info-bar">
-                  <div className="container">
+                  <div className="txc-container">
                     <div className="info-content">
                       <GrainQuotes />
                       <WeatherWidget />
@@ -121,6 +125,9 @@ function App() {
                   <Route path="*" element={<NotFound />} />
                 </Routes>
                 </Layout>
+                
+                {/* TXC Footer */}
+                <TXCFooter />
                 
                 {/* Global Chatbot Widget */}
                 <ChatbotWidget />

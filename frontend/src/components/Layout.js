@@ -1,16 +1,13 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import Navbar from './Navbar';
-import Footer from './Footer';
+import { motion } from 'framer-motion';
 
 const Layout = ({ children }) => {
   return (
-    <div className="min-h-screen bg-primary">
-      <Navbar />
-      <main className="relative">
+    <div className="txc-layout">
+      <main className="txc-main">
         {children || <Outlet />}
       </main>
-      <Footer />
     </div>
   );
 };
