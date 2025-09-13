@@ -23,22 +23,22 @@ const PremiumMarketplace = () => {
       icon: <Zap className="w-8 h-8" />,
       title: t('marketplace.features.technology'),
       description: t('marketplace.features.technologyDesc'),
-      color: 'var(--premium-teal)',
-      gradient: 'var(--premium-gradient-primary)',
+      color: 'var(--txc-secondary)',
+      gradient: 'var(--txc-gradient-primary)',
     },
     {
       icon: <Rocket className="w-8 h-8" />,
       title: t('marketplace.features.launch'),
       description: t('marketplace.features.launchDesc'),
-      color: 'var(--premium-petroleum)',
-      gradient: 'var(--premium-gradient-hover)',
+      color: 'var(--txc-primary)',
+      gradient: 'var(--txc-gradient-secondary)',
     },
     {
       icon: <Clock className="w-8 h-8" />,
       title: t('marketplace.features.development'),
       description: t('marketplace.features.developmentDesc'),
-      color: 'var(--premium-yellow)',
-      gradient: 'var(--premium-gradient-cta)',
+      color: 'var(--txc-accent)',
+      gradient: 'var(--txc-gradient-accent)',
     },
   ];
 

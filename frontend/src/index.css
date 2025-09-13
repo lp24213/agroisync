@@ -10,6 +10,9 @@
 /* Import TXC Real Theme */
 @import './styles/txc-real-theme.css';
 
+/* FORÇAR VISUAL TXC EM TODAS AS PÁGINAS */
+@import './styles/force-txc-visual.css';
+
 /* EXECUÇÃO IMEDIATA - CSS FORÇADO */
 @import './styles/execute-immediate.css';
 
