@@ -66,19 +66,33 @@ body {
   transform: translateY(-8px) !important;
 }
 
-/* FORÇAR TÍTULOS PREMIUM */
-.premium-title {
-  font-size: var(--premium-text-6xl) !important;
+/* FORÇAR TÍTULOS PREMIUM - APENAS CLASSES ESPECÍFICAS */
+.premium-hero-title {
+  font-size: var(--premium-text-7xl) !important;
   font-weight: var(--premium-font-black) !important;
   background: var(--premium-gradient-primary) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
-  letter-spacing: -0.04em !important;
+  letter-spacing: -0.05em !important;
   line-height: var(--premium-leading-tight) !important;
 }
 
-.premium-subtitle {
+.premium-hero-subtitle {
+  font-size: var(--premium-text-2xl) !important;
+  color: var(--premium-gray-600) !important;
+  font-weight: var(--premium-font-medium) !important;
+  line-height: var(--premium-leading-relaxed) !important;
+}
+
+.premium-features-title {
+  font-size: var(--premium-text-6xl) !important;
+  font-weight: var(--premium-font-black) !important;
+  color: var(--premium-petroleum) !important;
+  letter-spacing: -0.04em !important;
+}
+
+.premium-features-subtitle {
   font-size: var(--premium-text-xl) !important;
   color: var(--premium-gray-600) !important;
   font-weight: var(--premium-font-medium) !important;
@@ -198,6 +212,40 @@ body {
   color: var(--premium-gray-300) !important;
 }
 
+/* PROTEGER ELEMENTOS IMPORTANTES */
+.chatbot-widget,
+.chatbot-container,
+.chatbot-button,
+.chatbot-iframe,
+.ticker,
+.info-bar,
+.grain-quotes,
+.weather-widget {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 9999 !important;
+}
+
+/* PROTEGER NAVEGAÇÃO */
+.navbar,
+.navigation,
+.menu,
+.header {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 1000 !important;
+}
+
+/* PROTEGER FOOTER */
+.footer,
+.txc-footer {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
 /* FORÇAR APLICAÇÃO IMEDIATA */
 * {
   box-sizing: border-box !important;
@@ -212,3 +260,4 @@ body {
   padding: 0 !important;
   overflow-x: hidden !important;
 }
+
