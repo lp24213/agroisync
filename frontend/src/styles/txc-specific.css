@@ -1,0 +1,102 @@
+/* ========================================
+   TXC SPECIFIC - SEM QUEBRAR COMPONENTES
+   ======================================== */
+
+/* Aplicar visual TXC apenas nas páginas Premium */
+.premium-marketplace,
+.premium-agroconecta,
+.premium-crypto,
+.premium-plans,
+.premium-about,
+.premium-contact,
+.premium-login,
+.premium-register,
+.premium-dashboard {
+  background: var(--txc-white) !important;
+  color: var(--txc-gray-800) !important;
+  font-family: 'Roboto', sans-serif !important;
+}
+
+/* Títulos das páginas Premium */
+.premium-hero-title,
+.premium-section-title,
+.premium-title,
+.premium-cta-title {
+  color: var(--txc-primary) !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 700 !important;
+}
+
+/* Subtítulos das páginas Premium */
+.premium-hero-subtitle,
+.premium-section-subtitle,
+.premium-subtitle,
+.premium-cta-subtitle {
+  color: var(--txc-gray-600) !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 400 !important;
+}
+
+/* Botões das páginas Premium */
+.premium-btn-primary {
+  background: var(--txc-primary) !important;
+  color: var(--txc-white) !important;
+  border: none !important;
+  font-family: 'Roboto', sans-serif !important;
+}
+
+.premium-btn-secondary {
+  background: var(--txc-white) !important;
+  color: var(--txc-primary) !important;
+  border: 2px solid var(--txc-primary) !important;
+  font-family: 'Roboto', sans-serif !important;
+}
+
+.premium-btn-accent {
+  background: var(--txc-secondary) !important;
+  color: var(--txc-white) !important;
+  border: none !important;
+  font-family: 'Roboto', sans-serif !important;
+}
+
+/* Cards das páginas Premium */
+.premium-card {
+  background: var(--txc-white) !important;
+  border: 1px solid #E0E0E0 !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Ícones das páginas Premium */
+.premium-icon-container,
+.premium-feature-icon {
+  color: var(--txc-secondary) !important;
+}
+
+/* Ícone do ChatGPT específico */
+.chatbot-toggle {
+  background: var(--txc-accent) !important;
+  color: var(--txc-white) !important;
+}
+
+/* Manter componentes funcionais */
+.ticker-container,
+.weather-widget,
+.grain-quotes {
+  /* Não aplicar estilos forçados aqui */
+}
+
+/* Manter notícias funcionais */
+.news-container,
+.news-item,
+.news-title,
+.news-content {
+  /* Não aplicar estilos forçados aqui */
+}
+
+/* Manter cotações funcionais */
+.quotes-container,
+.quote-item,
+.quote-price,
+.quote-change {
+  /* Não aplicar estilos forçados aqui */
+}
