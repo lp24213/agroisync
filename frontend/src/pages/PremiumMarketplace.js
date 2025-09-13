@@ -305,6 +305,7 @@ const PremiumMarketplace = () => {
           justify-content: center;
           color: var(--premium-white);
           box-shadow: var(--premium-shadow-xl);
+          animation: premium-glow 2s ease-in-out infinite alternate;
         }
 
         .premium-hero-title {
@@ -427,6 +428,7 @@ const PremiumMarketplace = () => {
 
         .premium-feature-card:hover {
           box-shadow: var(--premium-shadow-2xl);
+          animation: premium-glow 0.5s ease-in-out;
         }
 
         .premium-feature-icon {

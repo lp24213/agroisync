@@ -559,6 +559,7 @@ const PremiumRegister = () => {
           justify-content: center;
           color: var(--premium-white);
           box-shadow: var(--premium-shadow-xl);
+          animation: premium-glow 2s ease-in-out infinite alternate;
         }
 
         .premium-hero-title {
