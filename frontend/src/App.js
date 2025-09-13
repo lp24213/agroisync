@@ -20,8 +20,8 @@ import './styles/txc-premium-theme.css';
 
 // Pages
 import Home from './pages/PremiumHome';
-import Marketplace from './pages/Marketplace';
-import AgroConecta from './pages/AgroConecta';
+import Marketplace from './pages/PremiumMarketplace';
+import AgroConecta from './pages/PremiumAgroConecta';
 import IntermediationSystem from './components/IntermediationSystem';
 import Crypto from './pages/Crypto';
 import Messaging from './pages/Messaging';
