@@ -13,6 +13,9 @@
 /* FORÇAR VISUAL TXC EM TODAS AS PÁGINAS */
 @import './styles/force-txc-visual.css';
 
+/* FORÇAR CORES TXC EM TUDO */
+@import './styles/force-all-txc.css';
+
 /* EXECUÇÃO IMEDIATA - CSS FORÇADO */
 @import './styles/execute-immediate.css';
 

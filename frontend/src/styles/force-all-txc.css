@@ -1,0 +1,216 @@
+/* ========================================
+   FORÇAR CORES TXC EM TUDO - TODAS AS PÁGINAS
+   ======================================== */
+
+/* CORES TXC FORÇADAS EM TUDO */
+* {
+  --txc-primary: #1A1A1A !important; /* Preto TXC */
+  --txc-secondary: #2C5AA0 !important; /* Azul TXC */
+  --txc-accent: #FF6B00 !important; /* Laranja TXC */
+  --txc-white: #FFFFFF !important;
+  --txc-gray-600: #757575 !important;
+  --txc-gray-800: #424242 !important;
+}
+
+/* TODAS AS PÁGINAS COM CORES TXC */
+body,
+html,
+#root,
+.app {
+  background: var(--txc-white) !important;
+  color: var(--txc-gray-800) !important;
+  font-family: 'Roboto', sans-serif !important;
+}
+
+/* TODOS OS TÍTULOS COM CORES TXC */
+h1, h2, h3, h4, h5, h6,
+.title,
+.hero-title,
+.section-title,
+.cta-title,
+.premium-hero-title,
+.premium-section-title,
+.premium-title,
+.premium-cta-title {
+  color: var(--txc-primary) !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 700 !important;
+}
+
+/* TODOS OS SUBTÍTULOS COM CORES TXC */
+.subtitle,
+.hero-subtitle,
+.section-subtitle,
+.cta-subtitle,
+.premium-hero-subtitle,
+.premium-section-subtitle,
+.premium-subtitle,
+.premium-cta-subtitle {
+  color: var(--txc-gray-600) !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 400 !important;
+}
+
+/* TODOS OS BOTÕES COM CORES TXC */
+button,
+.btn,
+.premium-btn,
+.txc-btn {
+  background: var(--txc-primary) !important;
+  color: var(--txc-white) !important;
+  border: none !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 500 !important;
+}
+
+button:hover,
+.btn:hover,
+.premium-btn:hover,
+.txc-btn:hover {
+  background: var(--txc-secondary) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* TODOS OS CARDS COM CORES TXC */
+.card,
+.premium-card,
+.txc-card {
+  background: var(--txc-white) !important;
+  border: 1px solid #E0E0E0 !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* TODOS OS ÍCONES COM CORES TXC */
+.icon,
+.premium-icon,
+.txc-icon,
+svg,
+.lucide {
+  color: var(--txc-secondary) !important;
+}
+
+/* ÍCONE DO CHATGPT COM COR TXC */
+.chatbot-icon,
+.chat-icon,
+.ai-icon,
+.gpt-icon {
+  color: var(--txc-accent) !important;
+  background: var(--txc-white) !important;
+}
+
+/* HEADER COM CORES TXC */
+header,
+.navbar,
+.header {
+  background: var(--txc-white) !important;
+  border-bottom: 1px solid #E0E0E0 !important;
+}
+
+/* FOOTER COM CORES TXC */
+footer,
+.footer {
+  background: var(--txc-gray-800) !important;
+  color: var(--txc-white) !important;
+}
+
+/* LINKS COM CORES TXC */
+a,
+.link {
+  color: var(--txc-secondary) !important;
+}
+
+a:hover,
+.link:hover {
+  color: var(--txc-accent) !important;
+}
+
+/* INPUTS COM CORES TXC */
+input,
+textarea,
+select {
+  border: 1px solid #E0E0E0 !important;
+  color: var(--txc-gray-800) !important;
+  font-family: 'Roboto', sans-serif !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--txc-secondary) !important;
+  box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.2) !important;
+}
+
+/* TICKER COM CORES TXC */
+.ticker,
+.ticker-container {
+  background: var(--txc-white) !important;
+  color: var(--txc-gray-800) !important;
+  border: 1px solid #E0E0E0 !important;
+}
+
+/* WEATHER WIDGET COM CORES TXC */
+.weather-widget {
+  background: var(--txc-white) !important;
+  color: var(--txc-gray-800) !important;
+  border: 1px solid #E0E0E0 !important;
+}
+
+/* GRAIN QUOTES COM CORES TXC */
+.grain-quotes {
+  background: var(--txc-white) !important;
+  color: var(--txc-gray-800) !important;
+  border: 1px solid #E0E0E0 !important;
+}
+
+/* TODAS AS SEÇÕES COM CORES TXC */
+section {
+  background: var(--txc-white) !important;
+  color: var(--txc-gray-800) !important;
+}
+
+.section-alt {
+  background: #FAFAFA !important;
+}
+
+/* GRADIENTES TXC */
+.gradient-primary {
+  background: linear-gradient(135deg, var(--txc-primary) 0%, var(--txc-secondary) 100%) !important;
+}
+
+.gradient-secondary {
+  background: linear-gradient(135deg, var(--txc-secondary) 0%, var(--txc-accent) 100%) !important;
+}
+
+/* SOMBRAS TXC */
+.shadow-txc {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.shadow-txc-lg {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 768px) {
+  h1, .hero-title, .premium-hero-title {
+    font-size: 36px !important;
+  }
+  
+  h2, .section-title, .premium-section-title {
+    font-size: 24px !important;
+  }
+  
+  h3, .cta-title, .premium-cta-title {
+    font-size: 20px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  h1, .hero-title, .premium-hero-title {
+    font-size: 28px !important;
+  }
+  
+  h2, .section-title, .premium-section-title {
+    font-size: 20px !important;
+  }
+}

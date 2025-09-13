@@ -122,7 +122,11 @@ const ChatbotWidget = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => toggleChatbot()}
-        className="fixed bottom-8 right-8 z-50 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 bg-gradient-to-r from-gray-800 to-black shadow-2xl hover:shadow-glow border border-white/20 backdrop-blur-xl"
+        className="fixed bottom-8 right-8 z-50 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 shadow-2xl hover:shadow-glow border border-white/20 backdrop-blur-xl"
+        style={{ 
+          background: 'var(--txc-accent)', 
+          color: 'var(--txc-white)'
+        }}
       >
         <AnimatePresence mode="wait">
           {isOpen ? (
