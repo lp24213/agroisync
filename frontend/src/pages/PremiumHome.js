@@ -43,12 +43,6 @@ const PremiumHome = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const stats = [
-    { number: '10K+', label: t('home.stats.users') },
-    { number: '50K+', label: t('home.stats.transactions') },
-    { number: '99.9%', label: t('home.stats.uptime') },
-    { number: '24/7', label: t('home.stats.support') },
-  ];
 
   const heroVariants = {
     hidden: { opacity: 0, y: 60 },
