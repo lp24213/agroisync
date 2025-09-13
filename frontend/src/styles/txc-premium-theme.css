@@ -737,6 +737,97 @@ input, textarea, [contenteditable], select {
   }
 }
 
+/* Ultra Premium Animations - Apple/Tesla/TXC Style */
+@keyframes premium-glow {
+  from {
+    box-shadow: var(--premium-shadow-lg);
+  }
+  to {
+    box-shadow: var(--premium-shadow-lg), 0 0 30px rgba(0, 122, 255, 0.4);
+  }
+}
+
+@keyframes premium-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+@keyframes premium-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes premium-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes premium-neon-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(0, 212, 255, 0.8);
+  }
+}
+
+/* Ultra Premium Animation Classes */
+.premium-animate-glow {
+  animation: premium-glow 2s ease-in-out infinite alternate;
+}
+
+.premium-animate-pulse {
+  animation: premium-pulse 2s ease-in-out infinite;
+}
+
+.premium-animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background-size: 200% 100%;
+  animation: premium-shimmer 2s infinite;
+}
+
+.premium-animate-float {
+  animation: premium-float 3s ease-in-out infinite;
+}
+
+.premium-animate-neon {
+  animation: premium-neon-glow 2s ease-in-out infinite alternate;
+}
+
+/* Ultra Premium Hover Effects */
+.premium-hover-glow:hover {
+  animation: premium-glow 0.5s ease-in-out;
+}
+
+.premium-hover-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--premium-shadow-2xl);
+  transition: all var(--premium-transition-normal);
+}
+
+.premium-hover-scale:hover {
+  transform: scale(1.05);
+  transition: all var(--premium-transition-normal);
+}
+
+.premium-hover-neon:hover {
+  animation: premium-neon-glow 0.5s ease-in-out;
+}
+
 @keyframes premium-pulse {
   0%, 100% {
     transform: scale(1);
