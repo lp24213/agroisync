@@ -3,61 +3,58 @@
    UPDATED: 2025-01-13 - FORÇAR DEPLOY
    ======================================== */
 
-/* Aplicar visual TXC apenas nas páginas Premium */
-.premium-marketplace,
-.premium-agroconecta,
-.premium-crypto,
-.premium-plans,
-.premium-about,
-.premium-contact,
-.premium-login,
-.premium-register,
-.premium-dashboard {
+/* Aplicar visual TXC em TODAS as páginas */
+body, html, #root, .app,
+.premium-marketplace, .premium-agroconecta, .premium-crypto, .premium-plans,
+.premium-about, .premium-contact, .premium-login, .premium-register, .premium-dashboard,
+.txc-marketplace, .txc-agroconecta, .txc-crypto, .txc-plans,
+.txc-about, .txc-contact, .txc-login, .txc-register, .txc-dashboard {
   background: var(--txc-white) !important;
   color: var(--txc-gray-800) !important;
   font-family: 'Roboto', sans-serif !important;
 }
 
-/* Títulos das páginas Premium */
-.premium-hero-title,
-.premium-section-title,
-.premium-title,
-.premium-cta-title {
-  color: var(--txc-primary) !important;
+/* Títulos em TODAS as páginas */
+h1, h2, h3, h4, h5, h6,
+.premium-hero-title, .premium-section-title, .premium-title, .premium-cta-title,
+.txc-hero-title, .txc-section-title, .txc-title, .txc-cta-title {
+  color: #1A1A1A !important; /* Preto TXC */
   font-family: 'Roboto', sans-serif !important;
   font-weight: 700 !important;
 }
 
-/* Subtítulos das páginas Premium */
-.premium-hero-subtitle,
-.premium-section-subtitle,
-.premium-subtitle,
-.premium-cta-subtitle {
-  color: var(--txc-gray-600) !important;
+/* Subtítulos em TODAS as páginas */
+p, .subtitle,
+.premium-hero-subtitle, .premium-section-subtitle, .premium-subtitle, .premium-cta-subtitle,
+.txc-hero-subtitle, .txc-section-subtitle, .txc-subtitle, .txc-cta-subtitle {
+  color: #757575 !important; /* Cinza TXC */
   font-family: 'Roboto', sans-serif !important;
   font-weight: 400 !important;
 }
 
-/* Botões das páginas Premium */
-.premium-btn-primary {
-  background: var(--txc-primary) !important;
-  color: var(--txc-white) !important;
-  border: none !important;
+/* Botões em TODAS as páginas */
+button, .btn,
+.premium-btn-primary, .premium-btn-secondary, .premium-btn-accent,
+.txc-btn-primary, .txc-btn-secondary, .txc-btn-accent {
   font-family: 'Roboto', sans-serif !important;
 }
 
-.premium-btn-secondary {
-  background: var(--txc-white) !important;
-  color: var(--txc-primary) !important;
-  border: 2px solid var(--txc-primary) !important;
-  font-family: 'Roboto', sans-serif !important;
+.premium-btn-primary, .txc-btn-primary {
+  background: #1A1A1A !important; /* Preto TXC */
+  color: #FFFFFF !important;
+  border: none !important;
 }
 
-.premium-btn-accent {
-  background: var(--txc-secondary) !important;
-  color: var(--txc-white) !important;
+.premium-btn-secondary, .txc-btn-secondary {
+  background: #FFFFFF !important;
+  color: #1A1A1A !important; /* Preto TXC */
+  border: 2px solid #1A1A1A !important;
+}
+
+.premium-btn-accent, .txc-btn-accent {
+  background: #2C5AA0 !important; /* Azul TXC */
+  color: #FFFFFF !important;
   border: none !important;
-  font-family: 'Roboto', sans-serif !important;
 }
 
 /* Cards das páginas Premium */
