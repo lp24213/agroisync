@@ -1,6 +1,5 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import { motion } from 'framer-motion';
 
 const Layout = ({ children }) => {
   return (

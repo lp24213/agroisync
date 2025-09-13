@@ -9,19 +9,13 @@ import {
   Truck,
   DollarSign,
   Activity,
-  Calendar,
-  Bell,
-  Settings,
   Plus,
   ArrowRight,
   Star,
   Shield,
   Zap,
   Globe,
-  CheckCircle,
-  AlertCircle,
-  Clock,
-  Eye
+  Clock
 } from 'lucide-react';
 
 const PremiumDashboard = () => {

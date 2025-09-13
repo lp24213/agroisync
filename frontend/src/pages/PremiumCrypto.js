@@ -8,8 +8,6 @@ import {
   Shield, 
   Globe,
   ArrowRight,
-  CheckCircle,
-  Star,
   Zap,
   Lock,
   Users,
