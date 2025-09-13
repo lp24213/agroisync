@@ -209,7 +209,7 @@ const TXCFooter = () => {
       </div>
     </motion.footer>
 
-    <style jsx>{`
+      <style jsx>{`
       .txc-footer {
         background: var(--txc-gradient-secondary);
         border-top: 1px solid var(--txc-gray-200);

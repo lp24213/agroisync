@@ -1,10 +1,54 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { 
+  ArrowRight, 
+  Play, 
+  Star, 
+  Shield, 
+  Zap, 
+  Globe,
+  Users,
+  TrendingUp,
+  Award,
+  CheckCircle,
+  Menu,
+  X,
+  Sparkles,
+  Rocket,
+  Target,
+  Heart,
+  BarChart3,
+  DollarSign,
+  Package,
+  Truck
+} from 'lucide-react';
 
 const PremiumHome = () => {
   const { t } = useTranslation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const { scrollY } = useScroll();
+  
+  const y = useTransform(scrollY, [0, 300], [0, -50]);
+  const opacity = useTransform(scrollY, [0, 300], [1, 0.8]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const stats = [
+    { number: '10K+', label: t('home.stats.users') },
+    { number: '50K+', label: t('home.stats.transactions') },
+    { number: '99.9%', label: t('home.stats.uptime') },
+    { number: '24/7', label: t('home.stats.support') },
+  ];
 
   const heroVariants = {
     hidden: { opacity: 0, y: 60 },

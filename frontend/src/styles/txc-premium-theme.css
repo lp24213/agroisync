@@ -5,18 +5,39 @@
 
 /* CSS Custom Properties - Paleta Premium */
 :root {
-  /* Core Colors - Paleta Principal */
+  /* Ultra Premium Colors - Apple/Tesla/TXC/Atlas Inspired */
   --premium-white: #FFFFFF;
-  --premium-gray-light: #EDECE9;
-  --premium-gray-gradient-start: #EDECE9;
+  --premium-black: #000000;
+  --premium-gray-light: #F5F5F5;
+  --premium-gray-gradient-start: #F5F5F5;
   --premium-gray-gradient-end: #FFFFFF;
-  --premium-teal: #56B8B9;
-  --premium-teal-light: #6BC5C6;
-  --premium-teal-dark: #4A9B9C;
-  --premium-petroleum: #00799B;
-  --premium-petroleum-light: #0088B0;
-  --premium-petroleum-dark: #006080;
-  --premium-yellow: #F8AC00;
+  
+  /* Apple Inspired Colors */
+  --premium-primary: #007AFF; /* Apple Blue */
+  --premium-primary-light: #4DA6FF;
+  --premium-primary-dark: #0056CC;
+  --premium-secondary: #34C759; /* Apple Green */
+  --premium-accent: #FF9500; /* Apple Orange */
+  --premium-danger: #FF3B30; /* Apple Red */
+  --premium-warning: #FFCC00; /* Apple Yellow */
+  
+  /* Tesla/TXC Inspired Colors */
+  --premium-teal: #00D4AA;
+  --premium-teal-light: #00E6BB;
+  --premium-teal-dark: #00B894;
+  --premium-petroleum: #2C3E50;
+  --premium-petroleum-light: #34495E;
+  --premium-petroleum-dark: #1A252F;
+  --premium-electric: #00D4FF;
+  --premium-neon: #00FF88;
+  
+  /* Atlas Inspired Colors */
+  --premium-atlas-blue: #1E3A8A;
+  --premium-atlas-purple: #7C3AED;
+  --premium-atlas-pink: #EC4899;
+  
+  /* Legacy Support */
+  --premium-yellow: #FF9500;
   --premium-yellow-light: #FFB800;
   --premium-yellow-dark: #E09900;
   
@@ -38,13 +59,16 @@
   --premium-error: #EF4444;
   --premium-info: #3B82F6;
   
-  /* Premium Gradients */
-  --premium-gradient-primary: linear-gradient(135deg, var(--premium-teal) 0%, var(--premium-petroleum) 100%);
-  --premium-gradient-secondary: linear-gradient(135deg, var(--premium-gray-gradient-start) 0%, var(--premium-gray-gradient-end) 100%);
-  --premium-gradient-accent: linear-gradient(135deg, var(--premium-teal) 0%, var(--premium-yellow) 100%);
-  --premium-gradient-hover: linear-gradient(135deg, var(--premium-petroleum) 0%, var(--premium-teal) 100%);
-  --premium-gradient-cta: linear-gradient(135deg, var(--premium-yellow) 0%, var(--premium-yellow-light) 100%);
+  /* Ultra Premium Gradients - Apple/Tesla/TXC Style */
+  --premium-gradient-primary: linear-gradient(135deg, var(--premium-primary) 0%, var(--premium-primary-light) 100%);
+  --premium-gradient-secondary: linear-gradient(135deg, var(--premium-secondary) 0%, var(--premium-teal) 100%);
+  --premium-gradient-accent: linear-gradient(135deg, var(--premium-accent) 0%, var(--premium-warning) 100%);
+  --premium-gradient-hover: linear-gradient(135deg, var(--premium-petroleum) 0%, var(--premium-electric) 100%);
+  --premium-gradient-cta: linear-gradient(135deg, var(--premium-electric) 0%, var(--premium-neon) 100%);
   --premium-gradient-hero: linear-gradient(135deg, var(--premium-white) 0%, var(--premium-gray-light) 100%);
+  --premium-gradient-dark: linear-gradient(135deg, var(--premium-gray-900) 0%, var(--premium-petroleum) 100%);
+  --premium-gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+  --premium-gradient-neon: linear-gradient(135deg, var(--premium-electric) 0%, var(--premium-neon) 100%);
   
   /* Premium Shadows */
   --premium-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);

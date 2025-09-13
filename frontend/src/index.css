@@ -6,8 +6,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
 
-/* Import TXC Modern Theme */
-@import './styles/txc-modern-theme.css';
+/* Import Ultra Premium Theme */
+@import './styles/ultra-premium-theme.css';
 
 /* EXECUÇÃO IMEDIATA - CSS FORÇADO */
 @import './styles/execute-immediate.css';
