@@ -6,20 +6,20 @@ import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/Layout';
-import TXCHeader from './components/TXCHeader';
+import PremiumHeader from './components/PremiumHeader';
 import TXCFooter from './components/TXCFooter';
-import CustomCursor from './components/CustomCursor';
+import PremiumCursor from './components/PremiumCursor';
 import ChatbotWidget from './components/ChatbotWidget';
 import Ticker from './components/Ticker';
 import GrainQuotes from './components/GrainQuotes';
 import WeatherWidget from './components/WeatherWidget';
 // import NewsFeed from './components/NewsFeed'; // Removido do topo, agora está no Home
 
-// Importar theme global TXC
-import './styles/txc-modern-theme.css';
+// Importar theme global Premium
+import './styles/txc-premium-theme.css';
 
 // Pages
-import Home from './pages/TXCHome';
+import Home from './pages/PremiumHome';
 import Marketplace from './pages/Marketplace';
 import AgroConecta from './pages/AgroConecta';
 import IntermediationSystem from './components/IntermediationSystem';
@@ -66,18 +66,18 @@ function App() {
           <LanguageProvider>
             <Router>
               <div className="App">
-                {/* Custom Cursor */}
-                <CustomCursor />
+                {/* Premium Cursor */}
+                <PremiumCursor />
                 
-                {/* TXC Header */}
-                <TXCHeader />
+                {/* Premium Header */}
+                <PremiumHeader />
                 
                 {/* Ticker fixo no topo */}
                 <Ticker />
                 
                 {/* Barra de Informações - Apenas cotações e clima */}
                 <div className="info-bar">
-                  <div className="txc-container">
+                  <div className="premium-container">
                     <div className="info-content">
                       <GrainQuotes />
                       <WeatherWidget />
