@@ -71,7 +71,7 @@ const WeatherWidget = () => {
     const interval = setInterval(loadWeather, 600000);
     
     return () => clearInterval(interval);
-  }, [userLocation]);
+  }, [userLocation, t]);
 
   if (isLoading) {
     return (
