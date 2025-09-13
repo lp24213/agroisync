@@ -32,12 +32,19 @@ const WeatherWidget = () => {
 
   useEffect(() => {
     // Dados mockados do clima (em produção, usar API real)
+    const conditions = [
+      { key: 'sunny', icon: '☀️' },
+      { key: 'partly-cloudy', icon: '⛅' },
+      { key: 'cloudy', icon: '☁️' }
+    ];
+    const randomCondition = conditions[Math.floor(Math.random() * 3)];
+    
     const mockWeather = {
       location: userLocation,
       temperature: Math.floor(Math.random() * 15) + 20, // 20-35°C
-      condition: ['Ensolarado', 'Parcialmente nublado', 'Nublado'][Math.floor(Math.random() * 3)],
-      icon: ['☀️', '⛅', '☁️'][Math.floor(Math.random() * 3)],
-      description: 'Clima atualizado automaticamente'
+      condition: t(`weather.conditions.${randomCondition.key}`),
+      icon: randomCondition.icon,
+      description: t('weather.description')
     };
 
     const loadWeather = async () => {

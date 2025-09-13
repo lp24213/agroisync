@@ -23,20 +23,29 @@ const Ticker = () => {
   }, []);
 
   const formatPrice = (price) => {
-    return price.toLocaleString('pt-BR', { 
+    const locale = t('locale') || 'pt-BR';
+    return price.toLocaleString(locale, { 
       minimumFractionDigits: 2, 
       maximumFractionDigits: 2 
     });
   };
 
   const formatChange = (change) => {
+    const locale = t('locale') || 'pt-BR';
     const sign = change >= 0 ? '+' : '';
-    return `${sign}${change.toFixed(2)}`;
+    return `${sign}${change.toLocaleString(locale, { 
+      minimumFractionDigits: 2, 
+      maximumFractionDigits: 2 
+    })}`;
   };
 
   const formatChangePercent = (changePercent) => {
+    const locale = t('locale') || 'pt-BR';
     const sign = changePercent >= 0 ? '+' : '';
-    return `(${sign}${changePercent.toFixed(2)}%)`;
+    return `(${sign}${changePercent.toLocaleString(locale, { 
+      minimumFractionDigits: 2, 
+      maximumFractionDigits: 2 
+    })}%)`;
   };
 
   return (
