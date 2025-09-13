@@ -1,0 +1,215 @@
+/* ========================================
+   FORÇAR CORES TXC EM TUDO - SEM EXCEÇÕES
+   ======================================== */
+
+/* CORES TXC FORÇADAS EM TUDO */
+* {
+  --txc-primary: #1A1A1A !important; /* Preto TXC */
+  --txc-secondary: #2C5AA0 !important; /* Azul TXC */
+  --txc-accent: #FF6B00 !important; /* Laranja TXC */
+  --txc-white: #FFFFFF !important;
+  --txc-gray-600: #757575 !important;
+  --txc-gray-800: #424242 !important;
+}
+
+/* TODOS OS TÍTULOS COM COR TXC PRETA */
+h1, h2, h3, h4, h5, h6,
+.title, .hero-title, .section-title, .cta-title,
+.premium-hero-title, .premium-section-title, .premium-title, .premium-cta-title,
+.txc-title, .txc-section-title {
+  color: #1A1A1A !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 700 !important;
+}
+
+/* TODOS OS SUBTÍTULOS COM COR TXC CINZA */
+.subtitle, .hero-subtitle, .section-subtitle, .cta-subtitle,
+.premium-hero-subtitle, .premium-section-subtitle, .premium-subtitle, .premium-cta-subtitle,
+.txc-subtitle, .txc-section-subtitle {
+  color: #757575 !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 400 !important;
+}
+
+/* TODOS OS BOTÕES COM COR TXC PRETA */
+button, .btn, .premium-btn, .txc-btn {
+  background: #1A1A1A !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 500 !important;
+}
+
+button:hover, .btn:hover, .premium-btn:hover, .txc-btn:hover {
+  background: #2C5AA0 !important;
+  transform: translateY(-2px) !important;
+}
+
+/* TODOS OS ÍCONES COM COR TXC AZUL */
+.icon, .premium-icon, .txc-icon, svg, .lucide {
+  color: #2C5AA0 !important;
+}
+
+/* ÍCONE DO CHATGPT COM COR TXC LARANJA */
+.chatbot-toggle, .chatbot-widget button {
+  background: #FF6B00 !important;
+  color: #FFFFFF !important;
+}
+
+/* TODOS OS CARDS COM FUNDO BRANCO TXC */
+.card, .premium-card, .txc-card {
+  background: #FFFFFF !important;
+  border: 1px solid #E0E0E0 !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* HEADER COM CORES TXC */
+header, .navbar, .header {
+  background: #FFFFFF !important;
+  border-bottom: 1px solid #E0E0E0 !important;
+}
+
+/* FOOTER COM CORES TXC */
+footer, .footer {
+  background: #424242 !important;
+  color: #FFFFFF !important;
+}
+
+/* LINKS COM CORES TXC */
+a, .link {
+  color: #2C5AA0 !important;
+}
+
+a:hover, .link:hover {
+  color: #FF6B00 !important;
+}
+
+/* INPUTS COM CORES TXC */
+input, textarea, select {
+  border: 1px solid #E0E0E0 !important;
+  color: #424242 !important;
+  font-family: 'Roboto', sans-serif !important;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #2C5AA0 !important;
+  box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.2) !important;
+}
+
+/* TICKER COM CORES TXC */
+.ticker, .ticker-container {
+  background: #FFFFFF !important;
+  color: #424242 !important;
+  border: 1px solid #E0E0E0 !important;
+}
+
+.ticker .ticker-item {
+  color: #424242 !important;
+}
+
+.ticker .ticker-price {
+  color: #1A1A1A !important;
+  font-weight: 700 !important;
+}
+
+.ticker .ticker-change {
+  color: #2C5AA0 !important;
+}
+
+/* WEATHER WIDGET COM CORES TXC */
+.weather-widget {
+  background: #FFFFFF !important;
+  color: #424242 !important;
+  border: 1px solid #E0E0E0 !important;
+}
+
+.weather-widget .weather-location {
+  color: #424242 !important;
+}
+
+.weather-widget .weather-temperature {
+  color: #1A1A1A !important;
+  font-weight: 700 !important;
+}
+
+.weather-widget .weather-condition {
+  color: #757575 !important;
+}
+
+/* GRAIN QUOTES COM CORES TXC */
+.grain-quotes {
+  background: #FFFFFF !important;
+  color: #424242 !important;
+  border: 1px solid #E0E0E0 !important;
+}
+
+.grain-quotes .quote-name {
+  color: #424242 !important;
+}
+
+.grain-quotes .quote-price {
+  color: #1A1A1A !important;
+  font-weight: 700 !important;
+}
+
+.grain-quotes .quote-change {
+  color: #2C5AA0 !important;
+}
+
+/* NOTÍCIAS COM CORES TXC */
+.news-container, .news-item {
+  background: #FFFFFF !important;
+  color: #424242 !important;
+  border: 1px solid #E0E0E0 !important;
+}
+
+.news-title {
+  color: #1A1A1A !important;
+  font-weight: 700 !important;
+}
+
+.news-content {
+  color: #757575 !important;
+}
+
+/* TODAS AS SEÇÕES COM CORES TXC */
+section {
+  background: #FFFFFF !important;
+  color: #424242 !important;
+}
+
+.section-alt {
+  background: #FAFAFA !important;
+}
+
+/* BODY COM CORES TXC */
+body, html, #root, .app {
+  background: #FFFFFF !important;
+  color: #424242 !important;
+  font-family: 'Roboto', sans-serif !important;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 768px) {
+  h1, .hero-title, .premium-hero-title {
+    font-size: 36px !important;
+  }
+  
+  h2, .section-title, .premium-section-title {
+    font-size: 24px !important;
+  }
+  
+  h3, .cta-title, .premium-cta-title {
+    font-size: 20px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  h1, .hero-title, .premium-hero-title {
+    font-size: 28px !important;
+  }
+  
+  h2, .section-title, .premium-section-title {
+    font-size: 20px !important;
+  }
+}
