@@ -84,10 +84,10 @@ const PremiumHome = () => {
             initial="hidden"
             animate="visible"
           >
-            <motion.h1 className="txc-title" variants={itemVariants}>
+            <motion.h1 className="hero-title" variants={itemVariants}>
               {t('home.hero.title')}
             </motion.h1>
-            <motion.p className="txc-subtitle" variants={itemVariants}>
+            <motion.p className="hero-subtitle" variants={itemVariants}>
               {t('home.hero.subtitle')}
             </motion.p>
             <motion.div className="txc-hero-actions" variants={itemVariants}>
@@ -164,10 +164,10 @@ const PremiumHome = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="txc-section-title">
+            <h2 className="section-title">
               {t('home.features.title')}
             </h2>
-            <p className="txc-section-subtitle">
+            <p className="section-subtitle">
               {t('home.features.subtitle')}
             </p>
           </motion.div>
@@ -211,10 +211,10 @@ const PremiumHome = () => {
             viewport={{ once: true }}
             transition={{ duration: 1 }}
           >
-            <h2 className="txc-title">
+            <h2 className="cta-title">
               {t('home.cta.title')}
             </h2>
-            <p className="txc-subtitle">
+            <p className="cta-subtitle">
               {t('home.cta.subtitle')}
             </p>
             <motion.div
@@ -263,6 +263,65 @@ const PremiumHome = () => {
           font-size: 64px;
           margin-bottom: var(--txc-space-lg);
           filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+        }
+
+        .hero-title {
+          font-size: var(--txc-text-7xl);
+          font-weight: var(--txc-font-black);
+          background: var(--txc-gradient-primary);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          margin-bottom: var(--txc-space-xl);
+          line-height: var(--txc-leading-tight);
+          letter-spacing: -0.05em;
+        }
+
+        .hero-subtitle {
+          font-size: var(--txc-text-2xl);
+          color: var(--txc-gray-600);
+          margin-bottom: var(--txc-space-3xl);
+          line-height: var(--txc-leading-relaxed);
+          font-weight: var(--txc-font-medium);
+          max-width: 700px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .section-title {
+          font-size: var(--txc-text-6xl);
+          font-weight: var(--txc-font-black);
+          color: var(--txc-gray-800);
+          margin-bottom: var(--txc-space-xl);
+          letter-spacing: -0.04em;
+        }
+
+        .section-subtitle {
+          font-size: var(--txc-text-xl);
+          color: var(--txc-gray-600);
+          max-width: 700px;
+          margin: 0 auto;
+          font-weight: var(--txc-font-medium);
+          line-height: var(--txc-leading-relaxed);
+        }
+
+        .cta-title {
+          font-size: var(--txc-text-6xl);
+          font-weight: var(--txc-font-black);
+          background: var(--txc-gradient-primary);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          margin-bottom: var(--txc-space-xl);
+          letter-spacing: -0.04em;
+        }
+
+        .cta-subtitle {
+          font-size: var(--txc-text-xl);
+          color: var(--txc-gray-600);
+          margin-bottom: var(--txc-space-3xl);
+          font-weight: var(--txc-font-medium);
+          line-height: var(--txc-leading-relaxed);
         }
 
         .txc-card-title {

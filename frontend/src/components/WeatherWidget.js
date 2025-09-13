@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Thermometer, Cloud } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 const WeatherWidget = () => {
+  const { t } = useTranslation();
   const [weather, setWeather] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [userLocation, setUserLocation] = useState('Sinop - MT');
