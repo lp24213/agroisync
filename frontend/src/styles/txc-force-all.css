@@ -20,9 +20,8 @@ h1, h2, h3, h4, h5, h6,
   color: #1A1A1A !important;
   font-family: 'Roboto', sans-serif !important;
   font-weight: 700 !important;
-  font-size: inherit !important;
   line-height: 1.2 !important;
-  margin: 0 !important;
+  margin-bottom: 1rem !important;
   padding: 0 !important;
 }
 
@@ -33,9 +32,8 @@ h1, h2, h3, h4, h5, h6,
   color: #757575 !important;
   font-family: 'Roboto', sans-serif !important;
   font-weight: 400 !important;
-  font-size: inherit !important;
   line-height: 1.4 !important;
-  margin: 0 !important;
+  margin-bottom: 1rem !important;
   padding: 0 !important;
 }
 
@@ -199,50 +197,50 @@ body, html, #root, .app {
 
 /* TAMANHOS ESPECÍFICOS PARA TÍTULOS */
 h1, .hero-title, .premium-hero-title {
-  font-size: 50px !important;
+  font-size: 3.125rem !important; /* 50px */
 }
 
 h2, .section-title, .premium-section-title {
-  font-size: 24px !important;
+  font-size: 1.5rem !important; /* 24px */
 }
 
 h3, .cta-title, .premium-cta-title {
-  font-size: 20px !important;
+  font-size: 1.25rem !important; /* 20px */
 }
 
 h4 {
-  font-size: 18px !important;
+  font-size: 1.125rem !important; /* 18px */
 }
 
 h5 {
-  font-size: 16px !important;
+  font-size: 1rem !important; /* 16px */
 }
 
 h6 {
-  font-size: 14px !important;
+  font-size: 0.875rem !important; /* 14px */
 }
 
 /* RESPONSIVIDADE */
 @media (max-width: 768px) {
   h1, .hero-title, .premium-hero-title {
-    font-size: 36px !important;
+    font-size: 2.25rem !important; /* 36px */
   }
   
   h2, .section-title, .premium-section-title {
-    font-size: 24px !important;
+    font-size: 1.5rem !important; /* 24px */
   }
   
   h3, .cta-title, .premium-cta-title {
-    font-size: 20px !important;
+    font-size: 1.25rem !important; /* 20px */
   }
 }
 
 @media (max-width: 480px) {
   h1, .hero-title, .premium-hero-title {
-    font-size: 28px !important;
+    font-size: 1.75rem !important; /* 28px */
   }
   
   h2, .section-title, .premium-section-title {
-    font-size: 20px !important;
+    font-size: 1.25rem !important; /* 20px */
   }
 }
