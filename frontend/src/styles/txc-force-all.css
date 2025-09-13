@@ -12,8 +12,7 @@
   --txc-gray-800: #424242 !important;
 }
 
-/* TODOS OS TÍTULOS COM COR TXC PRETA */
-h1, h2, h3, h4, h5, h6,
+/* TÍTULOS ESPECÍFICOS COM COR TXC PRETA */
 .title, .hero-title, .section-title, .cta-title,
 .premium-hero-title, .premium-section-title, .premium-title, .premium-cta-title,
 .txc-title, .txc-section-title {
@@ -196,51 +195,39 @@ body, html, #root, .app {
 }
 
 /* TAMANHOS ESPECÍFICOS PARA TÍTULOS */
-h1, .hero-title, .premium-hero-title {
+.hero-title, .premium-hero-title {
   font-size: 3.125rem !important; /* 50px */
 }
 
-h2, .section-title, .premium-section-title {
+.section-title, .premium-section-title {
   font-size: 1.5rem !important; /* 24px */
 }
 
-h3, .cta-title, .premium-cta-title {
+.cta-title, .premium-cta-title {
   font-size: 1.25rem !important; /* 20px */
-}
-
-h4 {
-  font-size: 1.125rem !important; /* 18px */
-}
-
-h5 {
-  font-size: 1rem !important; /* 16px */
-}
-
-h6 {
-  font-size: 0.875rem !important; /* 14px */
 }
 
 /* RESPONSIVIDADE */
 @media (max-width: 768px) {
-  h1, .hero-title, .premium-hero-title {
+  .hero-title, .premium-hero-title {
     font-size: 2.25rem !important; /* 36px */
   }
   
-  h2, .section-title, .premium-section-title {
+  .section-title, .premium-section-title {
     font-size: 1.5rem !important; /* 24px */
   }
   
-  h3, .cta-title, .premium-cta-title {
+  .cta-title, .premium-cta-title {
     font-size: 1.25rem !important; /* 20px */
   }
 }
 
 @media (max-width: 480px) {
-  h1, .hero-title, .premium-hero-title {
+  .hero-title, .premium-hero-title {
     font-size: 1.75rem !important; /* 28px */
   }
   
-  h2, .section-title, .premium-section-title {
+  .section-title, .premium-section-title {
     font-size: 1.25rem !important; /* 20px */
   }
 }
