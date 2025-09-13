@@ -16,8 +16,8 @@
 /* TXC SPECIFIC - SEM QUEBRAR COMPONENTES */
 @import './styles/txc-specific.css';
 
-/* FORÇAR CORES TXC EM TUDO - SEM EXCEÇÕES */
-@import './styles/txc-force-all.css';
+/* FORÇAR CORES TXC EM TUDO - REMOVIDO POR QUEBRAR COMPONENTES */
+/* @import './styles/txc-force-all.css'; */
 
 /* EXECUÇÃO IMEDIATA - CSS FORÇADO */
 @import './styles/execute-immediate.css';
