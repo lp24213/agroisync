@@ -19,7 +19,7 @@ import WeatherWidget from './components/WeatherWidget';
 import './styles/txc-premium-theme.css';
 
 // Pages
-import Home from './pages/UltraPremiumHome';
+import Home from './pages/PremiumHome';
 import Marketplace from './pages/PremiumMarketplace';
 import AgroConecta from './pages/PremiumAgroConecta';
 import IntermediationSystem from './components/IntermediationSystem';

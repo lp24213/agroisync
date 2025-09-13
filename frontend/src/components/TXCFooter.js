@@ -67,6 +67,7 @@ const TXCFooter = () => {
   };
 
   return (
+    <>
     <motion.footer
       className="txc-footer"
       initial="hidden"
@@ -495,6 +496,7 @@ const TXCFooter = () => {
         }
       }
     `}</style>
+    </>
   );
 };
 
