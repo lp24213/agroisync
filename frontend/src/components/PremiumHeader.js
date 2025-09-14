@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import LanguageSelector from './LanguageSelector';
-import ThemeToggle from './ThemeToggle';
+// import ThemeToggle from './ThemeToggle';
 
 const PremiumHeader = () => {
   const { t } = useTranslation();
@@ -88,7 +88,7 @@ const PremiumHeader = () => {
             {/* Header Actions Premium */}
             <div className="premium-header-actions">
               <LanguageSelector />
-              <ThemeToggle />
+              {/* <ThemeToggle /> */}
               
               {user ? (
                 <div className="premium-user-menu">
