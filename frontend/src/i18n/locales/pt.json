@@ -10,6 +10,19 @@
     "confirm": "Confirmar",
     "close": "Fechar"
   },
+  "nav": {
+    "home": "Home",
+    "about": "Sobre",
+    "contact": "Contato",
+    "plans": "Planos",
+    "services": "Serviços",
+    "store": "Loja Agroisync",
+    "agroconecta": "AgroConecta",
+    "marketplace": "Marketplace",
+    "crypto": "Cripto",
+    "login": "Entrar",
+    "register": "Cadastrar"
+  },
   "navigation": {
     "home": "Home",
     "about": "Sobre",
@@ -28,25 +41,40 @@
     "description": "Conecte-se ao futuro do agronegócio com tecnologia blockchain, IA e marketplace inteligente.",
     "getStarted": "Começar Agora",
     "watchDemo": "Ver Demo",
+    "hero": {
+      "title": "Revolucione Seu Agronegócio",
+      "subtitle": "A plataforma mais avançada para conectar produtores, compradores e transportadores",
+      "cta": {
+        "primary": "Começar Agora",
+        "secondary": "Ver Demo"
+      }
+    },
     "features": {
       "title": "Recursos Revolucionários",
       "subtitle": "Tecnologia de ponta para revolucionar o agronegócio",
-      "products": {
-        "title": "Intermediação de Produtos",
+      "marketplace": {
+        "title": "Marketplace Inteligente",
         "description": "Conectamos produtores e compradores através de nossa plataforma de intermediação"
       },
-      "freights": {
-        "title": "Intermediação de Fretes",
+      "agroconecta": {
+        "title": "AgroConecta",
         "description": "Conectamos cargas e transportadores com rastreamento em tempo real"
       },
       "crypto": {
         "title": "Cripto & DeFi",
         "description": "Pagamentos em cripto, staking e NFTs agrícolas"
       },
-      "messaging": {
-        "title": "Mensageria",
-        "description": "Comunicação em tempo real entre usuários"
-      }
+      "analytics": {
+        "title": "Analytics Avançado",
+        "description": "Dados em tempo real para otimizar seus negócios"
+      },
+      "learnMore": "Saiba Mais"
+    },
+    "stats": {
+      "users": "Usuários Ativos",
+      "transactions": "Transações",
+      "volume": "Volume Total",
+      "uptime": "Uptime"
     },
     "testimonials": {
       "title": "O que nossos usuários dizem",
@@ -55,6 +83,8 @@
     "cta": {
       "title": "Pronto para o Futuro?",
       "subtitle": "Junte-se à revolução do agronegócio e transforme sua forma de trabalhar",
+      "getStarted": "Começar Agora",
+      "contact": "Falar com Especialista",
       "startFree": "Começar Gratuitamente",
       "talkExpert": "Falar com Especialista"
     }
@@ -129,6 +159,32 @@
       "subtitle": "Seja você anunciante ou transportador, nossa plataforma conecta você com os melhores parceiros de frete. Vocês negociam diretamente, nós só facilitamos a conexão!",
       "haveLoad": "Tenho Carga",
       "transporter": "Sou Transportador"
+    }
+  },
+  "footer": {
+    "description": "Revolucionando o agronegócio com tecnologia de ponta. Conectamos produtores, compradores e transportadores em uma plataforma inteligente e segura.",
+    "product": "Produto",
+    "company": "Empresa",
+    "legal": "Legal",
+    "connect": "Conectar",
+    "newsletter": {
+      "title": "Newsletter",
+      "description": "Receba as últimas novidades do agronegócio",
+      "placeholder": "Seu email",
+      "subscribe": "Inscrever-se"
+    },
+    "copyright": "Todos os direitos reservados."
+  },
+  "auth": {
+    "login": "Entrar",
+    "register": "Cadastrar",
+    "logout": "Sair"
+  },
+  "weather": {
+    "conditions": {
+      "sunny": "Ensolarado",
+      "cloudy": "Nublado",
+      "rainy": "Chuvoso"
     }
   },
   "chatbot": {
