@@ -1,0 +1,363 @@
+/* ========================================
+   CORREÇÃO TXC EM TODAS AS PÁGINAS
+   Títulos, cores, design e layout TXC
+   ======================================== */
+
+/* ===== CORES TXC FORÇADAS EM TUDO ===== */
+body, html, #root, .App,
+.premium-home, .premium-marketplace, .premium-agroconecta, .premium-crypto, .premium-plans,
+.premium-about, .premium-contact, .premium-login, .premium-register, .premium-dashboard,
+main, section, article {
+  background: #FFFFFF !important; /* BRANCO TXC */
+  color: #000000 !important; /* PRETO TXC */
+  font-family: 'Roboto', sans-serif !important;
+}
+
+/* ===== TÍTULOS TXC EM TODAS AS PÁGINAS ===== */
+h1, h2, h3, h4, h5, h6,
+.hero-title, .section-title, .cta-title, .page-title, .main-title,
+.premium-hero-title, .premium-section-title, .premium-title, .premium-cta-title,
+.txc-hero-title, .txc-section-title, .txc-title, .txc-cta-title,
+.marketplace-title, .agroconecta-title, .crypto-title, .plans-title,
+.about-title, .contact-title, .login-title, .register-title, .dashboard-title {
+  color: #000000 !important; /* PRETO TXC */
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 700 !important;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: unset !important;
+  background-clip: unset !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}
+
+/* ===== SUBTÍTULOS TXC EM TODAS AS PÁGINAS ===== */
+p, .subtitle, .description, .text, .content,
+.hero-subtitle, .section-subtitle, .cta-subtitle, .page-subtitle,
+.premium-hero-subtitle, .premium-section-subtitle, .premium-subtitle, .premium-cta-subtitle,
+.txc-hero-subtitle, .txc-section-subtitle, .txc-subtitle, .txc-cta-subtitle,
+.marketplace-subtitle, .agroconecta-subtitle, .crypto-subtitle, .plans-subtitle,
+.about-subtitle, .contact-subtitle, .login-subtitle, .register-subtitle {
+  color: #757575 !important; /* CINZA TXC */
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}
+
+/* ===== BOTÕES TXC EM TODAS AS PÁGINAS ===== */
+button, .btn, .button,
+.premium-btn-primary, .premium-btn-secondary, .premium-btn-accent,
+.txc-btn-primary, .txc-btn-secondary, .txc-btn-accent,
+.btn-primary, .btn-secondary, .btn-accent, .btn-outline {
+  font-family: 'Roboto', sans-serif !important;
+  border-radius: 0.5rem !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.premium-btn-primary, .txc-btn-primary, .btn-primary {
+  background: #000000 !important; /* PRETO TXC */
+  color: #FFFFFF !important;
+  border: none !important;
+}
+
+.premium-btn-primary:hover, .txc-btn-primary:hover, .btn-primary:hover {
+  background: #424242 !important; /* CINZA ESCURO */
+  color: #FFFFFF !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.premium-btn-secondary, .txc-btn-secondary, .btn-secondary, .btn-outline {
+  background: #FFFFFF !important; /* BRANCO TXC */
+  color: #000000 !important; /* PRETO TXC */
+  border: 2px solid #000000 !important;
+}
+
+.premium-btn-secondary:hover, .txc-btn-secondary:hover, .btn-secondary:hover, .btn-outline:hover {
+  background: #000000 !important; /* PRETO TXC */
+  color: #FFFFFF !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.premium-btn-accent, .txc-btn-accent, .btn-accent {
+  background: #2C5AA0 !important; /* AZUL TXC */
+  color: #FFFFFF !important;
+  border: none !important;
+}
+
+.premium-btn-accent:hover, .txc-btn-accent:hover, .btn-accent:hover {
+  background: #1E3F73 !important; /* AZUL ESCURO */
+  color: #FFFFFF !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(44, 90, 160, 0.3) !important;
+}
+
+/* ===== CARDS TXC EM TODAS AS PÁGINAS ===== */
+.card, .premium-card, .txc-card,
+.feature-card, .service-card, .product-card, .info-card,
+.stats-card, .testimonial-card, .pricing-card, .benefit-card {
+  background: #FFFFFF !important; /* BRANCO TXC */
+  border: 1px solid #E0E0E0 !important; /* CINZA CLARO */
+  border-radius: 0.75rem !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  color: #000000 !important; /* PRETO TXC */
+  padding: 1.5rem !important;
+  transition: all 0.3s ease !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}
+
+.card:hover, .premium-card:hover, .txc-card:hover,
+.feature-card:hover, .service-card:hover, .product-card:hover,
+.info-card:hover, .stats-card:hover, .testimonial-card:hover,
+.pricing-card:hover, .benefit-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-4px) !important;
+}
+
+.card-title, .premium-card-title, .txc-card-title,
+.feature-title, .service-title, .product-title, .info-title,
+.stats-title, .testimonial-title, .pricing-title, .benefit-title {
+  color: #000000 !important; /* PRETO TXC */
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 600 !important;
+  margin-bottom: 0.75rem !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}
+
+.card-description, .premium-card-description, .txc-card-description,
+.feature-description, .service-description, .product-description,
+.info-description, .stats-description, .testimonial-description,
+.pricing-description, .benefit-description {
+  color: #757575 !important; /* CINZA TXC */
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}
+
+/* ===== FORMULÁRIOS TXC EM TODAS AS PÁGINAS ===== */
+input, textarea, select,
+.form-input, .form-field, .form-control,
+.premium-input, .txc-input, .input-field {
+  background: #FFFFFF !important; /* BRANCO TXC */
+  border: 2px solid #E0E0E0 !important; /* CINZA CLARO */
+  border-radius: 0.5rem !important;
+  color: #000000 !important; /* PRETO TXC */
+  font-family: 'Roboto', sans-serif !important;
+  padding: 0.75rem 1rem !important;
+  transition: all 0.3s ease !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}
+
+input:focus, textarea:focus, select:focus,
+.form-input:focus, .form-field:focus, .form-control:focus,
+.premium-input:focus, .txc-input:focus, .input-field:focus {
+  border-color: #2C5AA0 !important; /* AZUL TXC */
+  box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1) !important;
+  outline: none !important;
+}
+
+/* ===== NAVEGAÇÃO TXC EM TODAS AS PÁGINAS ===== */
+.nav-link, .premium-nav-link, .txc-nav-link,
+.menu-link, .navigation-link, .page-link {
+  color: #000000 !important; /* PRETO TXC */
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+  transition: all 0.3s ease !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.nav-link:hover, .premium-nav-link:hover, .txc-nav-link:hover,
+.menu-link:hover, .navigation-link:hover, .page-link:hover {
+  color: #2C5AA0 !important; /* AZUL TXC */
+}
+
+.nav-link.active, .premium-nav-link.active, .txc-nav-link.active,
+.menu-link.active, .navigation-link.active, .page-link.active {
+  color: #2C5AA0 !important; /* AZUL TXC */
+  font-weight: 600 !important;
+}
+
+/* ===== ÍCONES TXC EM TODAS AS PÁGINAS ===== */
+.icon, .premium-icon, .txc-icon,
+.feature-icon, .service-icon, .product-icon,
+.info-icon, .stats-icon, .testimonial-icon {
+  color: #2C5AA0 !important; /* AZUL TXC */
+  transition: all 0.3s ease !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.icon:hover, .premium-icon:hover, .txc-icon:hover,
+.feature-icon:hover, .service-icon:hover, .product-icon:hover,
+.info-icon:hover, .stats-icon:hover, .testimonial-icon:hover {
+  color: #000000 !important; /* PRETO TXC */
+  transform: scale(1.1) !important;
+}
+
+/* ===== ESTATÍSTICAS TXC EM TODAS AS PÁGINAS ===== */
+.stat-number, .premium-stat-number, .txc-stat-number,
+.number, .metric-value, .counter, .count {
+  color: #000000 !important; /* PRETO TXC */
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 900 !important;
+  font-size: 2.5rem !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}
+
+.stat-label, .premium-stat-label, .txc-stat-label,
+.label, .metric-label, .counter-label, .count-label {
+  color: #757575 !important; /* CINZA TXC */
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 1rem !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}
+
+/* ===== MODAIS TXC EM TODAS AS PÁGINAS ===== */
+.modal, .modal-content, .premium-modal, .txc-modal,
+.dialog, .popup, .overlay {
+  background: #FFFFFF !important; /* BRANCO TXC */
+  border: 1px solid #E0E0E0 !important; /* CINZA CLARO */
+  border-radius: 0.75rem !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.modal-title, .premium-modal-title, .txc-modal-title,
+.dialog-title, .popup-title {
+  color: #000000 !important; /* PRETO TXC */
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 700 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}
+
+/* ===== FOOTER TXC EM TODAS AS PÁGINAS ===== */
+footer, .footer, .premium-footer, .txc-footer {
+  background: #F5F5F5 !important; /* CINZA CLARO TXC */
+  border-top: 1px solid #E0E0E0 !important; /* CINZA CLARO */
+  color: #000000 !important; /* PRETO TXC */
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.footer-title, .premium-footer-title, .txc-footer-title {
+  color: #000000 !important; /* PRETO TXC */
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 600 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}
+
+.footer-link, .premium-footer-link, .txc-footer-link {
+  color: #757575 !important; /* CINZA TXC */
+  text-decoration: none !important;
+  transition: all 0.3s ease !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.footer-link:hover, .premium-footer-link:hover, .txc-footer-link:hover {
+  color: #2C5AA0 !important; /* AZUL TXC */
+}
+
+/* ===== RESPONSIVIDADE TXC ===== */
+@media (max-width: 768px) {
+  .card, .premium-card, .txc-card {
+    padding: 1rem !important;
+  }
+  
+  .stat-number, .premium-stat-number, .txc-stat-number {
+    font-size: 2rem !important;
+  }
+  
+  button, .btn, .button {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.9rem !important;
+  }
+  
+  h1, h2, h3 {
+    font-size: 1.5rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .card, .premium-card, .txc-card {
+    padding: 0.75rem !important;
+  }
+  
+  .stat-number, .premium-stat-number, .txc-stat-number {
+    font-size: 1.75rem !important;
+  }
+  
+  button, .btn, .button {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.85rem !important;
+  }
+  
+  h1, h2, h3 {
+    font-size: 1.25rem !important;
+  }
+}
+
+/* ===== GARANTIR VISIBILIDADE EM TUDO ===== */
+* {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+img, svg, .icon, .logo {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}
+
+/* ===== MANTER NAVBAR CINZA ===== */
+.premium-header {
+  background: #757575 !important; /* CINZA */
+  color: #FFFFFF !important;
+}
+
+.premium-nav-link {
+  color: #FFFFFF !important;
+}
+
+.premium-nav-link:hover {
+  color: #FF6B00 !important;
+}
+
+.premium-logo-text {
+  color: #FFFFFF !important;
+}
