@@ -9,6 +9,15 @@
   backdrop-filter: blur(20px) !important;
   border-bottom: 1px solid rgba(117, 117, 117, 0.3) !important;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 1000 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
 }
 
 .premium-header.scrolled {
@@ -19,6 +28,32 @@
 }
 
 /* ===== LOGO NO NAVBAR CINZA ===== */
+.premium-logo {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.premium-logo-link {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  text-decoration: none !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.premium-logo-img {
+  width: 40px !important;
+  height: 40px !important;
+  object-fit: contain !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3)) !important;
+}
+
 .premium-logo-text {
   color: #FFFFFF !important; /* BRANCO no navbar cinza */
   background: none !important;
@@ -27,6 +62,9 @@
   background-clip: unset !important;
   font-weight: var(--premium-font-extrabold) !important;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+  font-size: 1.5rem !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .premium-logo-img {
@@ -34,6 +72,18 @@
 }
 
 /* ===== NAVEGAÇÃO NO NAVBAR CINZA ===== */
+.premium-header-content {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100% !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 0 2rem !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
 .premium-nav-desktop {
   display: flex !important;
   justify-content: center !important;
@@ -41,6 +91,8 @@
   gap: 2rem !important;
   max-width: 600px !important;
   margin: 0 auto !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .premium-nav-link {
@@ -66,10 +118,25 @@
 }
 
 /* ===== BOTÕES NO NAVBAR CINZA ===== */
+.premium-header-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
 .premium-btn-ghost {
   background: rgba(255, 255, 255, 0.1) !important;
   color: #FFFFFF !important;
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 0.5rem !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .premium-btn-ghost:hover {
@@ -498,13 +565,65 @@ body, html, #root, .App {
   font-family: 'Roboto', sans-serif !important;
 }
 
-/* ===== CORREÇÃO DE Z-INDEX ===== */
+/* ===== CORREÇÃO DE Z-INDEX E LAYOUT ===== */
 .premium-header {
   z-index: 1000 !important;
 }
 
 .txc-home {
   padding-top: 88px !important;
+}
+
+/* ===== CENTRALIZAR TODOS OS ELEMENTOS ===== */
+.info-bar {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  padding: 1rem 0 !important;
+  background: #FFFFFF !important;
+  border-bottom: 1px solid #E0E0E0 !important;
+}
+
+.info-content {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 2rem !important;
+  flex-wrap: wrap !important;
+  max-width: 1200px !important;
+  width: 100% !important;
+  padding: 0 2rem !important;
+}
+
+.grain-quotes {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+.weather-widget {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.news-feed {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+.ticker-container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  background: #FFFFFF !important;
+  border-bottom: 1px solid #E0E0E0 !important;
+  padding: 0.5rem 0 !important;
 }
 
 /* ===== CORREÇÃO DE CORES FORÇADA ===== */
