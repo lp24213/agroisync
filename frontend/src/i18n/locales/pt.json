@@ -183,9 +183,11 @@
   "weather": {
     "conditions": {
       "sunny": "Ensolarado",
+      "partly-cloudy": "Parcialmente Nublado",
       "cloudy": "Nublado",
       "rainy": "Chuvoso"
-    }
+    },
+    "description": "Condições climáticas atuais"
   },
   "chatbot": {
     "title": "Assistente IA",

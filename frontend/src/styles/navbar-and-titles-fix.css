@@ -34,10 +34,22 @@
 }
 
 /* ===== NAVEGAÇÃO NO NAVBAR CINZA ===== */
+.premium-nav-desktop {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 2rem !important;
+  max-width: 600px !important;
+  margin: 0 auto !important;
+}
+
 .premium-nav-link {
   color: #FFFFFF !important; /* BRANCO */
   font-weight: var(--premium-font-semibold) !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+  font-size: 0.9rem !important; /* Menor */
+  padding: 0.5rem 1rem !important;
+  white-space: nowrap !important;
 }
 
 .premium-nav-link:hover {
@@ -115,6 +127,10 @@
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: unset !important;
+  background-clip: unset !important;
 }
 
 .section-title {
@@ -429,6 +445,56 @@ body, html, #root, .App {
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
+  font-family: 'Roboto', sans-serif !important;
+  background: #FFFFFF !important; /* BRANCO */
+  color: #000000 !important; /* PRETO */
+}
+
+/* ===== FORÇAR PRETO, BRANCO E CINZA EM TUDO ===== */
+.premium-hero-title,
+.premium-section-title,
+.premium-title,
+.premium-cta-title,
+.txc-hero-title,
+.txc-section-title,
+.txc-title,
+.txc-cta-title {
+  color: #000000 !important; /* PRETO */
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: unset !important;
+  background-clip: unset !important;
+  font-family: 'Roboto', sans-serif !important;
+}
+
+.premium-hero-subtitle,
+.premium-section-subtitle,
+.premium-subtitle,
+.premium-cta-subtitle,
+.txc-hero-subtitle,
+.txc-section-subtitle,
+.txc-subtitle,
+.txc-cta-subtitle {
+  color: #757575 !important; /* CINZA */
+  font-family: 'Roboto', sans-serif !important;
+}
+
+.premium-card,
+.txc-card {
+  background: #FFFFFF !important; /* BRANCO */
+  border: 1px solid #E0E0E0 !important; /* CINZA CLARO */
+  color: #000000 !important; /* PRETO */
+}
+
+.premium-card-title,
+.txc-card-title {
+  color: #000000 !important; /* PRETO */
+  font-family: 'Roboto', sans-serif !important;
+}
+
+.premium-card-description,
+.txc-card-description {
+  color: #757575 !important; /* CINZA */
   font-family: 'Roboto', sans-serif !important;
 }
 

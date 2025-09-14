@@ -13,7 +13,7 @@ import ChatbotWidget from './components/ChatbotWidget';
 import Ticker from './components/Ticker';
 import GrainQuotes from './components/GrainQuotes';
 import WeatherWidget from './components/WeatherWidget';
-// import NewsFeed from './components/NewsFeed'; // Removido do topo, agora está no Home
+import NewsFeed from './components/NewsFeed';
 
 // Importar theme global Premium
 import './styles/txc-premium-theme.css';
@@ -75,12 +75,13 @@ function App() {
                 {/* Ticker fixo no topo */}
                 <Ticker />
                 
-                {/* Barra de Informações - Apenas cotações e clima */}
+                {/* Barra de Informações - Cotações, clima e notícias */}
                 <div className="info-bar">
                   <div className="premium-container">
                     <div className="info-content">
                       <GrainQuotes />
                       <WeatherWidget />
+                      <NewsFeed />
                     </div>
                   </div>
                 </div>

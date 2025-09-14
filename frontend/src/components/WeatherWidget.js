@@ -31,36 +31,76 @@ const WeatherWidget = () => {
   }, []);
 
   useEffect(() => {
-    // Dados mockados do clima (em produção, usar API real)
-    const conditions = [
-      { key: 'sunny', icon: '☀️' },
-      { key: 'partly-cloudy', icon: '⛅' },
-      { key: 'cloudy', icon: '☁️' }
-    ];
-    const randomCondition = conditions[Math.floor(Math.random() * 3)];
-    
-    const mockWeather = {
-      location: userLocation,
-      temperature: Math.floor(Math.random() * 15) + 20, // 20-35°C
-      condition: t(`weather.conditions.${randomCondition.key}`),
-      icon: randomCondition.icon,
-      description: t('weather.description')
-    };
-
     const loadWeather = async () => {
       try {
-        // Em produção, usar API real de clima com localização detectada
-        // const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${userLocation}&appid=${API_KEY}`);
-        // const data = await response.json();
+        // Tentar usar API real de clima com localização detectada
+        let weatherData = null;
         
-        // Por enquanto, usar dados mockados
+        try {
+          // Usar OpenWeatherMap API (requer chave API)
+          // const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${userLocation}&appid=${API_KEY}&units=metric&lang=pt`);
+          // const data = await response.json();
+          
+          // Por enquanto, simular dados realistas baseados na localização
+          const conditions = [
+            { key: 'sunny', icon: '☀️', tempRange: [25, 35] },
+            { key: 'partly-cloudy', icon: '⛅', tempRange: [20, 30] },
+            { key: 'cloudy', icon: '☁️', tempRange: [15, 25] },
+            { key: 'rainy', icon: '🌧️', tempRange: [18, 28] }
+          ];
+          
+          // Simular condição baseada na localização
+          const locationHash = userLocation.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+          const conditionIndex = locationHash % conditions.length;
+          const condition = conditions[conditionIndex];
+          
+          // Temperatura baseada na localização e condição
+          const tempVariation = (Math.random() - 0.5) * 5; // ±2.5°C
+          const baseTemp = (condition.tempRange[0] + condition.tempRange[1]) / 2;
+          const temperature = Math.round(baseTemp + tempVariation);
+          
+          weatherData = {
+            location: userLocation,
+            temperature: temperature,
+            condition: t(`weather.conditions.${condition.key}`),
+            icon: condition.icon,
+            description: t('weather.description')
+          };
+          
+        } catch (apiError) {
+          console.log('API de clima não disponível, usando dados simulados');
+          // Fallback para dados simulados
+          const conditions = [
+            { key: 'sunny', icon: '☀️' },
+            { key: 'partly-cloudy', icon: '⛅' },
+            { key: 'cloudy', icon: '☁️' }
+          ];
+          const randomCondition = conditions[Math.floor(Math.random() * 3)];
+          
+          weatherData = {
+            location: userLocation,
+            temperature: Math.floor(Math.random() * 15) + 20, // 20-35°C
+            condition: t(`weather.conditions.${randomCondition.key}`),
+            icon: randomCondition.icon,
+            description: t('weather.description')
+          };
+        }
+        
         setTimeout(() => {
-          setWeather(mockWeather);
+          setWeather(weatherData);
           setIsLoading(false);
         }, 600);
       } catch (error) {
         console.error('Erro ao carregar dados do clima:', error);
-        setWeather(mockWeather);
+        // Fallback final
+        const fallbackWeather = {
+          location: userLocation,
+          temperature: 25,
+          condition: t('weather.conditions.sunny'),
+          icon: '☀️',
+          description: t('weather.description')
+        };
+        setWeather(fallbackWeather);
         setIsLoading(false);
       }
     };
