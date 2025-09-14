@@ -517,6 +517,18 @@ body, html, #root, .App {
   color: #000000 !important; /* PRETO */
 }
 
+/* ===== GARANTIR VISIBILIDADE DE ELEMENTOS BÁSICOS ===== */
+main, section, article, div, span, p, a, button, input, textarea {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+img {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}
+
 /* ===== FORÇAR PRETO, BRANCO E CINZA EM TUDO ===== */
 .premium-hero-title,
 .premium-section-title,
@@ -525,13 +537,17 @@ body, html, #root, .App {
 .txc-hero-title,
 .txc-section-title,
 .txc-title,
-.txc-cta-title {
+.txc-cta-title,
+h1, h2, h3, h4, h5, h6 {
   color: #000000 !important; /* PRETO */
   background: none !important;
   -webkit-background-clip: unset !important;
   -webkit-text-fill-color: unset !important;
   background-clip: unset !important;
   font-family: 'Roboto', sans-serif !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
 }
 
 .premium-hero-subtitle,

@@ -28,9 +28,6 @@
 /* CORREÇÃO NAVBAR CINZA E TÍTULOS BUGADOS */
 @import './styles/navbar-and-titles-fix.css';
 
-/* DESIGN TXC FORÇADO EM TODAS AS PÁGINAS */
-@import './styles/txc-force-all-pages.css';
-
 /* FORÇAR CORES TXC EM TUDO - REMOVIDO POR QUEBRAR COMPONENTES */
 /* @import './styles/txc-force-all.css'; */
 
