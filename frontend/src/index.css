@@ -16,6 +16,9 @@
 /* TXC SPECIFIC - SEM QUEBRAR COMPONENTES */
 @import './styles/txc-specific.css';
 
+/* CORREÇÃO DE CORES - PRETO, BRANCO E CINZA */
+@import './styles/black-white-gray-fix.css';
+
 /* FORÇAR CORES TXC EM TUDO - REMOVIDO POR QUEBRAR COMPONENTES */
 /* @import './styles/txc-force-all.css'; */
 

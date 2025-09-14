@@ -77,28 +77,28 @@
   border-color: #444444 !important;
 }
 
-/* ===== GRADIENTE GLOBAL FORÇADO ===== */
+/* ===== FUNDO GLOBAL CORRIGIDO - PRETO, BRANCO E CINZA ===== */
 body {
-  background: linear-gradient(180deg, #f2f2f2, #e6e6e6) !important;
+  background: #FFFFFF !important;
   transition: background 0.4s ease !important;
 }
 
 [data-theme="dark"] body {
-  background: linear-gradient(180deg, #1c1c1c, #2a2a2a) !important;
+  background: #000000 !important;
 }
 
 #root,
 #__next {
-  background: linear-gradient(180deg, #f2f2f2, #e6e6e6) !important;
+  background: #FFFFFF !important;
   transition: background 0.4s ease !important;
 }
 
 [data-theme="dark"] #root,
 [data-theme="dark"] #__next {
-  background: linear-gradient(180deg, #1c1c1c, #2a2a2a) !important;
+  background: #000000 !important;
 }
 
-/* ===== ESTRELAS ANIMADAS FORÇADAS ===== */
+/* ===== ESTRELAS ANIMADAS CORRIGIDAS - TONS DE CINZA ===== */
 body::before {
   content: '' !important;
   position: fixed !important;
@@ -107,27 +107,27 @@ body::before {
   width: 100% !important;
   height: 100% !important;
   background-image: 
-    radial-gradient(circle at 10px 10px, rgba(200,200,200,0.3) 1px, transparent 1px),
-    radial-gradient(circle at 30px 30px, rgba(200,200,200,0.3) 0.8px, transparent 0.8px),
-    radial-gradient(circle at 50px 10px, rgba(200,200,200,0.3) 1.2px, transparent 1.2px),
-    radial-gradient(circle at 70px 30px, rgba(200,200,200,0.3) 0.6px, transparent 0.6px),
-    radial-gradient(circle at 90px 10px, rgba(200,200,200,0.3) 1px, transparent 1px),
-    radial-gradient(circle at 110px 30px, rgba(200,200,200,0.3) 0.9px, transparent 0.9px),
-    radial-gradient(circle at 130px 10px, rgba(200,200,200,0.3) 1.1px, transparent 1.1px),
-    radial-gradient(circle at 150px 30px, rgba(200,200,200,0.3) 0.7px, transparent 0.7px),
-    radial-gradient(circle at 20px 20px, rgba(200,200,200,0.3) 1.5px, transparent 1.5px),
-    radial-gradient(circle at 60px 20px, rgba(200,200,200,0.3) 1.3px, transparent 1.3px),
-    radial-gradient(circle at 100px 20px, rgba(200,200,200,0.3) 1.4px, transparent 1.4px),
-    radial-gradient(circle at 140px 20px, rgba(200,200,200,0.3) 1.2px, transparent 1.2px),
-    radial-gradient(circle at 40px 40px, rgba(255,255,255,0.4) 2px, transparent 2px),
-    radial-gradient(circle at 120px 40px, rgba(255,255,255,0.4) 1.8px, transparent 1.8px);
+    radial-gradient(circle at 10px 10px, rgba(117,117,117,0.1) 1px, transparent 1px),
+    radial-gradient(circle at 30px 30px, rgba(117,117,117,0.1) 0.8px, transparent 0.8px),
+    radial-gradient(circle at 50px 10px, rgba(117,117,117,0.1) 1.2px, transparent 1.2px),
+    radial-gradient(circle at 70px 30px, rgba(117,117,117,0.1) 0.6px, transparent 0.6px),
+    radial-gradient(circle at 90px 10px, rgba(117,117,117,0.1) 1px, transparent 1px),
+    radial-gradient(circle at 110px 30px, rgba(117,117,117,0.1) 0.9px, transparent 0.9px),
+    radial-gradient(circle at 130px 10px, rgba(117,117,117,0.1) 1.1px, transparent 1.1px),
+    radial-gradient(circle at 150px 30px, rgba(117,117,117,0.1) 0.7px, transparent 0.7px),
+    radial-gradient(circle at 20px 20px, rgba(117,117,117,0.1) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 60px 20px, rgba(117,117,117,0.1) 1.3px, transparent 1.3px),
+    radial-gradient(circle at 100px 20px, rgba(117,117,117,0.1) 1.4px, transparent 1.4px),
+    radial-gradient(circle at 140px 20px, rgba(117,117,117,0.1) 1.2px, transparent 1.2px),
+    radial-gradient(circle at 40px 40px, rgba(66,66,66,0.15) 2px, transparent 2px),
+    radial-gradient(circle at 120px 40px, rgba(66,66,66,0.15) 1.8px, transparent 1.8px);
     
   background-size: 40px 40px !important;
   background-position: 0 0 !important;
   
   pointer-events: none !important;
   z-index: 0 !important;
-  opacity: 0.8 !important;
+  opacity: 0.6 !important;
   
   animation: 
     starfield-move 20s linear infinite,
@@ -137,22 +137,22 @@ body::before {
 /* Dark mode para estrelas */
 [data-theme="dark"] body::before {
   background-image: 
-    radial-gradient(circle at 10px 10px, rgba(255,255,255,0.2) 1px, transparent 1px),
-    radial-gradient(circle at 30px 30px, rgba(255,255,255,0.2) 0.8px, transparent 0.8px),
-    radial-gradient(circle at 50px 10px, rgba(255,255,255,0.2) 1.2px, transparent 1.2px),
-    radial-gradient(circle at 70px 30px, rgba(255,255,255,0.2) 0.6px, transparent 0.6px),
-    radial-gradient(circle at 90px 10px, rgba(255,255,255,0.2) 1px, transparent 1px),
-    radial-gradient(circle at 110px 30px, rgba(255,255,255,0.2) 0.9px, transparent 0.9px),
-    radial-gradient(circle at 130px 10px, rgba(255,255,255,0.2) 1.1px, transparent 1.1px),
-    radial-gradient(circle at 150px 30px, rgba(255,255,255,0.2) 0.7px, transparent 0.7px),
-    radial-gradient(circle at 20px 20px, rgba(255,255,255,0.2) 1.5px, transparent 1.5px),
-    radial-gradient(circle at 60px 20px, rgba(255,255,255,0.2) 1.3px, transparent 1.3px),
-    radial-gradient(circle at 100px 20px, rgba(255,255,255,0.2) 1.4px, transparent 1.4px),
-    radial-gradient(circle at 140px 20px, rgba(255,255,255,0.2) 1.2px, transparent 1.2px),
-    radial-gradient(circle at 40px 40px, rgba(255,255,255,0.3) 2px, transparent 2px),
-    radial-gradient(circle at 120px 40px, rgba(255,255,255,0.3) 1.8px, transparent 1.8px);
+    radial-gradient(circle at 10px 10px, rgba(255,255,255,0.05) 1px, transparent 1px),
+    radial-gradient(circle at 30px 30px, rgba(255,255,255,0.05) 0.8px, transparent 0.8px),
+    radial-gradient(circle at 50px 10px, rgba(255,255,255,0.05) 1.2px, transparent 1.2px),
+    radial-gradient(circle at 70px 30px, rgba(255,255,255,0.05) 0.6px, transparent 0.6px),
+    radial-gradient(circle at 90px 10px, rgba(255,255,255,0.05) 1px, transparent 1px),
+    radial-gradient(circle at 110px 30px, rgba(255,255,255,0.05) 0.9px, transparent 0.9px),
+    radial-gradient(circle at 130px 10px, rgba(255,255,255,0.05) 1.1px, transparent 1.1px),
+    radial-gradient(circle at 150px 30px, rgba(255,255,255,0.05) 0.7px, transparent 0.7px),
+    radial-gradient(circle at 20px 20px, rgba(255,255,255,0.05) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 60px 20px, rgba(255,255,255,0.05) 1.3px, transparent 1.3px),
+    radial-gradient(circle at 100px 20px, rgba(255,255,255,0.05) 1.4px, transparent 1.4px),
+    radial-gradient(circle at 140px 20px, rgba(255,255,255,0.05) 1.2px, transparent 1.2px),
+    radial-gradient(circle at 40px 40px, rgba(255,255,255,0.08) 2px, transparent 2px),
+    radial-gradient(circle at 120px 40px, rgba(255,255,255,0.08) 1.8px, transparent 1.8px);
     
-  opacity: 0.6 !important;
+  opacity: 0.4 !important;
 }
 
 /* ===== KEYFRAMES DAS ESTRELAS ===== */
