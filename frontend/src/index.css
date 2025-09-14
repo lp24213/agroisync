@@ -19,6 +19,9 @@
 /* CORREÇÃO DE CORES - PRETO, BRANCO E CINZA */
 @import './styles/black-white-gray-fix.css';
 
+/* CORREÇÕES DE ACESSIBILIDADE E SEO */
+@import './styles/accessibility-fixes.css';
+
 /* FORÇAR CORES TXC EM TUDO - REMOVIDO POR QUEBRAR COMPONENTES */
 /* @import './styles/txc-force-all.css'; */
 

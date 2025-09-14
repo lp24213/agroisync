@@ -224,7 +224,7 @@ const PremiumAbout = () => {
                 <div className="premium-mission-icon">
                   <Target className="w-12 h-12" />
                 </div>
-                <h2 className="premium-mission-title">{t('about.mission.title')}</h2>
+                <h3 className="premium-mission-title">{t('about.mission.title')}</h3>
                 <p className="premium-mission-description">{t('about.mission.description')}</p>
               </motion.div>
 
@@ -239,7 +239,7 @@ const PremiumAbout = () => {
                 <div className="premium-vision-icon">
                   <Award className="w-12 h-12" />
                 </div>
-                <h2 className="premium-vision-title">{t('about.vision.title')}</h2>
+                <h3 className="premium-vision-title">{t('about.vision.title')}</h3>
                 <p className="premium-vision-description">{t('about.vision.description')}</p>
               </motion.div>
             </div>

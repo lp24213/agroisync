@@ -54,7 +54,7 @@ const PremiumHeader = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Link to="/" className="premium-logo-link">
+              <Link to="/" className="premium-logo-link" aria-label="AGROISYNC - Página inicial">
                 <img
                   src="/agroisync-main-logo.png"
                   alt="AGROISYNC"
@@ -65,7 +65,7 @@ const PremiumHeader = () => {
             </motion.div>
 
             {/* Desktop Navigation Premium */}
-            <nav className="premium-nav-desktop">
+            <nav className="premium-nav-desktop" role="navigation" aria-label="Navegação principal">
               {navigationItems.map((item) => (
                 <motion.div
                   key={item.path}
@@ -77,6 +77,7 @@ const PremiumHeader = () => {
                     className={`premium-nav-link ${
                       location.pathname === item.path ? 'active' : ''
                     }`}
+                    aria-current={location.pathname === item.path ? 'page' : undefined}
                   >
                     {item.label}
                   </Link>
@@ -129,6 +130,9 @@ const PremiumHeader = () => {
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
+                aria-label={isMobileMenuOpen ? 'Fechar menu' : 'Abrir menu'}
+                aria-expanded={isMobileMenuOpen}
+                aria-controls="mobile-navigation"
               >
                 <span className={`premium-hamburger ${isMobileMenuOpen ? 'open' : ''}`}>
                   <span></span>
@@ -150,7 +154,7 @@ const PremiumHeader = () => {
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.4, ease: 'easeInOut' }}
             >
-              <div className="premium-mobile-nav">
+              <nav className="premium-mobile-nav" role="navigation" aria-label="Navegação móvel" id="mobile-navigation">
                 {navigationItems.map((item, index) => (
                   <motion.div
                     key={item.path}
@@ -164,6 +168,7 @@ const PremiumHeader = () => {
                         location.pathname === item.path ? 'active' : ''
                       }`}
                       onClick={() => setIsMobileMenuOpen(false)}
+                      aria-current={location.pathname === item.path ? 'page' : undefined}
                     >
                       {item.label}
                     </Link>
@@ -193,7 +198,7 @@ const PremiumHeader = () => {
                     </Link>
                   </motion.div>
                 )}
-              </div>
+              </nav>
             </motion.div>
           )}
         </AnimatePresence>

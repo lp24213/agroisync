@@ -118,7 +118,7 @@ const PremiumHome = () => {
                   whileHover={{ y: -15, scale: 1.05 }}
                 >
                   <div className="txc-card-icon">{feature.icon}</div>
-                  <h3 className="txc-card-title">{feature.title}</h3>
+                  <p className="txc-card-title">{feature.title}</p>
                 </motion.div>
               ))}
             </div>
