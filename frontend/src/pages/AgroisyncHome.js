@@ -318,7 +318,7 @@ const AgroisyncHome = () => {
         }
 
         .agro-features-section {
-          padding: 5rem 0;
+          padding: 6rem 0;
           background: var(--agro-white);
         }
 
@@ -400,7 +400,7 @@ const AgroisyncHome = () => {
         }
 
         .agro-stats-section {
-          padding: 4rem 0;
+          padding: 5rem 0;
           background: var(--agro-dark-green);
         }
 
@@ -427,12 +427,12 @@ const AgroisyncHome = () => {
         }
 
         .agro-news-section {
-          padding: 5rem 0;
+          padding: 6rem 0;
           background: var(--agro-white);
         }
 
         .agro-data-section {
-          padding: 5rem 0;
+          padding: 6rem 0;
           background: #f8f9fa;
         }
 
@@ -450,7 +450,7 @@ const AgroisyncHome = () => {
         }
 
         .agro-cta-section {
-          padding: 5rem 0;
+          padding: 6rem 0;
           background: var(--agro-dark-green);
           text-align: center;
         }
@@ -581,6 +581,17 @@ const AgroisyncHome = () => {
             flex-direction: column;
             align-items: center;
           }
+
+          .agro-features-section,
+          .agro-news-section,
+          .agro-data-section,
+          .agro-cta-section {
+            padding: 4rem 0;
+          }
+
+          .agro-stats-section {
+            padding: 3rem 0;
+          }
         }
 
         @media (max-width: 480px) {
@@ -600,6 +611,17 @@ const AgroisyncHome = () => {
           .agro-btn-secondary {
             padding: 0.8rem 1.5rem;
             font-size: 0.9rem;
+          }
+
+          .agro-features-section,
+          .agro-news-section,
+          .agro-data-section,
+          .agro-cta-section {
+            padding: 3rem 0;
+          }
+
+          .agro-stats-section {
+            padding: 2.5rem 0;
           }
         }
       `}</style>
