@@ -582,6 +582,26 @@ const AgroisyncHome = () => {
             align-items: center;
           }
         }
+
+        @media (max-width: 480px) {
+          .agro-banner-title {
+            font-size: 2rem;
+          }
+          
+          .agro-banner-description {
+            font-size: 0.9rem;
+          }
+          
+          .agro-banner-content {
+            padding: 0 16px;
+          }
+          
+          .agro-btn-primary,
+          .agro-btn-secondary {
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
+          }
+        }
       `}</style>
     </div>
   );
