@@ -1,14 +1,15 @@
 /* ========================================
-   CORREÇÃO NAVBAR CINZA E TÍTULOS BUGADOS
-   Navbar cinza + títulos funcionando perfeitamente
+   CORREÇÃO NAVBAR TXC E TÍTULOS BUGADOS
+   Navbar verde escuro TXC + títulos funcionando perfeitamente
    ======================================== */
 
-/* ===== NAVBAR CINZA FORÇADO ===== */
-.premium-header {
-  background: #757575 !important; /* CINZA */
+/* ===== NAVBAR TXC VERDE ESCURO FORÇADO ===== */
+.premium-header,
+.txc-navbar {
+  background: #1F2E1F !important; /* VERDE ESCURO TXC */
   backdrop-filter: blur(20px) !important;
-  border-bottom: 1px solid rgba(117, 117, 117, 0.3) !important;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+  border-bottom: 1px solid rgba(57, 255, 20, 0.2) !important;
+  box-shadow: 0 2px 10px rgba(31, 46, 31, 0.3) !important;
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
@@ -20,11 +21,12 @@
   display: block !important;
 }
 
-.premium-header.scrolled {
-  background: #757575 !important; /* CINZA MANTIDO */
+.premium-header.scrolled,
+.txc-navbar.scrolled {
+  background: #1F2E1F !important; /* VERDE ESCURO MANTIDO */
   backdrop-filter: blur(30px) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
-  border-bottom: 1px solid rgba(117, 117, 117, 0.4) !important;
+  box-shadow: 0 4px 20px rgba(31, 46, 31, 0.4) !important;
+  border-bottom: 1px solid rgba(57, 255, 20, 0.3) !important;
 }
 
 /* ===== LOGO NO NAVBAR CINZA ===== */
@@ -97,25 +99,31 @@
   opacity: 1 !important;
 }
 
-.premium-nav-link {
+.premium-nav-link,
+.txc-nav-link {
   color: #FFFFFF !important; /* BRANCO */
-  font-weight: var(--premium-font-semibold) !important;
+  font-weight: 500 !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
-  font-size: 0.9rem !important; /* Menor */
+  font-size: 0.95rem !important;
   padding: 0.5rem 1rem !important;
   white-space: nowrap !important;
+  text-decoration: none !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
 }
 
-.premium-nav-link:hover {
-  color: #FF6B00 !important; /* LARANJA TXC */
-  background: rgba(255, 107, 0, 0.1) !important;
+.premium-nav-link:hover,
+.txc-nav-link:hover {
+  color: #39FF14 !important; /* VERDE NEON TXC */
+  background: rgba(57, 255, 20, 0.1) !important;
   text-shadow: none !important;
 }
 
-.premium-nav-link.active {
-  color: #FF6B00 !important; /* LARANJA TXC */
-  background: rgba(255, 107, 0, 0.15) !important;
-  font-weight: var(--premium-font-bold) !important;
+.premium-nav-link.active,
+.txc-nav-link.active {
+  color: #39FF14 !important; /* VERDE NEON TXC */
+  background: rgba(57, 255, 20, 0.15) !important;
+  font-weight: 600 !important;
   text-shadow: none !important;
 }
 
@@ -146,53 +154,68 @@
   color: #FFFFFF !important;
 }
 
-.premium-btn-primary {
-  background: #FF6B00 !important; /* LARANJA TXC */
-  color: #FFFFFF !important;
+.premium-btn-primary,
+.txc-btn-primary {
+  background: #39FF14 !important; /* VERDE NEON TXC */
+  color: #1F2E1F !important;
   border: none !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
 }
 
-.premium-btn-primary:hover {
-  background: #E55A00 !important; /* LARANJA mais escuro */
-  color: #FFFFFF !important;
+.premium-btn-primary:hover,
+.txc-btn-primary:hover {
+  background: #2EFF2E !important; /* VERDE mais claro */
+  color: #1F2E1F !important;
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.3) !important;
+  transform: translateY(-2px) !important;
 }
 
-/* ===== MENU MÓVEL CINZA ===== */
-.premium-mobile-menu {
-  background: #757575 !important; /* CINZA */
-  border-top: 1px solid rgba(117, 117, 117, 0.3) !important;
+/* ===== MENU MÓVEL TXC ===== */
+.premium-mobile-menu,
+.txc-mobile-menu {
+  background: #1F2E1F !important; /* VERDE ESCURO TXC */
+  border-top: 1px solid rgba(57, 255, 20, 0.2) !important;
 }
 
-.premium-mobile-nav-link {
+.premium-mobile-nav-link,
+.txc-mobile-nav-link {
   color: #FFFFFF !important; /* BRANCO */
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
 }
 
 .premium-mobile-nav-link:hover,
-.premium-mobile-nav-link.active {
-  color: #FF6B00 !important; /* LARANJA TXC */
-  background: rgba(255, 107, 0, 0.1) !important;
+.premium-mobile-nav-link.active,
+.txc-mobile-nav-link:hover,
+.txc-mobile-nav-link.active {
+  color: #39FF14 !important; /* VERDE NEON TXC */
+  background: rgba(57, 255, 20, 0.1) !important;
   text-shadow: none !important;
 }
 
-/* ===== BOTÃO HAMBURGUER CINZA ===== */
-.premium-hamburger span {
+/* ===== BOTÃO HAMBURGUER TXC ===== */
+.premium-hamburger span,
+.txc-mobile-menu-btn {
   background: #FFFFFF !important; /* BRANCO */
+  color: #FFFFFF !important;
 }
 
-.premium-mobile-menu-btn:hover {
-  background: rgba(255, 255, 255, 0.1) !important;
+.premium-mobile-menu-btn:hover,
+.txc-mobile-menu-btn:hover {
+  background: rgba(57, 255, 20, 0.1) !important;
+  color: #39FF14 !important;
 }
 
-/* ===== CORREÇÃO FORÇADA DOS TÍTULOS ===== */
-.hero-title {
+/* ===== CORREÇÃO FORÇADA DOS TÍTULOS TXC ===== */
+.hero-title,
+.txc-title {
   font-size: 3.5rem !important; /* 56px */
   font-weight: 900 !important;
-  color: #000000 !important; /* PRETO */
+  color: #FFFFFF !important; /* BRANCO TXC */
   margin-bottom: 1.5rem !important;
   line-height: 1.1 !important;
   letter-spacing: -0.02em !important;
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Montserrat', sans-serif !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
@@ -202,40 +225,43 @@
   background-clip: unset !important;
 }
 
-.section-title {
+.section-title,
+.txc-title.h2 {
   font-size: 2.5rem !important; /* 40px */
   font-weight: 800 !important;
-  color: #000000 !important; /* PRETO */
+  color: #FFFFFF !important; /* BRANCO TXC */
   margin-bottom: 1rem !important;
   line-height: 1.2 !important;
   letter-spacing: -0.01em !important;
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Montserrat', sans-serif !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
 }
 
-.cta-title {
+.cta-title,
+.txc-title.h3 {
   font-size: 2.5rem !important; /* 40px */
   font-weight: 800 !important;
-  color: #000000 !important; /* PRETO */
+  color: #FFFFFF !important; /* BRANCO TXC */
   margin-bottom: 1rem !important;
   line-height: 1.2 !important;
   letter-spacing: -0.01em !important;
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Montserrat', sans-serif !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
 }
 
-/* ===== CORREÇÃO FORÇADA DOS SUBTÍTULOS ===== */
-.hero-subtitle {
+/* ===== CORREÇÃO FORÇADA DOS SUBTÍTULOS TXC ===== */
+.hero-subtitle,
+.txc-subtitle {
   font-size: 1.25rem !important; /* 20px */
-  color: #757575 !important; /* CINZA */
+  color: #EDEDED !important; /* CINZA CLARO TXC */
   margin-bottom: 2rem !important;
   line-height: 1.6 !important;
   font-weight: 500 !important;
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Montserrat', sans-serif !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
@@ -243,11 +269,11 @@
 
 .section-subtitle {
   font-size: 1.125rem !important; /* 18px */
-  color: #757575 !important; /* CINZA */
+  color: #EDEDED !important; /* CINZA CLARO TXC */
   margin-bottom: 1.5rem !important;
   line-height: 1.6 !important;
   font-weight: 500 !important;
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Montserrat', sans-serif !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
@@ -255,25 +281,25 @@
 
 .cta-subtitle {
   font-size: 1.125rem !important; /* 18px */
-  color: #757575 !important; /* CINZA */
+  color: #EDEDED !important; /* CINZA CLARO TXC */
   margin-bottom: 1.5rem !important;
   line-height: 1.6 !important;
   font-weight: 500 !important;
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Montserrat', sans-serif !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
 }
 
-/* ===== CORREÇÃO FORÇADA DOS TÍTULOS H2/H3 ===== */
+/* ===== CORREÇÃO FORÇADA DOS TÍTULOS H2/H3 TXC ===== */
 h2 {
   font-size: 2rem !important; /* 32px */
   font-weight: 700 !important;
-  color: #000000 !important; /* PRETO */
+  color: #FFFFFF !important; /* BRANCO TXC */
   margin-bottom: 1rem !important;
   line-height: 1.3 !important;
   letter-spacing: -0.01em !important;
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Montserrat', sans-serif !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
@@ -282,11 +308,11 @@ h2 {
 h3 {
   font-size: 1.5rem !important; /* 24px */
   font-weight: 600 !important;
-  color: #000000 !important; /* PRETO */
+  color: #FFFFFF !important; /* BRANCO TXC */
   margin-bottom: 0.75rem !important;
   line-height: 1.4 !important;
   letter-spacing: -0.01em !important;
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Montserrat', sans-serif !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
@@ -296,10 +322,10 @@ h3 {
 .txc-card-title {
   font-size: 1.25rem !important; /* 20px */
   font-weight: 600 !important;
-  color: #000000 !important; /* PRETO */
+  color: #FFFFFF !important; /* BRANCO TXC */
   margin-bottom: 0.75rem !important;
   line-height: 1.4 !important;
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Montserrat', sans-serif !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
@@ -308,22 +334,23 @@ h3 {
 .txc-feature-title {
   font-size: 1.25rem !important; /* 20px */
   font-weight: 600 !important;
-  color: #000000 !important; /* PRETO */
+  color: #FFFFFF !important; /* BRANCO TXC */
   margin-bottom: 0.75rem !important;
   line-height: 1.4 !important;
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Montserrat', sans-serif !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
 }
 
 /* ===== CORREÇÃO FORÇADA DOS PARÁGRAFOS ===== */
-.txc-feature-description {
-  color: #757575 !important; /* CINZA */
+.txc-feature-description,
+.txc-text {
+  color: #EDEDED !important; /* CINZA CLARO TXC */
   line-height: 1.6 !important;
   font-size: 1rem !important; /* 16px */
   font-weight: 400 !important;
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Montserrat', sans-serif !important;
   margin-bottom: 1rem !important;
   visibility: visible !important;
   opacity: 1 !important;
@@ -331,8 +358,8 @@ h3 {
 }
 
 p {
-  color: #757575 !important; /* CINZA */
-  font-family: 'Roboto', sans-serif !important;
+  color: #EDEDED !important; /* CINZA CLARO TXC */
+  font-family: 'Montserrat', sans-serif !important;
   font-weight: 400 !important;
   line-height: 1.6 !important;
   margin-bottom: 1rem !important;
@@ -343,8 +370,8 @@ p {
 
 /* ===== CORREÇÃO FORÇADA DOS BOTÕES ===== */
 .txc-btn-primary {
-  background: #2C5AA0 !important; /* AZUL TXC */
-  color: #FFFFFF !important;
+  background: #39FF14 !important; /* VERDE NEON TXC */
+  color: #1F2E1F !important;
   border: none !important;
   padding: 0.75rem 1.5rem !important;
   border-radius: 0.5rem !important;
@@ -361,16 +388,16 @@ p {
 }
 
 .txc-btn-primary:hover {
-  background: #1E3F73 !important; /* AZUL mais escuro */
-  color: #FFFFFF !important;
+  background: #2EFF2E !important; /* VERDE mais claro */
+  color: #1F2E1F !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 4px 12px rgba(44, 90, 160, 0.3) !important;
+  box-shadow: 0 4px 12px rgba(57, 255, 20, 0.3) !important;
 }
 
 .txc-btn-secondary {
-  background: #FFFFFF !important;
-  color: #2C5AA0 !important; /* AZUL TXC */
-  border: 2px solid #2C5AA0 !important;
+  background: transparent !important;
+  color: #FFFFFF !important;
+  border: 2px solid rgba(57, 255, 20, 0.3) !important;
   padding: 0.75rem 1.5rem !important;
   border-radius: 0.5rem !important;
   font-weight: 600 !important;
@@ -386,15 +413,16 @@ p {
 }
 
 .txc-btn-secondary:hover {
-  background: #2C5AA0 !important; /* AZUL TXC */
-  color: #FFFFFF !important;
+  background: rgba(57, 255, 20, 0.1) !important;
+  color: #39FF14 !important;
+  border-color: #39FF14 !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 4px 12px rgba(44, 90, 160, 0.3) !important;
+  box-shadow: 0 4px 12px rgba(57, 255, 20, 0.3) !important;
 }
 
 .txc-btn-accent {
-  background: #FF6B00 !important; /* LARANJA TXC */
-  color: #FFFFFF !important;
+  background: #39FF14 !important; /* VERDE NEON TXC */
+  color: #1F2E1F !important;
   border: none !important;
   padding: 0.75rem 1.5rem !important;
   border-radius: 0.5rem !important;
@@ -411,19 +439,19 @@ p {
 }
 
 .txc-btn-accent:hover {
-  background: #E55A00 !important; /* LARANJA mais escuro */
-  color: #FFFFFF !important;
+  background: #2EFF2E !important; /* VERDE mais claro */
+  color: #1F2E1F !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 4px 12px rgba(255, 107, 0, 0.3) !important;
+  box-shadow: 0 4px 12px rgba(57, 255, 20, 0.3) !important;
 }
 
 /* ===== CORREÇÃO FORÇADA DOS ESTATÍSTICAS ===== */
 .txc-stat-number {
   font-size: 2.5rem !important; /* 40px */
   font-weight: 900 !important;
-  color: #000000 !important; /* PRETO */
+  color: #39FF14 !important; /* VERDE NEON TXC */
   margin-bottom: 0.5rem !important;
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Montserrat', sans-serif !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
@@ -432,8 +460,8 @@ p {
 .txc-stat-label {
   font-size: 1rem !important; /* 16px */
   font-weight: 500 !important;
-  color: #757575 !important; /* CINZA */
-  font-family: 'Roboto', sans-serif !important;
+  color: #EDEDED !important; /* CINZA CLARO TXC */
+  font-family: 'Montserrat', sans-serif !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
@@ -443,7 +471,8 @@ p {
 .txc-card-icon {
   font-size: 3rem !important; /* 48px */
   margin-bottom: 1rem !important;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)) !important;
+  color: #39FF14 !important; /* VERDE NEON TXC */
+  filter: drop-shadow(0 2px 4px rgba(57, 255, 20, 0.3)) !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
@@ -452,7 +481,8 @@ p {
 .txc-feature-icon {
   font-size: 2.5rem !important; /* 40px */
   margin-bottom: 1rem !important;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)) !important;
+  color: #39FF14 !important; /* VERDE NEON TXC */
+  filter: drop-shadow(0 2px 4px rgba(57, 255, 20, 0.3)) !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
@@ -531,9 +561,9 @@ body, html, #root, .App {
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
-  font-family: 'Roboto', sans-serif !important;
-  background: #FFFFFF !important; /* BRANCO */
-  color: #000000 !important; /* PRETO */
+  font-family: 'Montserrat', sans-serif !important;
+  background: #1F2E1F !important; /* VERDE ESCURO TXC */
+  color: #FFFFFF !important; /* BRANCO */
 }
 
 /* ===== GARANTIR VISIBILIDADE DE ELEMENTOS BÁSICOS ===== */
@@ -558,12 +588,12 @@ img {
 .txc-title,
 .txc-cta-title,
 h1, h2, h3, h4, h5, h6 {
-  color: #000000 !important; /* PRETO */
+  color: #FFFFFF !important; /* BRANCO TXC */
   background: none !important;
   -webkit-background-clip: unset !important;
   -webkit-text-fill-color: unset !important;
   background-clip: unset !important;
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Montserrat', sans-serif !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
@@ -577,27 +607,28 @@ h1, h2, h3, h4, h5, h6 {
 .txc-section-subtitle,
 .txc-subtitle,
 .txc-cta-subtitle {
-  color: #757575 !important; /* CINZA */
-  font-family: 'Roboto', sans-serif !important;
+  color: #EDEDED !important; /* CINZA CLARO TXC */
+  font-family: 'Montserrat', sans-serif !important;
 }
 
 .premium-card,
 .txc-card {
-  background: #FFFFFF !important; /* BRANCO */
-  border: 1px solid #E0E0E0 !important; /* CINZA CLARO */
-  color: #000000 !important; /* PRETO */
+  background: rgba(42, 58, 42, 0.5) !important; /* VERDE ESCURO TRANSPARENTE TXC */
+  border: 1px solid rgba(57, 255, 20, 0.1) !important; /* VERDE NEON TRANSPARENTE */
+  color: #FFFFFF !important; /* BRANCO */
+  backdrop-filter: blur(10px) !important;
 }
 
 .premium-card-title,
 .txc-card-title {
-  color: #000000 !important; /* PRETO */
-  font-family: 'Roboto', sans-serif !important;
+  color: #FFFFFF !important; /* BRANCO TXC */
+  font-family: 'Montserrat', sans-serif !important;
 }
 
 .premium-card-description,
 .txc-card-description {
-  color: #757575 !important; /* CINZA */
-  font-family: 'Roboto', sans-serif !important;
+  color: #EDEDED !important; /* CINZA CLARO TXC */
+  font-family: 'Montserrat', sans-serif !important;
 }
 
 /* ===== CORREÇÃO DE Z-INDEX E LAYOUT ===== */
@@ -616,8 +647,8 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center !important;
   width: 100% !important;
   padding: 1rem 0 !important;
-  background: #FFFFFF !important;
-  border-bottom: 1px solid #E0E0E0 !important;
+  background: #1F2E1F !important; /* VERDE ESCURO TXC */
+  border-bottom: 1px solid rgba(57, 255, 20, 0.2) !important;
 }
 
 .info-content {
@@ -656,15 +687,15 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: center !important;
   align-items: center !important;
   width: 100% !important;
-  background: #FFFFFF !important;
-  border-bottom: 1px solid #E0E0E0 !important;
+  background: #1F2E1F !important; /* VERDE ESCURO TXC */
+  border-bottom: 1px solid rgba(57, 255, 20, 0.2) !important;
   padding: 0.5rem 0 !important;
 }
 
 /* ===== CORREÇÃO DE CORES FORÇADA ===== */
 [data-theme="dark"] .premium-header {
-  background: #424242 !important; /* CINZA mais escuro */
-  border-bottom: 1px solid rgba(66, 66, 66, 0.3) !important;
+  background: #1F2E1F !important; /* VERDE ESCURO TXC */
+  border-bottom: 1px solid rgba(57, 255, 20, 0.2) !important;
 }
 
 [data-theme="dark"] .premium-logo-text {
@@ -676,11 +707,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 [data-theme="dark"] .premium-nav-link:hover {
-  color: #FF6B00 !important;
+  color: #39FF14 !important; /* VERDE NEON TXC */
 }
 
 [data-theme="dark"] .premium-nav-link.active {
-  color: #FF6B00 !important;
+  color: #39FF14 !important; /* VERDE NEON TXC */
 }
 
 /* ===== CORREÇÃO FORÇADA DE VISIBILIDADE ===== */

@@ -3,15 +3,16 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { 
-  // Removed unused imports
+  ArrowRight,
+  TrendingUp,
+  Users,
+  Shield,
+  Zap
 } from 'lucide-react';
+import AgroNewsCarousel from '../components/AgroNewsCarousel';
 
 const PremiumHome = () => {
   const { t } = useTranslation();
-  // Removed unused state and scroll variables
-
-  // Removed unused scroll effect
-
 
   const heroVariants = {
     hidden: { opacity: 0, y: 60 },
@@ -37,88 +38,179 @@ const PremiumHome = () => {
 
   const features = [
     {
-      icon: '🌾',
-      title: t('home.features.marketplace.title'),
-      description: t('home.features.marketplace.description'),
+      icon: <TrendingUp size={48} />,
+      title: t('home.features.marketplace.title', 'Marketplace'),
+      description: t('home.features.marketplace.description', 'Conecte-se com compradores e vendedores de commodities agrícolas'),
       link: '/marketplace',
-      gradient: 'var(--premium-gradient-primary)',
     },
     {
-      icon: '🔗',
-      title: t('home.features.agroconecta.title'),
-      description: t('home.features.agroconecta.description'),
+      icon: <Users size={48} />,
+      title: t('home.features.agroconecta.title', 'AgroConecta'),
+      description: t('home.features.agroconecta.description', 'Rede de transporte e logística para o agronegócio'),
       link: '/agroconecta',
-      gradient: 'var(--premium-gradient-accent)',
     },
     {
-      icon: '₿',
-      title: t('home.features.crypto.title'),
-      description: t('home.features.crypto.description'),
+      icon: <Zap size={48} />,
+      title: t('home.features.crypto.title', 'Crypto Agro'),
+      description: t('home.features.crypto.description', 'Tecnologia blockchain para transações seguras'),
       link: '/crypto',
-      gradient: 'var(--premium-gradient-hover)',
     },
     {
-      icon: '📊',
-      title: t('home.features.analytics.title'),
-      description: t('home.features.analytics.description'),
+      icon: <Shield size={48} />,
+      title: t('home.features.analytics.title', 'Analytics'),
+      description: t('home.features.analytics.description', 'Dados e insights para tomada de decisão'),
       link: '/dashboard',
-      gradient: 'var(--premium-gradient-cta)',
     },
   ];
 
   const stats = [
-    { number: '10K+', label: t('home.stats.users'), color: 'var(--premium-teal)' },
-    { number: '50K+', label: t('home.stats.transactions'), color: 'var(--premium-petroleum)' },
-    { number: '$2M+', label: t('home.stats.volume'), color: 'var(--premium-yellow)' },
-    { number: '99.9%', label: t('home.stats.uptime'), color: 'var(--premium-teal)' },
+    { number: '10K+', label: t('home.stats.users', 'Usuários Ativos'), color: 'var(--txc-light-green)' },
+    { number: '50K+', label: t('home.stats.transactions', 'Transações'), color: 'var(--txc-light-green)' },
+    { number: '$2M+', label: t('home.stats.volume', 'Volume'), color: 'var(--txc-light-green)' },
+    { number: '99.9%', label: t('home.stats.uptime', 'Uptime'), color: 'var(--txc-light-green)' },
   ];
 
   return (
-    <div className="txc-home">
+    <div style={{ background: 'var(--txc-dark-green)', minHeight: '100vh' }}>
       {/* Hero Section TXC */}
-      <section className="txc-hero">
+      <section className="txc-section" style={{ paddingTop: 'var(--txc-space-3xl)' }}>
         <div className="txc-container">
           <motion.div
             className="txc-hero-content"
             variants={heroVariants}
             initial="hidden"
             animate="visible"
+            style={{ textAlign: 'center', maxWidth: '900px', margin: '0 auto' }}
           >
-            <motion.h1 className="hero-title" variants={itemVariants}>
-              {t('home.hero.title')}
+            <motion.h1 className="txc-title h1" variants={itemVariants}>
+              {t('home.hero.title', 'AGROISYNC - O Futuro do Agronegócio')}
             </motion.h1>
-            <motion.p className="hero-subtitle" variants={itemVariants}>
-              {t('home.hero.subtitle')}
+            <motion.p className="txc-subtitle" variants={itemVariants}>
+              {t('home.hero.subtitle', 'Conectamos produtores, compradores e tecnologia para revolucionar o agronegócio brasileiro')}
             </motion.p>
-            <motion.div className="txc-hero-actions" variants={itemVariants}>
-              <Link to="/marketplace" className="txc-btn txc-btn-primary">
-                {t('home.hero.cta.primary')}
+            <motion.div 
+              className="txc-hero-actions" 
+              variants={itemVariants}
+              style={{ 
+                display: 'flex', 
+                gap: 'var(--txc-space-lg)', 
+                justifyContent: 'center', 
+                flexWrap: 'wrap',
+                marginTop: 'var(--txc-space-xl)'
+              }}
+            >
+              <Link to="/marketplace" className="txc-btn-primary">
+                {t('home.hero.cta.primary', 'Explorar Marketplace')}
+                <ArrowRight size={20} />
               </Link>
-              <Link to="/about" className="txc-btn txc-btn-secondary">
-                {t('home.hero.cta.secondary')}
+              <Link to="/about" className="txc-btn-secondary">
+                {t('home.hero.cta.secondary', 'Saiba Mais')}
               </Link>
             </motion.div>
           </motion.div>
+        </div>
+      </section>
 
-          {/* Hero Visual TXC */}
+      {/* Carrossel de Notícias */}
+      <AgroNewsCarousel />
+
+      {/* Features Section */}
+      <section className="txc-section">
+        <div className="txc-container">
           <motion.div
-            className="txc-hero-visual"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.2, delay: 0.6 }}
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1 }}
+            style={{ textAlign: 'center', marginBottom: 'var(--txc-space-3xl)' }}
           >
-            <div className="txc-hero-cards">
-              {features.slice(0, 3).map((feature, index) => (
+            <h2 className="txc-title h2">{t('home.features.title', 'Nossas Soluções')}</h2>
+            <p className="txc-subtitle">
+              {t('home.features.subtitle', 'Tecnologia avançada para o agronegócio moderno')}
+            </p>
+          </motion.div>
+
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
+            gap: 'var(--txc-space-xl)' 
+          }}>
+            {features.map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                className="txc-card"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+                whileHover={{ y: -10, scale: 1.02 }}
+                style={{ textAlign: 'center' }}
+              >
+                <div style={{ 
+                  marginBottom: 'var(--txc-space-lg)',
+                  color: 'var(--txc-light-green)',
+                  filter: 'drop-shadow(0 4px 8px rgba(57, 255, 20, 0.3))'
+                }}>
+                  {feature.icon}
+                </div>
+                <h3 className="txc-title h3" style={{ marginBottom: 'var(--txc-space-md)' }}>
+                  {feature.title}
+                </h3>
+                <p className="txc-text" style={{ marginBottom: 'var(--txc-space-lg)' }}>
+                  {feature.description}
+                </p>
+                <Link to={feature.link} className="txc-btn-primary">
+                  {t('home.explore', 'Explorar')}
+                  <ArrowRight size={18} />
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="txc-section" style={{ background: 'var(--txc-dark-gray)' }}>
+        <div className="txc-container">
+          <motion.div
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1 }}
+            style={{ textAlign: 'center' }}
+          >
+            <h2 className="txc-title h2" style={{ marginBottom: 'var(--txc-space-2xl)' }}>
+              {t('home.stats.title', 'Números que Impressionam')}
+            </h2>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+              gap: 'var(--txc-space-xl)' 
+            }}>
+              {stats.map((stat, index) => (
                 <motion.div
-                  key={feature.title}
-                  className="txc-card"
-                  initial={{ opacity: 0, y: 60 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 1 + index * 0.2 }}
-                  whileHover={{ y: -15, scale: 1.05 }}
+                  key={stat.label}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: index * 0.1 }}
+                  whileHover={{ y: -8 }}
+                  style={{ textAlign: 'center' }}
                 >
-                  <div className="txc-card-icon">{feature.icon}</div>
-                  <p className="txc-card-title">{feature.title}</p>
+                  <div 
+                    className="txc-title h1" 
+                    style={{ 
+                      color: stat.color,
+                      fontSize: '3rem',
+                      marginBottom: 'var(--txc-space-sm)',
+                      fontWeight: '900'
+                    }}
+                  >
+                    {stat.number}
+                  </div>
+                  <div className="txc-text" style={{ fontSize: '1.125rem', fontWeight: '500' }}>
+                    {stat.label}
+                  </div>
                 </motion.div>
               ))}
             </div>
@@ -126,272 +218,39 @@ const PremiumHome = () => {
         </div>
       </section>
 
-      {/* Stats Section TXC */}
-      <section className="txc-section-alt">
-        <div className="txc-container">
-          <motion.div
-            className="txc-grid-4"
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-          >
-            {stats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                className="txc-card"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                whileHover={{ scale: 1.08, y: -8 }}
-              >
-                <div className="txc-stat-number">{stat.number}</div>
-                <div className="txc-stat-label">{stat.label}</div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Features Section TXC */}
+      {/* CTA Section */}
       <section className="txc-section">
         <div className="txc-container">
           <motion.div
-            className="txc-features-header"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="section-title">
-              {t('home.features.title')}
-            </h2>
-            <p className="section-subtitle">
-              {t('home.features.subtitle')}
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="txc-grid"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, delay: 0.2 }}
-          >
-            {features.map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                className="txc-card"
-                initial={{ opacity: 0, y: 60 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                whileHover={{ y: -12, scale: 1.02 }}
-              >
-                <div className="txc-feature-icon">{feature.icon}</div>
-                <h3 className="txc-feature-title">{feature.title}</h3>
-                <p className="txc-feature-description">{feature.description}</p>
-                <Link to={feature.link} className="txc-btn txc-btn-accent">
-                  {t('home.features.learnMore')} →
-                </Link>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* CTA Section TXC */}
-      <section className="txc-section-alt">
-        <div className="txc-container">
-          <motion.div
-            className="txc-cta-content"
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
+            style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}
           >
-            <h2 className="cta-title">
-              {t('home.cta.title')}
+            <h2 className="txc-title h2" style={{ marginBottom: 'var(--txc-space-lg)' }}>
+              {t('home.cta.title', 'Pronto para Revolucionar seu Agronegócio?')}
             </h2>
-            <p className="cta-subtitle">
-              {t('home.cta.subtitle')}
+            <p className="txc-subtitle" style={{ marginBottom: 'var(--txc-space-xl)' }}>
+              {t('home.cta.subtitle', 'Junte-se a milhares de produtores que já transformaram seus negócios com a AGROISYNC')}
             </p>
-            <motion.div
-              className="txc-cta-actions"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              <Link to="/register" className="txc-btn txc-btn-primary">
-                {t('home.cta.getStarted')}
+            <div style={{ 
+              display: 'flex', 
+              gap: 'var(--txc-space-lg)', 
+              justifyContent: 'center', 
+              flexWrap: 'wrap' 
+            }}>
+              <Link to="/register" className="txc-btn-primary" style={{ padding: 'var(--txc-space-md) var(--txc-space-xl)' }}>
+                {t('home.cta.primary', 'Começar Agora')}
+                <ArrowRight size={20} />
               </Link>
-              <Link to="/contact" className="txc-btn txc-btn-secondary">
-                {t('home.cta.contact')}
+              <Link to="/contact" className="txc-btn-secondary" style={{ padding: 'var(--txc-space-md) var(--txc-space-xl)' }}>
+                {t('home.cta.secondary', 'Falar com Especialista')}
               </Link>
-            </motion.div>
+            </div>
           </motion.div>
         </div>
       </section>
-
-      <style jsx>{`
-        .txc-home {
-          padding-top: 88px; /* Account for fixed header */
-        }
-
-        .txc-hero-content {
-          text-align: center;
-          max-width: 900px;
-          margin: 0 auto;
-        }
-
-        .txc-hero-visual {
-          margin-top: var(--txc-space-5xl);
-          display: flex;
-          justify-content: center;
-        }
-
-        .txc-hero-cards {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: var(--txc-space-2xl);
-          max-width: 800px;
-        }
-
-        .txc-card-icon {
-          font-size: 64px;
-          margin-bottom: var(--txc-space-lg);
-          filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
-        }
-
-        .hero-title {
-          font-size: var(--txc-text-7xl);
-          font-weight: var(--txc-font-black);
-          background: var(--txc-gradient-primary);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          margin-bottom: var(--txc-space-xl);
-          line-height: var(--txc-leading-tight);
-          letter-spacing: -0.05em;
-        }
-
-        .hero-subtitle {
-          font-size: var(--txc-text-2xl);
-          color: var(--txc-gray-600);
-          margin-bottom: var(--txc-space-3xl);
-          line-height: var(--txc-leading-relaxed);
-          font-weight: var(--txc-font-medium);
-          max-width: 700px;
-          margin-left: auto;
-          margin-right: auto;
-        }
-
-        .section-title {
-          font-size: var(--txc-text-6xl);
-          font-weight: var(--txc-font-black);
-          color: var(--txc-gray-800);
-          margin-bottom: var(--txc-space-xl);
-          letter-spacing: -0.04em;
-        }
-
-        .section-subtitle {
-          font-size: var(--txc-text-xl);
-          color: var(--txc-gray-600);
-          max-width: 700px;
-          margin: 0 auto;
-          font-weight: var(--txc-font-medium);
-          line-height: var(--txc-leading-relaxed);
-        }
-
-        .cta-title {
-          font-size: var(--txc-text-6xl);
-          font-weight: var(--txc-font-black);
-          background: var(--txc-gradient-primary);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          margin-bottom: var(--txc-space-xl);
-          letter-spacing: -0.04em;
-        }
-
-        .cta-subtitle {
-          font-size: var(--txc-text-xl);
-          color: var(--txc-gray-600);
-          margin-bottom: var(--txc-space-3xl);
-          font-weight: var(--txc-font-medium);
-          line-height: var(--txc-leading-relaxed);
-        }
-
-        .txc-card-title {
-          font-size: var(--txc-text-xl);
-          font-weight: var(--txc-font-bold);
-          color: var(--txc-gray-800);
-          letter-spacing: -0.02em;
-        }
-
-        .txc-stat-number {
-          font-size: var(--txc-text-5xl);
-          font-weight: var(--txc-font-black);
-          background: var(--txc-gradient-primary);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          margin-bottom: var(--txc-space-sm);
-          letter-spacing: -0.03em;
-        }
-
-        .txc-stat-label {
-          font-size: var(--txc-text-lg);
-          color: var(--txc-gray-600);
-          font-weight: var(--txc-font-semibold);
-          letter-spacing: 0.025em;
-        }
-
-        .txc-feature-icon {
-          font-size: 64px;
-          margin-bottom: var(--txc-space-xl);
-          filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
-        }
-
-        .txc-feature-title {
-          font-size: var(--txc-text-2xl);
-          font-weight: var(--txc-font-bold);
-          color: var(--txc-gray-800);
-          margin-bottom: var(--txc-space-lg);
-          letter-spacing: -0.02em;
-        }
-
-        .txc-feature-description {
-          color: var(--txc-gray-600);
-          margin-bottom: var(--txc-space-xl);
-          line-height: var(--txc-leading-relaxed);
-          font-size: var(--txc-text-lg);
-          font-weight: var(--txc-font-medium);
-        }
-
-        .txc-hero-actions,
-        .txc-cta-actions {
-          display: flex;
-          gap: var(--txc-space-xl);
-          justify-content: center;
-          flex-wrap: wrap;
-        }
-
-        @media (max-width: 768px) {
-          .txc-hero-cards {
-            grid-template-columns: 1fr;
-            gap: var(--txc-space-xl);
-          }
-
-          .txc-hero-actions,
-          .txc-cta-actions {
-            flex-direction: column;
-            align-items: center;
-          }
-        }
-      `}</style>
     </div>
   );
 };

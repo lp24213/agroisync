@@ -17,6 +17,8 @@ import NewsFeed from './components/NewsFeed';
 
 // Importar theme global Premium
 import './styles/txc-premium-theme.css';
+// Importar tema TXC Agro
+import './styles/txc-agro-theme.css';
 
 // Pages
 import Home from './pages/PremiumHome';
