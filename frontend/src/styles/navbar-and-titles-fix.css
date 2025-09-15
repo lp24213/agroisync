@@ -3,9 +3,15 @@
    Navbar verde escuro TXC + títulos funcionando perfeitamente
    ======================================== */
 
-/* ===== NAVBAR TXC VERDE ESCURO FORÇADO ===== */
+/* ===== NAVBAR TXC VERDE ESCURO FORÇADO - PRIORIDADE MÁXIMA ===== */
+header,
 .premium-header,
-.txc-navbar {
+.txc-navbar,
+header.premium-header,
+header.txc-navbar,
+.motion.header,
+header[class*="premium"],
+header[class*="txc"] {
   background: #1F2E1F !important; /* VERDE ESCURO TXC */
   backdrop-filter: blur(20px) !important;
   border-bottom: 1px solid rgba(57, 255, 20, 0.2) !important;
@@ -29,13 +35,20 @@
   border-bottom: 1px solid rgba(57, 255, 20, 0.3) !important;
 }
 
-/* ===== LOGO NO NAVBAR CINZA ===== */
-.premium-logo {
+/* ===== LOGO NO NAVBAR TXC - FORÇADO ===== */
+.premium-logo,
+.txc-logo,
+header .premium-logo,
+header .txc-logo {
   display: flex !important;
   align-items: center !important;
   gap: 0.5rem !important;
   visibility: visible !important;
   opacity: 1 !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
 }
 
 .premium-logo-link {
@@ -56,15 +69,19 @@
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3)) !important;
 }
 
-.premium-logo-text {
-  color: #FFFFFF !important; /* BRANCO no navbar cinza */
+.premium-logo-text,
+.txc-logo-text,
+header .premium-logo-text,
+header .txc-logo-text {
+  color: #FFFFFF !important; /* BRANCO TXC */
   background: none !important;
   -webkit-background-clip: unset !important;
   -webkit-text-fill-color: unset !important;
   background-clip: unset !important;
-  font-weight: var(--premium-font-extrabold) !important;
+  font-weight: 800 !important;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
   font-size: 1.5rem !important;
+  font-family: 'Montserrat', sans-serif !important;
   visibility: visible !important;
   opacity: 1 !important;
 }
@@ -86,7 +103,12 @@
   opacity: 1 !important;
 }
 
-.premium-nav-desktop {
+.premium-nav-desktop,
+.txc-nav-menu,
+header .premium-nav-desktop,
+header .txc-nav-menu,
+nav.premium-nav-desktop,
+nav.txc-nav-menu {
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
@@ -94,13 +116,21 @@
   max-width: 600px !important;
   position: absolute !important;
   left: 50% !important;
-  transform: translateX(-50%) !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
   visibility: visible !important;
   opacity: 1 !important;
+  z-index: 10 !important;
 }
 
 .premium-nav-link,
-.txc-nav-link {
+.txc-nav-link,
+header .premium-nav-link,
+header .txc-nav-link,
+nav .premium-nav-link,
+nav .txc-nav-link,
+a.premium-nav-link,
+a.txc-nav-link {
   color: #FFFFFF !important; /* BRANCO */
   font-weight: 500 !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
@@ -110,30 +140,50 @@
   text-decoration: none !important;
   border-radius: 8px !important;
   transition: all 0.3s ease !important;
+  font-family: 'Montserrat', sans-serif !important;
 }
 
 .premium-nav-link:hover,
-.txc-nav-link:hover {
+.txc-nav-link:hover,
+header .premium-nav-link:hover,
+header .txc-nav-link:hover,
+nav .premium-nav-link:hover,
+nav .txc-nav-link:hover,
+a.premium-nav-link:hover,
+a.txc-nav-link:hover {
   color: #39FF14 !important; /* VERDE NEON TXC */
   background: rgba(57, 255, 20, 0.1) !important;
   text-shadow: none !important;
 }
 
 .premium-nav-link.active,
-.txc-nav-link.active {
+.txc-nav-link.active,
+header .premium-nav-link.active,
+header .txc-nav-link.active,
+nav .premium-nav-link.active,
+nav .txc-nav-link.active,
+a.premium-nav-link.active,
+a.txc-nav-link.active {
   color: #39FF14 !important; /* VERDE NEON TXC */
   background: rgba(57, 255, 20, 0.15) !important;
   font-weight: 600 !important;
   text-shadow: none !important;
 }
 
-/* ===== BOTÕES NO NAVBAR CINZA ===== */
-.premium-header-actions {
+/* ===== BOTÕES NO NAVBAR TXC - FORÇADO ===== */
+.premium-header-actions,
+.txc-nav-actions,
+header .premium-header-actions,
+header .txc-nav-actions {
   display: flex !important;
   align-items: center !important;
   gap: 1rem !important;
   visibility: visible !important;
   opacity: 1 !important;
+  position: absolute !important;
+  right: 0 !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
 }
 
 .premium-btn-ghost {
@@ -725,6 +775,32 @@ h1, h2, h3, h4, h5, h6 {
   display: block !important;
 }
 
+/* ===== LAYOUT NAVBAR FORÇADO - PRIORIDADE MÁXIMA ===== */
+header .premium-container,
+header .txc-navbar-container,
+header > div {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  position: relative !important;
+  width: 100% !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 1rem 2rem !important;
+  height: 70px !important;
+}
+
+/* ===== FORÇAR LAYOUT DA NAVBAR ===== */
+header .premium-header-content,
+header .txc-navbar-container > div {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  position: relative !important;
+  height: 100% !important;
+}
+
 .txc-grid,
 .txc-grid-4,
 .txc-hero-cards {
@@ -738,4 +814,38 @@ h1, h2, h3, h4, h5, h6 {
   visibility: visible !important;
   opacity: 1 !important;
   display: flex !important;
+}
+
+/* ===== SOBRESCREVER TODOS OS ESTILOS ANTIGOS DA NAVBAR ===== */
+header[class*="premium"],
+header[class*="txc"],
+header.motion.header,
+header[data-testid],
+header {
+  background: #1F2E1F !important;
+  border-bottom: 1px solid rgba(57, 255, 20, 0.2) !important;
+  box-shadow: 0 2px 10px rgba(31, 46, 31, 0.3) !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 1000 !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+/* ===== FORÇAR COR VERDE ESCURO EM QUALQUER NAVBAR ===== */
+*[class*="header"],
+*[class*="navbar"],
+*[class*="nav"] {
+  background: #1F2E1F !important;
+}
+
+/* ===== FORÇAR COR VERDE ESCURO EM QUALQUER ELEMENTO DE NAVEGAÇÃO ===== */
+nav,
+.nav,
+.navigation,
+.navbar,
+.header {
+  background: #1F2E1F !important;
 }
