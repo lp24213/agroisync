@@ -1,364 +1,276 @@
+// Serviço para dados da bolsa de valores em tempo real
 import axios from 'axios';
 
 class StockService {
   constructor() {
-    this.alphaVantageApiKey = process.env.REACT_APP_ALPHA_VANTAGE_API_KEY || 'your_alpha_vantage_api_key';
-    this.iexApiKey = process.env.REACT_APP_IEX_API_KEY || 'your_iex_api_key';
-    this.baseUrl = 'https://www.alphavantage.co/query';
-    this.iexUrl = 'https://cloud.iexapis.com/stable';
+    this.baseURL = 'https://www.alphavantage.co/query';
+    this.apiKey = process.env.REACT_APP_ALPHA_VANTAGE_API_KEY || 'demo';
+    this.cache = new Map();
+    this.cacheTimeout = 5 * 60 * 1000; // 5 minutos
   }
 
-  // Obter cotações em tempo real
-  async getRealTimeQuotes(symbols = ['PETR4', 'VALE3', 'ITUB4', 'BBDC4', 'ABEV3']) {
+  // Buscar cotações das principais ações brasileiras
+  async getBrazilianStocks() {
+    const cacheKey = 'brazilian-stocks';
+    const cached = this.cache.get(cacheKey);
+    
+    if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
+      return cached.data;
+    }
+
     try {
-      const quotes = [];
+      // Principais ações brasileiras
+      const stocks = [
+        'VALE3.SAO', // Vale
+        'PETR4.SAO', // Petrobras
+        'ITUB4.SAO', // Itaú
+        'BBDC4.SAO', // Bradesco
+        'ABEV3.SAO', // Ambev
+        'WEGE3.SAO', // WEG
+        'MGLU3.SAO', // Magazine Luiza
+        'SUZB3.SAO', // Suzano
+        'JBSS3.SAO', // JBS
+        'RENT3.SAO'  // Localiza
+      ];
+
+      const promises = stocks.map(symbol => this.getStockQuote(symbol));
+      const results = await Promise.allSettled(promises);
       
-      for (const symbol of symbols) {
-        try {
-          const quote = await this.getQuote(symbol);
-          if (quote) {
-            quotes.push(quote);
-          }
-        } catch (error) {
-          console.error(`Erro ao obter cotação para ${symbol}:`, error);
-        }
-      }
-      
-      return quotes;
+      const stockData = results
+        .filter(result => result.status === 'fulfilled')
+        .map(result => result.value)
+        .filter(stock => stock);
+
+      // Cache dos resultados
+      this.cache.set(cacheKey, {
+        data: stockData,
+        timestamp: Date.now()
+      });
+
+      return stockData;
     } catch (error) {
-      console.error('Erro ao obter cotações:', error);
-      throw new Error('Não foi possível obter cotações em tempo real');
+      console.error('Erro ao buscar ações brasileiras:', error);
+      return this.getFallbackBrazilianStocks();
     }
   }
 
-  // Obter cotação individual
-  async getQuote(symbol) {
+  // Buscar cotação de uma ação específica
+  async getStockQuote(symbol) {
     try {
-      const response = await axios.get(this.baseUrl, {
+      const response = await axios.get(this.baseURL, {
         params: {
           function: 'GLOBAL_QUOTE',
-          symbol: symbol,
-          apikey: this.alphaVantageApiKey
+          symbol,
+          apikey: this.apiKey
         }
       });
 
-      if (response.data['Global Quote']) {
-        const data = response.data['Global Quote'];
-        return this.formatQuote(data, symbol);
-      } else {
-        throw new Error('Dados de cotação não encontrados');
-      }
+      const quote = response.data['Global Quote'];
+      if (!quote) return null;
+
+      return {
+        symbol: symbol.split('.')[0],
+        name: this.getStockName(symbol),
+        price: parseFloat(quote['05. price']),
+        change: parseFloat(quote['09. change']),
+        changePercent: parseFloat(quote['10. change percent'].replace('%', '')),
+        volume: parseInt(quote['06. volume']),
+        high: parseFloat(quote['03. high']),
+        low: parseFloat(quote['04. low']),
+        open: parseFloat(quote['02. open']),
+        previousClose: parseFloat(quote['08. previous close']),
+        timestamp: Date.now()
+      };
     } catch (error) {
-      console.error(`Erro ao obter cotação para ${symbol}:`, error);
+      console.error(`Erro ao buscar cotação de ${symbol}:`, error);
       return null;
     }
   }
 
-  // Obter dados históricos
-  async getHistoricalData(symbol, interval = 'daily', outputsize = 'compact') {
+  // Buscar dados históricos para gráfico
+  async getHistoricalData(symbol, interval = 'daily') {
+    const cacheKey = `historical-${symbol}-${interval}`;
+    const cached = this.cache.get(cacheKey);
+    
+    if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
+      return cached.data;
+    }
+
     try {
-      const response = await axios.get(this.baseUrl, {
+      const response = await axios.get(this.baseURL, {
         params: {
-          function: 'TIME_SERIES_INTRADAY',
-          symbol: symbol,
-          interval: interval,
-          outputsize: outputsize,
-          apikey: this.alphaVantageApiKey
+          function: interval === 'daily' ? 'TIME_SERIES_DAILY' : 'TIME_SERIES_INTRADAY',
+          symbol,
+          interval: interval === 'intraday' ? '5min' : undefined,
+          outputsize: 'compact',
+          apikey: this.apiKey
         }
       });
 
-      if (response.data['Time Series (1min)']) {
-        return this.formatHistoricalData(response.data['Time Series (1min)']);
-      } else {
-        throw new Error('Dados históricos não encontrados');
-      }
-    } catch (error) {
-      console.error(`Erro ao obter dados históricos para ${symbol}:`, error);
-      throw error;
-    }
-  }
+      const timeSeries = response.data[interval === 'daily' ? 'Time Series (Daily)' : 'Time Series (5min)'];
+      if (!timeSeries) return null;
 
-  // Obter dados de mercado brasileiro (B3)
-  async getBrazilianMarketData() {
-    try {
-      // Usar dados simulados para B3 (devido a limitações da API gratuita)
-      const brazilianStocks = [
-        {
-          symbol: 'PETR4',
-          name: 'Petrobras PN',
-          price: 28.45,
-          change: 0.85,
-          changePercent: 3.08,
-          volume: 45678900,
-          marketCap: 184500000000
-        },
-        {
-          symbol: 'VALE3',
-          name: 'Vale ON',
-          price: 67.23,
-          change: -1.27,
-          changePercent: -1.85,
-          volume: 23456700,
-          marketCap: 156800000000
-        },
-        {
-          symbol: 'ITUB4',
-          name: 'Itaú PN',
-          price: 32.18,
-          change: 0.42,
-          changePercent: 1.32,
-          volume: 34567800,
-          marketCap: 98700000000
-        },
-        {
-          symbol: 'BBDC4',
-          name: 'Bradesco PN',
-          price: 15.67,
-          change: -0.23,
-          changePercent: -1.45,
-          volume: 56789000,
-          marketCap: 45600000000
-        },
-        {
-          symbol: 'ABEV3',
-          name: 'Ambev ON',
-          price: 12.34,
-          change: 0.18,
-          changePercent: 1.48,
-          volume: 78901200,
-          marketCap: 23400000000
-        }
-      ];
-
-      // Simular variações em tempo real
-      return brazilianStocks.map(stock => ({
-        ...stock,
-        price: this.simulatePriceChange(stock.price, stock.changePercent),
-        change: this.simulateChange(stock.change),
-        changePercent: this.simulateChangePercent(stock.changePercent),
-        volume: this.simulateVolume(stock.volume)
-      }));
-    } catch (error) {
-      console.error('Erro ao obter dados do mercado brasileiro:', error);
-      throw error;
-    }
-  }
-
-  // Obter dados de commodities agrícolas
-  async getAgriculturalCommodities() {
-    try {
-      const commodities = [
-        {
-          symbol: 'SOJA',
-          name: 'Soja',
-          price: 125.67,
-          change: 2.34,
-          changePercent: 1.90,
-          unit: 'USD/bushel',
-          exchange: 'CBOT'
-        },
-        {
-          symbol: 'MILHO',
-          name: 'Milho',
-          price: 4.89,
-          change: -0.12,
-          changePercent: -2.40,
-          unit: 'USD/bushel',
-          exchange: 'CBOT'
-        },
-        {
-          symbol: 'CAFE',
-          name: 'Café',
-          price: 1.85,
-          change: 0.08,
-          changePercent: 4.52,
-          unit: 'USD/lb',
-          exchange: 'ICE'
-        },
-        {
-          symbol: 'ACUCAR',
-          name: 'Açúcar',
-          price: 0.23,
-          change: 0.01,
-          changePercent: 4.55,
-          unit: 'USD/lb',
-          exchange: 'ICE'
-        },
-        {
-          symbol: 'ALGODAO',
-          name: 'Algodão',
-          price: 0.89,
-          change: -0.03,
-          changePercent: -3.26,
-          unit: 'USD/lb',
-          exchange: 'ICE'
-        }
-      ];
-
-      // Simular variações em tempo real
-      return commodities.map(commodity => ({
-        ...commodity,
-        price: this.simulatePriceChange(commodity.price, commodity.changePercent),
-        change: this.simulateChange(commodity.change),
-        changePercent: this.simulateChangePercent(commodity.changePercent)
-      }));
-    } catch (error) {
-      console.error('Erro ao obter dados de commodities:', error);
-      throw error;
-    }
-  }
-
-  // Obter dados de câmbio
-  async getExchangeRates() {
-    try {
-      const rates = [
-        {
-          symbol: 'USD/BRL',
-          name: 'Dólar/Real',
-          rate: 5.23,
-          change: 0.08,
-          changePercent: 1.55
-        },
-        {
-          symbol: 'EUR/BRL',
-          name: 'Euro/Real',
-          rate: 5.67,
-          change: 0.12,
-          changePercent: 2.16
-        },
-        {
-          symbol: 'GBP/BRL',
-          name: 'Libra/Real',
-          rate: 6.45,
-          change: -0.05,
-          changePercent: -0.77
-        }
-      ];
-
-      // Simular variações em tempo real
-      return rates.map(rate => ({
-        ...rate,
-        rate: this.simulatePriceChange(rate.rate, rate.changePercent),
-        change: this.simulateChange(rate.change),
-        changePercent: this.simulateChangePercent(rate.changePercent)
-      }));
-    } catch (error) {
-      console.error('Erro ao obter taxas de câmbio:', error);
-      throw error;
-    }
-  }
-
-  // Formatar cotação
-  formatQuote(data, symbol) {
-    return {
-      symbol: symbol,
-      price: parseFloat(data['05. price']) || 0,
-      change: parseFloat(data['09. change']) || 0,
-      changePercent: parseFloat(data['10. change percent'].replace('%', '')) || 0,
-      volume: parseInt(data['06. volume']) || 0,
-      previousClose: parseFloat(data['08. previous close']) || 0,
-      open: parseFloat(data['02. open']) || 0,
-      high: parseFloat(data['03. high']) || 0,
-      low: parseFloat(data['04. low']) || 0,
-      timestamp: new Date()
-    };
-  }
-
-  // Formatar dados históricos
-  formatHistoricalData(timeSeriesData) {
-    const formattedData = [];
-    
-    Object.keys(timeSeriesData).forEach(timestamp => {
-      const data = timeSeriesData[timestamp];
-      formattedData.push({
-        timestamp: new Date(timestamp),
+      const historicalData = Object.entries(timeSeries).map(([date, data]) => ({
+        date: new Date(date),
         open: parseFloat(data['1. open']),
         high: parseFloat(data['2. high']),
         low: parseFloat(data['3. low']),
         close: parseFloat(data['4. close']),
         volume: parseInt(data['5. volume'])
+      })).reverse();
+
+      // Cache dos resultados
+      this.cache.set(cacheKey, {
+        data: historicalData,
+        timestamp: Date.now()
       });
-    });
 
-    return formattedData.sort((a, b) => a.timestamp - b.timestamp);
-  }
-
-  // Simular variação de preço
-  simulatePriceChange(basePrice, changePercent) {
-    const variation = (Math.random() - 0.5) * 0.02; // ±1%
-    return parseFloat((basePrice * (1 + variation)).toFixed(2));
-  }
-
-  // Simular variação
-  simulateChange(baseChange) {
-    const variation = (Math.random() - 0.5) * 0.1; // ±5%
-    return parseFloat((baseChange * (1 + variation)).toFixed(2));
-  }
-
-  // Simular percentual de variação
-  simulateChangePercent(baseChangePercent) {
-    const variation = (Math.random() - 0.5) * 0.2; // ±10%
-    return parseFloat((baseChangePercent * (1 + variation)).toFixed(2));
-  }
-
-  // Simular volume
-  simulateVolume(baseVolume) {
-    const variation = (Math.random() - 0.5) * 0.15; // ±7.5%
-    return Math.round(baseVolume * (1 + variation));
-  }
-
-  // Obter dados completos do mercado
-  async getMarketOverview() {
-    try {
-      const [stocks, commodities, rates] = await Promise.all([
-        this.getBrazilianMarketData(),
-        this.getAgriculturalCommodities(),
-        this.getExchangeRates()
-      ]);
-
-      return {
-        stocks,
-        commodities,
-        rates,
-        timestamp: new Date()
-      };
+      return historicalData;
     } catch (error) {
-      console.error('Erro ao obter visão geral do mercado:', error);
-      throw error;
+      console.error('Erro ao buscar dados históricos:', error);
+      return this.getFallbackHistoricalData();
     }
   }
 
-  // Buscar símbolo
-  async searchSymbol(query) {
+  // Buscar índice Bovespa
+  async getBovespaIndex() {
+    const cacheKey = 'bovespa-index';
+    const cached = this.cache.get(cacheKey);
+    
+    if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
+      return cached.data;
+    }
+
     try {
-      const response = await axios.get(this.baseUrl, {
+      const response = await axios.get(this.baseURL, {
         params: {
-          function: 'SYMBOL_SEARCH',
-          keywords: query,
-          apikey: this.alphaVantageApiKey
+          function: 'GLOBAL_QUOTE',
+          symbol: '^BVSP',
+          apikey: this.apiKey
         }
       });
 
-      if (response.data.bestMatches) {
-        return response.data.bestMatches.map(match => ({
-          symbol: match['1. symbol'],
-          name: match['2. name'],
-          type: match['3. type'],
-          region: match['4. region'],
-          marketOpen: match['5. marketOpen'],
-          marketClose: match['6. marketClose'],
-          timezone: match['7. timezone'],
-          currency: match['8. currency']
-        }));
-      }
+      const quote = response.data['Global Quote'];
+      if (!quote) return this.getFallbackBovespaIndex();
 
-      return [];
+      const indexData = {
+        symbol: 'BVSP',
+        name: 'Bovespa',
+        value: parseFloat(quote['05. price']),
+        change: parseFloat(quote['09. change']),
+        changePercent: parseFloat(quote['10. change percent'].replace('%', '')),
+        volume: parseInt(quote['06. volume']),
+        high: parseFloat(quote['03. high']),
+        low: parseFloat(quote['04. low']),
+        timestamp: Date.now()
+      };
+
+      // Cache dos resultados
+      this.cache.set(cacheKey, {
+        data: indexData,
+        timestamp: Date.now()
+      });
+
+      return indexData;
     } catch (error) {
-      console.error('Erro na busca de símbolos:', error);
-      return [];
+      console.error('Erro ao buscar índice Bovespa:', error);
+      return this.getFallbackBovespaIndex();
     }
+  }
+
+  // Obter nome da ação
+  getStockName(symbol) {
+    const names = {
+      'VALE3.SAO': 'Vale',
+      'PETR4.SAO': 'Petrobras',
+      'ITUB4.SAO': 'Itaú Unibanco',
+      'BBDC4.SAO': 'Bradesco',
+      'ABEV3.SAO': 'Ambev',
+      'WEGE3.SAO': 'WEG',
+      'MGLU3.SAO': 'Magazine Luiza',
+      'SUZB3.SAO': 'Suzano',
+      'JBSS3.SAO': 'JBS',
+      'RENT3.SAO': 'Localiza'
+    };
+    return names[symbol] || symbol;
+  }
+
+  // Dados de fallback
+  getFallbackBrazilianStocks() {
+    return [
+      {
+        symbol: 'VALE3',
+        name: 'Vale',
+        price: 65.50,
+        change: 1.20,
+        changePercent: 1.87,
+        volume: 45000000,
+        high: 66.00,
+        low: 64.30,
+        open: 64.50,
+        previousClose: 64.30,
+        timestamp: Date.now()
+      },
+      {
+        symbol: 'PETR4',
+        name: 'Petrobras',
+        price: 32.80,
+        change: -0.45,
+        changePercent: -1.35,
+        volume: 38000000,
+        high: 33.20,
+        low: 32.50,
+        open: 33.25,
+        previousClose: 33.25,
+        timestamp: Date.now()
+      }
+    ];
+  }
+
+  getFallbackBovespaIndex() {
+    return {
+      symbol: 'BVSP',
+      name: 'Bovespa',
+      value: 125000,
+      change: 850,
+      changePercent: 0.68,
+      volume: 0,
+      high: 125500,
+      low: 124200,
+      timestamp: Date.now()
+    };
+  }
+
+  getFallbackHistoricalData() {
+    const data = [];
+    const now = Date.now();
+    for (let i = 30; i >= 0; i--) {
+      data.push({
+        date: new Date(now - (i * 24 * 60 * 60 * 1000)),
+        open: 65 + (Math.random() - 0.5) * 5,
+        high: 66 + (Math.random() - 0.5) * 3,
+        low: 64 + (Math.random() - 0.5) * 3,
+        close: 65 + (Math.random() - 0.5) * 4,
+        volume: Math.floor(Math.random() * 10000000) + 1000000
+      });
+    }
+    return data;
+  }
+
+  // Obter cor baseada na variação
+  getChangeColor(change) {
+    if (change > 0) return '#39FF14'; // Verde neon para alta
+    if (change < 0) return '#FF4500'; // Vermelho para baixa
+    return '#EDEDED'; // Branco para neutro
+  }
+
+  // Formatar número
+  formatNumber(num) {
+    if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
+    if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+    if (num >= 1e3) return (num / 1e3).toFixed(2) + 'K';
+    return num.toFixed(2);
   }
 }
 
-const stockService = new StockService();
-export default stockService;
+export default new StockService();

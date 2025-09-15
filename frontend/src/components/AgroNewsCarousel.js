@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import agroNewsService from '../services/agroNewsService';
 
 // Dados mockados de notícias do agronegócio (simulando API)
 const mockNews = [
@@ -54,19 +55,12 @@ const AgroNewsCarousel = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simular carregamento de API
+    // Carregar notícias reais da API
     const loadNews = async () => {
       setIsLoading(true);
       try {
-        // Aqui você pode integrar com APIs reais como:
-        // - Globo Rural API
-        // - Canal Rural API
-        // - Outras APIs de notícias agro
-        
-        // Simular delay de API
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        setNews(mockNews);
+        const realNews = await agroNewsService.getAgroNews();
+        setNews(realNews);
       } catch (error) {
         console.error('Erro ao carregar notícias:', error);
         setNews(mockNews); // Fallback para dados mockados
@@ -76,6 +70,10 @@ const AgroNewsCarousel = () => {
     };
 
     loadNews();
+    
+    // Atualizar notícias a cada 30 minutos
+    const interval = setInterval(loadNews, 30 * 60 * 1000);
+    return () => clearInterval(interval);
   }, []);
 
   const nextSlide = useCallback(() => {

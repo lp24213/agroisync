@@ -10,6 +10,9 @@ import {
   Globe
 } from 'lucide-react';
 import AgroNewsCarousel from '../components/AgroNewsCarousel';
+import WeatherWidget from '../components/WeatherWidget';
+import CryptoChart from '../components/CryptoChart';
+import StockWidget from '../components/StockWidget';
 
 const TXCHome = () => {
   const features = [
@@ -231,6 +234,86 @@ const TXCHome = () => {
                 </div>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Dashboard de Dados em Tempo Real */}
+      <section className="txc-section" style={{ background: 'var(--txc-light-beige)' }}>
+        <div className="txc-container">
+          <motion.div
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1 }}
+            className="txc-text-center"
+            style={{ marginBottom: 'var(--txc-space-xl)' }}
+          >
+            <h2 className="txc-section-title">Dados em Tempo Real</h2>
+            <p className="txc-section-subtitle">
+              Informações atualizadas automaticamente para sua tomada de decisão
+            </p>
+          </motion.div>
+          
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', 
+            gap: 'var(--txc-space-xl)' 
+          }}>
+            {/* Clima */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+            >
+              <h3 style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: '600', 
+                color: 'var(--txc-text-dark)', 
+                marginBottom: 'var(--txc-space-md)' 
+              }}>
+                Clima
+              </h3>
+              <WeatherWidget city="São Paulo" />
+            </motion.div>
+            
+            {/* Criptomoedas */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <h3 style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: '600', 
+                color: 'var(--txc-text-dark)', 
+                marginBottom: 'var(--txc-space-md)' 
+              }}>
+                Criptomoedas
+              </h3>
+              <CryptoChart selectedCoin="bitcoin" />
+            </motion.div>
+            
+            {/* Bolsa de Valores */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              style={{ gridColumn: '1 / -1' }}
+            >
+              <h3 style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: '600', 
+                color: 'var(--txc-text-dark)', 
+                marginBottom: 'var(--txc-space-md)' 
+              }}>
+                Bolsa de Valores
+              </h3>
+              <StockWidget />
+            </motion.div>
           </div>
         </div>
       </section>
