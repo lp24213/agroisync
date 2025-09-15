@@ -93,11 +93,11 @@ const WeatherWidget = ({ city = null }) => {
 
   return (
     <div className="txc-card p-6">
-      <motion.div
+    <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      transition={{ duration: 0.5 }}
+    >
         {/* Cabeçalho */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
@@ -133,7 +133,7 @@ const WeatherWidget = ({ city = null }) => {
             </div>
           </div>
         </div>
-
+        
         {/* Detalhes */}
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="flex items-center space-x-2">
@@ -160,7 +160,7 @@ const WeatherWidget = ({ city = null }) => {
             </span>
           </div>
         </div>
-
+        
         {/* Previsão */}
         {forecast.length > 0 && (
           <div>
@@ -185,10 +185,10 @@ const WeatherWidget = ({ city = null }) => {
                   </div>
                 </motion.div>
               ))}
-            </div>
-          </div>
+        </div>
+      </div>
         )}
-      </motion.div>
+    </motion.div>
     </div>
   );
 };

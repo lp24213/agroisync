@@ -161,21 +161,21 @@ class CryptoService {
   // Dados de fallback
   getFallbackCryptoData() {
     return [
-      {
-        id: 'bitcoin',
-        symbol: 'BTC',
-        name: 'Bitcoin',
+          {
+            id: 'bitcoin',
+            symbol: 'BTC',
+            name: 'Bitcoin',
         priceUSD: 45000,
         priceBRL: 225000,
         change24h: 2.5,
         volume24h: 25000000000,
         marketCap: 850000000000,
         timestamp: Date.now()
-      },
-      {
-        id: 'ethereum',
-        symbol: 'ETH',
-        name: 'Ethereum',
+          },
+          {
+            id: 'ethereum',
+            symbol: 'ETH',
+            name: 'Ethereum',
         priceUSD: 3200,
         priceBRL: 16000,
         change24h: -1.2,

@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { 
   ArrowRight,
   TrendingUp,
@@ -14,38 +15,40 @@ import CryptoChart from '../components/CryptoChart';
 import StockWidget from '../components/StockWidget';
 
 const AgroisyncHome = () => {
+  const { t } = useTranslation();
+  
   const features = [
     {
       icon: <TrendingUp size={32} />,
-      title: 'Marketplace Inteligente',
-      description: 'Conecte-se com compradores e vendedores de commodities agrícolas em uma plataforma segura e eficiente.',
+      title: t('features.marketplace.title'),
+      description: t('features.marketplace.description'),
       link: '/marketplace',
     },
     {
       icon: <Truck size={32} />,
-      title: 'AgroConecta',
-      description: 'Rede de transporte e logística inteligente para otimizar sua cadeia de suprimentos.',
+      title: t('features.agroconecta.title'),
+      description: t('features.agroconecta.description'),
       link: '/agroconecta',
     },
     {
       icon: <Zap size={32} />,
-      title: 'Crypto Agro',
-      description: 'Tecnologia blockchain para transações seguras e transparentes no agronegócio.',
+      title: t('features.crypto.title'),
+      description: t('features.crypto.description'),
       link: '/crypto',
     },
     {
       icon: <Shield size={32} />,
-      title: 'Analytics Avançado',
-      description: 'Dados e insights para tomada de decisão baseada em inteligência artificial.',
+      title: t('features.analytics.title'),
+      description: t('features.analytics.description'),
       link: '/dashboard',
     },
   ];
 
   const stats = [
-    { number: '10K+', label: 'Usuários Ativos', color: 'var(--agro-green-accent)' },
-    { number: '50K+', label: 'Transações', color: 'var(--agro-green-accent)' },
-    { number: '$2M+', label: 'Volume', color: 'var(--agro-green-accent)' },
-    { number: '99.9%', label: 'Uptime', color: 'var(--agro-green-accent)' },
+    { number: '10K+', label: t('stats.users'), color: 'var(--agro-green-accent)' },
+    { number: '50K+', label: t('stats.transactions'), color: 'var(--agro-green-accent)' },
+    { number: '$2M+', label: t('stats.volume'), color: 'var(--agro-green-accent)' },
+    { number: '99.9%', label: t('stats.uptime'), color: 'var(--agro-green-accent)' },
   ];
 
   const heroVariants = {
@@ -77,29 +80,29 @@ const AgroisyncHome = () => {
         <div className="agro-banner-image">
           <div className="agro-banner-overlay">
             <div className="agro-banner-content">
-              <motion.div
-                variants={heroVariants}
-                initial="hidden"
-                animate="visible"
-              >
+          <motion.div
+            variants={heroVariants}
+            initial="hidden"
+            animate="visible"
+          >
                 <motion.h1 className="agro-banner-title" variants={itemVariants}>
-                  Conectando o Agronegócio Brasileiro com Tecnologia
+                  {t('home.title')}
                 </motion.h1>
                 
                 <motion.p className="agro-banner-description" variants={itemVariants}>
-                  Plataforma completa para marketplace, logística, criptomoedas e analytics do agronegócio brasileiro.
+                  {t('home.subtitle')}
                 </motion.p>
                 
                 <motion.div className="agro-banner-buttons" variants={itemVariants}>
                   <Link to="/marketplace" className="agro-btn-primary">
-                    Explorar Marketplace
+                    {t('home.exploreMarketplace')}
                     <ArrowRight size={20} />
                   </Link>
                   <Link to="/about" className="agro-btn-secondary">
-                    Saiba Mais
+                    {t('home.learnMore')}
                   </Link>
                 </motion.div>
-              </motion.div>
+          </motion.div>
             </div>
           </div>
         </div>

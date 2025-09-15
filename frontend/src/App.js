@@ -93,6 +93,7 @@ function App() {
                   <Route path="/marketplace" element={<AgroisyncMarketplace />} />
                   <Route path="/agroconecta" element={<AgroisyncAgroConecta />} />
                   <Route path="/loja" element={<Store />} />
+                  <Route path="/tecnologia" element={<AgroisyncCrypto />} />
                   <Route path="/intermediation" element={<IntermediationSystem />} />
                   <Route path="/crypto" element={<AgroisyncCrypto />} />
                   <Route path="/plans" element={<AgroisyncPlans />} />
@@ -104,8 +105,8 @@ function App() {
                   <Route path="/help" element={<Help />} />
                   
                   {/* Auth Routes */}
-                  <Route path="/login" element={<AgroisyncLogin />} />
-                  <Route path="/register" element={<AgroisyncRegister />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
@@ -117,7 +118,7 @@ function App() {
                   <Route path="/payment/cancel" element={<PaymentCancel />} />
                   
                   {/* Protected Routes */}
-                  <Route path="/dashboard" element={<AgroisyncDashboard />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/messaging" element={<Messaging />} />
                   <Route path="/admin" element={<AdminPanel />} />
                   
