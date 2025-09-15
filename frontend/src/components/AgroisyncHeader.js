@@ -23,14 +23,14 @@ const AgroisyncHeader = () => {
   const [currentLanguage, setCurrentLanguage] = useState('pt');
   const [isDarkTheme, setIsDarkTheme] = useState(true);
 
-  // Menu principal
+  // Menu principal com ícones
   const navigationItems = [
-    { path: '/', label: t('nav.inicio') },
-    { path: '/loja', label: t('nav.loja') },
-    { path: '/agroconecta', label: t('nav.agroconecta') },
-    { path: '/marketplace', label: t('nav.marketplace') },
-    { path: '/tecnologia', label: t('nav.tecnologia') },
-    { path: '/partnerships', label: t('nav.parcerias') }
+    { path: '/', label: t('nav.inicio'), icon: '🏠' },
+    { path: '/loja', label: t('nav.loja'), icon: '🛒' },
+    { path: '/agroconecta', label: t('nav.agroconecta'), icon: '🚛' },
+    { path: '/marketplace', label: t('nav.marketplace'), icon: '🏪' },
+    { path: '/tecnologia', label: t('nav.tecnologia'), icon: '⚡' },
+    { path: '/partnerships', label: t('nav.parcerias'), icon: '🤝' }
   ];
 
   // Idiomas disponíveis
@@ -107,7 +107,8 @@ const AgroisyncHeader = () => {
                   to={item.path}
                   className={`agro-nav-link ${isActive(item.path) ? 'active' : ''}`}
                 >
-                  {item.label}
+                  <span className="agro-nav-icon">{item.icon}</span>
+                  <span className="agro-nav-text">{item.label}</span>
                 </Link>
               </li>
             ))}
@@ -215,7 +216,8 @@ const AgroisyncHeader = () => {
                         className={`agro-mobile-link ${isActive(item.path) ? 'active' : ''}`}
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        {item.label}
+                        <span className="agro-mobile-icon">{item.icon}</span>
+                        <span className="agro-mobile-text">{item.label}</span>
                       </Link>
                     </li>
                   ))}
@@ -323,10 +325,11 @@ const AgroisyncHeader = () => {
           list-style: none;
           margin: 0;
           padding: 0;
-          gap: 40px;
+          gap: 32px;
           position: absolute;
           left: 50%;
           transform: translateX(-50%);
+          align-items: center;
         }
 
         .agro-menu-item {
@@ -342,12 +345,30 @@ const AgroisyncHeader = () => {
           border-radius: 8px;
           transition: all 0.3s ease;
           position: relative;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .agro-nav-icon {
+          font-size: 18px;
+          opacity: 0.8;
+          transition: all 0.3s ease;
+        }
+
+        .agro-nav-text {
+          font-weight: 500;
         }
 
         .agro-nav-link:hover {
           color: var(--agro-primary-color);
           background: var(--agro-hover-bg);
           transform: translateY(-2px);
+        }
+
+        .agro-nav-link:hover .agro-nav-icon {
+          opacity: 1;
+          transform: scale(1.1);
         }
 
         .agro-nav-link.active {
@@ -565,9 +586,21 @@ const AgroisyncHeader = () => {
           color: var(--agro-text-color);
           text-decoration: none;
           padding: 12px 16px;
-          display: block;
+          display: flex;
+          align-items: center;
+          gap: 12px;
           border-radius: 8px;
           transition: all 0.3s ease;
+          font-weight: 500;
+        }
+
+        .agro-mobile-icon {
+          font-size: 20px;
+          opacity: 0.8;
+          transition: all 0.3s ease;
+        }
+
+        .agro-mobile-text {
           font-weight: 500;
         }
 
@@ -575,6 +608,12 @@ const AgroisyncHeader = () => {
         .agro-mobile-link.active {
           background: var(--agro-hover-bg);
           color: var(--agro-primary-color);
+        }
+
+        .agro-mobile-link:hover .agro-mobile-icon,
+        .agro-mobile-link.active .agro-mobile-icon {
+          opacity: 1;
+          transform: scale(1.1);
         }
 
         .agro-mobile-languages {
