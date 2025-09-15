@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { 
   ArrowRight,
   Mail,
@@ -14,6 +15,8 @@ import {
 } from 'lucide-react';
 
 const AgroisyncLogin = () => {
+  const { login } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -41,8 +44,31 @@ const AgroisyncLogin = () => {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       if (formData.email === 'demo@agroisync.com' && formData.password === 'demo123') {
-        console.log('Login successful');
-        // Redirecionar para dashboard
+        // Login bem-sucedido
+        const userData = {
+          id: '1',
+          name: 'Usuário Demo',
+          email: formData.email,
+          role: 'user'
+        };
+        
+        await login(userData);
+        
+        // Redirecionar para dashboard + mensageria
+        navigate('/dashboard');
+      } else if (formData.email === 'admin@agroisync.com' && formData.password === 'admin123') {
+        // Login admin
+        const adminData = {
+          id: 'admin',
+          name: 'Administrador',
+          email: formData.email,
+          role: 'admin'
+        };
+        
+        await login(adminData);
+        
+        // Redirecionar para painel admin
+        navigate('/admin');
       } else {
         setError('Email ou senha incorretos');
       }

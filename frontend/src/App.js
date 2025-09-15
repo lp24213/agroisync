@@ -105,8 +105,8 @@ function App() {
                   <Route path="/help" element={<Help />} />
                   
                   {/* Auth Routes */}
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
+                  <Route path="/login" element={<AgroisyncLogin />} />
+                  <Route path="/register" element={<AgroisyncRegister />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
@@ -118,7 +118,7 @@ function App() {
                   <Route path="/payment/cancel" element={<PaymentCancel />} />
                   
                   {/* Protected Routes */}
-                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/dashboard" element={<AgroisyncDashboard />} />
                   <Route path="/messaging" element={<Messaging />} />
                   <Route path="/admin" element={<AdminPanel />} />
                   
