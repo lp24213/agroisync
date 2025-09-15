@@ -90,7 +90,9 @@
   align-items: center !important;
   gap: 2rem !important;
   max-width: 600px !important;
-  margin: 0 auto !important;
+  position: absolute !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
   visibility: visible !important;
   opacity: 1 !important;
 }
@@ -477,6 +479,23 @@ p {
   
   .premium-logo-text {
     font-size: 1.25rem !important; /* 20px */
+  }
+  
+  /* Correção navbar mobile */
+  .premium-nav-desktop {
+    display: none !important;
+  }
+  
+  .premium-mobile-menu-btn {
+    display: block !important;
+  }
+  
+  .premium-header-actions {
+    gap: 0.5rem !important;
+  }
+  
+  .premium-auth-buttons {
+    display: none !important;
   }
 }
 

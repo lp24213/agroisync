@@ -241,6 +241,7 @@ const PremiumHeader = () => {
           justify-content: space-between;
           padding: var(--premium-space-lg) 0;
           height: 88px;
+          position: relative;
         }
 
         .premium-logo-link {
@@ -272,6 +273,9 @@ const PremiumHeader = () => {
           display: flex;
           align-items: center;
           gap: var(--premium-space-xl);
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
         }
 
         .premium-nav-link {
