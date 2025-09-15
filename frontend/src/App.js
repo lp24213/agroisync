@@ -6,8 +6,8 @@ import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/Layout';
-import TXCHeader from './components/TXCHeader';
-import TXCFooter from './components/TXCFooter';
+import AgroisyncHeader from './components/AgroisyncHeader';
+import AgroisyncFooter from './components/AgroisyncFooter';
 import PremiumCursor from './components/PremiumCursor';
 import ChatbotWidget from './components/ChatbotWidget';
 import Ticker from './components/Ticker';
@@ -76,7 +76,7 @@ function App() {
                 <PremiumCursor />
                 
                        {/* TXC Header */}
-                       <TXCHeader />
+                       <AgroisyncHeader />
                 
                 {/* Ticker fixo no topo */}
                 <Ticker />
@@ -134,7 +134,7 @@ function App() {
                 </Layout>
                 
                 {/* TXC Footer */}
-                <TXCFooter />
+                <AgroisyncFooter />
                 
                 {/* Global Chatbot Widget */}
                 <ChatbotWidget />
