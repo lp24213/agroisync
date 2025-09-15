@@ -14,7 +14,7 @@ import {
   Plus
 } from 'lucide-react';
 
-const TXCDashboard = () => {
+const AgroisyncDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   const stats = [
@@ -23,28 +23,28 @@ const TXCDashboard = () => {
       value: 'R$ 125.430', 
       change: '+12.5%', 
       icon: <DollarSign size={24} />,
-      color: 'var(--txc-green-accent)'
+      color: 'var(--agro-green-accent)'
     },
     { 
       title: 'Produtos Vendidos', 
       value: '1.247', 
       change: '+8.2%', 
       icon: <Package size={24} />,
-      color: 'var(--txc-green-accent)'
+      color: 'var(--agro-green-accent)'
     },
     { 
       title: 'Clientes Ativos', 
       value: '89', 
       change: '+15.3%', 
       icon: <Users size={24} />,
-      color: 'var(--txc-green-accent)'
+      color: 'var(--agro-green-accent)'
     },
     { 
       title: 'Entregas', 
       value: '156', 
       change: '+5.7%', 
       icon: <Truck size={24} />,
-      color: 'var(--txc-green-accent)'
+      color: 'var(--agro-green-accent)'
     },
   ];
 
@@ -57,7 +57,7 @@ const TXCDashboard = () => {
       price: 'R$ 45.000',
       status: 'Entregue',
       date: '2024-01-15',
-      statusColor: 'var(--txc-green-accent)'
+      statusColor: 'var(--agro-green-accent)'
     },
     {
       id: '#002',
@@ -113,12 +113,12 @@ const TXCDashboard = () => {
   return (
     <div>
       {/* Header Section */}
-      <section className="txc-section" style={{ 
-        background: 'var(--txc-light-beige)', 
-        paddingTop: 'var(--txc-space-2xl)',
-        paddingBottom: 'var(--txc-space-xl)'
+      <section className="agro-section" style={{ 
+        background: 'var(--agro-light-beige)', 
+        paddingTop: 'var(--agro-space-2xl)',
+        paddingBottom: 'var(--agro-space-xl)'
       }}>
-        <div className="txc-container">
+        <div className="agro-container">
           <motion.div
             variants={heroVariants}
             initial="hidden"
@@ -130,34 +130,34 @@ const TXCDashboard = () => {
                 display: 'flex', 
                 justifyContent: 'space-between', 
                 alignItems: 'center',
-                marginBottom: 'var(--txc-space-xl)'
+                marginBottom: 'var(--agro-space-xl)'
               }}
             >
               <div>
-                <h1 className="txc-section-title" style={{ fontSize: '2.5rem', marginBottom: 'var(--txc-space-sm)' }}>
+                <h1 className="agro-section-title" style={{ fontSize: '2.5rem', marginBottom: 'var(--agro-space-sm)' }}>
                   Dashboard
                 </h1>
-                <p className="txc-section-subtitle" style={{ fontSize: '1.125rem' }}>
+                <p className="agro-section-subtitle" style={{ fontSize: '1.125rem' }}>
                   Gerencie seu agronegócio de forma inteligente
                 </p>
               </div>
               
-              <div style={{ display: 'flex', gap: 'var(--txc-space-md)', alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: 'var(--agro-space-md)', alignItems: 'center' }}>
                 <motion.button
-                  className="txc-btn txc-btn-secondary"
+                  className="agro-btn agro-btn-secondary"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  style={{ display: 'flex', alignItems: 'center', gap: 'var(--txc-space-sm)' }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 'var(--agro-space-sm)' }}
                 >
                   <Bell size={20} />
                   Notificações
                 </motion.button>
                 
                 <motion.button
-                  className="txc-btn txc-btn-primary"
+                  className="agro-btn agro-btn-primary"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  style={{ display: 'flex', alignItems: 'center', gap: 'var(--txc-space-sm)' }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 'var(--agro-space-sm)' }}
                 >
                   <Plus size={20} />
                   Novo Pedido
@@ -171,18 +171,18 @@ const TXCDashboard = () => {
               style={{ 
                 display: 'grid', 
                 gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-                gap: 'var(--txc-space-lg)' 
+                gap: 'var(--agro-space-lg)' 
               }}
             >
               {stats.map((stat, index) => (
                 <motion.div
                   key={stat.title}
-                  className="txc-card"
+                  className="agro-card"
                   whileHover={{ y: -8, scale: 1.02 }}
                   style={{ 
                     position: 'relative',
                     border: '1px solid rgba(57, 255, 20, 0.2)',
-                    background: 'var(--txc-white)'
+                    background: 'var(--agro-white)'
                   }}
                 >
                   <div style={{
@@ -192,20 +192,20 @@ const TXCDashboard = () => {
                     right: 0,
                     height: '4px',
                     background: stat.color,
-                    borderRadius: 'var(--txc-radius-xl) var(--txc-radius-xl) 0 0'
+                    borderRadius: 'var(--agro-radius-xl) var(--agro-radius-xl) 0 0'
                   }} />
                   
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--txc-space-md)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--agro-space-md)' }}>
                     <div style={{
                       width: '48px',
                       height: '48px',
-                      background: 'var(--txc-gradient-accent)',
-                      borderRadius: 'var(--txc-radius-lg)',
+                      background: 'var(--agro-gradient-accent)',
+                      borderRadius: 'var(--agro-radius-lg)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: 'var(--txc-dark-green)',
-                      boxShadow: 'var(--txc-shadow-md)'
+                      color: 'var(--agro-dark-green)',
+                      boxShadow: 'var(--agro-shadow-md)'
                     }}>
                       {stat.icon}
                     </div>
@@ -214,8 +214,8 @@ const TXCDashboard = () => {
                       fontWeight: '600',
                       color: stat.color,
                       background: 'rgba(57, 255, 20, 0.1)',
-                      padding: 'var(--txc-space-xs) var(--txc-space-sm)',
-                      borderRadius: 'var(--txc-radius-md)'
+                      padding: 'var(--agro-space-xs) var(--agro-space-sm)',
+                      borderRadius: 'var(--agro-radius-md)'
                     }}>
                       {stat.change}
                     </div>
@@ -224,15 +224,15 @@ const TXCDashboard = () => {
                   <h3 style={{ 
                     fontSize: '2rem', 
                     fontWeight: '800', 
-                    color: 'var(--txc-text-dark)',
-                    marginBottom: 'var(--txc-space-sm)',
-                    fontFamily: 'var(--txc-font-secondary)'
+                    color: 'var(--agro-text-dark)',
+                    marginBottom: 'var(--agro-space-sm)',
+                    fontFamily: 'var(--agro-font-secondary)'
                   }}>
                     {stat.value}
                   </h3>
                   
                   <p style={{ 
-                    color: 'var(--txc-text-light)', 
+                    color: 'var(--agro-text-light)', 
                     fontSize: '1rem',
                     fontWeight: '500'
                   }}>
@@ -246,8 +246,8 @@ const TXCDashboard = () => {
       </section>
 
       {/* Tabs Section */}
-      <section className="txc-section">
-        <div className="txc-container">
+      <section className="agro-section">
+        <div className="agro-container">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -257,10 +257,10 @@ const TXCDashboard = () => {
             {/* Tab Navigation */}
             <div style={{ 
               display: 'flex', 
-              gap: 'var(--txc-space-sm)', 
-              marginBottom: 'var(--txc-space-2xl)',
+              gap: 'var(--agro-space-sm)', 
+              marginBottom: 'var(--agro-space-2xl)',
               borderBottom: '1px solid #E5E5E5',
-              paddingBottom: 'var(--txc-space-md)'
+              paddingBottom: 'var(--agro-space-md)'
             }}>
               {tabs.map((tab) => (
                 <motion.button
@@ -271,15 +271,15 @@ const TXCDashboard = () => {
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 'var(--txc-space-sm)',
-                    padding: 'var(--txc-space-md) var(--txc-space-lg)',
+                    gap: 'var(--agro-space-sm)',
+                    padding: 'var(--agro-space-md) var(--agro-space-lg)',
                     border: 'none',
-                    background: activeTab === tab.id ? 'var(--txc-green-accent)' : 'transparent',
-                    color: activeTab === tab.id ? 'var(--txc-dark-green)' : 'var(--txc-text-dark)',
-                    borderRadius: 'var(--txc-radius-lg)',
+                    background: activeTab === tab.id ? 'var(--agro-green-accent)' : 'transparent',
+                    color: activeTab === tab.id ? 'var(--agro-dark-green)' : 'var(--agro-text-dark)',
+                    borderRadius: 'var(--agro-radius-lg)',
                     fontWeight: '500',
                     cursor: 'pointer',
-                    transition: 'all var(--txc-transition-normal)'
+                    transition: 'all var(--agro-transition-normal)'
                   }}
                 >
                   {tab.icon}
@@ -298,21 +298,21 @@ const TXCDashboard = () => {
                 <div style={{ 
                   display: 'grid', 
                   gridTemplateColumns: '2fr 1fr', 
-                  gap: 'var(--txc-space-xl)' 
+                  gap: 'var(--agro-space-xl)' 
                 }}>
                   {/* Recent Orders */}
-                  <div className="txc-card">
+                  <div className="agro-card">
                     <div style={{ 
                       display: 'flex', 
                       justifyContent: 'space-between', 
                       alignItems: 'center',
-                      marginBottom: 'var(--txc-space-xl)'
+                      marginBottom: 'var(--agro-space-xl)'
                     }}>
-                      <h3 className="txc-card-title">Pedidos Recentes</h3>
+                      <h3 className="agro-card-title">Pedidos Recentes</h3>
                       <Link 
                         to="/orders" 
                         style={{ 
-                          color: 'var(--txc-green-accent)', 
+                          color: 'var(--agro-green-accent)', 
                           textDecoration: 'none',
                           fontWeight: '500'
                         }}
@@ -321,7 +321,7 @@ const TXCDashboard = () => {
                       </Link>
                     </div>
                     
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--txc-space-md)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--agro-space-md)' }}>
                       {recentOrders.map((order, index) => (
                         <motion.div
                           key={order.id}
@@ -332,22 +332,22 @@ const TXCDashboard = () => {
                             display: 'flex',
                             justifyContent: 'space-between',
                             alignItems: 'center',
-                            padding: 'var(--txc-space-lg)',
-                            background: 'var(--txc-light-beige)',
-                            borderRadius: 'var(--txc-radius-lg)',
+                            padding: 'var(--agro-space-lg)',
+                            background: 'var(--agro-light-beige)',
+                            borderRadius: 'var(--agro-radius-lg)',
                             border: '1px solid rgba(57, 255, 20, 0.1)'
                           }}
                         >
                           <div>
-                            <div style={{ fontWeight: '600', color: 'var(--txc-text-dark)', marginBottom: 'var(--txc-space-xs)' }}>
+                            <div style={{ fontWeight: '600', color: 'var(--agro-text-dark)', marginBottom: 'var(--agro-space-xs)' }}>
                               {order.id} - {order.customer}
                             </div>
-                            <div style={{ fontSize: '0.875rem', color: 'var(--txc-text-light)' }}>
+                            <div style={{ fontSize: '0.875rem', color: 'var(--agro-text-light)' }}>
                               {order.product} • {order.quantity}
                             </div>
                           </div>
                           <div style={{ textAlign: 'right' }}>
-                            <div style={{ fontWeight: '600', color: 'var(--txc-text-dark)', marginBottom: 'var(--txc-space-xs)' }}>
+                            <div style={{ fontWeight: '600', color: 'var(--agro-text-dark)', marginBottom: 'var(--agro-space-xs)' }}>
                               {order.price}
                             </div>
                             <div style={{ 
@@ -364,12 +364,12 @@ const TXCDashboard = () => {
                   </div>
 
                   {/* Quick Actions */}
-                  <div className="txc-card">
-                    <h3 className="txc-card-title" style={{ marginBottom: 'var(--txc-space-xl)' }}>
+                  <div className="agro-card">
+                    <h3 className="agro-card-title" style={{ marginBottom: 'var(--agro-space-xl)' }}>
                       Ações Rápidas
                     </h3>
                     
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--txc-space-md)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--agro-space-md)' }}>
                       {[
                         { icon: <Plus size={20} />, label: 'Novo Produto', link: '/products/new' },
                         { icon: <Users size={20} />, label: 'Adicionar Cliente', link: '/customers/new' },
@@ -386,25 +386,25 @@ const TXCDashboard = () => {
                             style={{
                               display: 'flex',
                               alignItems: 'center',
-                              gap: 'var(--txc-space-md)',
-                              padding: 'var(--txc-space-md)',
-                              background: 'var(--txc-light-beige)',
-                              borderRadius: 'var(--txc-radius-lg)',
+                              gap: 'var(--agro-space-md)',
+                              padding: 'var(--agro-space-md)',
+                              background: 'var(--agro-light-beige)',
+                              borderRadius: 'var(--agro-radius-lg)',
                               textDecoration: 'none',
-                              color: 'var(--txc-text-dark)',
-                              transition: 'all var(--txc-transition-normal)',
+                              color: 'var(--agro-text-dark)',
+                              transition: 'all var(--agro-transition-normal)',
                               border: '1px solid rgba(57, 255, 20, 0.1)'
                             }}
                           >
                             <div style={{
                               width: '40px',
                               height: '40px',
-                              background: 'var(--txc-gradient-accent)',
-                              borderRadius: 'var(--txc-radius-lg)',
+                              background: 'var(--agro-gradient-accent)',
+                              borderRadius: 'var(--agro-radius-lg)',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              color: 'var(--txc-dark-green)',
+                              color: 'var(--agro-dark-green)',
                               flexShrink: 0
                             }}>
                               {action.icon}
@@ -424,30 +424,30 @@ const TXCDashboard = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="txc-card"
+                className="agro-card"
               >
                 <div style={{ 
                   display: 'flex', 
                   justifyContent: 'space-between', 
                   alignItems: 'center',
-                  marginBottom: 'var(--txc-space-xl)'
+                  marginBottom: 'var(--agro-space-xl)'
                 }}>
-                  <h3 className="txc-card-title">Todos os Pedidos</h3>
-                  <div style={{ display: 'flex', gap: 'var(--txc-space-md)' }}>
+                  <h3 className="agro-card-title">Todos os Pedidos</h3>
+                  <div style={{ display: 'flex', gap: 'var(--agro-space-md)' }}>
                     <motion.button
-                      className="txc-btn txc-btn-secondary"
+                      className="agro-btn agro-btn-secondary"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      style={{ display: 'flex', alignItems: 'center', gap: 'var(--txc-space-sm)' }}
+                      style={{ display: 'flex', alignItems: 'center', gap: 'var(--agro-space-sm)' }}
                     >
                       <Filter size={20} />
                       Filtrar
                     </motion.button>
                     <motion.button
-                      className="txc-btn txc-btn-secondary"
+                      className="agro-btn agro-btn-secondary"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      style={{ display: 'flex', alignItems: 'center', gap: 'var(--txc-space-sm)' }}
+                      style={{ display: 'flex', alignItems: 'center', gap: 'var(--agro-space-sm)' }}
                     >
                       <Download size={20} />
                       Exportar
@@ -455,12 +455,12 @@ const TXCDashboard = () => {
                   </div>
                 </div>
                 
-                <div style={{ textAlign: 'center', padding: 'var(--txc-space-3xl)' }}>
-                  <BarChart3 size={64} style={{ color: 'var(--txc-text-light)', marginBottom: 'var(--txc-space-lg)' }} />
-                  <h3 style={{ color: 'var(--txc-text-dark)', marginBottom: 'var(--txc-space-md)' }}>
+                <div style={{ textAlign: 'center', padding: 'var(--agro-space-3xl)' }}>
+                  <BarChart3 size={64} style={{ color: 'var(--agro-text-light)', marginBottom: 'var(--agro-space-lg)' }} />
+                  <h3 style={{ color: 'var(--agro-text-dark)', marginBottom: 'var(--agro-space-md)' }}>
                     Gestão de Pedidos
                   </h3>
-                  <p style={{ color: 'var(--txc-text-light)' }}>
+                  <p style={{ color: 'var(--agro-text-light)' }}>
                     Aqui você pode gerenciar todos os seus pedidos de forma centralizada
                   </p>
                 </div>
@@ -472,14 +472,14 @@ const TXCDashboard = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="txc-card"
+                className="agro-card"
               >
-                <div style={{ textAlign: 'center', padding: 'var(--txc-space-3xl)' }}>
-                  <Package size={64} style={{ color: 'var(--txc-text-light)', marginBottom: 'var(--txc-space-lg)' }} />
-                  <h3 style={{ color: 'var(--txc-text-dark)', marginBottom: 'var(--txc-space-md)' }}>
+                <div style={{ textAlign: 'center', padding: 'var(--agro-space-3xl)' }}>
+                  <Package size={64} style={{ color: 'var(--agro-text-light)', marginBottom: 'var(--agro-space-lg)' }} />
+                  <h3 style={{ color: 'var(--agro-text-dark)', marginBottom: 'var(--agro-space-md)' }}>
                     Catálogo de Produtos
                   </h3>
-                  <p style={{ color: 'var(--txc-text-light)' }}>
+                  <p style={{ color: 'var(--agro-text-light)' }}>
                     Gerencie seu catálogo de produtos e commodities
                   </p>
                 </div>
@@ -491,14 +491,14 @@ const TXCDashboard = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="txc-card"
+                className="agro-card"
               >
-                <div style={{ textAlign: 'center', padding: 'var(--txc-space-3xl)' }}>
-                  <Users size={64} style={{ color: 'var(--txc-text-light)', marginBottom: 'var(--txc-space-lg)' }} />
-                  <h3 style={{ color: 'var(--txc-text-dark)', marginBottom: 'var(--txc-space-md)' }}>
+                <div style={{ textAlign: 'center', padding: 'var(--agro-space-3xl)' }}>
+                  <Users size={64} style={{ color: 'var(--agro-text-light)', marginBottom: 'var(--agro-space-lg)' }} />
+                  <h3 style={{ color: 'var(--agro-text-dark)', marginBottom: 'var(--agro-space-md)' }}>
                     Base de Clientes
                   </h3>
-                  <p style={{ color: 'var(--txc-text-light)' }}>
+                  <p style={{ color: 'var(--agro-text-light)' }}>
                     Gerencie sua base de clientes e relacionamentos
                   </p>
                 </div>
@@ -511,4 +511,4 @@ const TXCDashboard = () => {
   );
 };
 
-export default TXCDashboard;
+export default AgroisyncDashboard;

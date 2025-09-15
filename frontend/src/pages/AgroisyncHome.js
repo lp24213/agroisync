@@ -14,7 +14,7 @@ import WeatherWidget from '../components/WeatherWidget';
 import CryptoChart from '../components/CryptoChart';
 import StockWidget from '../components/StockWidget';
 
-const TXCHome = () => {
+const AgroisyncHome = () => {
   const features = [
     {
       icon: <TrendingUp size={32} />,
@@ -43,10 +43,10 @@ const TXCHome = () => {
   ];
 
   const stats = [
-    { number: '10K+', label: 'Usuários Ativos', color: 'var(--txc-green-accent)' },
-    { number: '50K+', label: 'Transações', color: 'var(--txc-green-accent)' },
-    { number: '$2M+', label: 'Volume', color: 'var(--txc-green-accent)' },
-    { number: '99.9%', label: 'Uptime', color: 'var(--txc-green-accent)' },
+    { number: '10K+', label: 'Usuários Ativos', color: 'var(--agro-green-accent)' },
+    { number: '50K+', label: 'Transações', color: 'var(--agro-green-accent)' },
+    { number: '$2M+', label: 'Volume', color: 'var(--agro-green-accent)' },
+    { number: '99.9%', label: 'Uptime', color: 'var(--agro-green-accent)' },
   ];
 
   const heroVariants = {
@@ -74,14 +74,14 @@ const TXCHome = () => {
   return (
     <div>
       {/* Hero Section TXC */}
-      <section className="txc-hero-section">
-        <div className="txc-hero-content">
+      <section className="agro-hero-section">
+        <div className="agro-hero-content">
           <motion.div
             variants={heroVariants}
             initial="hidden"
             animate="visible"
           >
-            <motion.h1 className="txc-hero-title" variants={itemVariants}>
+            <motion.h1 className="agro-hero-title" variants={itemVariants}>
               GREEN MONEY
             </motion.h1>
             
@@ -90,40 +90,40 @@ const TXCHome = () => {
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'center', 
-                gap: 'var(--txc-space-md)',
-                marginBottom: 'var(--txc-space-lg)'
+                gap: 'var(--agro-space-md)',
+                marginBottom: 'var(--agro-space-lg)'
               }}
               variants={itemVariants}
             >
               <div style={{
                 width: '40px',
                 height: '40px',
-                background: 'var(--txc-white)',
-                borderRadius: 'var(--txc-radius-md)',
+                background: 'var(--agro-white)',
+                borderRadius: 'var(--agro-radius-md)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'var(--txc-green-accent)'
+                color: 'var(--agro-green-accent)'
               }}>
                 <Globe size={24} />
               </div>
             </motion.div>
             
-            <motion.p className="txc-hero-subtitle" variants={itemVariants}>
+            <motion.p className="agro-hero-subtitle" variants={itemVariants}>
               MENTALIDADE E PERTENCIMENTO
             </motion.p>
             
             <motion.div 
               style={{ 
                 display: 'flex', 
-                gap: 'var(--txc-space-lg)', 
+                gap: 'var(--agro-space-lg)', 
                 justifyContent: 'center', 
                 flexWrap: 'wrap',
-                marginTop: 'var(--txc-space-xl)'
+                marginTop: 'var(--agro-space-xl)'
               }}
               variants={itemVariants}
             >
-              <Link to="/marketplace" className="txc-btn-outline">
+              <Link to="/marketplace" className="agro-btn-outline">
                 CONFIRA
                 <ArrowRight size={20} />
               </Link>
@@ -136,42 +136,42 @@ const TXCHome = () => {
       <AgroNewsCarousel />
 
       {/* Features Section */}
-      <section className="txc-section">
-        <div className="txc-container">
+      <section className="agro-section">
+        <div className="agro-container">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="txc-text-center"
+            className="agro-text-center"
           >
-            <h2 className="txc-section-title">NAVEGUE POR CATEGORIAS</h2>
-            <p className="txc-section-subtitle">
+            <h2 className="agro-section-title">NAVEGUE POR CATEGORIAS</h2>
+            <p className="agro-section-subtitle">
               Tecnologia avançada para o agronegócio moderno
             </p>
           </motion.div>
 
-          <div className="txc-cards-grid">
+          <div className="agro-cards-grid">
             {features.map((feature, index) => (
               <motion.div
                 key={feature.title}
-                className="txc-card txc-fade-in"
+                className="agro-card agro-fade-in"
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: index * 0.1 }}
                 whileHover={{ y: -8, scale: 1.02 }}
               >
-                <div className="txc-card-icon">
+                <div className="agro-card-icon">
                   {feature.icon}
                 </div>
-                <h3 className="txc-card-title">
+                <h3 className="agro-card-title">
                   {feature.title}
                 </h3>
-                <p className="txc-card-description">
+                <p className="agro-card-description">
                   {feature.description}
                 </p>
-                <Link to={feature.link} className="txc-card-button">
+                <Link to={feature.link} className="agro-card-button">
                   Explorar
                   <ArrowRight size={16} />
                 </Link>
@@ -182,17 +182,17 @@ const TXCHome = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="txc-section" style={{ background: 'var(--txc-light-beige)' }}>
-        <div className="txc-container">
+      <section className="agro-section" style={{ background: 'var(--agro-light-beige)' }}>
+        <div className="agro-container">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="txc-text-center"
+            className="agro-text-center"
           >
-            <h2 className="txc-section-title">Números que Impressionam</h2>
-            <p className="txc-section-subtitle">
+            <h2 className="agro-section-title">Números que Impressionam</h2>
+            <p className="agro-section-subtitle">
               Resultados reais de quem confia na AGROISYNC
             </p>
           </motion.div>
@@ -200,7 +200,7 @@ const TXCHome = () => {
           <div style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-            gap: 'var(--txc-space-xl)' 
+            gap: 'var(--agro-space-xl)' 
           }}>
             {stats.map((stat, index) => (
               <motion.div
@@ -210,15 +210,15 @@ const TXCHome = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: index * 0.1 }}
                 whileHover={{ y: -8 }}
-                className="txc-text-center"
+                className="agro-text-center"
               >
                 <div 
                   style={{ 
                     fontSize: '3rem',
                     fontWeight: '900',
                     color: stat.color,
-                    marginBottom: 'var(--txc-space-sm)',
-                    fontFamily: 'var(--txc-font-secondary)'
+                    marginBottom: 'var(--agro-space-sm)',
+                    fontFamily: 'var(--agro-font-secondary)'
                   }}
                 >
                   {stat.number}
@@ -227,7 +227,7 @@ const TXCHome = () => {
                   style={{ 
                     fontSize: '1.125rem', 
                     fontWeight: '500',
-                    color: 'var(--txc-text-dark)'
+                    color: 'var(--agro-text-dark)'
                   }}
                 >
                   {stat.label}
@@ -239,18 +239,18 @@ const TXCHome = () => {
       </section>
 
       {/* Dashboard de Dados em Tempo Real */}
-      <section className="txc-section" style={{ background: 'var(--txc-light-beige)' }}>
-        <div className="txc-container">
+      <section className="agro-section" style={{ background: 'var(--agro-light-beige)' }}>
+        <div className="agro-container">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="txc-text-center"
-            style={{ marginBottom: 'var(--txc-space-xl)' }}
+            className="agro-text-center"
+            style={{ marginBottom: 'var(--agro-space-xl)' }}
           >
-            <h2 className="txc-section-title">Dados em Tempo Real</h2>
-            <p className="txc-section-subtitle">
+            <h2 className="agro-section-title">Dados em Tempo Real</h2>
+            <p className="agro-section-subtitle">
               Informações atualizadas automaticamente para sua tomada de decisão
             </p>
           </motion.div>
@@ -258,7 +258,7 @@ const TXCHome = () => {
           <div style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', 
-            gap: 'var(--txc-space-xl)' 
+            gap: 'var(--agro-space-xl)' 
           }}>
             {/* Clima */}
             <motion.div
@@ -270,8 +270,8 @@ const TXCHome = () => {
               <h3 style={{ 
                 fontSize: '1.5rem', 
                 fontWeight: '600', 
-                color: 'var(--txc-text-dark)', 
-                marginBottom: 'var(--txc-space-md)' 
+                color: 'var(--agro-text-dark)', 
+                marginBottom: 'var(--agro-space-md)' 
               }}>
                 Clima
               </h3>
@@ -288,8 +288,8 @@ const TXCHome = () => {
               <h3 style={{ 
                 fontSize: '1.5rem', 
                 fontWeight: '600', 
-                color: 'var(--txc-text-dark)', 
-                marginBottom: 'var(--txc-space-md)' 
+                color: 'var(--agro-text-dark)', 
+                marginBottom: 'var(--agro-space-md)' 
               }}>
                 Criptomoedas
               </h3>
@@ -307,8 +307,8 @@ const TXCHome = () => {
               <h3 style={{ 
                 fontSize: '1.5rem', 
                 fontWeight: '600', 
-                color: 'var(--txc-text-dark)', 
-                marginBottom: 'var(--txc-space-md)' 
+                color: 'var(--agro-text-dark)', 
+                marginBottom: 'var(--agro-space-md)' 
               }}>
                 Bolsa de Valores
               </h3>
@@ -319,34 +319,34 @@ const TXCHome = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="txc-section">
-        <div className="txc-container">
+      <section className="agro-section">
+        <div className="agro-container">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="txc-text-center"
+            className="agro-text-center"
             style={{ maxWidth: '800px', margin: '0 auto' }}
           >
-            <h2 className="txc-section-title">
+            <h2 className="agro-section-title">
               Pronto para Revolucionar seu Agronegócio?
             </h2>
-            <p className="txc-section-subtitle">
+            <p className="agro-section-subtitle">
               Junte-se a milhares de produtores que já transformaram seus negócios com a AGROISYNC
             </p>
             <div style={{ 
               display: 'flex', 
-              gap: 'var(--txc-space-lg)', 
+              gap: 'var(--agro-space-lg)', 
               justifyContent: 'center', 
               flexWrap: 'wrap',
-              marginTop: 'var(--txc-space-xl)'
+              marginTop: 'var(--agro-space-xl)'
             }}>
-              <Link to="/register" className="txc-btn txc-btn-primary">
+              <Link to="/register" className="agro-btn agro-btn-primary">
                 Começar Agora
                 <ArrowRight size={20} />
               </Link>
-              <Link to="/contact" className="txc-btn txc-btn-secondary">
+              <Link to="/contact" className="agro-btn agro-btn-secondary">
                 Falar com Especialista
               </Link>
             </div>
@@ -357,4 +357,4 @@ const TXCHome = () => {
   );
 };
 
-export default TXCHome;
+export default AgroisyncHome;

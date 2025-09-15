@@ -15,7 +15,7 @@ import {
   Building
 } from 'lucide-react';
 
-const TXCRegister = () => {
+const AgroisyncRegister = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -116,7 +116,7 @@ const TXCRegister = () => {
   return (
     <div>
       {/* Hero Section TXC */}
-      <section className="txc-hero-section" style={{
+      <section className="agro-hero-section" style={{
         background: 'linear-gradient(rgba(31, 46, 31, 0.4), rgba(31, 46, 31, 0.4)), url("https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&h=1080&fit=crop")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
@@ -124,11 +124,11 @@ const TXCRegister = () => {
         display: 'flex',
         alignItems: 'center'
       }}>
-        <div className="txc-container">
+        <div className="agro-container">
           <div style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))', 
-            gap: 'var(--txc-space-3xl)',
+            gap: 'var(--agro-space-3xl)',
             alignItems: 'center'
           }}>
             {/* Left Side - Info */}
@@ -136,34 +136,34 @@ const TXCRegister = () => {
               variants={heroVariants}
               initial="hidden"
               animate="visible"
-              className="txc-text-center"
-              style={{ color: 'var(--txc-white)' }}
+              className="agro-text-center"
+              style={{ color: 'var(--agro-white)' }}
             >
               <motion.div
                 variants={itemVariants}
-                style={{ marginBottom: 'var(--txc-space-xl)' }}
+                style={{ marginBottom: 'var(--agro-space-xl)' }}
               >
                 <div style={{
                   width: '120px',
                   height: '120px',
                   margin: '0 auto',
-                  background: 'var(--txc-gradient-accent)',
-                  borderRadius: 'var(--txc-radius-3xl)',
+                  background: 'var(--agro-gradient-accent)',
+                  borderRadius: 'var(--agro-radius-3xl)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: 'var(--txc-dark-green)',
-                  boxShadow: 'var(--txc-shadow-lg)'
+                  color: 'var(--agro-dark-green)',
+                  boxShadow: 'var(--agro-shadow-lg)'
                 }}>
                   <UserPlus size={48} />
                 </div>
               </motion.div>
 
-              <motion.h1 className="txc-hero-title" variants={itemVariants}>
+              <motion.h1 className="agro-hero-title" variants={itemVariants}>
                 JUNTE-SE À REVOLUÇÃO
               </motion.h1>
               
-              <motion.p className="txc-hero-subtitle" variants={itemVariants}>
+              <motion.p className="agro-hero-subtitle" variants={itemVariants}>
                 Crie sua conta e comece a transformar seu agronegócio hoje mesmo
               </motion.p>
 
@@ -171,10 +171,10 @@ const TXCRegister = () => {
                 style={{ 
                   display: 'flex', 
                   flexDirection: 'column',
-                  gap: 'var(--txc-space-md)',
-                  marginTop: 'var(--txc-space-xl)',
+                  gap: 'var(--agro-space-md)',
+                  marginTop: 'var(--agro-space-xl)',
                   maxWidth: '400px',
-                  margin: 'var(--txc-space-xl) auto 0 auto'
+                  margin: 'var(--agro-space-xl) auto 0 auto'
                 }}
                 variants={itemVariants}
               >
@@ -184,7 +184,7 @@ const TXCRegister = () => {
                     style={{ 
                       display: 'flex', 
                       alignItems: 'center', 
-                      gap: 'var(--txc-space-md)',
+                      gap: 'var(--agro-space-md)',
                       justifyContent: 'center'
                     }}
                   >
@@ -192,11 +192,11 @@ const TXCRegister = () => {
                       width: '32px',
                       height: '32px',
                       background: 'rgba(57, 255, 20, 0.2)',
-                      borderRadius: 'var(--txc-radius-lg)',
+                      borderRadius: 'var(--agro-radius-lg)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: 'var(--txc-green-accent)',
+                      color: 'var(--agro-green-accent)',
                       flexShrink: 0
                     }}>
                       {benefit.icon}
@@ -214,21 +214,21 @@ const TXCRegister = () => {
               initial={{ opacity: 0, x: 60 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1, delay: 0.3 }}
-              className="txc-card"
+              className="agro-card"
               style={{ 
                 maxWidth: '500px', 
                 margin: '0 auto',
-                padding: 'var(--txc-space-3xl)',
+                padding: 'var(--agro-space-3xl)',
                 background: 'rgba(255, 255, 255, 0.95)',
                 backdropFilter: 'blur(20px)',
                 border: '1px solid rgba(57, 255, 20, 0.2)'
               }}
             >
-              <div className="txc-text-center" style={{ marginBottom: 'var(--txc-space-2xl)' }}>
-                <h2 className="txc-section-title" style={{ fontSize: '2rem', marginBottom: 'var(--txc-space-md)' }}>
+              <div className="agro-text-center" style={{ marginBottom: 'var(--agro-space-2xl)' }}>
+                <h2 className="agro-section-title" style={{ fontSize: '2rem', marginBottom: 'var(--agro-space-md)' }}>
                   Criar Conta
                 </h2>
-                <p className="txc-section-subtitle" style={{ fontSize: '1rem' }}>
+                <p className="agro-section-subtitle" style={{ fontSize: '1rem' }}>
                   Preencha os dados abaixo para começar
                 </p>
               </div>
@@ -241,12 +241,12 @@ const TXCRegister = () => {
                     style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: 'var(--txc-space-sm)',
-                      padding: 'var(--txc-space-md)',
+                      gap: 'var(--agro-space-sm)',
+                      padding: 'var(--agro-space-md)',
                       background: 'rgba(255, 75, 75, 0.1)',
                       border: '1px solid rgba(255, 75, 75, 0.3)',
-                      borderRadius: 'var(--txc-radius-lg)',
-                      marginBottom: 'var(--txc-space-lg)',
+                      borderRadius: 'var(--agro-radius-lg)',
+                      marginBottom: 'var(--agro-space-lg)',
                       color: '#FF4B4B'
                     }}
                   >
@@ -256,16 +256,16 @@ const TXCRegister = () => {
                 )}
 
                 {/* Tipo de Usuário */}
-                <div style={{ marginBottom: 'var(--txc-space-lg)' }}>
+                <div style={{ marginBottom: 'var(--agro-space-lg)' }}>
                   <label style={{
                     display: 'block',
-                    marginBottom: 'var(--txc-space-sm)',
+                    marginBottom: 'var(--agro-space-sm)',
                     fontWeight: '500',
-                    color: 'var(--txc-text-dark)'
+                    color: 'var(--agro-text-dark)'
                   }}>
                     Tipo de Usuário *
                   </label>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 'var(--txc-space-sm)' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 'var(--agro-space-sm)' }}>
                     {userTypes.map((type) => (
                       <label
                         key={type.value}
@@ -273,13 +273,13 @@ const TXCRegister = () => {
                           display: 'flex',
                           flexDirection: 'column',
                           alignItems: 'center',
-                          gap: 'var(--txc-space-sm)',
-                          padding: 'var(--txc-space-md)',
-                          border: formData.userType === type.value ? '2px solid var(--txc-green-accent)' : '2px solid rgba(57, 255, 20, 0.2)',
-                          borderRadius: 'var(--txc-radius-lg)',
+                          gap: 'var(--agro-space-sm)',
+                          padding: 'var(--agro-space-md)',
+                          border: formData.userType === type.value ? '2px solid var(--agro-green-accent)' : '2px solid rgba(57, 255, 20, 0.2)',
+                          borderRadius: 'var(--agro-radius-lg)',
                           background: formData.userType === type.value ? 'rgba(57, 255, 20, 0.1)' : 'rgba(57, 255, 20, 0.05)',
                           cursor: 'pointer',
-                          transition: 'all var(--txc-transition-normal)'
+                          transition: 'all var(--agro-transition-normal)'
                         }}
                       >
                         <input
@@ -291,7 +291,7 @@ const TXCRegister = () => {
                           style={{ display: 'none' }}
                         />
                         {type.icon}
-                        <span style={{ fontSize: '0.875rem', fontWeight: '500', color: 'var(--txc-text-dark)' }}>
+                        <span style={{ fontSize: '0.875rem', fontWeight: '500', color: 'var(--agro-text-dark)' }}>
                           {type.label}
                         </span>
                       </label>
@@ -300,12 +300,12 @@ const TXCRegister = () => {
                 </div>
 
                 {/* Nome */}
-                <div style={{ marginBottom: 'var(--txc-space-lg)' }}>
+                <div style={{ marginBottom: 'var(--agro-space-lg)' }}>
                   <label style={{
                     display: 'block',
-                    marginBottom: 'var(--txc-space-sm)',
+                    marginBottom: 'var(--agro-space-sm)',
                     fontWeight: '500',
-                    color: 'var(--txc-text-dark)'
+                    color: 'var(--agro-text-dark)'
                   }}>
                     Nome Completo *
                   </label>
@@ -314,10 +314,10 @@ const TXCRegister = () => {
                       size={20} 
                       style={{
                         position: 'absolute',
-                        left: 'var(--txc-space-md)',
+                        left: 'var(--agro-space-md)',
                         top: '50%',
                         transform: 'translateY(-50%)',
-                        color: 'var(--txc-text-light)'
+                        color: 'var(--agro-text-light)'
                       }}
                     />
                     <input
@@ -328,13 +328,13 @@ const TXCRegister = () => {
                       required
                       style={{
                         width: '100%',
-                        padding: 'var(--txc-space-md) var(--txc-space-md) var(--txc-space-md) 3rem',
+                        padding: 'var(--agro-space-md) var(--agro-space-md) var(--agro-space-md) 3rem',
                         border: '2px solid rgba(57, 255, 20, 0.2)',
-                        borderRadius: 'var(--txc-radius-lg)',
+                        borderRadius: 'var(--agro-radius-lg)',
                         fontSize: '1rem',
                         background: 'rgba(57, 255, 20, 0.05)',
-                        color: 'var(--txc-text-dark)',
-                        transition: 'all var(--txc-transition-normal)',
+                        color: 'var(--agro-text-dark)',
+                        transition: 'all var(--agro-transition-normal)',
                         backdropFilter: 'blur(10px)'
                       }}
                       placeholder="Seu nome completo"
@@ -343,12 +343,12 @@ const TXCRegister = () => {
                 </div>
 
                 {/* Email */}
-                <div style={{ marginBottom: 'var(--txc-space-lg)' }}>
+                <div style={{ marginBottom: 'var(--agro-space-lg)' }}>
                   <label style={{
                     display: 'block',
-                    marginBottom: 'var(--txc-space-sm)',
+                    marginBottom: 'var(--agro-space-sm)',
                     fontWeight: '500',
-                    color: 'var(--txc-text-dark)'
+                    color: 'var(--agro-text-dark)'
                   }}>
                     Email *
                   </label>
@@ -357,10 +357,10 @@ const TXCRegister = () => {
                       size={20} 
                       style={{
                         position: 'absolute',
-                        left: 'var(--txc-space-md)',
+                        left: 'var(--agro-space-md)',
                         top: '50%',
                         transform: 'translateY(-50%)',
-                        color: 'var(--txc-text-light)'
+                        color: 'var(--agro-text-light)'
                       }}
                     />
                     <input
@@ -371,13 +371,13 @@ const TXCRegister = () => {
                       required
                       style={{
                         width: '100%',
-                        padding: 'var(--txc-space-md) var(--txc-space-md) var(--txc-space-md) 3rem',
+                        padding: 'var(--agro-space-md) var(--agro-space-md) var(--agro-space-md) 3rem',
                         border: '2px solid rgba(57, 255, 20, 0.2)',
-                        borderRadius: 'var(--txc-radius-lg)',
+                        borderRadius: 'var(--agro-radius-lg)',
                         fontSize: '1rem',
                         background: 'rgba(57, 255, 20, 0.05)',
-                        color: 'var(--txc-text-dark)',
-                        transition: 'all var(--txc-transition-normal)',
+                        color: 'var(--agro-text-dark)',
+                        transition: 'all var(--agro-transition-normal)',
                         backdropFilter: 'blur(10px)'
                       }}
                       placeholder="seu@email.com"
@@ -386,12 +386,12 @@ const TXCRegister = () => {
                 </div>
 
                 {/* Telefone */}
-                <div style={{ marginBottom: 'var(--txc-space-lg)' }}>
+                <div style={{ marginBottom: 'var(--agro-space-lg)' }}>
                   <label style={{
                     display: 'block',
-                    marginBottom: 'var(--txc-space-sm)',
+                    marginBottom: 'var(--agro-space-sm)',
                     fontWeight: '500',
-                    color: 'var(--txc-text-dark)'
+                    color: 'var(--agro-text-dark)'
                   }}>
                     Telefone
                   </label>
@@ -402,13 +402,13 @@ const TXCRegister = () => {
                     onChange={handleInputChange}
                     style={{
                       width: '100%',
-                      padding: 'var(--txc-space-md)',
+                      padding: 'var(--agro-space-md)',
                       border: '2px solid rgba(57, 255, 20, 0.2)',
-                      borderRadius: 'var(--txc-radius-lg)',
+                      borderRadius: 'var(--agro-radius-lg)',
                       fontSize: '1rem',
                       background: 'rgba(57, 255, 20, 0.05)',
-                      color: 'var(--txc-text-dark)',
-                      transition: 'all var(--txc-transition-normal)',
+                      color: 'var(--agro-text-dark)',
+                      transition: 'all var(--agro-transition-normal)',
                       backdropFilter: 'blur(10px)'
                     }}
                     placeholder="(11) 99999-9999"
@@ -417,12 +417,12 @@ const TXCRegister = () => {
 
                 {/* Empresa */}
                 {formData.userType !== 'producer' && (
-                  <div style={{ marginBottom: 'var(--txc-space-lg)' }}>
+                  <div style={{ marginBottom: 'var(--agro-space-lg)' }}>
                     <label style={{
                       display: 'block',
-                      marginBottom: 'var(--txc-space-sm)',
+                      marginBottom: 'var(--agro-space-sm)',
                       fontWeight: '500',
-                      color: 'var(--txc-text-dark)'
+                      color: 'var(--agro-text-dark)'
                     }}>
                       Empresa
                     </label>
@@ -433,13 +433,13 @@ const TXCRegister = () => {
                       onChange={handleInputChange}
                       style={{
                         width: '100%',
-                        padding: 'var(--txc-space-md)',
+                        padding: 'var(--agro-space-md)',
                         border: '2px solid rgba(57, 255, 20, 0.2)',
-                        borderRadius: 'var(--txc-radius-lg)',
+                        borderRadius: 'var(--agro-radius-lg)',
                         fontSize: '1rem',
                         background: 'rgba(57, 255, 20, 0.05)',
-                        color: 'var(--txc-text-dark)',
-                        transition: 'all var(--txc-transition-normal)',
+                        color: 'var(--agro-text-dark)',
+                        transition: 'all var(--agro-transition-normal)',
                         backdropFilter: 'blur(10px)'
                       }}
                       placeholder="Nome da empresa"
@@ -448,12 +448,12 @@ const TXCRegister = () => {
                 )}
 
                 {/* Senha */}
-                <div style={{ marginBottom: 'var(--txc-space-lg)' }}>
+                <div style={{ marginBottom: 'var(--agro-space-lg)' }}>
                   <label style={{
                     display: 'block',
-                    marginBottom: 'var(--txc-space-sm)',
+                    marginBottom: 'var(--agro-space-sm)',
                     fontWeight: '500',
-                    color: 'var(--txc-text-dark)'
+                    color: 'var(--agro-text-dark)'
                   }}>
                     Senha *
                   </label>
@@ -462,10 +462,10 @@ const TXCRegister = () => {
                       size={20} 
                       style={{
                         position: 'absolute',
-                        left: 'var(--txc-space-md)',
+                        left: 'var(--agro-space-md)',
                         top: '50%',
                         transform: 'translateY(-50%)',
-                        color: 'var(--txc-text-light)'
+                        color: 'var(--agro-text-light)'
                       }}
                     />
                     <input
@@ -476,13 +476,13 @@ const TXCRegister = () => {
                       required
                       style={{
                         width: '100%',
-                        padding: 'var(--txc-space-md) var(--txc-space-md) var(--txc-space-md) 3rem',
+                        padding: 'var(--agro-space-md) var(--agro-space-md) var(--agro-space-md) 3rem',
                         border: '2px solid rgba(57, 255, 20, 0.2)',
-                        borderRadius: 'var(--txc-radius-lg)',
+                        borderRadius: 'var(--agro-radius-lg)',
                         fontSize: '1rem',
                         background: 'rgba(57, 255, 20, 0.05)',
-                        color: 'var(--txc-text-dark)',
-                        transition: 'all var(--txc-transition-normal)',
+                        color: 'var(--agro-text-dark)',
+                        transition: 'all var(--agro-transition-normal)',
                         backdropFilter: 'blur(10px)'
                       }}
                       placeholder="Mínimo 8 caracteres"
@@ -492,14 +492,14 @@ const TXCRegister = () => {
                       onClick={() => setShowPassword(!showPassword)}
                       style={{
                         position: 'absolute',
-                        right: 'var(--txc-space-md)',
+                        right: 'var(--agro-space-md)',
                         top: '50%',
                         transform: 'translateY(-50%)',
                         background: 'none',
                         border: 'none',
-                        color: 'var(--txc-text-light)',
+                        color: 'var(--agro-text-light)',
                         cursor: 'pointer',
-                        padding: 'var(--txc-space-sm)'
+                        padding: 'var(--agro-space-sm)'
                       }}
                     >
                       {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -508,12 +508,12 @@ const TXCRegister = () => {
                 </div>
 
                 {/* Confirmar Senha */}
-                <div style={{ marginBottom: 'var(--txc-space-lg)' }}>
+                <div style={{ marginBottom: 'var(--agro-space-lg)' }}>
                   <label style={{
                     display: 'block',
-                    marginBottom: 'var(--txc-space-sm)',
+                    marginBottom: 'var(--agro-space-sm)',
                     fontWeight: '500',
-                    color: 'var(--txc-text-dark)'
+                    color: 'var(--agro-text-dark)'
                   }}>
                     Confirmar Senha *
                   </label>
@@ -522,10 +522,10 @@ const TXCRegister = () => {
                       size={20} 
                       style={{
                         position: 'absolute',
-                        left: 'var(--txc-space-md)',
+                        left: 'var(--agro-space-md)',
                         top: '50%',
                         transform: 'translateY(-50%)',
-                        color: 'var(--txc-text-light)'
+                        color: 'var(--agro-text-light)'
                       }}
                     />
                     <input
@@ -536,13 +536,13 @@ const TXCRegister = () => {
                       required
                       style={{
                         width: '100%',
-                        padding: 'var(--txc-space-md) var(--txc-space-md) var(--txc-space-md) 3rem',
+                        padding: 'var(--agro-space-md) var(--agro-space-md) var(--agro-space-md) 3rem',
                         border: '2px solid rgba(57, 255, 20, 0.2)',
-                        borderRadius: 'var(--txc-radius-lg)',
+                        borderRadius: 'var(--agro-radius-lg)',
                         fontSize: '1rem',
                         background: 'rgba(57, 255, 20, 0.05)',
-                        color: 'var(--txc-text-dark)',
-                        transition: 'all var(--txc-transition-normal)',
+                        color: 'var(--agro-text-dark)',
+                        transition: 'all var(--agro-transition-normal)',
                         backdropFilter: 'blur(10px)'
                       }}
                       placeholder="Confirme sua senha"
@@ -552,14 +552,14 @@ const TXCRegister = () => {
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       style={{
                         position: 'absolute',
-                        right: 'var(--txc-space-md)',
+                        right: 'var(--agro-space-md)',
                         top: '50%',
                         transform: 'translateY(-50%)',
                         background: 'none',
                         border: 'none',
-                        color: 'var(--txc-text-light)',
+                        color: 'var(--agro-text-light)',
                         cursor: 'pointer',
-                        padding: 'var(--txc-space-sm)'
+                        padding: 'var(--agro-space-sm)'
                       }}
                     >
                       {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -568,22 +568,22 @@ const TXCRegister = () => {
                 </div>
 
                 {/* Termos */}
-                <div style={{ marginBottom: 'var(--txc-space-xl)' }}>
-                  <label style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--txc-space-sm)', cursor: 'pointer' }}>
+                <div style={{ marginBottom: 'var(--agro-space-xl)' }}>
+                  <label style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--agro-space-sm)', cursor: 'pointer' }}>
                     <input 
                       type="checkbox" 
                       name="acceptTerms"
                       checked={formData.acceptTerms}
                       onChange={handleInputChange}
-                      style={{ accentColor: 'var(--txc-green-accent)', marginTop: '2px' }}
+                      style={{ accentColor: 'var(--agro-green-accent)', marginTop: '2px' }}
                     />
-                    <span style={{ fontSize: '0.875rem', color: 'var(--txc-text-dark)', lineHeight: 1.5 }}>
+                    <span style={{ fontSize: '0.875rem', color: 'var(--agro-text-dark)', lineHeight: 1.5 }}>
                       Eu aceito os{' '}
-                      <Link to="/terms" style={{ color: 'var(--txc-green-accent)', textDecoration: 'none' }}>
+                      <Link to="/terms" style={{ color: 'var(--agro-green-accent)', textDecoration: 'none' }}>
                         Termos de Uso
                       </Link>
                       {' '}e a{' '}
-                      <Link to="/privacy" style={{ color: 'var(--txc-green-accent)', textDecoration: 'none' }}>
+                      <Link to="/privacy" style={{ color: 'var(--agro-green-accent)', textDecoration: 'none' }}>
                         Política de Privacidade
                       </Link>
                     </span>
@@ -592,7 +592,7 @@ const TXCRegister = () => {
 
                 <motion.button
                   type="submit"
-                  className="txc-btn txc-btn-primary"
+                  className="agro-btn agro-btn-primary"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   style={{ 
@@ -624,13 +624,13 @@ const TXCRegister = () => {
                 </motion.button>
               </form>
 
-              <div className="txc-text-center" style={{ marginTop: 'var(--txc-space-xl)' }}>
-                <p style={{ color: 'var(--txc-text-light)', marginBottom: 'var(--txc-space-md)' }}>
+              <div className="agro-text-center" style={{ marginTop: 'var(--agro-space-xl)' }}>
+                <p style={{ color: 'var(--agro-text-light)', marginBottom: 'var(--agro-space-md)' }}>
                   Já tem uma conta?
                 </p>
                 <Link 
                   to="/login" 
-                  className="txc-btn txc-btn-secondary"
+                  className="agro-btn agro-btn-secondary"
                   style={{ width: '100%', justifyContent: 'center' }}
                 >
                   Fazer Login
@@ -651,4 +651,4 @@ const TXCRegister = () => {
   );
 };
 
-export default TXCRegister;
+export default AgroisyncRegister;

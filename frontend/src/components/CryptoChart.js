@@ -64,7 +64,7 @@ const CryptoChart = ({ selectedCoin = 'bitcoin' }) => {
 
   if (isLoading) {
     return (
-      <div className="txc-card p-6">
+      <div className="agro-card p-6">
         <div className="animate-pulse">
           <div className="h-4 bg-gray-300 rounded w-3/4 mb-4"></div>
           <div className="h-8 bg-gray-300 rounded w-1/2 mb-4"></div>
@@ -81,7 +81,7 @@ const CryptoChart = ({ selectedCoin = 'bitcoin' }) => {
 
   if (error || !selectedCrypto) {
     return (
-      <div className="txc-card p-6 text-center">
+      <div className="agro-card p-6 text-center">
         <BarChart3 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
         <p className="text-gray-500">{error || 'Erro ao carregar dados de criptomoedas'}</p>
       </div>
@@ -89,7 +89,7 @@ const CryptoChart = ({ selectedCoin = 'bitcoin' }) => {
   }
 
   return (
-    <div className="txc-card p-6">
+    <div className="agro-card p-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

@@ -10,7 +10,7 @@ import {
   CheckCircle
 } from 'lucide-react';
 
-const TXCContact = () => {
+const AgroisyncContact = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -87,12 +87,12 @@ const TXCContact = () => {
   return (
     <div>
       {/* Hero Section TXC */}
-      <section className="txc-hero-section" style={{
+      <section className="agro-hero-section" style={{
         background: 'linear-gradient(rgba(31, 46, 31, 0.4), rgba(31, 46, 31, 0.4)), url("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&h=1080&fit=crop")',
         backgroundSize: 'cover',
         backgroundPosition: 'center'
       }}>
-        <div className="txc-hero-content">
+        <div className="agro-hero-content">
           <motion.div
             variants={heroVariants}
             initial="hidden"
@@ -100,29 +100,29 @@ const TXCContact = () => {
           >
             <motion.div
               variants={itemVariants}
-              style={{ marginBottom: 'var(--txc-space-xl)' }}
+              style={{ marginBottom: 'var(--agro-space-xl)' }}
             >
               <div style={{
                 width: '120px',
                 height: '120px',
                 margin: '0 auto',
-                background: 'var(--txc-gradient-accent)',
-                borderRadius: 'var(--txc-radius-3xl)',
+                background: 'var(--agro-gradient-accent)',
+                borderRadius: 'var(--agro-radius-3xl)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'var(--txc-dark-green)',
-                boxShadow: 'var(--txc-shadow-lg)'
+                color: 'var(--agro-dark-green)',
+                boxShadow: 'var(--agro-shadow-lg)'
               }}>
                 <MessageCircle size={48} />
               </div>
             </motion.div>
 
-            <motion.h1 className="txc-hero-title" variants={itemVariants}>
+            <motion.h1 className="agro-hero-title" variants={itemVariants}>
               FALE CONOSCO
             </motion.h1>
             
-            <motion.p className="txc-hero-subtitle" variants={itemVariants}>
+            <motion.p className="agro-hero-subtitle" variants={itemVariants}>
               Estamos aqui para ajudar você a revolucionar seu agronegócio
             </motion.p>
           </motion.div>
@@ -130,26 +130,26 @@ const TXCContact = () => {
       </section>
 
       {/* Contact Info Section */}
-      <section className="txc-section">
-        <div className="txc-container">
+      <section className="agro-section">
+        <div className="agro-container">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="txc-text-center"
+            className="agro-text-center"
           >
-            <h2 className="txc-section-title">Informações de Contato</h2>
-            <p className="txc-section-subtitle">
+            <h2 className="agro-section-title">Informações de Contato</h2>
+            <p className="agro-section-subtitle">
               Escolha a melhor forma de entrar em contato conosco
             </p>
           </motion.div>
 
-          <div className="txc-cards-grid">
+          <div className="agro-cards-grid">
             {contactInfo.map((contact, index) => (
               <motion.div
                 key={contact.title}
-                className="txc-card txc-fade-in"
+                className="agro-card agro-fade-in"
                 initial={{ opacity: 0, y: 60 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -157,21 +157,21 @@ const TXCContact = () => {
                 whileHover={{ y: -12, scale: 1.02 }}
                 style={{ textAlign: 'center' }}
               >
-                <div className="txc-card-icon" style={{ color: 'var(--txc-green-accent)' }}>
+                <div className="agro-card-icon" style={{ color: 'var(--agro-green-accent)' }}>
                   {contact.icon}
                 </div>
-                <h3 className="txc-card-title">
+                <h3 className="agro-card-title">
                   {contact.title}
                 </h3>
                 <div style={{
                   fontSize: '1.25rem',
                   fontWeight: '600',
-                  color: 'var(--txc-text-dark)',
-                  marginBottom: 'var(--txc-space-md)'
+                  color: 'var(--agro-text-dark)',
+                  marginBottom: 'var(--agro-space-md)'
                 }}>
                   {contact.info}
                 </div>
-                <p className="txc-card-description">
+                <p className="agro-card-description">
                   {contact.description}
                 </p>
               </motion.div>
@@ -181,17 +181,17 @@ const TXCContact = () => {
       </section>
 
       {/* Contact Form Section */}
-      <section className="txc-section" style={{ background: 'var(--txc-light-beige)' }}>
-        <div className="txc-container">
+      <section className="agro-section" style={{ background: 'var(--agro-light-beige)' }}>
+        <div className="agro-container">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="txc-text-center"
+            className="agro-text-center"
           >
-            <h2 className="txc-section-title">Envie sua Mensagem</h2>
-            <p className="txc-section-subtitle">
+            <h2 className="agro-section-title">Envie sua Mensagem</h2>
+            <p className="agro-section-subtitle">
               Preencha o formulário abaixo e entraremos em contato
             </p>
           </motion.div>
@@ -203,13 +203,13 @@ const TXCContact = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             style={{ maxWidth: '600px', margin: '0 auto' }}
           >
-            <form onSubmit={handleSubmit} className="txc-card" style={{ padding: 'var(--txc-space-2xl)' }}>
-              <div style={{ marginBottom: 'var(--txc-space-lg)' }}>
+            <form onSubmit={handleSubmit} className="agro-card" style={{ padding: 'var(--agro-space-2xl)' }}>
+              <div style={{ marginBottom: 'var(--agro-space-lg)' }}>
                 <label style={{
                   display: 'block',
-                  marginBottom: 'var(--txc-space-sm)',
+                  marginBottom: 'var(--agro-space-sm)',
                   fontWeight: '500',
-                  color: 'var(--txc-text-dark)'
+                  color: 'var(--agro-text-dark)'
                 }}>
                   Nome Completo *
                 </label>
@@ -221,25 +221,25 @@ const TXCContact = () => {
                   required
                   style={{
                     width: '100%',
-                    padding: 'var(--txc-space-md)',
+                    padding: 'var(--agro-space-md)',
                     border: '2px solid rgba(57, 255, 20, 0.2)',
-                    borderRadius: 'var(--txc-radius-lg)',
+                    borderRadius: 'var(--agro-radius-lg)',
                     fontSize: '1rem',
                     background: 'rgba(57, 255, 20, 0.1)',
-                    color: 'var(--txc-text-dark)',
-                    transition: 'all var(--txc-transition-normal)',
+                    color: 'var(--agro-text-dark)',
+                    transition: 'all var(--agro-transition-normal)',
                     backdropFilter: 'blur(10px)'
                   }}
                   placeholder="Seu nome completo"
                 />
               </div>
 
-              <div style={{ marginBottom: 'var(--txc-space-lg)' }}>
+              <div style={{ marginBottom: 'var(--agro-space-lg)' }}>
                 <label style={{
                   display: 'block',
-                  marginBottom: 'var(--txc-space-sm)',
+                  marginBottom: 'var(--agro-space-sm)',
                   fontWeight: '500',
-                  color: 'var(--txc-text-dark)'
+                  color: 'var(--agro-text-dark)'
                 }}>
                   Email *
                 </label>
@@ -251,25 +251,25 @@ const TXCContact = () => {
                   required
                   style={{
                     width: '100%',
-                    padding: 'var(--txc-space-md)',
+                    padding: 'var(--agro-space-md)',
                     border: '2px solid rgba(57, 255, 20, 0.2)',
-                    borderRadius: 'var(--txc-radius-lg)',
+                    borderRadius: 'var(--agro-radius-lg)',
                     fontSize: '1rem',
                     background: 'rgba(57, 255, 20, 0.1)',
-                    color: 'var(--txc-text-dark)',
-                    transition: 'all var(--txc-transition-normal)',
+                    color: 'var(--agro-text-dark)',
+                    transition: 'all var(--agro-transition-normal)',
                     backdropFilter: 'blur(10px)'
                   }}
                   placeholder="seu@email.com"
                 />
               </div>
 
-              <div style={{ marginBottom: 'var(--txc-space-lg)' }}>
+              <div style={{ marginBottom: 'var(--agro-space-lg)' }}>
                 <label style={{
                   display: 'block',
-                  marginBottom: 'var(--txc-space-sm)',
+                  marginBottom: 'var(--agro-space-sm)',
                   fontWeight: '500',
-                  color: 'var(--txc-text-dark)'
+                  color: 'var(--agro-text-dark)'
                 }}>
                   Assunto *
                 </label>
@@ -280,13 +280,13 @@ const TXCContact = () => {
                   required
                   style={{
                     width: '100%',
-                    padding: 'var(--txc-space-md)',
+                    padding: 'var(--agro-space-md)',
                     border: '2px solid rgba(57, 255, 20, 0.2)',
-                    borderRadius: 'var(--txc-radius-lg)',
+                    borderRadius: 'var(--agro-radius-lg)',
                     fontSize: '1rem',
                     background: 'rgba(57, 255, 20, 0.1)',
-                    color: 'var(--txc-text-dark)',
-                    transition: 'all var(--txc-transition-normal)',
+                    color: 'var(--agro-text-dark)',
+                    transition: 'all var(--agro-transition-normal)',
                     backdropFilter: 'blur(10px)'
                   }}
                 >
@@ -298,12 +298,12 @@ const TXCContact = () => {
                 </select>
               </div>
 
-              <div style={{ marginBottom: 'var(--txc-space-xl)' }}>
+              <div style={{ marginBottom: 'var(--agro-space-xl)' }}>
                 <label style={{
                   display: 'block',
-                  marginBottom: 'var(--txc-space-sm)',
+                  marginBottom: 'var(--agro-space-sm)',
                   fontWeight: '500',
-                  color: 'var(--txc-text-dark)'
+                  color: 'var(--agro-text-dark)'
                 }}>
                   Mensagem *
                 </label>
@@ -315,13 +315,13 @@ const TXCContact = () => {
                   rows={6}
                   style={{
                     width: '100%',
-                    padding: 'var(--txc-space-md)',
+                    padding: 'var(--agro-space-md)',
                     border: '2px solid rgba(57, 255, 20, 0.2)',
-                    borderRadius: 'var(--txc-radius-lg)',
+                    borderRadius: 'var(--agro-radius-lg)',
                     fontSize: '1rem',
                     background: 'rgba(57, 255, 20, 0.1)',
-                    color: 'var(--txc-text-dark)',
-                    transition: 'all var(--txc-transition-normal)',
+                    color: 'var(--agro-text-dark)',
+                    transition: 'all var(--agro-transition-normal)',
                     backdropFilter: 'blur(10px)',
                     resize: 'vertical',
                     fontFamily: 'inherit'
@@ -332,7 +332,7 @@ const TXCContact = () => {
 
               <motion.button
                 type="submit"
-                className="txc-btn txc-btn-primary"
+                className="agro-btn agro-btn-primary"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 style={{ width: '100%', justifyContent: 'center' }}
@@ -356,17 +356,17 @@ const TXCContact = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="txc-section">
-        <div className="txc-container">
+      <section className="agro-section">
+        <div className="agro-container">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="txc-text-center"
+            className="agro-text-center"
           >
-            <h2 className="txc-section-title">Perguntas Frequentes</h2>
-            <p className="txc-section-subtitle">
+            <h2 className="agro-section-title">Perguntas Frequentes</h2>
+            <p className="agro-section-subtitle">
               Respostas para as dúvidas mais comuns
             </p>
           </motion.div>
@@ -392,17 +392,17 @@ const TXCContact = () => {
             ].map((faq, index) => (
               <motion.div
                 key={index}
-                className="txc-card"
+                className="agro-card"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                style={{ marginBottom: 'var(--txc-space-lg)' }}
+                style={{ marginBottom: 'var(--agro-space-lg)' }}
               >
-                <h3 className="txc-card-title" style={{ marginBottom: 'var(--txc-space-md)' }}>
+                <h3 className="agro-card-title" style={{ marginBottom: 'var(--agro-space-md)' }}>
                   {faq.question}
                 </h3>
-                <p className="txc-card-description">
+                <p className="agro-card-description">
                   {faq.answer}
                 </p>
               </motion.div>
@@ -414,4 +414,4 @@ const TXCContact = () => {
   );
 };
 
-export default TXCContact;
+export default AgroisyncContact;

@@ -19,16 +19,16 @@ import NewsFeed from './components/NewsFeed';
 import './styles/agro-premium-theme.css';
 
 // Pages
-import TXCHome from './pages/TXCHome';
-import TXCMarketplace from './pages/TXCMarketplace';
-import TXCAgroConecta from './pages/TXCAgroConecta';
-import TXCCrypto from './pages/TXCCrypto';
-import TXCPlans from './pages/TXCPlans';
-import TXCAbout from './pages/TXCAbout';
-import TXCContact from './pages/TXCContact';
-import TXCLogin from './pages/TXCLogin';
-import TXCRegister from './pages/TXCRegister';
-import TXCDashboard from './pages/TXCDashboard';
+import AgroisyncHome from './pages/AgroisyncHome';
+import AgroisyncMarketplace from './pages/AgroisyncMarketplace';
+import AgroisyncAgroConecta from './pages/AgroisyncAgroConecta';
+import AgroisyncCrypto from './pages/AgroisyncCrypto';
+import AgroisyncPlans from './pages/AgroisyncPlans';
+import AgroisyncAbout from './pages/AgroisyncAbout';
+import AgroisyncContact from './pages/AgroisyncContact';
+import AgroisyncLogin from './pages/AgroisyncLogin';
+import AgroisyncRegister from './pages/AgroisyncRegister';
+import AgroisyncDashboard from './pages/AgroisyncDashboard';
 import IntermediationSystem from './components/IntermediationSystem';
 import Messaging from './pages/Messaging';
 import AdminPanel from './pages/AdminPanel';
@@ -69,7 +69,7 @@ function App() {
                 {/* Premium Cursor */}
                 <PremiumCursor />
                 
-                       {/* TXC Header */}
+                       {/* AGROISYNC Header */}
                        <AgroisyncHeader />
                 
                 {/* Ticker fixo no topo */}
@@ -89,23 +89,23 @@ function App() {
                 <Layout>
                 <Routes>
                          {/* Public Routes */}
-                         <Route path="/" element={<TXCHome />} />
-                  <Route path="/marketplace" element={<TXCMarketplace />} />
-                  <Route path="/agroconecta" element={<TXCAgroConecta />} />
+                         <Route path="/" element={<AgroisyncHome />} />
+                  <Route path="/marketplace" element={<AgroisyncMarketplace />} />
+                  <Route path="/agroconecta" element={<AgroisyncAgroConecta />} />
                   <Route path="/loja" element={<Store />} />
                   <Route path="/intermediation" element={<IntermediationSystem />} />
-                  <Route path="/crypto" element={<TXCCrypto />} />
-                  <Route path="/plans" element={<TXCPlans />} />
-                  <Route path="/about" element={<TXCAbout />} />
-                  <Route path="/contact" element={<TXCContact />} />
+                  <Route path="/crypto" element={<AgroisyncCrypto />} />
+                  <Route path="/plans" element={<AgroisyncPlans />} />
+                  <Route path="/about" element={<AgroisyncAbout />} />
+                  <Route path="/contact" element={<AgroisyncContact />} />
                   <Route path="/faq" element={<FAQ />} />
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/privacy" element={<Privacy />} />
                   <Route path="/help" element={<Help />} />
                   
                   {/* Auth Routes */}
-                  <Route path="/login" element={<TXCLogin />} />
-                  <Route path="/register" element={<TXCRegister />} />
+                  <Route path="/login" element={<AgroisyncLogin />} />
+                  <Route path="/register" element={<AgroisyncRegister />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
@@ -117,7 +117,7 @@ function App() {
                   <Route path="/payment/cancel" element={<PaymentCancel />} />
                   
                   {/* Protected Routes */}
-                  <Route path="/dashboard" element={<TXCDashboard />} />
+                  <Route path="/dashboard" element={<AgroisyncDashboard />} />
                   <Route path="/messaging" element={<Messaging />} />
                   <Route path="/admin" element={<AdminPanel />} />
                   
@@ -127,7 +127,7 @@ function App() {
                 </Routes>
                 </Layout>
                 
-                {/* TXC Footer */}
+                {/* AGROISYNC Footer */}
                 <AgroisyncFooter />
                 
                 {/* Global Chatbot Widget */}

@@ -11,7 +11,7 @@ import {
   Shield
 } from 'lucide-react';
 
-const TXCAbout = () => {
+const AgroisyncAbout = () => {
   const values = [
     {
       icon: <Target size={32} />,
@@ -99,12 +99,12 @@ const TXCAbout = () => {
   return (
     <div>
       {/* Hero Section TXC */}
-      <section className="txc-hero-section" style={{
+      <section className="agro-hero-section" style={{
         background: 'linear-gradient(rgba(31, 46, 31, 0.4), rgba(31, 46, 31, 0.4)), url("https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=1920&h=1080&fit=crop")',
         backgroundSize: 'cover',
         backgroundPosition: 'center'
       }}>
-        <div className="txc-hero-content">
+        <div className="agro-hero-content">
           <motion.div
             variants={heroVariants}
             initial="hidden"
@@ -112,47 +112,47 @@ const TXCAbout = () => {
           >
             <motion.div
               variants={itemVariants}
-              style={{ marginBottom: 'var(--txc-space-xl)' }}
+              style={{ marginBottom: 'var(--agro-space-xl)' }}
             >
               <div style={{
                 width: '120px',
                 height: '120px',
                 margin: '0 auto',
-                background: 'var(--txc-gradient-accent)',
-                borderRadius: 'var(--txc-radius-3xl)',
+                background: 'var(--agro-gradient-accent)',
+                borderRadius: 'var(--agro-radius-3xl)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'var(--txc-dark-green)',
-                boxShadow: 'var(--txc-shadow-lg)'
+                color: 'var(--agro-dark-green)',
+                boxShadow: 'var(--agro-shadow-lg)'
               }}>
                 <Globe size={48} />
               </div>
             </motion.div>
 
-            <motion.h1 className="txc-hero-title" variants={itemVariants}>
+            <motion.h1 className="agro-hero-title" variants={itemVariants}>
               SOBRE A AGROISYNC
             </motion.h1>
             
-            <motion.p className="txc-hero-subtitle" variants={itemVariants}>
+            <motion.p className="agro-hero-subtitle" variants={itemVariants}>
               Revolucionando o agronegócio brasileiro com tecnologia e inovação
             </motion.p>
 
             <motion.div 
               style={{ 
                 display: 'flex', 
-                gap: 'var(--txc-space-lg)', 
+                gap: 'var(--agro-space-lg)', 
                 justifyContent: 'center', 
                 flexWrap: 'wrap',
-                marginTop: 'var(--txc-space-xl)'
+                marginTop: 'var(--agro-space-xl)'
               }}
               variants={itemVariants}
             >
-              <Link to="/contact" className="txc-btn-outline">
+              <Link to="/contact" className="agro-btn-outline">
                 Fale Conosco
                 <ArrowRight size={20} />
               </Link>
-              <Link to="/plans" className="txc-btn-outline">
+              <Link to="/plans" className="agro-btn-outline">
                 Nossos Planos
               </Link>
             </motion.div>
@@ -161,17 +161,17 @@ const TXCAbout = () => {
       </section>
 
       {/* Mission Section */}
-      <section className="txc-section">
-        <div className="txc-container">
+      <section className="agro-section">
+        <div className="agro-container">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="txc-text-center"
+            className="agro-text-center"
           >
-            <h2 className="txc-section-title">Nossa Missão</h2>
-            <p className="txc-section-subtitle" style={{ maxWidth: '800px', margin: '0 auto' }}>
+            <h2 className="agro-section-title">Nossa Missão</h2>
+            <p className="agro-section-subtitle" style={{ maxWidth: '800px', margin: '0 auto' }}>
               Conectar produtores, compradores e transportadores em uma plataforma única, 
               segura e eficiente, utilizando tecnologia blockchain e inteligência artificial 
               para revolucionar o agronegócio brasileiro.
@@ -181,26 +181,26 @@ const TXCAbout = () => {
       </section>
 
       {/* Values Section */}
-      <section className="txc-section" style={{ background: 'var(--txc-light-beige)' }}>
-        <div className="txc-container">
+      <section className="agro-section" style={{ background: 'var(--agro-light-beige)' }}>
+        <div className="agro-container">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="txc-text-center"
+            className="agro-text-center"
           >
-            <h2 className="txc-section-title">Nossos Valores</h2>
-            <p className="txc-section-subtitle">
+            <h2 className="agro-section-title">Nossos Valores</h2>
+            <p className="agro-section-subtitle">
               Os princípios que guiam nossa empresa
             </p>
           </motion.div>
 
-          <div className="txc-cards-grid">
+          <div className="agro-cards-grid">
             {values.map((value, index) => (
               <motion.div
                 key={value.title}
-                className="txc-card txc-fade-in"
+                className="agro-card agro-fade-in"
                 initial={{ opacity: 0, y: 60 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -208,13 +208,13 @@ const TXCAbout = () => {
                 whileHover={{ y: -12, scale: 1.02 }}
                 style={{ textAlign: 'center' }}
               >
-                <div className="txc-card-icon" style={{ color: 'var(--txc-green-accent)' }}>
+                <div className="agro-card-icon" style={{ color: 'var(--agro-green-accent)' }}>
                   {value.icon}
                 </div>
-                <h3 className="txc-card-title">
+                <h3 className="agro-card-title">
                   {value.title}
                 </h3>
-                <p className="txc-card-description">
+                <p className="agro-card-description">
                   {value.description}
                 </p>
               </motion.div>
@@ -224,17 +224,17 @@ const TXCAbout = () => {
       </section>
 
       {/* Team Section */}
-      <section className="txc-section">
-        <div className="txc-container">
+      <section className="agro-section">
+        <div className="agro-container">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="txc-text-center"
+            className="agro-text-center"
           >
-            <h2 className="txc-section-title">Nossa Equipe</h2>
-            <p className="txc-section-subtitle">
+            <h2 className="agro-section-title">Nossa Equipe</h2>
+            <p className="agro-section-subtitle">
               Conheça as pessoas por trás da AGROISYNC
             </p>
           </motion.div>
@@ -242,12 +242,12 @@ const TXCAbout = () => {
           <div style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-            gap: 'var(--txc-space-xl)' 
+            gap: 'var(--agro-space-xl)' 
           }}>
             {team.map((member, index) => (
               <motion.div
                 key={member.name}
-                className="txc-card"
+                className="agro-card"
                 initial={{ opacity: 0, y: 60 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -258,11 +258,11 @@ const TXCAbout = () => {
                 <div style={{
                   width: '120px',
                   height: '120px',
-                  margin: '0 auto var(--txc-space-lg) auto',
+                  margin: '0 auto var(--agro-space-lg) auto',
                   borderRadius: '50%',
                   overflow: 'hidden',
-                  boxShadow: 'var(--txc-shadow-lg)',
-                  border: '4px solid var(--txc-green-accent)'
+                  boxShadow: 'var(--agro-shadow-lg)',
+                  border: '4px solid var(--agro-green-accent)'
                 }}>
                   <img 
                     src={member.image} 
@@ -275,20 +275,20 @@ const TXCAbout = () => {
                   />
                 </div>
                 
-                <h3 className="txc-card-title" style={{ marginBottom: 'var(--txc-space-sm)' }}>
+                <h3 className="agro-card-title" style={{ marginBottom: 'var(--agro-space-sm)' }}>
                   {member.name}
                 </h3>
                 
                 <div style={{
-                  color: 'var(--txc-green-accent)',
+                  color: 'var(--agro-green-accent)',
                   fontWeight: '600',
-                  marginBottom: 'var(--txc-space-md)',
+                  marginBottom: 'var(--agro-space-md)',
                   fontSize: '1.125rem'
                 }}>
                   {member.role}
                 </div>
                 
-                <p className="txc-card-description">
+                <p className="agro-card-description">
                   {member.description}
                 </p>
               </motion.div>
@@ -298,17 +298,17 @@ const TXCAbout = () => {
       </section>
 
       {/* Timeline Section */}
-      <section className="txc-section" style={{ background: 'var(--txc-light-beige)' }}>
-        <div className="txc-container">
+      <section className="agro-section" style={{ background: 'var(--agro-light-beige)' }}>
+        <div className="agro-container">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="txc-text-center"
+            className="agro-text-center"
           >
-            <h2 className="txc-section-title">Nossa Jornada</h2>
-            <p className="txc-section-subtitle">
+            <h2 className="agro-section-title">Nossa Jornada</h2>
+            <p className="agro-section-subtitle">
               Marcos importantes da nossa história
             </p>
           </motion.div>
@@ -316,13 +316,13 @@ const TXCAbout = () => {
           <div style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-            gap: 'var(--txc-space-xl)',
-            marginTop: 'var(--txc-space-3xl)'
+            gap: 'var(--agro-space-xl)',
+            marginTop: 'var(--agro-space-3xl)'
           }}>
             {milestones.map((milestone, index) => (
               <motion.div
                 key={milestone.year}
-                className="txc-card"
+                className="agro-card"
                 initial={{ opacity: 0, y: 60 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -336,29 +336,29 @@ const TXCAbout = () => {
                   left: 0,
                   right: 0,
                   height: '4px',
-                  background: 'var(--txc-green-accent)',
-                  borderRadius: 'var(--txc-radius-xl) var(--txc-radius-xl) 0 0'
+                  background: 'var(--agro-green-accent)',
+                  borderRadius: 'var(--agro-radius-xl) var(--agro-radius-xl) 0 0'
                 }} />
                 
                 <div 
                   style={{ 
                     fontSize: '3rem',
-                    marginBottom: 'var(--txc-space-lg)',
+                    marginBottom: 'var(--agro-space-lg)',
                     fontWeight: '900',
-                    background: 'var(--txc-gradient-accent)',
+                    background: 'var(--agro-gradient-accent)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     backgroundClip: 'text',
-                    fontFamily: 'var(--txc-font-secondary)'
+                    fontFamily: 'var(--agro-font-secondary)'
                   }}
                 >
                   {milestone.year}
                 </div>
                 
-                <h3 className="txc-card-title" style={{ marginBottom: 'var(--txc-space-md)' }}>
+                <h3 className="agro-card-title" style={{ marginBottom: 'var(--agro-space-md)' }}>
                   {milestone.title}
                 </h3>
-                <p className="txc-card-description">
+                <p className="agro-card-description">
                   {milestone.description}
                 </p>
               </motion.div>
@@ -368,47 +368,47 @@ const TXCAbout = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="txc-section">
-        <div className="txc-container">
+      <section className="agro-section">
+        <div className="agro-container">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="txc-text-center"
+            className="agro-text-center"
             style={{ maxWidth: '800px', margin: '0 auto' }}
           >
             <div style={{
               width: '80px',
               height: '80px',
-              margin: '0 auto var(--txc-space-lg) auto',
-              background: 'var(--txc-gradient-accent)',
-              borderRadius: 'var(--txc-radius-2xl)',
+              margin: '0 auto var(--agro-space-lg) auto',
+              background: 'var(--agro-gradient-accent)',
+              borderRadius: 'var(--agro-radius-2xl)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: 'var(--txc-dark-green)',
-              boxShadow: 'var(--txc-shadow-lg)'
+              color: 'var(--agro-dark-green)',
+              boxShadow: 'var(--agro-shadow-lg)'
             }}>
               <Award size={32} />
             </div>
-            <h2 className="txc-section-title" style={{ marginBottom: 'var(--txc-space-lg)' }}>
+            <h2 className="agro-section-title" style={{ marginBottom: 'var(--agro-space-lg)' }}>
               Faça Parte da Revolução
             </h2>
-            <p className="txc-section-subtitle" style={{ marginBottom: 'var(--txc-space-xl)' }}>
+            <p className="agro-section-subtitle" style={{ marginBottom: 'var(--agro-space-xl)' }}>
               Junte-se a nós na missão de transformar o agronegócio brasileiro
             </p>
             <div style={{ 
               display: 'flex', 
-              gap: 'var(--txc-space-lg)', 
+              gap: 'var(--agro-space-lg)', 
               justifyContent: 'center', 
               flexWrap: 'wrap' 
             }}>
-              <Link to="/register" className="txc-btn txc-btn-primary">
+              <Link to="/register" className="agro-btn agro-btn-primary">
                 Começar Agora
                 <ArrowRight size={20} />
               </Link>
-              <Link to="/contact" className="txc-btn txc-btn-secondary">
+              <Link to="/contact" className="agro-btn agro-btn-secondary">
                 Fale Conosco
               </Link>
             </div>
@@ -419,4 +419,4 @@ const TXCAbout = () => {
   );
 };
 
-export default TXCAbout;
+export default AgroisyncAbout;

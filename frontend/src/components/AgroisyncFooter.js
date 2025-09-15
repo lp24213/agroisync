@@ -338,8 +338,8 @@ const AgroisyncFooter = () => {
         }
 
         .agro-social-icon:hover {
-          background: var(--txc-green-accent);
-          color: var(--txc-dark-green);
+          background: var(--agro-green-accent);
+          color: var(--agro-dark-green);
         }
 
         @media (max-width: 1024px) {

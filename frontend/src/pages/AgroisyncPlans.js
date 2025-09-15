@@ -12,7 +12,7 @@ import {
   Globe
 } from 'lucide-react';
 
-const TXCPlans = () => {
+const AgroisyncPlans = () => {
   const plans = [
     {
       name: 'Starter',
@@ -27,7 +27,7 @@ const TXCPlans = () => {
         'App mobile incluído',
       ],
       buttonText: 'Começar Grátis',
-      buttonStyle: 'txc-btn-secondary',
+      buttonStyle: 'agro-btn-secondary',
       popular: false,
       icon: <Globe size={32} />,
     },
@@ -46,7 +46,7 @@ const TXCPlans = () => {
         'AgroConecta incluído',
       ],
       buttonText: 'Escolher Plano',
-      buttonStyle: 'txc-btn-primary',
+      buttonStyle: 'agro-btn-primary',
       popular: true,
       icon: <Zap size={32} />,
     },
@@ -66,7 +66,7 @@ const TXCPlans = () => {
         'Integração completa',
       ],
       buttonText: 'Falar com Vendas',
-      buttonStyle: 'txc-btn-secondary',
+      buttonStyle: 'agro-btn-secondary',
       popular: false,
       icon: <Crown size={32} />,
     },
@@ -115,12 +115,12 @@ const TXCPlans = () => {
   return (
     <div>
       {/* Hero Section TXC */}
-      <section className="txc-hero-section" style={{
+      <section className="agro-hero-section" style={{
         background: 'linear-gradient(rgba(31, 46, 31, 0.4), rgba(31, 46, 31, 0.4)), url("https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1920&h=1080&fit=crop")',
         backgroundSize: 'cover',
         backgroundPosition: 'center'
       }}>
-        <div className="txc-hero-content">
+        <div className="agro-hero-content">
           <motion.div
             variants={heroVariants}
             initial="hidden"
@@ -128,29 +128,29 @@ const TXCPlans = () => {
           >
             <motion.div
               variants={itemVariants}
-              style={{ marginBottom: 'var(--txc-space-xl)' }}
+              style={{ marginBottom: 'var(--agro-space-xl)' }}
             >
               <div style={{
                 width: '120px',
                 height: '120px',
                 margin: '0 auto',
-                background: 'var(--txc-gradient-accent)',
-                borderRadius: 'var(--txc-radius-3xl)',
+                background: 'var(--agro-gradient-accent)',
+                borderRadius: 'var(--agro-radius-3xl)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'var(--txc-dark-green)',
-                boxShadow: 'var(--txc-shadow-lg)'
+                color: 'var(--agro-dark-green)',
+                boxShadow: 'var(--agro-shadow-lg)'
               }}>
                 <Star size={48} />
               </div>
             </motion.div>
 
-            <motion.h1 className="txc-hero-title" variants={itemVariants}>
+            <motion.h1 className="agro-hero-title" variants={itemVariants}>
               PLANOS AGROISYNC
             </motion.h1>
             
-            <motion.p className="txc-hero-subtitle" variants={itemVariants}>
+            <motion.p className="agro-hero-subtitle" variants={itemVariants}>
               Escolha o plano ideal para seu agronegócio e revolucione seus resultados
             </motion.p>
           </motion.div>
@@ -158,17 +158,17 @@ const TXCPlans = () => {
       </section>
 
       {/* Plans Section */}
-      <section className="txc-section">
-        <div className="txc-container">
+      <section className="agro-section">
+        <div className="agro-container">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="txc-text-center"
+            className="agro-text-center"
           >
-            <h2 className="txc-section-title">Escolha seu Plano</h2>
-            <p className="txc-section-subtitle">
+            <h2 className="agro-section-title">Escolha seu Plano</h2>
+            <p className="agro-section-subtitle">
               Planos flexíveis para todos os tamanhos de operação
             </p>
           </motion.div>
@@ -176,13 +176,13 @@ const TXCPlans = () => {
           <div style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', 
-            gap: 'var(--txc-space-xl)',
-            marginTop: 'var(--txc-space-3xl)'
+            gap: 'var(--agro-space-xl)',
+            marginTop: 'var(--agro-space-3xl)'
           }}>
             {plans.map((plan, index) => (
               <motion.div
                 key={plan.name}
-                className="txc-card"
+                className="agro-card"
                 initial={{ opacity: 0, y: 60 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -190,7 +190,7 @@ const TXCPlans = () => {
                 whileHover={{ y: -12, scale: 1.02 }}
                 style={{ 
                   position: 'relative',
-                  border: plan.popular ? '2px solid var(--txc-green-accent)' : '1px solid #E5E5E5',
+                  border: plan.popular ? '2px solid var(--agro-green-accent)' : '1px solid #E5E5E5',
                   transform: plan.popular ? 'scale(1.05)' : 'scale(1)',
                   zIndex: plan.popular ? 10 : 1
                 }}
@@ -201,10 +201,10 @@ const TXCPlans = () => {
                     top: '-12px',
                     left: '50%',
                     transform: 'translateX(-50%)',
-                    background: 'var(--txc-green-accent)',
-                    color: 'var(--txc-dark-green)',
-                    padding: 'var(--txc-space-sm) var(--txc-space-lg)',
-                    borderRadius: 'var(--txc-radius-full)',
+                    background: 'var(--agro-green-accent)',
+                    color: 'var(--agro-dark-green)',
+                    padding: 'var(--agro-space-sm) var(--agro-space-lg)',
+                    borderRadius: 'var(--agro-radius-full)',
                     fontSize: '0.875rem',
                     fontWeight: '600',
                     zIndex: 20
@@ -219,73 +219,73 @@ const TXCPlans = () => {
                   left: 0,
                   right: 0,
                   height: '4px',
-                  background: plan.popular ? 'var(--txc-green-accent)' : 'var(--txc-light-beige)',
-                  borderRadius: 'var(--txc-radius-xl) var(--txc-radius-xl) 0 0'
+                  background: plan.popular ? 'var(--agro-green-accent)' : 'var(--agro-light-beige)',
+                  borderRadius: 'var(--agro-radius-xl) var(--agro-radius-xl) 0 0'
                 }} />
 
-                <div className="txc-text-center" style={{ marginBottom: 'var(--txc-space-xl)' }}>
+                <div className="agro-text-center" style={{ marginBottom: 'var(--agro-space-xl)' }}>
                   <div style={{
                     width: '80px',
                     height: '80px',
-                    margin: '0 auto var(--txc-space-lg) auto',
-                    background: 'var(--txc-gradient-accent)',
-                    borderRadius: 'var(--txc-radius-2xl)',
+                    margin: '0 auto var(--agro-space-lg) auto',
+                    background: 'var(--agro-gradient-accent)',
+                    borderRadius: 'var(--agro-radius-2xl)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: 'var(--txc-dark-green)',
-                    boxShadow: 'var(--txc-shadow-md)'
+                    color: 'var(--agro-dark-green)',
+                    boxShadow: 'var(--agro-shadow-md)'
                   }}>
                     {plan.icon}
                   </div>
                   
-                  <h3 className="txc-card-title" style={{ fontSize: '1.5rem', marginBottom: 'var(--txc-space-sm)' }}>
+                  <h3 className="agro-card-title" style={{ fontSize: '1.5rem', marginBottom: 'var(--agro-space-sm)' }}>
                     {plan.name}
                   </h3>
                   
-                  <div style={{ marginBottom: 'var(--txc-space-md)' }}>
+                  <div style={{ marginBottom: 'var(--agro-space-md)' }}>
                     <span style={{ 
                       fontSize: '3rem', 
                       fontWeight: '900', 
-                      color: 'var(--txc-green-accent)',
-                      fontFamily: 'var(--txc-font-secondary)'
+                      color: 'var(--agro-green-accent)',
+                      fontFamily: 'var(--agro-font-secondary)'
                     }}>
                       {plan.price}
                     </span>
                     <span style={{ 
                       fontSize: '1rem', 
-                      color: 'var(--txc-text-light)',
-                      marginLeft: 'var(--txc-space-sm)'
+                      color: 'var(--agro-text-light)',
+                      marginLeft: 'var(--agro-space-sm)'
                     }}>
                       {plan.period}
                     </span>
                   </div>
                   
-                  <p className="txc-card-description" style={{ marginBottom: 'var(--txc-space-xl)' }}>
+                  <p className="agro-card-description" style={{ marginBottom: 'var(--agro-space-xl)' }}>
                     {plan.description}
                   </p>
                 </div>
 
-                <div style={{ marginBottom: 'var(--txc-space-xl)' }}>
+                <div style={{ marginBottom: 'var(--agro-space-xl)' }}>
                   {plan.features.map((feature, featureIndex) => (
                     <div 
                       key={featureIndex}
                       style={{ 
                         display: 'flex', 
                         alignItems: 'center', 
-                        gap: 'var(--txc-space-md)',
-                        marginBottom: 'var(--txc-space-md)',
-                        padding: 'var(--txc-space-sm) 0'
+                        gap: 'var(--agro-space-md)',
+                        marginBottom: 'var(--agro-space-md)',
+                        padding: 'var(--agro-space-sm) 0'
                       }}
                     >
                       <CheckCircle 
                         size={20} 
                         style={{ 
-                          color: 'var(--txc-green-accent)', 
+                          color: 'var(--agro-green-accent)', 
                           flexShrink: 0 
                         }} 
                       />
-                      <span style={{ color: 'var(--txc-text-dark)' }}>
+                      <span style={{ color: 'var(--agro-text-dark)' }}>
                         {feature}
                       </span>
                     </div>
@@ -294,7 +294,7 @@ const TXCPlans = () => {
 
                 <Link 
                   to="/register" 
-                  className={`txc-btn ${plan.buttonStyle}`}
+                  className={`agro-btn ${plan.buttonStyle}`}
                   style={{ width: '100%', justifyContent: 'center' }}
                 >
                   {plan.buttonText}
@@ -307,17 +307,17 @@ const TXCPlans = () => {
       </section>
 
       {/* Features Section */}
-      <section className="txc-section" style={{ background: 'var(--txc-light-beige)' }}>
-        <div className="txc-container">
+      <section className="agro-section" style={{ background: 'var(--agro-light-beige)' }}>
+        <div className="agro-container">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="txc-text-center"
+            className="agro-text-center"
           >
-            <h2 className="txc-section-title">Por que Escolher AGROISYNC?</h2>
-            <p className="txc-section-subtitle">
+            <h2 className="agro-section-title">Por que Escolher AGROISYNC?</h2>
+            <p className="agro-section-subtitle">
               Tecnologia de ponta para o agronegócio moderno
             </p>
           </motion.div>
@@ -325,12 +325,12 @@ const TXCPlans = () => {
           <div style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-            gap: 'var(--txc-space-xl)' 
+            gap: 'var(--agro-space-xl)' 
           }}>
             {features.map((feature, index) => (
               <motion.div
                 key={feature.title}
-                className="txc-card"
+                className="agro-card"
                 initial={{ opacity: 0, y: 60 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -341,21 +341,21 @@ const TXCPlans = () => {
                 <div style={{
                   width: '64px',
                   height: '64px',
-                  margin: '0 auto var(--txc-space-lg) auto',
-                  background: 'var(--txc-gradient-accent)',
-                  borderRadius: 'var(--txc-radius-2xl)',
+                  margin: '0 auto var(--agro-space-lg) auto',
+                  background: 'var(--agro-gradient-accent)',
+                  borderRadius: 'var(--agro-radius-2xl)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: 'var(--txc-dark-green)',
-                  boxShadow: 'var(--txc-shadow-md)'
+                  color: 'var(--agro-dark-green)',
+                  boxShadow: 'var(--agro-shadow-md)'
                 }}>
                   {feature.icon}
                 </div>
-                <h3 className="txc-card-title" style={{ marginBottom: 'var(--txc-space-md)' }}>
+                <h3 className="agro-card-title" style={{ marginBottom: 'var(--agro-space-md)' }}>
                   {feature.title}
                 </h3>
-                <p className="txc-card-description">
+                <p className="agro-card-description">
                   {feature.description}
                 </p>
               </motion.div>
@@ -365,33 +365,33 @@ const TXCPlans = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="txc-section">
-        <div className="txc-container">
+      <section className="agro-section">
+        <div className="agro-container">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="txc-text-center"
+            className="agro-text-center"
             style={{ maxWidth: '800px', margin: '0 auto' }}
           >
-            <h2 className="txc-section-title" style={{ marginBottom: 'var(--txc-space-lg)' }}>
+            <h2 className="agro-section-title" style={{ marginBottom: 'var(--agro-space-lg)' }}>
               Pronto para Começar?
             </h2>
-            <p className="txc-section-subtitle" style={{ marginBottom: 'var(--txc-space-xl)' }}>
+            <p className="agro-section-subtitle" style={{ marginBottom: 'var(--agro-space-xl)' }}>
               Junte-se a milhares de produtores que já revolucionaram seus negócios
             </p>
             <div style={{ 
               display: 'flex', 
-              gap: 'var(--txc-space-lg)', 
+              gap: 'var(--agro-space-lg)', 
               justifyContent: 'center', 
               flexWrap: 'wrap' 
             }}>
-              <Link to="/register" className="txc-btn txc-btn-primary">
+              <Link to="/register" className="agro-btn agro-btn-primary">
                 Começar Grátis
                 <ArrowRight size={20} />
               </Link>
-              <Link to="/contact" className="txc-btn txc-btn-secondary">
+              <Link to="/contact" className="agro-btn agro-btn-secondary">
                 Falar com Especialista
               </Link>
             </div>
@@ -402,4 +402,4 @@ const TXCPlans = () => {
   );
 };
 
-export default TXCPlans;
+export default AgroisyncPlans;
