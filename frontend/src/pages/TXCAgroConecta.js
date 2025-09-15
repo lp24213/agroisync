@@ -11,8 +11,7 @@ import {
   ArrowRight,
   CheckCircle,
   Star,
-  Globe,
-  Route
+  Globe
 } from 'lucide-react';
 
 const TXCAgroConecta = () => {

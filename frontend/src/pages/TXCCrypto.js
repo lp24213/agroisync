@@ -5,14 +5,10 @@ import {
   ArrowRight,
   TrendingUp,
   Shield,
-  Zap,
-  Globe,
-  Lock,
   Coins,
   Wallet,
   Star,
-  CheckCircle,
-  DollarSign
+  CheckCircle
 } from 'lucide-react';
 
 const TXCCrypto = () => {

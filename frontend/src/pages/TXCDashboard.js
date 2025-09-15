@@ -2,25 +2,16 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
-  ArrowRight,
   TrendingUp,
   Users,
   DollarSign,
   Package,
   Truck,
   BarChart3,
-  Settings,
   Bell,
-  Search,
   Filter,
   Download,
-  Eye,
-  Edit,
-  Trash2,
-  Plus,
-  Calendar,
-  MapPin,
-  Clock
+  Plus
 } from 'lucide-react';
 
 const TXCDashboard = () => {

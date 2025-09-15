@@ -8,9 +8,6 @@ import {
   Heart,
   Globe,
   Award,
-  CheckCircle,
-  Star,
-  TrendingUp,
   Shield
 } from 'lucide-react';
 

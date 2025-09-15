@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -78,13 +78,13 @@ const AgroNewsCarousel = () => {
     loadNews();
   }, []);
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % news.length);
-  };
+  }, [news.length]);
 
-  const prevSlide = () => {
+  const prevSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev - 1 + news.length) % news.length);
-  };
+  }, [news.length]);
 
   const goToSlide = (index) => {
     setCurrentSlide(index);
@@ -96,7 +96,7 @@ const AgroNewsCarousel = () => {
       const interval = setInterval(nextSlide, 5000); // Muda a cada 5 segundos
       return () => clearInterval(interval);
     }
-  }, [news.length]);
+  }, [news.length, nextSlide]);
 
   if (isLoading) {
     return (

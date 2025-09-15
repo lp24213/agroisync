@@ -6,12 +6,9 @@ import {
   TrendingUp,
   Users,
   Shield,
-  Zap,
   Clock,
   Star,
-  CheckCircle,
-  Truck,
-  Globe
+  CheckCircle
 } from 'lucide-react';
 
 const TXCMarketplace = () => {

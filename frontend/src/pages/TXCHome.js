@@ -4,12 +4,10 @@ import { Link } from 'react-router-dom';
 import { 
   ArrowRight,
   TrendingUp,
-  Users,
   Shield,
   Zap,
   Truck,
-  Globe,
-  Star
+  Globe
 } from 'lucide-react';
 import AgroNewsCarousel from '../components/AgroNewsCarousel';
 
