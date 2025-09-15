@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { 
@@ -7,13 +7,16 @@ import {
   UserPlus, 
   MessageCircle,
   Menu,
-  X
+  X,
+  Globe,
+  ChevronDown
 } from 'lucide-react';
 
 const AgroisyncHeader = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('pt');
 
   // Menu exato solicitado
@@ -28,14 +31,15 @@ const AgroisyncHeader = () => {
 
   // Idiomas disponíveis
   const languages = [
-    { code: 'pt', name: 'PT', flag: '🇧🇷' },
-    { code: 'en', name: 'EN', flag: '🇺🇸' },
-    { code: 'es', name: 'ES', flag: '🇪🇸' },
-    { code: 'zh', name: 'ZH', flag: '🇨🇳' }
+    { code: 'pt', name: 'PT', flag: '🇧🇷', label: 'Português' },
+    { code: 'en', name: 'EN', flag: '🇺🇸', label: 'English' },
+    { code: 'es', name: 'ES', flag: '🇪🇸', label: 'Español' },
+    { code: 'zh', name: 'ZH', flag: '🇨🇳', label: '中文' }
   ];
 
   const changeLanguage = (langCode) => {
     setCurrentLanguage(langCode);
+    setIsLanguageMenuOpen(false);
     // Aqui você pode implementar a lógica de mudança de idioma
     console.log('Mudando idioma para:', langCode);
   };
@@ -44,9 +48,15 @@ const AgroisyncHeader = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const toggleLanguageMenu = () => {
+    setIsLanguageMenuOpen(!isLanguageMenuOpen);
+  };
+
   const isActive = (path) => {
     return location.pathname === path;
   };
+
+  const currentLang = languages.find(lang => lang.code === currentLanguage);
 
   return (
     <>
@@ -85,7 +95,7 @@ const AgroisyncHeader = () => {
             </div>
 
             {/* Menu Central */}
-            <nav className="agro-main-menu">
+            <nav className="agro-main-menu" role="navigation" aria-label="Menu principal">
               <ul className="agro-menu-list">
                 {navigationItems.map((item) => (
                   <li key={item.path} className="agro-menu-item">
@@ -100,23 +110,46 @@ const AgroisyncHeader = () => {
               </ul>
             </nav>
 
-            {/* Ações Direitas */}
+            {/* Action Icons */}
             <div className="agro-action-icons">
-              {/* Troca de Idioma */}
-              <div className="agro-language-selector">
-                {languages.map((lang) => (
-                  <button
-                    key={lang.code}
-                    onClick={() => changeLanguage(lang.code)}
-                    className={`agro-lang-btn ${currentLanguage === lang.code ? 'active' : ''}`}
-                    title={lang.name}
-                  >
-                    {lang.flag}
-                  </button>
-                ))}
+              {/* Language Selector */}
+              <div className="agro-language-container">
+                <button 
+                  className="agro-language-btn"
+                  onClick={toggleLanguageMenu}
+                  aria-label="Selecionar idioma"
+                  aria-expanded={isLanguageMenuOpen}
+                >
+                  <Globe size={18} />
+                  <span className="agro-lang-code">{currentLang.name}</span>
+                  <ChevronDown size={14} className={`agro-chevron ${isLanguageMenuOpen ? 'open' : ''}`} />
+                </button>
+                
+                <AnimatePresence>
+                  {isLanguageMenuOpen && (
+                    <motion.div
+                      className="agro-language-dropdown"
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {languages.map((lang) => (
+                        <button
+                          key={lang.code}
+                          className={`agro-lang-option ${currentLanguage === lang.code ? 'active' : ''}`}
+                          onClick={() => changeLanguage(lang.code)}
+                        >
+                          <span className="agro-lang-flag">{lang.flag}</span>
+                          <span className="agro-lang-name">{lang.label}</span>
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
-              {/* Login/Cadastro */}
+              {/* Auth Buttons */}
               <div className="agro-auth-buttons">
                 {user ? (
                   <div className="agro-user-menu">
@@ -140,12 +173,12 @@ const AgroisyncHeader = () => {
               </div>
 
               {/* Chatbot */}
-              <button className="agro-chatbot-btn" title="Chatbot AGROISYNC">
-                <MessageCircle size={20} />
+              <button className="agro-chatbot-btn" aria-label="Abrir chatbot">
+                <MessageCircle size={18} />
               </button>
 
               {/* Mobile Menu Button */}
-              <button 
+              <button
                 className="agro-mobile-menu-btn"
                 onClick={toggleMobileMenu}
                 aria-label="Toggle menu"
@@ -157,60 +190,63 @@ const AgroisyncHeader = () => {
         </div>
 
         {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <motion.div
-            className="agro-mobile-menu"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="agro-mobile-menu-content">
-              <ul className="agro-mobile-menu-list">
-                {navigationItems.map((item) => (
-                  <li key={item.path} className="agro-mobile-menu-item">
-                    <Link
-                      to={item.path}
-                      className={`agro-mobile-nav-link ${isActive(item.path) ? 'active' : ''}`}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              
-              <div className="agro-mobile-auth">
-                {user ? (
-                  <div className="agro-mobile-user">
-                    <span>{user.name}</span>
-                    <button onClick={logout}>Sair</button>
-                  </div>
-                ) : (
-                  <>
-                    <Link to="/login" className="agro-mobile-login">
-                      Login
-                    </Link>
-                    <Link to="/register" className="agro-mobile-register">
-                      Cadastro
-                    </Link>
-                  </>
-                )}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              className="agro-mobile-menu"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="agro-mobile-menu-content">
+                <ul className="agro-mobile-menu-list">
+                  {navigationItems.map((item) => (
+                    <li key={item.path} className="agro-mobile-menu-item">
+                      <Link
+                        to={item.path}
+                        className={`agro-mobile-nav-link ${isActive(item.path) ? 'active' : ''}`}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                
+                <div className="agro-mobile-auth">
+                  {user ? (
+                    <div className="agro-mobile-user">
+                      <span>{user.name}</span>
+                      <button onClick={logout}>Sair</button>
+                    </div>
+                  ) : (
+                    <>
+                      <Link to="/login" className="agro-mobile-login">
+                        Login
+                      </Link>
+                      <Link to="/register" className="agro-mobile-register">
+                        Cadastro
+                      </Link>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-          </motion.div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       <style jsx>{`
         .agro-top-bar {
-          background: var(--agro-dark-green);
+          background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
           padding: 8px 0;
           font-size: 14px;
+          border-bottom: 1px solid rgba(57, 255, 20, 0.1);
         }
 
         .agro-container {
-          max-width: 1200px;
+          max-width: 1400px;
           margin: 0 auto;
           padding: 0 20px;
         }
@@ -222,7 +258,8 @@ const AgroisyncHeader = () => {
         }
 
         .agro-top-text {
-          color: var(--agro-light-gray);
+          color: #39FF14;
+          font-weight: 500;
         }
 
         .agro-social-links {
@@ -233,24 +270,27 @@ const AgroisyncHeader = () => {
         .agro-social-link {
           background: none;
           border: none;
-          color: var(--agro-light-gray);
+          color: #EDEDED;
           text-decoration: none;
-          transition: color 0.3s ease;
+          transition: all 0.3s ease;
           cursor: pointer;
           padding: 4px;
+          border-radius: 4px;
         }
 
         .agro-social-link:hover {
-          color: var(--agro-green-accent);
+          color: #39FF14;
+          background: rgba(57, 255, 20, 0.1);
         }
 
         .agro-main-navbar {
-          background: var(--agro-dark-green);
+          background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
           padding: 16px 0;
           position: sticky;
           top: 0;
           z-index: 1000;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+          border-bottom: 1px solid rgba(57, 255, 20, 0.2);
         }
 
         .agro-nav-content {
@@ -258,6 +298,13 @@ const AgroisyncHeader = () => {
           align-items: center;
           justify-content: space-between;
           position: relative;
+          min-height: 60px;
+        }
+
+        .agro-logo {
+          position: absolute;
+          left: 0;
+          z-index: 10;
         }
 
         .agro-logo-link {
@@ -274,14 +321,15 @@ const AgroisyncHeader = () => {
         .agro-logo-main {
           font-size: 28px;
           font-weight: 900;
-          font-family: var(--agro-font-secondary);
-          color: white;
+          font-family: 'Inter', sans-serif;
+          color: #39FF14;
           line-height: 1;
+          text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
         }
 
         .agro-logo-tagline {
           font-size: 12px;
-          color: var(--agro-light-gray);
+          color: #EDEDED;
           font-weight: 400;
           margin-top: 2px;
         }
@@ -290,8 +338,7 @@ const AgroisyncHeader = () => {
           position: absolute;
           left: 50%;
           transform: translateX(-50%);
-          display: flex;
-          justify-content: center;
+          z-index: 5;
         }
 
         .agro-menu-list {
@@ -307,34 +354,44 @@ const AgroisyncHeader = () => {
         }
 
         .agro-nav-link {
-          color: var(--agro-light-gray);
+          color: #EDEDED;
           text-decoration: none;
           font-weight: 500;
           font-size: 16px;
-          padding: 8px 0;
+          padding: 12px 16px;
           transition: all 0.3s ease;
           position: relative;
+          border-radius: 6px;
+          display: block;
         }
 
-        .agro-nav-link:hover,
+        .agro-nav-link:hover {
+          color: #39FF14;
+          background: rgba(57, 255, 20, 0.1);
+          transform: translateY(-2px);
+        }
+
         .agro-nav-link.active {
-          color: var(--agro-green-accent);
+          color: #39FF14;
+          background: rgba(57, 255, 20, 0.15);
         }
 
         .agro-nav-link::after {
           content: '';
           position: absolute;
-          bottom: 0;
-          left: 0;
+          bottom: 4px;
+          left: 50%;
+          transform: translateX(-50%);
           width: 0;
           height: 2px;
-          background: var(--agro-green-accent);
+          background: #39FF14;
           transition: width 0.3s ease;
+          box-shadow: 0 0 8px rgba(57, 255, 20, 0.6);
         }
 
         .agro-nav-link:hover::after,
         .agro-nav-link.active::after {
-          width: 100%;
+          width: 80%;
         }
 
         .agro-action-icons {
@@ -343,28 +400,89 @@ const AgroisyncHeader = () => {
           gap: 20px;
           position: absolute;
           right: 0;
+          z-index: 10;
         }
 
-        .agro-language-selector {
+        .agro-language-container {
+          position: relative;
+        }
+
+        .agro-language-btn {
+          background: rgba(57, 255, 20, 0.1);
+          border: 1px solid rgba(57, 255, 20, 0.3);
+          color: #EDEDED;
+          cursor: pointer;
+          padding: 8px 12px;
+          border-radius: 6px;
+          transition: all 0.3s ease;
+          font-size: 14px;
           display: flex;
-          gap: 8px;
+          align-items: center;
+          gap: 6px;
         }
 
-        .agro-lang-btn {
+        .agro-language-btn:hover {
+          background: rgba(57, 255, 20, 0.2);
+          border-color: #39FF14;
+          transform: translateY(-1px);
+        }
+
+        .agro-lang-code {
+          font-weight: 600;
+        }
+
+        .agro-chevron {
+          transition: transform 0.3s ease;
+        }
+
+        .agro-chevron.open {
+          transform: rotate(180deg);
+        }
+
+        .agro-language-dropdown {
+          position: absolute;
+          top: 100%;
+          right: 0;
+          background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+          border: 1px solid rgba(57, 255, 20, 0.3);
+          border-radius: 8px;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+          padding: 8px 0;
+          min-width: 160px;
+          z-index: 1001;
+        }
+
+        .agro-lang-option {
           background: none;
           border: none;
-          color: var(--agro-light-gray);
+          color: #EDEDED;
           cursor: pointer;
-          padding: 4px 8px;
-          border-radius: 4px;
+          padding: 10px 16px;
+          width: 100%;
+          text-align: left;
           transition: all 0.3s ease;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-size: 14px;
+        }
+
+        .agro-lang-option:hover {
+          background: rgba(57, 255, 20, 0.1);
+          color: #39FF14;
+        }
+
+        .agro-lang-option.active {
+          background: rgba(57, 255, 20, 0.15);
+          color: #39FF14;
+        }
+
+        .agro-lang-flag {
           font-size: 16px;
         }
 
-        .agro-lang-btn:hover,
-        .agro-lang-btn.active {
-          background: var(--agro-green-accent);
-          color: var(--agro-dark-green);
+        .agro-lang-name {
+          font-weight: 500;
         }
 
         .agro-auth-buttons {
@@ -374,61 +492,76 @@ const AgroisyncHeader = () => {
 
         .agro-login-btn,
         .agro-register-btn {
+          background: rgba(57, 255, 20, 0.1);
+          border: 1px solid rgba(57, 255, 20, 0.3);
+          color: #EDEDED;
+          text-decoration: none;
+          padding: 8px 16px;
+          border-radius: 6px;
+          font-size: 14px;
+          font-weight: 500;
+          transition: all 0.3s ease;
           display: flex;
           align-items: center;
           gap: 6px;
-          padding: 8px 16px;
-          border-radius: 6px;
-          text-decoration: none;
-          font-weight: 500;
-          transition: all 0.3s ease;
         }
 
-        .agro-login-btn {
-          color: var(--agro-light-gray);
-          border: 1px solid var(--agro-light-gray);
-        }
-
-        .agro-login-btn:hover {
-          background: var(--agro-light-gray);
-          color: var(--agro-dark-green);
+        .agro-login-btn:hover,
+        .agro-register-btn:hover {
+          background: rgba(57, 255, 20, 0.2);
+          border-color: #39FF14;
+          color: #39FF14;
+          transform: translateY(-1px);
         }
 
         .agro-register-btn {
-          background: var(--agro-green-accent);
-          color: var(--agro-dark-green);
+          background: #39FF14;
+          color: #0a0a0a;
+          border-color: #39FF14;
         }
 
         .agro-register-btn:hover {
           background: #2dd42d;
+          color: #0a0a0a;
         }
 
         .agro-chatbot-btn {
-          background: var(--agro-green-accent);
-          color: var(--agro-dark-green);
-          border: none;
-          padding: 10px;
-          border-radius: 50%;
+          background: rgba(57, 255, 20, 0.1);
+          border: 1px solid rgba(57, 255, 20, 0.3);
+          color: #39FF14;
           cursor: pointer;
+          padding: 8px;
+          border-radius: 6px;
           transition: all 0.3s ease;
         }
 
         .agro-chatbot-btn:hover {
-          background: #2dd42d;
-          transform: scale(1.1);
+          background: rgba(57, 255, 20, 0.2);
+          border-color: #39FF14;
+          transform: translateY(-1px);
+          box-shadow: 0 0 15px rgba(57, 255, 20, 0.4);
         }
 
         .agro-mobile-menu-btn {
           display: none;
           background: none;
           border: none;
-          color: var(--agro-light-gray);
+          color: #EDEDED;
           cursor: pointer;
+          padding: 8px;
+          border-radius: 6px;
+          transition: all 0.3s ease;
+        }
+
+        .agro-mobile-menu-btn:hover {
+          background: rgba(57, 255, 20, 0.1);
+          color: #39FF14;
         }
 
         .agro-mobile-menu {
-          background: var(--agro-dark-green);
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+          border-top: 1px solid rgba(57, 255, 20, 0.2);
+          overflow: hidden;
         }
 
         .agro-mobile-menu-content {
@@ -437,48 +570,66 @@ const AgroisyncHeader = () => {
 
         .agro-mobile-menu-list {
           list-style: none;
-          margin: 0;
           padding: 0;
+          margin: 0 0 20px 0;
         }
 
         .agro-mobile-menu-item {
-          margin-bottom: 16px;
+          margin-bottom: 8px;
         }
 
         .agro-mobile-nav-link {
-          color: var(--agro-light-gray);
+          color: #EDEDED;
           text-decoration: none;
-          font-size: 18px;
-          font-weight: 500;
+          padding: 12px 16px;
           display: block;
-          padding: 12px 0;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 6px;
+          transition: all 0.3s ease;
+          font-weight: 500;
         }
 
+        .agro-mobile-nav-link:hover,
         .agro-mobile-nav-link.active {
-          color: var(--agro-green-accent);
+          background: rgba(57, 255, 20, 0.1);
+          color: #39FF14;
         }
 
         .agro-mobile-auth {
-          margin-top: 20px;
-          padding-top: 20px;
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
           display: flex;
-          gap: 16px;
+          gap: 12px;
+          flex-wrap: wrap;
         }
 
         .agro-mobile-login,
         .agro-mobile-register {
-          color: var(--agro-light-gray);
+          background: rgba(57, 255, 20, 0.1);
+          border: 1px solid rgba(57, 255, 20, 0.3);
+          color: #EDEDED;
           text-decoration: none;
-          padding: 12px 20px;
+          padding: 10px 16px;
           border-radius: 6px;
+          font-size: 14px;
           font-weight: 500;
+          transition: all 0.3s ease;
+          flex: 1;
+          text-align: center;
+        }
+
+        .agro-mobile-login:hover,
+        .agro-mobile-register:hover {
+          background: rgba(57, 255, 20, 0.2);
+          color: #39FF14;
         }
 
         .agro-mobile-register {
-          background: var(--agro-green-accent);
-          color: var(--agro-dark-green);
+          background: #39FF14;
+          color: #0a0a0a;
+          border-color: #39FF14;
+        }
+
+        .agro-mobile-register:hover {
+          background: #2dd42d;
+          color: #0a0a0a;
         }
 
         .agro-user-menu {
@@ -488,26 +639,44 @@ const AgroisyncHeader = () => {
         }
 
         .agro-user-name {
-          color: var(--agro-light-gray);
+          color: #EDEDED;
+          font-size: 14px;
           font-weight: 500;
         }
 
         .agro-logout-btn {
-          background: none;
-          border: 1px solid var(--agro-light-gray);
-          color: var(--agro-light-gray);
-          padding: 6px 12px;
-          border-radius: 4px;
+          background: rgba(255, 59, 48, 0.1);
+          border: 1px solid rgba(255, 59, 48, 0.3);
+          color: #ff3b30;
           cursor: pointer;
+          padding: 6px 12px;
+          border-radius: 6px;
+          font-size: 12px;
+          font-weight: 500;
           transition: all 0.3s ease;
         }
 
         .agro-logout-btn:hover {
-          background: var(--agro-light-gray);
-          color: var(--agro-dark-green);
+          background: rgba(255, 59, 48, 0.2);
+          border-color: #ff3b30;
+        }
+
+        @media (max-width: 1024px) {
+          .agro-menu-list {
+            gap: 30px;
+          }
+          
+          .agro-nav-link {
+            font-size: 15px;
+            padding: 10px 14px;
+          }
         }
 
         @media (max-width: 768px) {
+          .agro-container {
+            padding: 0 16px;
+          }
+
           .agro-main-menu {
             display: none;
           }
@@ -516,34 +685,43 @@ const AgroisyncHeader = () => {
             display: block;
           }
 
-          .agro-language-selector {
-            display: none;
+          .agro-action-icons {
+            gap: 12px;
           }
 
           .agro-auth-buttons {
             display: none;
           }
 
-          .agro-chatbot-btn {
-            display: none;
+          .agro-language-btn {
+            padding: 6px 10px;
+            font-size: 13px;
           }
 
-          .agro-menu-list {
-            gap: 20px;
+          .agro-chatbot-btn {
+            padding: 6px;
           }
         }
 
         @media (max-width: 480px) {
-          .agro-container {
-            padding: 0 16px;
-          }
-
           .agro-logo-main {
             font-size: 24px;
           }
 
+          .agro-logo-tagline {
+            font-size: 11px;
+          }
+
           .agro-action-icons {
-            gap: 12px;
+            gap: 8px;
+          }
+
+          .agro-language-btn {
+            padding: 6px 8px;
+          }
+
+          .agro-language-btn span {
+            display: none;
           }
         }
       `}</style>

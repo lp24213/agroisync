@@ -135,10 +135,22 @@ const AgroisyncFooter = () => {
 
       <style jsx>{`
         .agro-footer {
-          background: var(--agro-dark-green);
+          background: var(--agro-gradient-primary);
           color: var(--agro-light-gray);
           padding: 3rem 0 1rem;
           margin-top: 4rem;
+          border-top: 1px solid rgba(57, 255, 20, 0.2);
+          position: relative;
+        }
+
+        .agro-footer::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 2px;
+          background: var(--agro-gradient-accent);
         }
 
         .agro-container {
@@ -166,13 +178,14 @@ const AgroisyncFooter = () => {
           display: block;
           font-size: 1.5rem;
           font-weight: 900;
-          color: white;
+          color: var(--agro-neon-green);
           margin-bottom: 0.25rem;
+          text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
         }
 
         .agro-footer-tagline {
           font-size: 0.875rem;
-          color: var(--agro-green-accent);
+          color: var(--agro-neon-blue);
           font-weight: 500;
         }
 

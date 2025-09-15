@@ -226,9 +226,10 @@ const AgroisyncHome = () => {
       <style jsx>{`
         .agro-banner-section {
           position: relative;
-          height: 60vh;
-          min-height: 500px;
+          height: 70vh;
+          min-height: 600px;
           overflow: hidden;
+          background: var(--agro-gradient-hero);
         }
 
         .agro-banner-image {
@@ -238,6 +239,7 @@ const AgroisyncHome = () => {
           background-size: cover;
           background-position: center;
           background-repeat: no-repeat;
+          opacity: 0.3;
         }
 
         .agro-banner-overlay {
@@ -248,9 +250,10 @@ const AgroisyncHome = () => {
           bottom: 0;
           background: linear-gradient(
             135deg,
-            rgba(31, 46, 31, 0.8) 0%,
-            rgba(31, 46, 31, 0.6) 50%,
-            rgba(31, 46, 31, 0.8) 100%
+            rgba(10, 10, 10, 0.9) 0%,
+            rgba(26, 26, 46, 0.7) 30%,
+            rgba(22, 33, 62, 0.7) 70%,
+            rgba(10, 10, 10, 0.9) 100%
           );
           display: flex;
           align-items: center;
@@ -264,19 +267,25 @@ const AgroisyncHome = () => {
         }
 
         .agro-banner-title {
-          font-size: 3.5rem;
+          font-size: 4rem;
           font-weight: 900;
           color: white;
           margin-bottom: 1.5rem;
           line-height: 1.2;
-          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+          text-shadow: 0 0 20px rgba(57, 255, 20, 0.5);
+          background: var(--agro-gradient-accent);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: glow 3s ease-in-out infinite;
         }
 
         .agro-banner-description {
-          font-size: 1.25rem;
+          font-size: 1.5rem;
           color: var(--agro-light-gray);
           margin-bottom: 2rem;
           line-height: 1.6;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .agro-banner-buttons {
@@ -323,36 +332,54 @@ const AgroisyncHome = () => {
         }
 
         .agro-feature-card {
-          background: white;
+          background: var(--agro-gradient-card);
+          border: 1px solid rgba(57, 255, 20, 0.2);
           padding: 2rem;
-          border-radius: 12px;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+          border-radius: var(--agro-radius-xl);
+          box-shadow: var(--agro-shadow-card);
           text-align: center;
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          transition: var(--agro-transition-normal);
+          backdrop-filter: blur(10px);
+          position: relative;
+          overflow: hidden;
+        }
+
+        .agro-feature-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 2px;
+          background: var(--agro-gradient-accent);
         }
 
         .agro-feature-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+          transform: translateY(-8px);
+          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+          border-color: rgba(57, 255, 20, 0.4);
         }
 
         .agro-feature-icon {
           width: 80px;
           height: 80px;
-          background: var(--agro-green-accent);
+          background: var(--agro-gradient-accent);
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
           margin: 0 auto 1.5rem;
-          color: white;
+          color: var(--agro-dark-green);
+          box-shadow: var(--agro-shadow-neon-green);
+          animation: neon-pulse 3s ease-in-out infinite;
         }
 
         .agro-feature-title {
           font-size: 1.5rem;
           font-weight: 700;
-          color: var(--agro-dark-green);
+          color: var(--agro-neon-green);
           margin-bottom: 1rem;
+          text-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
         }
 
         .agro-feature-description {
@@ -457,37 +484,78 @@ const AgroisyncHome = () => {
         }
 
         .agro-btn-primary {
-          background: var(--agro-green-accent);
+          background: var(--agro-gradient-accent);
           color: var(--agro-dark-green);
           padding: 1rem 2rem;
-          border-radius: 8px;
+          border-radius: var(--agro-radius-lg);
           text-decoration: none;
           font-weight: 600;
           display: inline-flex;
           align-items: center;
           gap: 0.5rem;
-          transition: all 0.3s ease;
+          transition: var(--agro-transition-normal);
+          box-shadow: var(--agro-shadow-neon-green);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .agro-btn-primary::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+          transition: var(--agro-transition-slow);
+        }
+
+        .agro-btn-primary:hover::before {
+          left: 100%;
         }
 
         .agro-btn-primary:hover {
-          background: #2dd42d;
-          transform: translateY(-2px);
+          transform: translateY(-3px);
+          box-shadow: 0 8px 25px rgba(57, 255, 20, 0.6);
         }
 
         .agro-btn-secondary {
           background: transparent;
-          color: white;
+          color: var(--agro-neon-blue);
           padding: 1rem 2rem;
-          border: 2px solid var(--agro-green-accent);
-          border-radius: 8px;
+          border: 2px solid var(--agro-neon-blue);
+          border-radius: var(--agro-radius-lg);
           text-decoration: none;
           font-weight: 600;
-          transition: all 0.3s ease;
+          transition: var(--agro-transition-normal);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .agro-btn-secondary::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 0;
+          height: 100%;
+          background: var(--agro-neon-blue);
+          transition: var(--agro-transition-normal);
+          z-index: -1;
+        }
+
+        .agro-btn-secondary:hover::before {
+          width: 100%;
         }
 
         .agro-btn-secondary:hover {
-          background: var(--agro-green-accent);
           color: var(--agro-dark-green);
+          transform: translateY(-3px);
+          box-shadow: var(--agro-shadow-neon-blue);
         }
 
         @media (max-width: 768px) {
