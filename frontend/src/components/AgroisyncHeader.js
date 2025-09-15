@@ -10,8 +10,6 @@ import {
   X,
   Globe,
   ChevronDown,
-  Sun,
-  Moon,
   Home,
   ShoppingCart,
   Truck,
@@ -27,7 +25,6 @@ const AgroisyncHeader = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('pt');
-  const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
 
   // Menu principal com ícones profissionais
@@ -51,13 +48,11 @@ const AgroisyncHeader = () => {
   // Carregar preferências do localStorage
   useEffect(() => {
     const savedLanguage = localStorage.getItem('agroisync-language') || 'pt';
-    const savedTheme = localStorage.getItem('agroisync-theme') || 'dark';
     
     setCurrentLanguage(savedLanguage);
-    setIsDarkTheme(savedTheme === 'dark');
     
-    // Aplicar tema
-    document.documentElement.setAttribute('data-theme', savedTheme);
+    // Aplicar tema fixo dark
+    document.documentElement.setAttribute('data-theme', 'dark');
     
     // Aplicar idioma
     i18n.changeLanguage(savedLanguage);
@@ -80,13 +75,6 @@ const AgroisyncHeader = () => {
     i18n.changeLanguage(langCode);
   };
 
-  const toggleTheme = () => {
-    const newTheme = !isDarkTheme;
-    setIsDarkTheme(newTheme);
-    const themeValue = newTheme ? 'dark' : 'light';
-    localStorage.setItem('agroisync-theme', themeValue);
-    document.documentElement.setAttribute('data-theme', themeValue);
-  };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -181,14 +169,6 @@ const AgroisyncHeader = () => {
               </AnimatePresence>
             </div>
 
-            {/* Toggle de Tema */}
-            <button 
-              className="agro-theme-toggle"
-              onClick={toggleTheme}
-              aria-label={t('nav.toggleTheme')}
-            >
-              {isDarkTheme ? <Moon size={18} /> : <Sun size={18} />}
-            </button>
 
             {/* Botões de Auth */}
             <div className="agro-auth-buttons">
