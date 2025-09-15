@@ -11,13 +11,11 @@ import {
   MessageCircle,
   Paperclip,
   Smile,
-  X,
-  Check,
   CheckCheck
 } from 'lucide-react';
 
 const MessagingSystem = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [activeChat, setActiveChat] = useState(null);
   const [message, setMessage] = useState('');
   const [searchTerm, setSearchTerm] = useState('');

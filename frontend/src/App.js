@@ -26,6 +26,7 @@ import AgroisyncCrypto from './pages/AgroisyncCrypto';
 import AgroisyncPlans from './pages/AgroisyncPlans';
 import AgroisyncAbout from './pages/AgroisyncAbout';
 import AgroisyncContact from './pages/AgroisyncContact';
+import Partnerships from './pages/Partnerships';
 import AgroisyncLogin from './pages/AgroisyncLogin';
 import AgroisyncRegister from './pages/AgroisyncRegister';
 import AgroisyncDashboard from './pages/AgroisyncDashboard';
@@ -99,6 +100,7 @@ function App() {
                   <Route path="/plans" element={<AgroisyncPlans />} />
                   <Route path="/about" element={<AgroisyncAbout />} />
                   <Route path="/contact" element={<AgroisyncContact />} />
+                  <Route path="/partnerships" element={<Partnerships />} />
                   <Route path="/faq" element={<FAQ />} />
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/privacy" element={<Privacy />} />

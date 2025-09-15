@@ -6,24 +6,19 @@ import {
   Settings, 
   BarChart3, 
   Shield, 
-  AlertTriangle,
   CheckCircle,
   XCircle,
   Eye,
   Edit,
   Trash2,
-  Plus,
   Search,
   Filter,
   Download,
-  Mail,
   Phone,
   MapPin,
   Calendar,
   DollarSign,
-  Package,
-  Truck,
-  MessageCircle
+  Package
 } from 'lucide-react';
 
 const AdminPanel = () => {

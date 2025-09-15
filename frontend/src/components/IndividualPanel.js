@@ -4,7 +4,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { 
   User, 
   Settings, 
-  Bell, 
   BarChart3, 
   Package, 
   Truck, 
@@ -26,7 +25,7 @@ const IndividualPanel = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   // Mock data - em produção viria de API
-  const [announcements, setAnnouncements] = useState([
+  const [announcements] = useState([
     {
       id: '1',
       title: 'Soja Premium - 1000 toneladas',
@@ -62,7 +61,7 @@ const IndividualPanel = () => {
     }
   ]);
 
-  const [transportOffers, setTransportOffers] = useState([
+  const [transportOffers] = useState([
     {
       id: '1',
       origin: 'Sinop - MT',

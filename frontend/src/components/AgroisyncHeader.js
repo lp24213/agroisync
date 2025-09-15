@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { 
   User, 
   UserPlus, 
-  MessageCircle,
   Menu,
   X,
   Globe,
@@ -30,7 +29,8 @@ const AgroisyncHeader = () => {
     { path: '/loja', label: t('nav.loja') },
     { path: '/agroconecta', label: t('nav.agroconecta') },
     { path: '/marketplace', label: t('nav.marketplace') },
-    { path: '/tecnologia', label: t('nav.tecnologia') }
+    { path: '/tecnologia', label: t('nav.tecnologia') },
+    { path: '/partnerships', label: t('nav.parcerias') }
   ];
 
   // Idiomas disponíveis
@@ -83,7 +83,7 @@ const AgroisyncHeader = () => {
     return location.pathname === path;
   };
 
-  const currentLang = languages.find(lang => lang.code === currentLanguage);
+  // const currentLang = languages.find(lang => lang.code === currentLanguage);
 
   return (
     <>
