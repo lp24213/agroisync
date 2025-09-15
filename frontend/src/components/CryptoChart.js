@@ -10,14 +10,6 @@ const CryptoChart = ({ selectedCoin = 'bitcoin' }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    loadCryptoData();
-    
-    // Atualizar dados a cada 2 minutos
-    const interval = setInterval(loadCryptoData, 2 * 60 * 1000);
-    return () => clearInterval(interval);
-  }, [selectedCoin, loadCryptoData]);
-
   const loadCryptoData = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -39,6 +31,14 @@ const CryptoChart = ({ selectedCoin = 'bitcoin' }) => {
       setIsLoading(false);
     }
   }, [selectedCoin]);
+
+  useEffect(() => {
+    loadCryptoData();
+    
+    // Atualizar dados a cada 2 minutos
+    const interval = setInterval(loadCryptoData, 2 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [selectedCoin, loadCryptoData]);
 
   const selectedCrypto = cryptoData.find(crypto => crypto.id === selectedCoin);
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Droplets, Wind, Eye, Sun, Cloud, CloudRain } from 'lucide-react';
 import weatherService from '../services/weatherService';
@@ -9,15 +9,7 @@ const WeatherWidget = ({ city = null }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    loadWeatherData();
-    
-    // Atualizar dados a cada 10 minutos
-    const interval = setInterval(loadWeatherData, 10 * 60 * 1000);
-    return () => clearInterval(interval);
-  }, [city]);
-
-  const loadWeatherData = async () => {
+  const loadWeatherData = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     
@@ -35,7 +27,15 @@ const WeatherWidget = ({ city = null }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [city]);
+
+  useEffect(() => {
+    loadWeatherData();
+    
+    // Atualizar dados a cada 10 minutos
+    const interval = setInterval(loadWeatherData, 10 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [city, loadWeatherData]);
 
   const getWeatherIcon = (iconCode) => {
     const iconMap = {
