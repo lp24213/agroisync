@@ -25,12 +25,13 @@ const TXCHeader = () => {
   ];
 
   const menuItems = [
-    { label: 'Marketplace', path: '/marketplace' },
-    { label: 'AgroConecta', path: '/agroconecta' },
-    { label: 'Crypto', path: '/crypto' },
-    { label: 'Plans', path: '/plans' },
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'About', path: '/about' },
+    { label: 'Masculino', path: '/masculino' },
+    { label: 'Feminino', path: '/feminino' },
+    { label: 'Infantil', path: '/infantil' },
+    { label: 'Calçados', path: '/calcados' },
+    { label: 'Acessórios', path: '/acessorios' },
+    { label: 'Novidades', path: '/novidades' },
+    { label: 'Collabs', path: '/collabs' },
   ];
 
   return (
@@ -53,7 +54,7 @@ const TXCHeader = () => {
             ))}
           </div>
           <div className="txc-top-message">
-            Frete grátis acima de R$499,00
+            Envio em até 24 horas!
           </div>
         </div>
       </div>
@@ -64,7 +65,7 @@ const TXCHeader = () => {
           {/* Logo TXC */}
           <div className="txc-logo-section">
             <Link to="/" className="txc-logo">
-              AGROISYNC
+              TXC
             </Link>
             <span className="txc-logo-tagline">
               Produzindo para quem Produz

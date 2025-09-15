@@ -22,6 +22,8 @@ import './styles/txc-premium-theme.css';
 import './styles/txc-agro-theme.css';
 // Importar tema TXC Completo
 import './styles/txc-complete-theme.css';
+// Importar TXC Force Override - ESTILO TXC OBRIGATÓRIO
+import './styles/txc-force-override.css';
 
 // Pages
 import Home from './pages/PremiumHome';
