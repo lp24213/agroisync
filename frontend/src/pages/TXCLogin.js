@@ -1,0 +1,427 @@
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { 
+  ArrowRight,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  CheckCircle,
+  AlertCircle,
+  User,
+  Shield
+} from 'lucide-react';
+
+const TXCLogin = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    setError('');
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
+    try {
+      // Simular login
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      if (formData.email === 'demo@agroisync.com' && formData.password === 'demo123') {
+        console.log('Login successful');
+        // Redirecionar para dashboard
+      } else {
+        setError('Email ou senha incorretos');
+      }
+    } catch (err) {
+      setError('Erro ao fazer login. Tente novamente.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const features = [
+    {
+      icon: <Shield size={24} />,
+      text: 'Login seguro com criptografia',
+    },
+    {
+      icon: <User size={24} />,
+      text: 'Acesso a todas as funcionalidades',
+    },
+    {
+      icon: <CheckCircle size={24} />,
+      text: 'Suporte 24/7',
+    },
+  ];
+
+  const heroVariants = {
+    hidden: { opacity: 0, y: 60 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 1,
+        ease: 'easeOut',
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: 'easeOut' },
+    },
+  };
+
+  return (
+    <div>
+      {/* Hero Section TXC */}
+      <section className="txc-hero-section" style={{
+        background: 'linear-gradient(rgba(31, 46, 31, 0.4), rgba(31, 46, 31, 0.4)), url("https://images.unsplash.com/photo-1551434678-e076c223a692?w=1920&h=1080&fit=crop")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center'
+      }}>
+        <div className="txc-container">
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))', 
+            gap: 'var(--txc-space-3xl)',
+            alignItems: 'center'
+          }}>
+            {/* Left Side - Info */}
+            <motion.div
+              variants={heroVariants}
+              initial="hidden"
+              animate="visible"
+              className="txc-text-center"
+              style={{ color: 'var(--txc-white)' }}
+            >
+              <motion.div
+                variants={itemVariants}
+                style={{ marginBottom: 'var(--txc-space-xl)' }}
+              >
+                <div style={{
+                  width: '120px',
+                  height: '120px',
+                  margin: '0 auto',
+                  background: 'var(--txc-gradient-accent)',
+                  borderRadius: 'var(--txc-radius-3xl)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'var(--txc-dark-green)',
+                  boxShadow: 'var(--txc-shadow-lg)'
+                }}>
+                  <User size={48} />
+                </div>
+              </motion.div>
+
+              <motion.h1 className="txc-hero-title" variants={itemVariants}>
+                BEM-VINDO DE VOLTA
+              </motion.h1>
+              
+              <motion.p className="txc-hero-subtitle" variants={itemVariants}>
+                Acesse sua conta e continue revolucionando seu agronegócio
+              </motion.p>
+
+              <motion.div 
+                style={{ 
+                  display: 'flex', 
+                  flexDirection: 'column',
+                  gap: 'var(--txc-space-md)',
+                  marginTop: 'var(--txc-space-xl)',
+                  maxWidth: '400px',
+                  margin: 'var(--txc-space-xl) auto 0 auto'
+                }}
+                variants={itemVariants}
+              >
+                {features.map((feature, index) => (
+                  <div 
+                    key={index}
+                    style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: 'var(--txc-space-md)',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <div style={{
+                      width: '32px',
+                      height: '32px',
+                      background: 'rgba(57, 255, 20, 0.2)',
+                      borderRadius: 'var(--txc-radius-lg)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'var(--txc-green-accent)',
+                      flexShrink: 0
+                    }}>
+                      {feature.icon}
+                    </div>
+                    <span style={{ fontSize: '1rem', opacity: 0.9 }}>
+                      {feature.text}
+                    </span>
+                  </div>
+                ))}
+              </motion.div>
+            </motion.div>
+
+            {/* Right Side - Login Form */}
+            <motion.div
+              initial={{ opacity: 0, x: 60 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, delay: 0.3 }}
+              className="txc-card"
+              style={{ 
+                maxWidth: '500px', 
+                margin: '0 auto',
+                padding: 'var(--txc-space-3xl)',
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(57, 255, 20, 0.2)'
+              }}
+            >
+              <div className="txc-text-center" style={{ marginBottom: 'var(--txc-space-2xl)' }}>
+                <h2 className="txc-section-title" style={{ fontSize: '2rem', marginBottom: 'var(--txc-space-md)' }}>
+                  Fazer Login
+                </h2>
+                <p className="txc-section-subtitle" style={{ fontSize: '1rem' }}>
+                  Entre com suas credenciais para acessar sua conta
+                </p>
+              </div>
+
+              <form onSubmit={handleSubmit}>
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 'var(--txc-space-sm)',
+                      padding: 'var(--txc-space-md)',
+                      background: 'rgba(255, 75, 75, 0.1)',
+                      border: '1px solid rgba(255, 75, 75, 0.3)',
+                      borderRadius: 'var(--txc-radius-lg)',
+                      marginBottom: 'var(--txc-space-lg)',
+                      color: '#FF4B4B'
+                    }}
+                  >
+                    <AlertCircle size={20} />
+                    <span>{error}</span>
+                  </motion.div>
+                )}
+
+                <div style={{ marginBottom: 'var(--txc-space-lg)' }}>
+                  <label style={{
+                    display: 'block',
+                    marginBottom: 'var(--txc-space-sm)',
+                    fontWeight: '500',
+                    color: 'var(--txc-text-dark)'
+                  }}>
+                    Email
+                  </label>
+                  <div style={{ position: 'relative' }}>
+                    <Mail 
+                      size={20} 
+                      style={{
+                        position: 'absolute',
+                        left: 'var(--txc-space-md)',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        color: 'var(--txc-text-light)'
+                      }}
+                    />
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                      style={{
+                        width: '100%',
+                        padding: 'var(--txc-space-md) var(--txc-space-md) var(--txc-space-md) 3rem',
+                        border: '2px solid rgba(57, 255, 20, 0.2)',
+                        borderRadius: 'var(--txc-radius-lg)',
+                        fontSize: '1rem',
+                        background: 'rgba(57, 255, 20, 0.05)',
+                        color: 'var(--txc-text-dark)',
+                        transition: 'all var(--txc-transition-normal)',
+                        backdropFilter: 'blur(10px)'
+                      }}
+                      placeholder="seu@email.com"
+                    />
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: 'var(--txc-space-xl)' }}>
+                  <label style={{
+                    display: 'block',
+                    marginBottom: 'var(--txc-space-sm)',
+                    fontWeight: '500',
+                    color: 'var(--txc-text-dark)'
+                  }}>
+                    Senha
+                  </label>
+                  <div style={{ position: 'relative' }}>
+                    <Lock 
+                      size={20} 
+                      style={{
+                        position: 'absolute',
+                        left: 'var(--txc-space-md)',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        color: 'var(--txc-text-light)'
+                      }}
+                    />
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      required
+                      style={{
+                        width: '100%',
+                        padding: 'var(--txc-space-md) var(--txc-space-md) var(--txc-space-md) 3rem',
+                        border: '2px solid rgba(57, 255, 20, 0.2)',
+                        borderRadius: 'var(--txc-radius-lg)',
+                        fontSize: '1rem',
+                        background: 'rgba(57, 255, 20, 0.05)',
+                        color: 'var(--txc-text-dark)',
+                        transition: 'all var(--txc-transition-normal)',
+                        backdropFilter: 'blur(10px)'
+                      }}
+                      placeholder="Sua senha"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{
+                        position: 'absolute',
+                        right: 'var(--txc-space-md)',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        background: 'none',
+                        border: 'none',
+                        color: 'var(--txc-text-light)',
+                        cursor: 'pointer',
+                        padding: 'var(--txc-space-sm)'
+                      }}
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
+                </div>
+
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center',
+                  marginBottom: 'var(--txc-space-xl)'
+                }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--txc-space-sm)', cursor: 'pointer' }}>
+                    <input type="checkbox" style={{ accentColor: 'var(--txc-green-accent)' }} />
+                    <span style={{ fontSize: '0.875rem', color: 'var(--txc-text-dark)' }}>
+                      Lembrar de mim
+                    </span>
+                  </label>
+                  <Link 
+                    to="/forgot-password" 
+                    style={{ 
+                      fontSize: '0.875rem', 
+                      color: 'var(--txc-green-accent)',
+                      textDecoration: 'none'
+                    }}
+                  >
+                    Esqueceu a senha?
+                  </Link>
+                </div>
+
+                <motion.button
+                  type="submit"
+                  className="txc-btn txc-btn-primary"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  style={{ 
+                    width: '100%', 
+                    justifyContent: 'center',
+                    opacity: isLoading ? 0.7 : 1,
+                    cursor: isLoading ? 'not-allowed' : 'pointer'
+                  }}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <div style={{
+                        width: '20px',
+                        height: '20px',
+                        border: '2px solid transparent',
+                        borderTop: '2px solid currentColor',
+                        borderRadius: '50%',
+                        animation: 'spin 1s linear infinite'
+                      }} />
+                      Entrando...
+                    </>
+                  ) : (
+                    <>
+                      Entrar
+                      <ArrowRight size={20} />
+                    </>
+                  )}
+                </motion.button>
+              </form>
+
+              <div className="txc-text-center" style={{ marginTop: 'var(--txc-space-xl)' }}>
+                <p style={{ color: 'var(--txc-text-light)', marginBottom: 'var(--txc-space-md)' }}>
+                  Não tem uma conta?
+                </p>
+                <Link 
+                  to="/register" 
+                  className="txc-btn txc-btn-secondary"
+                  style={{ width: '100%', justifyContent: 'center' }}
+                >
+                  Criar Conta
+                </Link>
+              </div>
+
+              <div className="txc-text-center" style={{ marginTop: 'var(--txc-space-lg)' }}>
+                <p style={{ fontSize: '0.875rem', color: 'var(--txc-text-light)' }}>
+                  Demo: demo@agroisync.com / demo123
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      <style jsx>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default TXCLogin;

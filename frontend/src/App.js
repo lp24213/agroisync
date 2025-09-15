@@ -26,6 +26,15 @@ import './styles/txc-complete-theme.css';
 // Pages
 import Home from './pages/PremiumHome';
 import TXCHome from './pages/TXCHome';
+import TXCMarketplace from './pages/TXCMarketplace';
+import TXCAgroConecta from './pages/TXCAgroConecta';
+import TXCCrypto from './pages/TXCCrypto';
+import TXCPlans from './pages/TXCPlans';
+import TXCAbout from './pages/TXCAbout';
+import TXCContact from './pages/TXCContact';
+import TXCLogin from './pages/TXCLogin';
+import TXCRegister from './pages/TXCRegister';
+import TXCDashboard from './pages/TXCDashboard';
 import Marketplace from './pages/PremiumMarketplace';
 import AgroConecta from './pages/PremiumAgroConecta';
 import IntermediationSystem from './components/IntermediationSystem';
@@ -96,22 +105,22 @@ function App() {
                 <Routes>
                          {/* Public Routes */}
                          <Route path="/" element={<TXCHome />} />
-                  <Route path="/marketplace" element={<Marketplace />} />
-                  <Route path="/agroconecta" element={<AgroConecta />} />
+                  <Route path="/marketplace" element={<TXCMarketplace />} />
+                  <Route path="/agroconecta" element={<TXCAgroConecta />} />
                   <Route path="/loja" element={<Store />} />
                   <Route path="/intermediation" element={<IntermediationSystem />} />
-                  <Route path="/crypto" element={<Crypto />} />
-                  <Route path="/plans" element={<Plans />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/crypto" element={<TXCCrypto />} />
+                  <Route path="/plans" element={<TXCPlans />} />
+                  <Route path="/about" element={<TXCAbout />} />
+                  <Route path="/contact" element={<TXCContact />} />
                   <Route path="/faq" element={<FAQ />} />
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/privacy" element={<Privacy />} />
                   <Route path="/help" element={<Help />} />
                   
                   {/* Auth Routes */}
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
+                  <Route path="/login" element={<TXCLogin />} />
+                  <Route path="/register" element={<TXCRegister />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
@@ -123,7 +132,7 @@ function App() {
                   <Route path="/payment/cancel" element={<PaymentCancel />} />
                   
                   {/* Protected Routes */}
-                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/dashboard" element={<TXCDashboard />} />
                   <Route path="/messaging" element={<Messaging />} />
                   <Route path="/admin" element={<AdminPanel />} />
                   
