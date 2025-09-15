@@ -56,7 +56,8 @@ const AgroisyncFooter = () => {
   ];
 
   return (
-    <footer className="agro-footer">
+    <>
+      <footer className="agro-footer">
       <div className="agro-container">
         {/* Main Footer Content */}
         <div className="agro-footer-main">
@@ -160,11 +161,12 @@ const AgroisyncFooter = () => {
           </div>
         </div>
       </div>
+      </footer>
 
       <style jsx>{`
         .agro-footer {
-          background: var(--txc-dark-green);
-          color: var(--txc-light-gray);
+          background: var(--agro-dark-green);
+          color: var(--agro-light-gray);
           padding: 60px 0 20px;
           margin-top: 80px;
         }
@@ -193,7 +195,7 @@ const AgroisyncFooter = () => {
         .agro-footer-logo-text {
           font-size: 32px;
           font-weight: 900;
-          font-family: var(--txc-font-secondary);
+          font-family: var(--agro-font-secondary);
           color: white;
           display: block;
           line-height: 1;
@@ -201,7 +203,7 @@ const AgroisyncFooter = () => {
 
         .agro-footer-tagline {
           font-size: 14px;
-          color: var(--txc-green-accent);
+          color: var(--agro-green-accent);
           font-weight: 500;
           margin-top: 4px;
           display: block;
@@ -211,7 +213,7 @@ const AgroisyncFooter = () => {
           font-size: 16px;
           line-height: 1.6;
           margin-bottom: 30px;
-          color: var(--txc-light-gray);
+          color: var(--agro-light-gray);
         }
 
         .agro-contact-info {
@@ -225,11 +227,11 @@ const AgroisyncFooter = () => {
           align-items: center;
           gap: 12px;
           font-size: 14px;
-          color: var(--txc-light-gray);
+          color: var(--agro-light-gray);
         }
 
         .agro-contact-item svg {
-          color: var(--txc-green-accent);
+          color: var(--agro-green-accent);
           flex-shrink: 0;
         }
 
@@ -244,7 +246,7 @@ const AgroisyncFooter = () => {
           font-weight: 600;
           color: white;
           margin-bottom: 20px;
-          font-family: var(--txc-font-secondary);
+          font-family: var(--agro-font-secondary);
         }
 
         .agro-footer-links {
@@ -258,7 +260,7 @@ const AgroisyncFooter = () => {
         }
 
         .agro-footer-link {
-          color: var(--txc-light-gray);
+          color: var(--agro-light-gray);
           text-decoration: none;
           font-size: 14px;
           transition: all 0.3s ease;
@@ -266,7 +268,7 @@ const AgroisyncFooter = () => {
         }
 
         .agro-footer-link:hover {
-          color: var(--txc-green-accent);
+          color: var(--agro-green-accent);
           padding-left: 8px;
         }
 
@@ -286,7 +288,7 @@ const AgroisyncFooter = () => {
         .agro-footer-copyright p {
           margin: 0 0 12px 0;
           font-size: 14px;
-          color: var(--txc-light-gray);
+          color: var(--agro-light-gray);
         }
 
         .agro-footer-legal {
@@ -295,14 +297,14 @@ const AgroisyncFooter = () => {
         }
 
         .agro-footer-legal-link {
-          color: var(--txc-light-gray);
+          color: var(--agro-light-gray);
           text-decoration: none;
           font-size: 12px;
           transition: color 0.3s ease;
         }
 
         .agro-footer-legal-link:hover {
-          color: var(--txc-green-accent);
+          color: var(--agro-green-accent);
         }
 
         .agro-footer-social {
@@ -313,7 +315,7 @@ const AgroisyncFooter = () => {
 
         .agro-social-label {
           font-size: 14px;
-          color: var(--txc-light-gray);
+          color: var(--agro-light-gray);
           font-weight: 500;
         }
 
@@ -330,7 +332,7 @@ const AgroisyncFooter = () => {
           height: 40px;
           background: rgba(255, 255, 255, 0.1);
           border-radius: 50%;
-          color: var(--txc-light-gray);
+          color: var(--agro-light-gray);
           text-decoration: none;
           transition: all 0.3s ease;
         }

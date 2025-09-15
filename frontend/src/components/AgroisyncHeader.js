@@ -207,7 +207,7 @@ const AgroisyncHeader = () => {
 
       <style jsx>{`
         .agro-top-bar {
-          background: var(--txc-dark-green);
+          background: var(--agro-dark-green);
           padding: 8px 0;
           font-size: 14px;
         }
@@ -225,7 +225,7 @@ const AgroisyncHeader = () => {
         }
 
         .agro-top-text {
-          color: var(--txc-light-gray);
+          color: var(--agro-light-gray);
         }
 
         .agro-social-links {
@@ -234,17 +234,17 @@ const AgroisyncHeader = () => {
         }
 
         .agro-social-link {
-          color: var(--txc-light-gray);
+          color: var(--agro-light-gray);
           text-decoration: none;
           transition: color 0.3s ease;
         }
 
         .agro-social-link:hover {
-          color: var(--txc-green-accent);
+          color: var(--agro-green-accent);
         }
 
         .agro-main-navbar {
-          background: var(--txc-dark-green);
+          background: var(--agro-dark-green);
           padding: 16px 0;
           position: sticky;
           top: 0;
@@ -272,14 +272,14 @@ const AgroisyncHeader = () => {
         .agro-logo-main {
           font-size: 28px;
           font-weight: 900;
-          font-family: var(--txc-font-secondary);
+          font-family: var(--agro-font-secondary);
           color: white;
           line-height: 1;
         }
 
         .agro-logo-tagline {
           font-size: 12px;
-          color: var(--txc-light-gray);
+          color: var(--agro-light-gray);
           font-weight: 400;
           margin-top: 2px;
         }
@@ -303,7 +303,7 @@ const AgroisyncHeader = () => {
         }
 
         .agro-nav-link {
-          color: var(--txc-light-gray);
+          color: var(--agro-light-gray);
           text-decoration: none;
           font-weight: 500;
           font-size: 16px;
@@ -314,7 +314,7 @@ const AgroisyncHeader = () => {
 
         .agro-nav-link:hover,
         .agro-nav-link.active {
-          color: var(--txc-green-accent);
+          color: var(--agro-green-accent);
         }
 
         .agro-nav-link::after {
@@ -324,7 +324,7 @@ const AgroisyncHeader = () => {
           left: 0;
           width: 0;
           height: 2px;
-          background: var(--txc-green-accent);
+          background: var(--agro-green-accent);
           transition: width 0.3s ease;
         }
 
@@ -347,7 +347,7 @@ const AgroisyncHeader = () => {
         .agro-lang-btn {
           background: none;
           border: none;
-          color: var(--txc-light-gray);
+          color: var(--agro-light-gray);
           cursor: pointer;
           padding: 4px 8px;
           border-radius: 4px;
@@ -357,8 +357,8 @@ const AgroisyncHeader = () => {
 
         .agro-lang-btn:hover,
         .agro-lang-btn.active {
-          background: var(--txc-green-accent);
-          color: var(--txc-dark-green);
+          background: var(--agro-green-accent);
+          color: var(--agro-dark-green);
         }
 
         .agro-auth-buttons {
@@ -379,18 +379,18 @@ const AgroisyncHeader = () => {
         }
 
         .agro-login-btn {
-          color: var(--txc-light-gray);
-          border: 1px solid var(--txc-light-gray);
+          color: var(--agro-light-gray);
+          border: 1px solid var(--agro-light-gray);
         }
 
         .agro-login-btn:hover {
-          background: var(--txc-light-gray);
-          color: var(--txc-dark-green);
+          background: var(--agro-light-gray);
+          color: var(--agro-dark-green);
         }
 
         .agro-register-btn {
-          background: var(--txc-green-accent);
-          color: var(--txc-dark-green);
+          background: var(--agro-green-accent);
+          color: var(--agro-dark-green);
         }
 
         .agro-register-btn:hover {
@@ -398,8 +398,8 @@ const AgroisyncHeader = () => {
         }
 
         .agro-chatbot-btn {
-          background: var(--txc-green-accent);
-          color: var(--txc-dark-green);
+          background: var(--agro-green-accent);
+          color: var(--agro-dark-green);
           border: none;
           padding: 10px;
           border-radius: 50%;
@@ -416,12 +416,12 @@ const AgroisyncHeader = () => {
           display: none;
           background: none;
           border: none;
-          color: var(--txc-light-gray);
+          color: var(--agro-light-gray);
           cursor: pointer;
         }
 
         .agro-mobile-menu {
-          background: var(--txc-dark-green);
+          background: var(--agro-dark-green);
           border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
@@ -440,7 +440,7 @@ const AgroisyncHeader = () => {
         }
 
         .agro-mobile-nav-link {
-          color: var(--txc-light-gray);
+          color: var(--agro-light-gray);
           text-decoration: none;
           font-size: 18px;
           font-weight: 500;
@@ -450,7 +450,7 @@ const AgroisyncHeader = () => {
         }
 
         .agro-mobile-nav-link.active {
-          color: var(--txc-green-accent);
+          color: var(--agro-green-accent);
         }
 
         .agro-mobile-auth {
@@ -463,7 +463,7 @@ const AgroisyncHeader = () => {
 
         .agro-mobile-login,
         .agro-mobile-register {
-          color: var(--txc-light-gray);
+          color: var(--agro-light-gray);
           text-decoration: none;
           padding: 12px 20px;
           border-radius: 6px;
@@ -471,8 +471,8 @@ const AgroisyncHeader = () => {
         }
 
         .agro-mobile-register {
-          background: var(--txc-green-accent);
-          color: var(--txc-dark-green);
+          background: var(--agro-green-accent);
+          color: var(--agro-dark-green);
         }
 
         .agro-user-menu {
@@ -482,14 +482,14 @@ const AgroisyncHeader = () => {
         }
 
         .agro-user-name {
-          color: var(--txc-light-gray);
+          color: var(--agro-light-gray);
           font-weight: 500;
         }
 
         .agro-logout-btn {
           background: none;
-          border: 1px solid var(--txc-light-gray);
-          color: var(--txc-light-gray);
+          border: 1px solid var(--agro-light-gray);
+          color: var(--agro-light-gray);
           padding: 6px 12px;
           border-radius: 4px;
           cursor: pointer;
@@ -497,8 +497,8 @@ const AgroisyncHeader = () => {
         }
 
         .agro-logout-btn:hover {
-          background: var(--txc-light-gray);
-          color: var(--txc-dark-green);
+          background: var(--agro-light-gray);
+          color: var(--agro-dark-green);
         }
 
         @media (max-width: 768px) {

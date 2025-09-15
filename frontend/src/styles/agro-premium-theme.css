@@ -1,0 +1,297 @@
+/* AGROISYNC Premium Theme - Inspirado em design moderno */
+:root {
+  /* Cores principais */
+  --agro-dark-green: #1F2E1F;
+  --agro-light-beige: #F5F5F5;
+  --agro-green-accent: #39FF14;
+  --agro-white: #FFFFFF;
+  --agro-light-gray: #EDEDED;
+  --agro-text-dark: #2C3E50;
+  --agro-text-light: #7F8C8D;
+  
+  /* Gradientes */
+  --agro-gradient-primary: linear-gradient(135deg, var(--agro-dark-green) 0%, #2C3E50 100%);
+  --agro-gradient-accent: linear-gradient(135deg, var(--agro-green-accent) 0%, #2dd42d 100%);
+  --agro-gradient-hero: linear-gradient(135deg, var(--agro-dark-green) 0%, #34495E 50%, var(--agro-dark-green) 100%);
+  
+  /* Espaçamentos */
+  --agro-space-xs: 4px;
+  --agro-space-sm: 8px;
+  --agro-space-md: 16px;
+  --agc-space-lg: 24px;
+  --agro-space-xl: 32px;
+  --agro-space-2xl: 48px;
+  --agro-space-3xl: 64px;
+  
+  /* Tipografia */
+  --agro-font-primary: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --agro-font-secondary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --agro-font-weight-light: 300;
+  --agro-font-weight-normal: 400;
+  --agro-font-weight-medium: 500;
+  --agro-font-weight-semibold: 600;
+  --agro-font-weight-bold: 700;
+  --agro-font-weight-black: 900;
+  
+  /* Tamanhos de fonte */
+  --agro-text-xs: 12px;
+  --agro-text-sm: 14px;
+  --agro-text-base: 16px;
+  --agro-text-lg: 18px;
+  --agro-text-xl: 20px;
+  --agro-text-2xl: 24px;
+  --agro-text-3xl: 30px;
+  --agro-text-4xl: 36px;
+  --agro-text-5xl: 48px;
+  --agro-text-6xl: 60px;
+  
+  /* Border radius */
+  --agro-radius-sm: 4px;
+  --agro-radius-md: 8px;
+  --agro-radius-lg: 12px;
+  --agro-radius-xl: 16px;
+  --agro-radius-2xl: 24px;
+  --agro-radius-full: 9999px;
+  
+  /* Sombras */
+  --agro-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --agro-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --agro-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --agro-shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+  --agro-shadow-glow: 0 0 20px rgba(57, 255, 20, 0.3);
+  --agro-shadow-neon: 0 0 10px var(--agro-green-accent);
+  
+  /* Transições */
+  --agro-transition-fast: 0.15s ease;
+  --agro-transition-normal: 0.3s ease;
+  --agro-transition-slow: 0.5s ease;
+  --agro-transition-bounce: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Reset e base */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--agro-font-primary);
+  font-weight: var(--agro-font-weight-normal);
+  line-height: 1.6;
+  color: var(--agro-text-dark);
+  background-color: var(--agro-white);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Tipografia */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--agro-font-secondary);
+  font-weight: var(--agro-font-weight-bold);
+  line-height: 1.2;
+  margin: 0 0 var(--agro-space-md) 0;
+  color: var(--agro-text-dark);
+}
+
+h1 { font-size: var(--agro-text-5xl); }
+h2 { font-size: var(--agro-text-4xl); }
+h3 { font-size: var(--agro-text-3xl); }
+h4 { font-size: var(--agro-text-2xl); }
+h5 { font-size: var(--agro-text-xl); }
+h6 { font-size: var(--agro-text-lg); }
+
+p {
+  margin: 0 0 var(--agro-space-md) 0;
+  color: var(--agro-text-light);
+  font-size: var(--agro-text-base);
+}
+
+a {
+  color: var(--agro-green-accent);
+  text-decoration: none;
+  transition: color var(--agro-transition-normal);
+}
+
+a:hover {
+  color: #2dd42d;
+}
+
+/* Classes utilitárias */
+.agro-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--agro-space-md);
+}
+
+.agro-section {
+  padding: var(--agro-space-3xl) 0;
+}
+
+.agro-text-center {
+  text-align: center;
+}
+
+.agro-title {
+  font-size: var(--agro-text-4xl);
+  font-weight: var(--agro-font-weight-black);
+  color: var(--agro-text-dark);
+  margin-bottom: var(--agro-space-lg);
+  font-family: var(--agro-font-secondary);
+}
+
+.agro-subtitle {
+  font-size: var(--agro-text-lg);
+  color: var(--agro-text-light);
+  margin-bottom: var(--agro-space-xl);
+  font-weight: var(--agro-font-weight-medium);
+}
+
+.agro-text {
+  font-size: var(--agro-text-base);
+  color: var(--agro-text-light);
+  line-height: 1.7;
+}
+
+/* Botões */
+.agro-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--agro-space-sm);
+  padding: var(--agro-space-md) var(--agro-space-xl);
+  border: none;
+  border-radius: var(--agro-radius-lg);
+  font-family: var(--agro-font-primary);
+  font-weight: var(--agro-font-weight-semibold);
+  font-size: var(--agro-text-base);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--agro-transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.agro-btn-primary {
+  background: var(--agro-gradient-accent);
+  color: var(--agro-dark-green);
+  box-shadow: var(--agro-shadow-md);
+}
+
+.agro-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--agro-shadow-lg);
+}
+
+.agro-btn-secondary {
+  background: transparent;
+  color: var(--agro-white);
+  border: 2px solid var(--agro-white);
+}
+
+.agro-btn-secondary:hover {
+  background: var(--agro-white);
+  color: var(--agro-dark-green);
+}
+
+/* Cards */
+.agro-card {
+  background: var(--agro-white);
+  border-radius: var(--agro-radius-xl);
+  padding: var(--agro-space-xl);
+  box-shadow: var(--agro-shadow-md);
+  transition: all var(--agro-transition-normal);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.agro-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--agro-shadow-xl);
+}
+
+/* Animações */
+@keyframes agro-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px var(--agro-green-accent);
+  }
+  50% {
+    box-shadow: 0 0 20px var(--agro-green-accent), 0 0 30px var(--agro-green-accent);
+  }
+}
+
+@keyframes agro-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes agro-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.agro-fade-in {
+  animation: agro-fade-in 0.8s ease-out;
+}
+
+.agro-slide-in {
+  animation: agro-slide-in 0.8s ease-out;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .agro-container {
+    padding: 0 var(--agro-space-md);
+  }
+  
+  .agro-section {
+    padding: var(--agro-space-2xl) 0;
+  }
+  
+  h1 { font-size: var(--agro-text-4xl); }
+  h2 { font-size: var(--agro-text-3xl); }
+  h3 { font-size: var(--agro-text-2xl); }
+}
+
+@media (max-width: 768px) {
+  .agro-container {
+    padding: 0 var(--agro-space-sm);
+  }
+  
+  .agro-section {
+    padding: var(--agro-space-xl) 0;
+  }
+  
+  h1 { font-size: var(--agro-text-3xl); }
+  h2 { font-size: var(--agro-text-2xl); }
+  h3 { font-size: var(--agro-text-xl); }
+  
+  .agro-btn {
+    padding: var(--agro-space-sm) var(--agro-space-lg);
+    font-size: var(--agro-text-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .agro-container {
+    padding: 0 var(--agro-space-xs);
+  }
+  
+  h1 { font-size: var(--agro-text-2xl); }
+  h2 { font-size: var(--agro-text-xl); }
+  h3 { font-size: var(--agro-text-lg); }
+  
+  .agro-card {
+    padding: var(--agro-space-md);
+  }
+}

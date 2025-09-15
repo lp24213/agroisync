@@ -15,14 +15,8 @@ import GrainQuotes from './components/GrainQuotes';
 import WeatherWidget from './components/WeatherWidget';
 import NewsFeed from './components/NewsFeed';
 
-// Importar theme global Premium
-import './styles/txc-premium-theme.css';
-// Importar tema TXC Agro
-import './styles/txc-agro-theme.css';
-// Importar tema TXC Completo
-import './styles/txc-complete-theme.css';
-// Importar TXC Force Override - ESTILO TXC OBRIGATÓRIO
-import './styles/txc-force-override.css';
+// Importar tema AGROISYNC Premium
+import './styles/agro-premium-theme.css';
 
 // Pages
 import TXCHome from './pages/TXCHome';
