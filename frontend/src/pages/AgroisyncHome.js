@@ -6,8 +6,7 @@ import {
   TrendingUp,
   Shield,
   Zap,
-  Truck,
-  Globe
+  Truck
 } from 'lucide-react';
 import AgroNewsCarousel from '../components/AgroNewsCarousel';
 import WeatherWidget from '../components/WeatherWidget';
