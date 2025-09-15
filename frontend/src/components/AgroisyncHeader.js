@@ -16,14 +16,14 @@ const AgroisyncHeader = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('pt');
 
-  // Menu original do AGROISYNC
+  // Menu exato solicitado
   const navigationItems = [
     { path: '/', label: 'Início' },
-    { path: '/marketplace', label: 'Loja' },
+    { path: '/loja', label: 'Loja' },
     { path: '/agroconecta', label: 'AgroConecta' },
     { path: '/crypto', label: 'Cripto' },
     { path: '/about', label: 'Sobre' },
-    { path: '/store', label: 'Marketplace' }
+    { path: '/marketplace', label: 'Marketplace' }
   ];
 
   // Idiomas disponíveis
@@ -257,6 +257,7 @@ const AgroisyncHeader = () => {
           display: flex;
           align-items: center;
           justify-content: space-between;
+          position: relative;
         }
 
         .agro-logo-link {
@@ -286,7 +287,9 @@ const AgroisyncHeader = () => {
         }
 
         .agro-main-menu {
-          flex: 1;
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
           display: flex;
           justify-content: center;
         }
@@ -338,6 +341,8 @@ const AgroisyncHeader = () => {
           display: flex;
           align-items: center;
           gap: 20px;
+          position: absolute;
+          right: 0;
         }
 
         .agro-language-selector {
