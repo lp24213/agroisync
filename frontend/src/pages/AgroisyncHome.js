@@ -43,10 +43,10 @@ const AgroisyncHome = () => {
   ];
 
   const stats = [
-    { number: '10K+', label: t('stats.users'), color: 'var(--agro-green-accent)' },
-    { number: '50K+', label: t('stats.transactions'), color: 'var(--agro-green-accent)' },
-    { number: '$2M+', label: t('stats.volume'), color: 'var(--agro-green-accent)' },
-    { number: '99.9%', label: t('stats.uptime'), color: 'var(--agro-green-accent)' },
+    { number: '10K+', label: t('stats.users'), color: 'var(--txc-primary-green)' },
+    { number: '50K+', label: t('stats.transactions'), color: 'var(--txc-light-green)' },
+    { number: '$2M+', label: t('stats.volume'), color: 'var(--grao-primary-gold)' },
+    { number: '99.9%', label: t('stats.uptime'), color: 'var(--txc-accent-green)' },
   ];
 
   const heroVariants = {
@@ -83,20 +83,20 @@ const AgroisyncHome = () => {
             initial="hidden"
             animate="visible"
           >
-                <motion.h1 className="agro-banner-title" variants={itemVariants}>
+                <motion.h1 className="text-center" variants={itemVariants}>
                   {t('home.title')}
                 </motion.h1>
                 
-                <motion.p className="agro-banner-description" variants={itemVariants}>
+                <motion.p className="text-center" variants={itemVariants}>
                   {t('home.subtitle')}
                 </motion.p>
                 
-                <motion.div className="agro-banner-buttons" variants={itemVariants}>
-                  <Link to="/marketplace" className="agro-btn-primary">
+                <motion.div className="flex-center gap-4" variants={itemVariants}>
+                  <Link to="/marketplace" className="btn-primary">
                     {t('home.exploreMarketplace')}
                     <ArrowRight size={20} />
                   </Link>
-                  <Link to="/about" className="agro-btn-secondary">
+                  <Link to="/about" className="btn-secondary">
                     {t('home.learnMore')}
                   </Link>
                 </motion.div>
@@ -107,31 +107,31 @@ const AgroisyncHome = () => {
       </section>
 
       {/* Features Section */}
-      <section className="agro-features-section">
-        <div className="agro-container">
-          <div className="agro-section-header">
-            <h2 className="agro-section-title">Nossas Soluções</h2>
-            <p className="agro-section-description">
+      <section className="section">
+        <div className="container">
+          <div className="text-center mb-12">
+            <h2>Nossas Soluções</h2>
+            <p>
               Tecnologia avançada para revolucionar o agronegócio brasileiro
             </p>
           </div>
           
-          <div className="agro-features-grid">
+          <div className="grid grid-4">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
-                className="agro-feature-card"
+                className="card text-center"
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <div className="agro-feature-icon">
+                <div className="flex-center mb-4" style={{ color: 'var(--txc-primary-green)' }}>
                   {feature.icon}
                 </div>
-                <h3 className="agro-feature-title">{feature.title}</h3>
-                <p className="agro-feature-description">{feature.description}</p>
-                <Link to={feature.link} className="agro-feature-link">
+                <h3>{feature.title}</h3>
+                <p>{feature.description}</p>
+                <Link to={feature.link} className="btn-secondary">
                   Saiba mais <ArrowRight size={16} />
                 </Link>
               </motion.div>
@@ -141,25 +141,25 @@ const AgroisyncHome = () => {
       </section>
 
       {/* Statistics Section */}
-      <section className="agro-stats-section">
-        <div className="agro-container">
-          <div className="agro-stats-grid">
+      <section className="section">
+        <div className="container">
+          <div className="grid grid-4">
             {stats.map((stat, index) => (
               <motion.div
                 key={index}
-                className="agro-stat-item"
+                className="text-center"
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
                 <div 
-                  className="agro-stat-number"
+                  className="text-5xl font-bold mb-2"
                   style={{ color: stat.color }}
                 >
                   {stat.number}
                 </div>
-                <div className="agro-stat-label">{stat.label}</div>
+                <div className="text-secondary">{stat.label}</div>
               </motion.div>
             ))}
           </div>

@@ -45,8 +45,34 @@ const paymentSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      enum: ['pending', 'processing', 'completed', 'failed', 'cancelled', 'refunded'],
+      enum: ['pending', 'processing', 'succeeded', 'failed', 'cancelled', 'refunded'],
       default: 'pending'
+    },
+
+    // Tipo de pagamento
+    type: {
+      type: String,
+      required: true,
+      enum: ['plan', 'individual', 'subscription'],
+      default: 'plan'
+    },
+
+    // ID do anúncio (para pagamentos individuais)
+    adId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product',
+      required: function() {
+        return this.type === 'individual';
+      }
+    },
+
+    // Controle de liberação de dados
+    dataUnlocked: {
+      type: Boolean,
+      default: false
+    },
+    unlockedAt: {
+      type: Date
     },
 
     // Dados específicos do Stripe
@@ -123,7 +149,7 @@ paymentSchema.index({ 'crypto.transactionHash': 1 });
 
 // Virtual para verificar se pagamento foi bem-sucedido
 paymentSchema.virtual('isSuccessful').get(function () {
-  return this.status === 'completed';
+  return this.status === 'succeeded';
 });
 
 // Virtual para verificar se pagamento está pendente
@@ -155,7 +181,7 @@ paymentSchema.pre('save', function (next) {
     const now = new Date();
 
     switch (this.status) {
-      case 'completed':
+      case 'succeeded':
         this.processedAt = now;
         break;
       case 'failed':
@@ -174,7 +200,7 @@ paymentSchema.pre('save', function (next) {
 
 // Método para marcar como processado
 paymentSchema.methods.markAsCompleted = function () {
-  this.status = 'completed';
+  this.status = 'succeeded';
   this.processedAt = new Date();
   return this.save();
 };
@@ -278,10 +304,10 @@ paymentSchema.statics.getStats = async function (userId = null) {
         totalPayments: { $sum: 1 },
         totalAmount: { $sum: '$amount' },
         completedPayments: {
-          $sum: { $cond: [{ $eq: ['$status', 'completed'] }, 1, 0] }
+          $sum: { $cond: [{ $eq: ['$status', 'succeeded'] }, 1, 0] }
         },
         completedAmount: {
-          $sum: { $cond: [{ $eq: ['$status', 'completed'] }, '$amount', 0] }
+          $sum: { $cond: [{ $eq: ['$status', 'succeeded'] }, '$amount', 0] }
         },
         pendingPayments: {
           $sum: { $cond: [{ $in: ['$status', ['pending', 'processing']] }, 1, 0] }

@@ -11,7 +11,13 @@ import {
   Globe,
   ChevronDown,
   Sun,
-  Moon
+  Moon,
+  Home,
+  ShoppingCart,
+  Truck,
+  Store,
+  Zap,
+  Handshake
 } from 'lucide-react';
 
 const AgroisyncHeader = () => {
@@ -23,14 +29,14 @@ const AgroisyncHeader = () => {
   const [currentLanguage, setCurrentLanguage] = useState('pt');
   const [isDarkTheme, setIsDarkTheme] = useState(true);
 
-  // Menu principal com ícones
+  // Menu principal com ícones profissionais
   const navigationItems = [
-    { path: '/', label: t('nav.inicio'), icon: '🏠' },
-    { path: '/loja', label: t('nav.loja'), icon: '🛒' },
-    { path: '/agroconecta', label: t('nav.agroconecta'), icon: '🚛' },
-    { path: '/marketplace', label: t('nav.marketplace'), icon: '🏪' },
-    { path: '/tecnologia', label: t('nav.tecnologia'), icon: '⚡' },
-    { path: '/partnerships', label: t('nav.parcerias'), icon: '🤝' }
+    { path: '/', label: t('nav.inicio'), icon: Home },
+    { path: '/loja', label: t('nav.loja'), icon: ShoppingCart },
+    { path: '/agroconecta', label: t('nav.agroconecta'), icon: Truck },
+    { path: '/marketplace', label: t('nav.marketplace'), icon: Store },
+    { path: '/tecnologia', label: t('nav.tecnologia'), icon: Zap },
+    { path: '/partnerships', label: t('nav.parcerias'), icon: Handshake }
   ];
 
   // Idiomas disponíveis
@@ -87,35 +93,35 @@ const AgroisyncHeader = () => {
   return (
     <>
       {/* Navbar Principal */}
-      <nav className="agro-navbar">
-        <div className="agro-navbar-container">
+      <nav className="navbar">
+        <div className="navbar-container">
           {/* Logo - Esquerda */}
-          <div className="agro-logo">
-            <Link to="/" className="agro-logo-link">
-              <div className="agro-logo-content">
-                <span className="agro-logo-text">AGROISYNC</span>
-                <span className="agro-logo-tagline">{t('nav.tagline')}</span>
+          <div className="navbar-logo">
+            <Link to="/" className="navbar-logo-link">
+              <div className="navbar-logo-content">
+                <span className="navbar-logo-text">AGROISYNC</span>
+                <span className="navbar-logo-tagline">{t('nav.tagline')}</span>
               </div>
             </Link>
           </div>
 
           {/* Menu Principal - Centro (Desktop) */}
-          <ul className="agro-main-menu">
+          <ul className="navbar-menu">
             {navigationItems.map((item) => (
-              <li key={item.path} className="agro-menu-item">
+              <li key={item.path} className="navbar-item">
                 <Link
                   to={item.path}
-                  className={`agro-nav-link ${isActive(item.path) ? 'active' : ''}`}
+                  className={`navbar-link ${isActive(item.path) ? 'active' : ''}`}
                 >
-                  <span className="agro-nav-icon">{item.icon}</span>
-                  <span className="agro-nav-text">{item.label}</span>
+                  <item.icon size={18} />
+                  <span className="navbar-text">{item.label}</span>
                 </Link>
               </li>
             ))}
           </ul>
 
           {/* Ações - Direita */}
-          <div className="agro-nav-actions">
+          <div className="navbar-actions">
             {/* Menu de Idiomas */}
             <div className="agro-language-container">
               <button 
@@ -265,558 +271,8 @@ const AgroisyncHeader = () => {
       </nav>
 
       {/* Espaçador para não sobrepor conteúdo */}
-      <div className="agro-navbar-spacer"></div>
+      <div className="navbar-spacer"></div>
 
-      <style jsx>{`
-        .agro-navbar {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          z-index: 50;
-          background: var(--agro-navbar-bg);
-          border-bottom: 1px solid var(--agro-border-color);
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-          backdrop-filter: blur(10px);
-        }
-
-        .agro-navbar-container {
-          max-width: 1400px;
-          margin: 0 auto;
-          padding: 0 20px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          min-height: 70px;
-        }
-
-        .agro-logo {
-          flex: 0 0 auto;
-        }
-
-        .agro-logo-link {
-          text-decoration: none;
-          color: inherit;
-        }
-
-        .agro-logo-content {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-        }
-
-        .agro-logo-text {
-          font-size: 24px;
-          font-weight: 900;
-          color: var(--agro-primary-color);
-          line-height: 1;
-          text-shadow: 0 0 10px var(--agro-primary-glow);
-        }
-
-        .agro-logo-tagline {
-          font-size: 12px;
-          color: var(--agro-secondary-color);
-          font-weight: 500;
-          margin-top: 2px;
-        }
-
-        .agro-main-menu {
-          display: flex;
-          list-style: none;
-          margin: 0;
-          padding: 0;
-          gap: 32px;
-          position: absolute;
-          left: 50%;
-          transform: translateX(-50%);
-          align-items: center;
-        }
-
-        .agro-menu-item {
-          position: relative;
-        }
-
-        .agro-nav-link {
-          color: var(--agro-text-color);
-          text-decoration: none;
-          font-weight: 500;
-          font-size: 16px;
-          padding: 12px 16px;
-          border-radius: 8px;
-          transition: all 0.3s ease;
-          position: relative;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .agro-nav-icon {
-          font-size: 18px;
-          opacity: 0.8;
-          transition: all 0.3s ease;
-        }
-
-        .agro-nav-text {
-          font-weight: 500;
-        }
-
-        .agro-nav-link:hover {
-          color: var(--agro-primary-color);
-          background: var(--agro-hover-bg);
-          transform: translateY(-2px);
-        }
-
-        .agro-nav-link:hover .agro-nav-icon {
-          opacity: 1;
-          transform: scale(1.1);
-        }
-
-        .agro-nav-link.active {
-          color: var(--agro-primary-color);
-          background: var(--agro-active-bg);
-        }
-
-        .agro-nav-link::after {
-          content: '';
-          position: absolute;
-          bottom: 4px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 0;
-          height: 2px;
-          background: var(--agro-primary-color);
-          transition: width 0.3s ease;
-          box-shadow: 0 0 8px var(--agro-primary-glow);
-        }
-
-        .agro-nav-link:hover::after,
-        .agro-nav-link.active::after {
-          width: 80%;
-        }
-
-        .agro-nav-actions {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          flex: 0 0 auto;
-        }
-
-        .agro-language-container {
-          position: relative;
-        }
-
-        .agro-language-btn {
-          background: var(--agro-button-bg);
-          border: 1px solid var(--agro-border-color);
-          color: var(--agro-text-color);
-          cursor: pointer;
-          padding: 8px 12px;
-          border-radius: 8px;
-          transition: all 0.3s ease;
-          font-size: 14px;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-        }
-
-        .agro-language-btn:hover {
-          background: var(--agro-hover-bg);
-          border-color: var(--agro-primary-color);
-          transform: translateY(-1px);
-        }
-
-        .agro-lang-text {
-          font-weight: 500;
-        }
-
-        .agro-chevron {
-          transition: transform 0.3s ease;
-        }
-
-        .agro-chevron.open {
-          transform: rotate(180deg);
-        }
-
-        .agro-language-dropdown {
-          position: absolute;
-          top: 100%;
-          right: 0;
-          background: var(--agro-dropdown-bg);
-          border: 1px solid var(--agro-border-color);
-          border-radius: 12px;
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-          padding: 8px 0;
-          min-width: 180px;
-          z-index: 1000;
-          backdrop-filter: blur(10px);
-        }
-
-        .agro-lang-option {
-          background: none;
-          border: none;
-          color: var(--agro-text-color);
-          cursor: pointer;
-          padding: 12px 16px;
-          width: 100%;
-          text-align: left;
-          transition: all 0.3s ease;
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          font-size: 14px;
-        }
-
-        .agro-lang-option:hover {
-          background: var(--agro-hover-bg);
-          color: var(--agro-primary-color);
-        }
-
-        .agro-lang-option.active {
-          background: var(--agro-active-bg);
-          color: var(--agro-primary-color);
-        }
-
-        .agro-lang-flag {
-          font-size: 18px;
-        }
-
-        .agro-lang-name {
-          font-weight: 500;
-        }
-
-        .agro-theme-toggle {
-          background: var(--agro-button-bg);
-          border: 1px solid var(--agro-border-color);
-          color: var(--agro-text-color);
-          cursor: pointer;
-          padding: 8px;
-          border-radius: 8px;
-          transition: all 0.3s ease;
-        }
-
-        .agro-theme-toggle:hover {
-          background: var(--agro-hover-bg);
-          border-color: var(--agro-primary-color);
-          color: var(--agro-primary-color);
-          transform: translateY(-1px);
-        }
-
-        .agro-auth-buttons {
-          display: flex;
-          gap: 12px;
-        }
-
-        .agro-login-btn,
-        .agro-register-btn {
-          background: var(--agro-button-bg);
-          border: 1px solid var(--agro-border-color);
-          color: var(--agro-text-color);
-          text-decoration: none;
-          padding: 8px 16px;
-          border-radius: 8px;
-          font-size: 14px;
-          font-weight: 500;
-          transition: all 0.3s ease;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-        }
-
-        .agro-login-btn:hover,
-        .agro-register-btn:hover {
-          background: var(--agro-hover-bg);
-          border-color: var(--agro-primary-color);
-          color: var(--agro-primary-color);
-          transform: translateY(-1px);
-        }
-
-        .agro-register-btn {
-          background: var(--agro-primary-color);
-          color: var(--agro-primary-text);
-          border-color: var(--agro-primary-color);
-        }
-
-        .agro-register-btn:hover {
-          background: var(--agro-primary-hover);
-          color: var(--agro-primary-text);
-        }
-
-        .agro-mobile-toggle {
-          display: none;
-          background: none;
-          border: none;
-          color: var(--agro-text-color);
-          cursor: pointer;
-          padding: 8px;
-          border-radius: 8px;
-          transition: all 0.3s ease;
-        }
-
-        .agro-mobile-toggle:hover {
-          background: var(--agro-hover-bg);
-          color: var(--agro-primary-color);
-        }
-
-        .agro-navbar-spacer {
-          height: 110px;
-        }
-
-        .agro-mobile-menu {
-          background: var(--agro-dropdown-bg);
-          border-top: 1px solid var(--agro-border-color);
-          overflow: hidden;
-          backdrop-filter: blur(10px);
-        }
-
-        .agro-mobile-content {
-          padding: 20px;
-        }
-
-        .agro-mobile-nav {
-          list-style: none;
-          padding: 0;
-          margin: 0 0 20px 0;
-        }
-
-        .agro-mobile-item {
-          margin-bottom: 8px;
-        }
-
-        .agro-mobile-link {
-          color: var(--agro-text-color);
-          text-decoration: none;
-          padding: 12px 16px;
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          border-radius: 8px;
-          transition: all 0.3s ease;
-          font-weight: 500;
-        }
-
-        .agro-mobile-icon {
-          font-size: 20px;
-          opacity: 0.8;
-          transition: all 0.3s ease;
-        }
-
-        .agro-mobile-text {
-          font-weight: 500;
-        }
-
-        .agro-mobile-link:hover,
-        .agro-mobile-link.active {
-          background: var(--agro-hover-bg);
-          color: var(--agro-primary-color);
-        }
-
-        .agro-mobile-link:hover .agro-mobile-icon,
-        .agro-mobile-link.active .agro-mobile-icon {
-          opacity: 1;
-          transform: scale(1.1);
-        }
-
-        .agro-mobile-languages {
-          margin-bottom: 20px;
-        }
-
-        .agro-mobile-section-title {
-          font-size: 16px;
-          font-weight: 600;
-          color: var(--agro-text-color);
-          margin-bottom: 12px;
-        }
-
-        .agro-mobile-lang-grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 8px;
-        }
-
-        .agro-mobile-lang-btn {
-          background: var(--agro-button-bg);
-          border: 1px solid var(--agro-border-color);
-          color: var(--agro-text-color);
-          cursor: pointer;
-          padding: 8px;
-          border-radius: 8px;
-          transition: all 0.3s ease;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 4px;
-          font-size: 12px;
-        }
-
-        .agro-mobile-lang-btn:hover,
-        .agro-mobile-lang-btn.active {
-          background: var(--agro-hover-bg);
-          border-color: var(--agro-primary-color);
-          color: var(--agro-primary-color);
-        }
-
-        .agro-mobile-lang-flag {
-          font-size: 16px;
-        }
-
-        .agro-mobile-lang-name {
-          font-weight: 500;
-        }
-
-        .agro-mobile-auth {
-          display: flex;
-          gap: 12px;
-          flex-wrap: wrap;
-        }
-
-        .agro-mobile-login,
-        .agro-mobile-register {
-          background: var(--agro-button-bg);
-          border: 1px solid var(--agro-border-color);
-          color: var(--agro-text-color);
-          text-decoration: none;
-          padding: 12px 16px;
-          border-radius: 8px;
-          font-size: 14px;
-          font-weight: 500;
-          transition: all 0.3s ease;
-          flex: 1;
-          text-align: center;
-        }
-
-        .agro-mobile-login:hover,
-        .agro-mobile-register:hover {
-          background: var(--agro-hover-bg);
-          color: var(--agro-primary-color);
-        }
-
-        .agro-mobile-register {
-          background: var(--agro-primary-color);
-          color: var(--agro-primary-text);
-          border-color: var(--agro-primary-color);
-        }
-
-        .agro-mobile-register:hover {
-          background: var(--agro-primary-hover);
-          color: var(--agro-primary-text);
-        }
-
-        .agro-user-menu {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-
-        .agro-user-name {
-          color: var(--agro-text-color);
-          font-size: 14px;
-          font-weight: 500;
-        }
-
-        .agro-logout-btn {
-          background: rgba(255, 59, 48, 0.1);
-          border: 1px solid rgba(255, 59, 48, 0.3);
-          color: #ff3b30;
-          cursor: pointer;
-          padding: 6px 12px;
-          border-radius: 6px;
-          font-size: 12px;
-          font-weight: 500;
-          transition: all 0.3s ease;
-        }
-
-        .agro-logout-btn:hover {
-          background: rgba(255, 59, 48, 0.2);
-          border-color: #ff3b30;
-        }
-
-        .agro-mobile-user {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          width: 100%;
-          padding: 12px 16px;
-          background: var(--agro-button-bg);
-          border: 1px solid var(--agro-border-color);
-          border-radius: 8px;
-        }
-
-        .agro-mobile-user span {
-          color: var(--agro-text-color);
-          font-weight: 500;
-        }
-
-        .agro-mobile-user button {
-          background: rgba(255, 59, 48, 0.1);
-          border: 1px solid rgba(255, 59, 48, 0.3);
-          color: #ff3b30;
-          cursor: pointer;
-          padding: 6px 12px;
-          border-radius: 6px;
-          font-size: 12px;
-          font-weight: 500;
-        }
-
-        @media (max-width: 1024px) {
-          .agro-main-menu {
-            gap: 30px;
-          }
-          
-          .agro-nav-link {
-            font-size: 15px;
-            padding: 10px 14px;
-          }
-        }
-
-        @media (max-width: 768px) {
-          .agro-navbar-container {
-            padding: 0 16px;
-          }
-
-          .agro-main-menu {
-            display: none;
-          }
-
-          .agro-mobile-toggle {
-            display: block;
-          }
-
-          .agro-nav-actions {
-            gap: 12px;
-          }
-
-          .agro-auth-buttons {
-            display: none;
-          }
-
-          .agro-language-btn {
-            padding: 6px 10px;
-            font-size: 13px;
-          }
-
-          .agro-lang-text {
-            display: none;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .agro-logo-text {
-            font-size: 20px;
-          }
-
-          .agro-logo-tagline {
-            font-size: 11px;
-          }
-
-          .agro-nav-actions {
-            gap: 8px;
-          }
-
-          .agro-language-btn {
-            padding: 6px 8px;
-          }
-        }
-      `}</style>
     </>
   );
 };

@@ -84,49 +84,49 @@ const WeatherWidget = ({ city = null }) => {
 
   if (error || !weather) {
     return (
-      <div className="txc-card p-6 text-center">
-        <Cloud className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-        <p className="text-gray-500">{error || 'Erro ao carregar dados do clima'}</p>
+      <div className="card text-center">
+        <Cloud className="w-12 h-12 text-secondary mx-auto mb-4" />
+        <p className="text-secondary">{error || 'Erro ao carregar dados do clima'}</p>
       </div>
     );
   }
 
   return (
-    <div className="txc-card p-6">
+    <div className="card">
     <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
         {/* Cabeçalho */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-2">
-            <MapPin className="w-5 h-5 text-gray-400" />
-            <span className="text-sm text-gray-600">{weather.city}, {weather.country}</span>
+        <div className="flex-between mb-4">
+          <div className="flex items-center gap-2">
+            <MapPin className="w-5 h-5 text-secondary" />
+            <span className="text-sm text-secondary">{weather.city}, {weather.country}</span>
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-light">
             Atualizado: {new Date(weather.timestamp).toLocaleTimeString()}
           </div>
         </div>
 
         {/* Temperatura Principal */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-4">
+        <div className="flex-between mb-6">
+          <div className="flex items-center gap-4">
             {getWeatherIcon(weather.icon)}
             <div>
-              <div className="text-4xl font-bold text-white">
+              <div className="text-4xl font-bold text-primary">
                 {weather.temperature}°C
               </div>
-              <div className="text-sm text-gray-400 capitalize">
+              <div className="text-sm text-secondary capitalize">
                 {weather.description}
               </div>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-sm text-gray-400">
+            <div className="text-sm text-secondary">
               Sensação: {weather.feelsLike}°C
             </div>
-            <div className="text-sm text-gray-400">
+            <div className="text-sm text-secondary">
               UV: <span style={{ color: getUVIndexColor(weather.uvIndex) }}>
                 {weather.uvIndex}
               </span>
@@ -136,26 +136,26 @@ const WeatherWidget = ({ city = null }) => {
         
         {/* Detalhes */}
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="flex items-center space-x-2">
-            <Droplets className="w-4 h-4 text-blue-400" />
-            <span className="text-sm text-gray-400">
+          <div className="flex items-center gap-2">
+            <Droplets className="w-4 h-4 text-secondary" />
+            <span className="text-sm text-secondary">
               Umidade: {weather.humidity}%
             </span>
           </div>
-          <div className="flex items-center space-x-2">
-            <Wind className="w-4 h-4 text-gray-400" />
-            <span className="text-sm text-gray-400">
+          <div className="flex items-center gap-2">
+            <Wind className="w-4 h-4 text-secondary" />
+            <span className="text-sm text-secondary">
               Vento: {weather.windSpeed} km/h
             </span>
           </div>
-          <div className="flex items-center space-x-2">
-            <Eye className="w-4 h-4 text-gray-400" />
-            <span className="text-sm text-gray-400">
+          <div className="flex items-center gap-2">
+            <Eye className="w-4 h-4 text-secondary" />
+            <span className="text-sm text-secondary">
               Visibilidade: {weather.visibility} km
             </span>
           </div>
-          <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-400">
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-secondary">
               Pressão: {weather.pressure} hPa
             </span>
           </div>
@@ -164,23 +164,23 @@ const WeatherWidget = ({ city = null }) => {
         {/* Previsão */}
         {forecast.length > 0 && (
           <div>
-            <h4 className="text-lg font-semibold text-white mb-3">Previsão</h4>
+            <h4 className="text-lg font-semibold text-primary mb-3">Previsão</h4>
             <div className="grid grid-cols-3 gap-3">
               {forecast.slice(0, 3).map((day, index) => (
                 <motion.div
                   key={index}
-                  className="text-center p-3 bg-gray-800 rounded-lg"
+                  className="text-center p-3 bg-secondary rounded-lg"
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <div className="text-xs text-gray-400 mb-2">
+                  <div className="text-xs text-light mb-2">
                     {day.date.toLocaleDateString('pt-BR', { weekday: 'short' })}
                   </div>
                   {getWeatherIcon(day.icon)}
-                  <div className="text-sm font-semibold text-white mt-2">
+                  <div className="text-sm font-semibold text-primary mt-2">
                     {day.maxTemp}°
                   </div>
-                  <div className="text-xs text-gray-400">
+                  <div className="text-xs text-light">
                     {day.minTemp}°
                   </div>
                 </motion.div>

@@ -15,8 +15,8 @@ import GrainQuotes from './components/GrainQuotes';
 import WeatherWidget from './components/WeatherWidget';
 import NewsFeed from './components/NewsFeed';
 
-// Importar tema AGROISYNC Premium
-import './styles/agro-premium-theme.css';
+// Importar tema TXC + Grão Direto unificado
+import './styles/agro-txc-grao-theme.css';
 
 // Pages
 import AgroisyncHome from './pages/AgroisyncHome';
@@ -76,12 +76,11 @@ function App() {
                 {/* Ticker fixo no topo */}
                 <Ticker />
                 
-                {/* Barra de Informações - Cotações, clima e notícias */}
+                {/* Barra de Informações - Cotações e notícias */}
                 <div className="info-bar">
                   <div className="premium-container">
                     <div className="info-content">
                       <GrainQuotes />
-                      <WeatherWidget />
                       <NewsFeed />
                     </div>
                   </div>
@@ -129,6 +128,19 @@ function App() {
                 </Routes>
                 </Layout>
                 
+                {/* Widget de Clima - Final da página */}
+                <div className="weather-section">
+                  <div className="container">
+                    <div className="text-center">
+                      <h2>Informações Climáticas</h2>
+                      <p>Dados meteorológicos atualizados para auxiliar suas decisões agrícolas</p>
+                    </div>
+                    <div className="flex-center">
+                      <WeatherWidget />
+                    </div>
+                  </div>
+                </div>
+
                 {/* AGROISYNC Footer */}
                 <AgroisyncFooter />
                 

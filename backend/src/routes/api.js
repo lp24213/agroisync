@@ -19,6 +19,7 @@ import contactRoutes from './contact.js';
 import userRoutes from './users.js';
 import notificationRoutes from './notifications.js';
 import escrowRoutes from './escrow.js';
+import dataAccessRoutes from './data-access.js';
 
 const router = express.Router();
 
@@ -78,6 +79,9 @@ router.use('/v1/notifications', notificationRoutes);
 
 // ===== ESCROW ROUTES =====
 router.use('/v1/escrow', escrowRoutes);
+
+// ===== DATA ACCESS ROUTES =====
+router.use('/v1/data-access', dataAccessRoutes);
 
 // ===== API INFO ENDPOINT =====
 router.get('/v1', (req, res) => {
