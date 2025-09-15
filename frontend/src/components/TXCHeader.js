@@ -5,7 +5,7 @@ import {
   Instagram, 
   Facebook, 
   Youtube, 
-  Pinterest, 
+  Twitter, 
   Search, 
   User, 
   ShoppingCart,
@@ -21,7 +21,7 @@ const TXCHeader = () => {
     { icon: Instagram, href: '#' },
     { icon: Facebook, href: '#' },
     { icon: Youtube, href: '#' },
-    { icon: Pinterest, href: '#' },
+    { icon: Twitter, href: '#' },
   ];
 
   const menuItems = [
