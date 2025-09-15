@@ -61,7 +61,7 @@ const paymentSchema = new mongoose.Schema(
     adId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Product',
-      required: function() {
+      required() {
         return this.type === 'individual';
       }
     },

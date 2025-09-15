@@ -11,14 +11,18 @@
     "close": "Fechar"
   },
   "nav": {
+    "inicio": "Início",
+    "loja": "Loja",
+    "agroconecta": "AgroConecta",
+    "marketplace": "Marketplace",
+    "tecnologia": "Tecnologia",
+    "parcerias": "Parcerias",
     "home": "Home",
     "about": "Sobre",
     "contact": "Contato",
     "plans": "Planos",
     "services": "Serviços",
     "store": "Loja Agroisync",
-    "agroconecta": "AgroConecta",
-    "marketplace": "Marketplace",
     "crypto": "Cripto",
     "login": "Entrar",
     "register": "Cadastrar"

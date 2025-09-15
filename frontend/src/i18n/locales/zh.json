@@ -10,6 +10,22 @@
     "confirm": "确认",
     "close": "关闭"
   },
+  "nav": {
+    "inicio": "首页",
+    "loja": "商店",
+    "agroconecta": "AgroConecta",
+    "marketplace": "市场",
+    "tecnologia": "技术",
+    "parcerias": "合作伙伴",
+    "home": "首页",
+    "about": "关于",
+    "contact": "联系",
+    "plans": "计划",
+    "services": "服务",
+    "store": "Agroisync商店",
+    "login": "登录",
+    "register": "注册"
+  },
   "navigation": {
     "home": "首页",
     "about": "关于",

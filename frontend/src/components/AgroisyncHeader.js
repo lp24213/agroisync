@@ -17,7 +17,7 @@ import {
   Truck,
   Store,
   Zap,
-  Handshake
+  Users
 } from 'lucide-react';
 
 const AgroisyncHeader = () => {
@@ -28,6 +28,7 @@ const AgroisyncHeader = () => {
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('pt');
   const [isDarkTheme, setIsDarkTheme] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // Menu principal com ícones profissionais
   const navigationItems = [
@@ -36,7 +37,7 @@ const AgroisyncHeader = () => {
     { path: '/agroconecta', label: t('nav.agroconecta'), icon: Truck },
     { path: '/marketplace', label: t('nav.marketplace'), icon: Store },
     { path: '/tecnologia', label: t('nav.tecnologia'), icon: Zap },
-    { path: '/partnerships', label: t('nav.parcerias'), icon: Handshake }
+    { path: '/partnerships', label: t('nav.parcerias'), icon: Users }
   ];
 
   // Idiomas disponíveis
@@ -61,6 +62,16 @@ const AgroisyncHeader = () => {
     // Aplicar idioma
     i18n.changeLanguage(savedLanguage);
   }, [i18n]);
+
+  // Efeito de scroll para navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const changeLanguage = (langCode) => {
     setCurrentLanguage(langCode);
@@ -93,7 +104,7 @@ const AgroisyncHeader = () => {
   return (
     <>
       {/* Navbar Principal */}
-      <nav className="navbar">
+      <nav className={`navbar ${isScrolled ? 'navbar-scrolled' : ''}`}>
         <div className="navbar-container">
           {/* Logo - Esquerda */}
           <div className="navbar-logo">
@@ -108,15 +119,26 @@ const AgroisyncHeader = () => {
           {/* Menu Principal - Centro (Desktop) */}
           <ul className="navbar-menu">
             {navigationItems.map((item) => (
-              <li key={item.path} className="navbar-item">
+              <motion.li 
+                key={item.path} 
+                className="navbar-item"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <Link
                   to={item.path}
                   className={`navbar-link ${isActive(item.path) ? 'active' : ''}`}
                 >
-                  <item.icon size={18} />
+                  <motion.div
+                    className="navbar-icon"
+                    whileHover={{ rotate: 5 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <item.icon size={18} />
+                  </motion.div>
                   <span className="navbar-text">{item.label}</span>
                 </Link>
-              </li>
+              </motion.li>
             ))}
           </ul>
 
@@ -207,25 +229,36 @@ const AgroisyncHeader = () => {
           {isMobileMenuOpen && (
             <motion.div
               className="agro-mobile-menu"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
+              initial={{ opacity: 0, height: 0, y: -20 }}
+              animate={{ opacity: 1, height: 'auto', y: 0 }}
+              exit={{ opacity: 0, height: 0, y: -20 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
             >
               <div className="agro-mobile-content">
                 {/* Menu Principal Mobile */}
                 <ul className="agro-mobile-nav">
-                  {navigationItems.map((item) => (
-                    <li key={item.path} className="agro-mobile-item">
+                  {navigationItems.map((item, index) => (
+                    <motion.li 
+                      key={item.path} 
+                      className="agro-mobile-item"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                    >
                       <Link
                         to={item.path}
                         className={`agro-mobile-link ${isActive(item.path) ? 'active' : ''}`}
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        <span className="agro-mobile-icon">{item.icon}</span>
+                        <motion.span 
+                          className="agro-mobile-icon"
+                          whileHover={{ scale: 1.2, rotate: 5 }}
+                        >
+                          <item.icon size={20} />
+                        </motion.span>
                         <span className="agro-mobile-text">{item.label}</span>
                       </Link>
-                    </li>
+                    </motion.li>
                   ))}
                 </ul>
                 

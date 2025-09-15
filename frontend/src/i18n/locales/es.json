@@ -10,6 +10,22 @@
     "confirm": "Confirmar",
     "close": "Cerrar"
   },
+  "nav": {
+    "inicio": "Inicio",
+    "loja": "Tienda",
+    "agroconecta": "AgroConecta",
+    "marketplace": "Marketplace",
+    "tecnologia": "Tecnología",
+    "parcerias": "Alianzas",
+    "home": "Inicio",
+    "about": "Acerca de",
+    "contact": "Contacto",
+    "plans": "Planes",
+    "services": "Servicios",
+    "store": "Tienda Agroisync",
+    "login": "Iniciar Sesión",
+    "register": "Registrarse"
+  },
   "navigation": {
     "home": "Inicio",
     "about": "Acerca de",
