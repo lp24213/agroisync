@@ -83,7 +83,6 @@ const AgroisyncHeader = () => {
     return location.pathname === path;
   };
 
-  // const currentLang = languages.find(lang => lang.code === currentLanguage);
 
   return (
     <>

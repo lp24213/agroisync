@@ -131,7 +131,7 @@ class PaymentService {
 
   // Payment Routing Logic
   async processPayment(paymentData) {
-    const { amount, currency, paymentMethod, service, metadata = {} } = paymentData;
+    const { amount, currency, service, metadata = {} } = paymentData;
 
     try {
       switch (service) {

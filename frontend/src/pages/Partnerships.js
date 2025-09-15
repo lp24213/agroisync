@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Handshake, 
   Users, 
   TrendingUp, 
   Globe, 
@@ -11,8 +10,7 @@ import {
   Send,
   CheckCircle,
   Star,
-  Award,
-  Target
+  Award
 } from 'lucide-react';
 
 const Partnerships = () => {
@@ -269,7 +267,7 @@ const Partnerships = () => {
               className="hero-text"
             >
               <div className="hero-icon">
-                <Handshake size={48} />
+                <Users size={48} />
               </div>
               <h1>Seja Nosso Parceiro</h1>
               <p>
