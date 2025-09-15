@@ -3,14 +3,8 @@ import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-const AgroNewsCarousel = () => {
-  const { t } = useTranslation();
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [news, setNews] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Dados mockados de notícias do agronegócio (simulando API)
-  const mockNews = [
+// Dados mockados de notícias do agronegócio (simulando API)
+const mockNews = [
     {
       id: 1,
       title: "Soja atinge nova máxima histórica com alta de 15%",
@@ -52,6 +46,12 @@ const AgroNewsCarousel = () => {
       category: "Exportação"
     }
   ];
+
+const AgroNewsCarousel = () => {
+  const { t } = useTranslation();
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [news, setNews] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Simular carregamento de API
