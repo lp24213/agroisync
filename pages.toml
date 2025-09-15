@@ -1,6 +1,0 @@
-[build]
-command = "npm run build"
-output_directory = "frontend/build"
-
-[env.production]
-NODE_VERSION = "18.20.4"

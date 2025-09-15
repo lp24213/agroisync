@@ -1,5 +1,5 @@
 name = "agroisync"
 compatibility_date = "2025-09-12"
 
-[pages]
-build_output_dir = "./frontend/build"
+[assets]
+directory = "./frontend/build"
