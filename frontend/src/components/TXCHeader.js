@@ -1,440 +1,183 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import LanguageSelector from './LanguageSelector';
-import ThemeToggle from './ThemeToggle';
+import { 
+  Instagram, 
+  Facebook, 
+  Youtube, 
+  Pinterest, 
+  Search, 
+  User, 
+  ShoppingCart,
+  Menu,
+  X
+} from 'lucide-react';
 
 const TXCHeader = () => {
-  const { t } = useTranslation();
-  const { user, logout } = useAuth();
-  const location = useLocation();
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const navigationItems = [
-    { path: '/', label: t('nav.home') },
-    { path: '/marketplace', label: t('nav.marketplace') },
-    { path: '/agroconecta', label: t('nav.agroconecta') },
-    { path: '/crypto', label: t('nav.crypto') },
-    { path: '/plans', label: t('nav.plans') },
+  const socialIcons = [
+    { icon: Instagram, href: '#' },
+    { icon: Facebook, href: '#' },
+    { icon: Youtube, href: '#' },
+    { icon: Pinterest, href: '#' },
   ];
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  };
+  const menuItems = [
+    { label: 'Marketplace', path: '/marketplace' },
+    { label: 'AgroConecta', path: '/agroconecta' },
+    { label: 'Crypto', path: '/crypto' },
+    { label: 'Plans', path: '/plans' },
+    { label: 'Dashboard', path: '/dashboard' },
+    { label: 'About', path: '/about' },
+  ];
 
   return (
     <>
-      <motion.header
-        className={`txc-header ${isScrolled ? 'scrolled' : ''}`}
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-      >
-        <div className="txc-container">
-          <div className="txc-header-content">
-            {/* Logo */}
-            <motion.div
-              className="txc-logo"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Link to="/" className="txc-logo-link">
-                <img
-                  src="/agroisync-main-logo.png"
-                  alt="AGROISYNC"
-                  className="txc-logo-img"
-                />
-                <span className="txc-logo-text">AGROISYNC</span>
-              </Link>
-            </motion.div>
-
-            {/* Desktop Navigation */}
-            <nav className="txc-nav-desktop">
-              {navigationItems.map((item) => (
-                <motion.div
-                  key={item.path}
-                  whileHover={{ y: -2 }}
-                  whileTap={{ y: 0 }}
-                >
-                  <Link
-                    to={item.path}
-                    className={`txc-nav-link ${
-                      location.pathname === item.path ? 'active' : ''
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                </motion.div>
-              ))}
-            </nav>
-
-            {/* Header Actions */}
-            <div className="txc-header-actions">
-              <LanguageSelector />
-              <ThemeToggle />
-              
-              {user ? (
-                <div className="txc-user-menu">
-                  <motion.div
-                    className="txc-user-avatar"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <img
-                      src={user.avatar || '/default-avatar.png'}
-                      alt={user.name}
-                      className="txc-avatar-img"
-                    />
-                  </motion.div>
-                  
-                  <motion.button
-                    className="txc-btn txc-btn-ghost"
-                    onClick={handleLogout}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {t('auth.logout')}
-                  </motion.button>
-                </div>
-              ) : (
-                <div className="txc-auth-buttons">
-                  <Link to="/login" className="txc-btn txc-btn-ghost">
-                    {t('auth.login')}
-                  </Link>
-                  <Link to="/register" className="txc-btn txc-btn-primary">
-                    {t('auth.register')}
-                  </Link>
-                </div>
-              )}
-
-              {/* Mobile Menu Button */}
-              <motion.button
-                className="txc-mobile-menu-btn"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+      {/* Top Bar TXC */}
+      <div className="txc-top-bar">
+        <div className="txc-top-bar-content">
+          <div className="txc-social-icons">
+            {socialIcons.map((social, index) => (
+              <motion.a
+                key={index}
+                href={social.href}
+                className="txc-social-icon"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
+                aria-label={`${social.icon.name} social media`}
               >
-                <span className={`txc-hamburger ${isMobileMenuOpen ? 'open' : ''}`}>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </span>
-              </motion.button>
-            </div>
+                <social.icon size={20} />
+              </motion.a>
+            ))}
+          </div>
+          <div className="txc-top-message">
+            Frete grátis acima de R$499,00
+          </div>
+        </div>
+      </div>
+
+      {/* Main Navbar TXC */}
+      <nav className="txc-main-navbar">
+        <div className="txc-navbar-content">
+          {/* Logo TXC */}
+          <div className="txc-logo-section">
+            <Link to="/" className="txc-logo">
+              AGROISYNC
+            </Link>
+            <span className="txc-logo-tagline">
+              Produzindo para quem Produz
+            </span>
+          </div>
+
+          {/* Menu Central */}
+          <div className="txc-main-menu">
+            {menuItems.map((item) => (
+              <motion.div
+                key={item.path}
+                whileHover={{ y: -2 }}
+                whileTap={{ y: 0 }}
+              >
+                <Link
+                  to={item.path}
+                  className={`txc-menu-link ${
+                    location.pathname === item.path ? 'active' : ''
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Ícones da Navbar */}
+          <div className="txc-navbar-icons">
+            <motion.div
+              className="txc-navbar-icon"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              title="Buscar"
+            >
+              <Search size={24} />
+            </motion.div>
+            
+            <motion.div
+              className="txc-navbar-icon"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              title="Minha Conta"
+            >
+              <User size={24} />
+            </motion.div>
+            
+            <motion.div
+              className="txc-navbar-icon"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              title="Carrinho"
+            >
+              <ShoppingCart size={24} />
+            </motion.div>
+
+            {/* Botão Menu Mobile */}
+            <motion.button
+              className="txc-navbar-icon"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              title="Menu"
+              style={{ display: 'none' }}
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </motion.button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              className="txc-mobile-menu"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <div className="txc-mobile-nav">
-                {navigationItems.map((item, index) => (
-                  <motion.div
-                    key={item.path}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <Link
-                      to={item.path}
-                      className={`txc-mobile-nav-link ${
-                        location.pathname === item.path ? 'active' : ''
-                      }`}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  </motion.div>
-                ))}
-                
-                {!user && (
-                  <motion.div
-                    className="txc-mobile-auth"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 }}
-                  >
-                    <Link
-                      to="/login"
-                      className="txc-btn txc-btn-ghost txc-btn-full"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {t('auth.login')}
-                    </Link>
-                    <Link
-                      to="/register"
-                      className="txc-btn txc-btn-primary txc-btn-full"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {t('auth.register')}
-                    </Link>
-                  </motion.div>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.header>
+        {/* Menu Mobile TXC */}
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="txc-mobile-menu"
+            style={{
+              background: 'var(--txc-white)',
+              borderTop: '1px solid #E5E5E5',
+              padding: 'var(--txc-space-lg)',
+              display: 'none'
+            }}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--txc-space-md)' }}>
+              {menuItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className="txc-menu-link"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  style={{ padding: 'var(--txc-space-md)' }}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </nav>
 
+      {/* CSS Mobile */}
       <style jsx>{`
-        .txc-header {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          z-index: var(--txc-z-fixed);
-          background: rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(20px);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-          transition: all var(--txc-transition-normal);
-        }
-
-        .txc-header.scrolled {
-          background: rgba(255, 255, 255, 0.95);
-          backdrop-filter: blur(30px);
-          box-shadow: var(--txc-shadow-lg);
-        }
-
-        [data-theme="dark"] .txc-header {
-          background: rgba(0, 0, 0, 0.3);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        [data-theme="dark"] .txc-header.scrolled {
-          background: rgba(0, 0, 0, 0.95);
-          backdrop-filter: blur(30px);
-        }
-
-        .txc-header-content {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: var(--txc-space-md) 0;
-          height: 80px;
-        }
-
-        .txc-logo-link {
-          display: flex;
-          align-items: center;
-          gap: var(--txc-space-sm);
-          text-decoration: none;
-          color: var(--txc-petroleum);
-        }
-
-        .txc-logo-img {
-          width: 40px;
-          height: 40px;
-          object-fit: contain;
-        }
-
-        .txc-logo-text {
-          font-size: var(--txc-text-xl);
-          font-weight: var(--txc-font-bold);
-          background: var(--txc-gradient-primary);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .txc-nav-desktop {
-          display: flex;
-          align-items: center;
-          gap: var(--txc-space-lg);
-        }
-
-        .txc-nav-link {
-          padding: var(--txc-space-sm) var(--txc-space-md);
-          border-radius: var(--txc-radius-md);
-          font-weight: var(--txc-font-medium);
-          color: var(--txc-gray-600);
-          text-decoration: none;
-          transition: all var(--txc-transition-fast);
-          position: relative;
-        }
-
-        .txc-nav-link:hover {
-          color: var(--txc-teal);
-          background: rgba(86, 184, 185, 0.1);
-        }
-
-        .txc-nav-link.active {
-          color: var(--txc-teal);
-          background: rgba(86, 184, 185, 0.1);
-        }
-
-        .txc-header-actions {
-          display: flex;
-          align-items: center;
-          gap: var(--txc-space-md);
-        }
-
-        .txc-user-menu {
-          display: flex;
-          align-items: center;
-          gap: var(--txc-space-sm);
-        }
-
-        .txc-user-avatar {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          overflow: hidden;
-          border: 2px solid var(--txc-teal);
-        }
-
-        .txc-avatar-img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-
-        .txc-auth-buttons {
-          display: flex;
-          align-items: center;
-          gap: var(--txc-space-sm);
-        }
-
-        .txc-mobile-menu-btn {
-          display: none;
-          background: none;
-          border: none;
-          cursor: pointer;
-          padding: var(--txc-space-sm);
-        }
-
-        .txc-hamburger {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-          width: 24px;
-          height: 18px;
-        }
-
-        .txc-hamburger span {
-          width: 100%;
-          height: 2px;
-          background: var(--txc-petroleum);
-          transition: all var(--txc-transition-fast);
-          border-radius: 1px;
-        }
-
-        .txc-hamburger.open span:nth-child(1) {
-          transform: rotate(45deg) translate(5px, 5px);
-        }
-
-        .txc-hamburger.open span:nth-child(2) {
-          opacity: 0;
-        }
-
-        .txc-hamburger.open span:nth-child(3) {
-          transform: rotate(-45deg) translate(7px, -6px);
-        }
-
-        .txc-mobile-menu {
-          background: var(--txc-white);
-          border-top: 1px solid var(--txc-gray-200);
-          overflow: hidden;
-        }
-
-        [data-theme="dark"] .txc-mobile-menu {
-          background: var(--txc-gray-800);
-          border-top: 1px solid var(--txc-gray-700);
-        }
-
-        .txc-mobile-nav {
-          padding: var(--txc-space-lg);
-          display: flex;
-          flex-direction: column;
-          gap: var(--txc-space-md);
-        }
-
-        .txc-mobile-nav-link {
-          padding: var(--txc-space-md);
-          border-radius: var(--txc-radius-md);
-          font-weight: var(--txc-font-medium);
-          color: var(--txc-gray-600);
-          text-decoration: none;
-          transition: all var(--txc-transition-fast);
-        }
-
-        .txc-mobile-nav-link:hover,
-        .txc-mobile-nav-link.active {
-          color: var(--txc-teal);
-          background: rgba(86, 184, 185, 0.1);
-        }
-
-        .txc-mobile-auth {
-          display: flex;
-          flex-direction: column;
-          gap: var(--txc-space-sm);
-          margin-top: var(--txc-space-md);
-          padding-top: var(--txc-space-md);
-          border-top: 1px solid var(--txc-gray-200);
-        }
-
-        [data-theme="dark"] .txc-mobile-auth {
-          border-top: 1px solid var(--txc-gray-700);
-        }
-
-        .txc-btn-full {
-          width: 100%;
-          justify-content: center;
-        }
-
         @media (max-width: 768px) {
-          .txc-nav-desktop {
+          .txc-main-menu {
             display: none;
           }
-
-          .txc-mobile-menu-btn {
-            display: block;
+          
+          .txc-navbar-icons button[title="Menu"] {
+            display: block !important;
           }
-
-          .txc-header-actions {
-            gap: var(--txc-space-sm);
-          }
-
-          .txc-auth-buttons {
-            display: none;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .txc-header-content {
-            padding: var(--txc-space-sm) 0;
-            height: 70px;
-          }
-
-          .txc-logo-text {
-            font-size: var(--txc-text-lg);
-          }
-
-          .txc-logo-img {
-            width: 32px;
-            height: 32px;
+          
+          .txc-mobile-menu {
+            display: block !important;
           }
         }
       `}</style>

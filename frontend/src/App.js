@@ -7,6 +7,7 @@ import { LanguageProvider } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/Layout';
 import PremiumHeader from './components/PremiumHeader';
+import TXCHeader from './components/TXCHeader';
 import TXCFooter from './components/TXCFooter';
 import PremiumCursor from './components/PremiumCursor';
 import ChatbotWidget from './components/ChatbotWidget';
@@ -19,9 +20,12 @@ import NewsFeed from './components/NewsFeed';
 import './styles/txc-premium-theme.css';
 // Importar tema TXC Agro
 import './styles/txc-agro-theme.css';
+// Importar tema TXC Completo
+import './styles/txc-complete-theme.css';
 
 // Pages
 import Home from './pages/PremiumHome';
+import TXCHome from './pages/TXCHome';
 import Marketplace from './pages/PremiumMarketplace';
 import AgroConecta from './pages/PremiumAgroConecta';
 import IntermediationSystem from './components/IntermediationSystem';
@@ -71,8 +75,8 @@ function App() {
                 {/* Premium Cursor */}
                 <PremiumCursor />
                 
-                {/* Premium Header */}
-                <PremiumHeader />
+                       {/* TXC Header */}
+                       <TXCHeader />
                 
                 {/* Ticker fixo no topo */}
                 <Ticker />
@@ -90,8 +94,8 @@ function App() {
                 
                 <Layout>
                 <Routes>
-                  {/* Public Routes */}
-                  <Route path="/" element={<Home />} />
+                         {/* Public Routes */}
+                         <Route path="/" element={<TXCHome />} />
                   <Route path="/marketplace" element={<Marketplace />} />
                   <Route path="/agroconecta" element={<AgroConecta />} />
                   <Route path="/loja" element={<Store />} />
