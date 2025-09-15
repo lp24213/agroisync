@@ -210,7 +210,7 @@ const AgroisyncFooter = () => {
         }
 
         .agro-contact-item svg {
-          color: var(--agro-green-accent);
+          color: var(--txc-light-green);
           flex-shrink: 0;
         }
 
@@ -245,7 +245,7 @@ const AgroisyncFooter = () => {
         }
 
         .agro-footer-link:hover {
-          color: var(--agro-green-accent);
+          color: var(--txc-light-green);
         }
 
         .agro-footer-bottom {
@@ -268,7 +268,7 @@ const AgroisyncFooter = () => {
         }
 
         .agro-footer-location {
-          color: var(--agro-green-accent) !important;
+          color: var(--txc-light-green) !important;
           font-weight: 500;
         }
 
@@ -285,7 +285,7 @@ const AgroisyncFooter = () => {
         }
 
         .agro-footer-legal-link:hover {
-          color: var(--agro-green-accent);
+          color: var(--txc-light-green);
         }
 
         @media (max-width: 768px) {

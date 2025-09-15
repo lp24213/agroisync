@@ -20,37 +20,37 @@ const AgroisyncAgroConecta = () => {
       icon: <Truck size={32} />,
       title: 'Frete Inteligente',
       description: 'Conecte-se com transportadores confiáveis e otimize seus custos de frete',
-      color: 'var(--agro-green-accent)',
+      color: 'var(--txc-light-green)',
     },
     {
       icon: <MapPin size={32} />,
       title: 'Rastreamento em Tempo Real',
       description: 'Acompanhe sua carga em tempo real com tecnologia GPS avançada',
-      color: 'var(--agro-green-accent)',
+      color: 'var(--txc-light-green)',
     },
     {
       icon: <Users size={32} />,
       title: 'Rede de Parceiros',
       description: 'Conecte-se com uma rede confiável de transportadores e produtores',
-      color: 'var(--agro-green-accent)',
+      color: 'var(--txc-light-green)',
     },
     {
       icon: <Zap size={32} />,
       title: 'IA para Logística',
       description: 'Algoritmos inteligentes para otimizar rotas e reduzir custos',
-      color: 'var(--agro-green-accent)',
+      color: 'var(--txc-light-green)',
     },
     {
       icon: <Shield size={32} />,
       title: 'Segurança Total',
       description: 'Proteção completa para sua carga com seguro e monitoramento',
-      color: 'var(--agro-green-accent)',
+      color: 'var(--txc-light-green)',
     },
     {
       icon: <Clock size={32} />,
       title: 'Entrega Rápida',
       description: 'Entregas mais rápidas com otimização de rotas e gestão eficiente',
-      color: 'var(--agro-green-accent)',
+      color: 'var(--txc-light-green)',
     },
   ];
 

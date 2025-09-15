@@ -43,10 +43,10 @@ const AgroisyncHome = () => {
   ];
 
   const stats = [
-    { number: '10K+', label: t('stats.users'), color: 'var(--txc-primary-green)' },
-    { number: '50K+', label: t('stats.transactions'), color: 'var(--txc-light-green)' },
+    { number: '10K+', label: t('stats.users'), color: 'var(--txc-light-green)' },
+    { number: '50K+', label: t('stats.transactions'), color: 'var(--txc-accent-green)' },
     { number: '$2M+', label: t('stats.volume'), color: 'var(--grao-primary-gold)' },
-    { number: '99.9%', label: t('stats.uptime'), color: 'var(--txc-accent-green)' },
+    { number: '99.9%', label: t('stats.uptime'), color: 'var(--txc-light-green)' },
   ];
 
   const heroVariants = {

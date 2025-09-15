@@ -2,40 +2,8 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
-
-/* Import TXC Real Theme */
-@import './styles/agro-real-theme.css';
-
-/* FORÇAR VISUAL TXC EM TODAS AS PÁGINAS */
-@import './styles/force-agro-visual.css';
-
-/* TXC SPECIFIC - SEM QUEBRAR COMPONENTES */
-@import './styles/agro-specific.css';
-
-/* CORREÇÃO DE CORES - PRETO, BRANCO E CINZA */
-@import './styles/black-white-gray-fix.css';
-
-/* CORREÇÕES DE ACESSIBILIDADE E SEO */
-@import './styles/accessibility-fixes.css';
-
-/* CORREÇÕES DE LOGO E PROBLEMAS VISUAIS */
-@import './styles/logo-and-visual-fixes.css';
-
-/* CORREÇÃO NAVBAR CINZA E TÍTULOS BUGADOS */
-@import './styles/navbar-and-titles-fix.css';
-
-/* CORREÇÃO TXC EM TODAS AS PÁGINAS */
-@import './styles/fix-all-pages-txc.css';
-
-/* FORÇAR CORES TXC EM TUDO - REMOVIDO POR QUEBRAR COMPONENTES */
-/* @import './styles/agro-force-all.css'; */
-
-/* EXECUÇÃO IMEDIATA - CSS FORÇADO */
-@import './styles/execute-immediate.css';
+/* TEMA TXC + GRÃO DIRETO UNIFICADO */
+@import './styles/agro-txc-grao-theme.css';
 
 /* Base styles */
 * {
@@ -49,18 +17,12 @@ html {
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  /* Background controlado pelo complete-theme-fix.css */
-  color: #1e293b;
+  font-family: var(--font-primary);
+  background: var(--bg-primary);
+  color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
   transition: all 0.3s ease;
-}
-
-/* Dark mode styles */
-.dark body {
-  /* Background controlado pelo complete-theme-fix.css */
-  color: #ffffff;
 }
 
 /* Custom scrollbar */

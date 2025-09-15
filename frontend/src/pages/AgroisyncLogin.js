@@ -199,7 +199,7 @@ const AgroisyncLogin = () => {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: 'var(--agro-green-accent)',
+                      color: 'var(--txc-light-green)',
                       flexShrink: 0
                     }}>
                       {feature.icon}
@@ -366,7 +366,7 @@ const AgroisyncLogin = () => {
                   marginBottom: 'var(--agro-space-xl)'
                 }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--agro-space-sm)', cursor: 'pointer' }}>
-                    <input type="checkbox" style={{ accentColor: 'var(--agro-green-accent)' }} />
+                    <input type="checkbox" style={{ accentColor: 'var(--txc-light-green)' }} />
                     <span style={{ fontSize: '0.875rem', color: 'var(--agro-text-dark)' }}>
                       Lembrar de mim
                     </span>
@@ -375,7 +375,7 @@ const AgroisyncLogin = () => {
                     to="/forgot-password" 
                     style={{ 
                       fontSize: '0.875rem', 
-                      color: 'var(--agro-green-accent)',
+                      color: 'var(--txc-light-green)',
                       textDecoration: 'none'
                     }}
                   >

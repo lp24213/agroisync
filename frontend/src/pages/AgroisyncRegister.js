@@ -196,7 +196,7 @@ const AgroisyncRegister = () => {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: 'var(--agro-green-accent)',
+                      color: 'var(--txc-light-green)',
                       flexShrink: 0
                     }}>
                       {benefit.icon}
@@ -275,7 +275,7 @@ const AgroisyncRegister = () => {
                           alignItems: 'center',
                           gap: 'var(--agro-space-sm)',
                           padding: 'var(--agro-space-md)',
-                          border: formData.userType === type.value ? '2px solid var(--agro-green-accent)' : '2px solid rgba(57, 255, 20, 0.2)',
+                          border: formData.userType === type.value ? '2px solid var(--txc-light-green)' : '2px solid rgba(57, 255, 20, 0.2)',
                           borderRadius: 'var(--agro-radius-lg)',
                           background: formData.userType === type.value ? 'rgba(57, 255, 20, 0.1)' : 'rgba(57, 255, 20, 0.05)',
                           cursor: 'pointer',
@@ -575,15 +575,15 @@ const AgroisyncRegister = () => {
                       name="acceptTerms"
                       checked={formData.acceptTerms}
                       onChange={handleInputChange}
-                      style={{ accentColor: 'var(--agro-green-accent)', marginTop: '2px' }}
+                      style={{ accentColor: 'var(--txc-light-green)', marginTop: '2px' }}
                     />
                     <span style={{ fontSize: '0.875rem', color: 'var(--agro-text-dark)', lineHeight: 1.5 }}>
                       Eu aceito os{' '}
-                      <Link to="/terms" style={{ color: 'var(--agro-green-accent)', textDecoration: 'none' }}>
+                      <Link to="/terms" style={{ color: 'var(--txc-light-green)', textDecoration: 'none' }}>
                         Termos de Uso
                       </Link>
                       {' '}e a{' '}
-                      <Link to="/privacy" style={{ color: 'var(--agro-green-accent)', textDecoration: 'none' }}>
+                      <Link to="/privacy" style={{ color: 'var(--txc-light-green)', textDecoration: 'none' }}>
                         Política de Privacidade
                       </Link>
                     </span>

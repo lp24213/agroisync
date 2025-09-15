@@ -208,7 +208,7 @@ const AgroisyncAbout = () => {
                 whileHover={{ y: -12, scale: 1.02 }}
                 style={{ textAlign: 'center' }}
               >
-                <div className="agro-card-icon" style={{ color: 'var(--agro-green-accent)' }}>
+                <div className="agro-card-icon" style={{ color: 'var(--txc-light-green)' }}>
                   {value.icon}
                 </div>
                 <h3 className="agro-card-title">
@@ -262,7 +262,7 @@ const AgroisyncAbout = () => {
                   borderRadius: '50%',
                   overflow: 'hidden',
                   boxShadow: 'var(--agro-shadow-lg)',
-                  border: '4px solid var(--agro-green-accent)'
+                  border: '4px solid var(--txc-light-green)'
                 }}>
                   <img 
                     src={member.image} 
@@ -280,7 +280,7 @@ const AgroisyncAbout = () => {
                 </h3>
                 
                 <div style={{
-                  color: 'var(--agro-green-accent)',
+                  color: 'var(--txc-light-green)',
                   fontWeight: '600',
                   marginBottom: 'var(--agro-space-md)',
                   fontSize: '1.125rem'
@@ -336,7 +336,7 @@ const AgroisyncAbout = () => {
                   left: 0,
                   right: 0,
                   height: '4px',
-                  background: 'var(--agro-green-accent)',
+                  background: 'var(--txc-light-green)',
                   borderRadius: 'var(--agro-radius-xl) var(--agro-radius-xl) 0 0'
                 }} />
                 

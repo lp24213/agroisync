@@ -19,25 +19,25 @@ const AgroisyncCrypto = () => {
       icon: <Coins size={32} />,
       title: 'Crypto Agro Token',
       description: 'Token digital exclusivo para transações no agronegócio com valorização garantida',
-      color: 'var(--agro-green-accent)',
+      color: 'var(--txc-light-green)',
     },
     {
       icon: <Shield size={32} />,
       title: 'Blockchain Seguro',
       description: 'Tecnologia blockchain para garantir transparência e segurança em todas as operações',
-      color: 'var(--agro-green-accent)',
+      color: 'var(--txc-light-green)',
     },
     {
       icon: <Wallet size={32} />,
       title: 'Wallet Integrado',
       description: 'Carteira digital integrada para gerenciar seus tokens e fazer transações',
-      color: 'var(--agro-green-accent)',
+      color: 'var(--txc-light-green)',
     },
     {
       icon: <TrendingUp size={32} />,
       title: 'Staking Rewards',
       description: 'Ganhe recompensas ao manter seus tokens bloqueados na plataforma',
-      color: 'var(--agro-green-accent)',
+      color: 'var(--txc-light-green)',
     },
   ];
 

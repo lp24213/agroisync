@@ -19,19 +19,19 @@ const AgroisyncMarketplace = () => {
       icon: <TrendingUp size={32} />,
       title: 'Commodities em Tempo Real',
       description: 'Acompanhe cotações de soja, milho, café e outras commodities em tempo real',
-      color: 'var(--agro-green-accent)',
+      color: 'var(--txc-light-green)',
     },
     {
       icon: <Users size={32} />,
       title: 'Rede de Produtores',
       description: 'Conecte-se com milhares de produtores e compradores confiáveis',
-      color: 'var(--agro-green-accent)',
+      color: 'var(--txc-light-green)',
     },
     {
       icon: <Shield size={32} />,
       title: 'Transações Seguras',
       description: 'Blockchain e criptografia para garantir a segurança de todas as transações',
-      color: 'var(--agro-green-accent)',
+      color: 'var(--txc-light-green)',
     },
   ];
 

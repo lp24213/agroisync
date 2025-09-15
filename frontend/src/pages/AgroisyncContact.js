@@ -157,7 +157,7 @@ const AgroisyncContact = () => {
                 whileHover={{ y: -12, scale: 1.02 }}
                 style={{ textAlign: 'center' }}
               >
-                <div className="agro-card-icon" style={{ color: 'var(--agro-green-accent)' }}>
+                <div className="agro-card-icon" style={{ color: 'var(--txc-light-green)' }}>
                   {contact.icon}
                 </div>
                 <h3 className="agro-card-title">
