@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, BarChart3, Building2 } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import stockService from '../services/stockService';
 
 const StockWidget = () => {
-  const { t } = useTranslation();
   const [stocks, setStocks] = useState([]);
   const [bovespaIndex, setBovespaIndex] = useState(null);
   const [isLoading, setIsLoading] = useState(true);

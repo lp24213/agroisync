@@ -227,4 +227,5 @@ class CryptoService {
   }
 }
 
-export default new CryptoService();
+const cryptoService = new CryptoService();
+export default cryptoService;

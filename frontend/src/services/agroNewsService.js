@@ -153,4 +153,5 @@ class AgroNewsService {
   }
 }
 
-export default new AgroNewsService();
+const agroNewsService = new AgroNewsService();
+export default agroNewsService;

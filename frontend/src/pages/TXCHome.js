@@ -275,7 +275,7 @@ const TXCHome = () => {
               }}>
                 Clima
               </h3>
-              <WeatherWidget city="São Paulo" />
+              <WeatherWidget />
             </motion.div>
             
             {/* Criptomoedas */}

@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, DollarSign, BarChart3 } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { TrendingUp, TrendingDown, BarChart3 } from 'lucide-react';
 import cryptoService from '../services/cryptoService';
 
 const CryptoChart = ({ selectedCoin = 'bitcoin' }) => {
-  const { t } = useTranslation();
   const [cryptoData, setCryptoData] = useState([]);
   const [historicalData, setHistoricalData] = useState([]);
   const [marketTrends, setMarketTrends] = useState(null);
@@ -18,9 +16,9 @@ const CryptoChart = ({ selectedCoin = 'bitcoin' }) => {
     // Atualizar dados a cada 2 minutos
     const interval = setInterval(loadCryptoData, 2 * 60 * 1000);
     return () => clearInterval(interval);
-  }, [selectedCoin]);
+  }, [selectedCoin, loadCryptoData]);
 
-  const loadCryptoData = async () => {
+  const loadCryptoData = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     
@@ -40,7 +38,7 @@ const CryptoChart = ({ selectedCoin = 'bitcoin' }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedCoin]);
 
   const selectedCrypto = cryptoData.find(crypto => crypto.id === selectedCoin);
 

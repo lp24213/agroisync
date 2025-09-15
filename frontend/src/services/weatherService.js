@@ -9,9 +9,9 @@ class WeatherService {
     this.cacheTimeout = 10 * 60 * 1000; // 10 minutos
   }
 
-  // Buscar clima atual por cidade
-  async getCurrentWeather(city = 'São Paulo') {
-    const cacheKey = `weather-${city}`;
+  // Buscar clima atual por IP (localização automática)
+  async getCurrentWeather(city = null) {
+    const cacheKey = city ? `weather-${city}` : 'weather-by-ip';
     const cached = this.cache.get(cacheKey);
     
     if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
@@ -19,14 +19,28 @@ class WeatherService {
     }
 
     try {
-      const response = await axios.get(`${this.baseURL}/weather`, {
-        params: {
-          q: city,
-          appid: this.apiKey,
-          units: 'metric',
-          lang: 'pt_br'
-        }
-      });
+      let response;
+      
+      if (city) {
+        // Buscar por cidade específica
+        response = await axios.get(`${this.baseURL}/weather`, {
+          params: {
+            q: city,
+            appid: this.apiKey,
+            units: 'metric',
+            lang: 'pt_br'
+          }
+        });
+      } else {
+        // Buscar por IP (localização automática)
+        response = await axios.get(`${this.baseURL}/weather`, {
+          params: {
+            appid: this.apiKey,
+            units: 'metric',
+            lang: 'pt_br'
+          }
+        });
+      }
 
       const weatherData = {
         city: response.data.name,
@@ -176,4 +190,5 @@ class WeatherService {
   }
 }
 
-export default new WeatherService();
+const weatherService = new WeatherService();
+export default weatherService;

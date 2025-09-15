@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Droplets, Wind, Eye, Sun, Cloud, CloudRain } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import weatherService from '../services/weatherService';
 
-const WeatherWidget = ({ city = 'São Paulo' }) => {
-  const { t } = useTranslation();
+const WeatherWidget = ({ city = null }) => {
   const [weather, setWeather] = useState(null);
   const [forecast, setForecast] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
