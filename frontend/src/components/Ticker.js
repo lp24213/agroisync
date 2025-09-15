@@ -88,10 +88,10 @@ const Ticker = () => {
       <style jsx>{`
         .ticker-container {
           position: fixed;
-          top: 0;
+          top: 70px;
           left: 0;
           right: 0;
-          z-index: 1001;
+          z-index: 40;
           background: linear-gradient(90deg, var(--nav-gradient-start) 0%, var(--nav-gradient-end) 100%);
           border-bottom: 1px solid var(--border-light);
           height: 40px;

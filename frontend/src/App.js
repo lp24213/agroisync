@@ -70,8 +70,8 @@ function App() {
                 {/* Premium Cursor */}
                 <PremiumCursor />
                 
-                       {/* AGROISYNC Header */}
-                       <AgroisyncHeader />
+                {/* AGROISYNC Header */}
+                <AgroisyncHeader />
                 
                 {/* Ticker fixo no topo */}
                 <Ticker />

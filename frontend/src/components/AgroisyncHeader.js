@@ -537,7 +537,7 @@ const AgroisyncHeader = () => {
         }
 
         .agro-navbar-spacer {
-          height: 70px;
+          height: 110px;
         }
 
         .agro-mobile-menu {
