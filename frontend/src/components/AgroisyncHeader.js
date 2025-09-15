@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { 
-  Globe, 
   User, 
   UserPlus, 
   MessageCircle,
@@ -13,7 +11,6 @@ import {
 } from 'lucide-react';
 
 const AgroisyncHeader = () => {
-  const { t } = useTranslation();
   const { user, logout } = useAuth();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -64,9 +61,9 @@ const AgroisyncHeader = () => {
             </div>
             <div className="agro-top-right">
               <div className="agro-social-links">
-                <a href="#" className="agro-social-link">📧</a>
-                <a href="#" className="agro-social-link">📱</a>
-                <a href="#" className="agro-social-link">💼</a>
+                <button className="agro-social-link">📧</button>
+                <button className="agro-social-link">📱</button>
+                <button className="agro-social-link">💼</button>
               </div>
             </div>
           </div>
@@ -234,9 +231,13 @@ const AgroisyncHeader = () => {
         }
 
         .agro-social-link {
+          background: none;
+          border: none;
           color: var(--agro-light-gray);
           text-decoration: none;
           transition: color 0.3s ease;
+          cursor: pointer;
+          padding: 4px;
         }
 
         .agro-social-link:hover {
