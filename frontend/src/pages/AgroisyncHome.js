@@ -9,8 +9,6 @@ import {
   Zap,
   Truck
 } from 'lucide-react';
-import AgroNewsCarousel from '../components/AgroNewsCarousel';
-import WeatherWidget from '../components/WeatherWidget';
 import CryptoChart from '../components/CryptoChart';
 import StockWidget from '../components/StockWidget';
 
@@ -177,7 +175,6 @@ const AgroisyncHome = () => {
               Fique por dentro das últimas novidades do setor
             </p>
           </div>
-          <AgroNewsCarousel />
         </div>
       </section>
 
@@ -192,9 +189,6 @@ const AgroisyncHome = () => {
           </div>
           
           <div className="agro-data-grid">
-            <div className="agro-data-widget">
-              <WeatherWidget />
-            </div>
             <div className="agro-data-widget">
               <CryptoChart />
             </div>

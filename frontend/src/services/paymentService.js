@@ -127,7 +127,7 @@ class PaymentService {
       console.error('Erro ao enviar pagamento crypto:', error);
       throw error;
     }
-  }
+    }
 
   // Payment Routing Logic
   async processPayment(paymentData) {
@@ -172,8 +172,8 @@ class PaymentService {
     } catch (error) {
       console.error('Erro ao processar pagamento:', error);
       throw error;
+      }
     }
-  }
 
   // Plan Pricing Logic
   getPlanPricing(planType, service) {

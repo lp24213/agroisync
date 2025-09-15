@@ -96,7 +96,6 @@ function App() {
                   <Route path="/loja" element={<Store />} />
                   <Route path="/tecnologia" element={<AgroisyncCrypto />} />
                   <Route path="/intermediation" element={<IntermediationSystem />} />
-                  <Route path="/crypto" element={<AgroisyncCrypto />} />
                   <Route path="/plans" element={<AgroisyncPlans />} />
                   <Route path="/about" element={<AgroisyncAbout />} />
                   <Route path="/contact" element={<AgroisyncContact />} />
