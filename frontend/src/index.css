@@ -8,13 +8,13 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
 
 /* Import TXC Real Theme */
-@import './styles/txc-real-theme.css';
+@import './styles/agro-real-theme.css';
 
 /* FORÇAR VISUAL TXC EM TODAS AS PÁGINAS */
-@import './styles/force-txc-visual.css';
+@import './styles/force-agro-visual.css';
 
 /* TXC SPECIFIC - SEM QUEBRAR COMPONENTES */
-@import './styles/txc-specific.css';
+@import './styles/agro-specific.css';
 
 /* CORREÇÃO DE CORES - PRETO, BRANCO E CINZA */
 @import './styles/black-white-gray-fix.css';
@@ -32,7 +32,7 @@
 @import './styles/fix-all-pages-txc.css';
 
 /* FORÇAR CORES TXC EM TUDO - REMOVIDO POR QUEBRAR COMPONENTES */
-/* @import './styles/txc-force-all.css'; */
+/* @import './styles/agro-force-all.css'; */
 
 /* EXECUÇÃO IMEDIATA - CSS FORÇADO */
 @import './styles/execute-immediate.css';
