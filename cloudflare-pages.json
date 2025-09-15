@@ -1,0 +1,9 @@
+{
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "buildOutputDirectory": "frontend/build",
+  "rootDirectory": ".",
+  "environmentVariables": {
+    "NODE_VERSION": "18.20.4",
+    "CI": "false"
+  }
+}

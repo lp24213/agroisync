@@ -9,9 +9,9 @@
 /* CSS Custom Properties - Paleta TXC + Grão Direto */
 :root {
   /* Cores principais TXC */
-  --txc-primary-green: #2D5A27;      /* Verde escuro TXC */
-  --txc-light-green: #4CAF50;        /* Verde médio TXC */
-  --txc-accent-green: #8BC34A;        /* Verde claro TXC */
+  --txc-primary-green: #1F2E1F;      /* Verde escuro TXC */
+  --txc-light-green: #39FF14;        /* Verde neon TXC */
+  --txc-accent-green: #2EFF2E;        /* Verde mais claro TXC */
   --txc-neon-green: #39FF14;         /* Verde neon TXC */
   
   /* Cores Grão Direto */
@@ -21,32 +21,32 @@
   
   /* Cores neutras profissionais */
   --neutral-white: #FFFFFF;
-  --neutral-light-gray: #F8F9FA;
-  --neutral-medium-gray: #E9ECEF;
-  --neutral-dark-gray: #6C757D;
-  --neutral-black: #212529;
+  --neutral-light-gray: #EDEDED;
+  --neutral-medium-gray: #B8B8B8;
+  --neutral-dark-gray: #2A3A2A;
+  --neutral-black: #0A0A0A;
   
   /* Cores de fundo */
-  --bg-primary: #FFFFFF;
-  --bg-secondary: #F8F9FA;
+  --bg-primary: #0A0A0A;              /* Quase preto */
+  --bg-secondary: #1A1A1A;            /* Cinza escuro */
   --bg-dark: #212529;
-  --bg-card: #FFFFFF;
-  --bg-hover: #F8F9FA;
+  --bg-card: rgba(26, 26, 46, 0.8);  /* Fundo de card com transparência */
+  --bg-hover: rgba(57, 255, 20, 0.1);
   
   /* Cores de texto */
-  --text-primary: #212529;
-  --text-secondary: #6C757D;
-  --text-light: #ADB5BD;
+  --text-primary: #FFFFFF;
+  --text-secondary: #EDEDED;
+  --text-light: #B8B8B8;
   --text-white: #FFFFFF;
   
   /* Cores de borda */
-  --border-light: #E9ECEF;
-  --border-medium: #DEE2E6;
-  --border-dark: #6C757D;
+  --border-light: rgba(255, 255, 255, 0.1);
+  --border-medium: rgba(255, 255, 255, 0.2);
+  --border-dark: rgba(255, 255, 255, 0.3);
   
   /* Gradientes profissionais */
-  --gradient-primary: linear-gradient(135deg, var(--txc-primary-green) 0%, var(--txc-light-green) 100%);
-  --gradient-secondary: linear-gradient(135deg, var(--grao-primary-gold) 0%, var(--grao-secondary-gold) 100%);
+  --gradient-primary: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  --gradient-secondary: linear-gradient(135deg, var(--txc-primary-green) 0%, var(--grao-primary-gold) 100%);
   --gradient-accent: linear-gradient(135deg, var(--txc-light-green) 0%, var(--grao-primary-gold) 100%);
   --gradient-hero: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
   
@@ -169,7 +169,7 @@ h1, h2, h3, h4, h5, h6 {
 h1 {
   font-size: var(--text-5xl);
   font-weight: var(--font-black);
-  background: var(--gradient-primary);
+  background: var(--gradient-accent);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -178,13 +178,13 @@ h1 {
 
 h2 {
   font-size: var(--text-4xl);
-  color: var(--txc-primary-green);
+  color: var(--txc-light-green);
   margin-bottom: var(--space-lg);
 }
 
 h3 {
   font-size: var(--text-3xl);
-  color: var(--txc-light-green);
+  color: var(--grao-primary-gold);
   margin-bottom: var(--space-md);
 }
 
@@ -225,8 +225,8 @@ a:hover {
 
 /* Botões profissionais */
 .btn-primary {
-  background: var(--gradient-primary);
-  color: var(--neutral-white);
+  background: linear-gradient(90deg, var(--txc-light-green) 0%, var(--txc-accent-green) 100%);
+  color: var(--bg-primary);
   border: none;
   padding: var(--space-md) var(--space-xl);
   border-radius: var(--radius-lg);
@@ -234,7 +234,7 @@ a:hover {
   font-size: var(--text-base);
   cursor: pointer;
   transition: var(--transition-normal);
-  box-shadow: var(--shadow-green);
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.6);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   position: relative;
@@ -248,8 +248,8 @@ a:hover {
 
 .btn-secondary {
   background: transparent;
-  color: var(--txc-primary-green);
-  border: 2px solid var(--txc-primary-green);
+  color: var(--grao-primary-gold);
+  border: 2px solid var(--grao-primary-gold);
   padding: var(--space-md) var(--space-xl);
   border-radius: var(--radius-lg);
   font-weight: var(--font-semibold);
@@ -261,9 +261,10 @@ a:hover {
 }
 
 .btn-secondary:hover {
-  background: var(--txc-primary-green);
-  color: var(--neutral-white);
+  background: var(--grao-primary-gold);
+  color: var(--bg-primary);
   transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
 }
 
 .btn-gold {
@@ -301,7 +302,7 @@ a:hover {
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: var(--shadow-xl);
+  box-shadow: 0 8px 25px rgba(57, 255, 20, 0.3);
   border-color: var(--txc-light-green);
 }
 
@@ -351,7 +352,7 @@ a:hover {
   left: 0;
   right: 0;
   z-index: var(--z-fixed);
-  background: var(--bg-card);
+  background: rgba(10, 10, 10, 0.95);
   border-bottom: 1px solid var(--border-light);
   box-shadow: var(--shadow-md);
   backdrop-filter: blur(10px);
@@ -361,7 +362,7 @@ a:hover {
 .navbar-scrolled {
   background: rgba(10, 10, 10, 0.98);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  border-bottom: 1px solid var(--primary-color);
+  border-bottom: 1px solid var(--txc-light-green);
 }
 
 .navbar-container {
@@ -381,9 +382,9 @@ a:hover {
 .navbar-logo-text {
   font-size: var(--text-2xl);
   font-weight: var(--font-black);
-  color: var(--txc-primary-green);
+  color: var(--txc-light-green);
   line-height: 1;
-  text-shadow: 0 2px 4px rgba(45, 90, 39, 0.2);
+  text-shadow: 0 0 15px rgba(57, 255, 20, 0.6);
 }
 
 .navbar-logo-tagline {
@@ -440,14 +441,14 @@ a:hover {
 }
 
 .navbar-link:hover {
-  color: var(--txc-primary-green);
+  color: var(--txc-light-green);
   background: rgba(57, 255, 20, 0.1);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(57, 255, 20, 0.2);
 }
 
 .navbar-link.active {
-  color: var(--txc-primary-green);
+  color: var(--txc-light-green);
   background: rgba(57, 255, 20, 0.15);
   box-shadow: 0 2px 8px rgba(57, 255, 20, 0.3);
 }
