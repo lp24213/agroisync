@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Wallet, ExternalLink, Copy, Check, AlertCircle, TrendingUp, TrendingDown } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Wallet, Copy, Check, AlertCircle, TrendingUp, TrendingDown } from 'lucide-react';
 
 const MetaMaskIntegration = () => {
-  const { t } = useTranslation();
   const [isConnected, setIsConnected] = useState(false);
   const [account, setAccount] = useState('');
   const [balance, setBalance] = useState('0');
@@ -21,9 +18,9 @@ const MetaMaskIntegration = () => {
     if (typeof window.ethereum !== 'undefined') {
       checkConnection();
     }
-  }, []);
+  }, [checkConnection]);
 
-  const checkConnection = async () => {
+  const checkConnection = useCallback(async () => {
     try {
       const accounts = await window.ethereum.request({ method: 'eth_accounts' });
       if (accounts.length > 0) {
@@ -35,7 +32,7 @@ const MetaMaskIntegration = () => {
     } catch (error) {
       console.error('Erro ao verificar conexão:', error);
     }
-  };
+  }, []);
 
   const connectWallet = async () => {
     if (typeof window.ethereum === 'undefined') {

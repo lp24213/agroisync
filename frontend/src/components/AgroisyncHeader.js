@@ -23,7 +23,6 @@ const AgroisyncHeader = () => {
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('pt');
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isOverHero, setIsOverHero] = useState(false);
 
   // Menu principal com ícones profissionais
   const navigationItems = [
@@ -61,14 +60,6 @@ const AgroisyncHeader = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
       
-      // Detectar se está sobre hero/banner
-      const heroElement = document.querySelector('[data-hero="true"]');
-      if (heroElement) {
-        const heroRect = heroElement.getBoundingClientRect();
-        setIsOverHero(heroRect.top <= 72 && heroRect.bottom > 72);
-      } else {
-        setIsOverHero(false);
-      }
     };
 
     // Verificar estado inicial

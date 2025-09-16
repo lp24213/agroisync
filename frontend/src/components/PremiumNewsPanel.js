@@ -4,7 +4,6 @@ import { ExternalLink, Calendar, Globe, TrendingUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 const PremiumNewsPanel = () => {
-  const { t } = useTranslation();
   const [news, setNews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
