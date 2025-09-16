@@ -6,12 +6,12 @@
 /* Importar fontes profissionais */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
-/* CSS Custom Properties - Paleta AGROISYNC (Baseada na Logotipo) */
+/* CSS Custom Properties - Paleta AGROISYNC (Baseada nas imagens fornecidas) */
 :root {
-  /* Cores principais da logotipo Agroisync */
-  --agro-organic-green: #3B5D2A;      /* Verde orgânico - principal */
+  /* Cores principais baseadas nas imagens */
+  --agro-organic-green: #3B5D2A;      /* Verde escuro das imagens - principal */
   --agro-light-green: #6C8C55;         /* Verde claro - hover e detalhes */
-  --agro-beige-bg: #F5EDE4;           /* Bege claro - fundo predominante */
+  --agro-beige-bg: #F5EDE4;           /* Bege claro das imagens - fundo predominante */
   --agro-white: #FFFFFF;              /* Branco puro - contraste */
   --agro-black: #111111;               /* Preto fosco - texto principal */
   --agro-gray: #666666;                /* Cinza médio - textos secundários */
@@ -157,7 +157,7 @@ body {
   font-size: var(--text-base);
   line-height: 1.6;
   color: var(--text-primary);
-  background: var(--agro-beige-bg);
+  background: #F5EDE4; /* Bege claro das imagens */
   margin: 0;
   padding: 0;
   min-height: 100vh;
@@ -375,7 +375,7 @@ a:hover {
   left: 0;
   right: 0;
   z-index: var(--z-fixed);
-  background: var(--agro-beige-bg);
+  background: #F5EDE4; /* Bege claro das imagens */
   border-bottom: 2px solid var(--agro-organic-green);
   box-shadow: var(--shadow-md);
   backdrop-filter: blur(10px);

@@ -14,6 +14,9 @@
 /* PREMIUM BACKGROUNDS */
 @import './styles/premium-backgrounds.css';
 
+/* NOVO REDESIGN AGROISYNC */
+@import './styles/agroisync-redesign.css';
+
 /* TEMA TXC + GRÃO DIRETO UNIFICADO */
 @import './styles/agro-txc-grao-theme.css';
 

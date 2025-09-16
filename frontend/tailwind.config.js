@@ -8,8 +8,18 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Premium Design System - Tesla + Solana inspired
-        // Preto fosco base
+        // Nova paleta AgroSync baseada nas imagens
+        'agro-white': '#FFFFFF',
+        'agro-green-primary': '#2e7d32',
+        'agro-green-hover': '#1b5e20',
+        'agro-gray-light': '#F5F5F5',
+        'agro-gray-medium': '#333333',
+        'agro-gray-hover': '#424242',
+        'agro-black': '#000000',
+        'agro-border-light': 'rgba(46, 125, 50, 0.1)',
+        'agro-border-medium': 'rgba(46, 125, 50, 0.2)',
+        
+        // Premium Design System - Tesla + Solana inspired (mantido para compatibilidade)
         'matte-black': '#0a0a0a',
         'matte-black-light': '#1a1a1a',
         'matte-black-lighter': '#2a2a2a',
@@ -49,6 +59,8 @@ module.exports = {
       },
       fontFamily: {
         'sans': ['Inter', 'system-ui', 'sans-serif'],
+        'display': ['Roboto', 'system-ui', 'sans-serif'],
+        'secondary': ['Open Sans', 'system-ui', 'sans-serif'],
         'mono': ['JetBrains Mono', 'monospace'],
       },
       animation: {

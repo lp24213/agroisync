@@ -136,7 +136,7 @@ const Store = () => {
       <AgroisyncHeroPrompt 
         title="Loja Agroisync"
         subtitle="Commodities Agrícolas em Tempo Real"
-        heroImage="/assets/loja-milho-soja-4k.jpg"
+        heroImage="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIwIiBoZWlnaHQ9IjEwODAiIHZpZXdCb3g9IjAgMCAxOTIwIDEwODAiPgogIDwhLS0gSW1hZ2VtIGRlIG1hcmtldHBsYWNlIGRpZ2l0YWwgLS0+CiAgPHJlY3Qgd2lkdGg9IjE5MjAiIGhlaWdodD0iMTA4MCIgZmlsbD0iI0ZGRkZGRiIvPgogIDx0ZXh0IHg9Ijk2MCIgeT0iNTQwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMzMzMiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlbSBkZSBNYXJrZXRwbGFjZSBEaWdpdGFsPC90ZXh0Pgo8L3N2Zz4K"
         showCTA={true}
       />
 

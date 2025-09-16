@@ -78,7 +78,7 @@ const AgroisyncHome = () => {
       <AgroisyncHeroPrompt 
         title="Agroisync"
         subtitle="A Plataforma de Agronegócio Mais Futurista do Mundo"
-        heroImage="/assets/hero-plantacao-4k.jpg"
+        heroImage="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIwIiBoZWlnaHQ9IjEwODAiIHZpZXdCb3g9IjAgMCAxOTIwIDEwODAiPgogIDwhLS0gSW1hZ2VtIGRlIHBsYW50YcOnw6NvIGRlIHNvamEgLS0+CiAgPHJlY3Qgd2lkdGg9IjE5MjAiIGhlaWdodD0iMTA4MCIgZmlsbD0iI0ZGRkZGRiIvPgogIDx0ZXh0IHg9Ijk2MCIgeT0iNTQwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMzMzMiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlbSBkZSBQbGFudGHDp8OjbyBkZSBTb2phPC90ZXh0Pgo8L3N2Zz4K"
         showCTA={true}
       />
 
@@ -206,12 +206,13 @@ const AgroisyncHome = () => {
       </section>
 
       <style jsx>{`
+        /* Aplicando nova paleta de cores - branco puro e verde vibrante */
         .agro-banner-section {
           position: relative;
           height: 70vh;
           min-height: 600px;
           overflow: hidden;
-          background: var(--agro-gradient-hero);
+          background: #FFFFFF;
         }
 
         .agro-banner-image {
@@ -251,23 +252,25 @@ const AgroisyncHome = () => {
         .agro-banner-title {
           font-size: 4rem;
           font-weight: 900;
-          color: white;
+          color: #000000; /* Preto puro para títulos */
           margin-bottom: 1.5rem;
           line-height: 1.2;
-          text-shadow: 0 0 20px rgba(57, 255, 20, 0.5);
-          background: var(--agro-gradient-accent);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          animation: glow 3s ease-in-out infinite;
+          text-shadow: none;
+          background: none;
+          -webkit-background-clip: unset;
+          -webkit-text-fill-color: unset;
+          background-clip: unset;
+          animation: none;
+          font-family: 'Roboto', sans-serif;
         }
 
         .agro-banner-description {
           font-size: 1.5rem;
-          color: var(--agro-light-gray);
+          color: #333333; /* Cinza escuro suave para texto corpo */
           margin-bottom: 2rem;
           line-height: 1.6;
-          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+          text-shadow: none;
+          font-family: 'Inter', sans-serif;
         }
 
         .agro-banner-buttons {
@@ -291,20 +294,22 @@ const AgroisyncHome = () => {
         .agro-section-title {
           font-size: 2.5rem;
           font-weight: 800;
-          color: var(--agro-dark-green);
+          color: #000000; /* Preto puro para títulos */
           margin-bottom: 1rem;
+          font-family: 'Roboto', sans-serif;
         }
 
         .agro-section-description {
           font-size: 1.125rem;
-          color: var(--agro-light-gray);
+          color: #333333; /* Cinza escuro suave para texto corpo */
           max-width: 600px;
           margin: 0 auto;
+          font-family: 'Inter', sans-serif;
         }
 
         .agro-features-section {
           padding: 6rem 0;
-          background: var(--agro-white);
+          background: #FFFFFF; /* Branco puro */
         }
 
         .agro-features-grid {
@@ -314,14 +319,14 @@ const AgroisyncHome = () => {
         }
 
         .agro-feature-card {
-          background: var(--agro-gradient-card);
-          border: 1px solid rgba(57, 255, 20, 0.2);
+          background: #F5F5F5; /* Cinza claro para painéis */
+          border: 1px solid rgba(46, 125, 50, 0.1); /* Verde vibrante sutil */
           padding: 2rem;
-          border-radius: var(--agro-radius-xl);
-          box-shadow: var(--agro-shadow-card);
+          border-radius: 12px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.08);
           text-align: center;
-          transition: var(--agro-transition-normal);
-          backdrop-filter: blur(10px);
+          transition: all 0.3s ease;
+          backdrop-filter: none;
           position: relative;
           overflow: hidden;
         }
@@ -337,51 +342,54 @@ const AgroisyncHome = () => {
         }
 
         .agro-feature-card:hover {
-          transform: translateY(-8px);
-          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-          border-color: rgba(57, 255, 20, 0.4);
+          transform: translateY(-3px);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+          border-color: rgba(46, 125, 50, 0.2); /* Verde vibrante */
         }
 
         .agro-feature-icon {
           width: 80px;
           height: 80px;
-          background: var(--agro-gradient-accent);
+          background: #2e7d32; /* Verde vibrante */
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
           margin: 0 auto 1.5rem;
-          color: var(--agro-dark-green);
-          box-shadow: var(--agro-shadow-neon-green);
-          animation: neon-pulse 3s ease-in-out infinite;
+          color: white;
+          box-shadow: 0 2px 8px rgba(46, 125, 50, 0.2);
+          animation: none;
         }
 
         .agro-feature-title {
           font-size: 1.5rem;
           font-weight: 700;
-          color: var(--agro-neon-green);
+          color: #000000; /* Preto puro para títulos */
           margin-bottom: 1rem;
-          text-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
+          text-shadow: none;
+          font-family: 'Roboto', sans-serif;
         }
 
         .agro-feature-description {
-          color: var(--agro-light-gray);
+          color: #333333; /* Cinza escuro suave para texto corpo */
           margin-bottom: 1.5rem;
           line-height: 1.6;
+          font-family: 'Inter', sans-serif;
         }
 
         .agro-feature-link {
-          color: var(--agro-green-accent);
+          color: #2e7d32; /* Verde vibrante para links */
           text-decoration: none;
           font-weight: 600;
           display: inline-flex;
           align-items: center;
           gap: 0.5rem;
           transition: color 0.3s ease;
+          font-family: 'Inter', sans-serif;
         }
 
         .agro-feature-link:hover {
-          color: var(--agro-dark-green);
+          color: #1b5e20; /* Verde mais escuro para hover */
         }
 
         .agro-stats-section {
@@ -466,21 +474,22 @@ const AgroisyncHome = () => {
         }
 
         .agro-btn-primary {
-          background: var(--agro-gradient-accent);
-          color: var(--agro-dark-green);
+          background: #616161; /* Cinza escuro para botões */
+          color: #FFFFFF;
           padding: 1rem 2rem;
-          border-radius: var(--agro-radius-lg);
+          border-radius: 8px;
           text-decoration: none;
           font-weight: 600;
           display: inline-flex;
           align-items: center;
           gap: 0.5rem;
-          transition: var(--agro-transition-normal);
-          box-shadow: var(--agro-shadow-neon-green);
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
+          transition: all 0.3s ease;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+          text-transform: none;
+          letter-spacing: 0.3px;
           position: relative;
           overflow: hidden;
+          font-family: 'Inter', sans-serif;
         }
 
         .agro-btn-primary::before {
@@ -499,23 +508,25 @@ const AgroisyncHome = () => {
         }
 
         .agro-btn-primary:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 8px 25px rgba(57, 255, 20, 0.6);
+          background: #424242; /* Cinza mais escuro para hover */
+          transform: translateY(-1px);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
         }
 
         .agro-btn-secondary {
           background: transparent;
-          color: var(--agro-neon-blue);
+          color: #2e7d32; /* Verde vibrante */
           padding: 1rem 2rem;
-          border: 2px solid var(--agro-neon-blue);
-          border-radius: var(--agro-radius-lg);
+          border: 2px solid #2e7d32;
+          border-radius: 8px;
           text-decoration: none;
           font-weight: 600;
-          transition: var(--agro-transition-normal);
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
+          transition: all 0.3s ease;
+          text-transform: none;
+          letter-spacing: 0.3px;
           position: relative;
           overflow: hidden;
+          font-family: 'Inter', sans-serif;
         }
 
         .agro-btn-secondary::before {
@@ -535,9 +546,10 @@ const AgroisyncHome = () => {
         }
 
         .agro-btn-secondary:hover {
-          color: var(--agro-dark-green);
-          transform: translateY(-3px);
-          box-shadow: var(--agro-shadow-neon-blue);
+          background: #2e7d32;
+          color: #FFFFFF;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 16px rgba(46, 125, 50, 0.2);
         }
 
         @media (max-width: 768px) {
