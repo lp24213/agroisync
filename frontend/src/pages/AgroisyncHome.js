@@ -50,7 +50,27 @@ const AgroisyncHome = () => {
     { number: '99.9%', label: t('stats.uptime'), color: 'var(--txc-light-green)' },
   ];
 
-  // Variáveis de animação removidas - não utilizadas após implementação do hero prompt
+  const sectionVariants = {
+    hidden: { opacity: 0, y: 60 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 1,
+        ease: 'easeOut',
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: 'easeOut' },
+    },
+  };
 
   return (
     <div>
@@ -65,22 +85,31 @@ const AgroisyncHome = () => {
       {/* Features Section */}
       <section className="section">
         <div className="container">
-          <div className="text-center mb-12">
-            <h2>Nossas Soluções</h2>
-            <p>
+          <motion.div 
+            className="text-center mb-12"
+            variants={sectionVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <motion.h2 variants={itemVariants}>Nossas Soluções</motion.h2>
+            <motion.p variants={itemVariants}>
               Tecnologia avançada para revolucionar o agronegócio brasileiro
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
           
-          <div className="grid grid-4">
+          <motion.div 
+            className="grid grid-4"
+            variants={sectionVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
             {features.map((feature, index) => (
               <motion.div
                 key={index}
                 className="card text-center"
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
+                variants={itemVariants}
               >
                 <div className="flex-center mb-4" style={{ color: 'var(--txc-primary-green)' }}>
                   {feature.icon}
@@ -92,7 +121,7 @@ const AgroisyncHome = () => {
                 </Link>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 

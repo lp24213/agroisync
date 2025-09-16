@@ -76,7 +76,27 @@ const AgroisyncAgroConecta = () => {
     },
   ];
 
-  // Variáveis de animação removidas - não utilizadas após implementação do hero prompt
+  const sectionVariants = {
+    hidden: { opacity: 0, y: 60 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 1,
+        ease: 'easeOut',
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: 'easeOut' },
+    },
+  };
 
   return (
     <div>
@@ -92,16 +112,18 @@ const AgroisyncAgroConecta = () => {
       <section className="agro-section">
         <div className="agro-container">
           <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            variants={sectionVariants}
+            initial="hidden"
+            whileInView="visible"
             viewport={{ once: true }}
-            transition={{ duration: 1 }}
             className="agro-text-center"
           >
-            <h2 className="agro-section-title">Recursos Principais</h2>
-            <p className="agro-section-subtitle">
+            <motion.h2 className="agro-section-title" variants={itemVariants}>
+              Recursos Principais
+            </motion.h2>
+            <motion.p className="agro-section-subtitle" variants={itemVariants}>
               Tecnologia avançada para revolucionar a logística agro
-            </p>
+            </motion.p>
           </motion.div>
 
           <div className="agro-cards-grid">
