@@ -15,9 +15,24 @@ import {
   Truck,
   Store,
   Zap,
-  Users,
-  Sprout
+  Users
 } from 'lucide-react';
+
+// Ícone da planta Agroisync (baseado na imagem)
+const AgroisyncIcon = ({ size = 28 }) => (
+  <svg width={size} height={size} viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    {/* Caule central */}
+    <path d="M14 8L14 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    {/* Folha esquerda */}
+    <path d="M14 12C10 10 8 8 6 6C4 8 6 10 8 12C10 14 12 12 14 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none"/>
+    {/* Folha direita */}
+    <path d="M14 12C18 10 20 8 22 6C24 8 22 10 20 12C18 14 16 12 14 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none"/>
+    {/* Folha superior */}
+    <path d="M14 8C12 6 10 4 8 2C10 4 12 6 14 8Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none"/>
+    {/* Semente superior */}
+    <circle cx="14" cy="6" r="2" fill="currentColor"/>
+  </svg>
+);
 
 const AgroisyncHeader = () => {
   const { user, logout } = useAuth();
@@ -100,7 +115,7 @@ const AgroisyncHeader = () => {
             <Link to="/" className="navbar-logo-link">
               <div className="navbar-logo-content">
                 <div className="navbar-logo-icon">
-                  <Sprout size={28} />
+                  <AgroisyncIcon size={28} />
                 </div>
                 <div className="navbar-logo-text-container">
                   <span className="navbar-logo-text">AGROISYNC</span>
