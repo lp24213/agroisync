@@ -2,53 +2,9 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { 
-  ArrowRight,
-  TrendingUp,
-  Shield,
-  Zap,
-  Truck
-} from 'lucide-react';
-import CryptoChart from '../components/CryptoChart';
-import StockWidget from '../components/StockWidget';
-import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt';
 
 const AgroisyncHome = () => {
   const { t } = useTranslation();
-  
-  const features = [
-    {
-      icon: <TrendingUp size={32} />,
-      title: 'Marketplace Digital',
-      description: 'Conecte-se com compradores e vendedores em uma plataforma segura e eficiente.',
-      link: '/marketplace',
-    },
-    {
-      icon: <Truck size={32} />,
-      title: 'AgroConecta',
-      description: 'Logística inteligente para otimizar toda a cadeia de suprimentos agrícolas.',
-      link: '/agroconecta',
-    },
-    {
-      icon: <Zap size={32} />,
-      title: 'Tecnologia Blockchain',
-      description: 'Transações seguras e transparentes com tecnologia de ponta.',
-      link: '/crypto',
-    },
-    {
-      icon: <Shield size={32} />,
-      title: 'Analytics Avançado',
-      description: 'Insights poderosos para tomar decisões estratégicas no agronegócio.',
-      link: '/dashboard',
-    },
-  ];
-
-  const stats = [
-    { number: '10K+', label: t('stats.users'), color: 'var(--txc-light-green)' },
-    { number: '50K+', label: t('stats.transactions'), color: 'var(--txc-accent-green)' },
-    { number: '$2M+', label: t('stats.volume'), color: 'var(--grao-primary-gold)' },
-    { number: '99.9%', label: t('stats.uptime'), color: 'var(--txc-light-green)' },
-  ];
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 60 },
@@ -97,9 +53,9 @@ const AgroisyncHome = () => {
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
                 A plataforma mais futurista e sofisticada do mundo para conectar produtores, compradores e transportadores. Design premium, tecnologia de ponta e performance excepcional.
-              </motion.p>
-              
-              <motion.div 
+            </motion.p>
+          
+          <motion.div 
                 className="agro-hero-cta"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -108,11 +64,11 @@ const AgroisyncHome = () => {
                 <Link to="/register" className="agro-btn-start">
                   Começar Agora
                 </Link>
-              </motion.div>
-            </div>
-          </section>
+          </motion.div>
+        </div>
+      </section>
 
-          {/* Statistics Section */}
+      {/* Statistics Section */}
           <section className="agro-stats-section">
             <div className="agro-stats-grid">
               <motion.div 
@@ -126,7 +82,7 @@ const AgroisyncHome = () => {
                 <div className="agro-stat-label">Usuários Ativos</div>
               </motion.div>
               
-              <motion.div 
+              <motion.div
                 className="agro-stat-item"
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
@@ -147,8 +103,8 @@ const AgroisyncHome = () => {
                 <div className="agro-stat-number">99,9%</div>
                 <div className="agro-stat-label">Uptime Garantido</div>
               </motion.div>
-            </div>
-          </section>
+        </div>
+      </section>
 
           {/* Features Section */}
           <section className="agro-features-section">
@@ -225,8 +181,8 @@ const AgroisyncHome = () => {
                   <div className="agro-shop-item-name">Colheitadeira Case®</div>
                   <div className="agro-shop-item-price">R$ 850.000</div>
                 </div>
-              </div>
-              
+          </div>
+          
               <div className="agro-shop-item">
                 <div className="agro-shop-item-image">
                   <div className="agro-implement-icon">⚙️</div>
@@ -262,7 +218,7 @@ const AgroisyncHome = () => {
                   Tecnologia SG revoluciona monitoramento de safras no Brasil
                 </div>
                 <div className="agro-news-time">3h atrás</div>
-              </div>
+        </div>
               
               <div className="agro-news-item">
                 <div className="agro-news-category">CLIMA</div>
@@ -561,11 +517,11 @@ const AgroisyncHome = () => {
           .agro-sidebar {
             order: -1;
           }
-
+          
           .agro-features-grid {
             grid-template-columns: 1fr;
           }
-
+          
           .agro-stats-grid {
             grid-template-columns: 1fr;
           }
@@ -596,7 +552,7 @@ const AgroisyncHome = () => {
           .agro-hero-title {
             font-size: 2rem;
           }
-
+          
           .agro-hero-section,
           .agro-stats-section,
           .agro-features-section {
