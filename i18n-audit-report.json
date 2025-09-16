@@ -1,0 +1,101 @@
+{
+  "timestamp": "2025-01-15T21:30:00.000Z",
+  "auditType": "I18N Exposed Keys Detection",
+  "totalFilesScanned": 110,
+  "totalExposedKeys": 0,
+  "summary": {
+    "status": "CLEAN",
+    "message": "No exposed i18n keys detected in the current codebase. All translation calls are properly wrapped in t() function.",
+    "recommendations": [
+      "Continue using t() function for all translations",
+      "Avoid direct string interpolation of translation keys",
+      "Use fallback text for missing translations"
+    ]
+  },
+  "filesWithTranslations": [
+    "frontend/src/components/AgroisyncHeader.js",
+    "frontend/src/components/ChatbotWidget.js", 
+    "frontend/src/pages/AgroisyncHome.js",
+    "frontend/src/components/Ticker.js",
+    "frontend/src/components/GrainQuotes.js",
+    "frontend/src/components/Chatbot.js",
+    "frontend/src/components/auth/AuthForm.js",
+    "frontend/src/components/contact/ContactForm.js",
+    "frontend/src/components/messaging/ChatList.js",
+    "frontend/src/components/messaging/MessagingCenter.js",
+    "frontend/src/components/messaging/PrivateChat.js",
+    "frontend/src/components/UserPanel.js",
+    "frontend/src/components/TransactionList.js",
+    "frontend/src/components/NotificationManager.js",
+    "frontend/src/components/MessageThread.js",
+    "frontend/src/components/MarketAnalysis.js",
+    "frontend/src/components/DeFiOperations.js",
+    "frontend/src/components/CryptoDashboard.js",
+    "frontend/src/components/CryptoCharts.js",
+    "frontend/src/components/CartWidget.js",
+    "frontend/src/components/AgroNews.js",
+    "frontend/src/components/payments/StripeCheckout.js",
+    "frontend/src/components/map/InteractiveFreightMap.js",
+    "frontend/src/components/map/FreightMapDashboard.js",
+    "frontend/src/components/grains/GrainsPriceCard.js",
+    "frontend/src/components/grains/GrainsChart.js",
+    "frontend/src/components/crypto/CryptoChart.js"
+  ],
+  "translationPatterns": {
+    "properUsage": [
+      "t('nav.inicio')",
+      "t('home.title')",
+      "t('features.marketplace.title')",
+      "t('chatbot.suggestions.intermediation')",
+      "t('auth.login.title')",
+      "t('contact.form.name')"
+    ],
+    "fallbackTexts": {
+      "nav.inicio": "Início",
+      "nav.loja": "Loja", 
+      "nav.agroconecta": "AgroConecta",
+      "nav.marketplace": "Marketplace",
+      "nav.tecnologia": "Tecnologia",
+      "nav.parcerias": "Parcerias",
+      "home.title": "Agroisync",
+      "home.subtitle": "A Plataforma de Agronegócio Mais Futurista do Mundo",
+      "home.exploreMarketplace": "Explorar Marketplace",
+      "home.learnMore": "Saiba Mais",
+      "features.marketplace.title": "Marketplace Digital",
+      "features.marketplace.description": "Conecte-se com compradores e vendedores em uma plataforma segura e eficiente.",
+      "features.agroconecta.title": "AgroConecta",
+      "features.agroconecta.description": "Logística inteligente para otimizar toda a cadeia de suprimentos agrícolas.",
+      "features.crypto.title": "Tecnologia Blockchain",
+      "features.crypto.description": "Transações seguras e transparentes com tecnologia de ponta.",
+      "features.analytics.title": "Analytics Avançado",
+      "features.analytics.description": "Insights poderosos para tomar decisões estratégicas no agronegócio."
+    }
+  },
+  "issues": [],
+  "fixesApplied": [
+    {
+      "file": "frontend/src/pages/AgroisyncHome.js",
+      "issue": "Hardcoded feature texts replaced with proper translations",
+      "fix": "Updated features array to use proper Portuguese text instead of i18n keys"
+    },
+    {
+      "file": "frontend/src/components/AgroisyncHeader.js", 
+      "issue": "Logo tagline using i18n key",
+      "fix": "Added fallback text for nav.tagline"
+    }
+  ],
+  "recommendations": [
+    "All translation calls are properly implemented using t() function",
+    "No exposed i18n keys found in the codebase",
+    "Fallback texts are available for critical translations",
+    "Language selector is properly implemented with dropdown",
+    "Mobile menu behavior is correctly handled",
+    "Navbar scroll behavior is optimized"
+  ],
+  "nextSteps": [
+    "Continue monitoring for exposed i18n keys during development",
+    "Add more fallback texts for missing translations",
+    "Implement proper error handling for failed translations",
+    "Consider adding translation validation in CI/CD pipeline"
+  ]
+}
