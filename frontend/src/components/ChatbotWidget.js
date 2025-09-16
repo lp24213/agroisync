@@ -145,7 +145,7 @@ const ChatbotWidget = () => {
               animate={{ rotate: 0, opacity: 1 }}
               exit={{ rotate: -90, opacity: 0 }}
             >
-              <MessageCircle className="w-6 h-6 text-white" />
+              <MessageCircle className="w-6 h-6 text-black" />
             </motion.div>
           )}
         </AnimatePresence>
@@ -175,7 +175,7 @@ const ChatbotWidget = () => {
                   onClick={() => setMode('text')}
                   className={`p-1 rounded ${mode === 'text' ? 'bg-gray-600 text-white' : 'text-gray-400'}`}
                 >
-                  <MessageCircle className="w-4 h-4" />
+                  <MessageCircle className="w-4 h-4 text-black" />
                 </button>
                 <button
                   onClick={toggleVoiceMode}
