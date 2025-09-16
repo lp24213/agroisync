@@ -244,15 +244,15 @@ const AgroisyncHome = () => {
         }
 
         .agro-banner-content {
-          text-align: center;
-          max-width: 800px;
+          text-align: left;
+          max-width: 100%;
           padding: 0 20px;
         }
 
         .agro-banner-title {
-          font-size: 2.5rem;
+          font-size: 2rem;
           font-weight: 700;
-          color: #000000; /* Preto puro para títulos */
+          color: #212529; /* Preto suave para títulos */
           margin-bottom: 1rem;
           line-height: 1.2;
           text-shadow: none;
@@ -262,28 +262,89 @@ const AgroisyncHome = () => {
           background-clip: unset;
           animation: none;
           font-family: 'Roboto', sans-serif;
+          text-align: left;
         }
 
         .agro-banner-description {
-          font-size: 1rem;
+          font-size: 0.9rem;
           color: #6C757D; /* Cinza médio para texto corpo */
           margin-bottom: 1.5rem;
           line-height: 1.5;
           text-shadow: none;
           font-family: 'Inter', sans-serif;
+          text-align: left;
         }
 
         .agro-banner-buttons {
           display: flex;
           gap: 1rem;
-          justify-content: center;
+          justify-content: flex-start;
           flex-wrap: wrap;
         }
 
         .agro-container {
-          max-width: 1200px;
+          max-width: 1400px;
           margin: 0 auto;
           padding: 0 20px;
+        }
+
+        .agro-store-section {
+          background: #F8F9FA;
+          border: 1px solid #E9ECEF;
+          border-radius: 12px;
+          padding: 1.5rem;
+          margin-left: 2rem;
+        }
+
+        .agro-store-title {
+          font-size: 1.2rem;
+          font-weight: 600;
+          color: #212529;
+          margin-bottom: 1rem;
+          font-family: 'Roboto', sans-serif;
+        }
+
+        .agro-store-item {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          padding: 0.75rem 0;
+          border-bottom: 1px solid #E9ECEF;
+        }
+
+        .agro-store-item:last-child {
+          border-bottom: none;
+        }
+
+        .agro-store-item-image {
+          width: 60px;
+          height: 60px;
+          background: #DEE2E6;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.5rem;
+          color: #6C757D;
+        }
+
+        .agro-store-item-info {
+          flex: 1;
+        }
+
+        .agro-store-item-name {
+          font-size: 0.9rem;
+          font-weight: 500;
+          color: #212529;
+          margin-bottom: 0.25rem;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .agro-store-item-price {
+          font-size: 0.8rem;
+          color: #4CAF50;
+          font-weight: 600;
+          font-family: 'Inter', sans-serif;
         }
 
         .agro-section-header {
