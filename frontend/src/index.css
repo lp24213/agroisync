@@ -85,83 +85,144 @@ body {
 /* Custom components */
 @layer components {
   .text-gradient {
-    @apply bg-gradient-to-r from-primary-500 via-purple-500 to-secondary-500 bg-clip-text text-transparent;
-  }
-  
-  .dark .text-gradient {
-    @apply bg-gradient-to-r from-neon-blue via-neon-purple to-neon-green bg-clip-text text-transparent;
+    background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 50%, var(--neon-green) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   
   .text-gradient-gold {
-    @apply bg-gradient-to-r from-yellow-500 to-yellow-400 bg-clip-text text-transparent;
-  }
-  
-  .dark .text-gradient-gold {
-    @apply bg-gradient-to-r from-neon-gold to-yellow-400 bg-clip-text text-transparent;
+    background: linear-gradient(135deg, var(--light-gold) 0%, var(--light-gold-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   
   .card-futuristic {
-    @apply bg-white/80 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-lg;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   }
   
   .dark .card-futuristic {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-glass;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   }
   
   .card-futuristic:hover {
-    @apply bg-white/90 border-gray-300/50 shadow-xl transition-all duration-300;
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
   }
   
   .dark .card-futuristic:hover {
-    @apply bg-white/10 border-white/20 shadow-neon transition-all duration-300;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+    transition: all 0.3s ease;
   }
   
   .glass-effect {
-    @apply bg-white/60 backdrop-blur-xl border border-gray-200/50;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
   
   .glass-effect:hover {
-    @apply bg-white/80 border-gray-300/50 transition-all duration-300;
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
   }
   
   .glass-effect-dark {
-    @apply bg-white/10 backdrop-blur-xl border border-white/20;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
   
   .glass-effect-dark:hover {
-    @apply bg-white/20 border-white/30 transition-all duration-300;
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
   }
   
   .btn-primary {
-    @apply bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold px-6 py-3 rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl;
+    background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 100%);
+    color: var(--premium-white);
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    transform: scale(1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   }
   
-  .dark .btn-primary {
-    @apply bg-gradient-to-r from-neon-blue to-neon-purple text-white font-semibold px-6 py-3 rounded-xl hover:from-neon-purple hover:to-neon-blue transition-all duration-300 transform hover:scale-105 hover:shadow-neon;
+  .btn-primary:hover {
+    background: linear-gradient(135deg, var(--neon-purple) 0%, var(--neon-blue) 100%);
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
   }
   
   .btn-secondary {
-    @apply glass-effect text-gray-800 font-semibold px-6 py-3 rounded-xl hover:bg-white/80 transition-all duration-300 transform hover:scale-105;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--premium-white);
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    transform: scale(1);
   }
   
-  .dark .btn-secondary {
-    @apply glass-effect-dark text-white font-semibold px-6 py-3 rounded-xl hover:bg-white/20 transition-all duration-300 transform hover:scale-105;
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
   }
   
   .btn-ghost {
-    @apply text-gray-600 hover:text-gray-800 hover:bg-gray-100/50 px-4 py-2 rounded-lg transition-all duration-300;
+    color: var(--premium-gray-dark);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: transparent;
+    border: none;
   }
   
-  .dark .btn-ghost {
-    @apply text-gray-300 hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-all duration-300;
+  .btn-ghost:hover {
+    color: var(--premium-white);
+    background: rgba(255, 255, 255, 0.1);
   }
   
   .input-futuristic {
-    @apply bg-white/80 backdrop-blur-xl border border-gray-200/50 rounded-xl px-4 py-3 text-gray-800 placeholder-gray-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-300;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--premium-white);
+    transition: all 0.3s ease;
   }
   
-  .dark .input-futuristic {
-    @apply bg-white/5 backdrop-blur-xl border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:border-neon-blue focus:ring-2 focus:ring-neon-blue/20 transition-all duration-300;
+  .input-futuristic::placeholder {
+    color: var(--premium-gray-dark);
+  }
+  
+  .input-futuristic:focus {
+    outline: none;
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
   }
   
   .cyber-grid {
