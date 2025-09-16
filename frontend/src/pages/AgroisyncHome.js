@@ -50,27 +50,7 @@ const AgroisyncHome = () => {
     { number: '99.9%', label: t('stats.uptime'), color: 'var(--txc-light-green)' },
   ];
 
-  const heroVariants = {
-    hidden: { opacity: 0, y: 60 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 1,
-        ease: 'easeOut',
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 40 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, ease: 'easeOut' },
-    },
-  };
+  // Variáveis de animação removidas - não utilizadas após implementação do hero prompt
 
   return (
     <div>
