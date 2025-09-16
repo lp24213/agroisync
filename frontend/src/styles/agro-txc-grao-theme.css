@@ -6,9 +6,17 @@
 /* Importar fontes profissionais */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
-/* CSS Custom Properties - Paleta TXC + Grão Direto */
+/* CSS Custom Properties - Paleta AGROISYNC (Baseada na Logotipo) */
 :root {
-  /* Cores principais TXC */
+  /* Cores principais da logotipo Agroisync */
+  --agro-organic-green: #3B5D2A;      /* Verde orgânico - principal */
+  --agro-light-green: #6C8C55;         /* Verde claro - hover e detalhes */
+  --agro-beige-bg: #F5EDE4;           /* Bege claro - fundo predominante */
+  --agro-white: #FFFFFF;              /* Branco puro - contraste */
+  --agro-black: #111111;               /* Preto fosco - texto principal */
+  --agro-gray: #666666;                /* Cinza médio - textos secundários */
+  
+  /* Cores TXC (mantidas para compatibilidade) */
   --txc-primary-green: #1F2E1F;      /* Verde escuro TXC */
   --txc-light-green: #39FF14;        /* Verde neon TXC */
   --txc-accent-green: #2EFF2E;        /* Verde mais claro TXC */
@@ -26,36 +34,36 @@
   --neutral-dark-gray: #2A3A2A;
   --neutral-black: #0A0A0A;
   
-  /* Cores de fundo */
-  --bg-primary: #0A0A0A;              /* Quase preto */
-  --bg-secondary: #1A1A1A;            /* Cinza escuro */
-  --bg-dark: #212529;
-  --bg-card: rgba(26, 26, 46, 0.8);  /* Fundo de card com transparência */
-  --bg-hover: rgba(57, 255, 20, 0.1);
+  /* Cores de fundo Agroisync */
+  --bg-primary: var(--agro-beige-bg);     /* Bege claro - fundo principal */
+  --bg-secondary: var(--agro-white);      /* Branco - fundo secundário */
+  --bg-dark: var(--agro-black);           /* Preto fosco - fundo escuro */
+  --bg-card: var(--agro-white);           /* Branco - fundo de cards */
+  --bg-hover: rgba(59, 93, 42, 0.1);     /* Verde orgânico com transparência */
   
-  /* Cores de texto */
-  --text-primary: #FFFFFF;
-  --text-secondary: #EDEDED;
-  --text-light: #B8B8B8;
-  --text-white: #FFFFFF;
+  /* Cores de texto Agroisync */
+  --text-primary: var(--agro-black);       /* Preto fosco - texto principal */
+  --text-secondary: var(--agro-gray);      /* Cinza médio - texto secundário */
+  --text-light: var(--agro-gray);          /* Cinza médio - texto claro */
+  --text-white: var(--agro-white);         /* Branco - texto sobre fundo escuro */
   
-  /* Cores de borda */
-  --border-light: rgba(255, 255, 255, 0.1);
-  --border-medium: rgba(255, 255, 255, 0.2);
-  --border-dark: rgba(255, 255, 255, 0.3);
+  /* Cores de borda Agroisync */
+  --border-light: rgba(59, 93, 42, 0.2);     /* Verde orgânico claro */
+  --border-medium: rgba(59, 93, 42, 0.4);    /* Verde orgânico médio */
+  --border-dark: rgba(59, 93, 42, 0.6);      /* Verde orgânico escuro */
   
-  /* Gradientes profissionais */
-  --gradient-primary: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-  --gradient-secondary: linear-gradient(135deg, var(--txc-primary-green) 0%, var(--grao-primary-gold) 100%);
-  --gradient-accent: linear-gradient(135deg, var(--txc-light-green) 0%, var(--grao-primary-gold) 100%);
-  --gradient-hero: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  /* Gradientes Agroisync */
+  --gradient-primary: linear-gradient(135deg, var(--agro-beige-bg) 0%, var(--agro-white) 100%);
+  --gradient-secondary: linear-gradient(135deg, var(--agro-organic-green) 0%, var(--agro-light-green) 100%);
+  --gradient-accent: linear-gradient(135deg, var(--agro-organic-green) 0%, var(--agro-light-green) 100%);
+  --gradient-hero: linear-gradient(135deg, var(--agro-beige-bg) 0%, var(--agro-white) 50%, var(--agro-beige-bg) 100%);
   
-  /* Sombras profissionais */
+  /* Sombras Agroisync */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
-  --shadow-green: 0 4px 15px rgba(45, 90, 39, 0.2);
+  --shadow-green: 0 4px 12px rgba(59, 93, 42, 0.2);
   --shadow-gold: 0 4px 15px rgba(255, 215, 0, 0.2);
   
   /* Espaçamentos */
@@ -69,9 +77,9 @@
   --space-4xl: 80px;
   
   /* Fontes */
-  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-secondary: 'Montserrat', sans-serif;
-  --font-display: 'Poppins', sans-serif;
+  --font-primary: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-secondary: 'Inter', sans-serif;
+  --font-display: 'Montserrat', sans-serif;
   
   /* Pesos de fonte */
   --font-light: 300;
@@ -149,7 +157,7 @@ body {
   font-size: var(--text-base);
   line-height: 1.6;
   color: var(--text-primary);
-  background: var(--bg-primary);
+  background: var(--agro-beige-bg);
   margin: 0;
   padding: 0;
   min-height: 100vh;
@@ -171,10 +179,7 @@ h1, h2, h3, h4, h5, h6 {
 h1 {
   font-size: var(--text-5xl);
   font-weight: var(--font-black);
-  background: var(--gradient-accent);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--agro-black);
   margin: 0 auto var(--space-xl) auto;
   text-align: center;
   max-width: 100%;
@@ -184,7 +189,7 @@ h1 {
 
 h2 {
   font-size: var(--text-4xl);
-  color: var(--txc-light-green);
+  color: var(--agro-organic-green);
   margin: 0 auto var(--space-lg) auto;
   text-align: center;
   max-width: 100%;
@@ -194,7 +199,7 @@ h2 {
 
 h3 {
   font-size: var(--text-3xl);
-  color: var(--grao-primary-gold);
+  color: var(--agro-light-green);
   margin: 0 auto var(--space-md) auto;
   text-align: center;
   max-width: 100%;
@@ -241,16 +246,16 @@ a:hover {
 
 /* Botões profissionais */
 .btn-primary {
-  background: linear-gradient(90deg, var(--txc-light-green) 0%, var(--txc-accent-green) 100%);
-  color: var(--bg-primary);
+  background: var(--agro-organic-green);
+  color: var(--agro-white);
   border: none;
   padding: var(--space-md) var(--space-xl);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   font-weight: var(--font-semibold);
   font-size: var(--text-base);
   cursor: pointer;
   transition: var(--transition-normal);
-  box-shadow: 0 0 15px rgba(57, 255, 20, 0.6);
+  box-shadow: var(--shadow-md);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   position: relative;
@@ -258,16 +263,17 @@ a:hover {
 }
 
 .btn-primary:hover {
+  background: var(--agro-light-green);
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
 
 .btn-secondary {
   background: transparent;
-  color: var(--grao-primary-gold);
-  border: 2px solid var(--grao-primary-gold);
+  color: var(--agro-organic-green);
+  border: 2px solid var(--agro-organic-green);
   padding: var(--space-md) var(--space-xl);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   font-weight: var(--font-semibold);
   font-size: var(--text-base);
   cursor: pointer;
@@ -277,10 +283,10 @@ a:hover {
 }
 
 .btn-secondary:hover {
-  background: var(--grao-primary-gold);
-  color: var(--bg-primary);
+  background: var(--agro-organic-green);
+  color: var(--agro-white);
   transform: translateY(-2px);
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+  box-shadow: var(--shadow-green);
 }
 
 .btn-gold {
@@ -305,7 +311,7 @@ a:hover {
 
 /* Cards profissionais */
 .card {
-  background: var(--bg-card);
+  background: var(--agro-white);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-xl);
   padding: var(--space-xl);
@@ -318,8 +324,8 @@ a:hover {
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(57, 255, 20, 0.3);
-  border-color: var(--txc-light-green);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--agro-organic-green);
 }
 
 .card::before {
@@ -334,7 +340,7 @@ a:hover {
 
 /* Containers */
 .container {
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 var(--space-lg);
 }
@@ -368,7 +374,7 @@ a:hover {
   left: 0;
   right: 0;
   z-index: var(--z-fixed);
-  background: rgba(10, 10, 10, 0.95);
+  background: var(--agro-beige-bg);
   border-bottom: 1px solid var(--border-light);
   box-shadow: var(--shadow-md);
   backdrop-filter: blur(10px);
@@ -376,9 +382,9 @@ a:hover {
 }
 
 .navbar-scrolled {
-  background: rgba(10, 10, 10, 0.98);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  border-bottom: 1px solid var(--txc-light-green);
+  background: var(--agro-white);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--agro-organic-green);
 }
 
 .navbar-container {
@@ -400,9 +406,9 @@ a:hover {
 .navbar-logo-text {
   font-size: var(--text-2xl);
   font-weight: var(--font-black);
-  color: var(--txc-light-green);
+  color: var(--agro-organic-green);
   line-height: 1;
-  text-shadow: 0 0 15px rgba(57, 255, 20, 0.6);
+  text-shadow: none;
 }
 
 .navbar-logo-tagline {
@@ -433,7 +439,7 @@ a:hover {
 }
 
 .navbar-link {
-  color: var(--text-primary);
+  color: var(--agro-organic-green);
   text-decoration: none;
   font-weight: var(--font-medium);
   font-size: var(--text-base);
@@ -465,16 +471,16 @@ a:hover {
 }
 
 .navbar-link:hover {
-  color: var(--txc-light-green);
-  background: rgba(57, 255, 20, 0.1);
+  color: var(--agro-light-green);
+  background: var(--bg-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(57, 255, 20, 0.2);
+  box-shadow: var(--shadow-green);
 }
 
 .navbar-link.active {
-  color: var(--txc-light-green);
-  background: rgba(57, 255, 20, 0.15);
-  box-shadow: 0 2px 8px rgba(57, 255, 20, 0.3);
+  color: var(--agro-light-green);
+  background: var(--bg-hover);
+  box-shadow: var(--shadow-green);
 }
 
 .navbar-link::after {
