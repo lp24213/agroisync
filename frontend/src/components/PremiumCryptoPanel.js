@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Bitcoin, Zap, Coins, Link, Activity, Wallet } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import MetaMaskIntegration from './MetaMaskIntegration';
 
 const PremiumCryptoPanel = () => {

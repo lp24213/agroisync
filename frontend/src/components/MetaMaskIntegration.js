@@ -13,13 +13,6 @@ const MetaMaskIntegration = () => {
   // Endereço da carteira central
   const CENTRAL_WALLET = '0x5Ea5C5970e8AE23A5336d631707CF31C5916E8b1';
 
-  useEffect(() => {
-    // Verificar se MetaMask está instalado
-    if (typeof window.ethereum !== 'undefined') {
-      checkConnection();
-    }
-  }, [checkConnection]);
-
   const checkConnection = useCallback(async () => {
     try {
       const accounts = await window.ethereum.request({ method: 'eth_accounts' });
@@ -33,6 +26,13 @@ const MetaMaskIntegration = () => {
       console.error('Erro ao verificar conexão:', error);
     }
   }, []);
+
+  useEffect(() => {
+    // Verificar se MetaMask está instalado
+    if (typeof window.ethereum !== 'undefined') {
+      checkConnection();
+    }
+  }, [checkConnection]);
 
   const connectWallet = async () => {
     if (typeof window.ethereum === 'undefined') {

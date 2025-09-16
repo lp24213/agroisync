@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, Calendar, Globe, TrendingUp } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 
 const PremiumNewsPanel = () => {
   const [news, setNews] = useState([]);
