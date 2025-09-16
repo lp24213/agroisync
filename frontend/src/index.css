@@ -5,6 +5,9 @@
 /* TEMA TXC + GRÃO DIRETO UNIFICADO */
 @import './styles/agro-txc-grao-theme.css';
 
+/* HEADER TRANSPARENTE */
+@import './styles/header-transparent.css';
+
 /* Base styles */
 * {
   margin: 0;
