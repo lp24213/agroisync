@@ -17,6 +17,8 @@ import NewsFeed from './components/NewsFeed';
 
 // Importar tema TXC + Grão Direto unificado
 import './styles/agro-txc-grao-theme.css';
+// Importar override CSS para correções específicas
+import './styles/ui-txc-final-override.css';
 
 // Pages
 import AgroisyncHome from './pages/AgroisyncHome';
