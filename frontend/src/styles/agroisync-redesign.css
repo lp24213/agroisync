@@ -8,19 +8,22 @@
 
 /* CSS Custom Properties - Nova Paleta AgroSync */
 :root {
-  /* Cores principais baseadas nas imagens */
+  /* Cores principais baseadas na imagem do layout */
   --agro-white: #FFFFFF;                    /* Branco puro - fundo principal */
-  --agro-green-primary: #2e7d32;           /* Verde vibrante - elementos interativos */
-  --agro-gray-light: #F5F5F5;              /* Cinza claro - painéis/cards */
-  --agro-gray-medium: #333333;             /* Cinza escuro suave - texto corpo */
-  --agro-black: #000000;                   /* Preto puro - títulos */
-  --agro-gray-text: #333333;              /* Cinza escuro - links/menu */
+  --agro-green-primary: #4CAF50;           /* Verde moderno - elementos interativos */
+  --agro-gray-light: #F8F9FA;              /* Cinza muito claro - painéis/cards */
+  --agro-gray-medium: #6C757D;            /* Cinza médio - texto corpo */
+  --agro-black: #212529;                   /* Preto suave - títulos */
+  --agro-gray-text: #495057;              /* Cinza escuro - links/menu */
   
-  /* Cores de apoio */
-  --agro-green-hover: #1b5e20;            /* Verde mais escuro para hover */
-  --agro-gray-hover: #424242;             /* Cinza mais escuro para hover */
-  --agro-border-light: rgba(46, 125, 50, 0.1);  /* Borda sutil */
-  --agro-border-medium: rgba(46, 125, 50, 0.2);  /* Borda média */
+  /* Cores de apoio baseadas na imagem */
+  --agro-green-hover: #45A049;            /* Verde mais escuro para hover */
+  --agro-gray-hover: #5A6268;             /* Cinza mais escuro para hover */
+  --agro-blue-accent: #007BFF;            /* Azul para destaques */
+  --agro-orange-accent: #FD7E14;          /* Laranja para destaques */
+  --agro-red-accent: #DC3545;             /* Vermelho para alertas */
+  --agro-border-light: #E9ECEF;           /* Borda sutil */
+  --agro-border-medium: #DEE2E6;          /* Borda média */
   
   /* Sombras */
   --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.08);

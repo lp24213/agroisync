@@ -266,7 +266,7 @@ const AgroisyncHome = () => {
 
         .agro-banner-description {
           font-size: 1rem;
-          color: #333333; /* Cinza escuro suave para texto corpo */
+          color: #6C757D; /* Cinza médio para texto corpo */
           margin-bottom: 1.5rem;
           line-height: 1.5;
           text-shadow: none;
@@ -301,7 +301,7 @@ const AgroisyncHome = () => {
 
         .agro-section-description {
           font-size: 0.9rem;
-          color: #333333; /* Cinza escuro suave para texto corpo */
+          color: #6C757D; /* Cinza médio para texto corpo */
           max-width: 600px;
           margin: 0 auto;
           font-family: 'Inter', sans-serif;
@@ -371,7 +371,7 @@ const AgroisyncHome = () => {
         }
 
         .agro-feature-description {
-          color: #333333; /* Cinza escuro suave para texto corpo */
+          color: #6C757D; /* Cinza médio para texto corpo */
           margin-bottom: 1.5rem;
           line-height: 1.6;
           font-family: 'Inter', sans-serif;
@@ -389,7 +389,7 @@ const AgroisyncHome = () => {
         }
 
         .agro-feature-link:hover {
-          color: #1b5e20; /* Verde mais escuro para hover */
+          color: #45A049; /* Verde mais escuro para hover */
         }
 
         .agro-stats-section {
@@ -508,7 +508,7 @@ const AgroisyncHome = () => {
         }
 
         .agro-btn-primary:hover {
-          background: #424242; /* Cinza mais escuro para hover */
+          background: #5A6268; /* Cinza mais escuro para hover */
           transform: translateY(-1px);
           box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
         }

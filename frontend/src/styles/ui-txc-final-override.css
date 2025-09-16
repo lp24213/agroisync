@@ -139,7 +139,7 @@
 
 .hero-subtitle {
   font-size: 18px !important;
-  color: #333333 !important;
+  color: #6C757D !important;
   margin: 0 auto 24px auto !important;
   text-align: center !important;
   max-width: 100% !important;
@@ -177,7 +177,7 @@
 }
 
 .btn-primary:hover {
-  background: #424242 !important;
+  background: #5A6268 !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
 }
@@ -200,10 +200,10 @@
 }
 
 .btn-secondary:hover {
-  background: #2e7d32 !important;
+  background: #4CAF50 !important;
   color: #FFFFFF !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 4px 16px rgba(46, 125, 50, 0.2) !important;
+  box-shadow: 0 4px 16px rgba(76, 175, 80, 0.2) !important;
 }
 
 /* === LANGUAGE SELECTOR FIXES === */
@@ -440,7 +440,7 @@ h3 {
 }
 
 p {
-  color: #333333 !important;
+  color: #6C757D !important;
   font-family: 'Inter', sans-serif !important;
   font-weight: 400 !important;
   font-size: 14px !important;
@@ -459,13 +459,13 @@ p {
 .card:hover {
   transform: translateY(-3px) !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
-  border-color: rgba(46, 125, 50, 0.2) !important;
+  border-color: #DEE2E6 !important;
 }
 
 /* === BODY BACKGROUND FIX === */
 body {
   background: #FFFFFF !important;
-  color: #333333 !important;
+  color: #6C757D !important;
   font-family: 'Inter', sans-serif !important;
 }
 
