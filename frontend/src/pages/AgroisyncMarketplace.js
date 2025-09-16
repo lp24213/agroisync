@@ -10,6 +10,7 @@ import {
   Star,
   CheckCircle
 } from 'lucide-react';
+import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt';
 
 const AgroisyncMarketplace = () => {
   const [email, setEmail] = useState('');
@@ -91,67 +92,13 @@ const AgroisyncMarketplace = () => {
 
   return (
     <div>
-      {/* Hero Section TXC */}
-      <section className="agro-hero-section" style={{
-        background: 'linear-gradient(rgba(31, 46, 31, 0.4), rgba(31, 46, 31, 0.4)), url("https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=1920&h=1080&fit=crop")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-      }}>
-        <div className="agro-hero-content">
-          <motion.div
-            variants={heroVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            <motion.div
-              variants={itemVariants}
-              style={{ marginBottom: 'var(--agro-space-xl)' }}
-            >
-              <div style={{
-                width: '120px',
-                height: '120px',
-                margin: '0 auto',
-                background: 'var(--agro-gradient-accent)',
-                borderRadius: 'var(--agro-radius-3xl)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--agro-dark-green)',
-                boxShadow: 'var(--agro-shadow-lg)'
-              }}>
-                <TrendingUp size={48} />
-              </div>
-            </motion.div>
-
-            <motion.h1 className="agro-hero-title" variants={itemVariants}>
-              MARKETPLACE AGRO
-            </motion.h1>
-            
-            <motion.p className="agro-hero-subtitle" variants={itemVariants}>
-              Conecte-se com compradores e vendedores de commodities agrícolas em uma plataforma segura e eficiente
-            </motion.p>
-
-            <motion.div 
-              style={{ 
-                display: 'flex', 
-                gap: 'var(--agro-space-lg)', 
-                justifyContent: 'center', 
-                flexWrap: 'wrap',
-                marginTop: 'var(--agro-space-xl)'
-              }}
-              variants={itemVariants}
-            >
-              <Link to="/register" className="agro-btn-outline">
-                Começar Agora
-                <ArrowRight size={20} />
-              </Link>
-              <Link to="/about" className="agro-btn-outline">
-                Saiba Mais
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
+      {/* HERO COM IMAGEM 4K DE CAMINHÕES (MESMA DO AGROCONECTA) */}
+      <AgroisyncHeroPrompt 
+        title="Marketplace Agro"
+        subtitle="Conecte-se com compradores e vendedores de commodities agrícolas"
+        heroImage="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=1920&h=1080&fit=crop&q=80"
+        showCTA={true}
+      />
 
       {/* Features Section */}
       <section className="agro-section">

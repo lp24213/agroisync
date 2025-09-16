@@ -12,6 +12,7 @@ import {
   Star,
   Award
 } from 'lucide-react';
+import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt';
 
 const Partnerships = () => {
   const [formData, setFormData] = useState({
@@ -257,26 +258,13 @@ const Partnerships = () => {
   return (
     <div className="partnerships-page">
       <div className="partnerships-container">
-        {/* Hero Section */}
-        <section className="partnerships-hero">
-          <div className="hero-content">
-            <motion.div
-              initial={{ opacity: 0, y: 60 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
-              className="hero-text"
-            >
-              <div className="hero-icon">
-                <Users size={48} />
-              </div>
-              <h1>Seja Nosso Parceiro</h1>
-              <p>
-                Junte-se à AGROISYNC e faça parte da revolução do agronegócio brasileiro.
-                Oferecemos oportunidades únicas de parceria para empresas inovadoras.
-              </p>
-            </motion.div>
-          </div>
-        </section>
+        {/* HERO COM IMAGEM 4K DE HOMENS APERTANDO AS MÃOS */}
+        <AgroisyncHeroPrompt 
+          title="Seja Nosso Parceiro"
+          subtitle="Junte-se à AGROISYNC e faça parte da revolução do agronegócio brasileiro"
+          heroImage="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1920&h=1080&fit=crop&q=80"
+          showCTA={true}
+        />
 
         {/* Benefits Section */}
         <section className="benefits-section">

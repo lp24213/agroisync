@@ -100,11 +100,11 @@ const AgroisyncAgroConecta = () => {
 
   return (
     <div>
-      {/* HERO COM IMAGEM 4K DE CAMINHÕES */}
+      {/* HERO COM IMAGEM 4K DE VÁRIOS CAMINHÕES */}
       <AgroisyncHeroPrompt 
         title="AgroConecta"
         subtitle="Logística Inteligente para o Agronegócio"
-        heroImage="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1920&h=1080&fit=crop&q=80"
+        heroImage="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=1920&h=1080&fit=crop&q=80"
         showCTA={true}
       />
 

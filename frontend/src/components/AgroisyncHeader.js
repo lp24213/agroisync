@@ -45,12 +45,12 @@ const AgroisyncHeader = () => {
 
   // Menu principal com ícones profissionais
   const navigationItems = [
-    { path: '/', label: t('nav.inicio'), icon: Home },
-    { path: '/loja', label: t('nav.loja'), icon: ShoppingCart },
-    { path: '/agroconecta', label: t('nav.agroconecta'), icon: Truck },
-    { path: '/marketplace', label: t('nav.marketplace'), icon: Store },
-    { path: '/tecnologia', label: t('nav.tecnologia'), icon: Zap },
-    { path: '/partnerships', label: t('nav.parcerias'), icon: Users }
+    { path: '/', label: 'Início', icon: Home },
+    { path: '/loja', label: 'Loja', icon: ShoppingCart },
+    { path: '/agroconecta', label: 'AgroConecta', icon: Truck },
+    { path: '/marketplace', label: 'Marketplace', icon: Store },
+    { path: '/tecnologia', label: 'Tecnologia', icon: Zap },
+    { path: '/partnerships', label: 'Parcerias', icon: Users }
   ];
 
   // Idiomas disponíveis

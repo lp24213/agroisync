@@ -132,11 +132,11 @@ const Store = () => {
 
   return (
     <div className="min-h-screen">
-      {/* HERO COM IMAGEM 4K DE MILHO/SOJA */}
+      {/* HERO COM IMAGEM 4K DE GRÃOS (TRIGO) */}
       <AgroisyncHeroPrompt 
         title="Loja Agroisync"
         subtitle="Commodities Agrícolas em Tempo Real"
-        heroImage="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1920&h=1080&fit=crop&q=80"
+        heroImage="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=1920&h=1080&fit=crop&q=80"
         showCTA={true}
       />
 
