@@ -250,10 +250,10 @@ const AgroisyncHome = () => {
         }
 
         .agro-banner-title {
-          font-size: 4rem;
-          font-weight: 900;
+          font-size: 2.5rem;
+          font-weight: 700;
           color: #000000; /* Preto puro para títulos */
-          margin-bottom: 1.5rem;
+          margin-bottom: 1rem;
           line-height: 1.2;
           text-shadow: none;
           background: none;
@@ -265,10 +265,10 @@ const AgroisyncHome = () => {
         }
 
         .agro-banner-description {
-          font-size: 1.5rem;
+          font-size: 1rem;
           color: #333333; /* Cinza escuro suave para texto corpo */
-          margin-bottom: 2rem;
-          line-height: 1.6;
+          margin-bottom: 1.5rem;
+          line-height: 1.5;
           text-shadow: none;
           font-family: 'Inter', sans-serif;
         }
@@ -292,15 +292,15 @@ const AgroisyncHome = () => {
         }
 
         .agro-section-title {
-          font-size: 2.5rem;
-          font-weight: 800;
+          font-size: 1.5rem;
+          font-weight: 600;
           color: #000000; /* Preto puro para títulos */
-          margin-bottom: 1rem;
+          margin-bottom: 0.75rem;
           font-family: 'Roboto', sans-serif;
         }
 
         .agro-section-description {
-          font-size: 1.125rem;
+          font-size: 0.9rem;
           color: #333333; /* Cinza escuro suave para texto corpo */
           max-width: 600px;
           margin: 0 auto;
