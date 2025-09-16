@@ -1,0 +1,451 @@
+/* ========================================
+   UI TXC FINAL OVERRIDE - AGROISYNC
+   Correções específicas para navbar, hero, i18n e componentes
+   ======================================== */
+
+/* === NAVBAR FIXES === */
+.navbar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 1000 !important;
+  background: rgba(245, 237, 228, 0.98) !important;
+  border-bottom: 2px solid #3B5D2A !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
+  transition: all 0.3s ease !important;
+}
+
+.navbar-scrolled {
+  background: rgba(255, 255, 255, 0.98) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.navbar-container {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 0 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  min-height: 80px !important;
+  position: relative !important;
+}
+
+.navbar-logo {
+  flex: 0 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.navbar-logo-content {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.navbar-logo-text {
+  font-size: 24px !important;
+  font-weight: 900 !important;
+  color: #3B5D2A !important;
+  font-family: 'Montserrat', sans-serif !important;
+  text-shadow: none !important;
+}
+
+.navbar-logo-tagline {
+  font-size: 12px !important;
+  color: #666666 !important;
+  font-weight: 500 !important;
+  margin-top: 2px !important;
+}
+
+.navbar-menu {
+  display: flex !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  gap: 32px !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+  z-index: 10 !important;
+}
+
+.navbar-link {
+  color: #3B5D2A !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+.navbar-link:hover {
+  color: #6C8C55 !important;
+  background: rgba(59, 93, 42, 0.1) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(59, 93, 42, 0.2) !important;
+}
+
+.navbar-link.active {
+  color: #6C8C55 !important;
+  background: rgba(59, 93, 42, 0.15) !important;
+  box-shadow: 0 2px 8px rgba(59, 93, 42, 0.3) !important;
+}
+
+.navbar-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  flex: 0 0 auto !important;
+  height: 100% !important;
+  justify-content: flex-end !important;
+}
+
+/* === HERO OVERLAY FIXES === */
+.hero-title {
+  font-size: 64px !important;
+  font-weight: 900 !important;
+  color: #111111 !important;
+  margin: 0 auto 24px auto !important;
+  text-align: center !important;
+  max-width: 100% !important;
+  line-height: 1.1 !important;
+  display: block !important;
+  font-family: 'Montserrat', sans-serif !important;
+  text-shadow: none !important;
+}
+
+.hero-subtitle {
+  font-size: 24px !important;
+  color: #666666 !important;
+  margin: 0 auto 32px auto !important;
+  text-align: center !important;
+  max-width: 100% !important;
+  line-height: 1.3 !important;
+  display: block !important;
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: 500 !important;
+}
+
+.hero-buttons {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 24px !important;
+  margin-top: 32px !important;
+}
+
+/* === BUTTON FIXES === */
+.btn-primary {
+  background: #3B5D2A !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  padding: 12px 24px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+.btn-primary:hover {
+  background: #6C8C55 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.btn-secondary {
+  background: transparent !important;
+  color: #3B5D2A !important;
+  border: 2px solid #3B5D2A !important;
+  padding: 12px 24px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+.btn-secondary:hover {
+  background: #3B5D2A !important;
+  color: #FFFFFF !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(59, 93, 42, 0.2) !important;
+}
+
+/* === LANGUAGE SELECTOR FIXES === */
+.agro-language-container {
+  position: relative !important;
+}
+
+.agro-language-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 8px 12px !important;
+  background: transparent !important;
+  border: 1px solid #3B5D2A !important;
+  border-radius: 8px !important;
+  color: #3B5D2A !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+.agro-language-btn:hover {
+  background: rgba(59, 93, 42, 0.1) !important;
+  border-color: #6C8C55 !important;
+}
+
+.agro-language-dropdown {
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  background: #FFFFFF !important;
+  border: 1px solid #3B5D2A !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  z-index: 1001 !important;
+  min-width: 160px !important;
+  overflow: hidden !important;
+}
+
+.agro-lang-option {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 12px 16px !important;
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  color: #3B5D2A !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+.agro-lang-option:hover {
+  background: rgba(59, 93, 42, 0.1) !important;
+}
+
+.agro-lang-option.active {
+  background: rgba(59, 93, 42, 0.15) !important;
+  color: #6C8C55 !important;
+}
+
+/* === AUTH BUTTONS FIXES === */
+.agro-auth-buttons {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.agro-login-btn,
+.agro-register-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  transition: all 0.3s ease !important;
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+.agro-login-btn {
+  color: #3B5D2A !important;
+  background: transparent !important;
+  border: 1px solid #3B5D2A !important;
+}
+
+.agro-login-btn:hover {
+  background: rgba(59, 93, 42, 0.1) !important;
+}
+
+.agro-register-btn {
+  color: #FFFFFF !important;
+  background: #3B5D2A !important;
+  border: 1px solid #3B5D2A !important;
+}
+
+.agro-register-btn:hover {
+  background: #6C8C55 !important;
+  border-color: #6C8C55 !important;
+}
+
+/* === MOBILE MENU FIXES === */
+@media (max-width: 768px) {
+  .navbar-menu {
+    position: static !important;
+    transform: none !important;
+    width: 100% !important;
+    justify-content: center !important;
+    margin-top: 16px !important;
+    gap: 16px !important;
+    flex-wrap: wrap !important;
+  }
+  
+  .navbar-container {
+    flex-wrap: wrap !important;
+    padding: 0 16px !important;
+  }
+  
+  .navbar-link {
+    font-size: 12px !important;
+    padding: 6px 12px !important;
+  }
+  
+  .hero-title {
+    font-size: 48px !important;
+  }
+  
+  .hero-subtitle {
+    font-size: 20px !important;
+  }
+  
+  .hero-buttons {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-menu {
+    gap: 8px !important;
+  }
+  
+  .navbar-link {
+    font-size: 11px !important;
+    padding: 4px 8px !important;
+  }
+  
+  .navbar-container {
+    padding: 0 12px !important;
+  }
+  
+  .hero-title {
+    font-size: 36px !important;
+  }
+  
+  .hero-subtitle {
+    font-size: 18px !important;
+  }
+}
+
+/* === Z-INDEX FIXES === */
+.navbar {
+  z-index: 1000 !important;
+}
+
+.agro-language-dropdown {
+  z-index: 1001 !important;
+}
+
+.chatbot-widget {
+  z-index: 999 !important;
+}
+
+.info-bar {
+  z-index: 998 !important;
+}
+
+/* === TYPOGRAPHY FIXES === */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif !important;
+  color: #111111 !important;
+  text-shadow: none !important;
+}
+
+h1 {
+  font-size: 48px !important;
+  font-weight: 900 !important;
+  color: #111111 !important;
+}
+
+h2 {
+  font-size: 36px !important;
+  font-weight: 700 !important;
+  color: #3B5D2A !important;
+}
+
+h3 {
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  color: #6C8C55 !important;
+}
+
+p {
+  color: #666666 !important;
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: 400 !important;
+}
+
+/* === CARD FIXES === */
+.card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(59, 93, 42, 0.2) !important;
+  border-radius: 12px !important;
+  padding: 24px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.3s ease !important;
+}
+
+.card:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  border-color: #3B5D2A !important;
+}
+
+/* === BODY BACKGROUND FIX === */
+body {
+  background: #F5EDE4 !important;
+  color: #111111 !important;
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+/* === CHATBOT ICON FIX === */
+.chatbot-widget button svg {
+  color: #111111 !important;
+}
+
+/* === I18N EXPOSED KEYS FIX === */
+.i18n-exposed-key {
+  display: none !important;
+}
+
+.lang-toggle {
+  display: none !important;
+}
+
+.lang-list {
+  display: none !important;
+}
