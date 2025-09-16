@@ -13,6 +13,7 @@ import {
   Star,
   Globe
 } from 'lucide-react';
+import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt';
 
 const AgroisyncAgroConecta = () => {
   const features = [
@@ -99,67 +100,13 @@ const AgroisyncAgroConecta = () => {
 
   return (
     <div>
-      {/* Hero Section TXC */}
-      <section className="agro-hero-section" style={{
-        background: 'linear-gradient(rgba(31, 46, 31, 0.4), rgba(31, 46, 31, 0.4)), url("https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1920&h=1080&fit=crop")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-      }}>
-        <div className="agro-hero-content">
-          <motion.div
-            variants={heroVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            <motion.div
-              variants={itemVariants}
-              style={{ marginBottom: 'var(--agro-space-xl)' }}
-            >
-              <div style={{
-                width: '120px',
-                height: '120px',
-                margin: '0 auto',
-                background: 'var(--agro-gradient-accent)',
-                borderRadius: 'var(--agro-radius-3xl)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--agro-dark-green)',
-                boxShadow: 'var(--agro-shadow-lg)'
-              }}>
-                <Truck size={48} />
-              </div>
-            </motion.div>
-
-            <motion.h1 className="agro-hero-title" variants={itemVariants}>
-              AGROCONECTA
-            </motion.h1>
-            
-            <motion.p className="agro-hero-subtitle" variants={itemVariants}>
-              Rede de transporte e logística inteligente para o agronegócio
-            </motion.p>
-
-            <motion.div 
-              style={{ 
-                display: 'flex', 
-                gap: 'var(--agro-space-lg)', 
-                justifyContent: 'center', 
-                flexWrap: 'wrap',
-                marginTop: 'var(--agro-space-xl)'
-              }}
-              variants={itemVariants}
-            >
-              <Link to="/register" className="agro-btn-outline">
-                Começar Agora
-                <ArrowRight size={20} />
-              </Link>
-              <Link to="/marketplace" className="agro-btn-outline">
-                Explorar
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
+      {/* HERO COM IMAGEM 4K DE CAMINHÕES */}
+      <AgroisyncHeroPrompt 
+        title="AgroConecta"
+        subtitle="Logística Inteligente para o Agronegócio"
+        heroImage="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1920&h=1080&fit=crop&q=80"
+        showCTA={true}
+      />
 
       {/* Features Section */}
       <section className="agro-section">

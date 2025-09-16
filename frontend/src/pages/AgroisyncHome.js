@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import CryptoChart from '../components/CryptoChart';
 import StockWidget from '../components/StockWidget';
+import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt';
 
 const AgroisyncHome = () => {
   const { t } = useTranslation();
@@ -73,38 +74,13 @@ const AgroisyncHome = () => {
 
   return (
     <div>
-      {/* Banner Principal */}
-      <section className="agro-banner-section">
-        <div className="agro-banner-image">
-          <div className="agro-banner-overlay">
-            <div className="agro-banner-content">
-          <motion.div
-            variants={heroVariants}
-            initial="hidden"
-            animate="visible"
-          >
-                <motion.h1 className="hero-title" variants={itemVariants}>
-                  Agroisync
-                </motion.h1>
-                
-                <motion.h2 className="hero-subtitle" variants={itemVariants}>
-                  A Plataforma de Agronegócio Mais Futurista do Mundo
-                </motion.h2>
-                
-                <motion.div className="hero-buttons" variants={itemVariants}>
-                  <Link to="/marketplace" className="btn-primary">
-                    Explorar Marketplace
-                    <ArrowRight size={20} />
-                  </Link>
-                  <Link to="/about" className="btn-secondary">
-                    Saiba Mais
-                  </Link>
-                </motion.div>
-          </motion.div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* HERO COM IMAGEM 4K DE PLANTAÇÃO */}
+      <AgroisyncHeroPrompt 
+        title="Agroisync"
+        subtitle="A Plataforma de Agronegócio Mais Futurista do Mundo"
+        heroImage="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1920&h=1080&fit=crop&q=80"
+        showCTA={true}
+      />
 
       {/* Features Section */}
       <section className="section">

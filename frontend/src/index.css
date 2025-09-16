@@ -8,6 +8,9 @@
 /* HEADER TRANSPARENTE */
 @import './styles/header-transparent.css';
 
+/* PROMPT CERTEIRO - HEADER PADRÃO */
+@import './styles/agroisync-prompt.css';
+
 /* Base styles */
 * {
   margin: 0;

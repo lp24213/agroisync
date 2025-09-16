@@ -12,6 +12,7 @@ import {
   Grid,
   List
 } from 'lucide-react';
+import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt';
 
 const Store = () => {
   const [viewMode, setViewMode] = useState('grid');
@@ -131,25 +132,13 @@ const Store = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="hero-futuristic">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
-          >
-            <h1 className="hero-title">
-              Loja Agroisync
-            </h1>
-            <p className="hero-subtitle">
-              Intermediação inteligente para o agronegócio. Conectamos produtores, 
-              compradores e transportadores com tecnologia de ponta.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      {/* HERO COM IMAGEM 4K DE MILHO/SOJA */}
+      <AgroisyncHeroPrompt 
+        title="Loja Agroisync"
+        subtitle="Commodities Agrícolas em Tempo Real"
+        heroImage="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1920&h=1080&fit=crop&q=80"
+        showCTA={true}
+      />
 
       {/* Features */}
       <section className="section-sm bg-secondary">

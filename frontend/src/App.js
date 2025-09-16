@@ -22,6 +22,7 @@ import './styles/ui-txc-final-override.css';
 
 // Pages
 import AgroisyncHome from './pages/AgroisyncHome';
+import AgroisyncHomePrompt from './pages/AgroisyncHomePrompt';
 import AgroisyncMarketplace from './pages/AgroisyncMarketplace';
 import AgroisyncAgroConecta from './pages/AgroisyncAgroConecta';
 import AgroisyncCrypto from './pages/AgroisyncCrypto';
@@ -92,6 +93,8 @@ function App() {
                 <Routes>
                          {/* Public Routes */}
                          <Route path="/" element={<AgroisyncHome />} />
+                         {/* PROMPT CERTEIRO - Página com header padrão */}
+                         <Route path="/home-prompt" element={<AgroisyncHomePrompt />} />
                   <Route path="/marketplace" element={<AgroisyncMarketplace />} />
                   <Route path="/agroconecta" element={<AgroisyncAgroConecta />} />
                   <Route path="/loja" element={<Store />} />
