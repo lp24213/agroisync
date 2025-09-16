@@ -8,55 +8,44 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Light theme base colors (refinado como Apple/Tesla)
-        'light-primary': '#ffffff',
-        'light-secondary': '#f8fafc',
-        'light-tertiary': '#f1f5f9',
-        'light-quaternary': '#e2e8f0',
+        // Premium Design System - Tesla + Solana inspired
+        // Preto fosco base
+        'matte-black': '#0a0a0a',
+        'matte-black-light': '#1a1a1a',
+        'matte-black-lighter': '#2a2a2a',
+        'matte-black-lightest': '#3a3a3a',
         
-        // Dark theme base colors
-        'dark-primary': '#0a0a0a',
-        'dark-secondary': '#1a1a1a',
-        'dark-tertiary': '#2a2a2a',
-        'dark-quaternary': '#3a3a3a',
-        
-        // Refined accent colors
-        'primary': {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
-        },
-        'secondary': {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          200: '#bbf7d0',
-          300: '#86efac',
-          400: '#4ade80',
-          500: '#22c55e',
-          600: '#16a34a',
-          700: '#15803d',
-          800: '#166534',
-          900: '#14532d',
-        },
-        
-        // Neon accent colors
+        // Azul neon
         'neon-blue': '#00d4ff',
-        'neon-green': '#00ff88',
-        'neon-purple': '#8b5cf6',
-        'neon-gold': '#ffd700',
-        'neon-cyan': '#00ffff',
-        'neon-pink': '#ff0080',
+        'neon-blue-dark': '#0099cc',
+        'neon-blue-light': '#33ddff',
+        'neon-blue-glow': 'rgba(0, 212, 255, 0.3)',
+        
+        // Dourado leve
+        'light-gold': '#ffd700',
+        'light-gold-dark': '#ccac00',
+        'light-gold-light': '#ffe033',
+        'light-gold-glow': 'rgba(255, 215, 0, 0.3)',
+        
+        // Cores de apoio premium
+        'premium-white': '#ffffff',
+        'premium-gray': '#f8fafc',
+        'premium-gray-dark': '#64748b',
+        'premium-gray-darker': '#334155',
+        
+        // Cores de status
+        'success': '#00ff88',
+        'success-glow': 'rgba(0, 255, 136, 0.3)',
+        'danger': '#ff4757',
+        'danger-glow': 'rgba(255, 71, 87, 0.3)',
+        'warning': '#ffa502',
+        'warning-glow': 'rgba(255, 165, 2, 0.3)',
         
         // Glass effect colors
         'glass-white': 'rgba(255, 255, 255, 0.1)',
         'glass-black': 'rgba(0, 0, 0, 0.3)',
+        'glass-neon': 'rgba(0, 212, 255, 0.1)',
+        'glass-gold': 'rgba(255, 215, 0, 0.1)',
       },
       fontFamily: {
         'sans': ['Inter', 'system-ui', 'sans-serif'],
@@ -102,7 +91,12 @@ module.exports = {
         'neon': '0 0 20px rgba(0, 212, 255, 0.5)',
         'neon-lg': '0 0 40px rgba(0, 212, 255, 0.6)',
         'neon-xl': '0 0 60px rgba(0, 212, 255, 0.7)',
+        'gold': '0 0 20px rgba(255, 215, 0, 0.5)',
+        'gold-lg': '0 0 40px rgba(255, 215, 0, 0.6)',
+        'gold-xl': '0 0 60px rgba(255, 215, 0, 0.7)',
         'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+        'premium': '0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+        'premium-lg': '0 25px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1)',
       }
     },
   },

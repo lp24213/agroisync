@@ -49,15 +49,15 @@ const Ticker = () => {
   };
 
   return (
-    <div className="ticker-container">
-      <div className="ticker-content">
-        <div className="ticker-label">
+    <div className="premium-ticker-container">
+      <div className="premium-ticker-content">
+        <div className="premium-ticker-label">
           <span>Bolsa de Valores</span>
         </div>
         
-        <div className="ticker-scroll">
+        <div className="premium-ticker-scroll">
           <motion.div
-            className="ticker-items"
+            className="premium-ticker-items"
             animate={{ x: [0, -100] }}
             transition={{
               x: {
@@ -69,16 +69,16 @@ const Ticker = () => {
             }}
           >
             {tickerData.map((item, index) => (
-              <div key={index} className="ticker-item">
-                <span className="symbol">{item.symbol}</span>
-                <span className="price">R${formatPrice(item.price)}</span>
-                <span className={`change ${item.change >= 0 ? 'positive' : 'negative'}`}>
+              <div key={index} className="premium-ticker-item">
+                <span className="premium-symbol">{item.symbol}</span>
+                <span className="premium-price">R${formatPrice(item.price)}</span>
+                <span className={`premium-change ${item.change >= 0 ? 'positive' : 'negative'}`}>
                   {formatChange(item.change)}
                 </span>
-                <span className={`change-percent ${item.change >= 0 ? 'positive' : 'negative'}`}>
+                <span className={`premium-change-percent ${item.change >= 0 ? 'positive' : 'negative'}`}>
                   {formatChangePercent(item.changePercent)}
                 </span>
-                <span className="separator">—</span>
+                <span className="premium-separator">—</span>
               </div>
             ))}
           </motion.div>
@@ -86,102 +86,106 @@ const Ticker = () => {
       </div>
       
       <style jsx>{`
-        .ticker-container {
+        .premium-ticker-container {
           position: fixed;
           top: 70px;
           left: 0;
           right: 0;
           z-index: 40;
-          background: linear-gradient(90deg, var(--nav-gradient-start) 0%, var(--nav-gradient-end) 100%);
-          border-bottom: 1px solid var(--border-light);
+          background: linear-gradient(90deg, var(--matte-black-light) 0%, var(--matte-black-lighter) 100%);
+          border-bottom: 1px solid var(--glass-white);
           height: 40px;
           overflow: hidden;
+          backdrop-filter: blur(20px);
         }
         
-        .ticker-content {
+        .premium-ticker-content {
           display: flex;
           align-items: center;
           height: 100%;
           max-width: 100%;
         }
         
-        .ticker-label {
-          background: var(--accent-metal);
+        .premium-ticker-label {
+          background: var(--glass-neon);
           padding: 0 var(--spacing-sm);
           height: 100%;
           display: flex;
           align-items: center;
           font-size: 0.75rem;
           font-weight: 600;
-          color: var(--text);
+          color: var(--neon-blue);
           white-space: nowrap;
-          border-right: 1px solid var(--border-light);
+          border-right: 1px solid var(--glass-white);
+          box-shadow: var(--shadow-neon);
         }
         
-        .ticker-scroll {
+        .premium-ticker-scroll {
           flex: 1;
           overflow: hidden;
           height: 100%;
         }
         
-        .ticker-items {
+        .premium-ticker-items {
           display: flex;
           align-items: center;
           height: 100%;
           white-space: nowrap;
         }
         
-        .ticker-item {
+        .premium-ticker-item {
           display: flex;
           align-items: center;
           gap: var(--spacing-xs);
           padding: 0 var(--spacing-sm);
           font-size: 0.75rem;
-          color: var(--muted);
+          color: var(--premium-gray-dark);
         }
         
-        .symbol {
+        .premium-symbol {
           font-weight: 600;
-          color: var(--text);
+          color: var(--premium-white);
         }
         
-        .price {
+        .premium-price {
           font-weight: 500;
+          color: var(--premium-white);
         }
         
-        .change.positive {
-          color: #059669;
+        .premium-change.positive {
+          color: var(--success);
         }
         
-        .change.negative {
-          color: #dc2626;
+        .premium-change.negative {
+          color: var(--danger);
         }
         
-        .change-percent.positive {
-          color: #059669;
+        .premium-change-percent.positive {
+          color: var(--success);
         }
         
-        .change-percent.negative {
-          color: #dc2626;
+        .premium-change-percent.negative {
+          color: var(--danger);
         }
         
-        .separator {
-          color: var(--text-light);
+        .premium-separator {
+          color: var(--premium-gray-dark);
           margin: 0 var(--spacing-xs);
         }
         
         @media (max-width: 768px) {
-          .ticker-container {
+          .premium-ticker-container {
             height: 36px;
+            top: 60px;
           }
           
-          .ticker-item {
+          .premium-ticker-item {
             font-size: 0.7rem;
             gap: 0.25rem;
             padding: 0 0.5rem;
           }
           
-          .ticker-label {
+          .premium-ticker-label {
             font-size: 0.7rem;
             padding: 0 0.5rem;
           }

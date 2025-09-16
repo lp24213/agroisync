@@ -2,6 +2,18 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+/* PREMIUM DESIGN SYSTEM */
+@import './styles/premium-design-system.css';
+
+/* PREMIUM HEADER */
+@import './styles/premium-header.css';
+
+/* PREMIUM PANELS */
+@import './styles/premium-panels.css';
+
+/* PREMIUM BACKGROUNDS */
+@import './styles/premium-backgrounds.css';
+
 /* TEMA TXC + GRÃO DIRETO UNIFICADO */
 @import './styles/agro-txc-grao-theme.css';
 

@@ -1,0 +1,60 @@
+/* ========================================
+   PREMIUM PANELS STYLES
+   ======================================== */
+
+.premium-panels-section {
+  padding: var(--spacing-xl) 0;
+  background: var(--matte-black);
+  position: relative;
+  z-index: 10;
+}
+
+.premium-panels-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-xl);
+  align-items: start;
+}
+
+.premium-panel-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .premium-panels-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+  }
+  
+  .premium-panel-column:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .premium-panels-section {
+    padding: var(--spacing-lg) 0;
+  }
+  
+  .premium-panels-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+  
+  .premium-panel-column {
+    gap: var(--spacing-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .premium-panels-section {
+    padding: var(--spacing-md) 0;
+  }
+  
+  .premium-container {
+    padding: 0 var(--spacing-sm);
+  }
+}

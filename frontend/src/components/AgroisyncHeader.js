@@ -101,23 +101,23 @@ const AgroisyncHeader = () => {
 
   return (
     <>
-      {/* Navbar Principal */}
-      <nav className={`agro-header ${isOverHero ? 'agro-header-transparent' : ''} ${isScrolled ? 'agro-header-scrolled' : ''}`}>
-        <div className="agro-header-container">
+      {/* Navbar Principal Premium */}
+      <nav className={`premium-header ${isScrolled ? 'premium-header-scrolled' : ''}`}>
+        <div className="premium-header-container">
           {/* Logo - Esquerda */}
-          <div className="agro-header-logo">
-            <Link to="/" className="agro-header-logo-link">
-              <img src="/assets/logo.png" alt="Agroisync" className="agro-header-logo-img" />
+          <div className="premium-header-logo">
+            <Link to="/" className="premium-header-logo-link">
+              <img src="/agroisync-logo.svg" alt="Agroisync" className="premium-header-logo-img" />
             </Link>
           </div>
 
           {/* Menu Principal - Centro (Desktop) */}
-          <ul className="agro-header-menu">
+          <ul className="premium-header-menu">
             {navigationItems.map((item) => (
-              <li key={item.path} className="agro-header-item">
+              <li key={item.path} className="premium-header-item">
                 <Link
                   to={item.path}
-                  className={`agro-header-link ${isActive(item.path) ? 'active' : ''}`}
+                  className={`premium-header-link ${isActive(item.path) ? 'active' : ''}`}
                 >
                   {item.label}
                 </Link>
@@ -126,22 +126,22 @@ const AgroisyncHeader = () => {
           </ul>
 
           {/* Ações - Direita */}
-          <div className="agro-header-actions">
+          <div className="premium-header-actions">
             {/* Menu de Idiomas */}
-            <div className="agro-language-selector">
+            <div className="premium-language-selector">
               <button 
-                className="agro-language-btn"
+                className="premium-language-btn"
                 onClick={toggleLanguageMenu}
                 aria-label={t('nav.selectLanguage')}
                 aria-expanded={isLanguageMenuOpen}
               >
-                <span className="agro-lang-text">{currentLanguage.toUpperCase()} ▼</span>
+                <span className="premium-lang-text">{currentLanguage.toUpperCase()} ▼</span>
               </button>
               
               <AnimatePresence>
                 {isLanguageMenuOpen && (
                   <motion.div
-                    className="agro-language-dropdown"
+                    className="premium-language-dropdown"
                     initial={{ opacity: 0, y: -10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -150,11 +150,11 @@ const AgroisyncHeader = () => {
                     {languages.map((lang) => (
                       <button
                         key={lang.code}
-                        className={`agro-lang-option ${currentLanguage === lang.code ? 'active' : ''}`}
+                        className={`premium-lang-option ${currentLanguage === lang.code ? 'active' : ''}`}
                         onClick={() => changeLanguage(lang.code)}
                       >
-                        <span className="agro-lang-flag">{lang.flag}</span>
-                        <span className="agro-lang-name">{lang.name}</span>
+                        <span className="premium-lang-flag">{lang.flag}</span>
+                        <span className="premium-lang-name">{lang.name}</span>
                       </button>
                     ))}
                   </motion.div>
@@ -163,20 +163,20 @@ const AgroisyncHeader = () => {
             </div>
 
             {/* Botões de Auth */}
-            <div className="agro-auth-buttons">
+            <div className="premium-auth-buttons">
               {user ? (
-                <div className="agro-user-menu">
-                  <span className="agro-user-name">{user.name}</span>
-                  <button onClick={logout} className="agro-logout-btn">
+                <div className="premium-user-menu">
+                  <span className="premium-user-name">{user.name}</span>
+                  <button onClick={logout} className="btn-premium-secondary">
                     {t('nav.logout')}
                   </button>
                 </div>
               ) : (
                 <>
-                  <Link to="/login" className="agro-login-btn">
+                  <Link to="/login" className="btn-premium-secondary">
                     {t('nav.login')}
                   </Link>
-                  <Link to="/register" className="agro-register-btn">
+                  <Link to="/register" className="btn-premium-primary">
                     {t('nav.register')}
                   </Link>
                 </>
@@ -185,7 +185,7 @@ const AgroisyncHeader = () => {
 
             {/* Botão Mobile */}
             <button
-              className="agro-mobile-toggle"
+              className="premium-mobile-toggle"
               onClick={toggleMobileMenu}
               aria-label={t('nav.toggleMenu')}
             >
@@ -194,68 +194,70 @@ const AgroisyncHeader = () => {
           </div>
         </div>
 
-        {/* Menu Mobile */}
+        {/* Menu Mobile Premium */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
-              className="agro-mobile-menu"
+              className="premium-mobile-menu"
               initial={{ opacity: 0, height: 0, y: -20 }}
               animate={{ opacity: 1, height: 'auto', y: 0 }}
               exit={{ opacity: 0, height: 0, y: -20 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
             >
-              <div className="agro-mobile-content">
+              <div className="premium-mobile-content">
                 {/* Menu Principal Mobile */}
-                <ul className="agro-mobile-nav">
+                <ul className="premium-mobile-nav">
                   {navigationItems.map((item, index) => (
                     <motion.li 
                       key={item.path} 
-                      className="agro-mobile-item"
+                      className="premium-mobile-item"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
                     >
                       <Link
                         to={item.path}
-                        className={`agro-mobile-link ${isActive(item.path) ? 'active' : ''}`}
+                        className={`premium-mobile-link ${isActive(item.path) ? 'active' : ''}`}
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        <span className="agro-mobile-text">{item.label}</span>
+                        <span className="premium-mobile-text">{item.label}</span>
                       </Link>
                     </motion.li>
                   ))}
                 </ul>
                 
                 {/* Idiomas Mobile */}
-                <div className="agro-mobile-languages">
-                  <h4 className="agro-mobile-section-title">{t('nav.languages')}</h4>
-                  <div className="agro-mobile-lang-grid">
+                <div className="premium-mobile-languages">
+                  <h4 className="premium-mobile-section-title">{t('nav.languages')}</h4>
+                  <div className="premium-mobile-lang-grid">
                     {languages.map((lang) => (
                       <button
                         key={lang.code}
-                        className={`agro-mobile-lang-btn ${currentLanguage === lang.code ? 'active' : ''}`}
+                        className={`premium-mobile-lang-btn ${currentLanguage === lang.code ? 'active' : ''}`}
                         onClick={() => changeLanguage(lang.code)}
                       >
-                        <span className="agro-mobile-lang-flag">{lang.flag}</span>
-                        <span className="agro-mobile-lang-name">{lang.name}</span>
+                        <span className="premium-mobile-lang-flag">{lang.flag}</span>
+                        <span className="premium-mobile-lang-name">{lang.name}</span>
                       </button>
                     ))}
                   </div>
                 </div>
                 
                 {/* Auth Mobile */}
-                <div className="agro-mobile-auth">
+                <div className="premium-mobile-auth">
                   {user ? (
-                    <div className="agro-mobile-user">
+                    <div className="premium-mobile-user">
                       <span>{user.name}</span>
-                      <button onClick={logout}>{t('nav.logout')}</button>
+                      <button onClick={logout} className="btn-premium-secondary">
+                        {t('nav.logout')}
+                      </button>
                     </div>
                   ) : (
                     <>
-                      <Link to="/login" className="agro-mobile-login">
+                      <Link to="/login" className="btn-premium-secondary">
                         {t('nav.login')}
                       </Link>
-                      <Link to="/register" className="agro-mobile-register">
+                      <Link to="/register" className="btn-premium-primary">
                         {t('nav.register')}
                       </Link>
                     </>
@@ -268,7 +270,7 @@ const AgroisyncHeader = () => {
       </nav>
 
       {/* Espaçador para não sobrepor conteúdo */}
-      <div className="agro-header-spacer"></div>
+      <div className="premium-header-spacer"></div>
 
     </>
   );

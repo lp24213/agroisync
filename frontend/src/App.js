@@ -11,9 +11,10 @@ import AgroisyncFooter from './components/AgroisyncFooter';
 import PremiumCursor from './components/PremiumCursor';
 import ChatbotWidget from './components/ChatbotWidget';
 import Ticker from './components/Ticker';
-import GrainQuotes from './components/GrainQuotes';
+import PremiumCommoditiesPanel from './components/PremiumCommoditiesPanel';
+import PremiumCryptoPanel from './components/PremiumCryptoPanel';
+import PremiumNewsPanel from './components/PremiumNewsPanel';
 import WeatherWidget from './components/WeatherWidget';
-import NewsFeed from './components/NewsFeed';
 
 // Importar tema TXC + Grão Direto unificado
 import './styles/agro-txc-grao-theme.css';
@@ -79,12 +80,19 @@ function App() {
                 {/* Ticker fixo no topo */}
                 <Ticker />
                 
-                {/* Barra de Informações - Cotações e notícias */}
-                <div className="info-bar">
+                {/* Painéis Premium - Commodities, Cripto e Notícias */}
+                <div className="premium-panels-section">
                   <div className="premium-container">
-                    <div className="info-content">
-                      <GrainQuotes />
-                      <NewsFeed />
+                    <div className="premium-panels-grid">
+                      <div className="premium-panel-column">
+                        <PremiumCommoditiesPanel />
+                      </div>
+                      <div className="premium-panel-column">
+                        <PremiumCryptoPanel />
+                      </div>
+                      <div className="premium-panel-column">
+                        <PremiumNewsPanel />
+                      </div>
                     </div>
                   </div>
                 </div>
