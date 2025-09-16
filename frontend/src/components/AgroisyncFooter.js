@@ -43,15 +43,14 @@ const AgroisyncFooter = () => {
 
   return (
     <>
-      <footer className="agro-footer">
-        <div className="agro-container">
+      <footer className="agro-footer-new">
+        <div className="agro-footer-container">
           {/* Main Footer Content */}
           <div className="agro-footer-main">
             {/* Company Info */}
             <div className="agro-footer-brand">
               <div className="agro-footer-logo">
-                <span className="agro-footer-logo-text">AGROISYNC</span>
-                <span className="agro-footer-tagline">AgroTech Solutions</span>
+                <img src="/assets/logo.png" alt="Agroisync" className="agro-footer-logo-img" />
               </div>
               <p className="agro-footer-description">
                 Conectando o agronegócio brasileiro através de tecnologia inovadora, 
@@ -82,13 +81,9 @@ const AgroisyncFooter = () => {
             {/* Footer Sections */}
             <div className="agro-footer-sections">
               {footerSections.map((section, index) => (
-                <motion.div
+                <div
                   key={section.title}
                   className="agro-footer-section"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true }}
                 >
                   <h3 className="agro-footer-section-title">{section.title}</h3>
                   <ul className="agro-footer-links">
@@ -100,7 +95,7 @@ const AgroisyncFooter = () => {
                       </li>
                     ))}
                   </ul>
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>

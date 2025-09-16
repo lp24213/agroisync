@@ -11,6 +11,15 @@
 /* PROMPT CERTEIRO - HEADER PADRÃO */
 @import './styles/agroisync-prompt.css';
 
+/* HEADER ATUALIZADO AGROISYNC */
+@import './styles/agro-header-new.css';
+
+/* HERO ATUALIZADO AGROISYNC */
+@import './styles/agro-hero-new.css';
+
+/* FOOTER ATUALIZADO AGROISYNC */
+@import './styles/agro-footer-new.css';
+
 /* Base styles */
 * {
   margin: 0;

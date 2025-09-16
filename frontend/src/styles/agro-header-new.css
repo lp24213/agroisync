@@ -1,0 +1,444 @@
+/* ===== AGROISYNC HEADER ATUALIZADO ===== */
+/* Design conforme especificações: fundo #0b2a16, altura 72px, menu centralizado */
+
+/* VARIÁVEIS */
+:root {
+  --agro-primary-green: #1a7f2e;
+  --agro-dark-green: #0b2a16;
+  --agro-white: #ffffff;
+  --agro-light-gray: rgba(255, 255, 255, 0.9);
+  --agro-header-height: 72px;
+  --agro-font-family: "Inter", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* HEADER PRINCIPAL */
+.agro-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--agro-header-height);
+  background: var(--agro-dark-green);
+  z-index: 9999;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(26, 127, 46, 0.2);
+}
+
+/* HEADER TRANSPARENTE SOBRE HERO */
+.agro-header-transparent {
+  background: transparent !important;
+  border-bottom: none !important;
+}
+
+/* HEADER COM SCROLL */
+.agro-header-scrolled {
+  background: rgba(11, 42, 22, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(26, 127, 46, 0.3) !important;
+}
+
+/* CONTAINER INTERNO */
+.agro-header-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  gap: 20px;
+}
+
+/* LOGO - ESQUERDA */
+.agro-header-logo {
+  flex: 0 0 auto;
+  max-width: 220px;
+}
+
+.agro-header-logo-link {
+  display: block;
+  text-decoration: none;
+}
+
+.agro-header-logo-img {
+  height: 48px;
+  width: auto;
+  max-width: 100%;
+}
+
+/* MENU CENTRALIZADO */
+.agro-header-menu {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(14px, 1.6vw, 28px);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.agro-header-item {
+  display: flex;
+  align-items: center;
+}
+
+.agro-header-link {
+  font-family: var(--agro-font-family);
+  font-weight: 600;
+  font-size: clamp(14px, 1.6vw, 18px);
+  color: var(--agro-white);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.agro-header-link:hover {
+  color: var(--agro-primary-green);
+  background: rgba(26, 127, 46, 0.1);
+  transform: translateY(-1px);
+}
+
+.agro-header-link.active {
+  color: var(--agro-primary-green);
+  background: rgba(26, 127, 46, 0.15);
+}
+
+/* AÇÕES À DIREITA */
+.agro-header-actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* SELETOR DE IDIOMA */
+.agro-language-selector {
+  position: relative;
+}
+
+.agro-language-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--agro-white);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-family: var(--agro-font-family);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.agro-language-btn:hover {
+  border-color: var(--agro-primary-green);
+  color: var(--agro-primary-green);
+}
+
+.agro-language-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--agro-dark-green);
+  border: 1px solid rgba(26, 127, 46, 0.3);
+  border-radius: 8px;
+  padding: 8px 0;
+  min-width: 120px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.agro-lang-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  color: var(--agro-white);
+  font-family: var(--agro-font-family);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.agro-lang-option:hover {
+  background: rgba(26, 127, 46, 0.1);
+  color: var(--agro-primary-green);
+}
+
+.agro-lang-option.active {
+  background: rgba(26, 127, 46, 0.2);
+  color: var(--agro-primary-green);
+}
+
+.agro-lang-flag {
+  font-size: 16px;
+}
+
+/* BOTÕES DE AUTH */
+.agro-auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.agro-login-btn {
+  color: var(--agro-white);
+  text-decoration: none;
+  font-family: var(--agro-font-family);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.agro-login-btn:hover {
+  color: var(--agro-primary-green);
+  background: rgba(26, 127, 46, 0.1);
+}
+
+.agro-register-btn {
+  background: var(--agro-primary-green);
+  color: var(--agro-white);
+  text-decoration: none;
+  font-family: var(--agro-font-family);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.agro-register-btn:hover {
+  background: #1e8a35;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26, 127, 46, 0.3);
+}
+
+/* BOTÃO MOBILE */
+.agro-mobile-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--agro-white);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.agro-mobile-toggle:hover {
+  background: rgba(26, 127, 46, 0.1);
+  color: var(--agro-primary-green);
+}
+
+/* MENU MOBILE */
+.agro-mobile-menu {
+  position: fixed;
+  top: var(--agro-header-height);
+  right: 0;
+  width: 280px;
+  height: calc(100vh - var(--agro-header-height));
+  background: var(--agro-dark-green);
+  border-left: 1px solid rgba(26, 127, 46, 0.3);
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.3);
+  z-index: 9998;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.agro-mobile-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.agro-mobile-nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.agro-mobile-item {
+  margin-bottom: 8px;
+}
+
+.agro-mobile-link {
+  display: block;
+  color: var(--agro-white);
+  text-decoration: none;
+  font-family: var(--agro-font-family);
+  font-size: 16px;
+  font-weight: 500;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.agro-mobile-link:hover,
+.agro-mobile-link.active {
+  color: var(--agro-primary-green);
+  padding-left: 8px;
+}
+
+.agro-mobile-languages {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 20px;
+}
+
+.agro-mobile-section-title {
+  color: var(--agro-white);
+  font-family: var(--agro-font-family);
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+}
+
+.agro-mobile-lang-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.agro-mobile-lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--agro-white);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-family: var(--agro-font-family);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.agro-mobile-lang-btn:hover,
+.agro-mobile-lang-btn.active {
+  border-color: var(--agro-primary-green);
+  color: var(--agro-primary-green);
+  background: rgba(26, 127, 46, 0.1);
+}
+
+.agro-mobile-auth {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.agro-mobile-login {
+  color: var(--agro-white);
+  text-decoration: none;
+  font-family: var(--agro-font-family);
+  font-size: 16px;
+  font-weight: 500;
+  padding: 12px 0;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.agro-mobile-login:hover {
+  border-color: var(--agro-primary-green);
+  color: var(--agro-primary-green);
+}
+
+.agro-mobile-register {
+  background: var(--agro-primary-green);
+  color: var(--agro-white);
+  text-decoration: none;
+  font-family: var(--agro-font-family);
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 0;
+  text-align: center;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.agro-mobile-register:hover {
+  background: #1e8a35;
+}
+
+/* ESPAÇADOR */
+.agro-header-spacer {
+  height: var(--agro-header-height);
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 991px) {
+  .agro-header-menu {
+    display: none;
+  }
+  
+  .agro-mobile-toggle {
+    display: block;
+  }
+  
+  .agro-header-container {
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .agro-header-container {
+    padding: 0 12px;
+  }
+  
+  .agro-header-logo-img {
+    height: 40px;
+  }
+  
+  .agro-mobile-menu {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .agro-header {
+    height: 64px;
+  }
+  
+  .agro-header-spacer {
+    height: 64px;
+  }
+  
+  .agro-header-logo-img {
+    height: 36px;
+  }
+  
+  .agro-mobile-menu {
+    top: 64px;
+    height: calc(100vh - 64px);
+  }
+}
+
+/* ESTADOS DE FOCO PARA ACESSIBILIDADE */
+.agro-header-link:focus,
+.agro-language-btn:focus,
+.agro-login-btn:focus,
+.agro-register-btn:focus,
+.agro-mobile-toggle:focus {
+  outline: 2px solid var(--agro-primary-green);
+  outline-offset: 2px;
+}
+
+/* GARANTIR CONTRASTE ADEQUADO */
+@media (prefers-contrast: high) {
+  .agro-header-link,
+  .agro-language-btn,
+  .agro-login-btn {
+    color: var(--agro-white) !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  }
+}

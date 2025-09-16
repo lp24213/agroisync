@@ -42,6 +42,7 @@ const AgroisyncHeader = () => {
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('pt');
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isOverHero, setIsOverHero] = useState(false);
 
   // Menu principal com ícones profissionais
   const navigationItems = [
@@ -74,15 +75,27 @@ const AgroisyncHeader = () => {
     i18n.changeLanguage(savedLanguage);
   }, [i18n]);
 
-  // Efeito de scroll para navbar
+  // Efeito de scroll para navbar e detecção de hero
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
+      
+      // Detectar se está sobre hero/banner
+      const heroElement = document.querySelector('[data-hero="true"]');
+      if (heroElement) {
+        const heroRect = heroElement.getBoundingClientRect();
+        setIsOverHero(heroRect.top <= 72 && heroRect.bottom > 72);
+      } else {
+        setIsOverHero(false);
+      }
     };
 
+    // Verificar estado inicial
+    handleScroll();
+    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [location.pathname]);
 
   const changeLanguage = (langCode) => {
     setCurrentLanguage(langCode);
@@ -108,62 +121,40 @@ const AgroisyncHeader = () => {
   return (
     <>
       {/* Navbar Principal */}
-      <nav className={`navbar ${isScrolled ? 'navbar-scrolled' : ''}`}>
-        <div className="navbar-container">
+      <nav className={`agro-header ${isOverHero ? 'agro-header-transparent' : ''} ${isScrolled ? 'agro-header-scrolled' : ''}`}>
+        <div className="agro-header-container">
           {/* Logo - Esquerda */}
-          <div className="navbar-logo">
-            <Link to="/" className="navbar-logo-link">
-              <div className="navbar-logo-content">
-                <div className="navbar-logo-icon">
-                  <AgroisyncIcon size={28} />
-                </div>
-                <div className="navbar-logo-text-container">
-                  <span className="navbar-logo-text">AGROISYNC</span>
-                  <span className="navbar-logo-tagline">{t('nav.tagline')}</span>
-                </div>
-              </div>
+          <div className="agro-header-logo">
+            <Link to="/" className="agro-header-logo-link">
+              <img src="/assets/logo.png" alt="Agroisync" className="agro-header-logo-img" />
             </Link>
           </div>
 
           {/* Menu Principal - Centro (Desktop) */}
-          <ul className="navbar-menu">
+          <ul className="agro-header-menu">
             {navigationItems.map((item) => (
-              <motion.li 
-                key={item.path} 
-                className="navbar-item"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
+              <li key={item.path} className="agro-header-item">
                 <Link
                   to={item.path}
-                  className={`navbar-link ${isActive(item.path) ? 'active' : ''}`}
+                  className={`agro-header-link ${isActive(item.path) ? 'active' : ''}`}
                 >
-                  <motion.div
-                    className="navbar-icon"
-                    whileHover={{ rotate: 5 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <item.icon size={18} />
-                  </motion.div>
-                  <span className="navbar-text">{item.label}</span>
+                  {item.label}
                 </Link>
-              </motion.li>
+              </li>
             ))}
           </ul>
 
           {/* Ações - Direita */}
-          <div className="navbar-actions">
+          <div className="agro-header-actions">
             {/* Menu de Idiomas */}
-            <div className="agro-language-container">
+            <div className="agro-language-selector">
               <button 
                 className="agro-language-btn"
                 onClick={toggleLanguageMenu}
                 aria-label={t('nav.selectLanguage')}
                 aria-expanded={isLanguageMenuOpen}
               >
-                <Globe size={18} />
-                <span className="agro-lang-text">{t('nav.languages')}</span>
-                <ChevronDown size={14} className={`agro-chevron ${isLanguageMenuOpen ? 'open' : ''}`} />
+                <span className="agro-lang-text">{currentLanguage.toUpperCase()} ▼</span>
               </button>
               
               <AnimatePresence>
@@ -182,14 +173,13 @@ const AgroisyncHeader = () => {
                         onClick={() => changeLanguage(lang.code)}
                       >
                         <span className="agro-lang-flag">{lang.flag}</span>
-                        <span className="agro-lang-name">{lang.label}</span>
+                        <span className="agro-lang-name">{lang.name}</span>
                       </button>
                     ))}
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
-
 
             {/* Botões de Auth */}
             <div className="agro-auth-buttons">
@@ -203,11 +193,9 @@ const AgroisyncHeader = () => {
               ) : (
                 <>
                   <Link to="/login" className="agro-login-btn">
-                    <User size={18} />
                     {t('nav.login')}
                   </Link>
                   <Link to="/register" className="agro-register-btn">
-                    <UserPlus size={18} />
                     {t('nav.register')}
                   </Link>
                 </>
@@ -251,12 +239,6 @@ const AgroisyncHeader = () => {
                         className={`agro-mobile-link ${isActive(item.path) ? 'active' : ''}`}
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        <motion.span 
-                          className="agro-mobile-icon"
-                          whileHover={{ scale: 1.2, rotate: 5 }}
-                        >
-                          <item.icon size={20} />
-                        </motion.span>
                         <span className="agro-mobile-text">{item.label}</span>
                       </Link>
                     </motion.li>
@@ -305,7 +287,7 @@ const AgroisyncHeader = () => {
       </nav>
 
       {/* Espaçador para não sobrepor conteúdo */}
-      <div className="navbar-spacer"></div>
+      <div className="agro-header-spacer"></div>
 
     </>
   );

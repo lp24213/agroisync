@@ -11,18 +11,24 @@ const AgroisyncHeroPrompt = ({
     <>
       {/* HERO: apenas nas páginas com imagem (HOME, banners) */}
       <section 
-        className="hero hero-image" 
+        className="agro-hero-section" 
         id="home-hero" 
         data-hero="true"
         data-hero-img={heroImage}
+        style={{
+          backgroundImage: `url(${heroImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
       >
-        <div className="hero-inner">
-          <h1 className="hero-title">{title}</h1>
-          <p className="hero-sub">{subtitle}</p>
+        <div className="agro-hero-content">
+          <h1 className="agro-hero-title">{title}</h1>
+          <p className="agro-hero-subtitle">{subtitle}</p>
           {showCTA && (
-            <div className="hero-cta">
-              <Link to="/marketplace" className="btn-primary">Explorar Marketplace</Link>
-              <Link to="/about" className="btn-outline">Saiba Mais</Link>
+            <div className="agro-hero-buttons">
+              <Link to="/marketplace" className="agro-btn-primary">Explorar Marketplace</Link>
+              <Link to="/about" className="agro-btn-outline">Saiba Mais</Link>
             </div>
           )}
         </div>

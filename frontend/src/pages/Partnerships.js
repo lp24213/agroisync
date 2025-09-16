@@ -258,11 +258,11 @@ const Partnerships = () => {
   return (
     <div className="partnerships-page">
       <div className="partnerships-container">
-        {/* HERO COM IMAGEM 4K DE HOMENS APERTANDO AS MÃOS */}
+        {/* HERO COM IMAGEM 4K DE APERTO DE MÃOS */}
         <AgroisyncHeroPrompt 
           title="Seja Nosso Parceiro"
           subtitle="Junte-se à AGROISYNC e faça parte da revolução do agronegócio brasileiro"
-          heroImage="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1920&h=1080&fit=crop&q=80"
+          heroImage="/assets/parcerias-aperto-maos-4k.jpg"
           showCTA={true}
         />
 

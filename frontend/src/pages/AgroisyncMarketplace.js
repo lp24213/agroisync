@@ -92,11 +92,11 @@ const AgroisyncMarketplace = () => {
 
   return (
     <div>
-      {/* HERO COM IMAGEM 4K DE CAMINHÕES (MESMA DO AGROCONECTA) */}
+      {/* HERO COM IMAGEM 4K DE MARKETPLACE */}
       <AgroisyncHeroPrompt 
         title="Marketplace Agro"
         subtitle="Conecte-se com compradores e vendedores de commodities agrícolas"
-        heroImage="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=1920&h=1080&fit=crop&q=80"
+        heroImage="/assets/marketplace-4k.jpg"
         showCTA={true}
       />
 

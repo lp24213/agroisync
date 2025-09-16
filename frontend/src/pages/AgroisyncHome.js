@@ -78,7 +78,7 @@ const AgroisyncHome = () => {
       <AgroisyncHeroPrompt 
         title="Agroisync"
         subtitle="A Plataforma de Agronegócio Mais Futurista do Mundo"
-        heroImage="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&h=1080&fit=crop&q=80"
+        heroImage="/assets/hero-plantacao-4k.jpg"
         showCTA={true}
       />
 

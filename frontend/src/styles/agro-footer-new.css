@@ -1,0 +1,237 @@
+/* ===== AGROISYNC FOOTER ATUALIZADO ===== */
+/* Footer com fundo #0b2a16, logo à esquerda, links organizados à direita */
+
+/* VARIÁVEIS */
+:root {
+  --agro-primary-green: #1a7f2e;
+  --agro-dark-green: #0b2a16;
+  --agro-white: #ffffff;
+  --agro-light-gray: rgba(255, 255, 255, 0.8);
+  --agro-font-family: "Inter", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* FOOTER PRINCIPAL */
+.agro-footer-new {
+  background: var(--agro-dark-green);
+  color: var(--agro-white);
+  padding: 60px 0 20px;
+  margin-top: 60px;
+  border-top: 1px solid rgba(26, 127, 46, 0.2);
+}
+
+/* CONTAINER */
+.agro-footer-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* CONTEÚDO PRINCIPAL */
+.agro-footer-main {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 60px;
+  margin-bottom: 40px;
+}
+
+/* BRAND - LOGO À ESQUERDA */
+.agro-footer-brand {
+  max-width: 400px;
+}
+
+.agro-footer-logo {
+  margin-bottom: 20px;
+}
+
+.agro-footer-logo-img {
+  height: 48px;
+  width: auto;
+  filter: brightness(0) invert(1);
+}
+
+.agro-footer-description {
+  color: var(--agro-light-gray);
+  line-height: 1.6;
+  margin-bottom: 24px;
+  font-family: var(--agro-font-family);
+  font-size: 14px;
+}
+
+/* INFORMAÇÕES DE CONTATO */
+.agro-contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.agro-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--agro-light-gray);
+  font-family: var(--agro-font-family);
+  font-size: 14px;
+}
+
+.agro-contact-item svg {
+  color: var(--agro-primary-green);
+  flex-shrink: 0;
+}
+
+/* SEÇÕES DE LINKS - À DIREITA */
+.agro-footer-sections {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.agro-footer-section-title {
+  font-family: var(--agro-font-family);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--agro-white);
+  margin-bottom: 16px;
+}
+
+.agro-footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.agro-footer-links li {
+  margin-bottom: 8px;
+}
+
+.agro-footer-link {
+  color: var(--agro-light-gray);
+  text-decoration: none;
+  font-family: var(--agro-font-family);
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.agro-footer-link:hover {
+  color: var(--agro-primary-green);
+}
+
+/* FOOTER BOTTOM */
+.agro-footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 20px;
+}
+
+.agro-footer-bottom-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.agro-footer-copyright {
+  color: var(--agro-light-gray);
+  font-family: var(--agro-font-family);
+  font-size: 14px;
+}
+
+.agro-footer-copyright p {
+  margin: 0;
+}
+
+.agro-footer-location {
+  color: var(--agro-primary-green) !important;
+  font-weight: 500;
+}
+
+.agro-footer-legal {
+  display: flex;
+  gap: 24px;
+}
+
+.agro-footer-legal-link {
+  color: var(--agro-light-gray);
+  text-decoration: none;
+  font-family: var(--agro-font-family);
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.agro-footer-legal-link:hover {
+  color: var(--agro-primary-green);
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 991px) {
+  .agro-footer-main {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .agro-footer-sections {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .agro-footer-new {
+    padding: 40px 0 20px;
+  }
+  
+  .agro-footer-container {
+    padding: 0 16px;
+  }
+  
+  .agro-footer-sections {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .agro-footer-bottom-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .agro-footer-legal {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .agro-footer-new {
+    padding: 30px 0 20px;
+  }
+  
+  .agro-footer-container {
+    padding: 0 12px;
+  }
+  
+  .agro-footer-main {
+    gap: 30px;
+  }
+  
+  .agro-footer-logo-img {
+    height: 40px;
+  }
+  
+  .agro-footer-legal {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+/* ESTADOS DE FOCO PARA ACESSIBILIDADE */
+.agro-footer-link:focus,
+.agro-footer-legal-link:focus {
+  outline: 2px solid var(--agro-primary-green);
+  outline-offset: 2px;
+}
+
+/* GARANTIR CONTRASTE ADEQUADO */
+@media (prefers-contrast: high) {
+  .agro-footer-link,
+  .agro-footer-legal-link {
+    color: var(--agro-white) !important;
+  }
+}
