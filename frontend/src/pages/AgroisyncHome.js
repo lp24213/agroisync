@@ -18,26 +18,26 @@ const AgroisyncHome = () => {
   const features = [
     {
       icon: <TrendingUp size={32} />,
-      title: t('features.marketplace.title'),
-      description: t('features.marketplace.description'),
+      title: 'Marketplace Digital',
+      description: 'Conecte-se com compradores e vendedores em uma plataforma segura e eficiente.',
       link: '/marketplace',
     },
     {
       icon: <Truck size={32} />,
-      title: t('features.agroconecta.title'),
-      description: t('features.agroconecta.description'),
+      title: 'AgroConecta',
+      description: 'Logística inteligente para otimizar toda a cadeia de suprimentos agrícolas.',
       link: '/agroconecta',
     },
     {
       icon: <Zap size={32} />,
-      title: t('features.crypto.title'),
-      description: t('features.crypto.description'),
+      title: 'Tecnologia Blockchain',
+      description: 'Transações seguras e transparentes com tecnologia de ponta.',
       link: '/crypto',
     },
     {
       icon: <Shield size={32} />,
-      title: t('features.analytics.title'),
-      description: t('features.analytics.description'),
+      title: 'Analytics Avançado',
+      description: 'Insights poderosos para tomar decisões estratégicas no agronegócio.',
       link: '/dashboard',
     },
   ];
@@ -83,21 +83,21 @@ const AgroisyncHome = () => {
             initial="hidden"
             animate="visible"
           >
-                <motion.h1 className="text-center" variants={itemVariants}>
-                  {t('home.title')}
+                <motion.h1 className="hero-title" variants={itemVariants}>
+                  Agroisync
                 </motion.h1>
                 
-                <motion.p className="text-center" variants={itemVariants}>
-                  {t('home.subtitle')}
-                </motion.p>
+                <motion.h2 className="hero-subtitle" variants={itemVariants}>
+                  A Plataforma de Agronegócio Mais Futurista do Mundo
+                </motion.h2>
                 
-                <motion.div className="flex-center gap-4" variants={itemVariants}>
+                <motion.div className="hero-buttons" variants={itemVariants}>
                   <Link to="/marketplace" className="btn-primary">
-                    {t('home.exploreMarketplace')}
+                    Explorar Marketplace
                     <ArrowRight size={20} />
                   </Link>
                   <Link to="/about" className="btn-secondary">
-                    {t('home.learnMore')}
+                    Saiba Mais
                   </Link>
                 </motion.div>
           </motion.div>

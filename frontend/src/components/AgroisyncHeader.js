@@ -15,7 +15,8 @@ import {
   Truck,
   Store,
   Zap,
-  Users
+  Users,
+  Sprout
 } from 'lucide-react';
 
 const AgroisyncHeader = () => {
@@ -98,8 +99,13 @@ const AgroisyncHeader = () => {
           <div className="navbar-logo">
             <Link to="/" className="navbar-logo-link">
               <div className="navbar-logo-content">
-                <span className="navbar-logo-text">AGROISYNC</span>
-                <span className="navbar-logo-tagline">{t('nav.tagline')}</span>
+                <div className="navbar-logo-icon">
+                  <Sprout size={28} />
+                </div>
+                <div className="navbar-logo-text-container">
+                  <span className="navbar-logo-text">AGROISYNC</span>
+                  <span className="navbar-logo-tagline">{t('nav.tagline')}</span>
+                </div>
               </div>
             </Link>
           </div>
