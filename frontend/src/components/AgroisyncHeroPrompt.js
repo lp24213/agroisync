@@ -15,7 +15,6 @@ const AgroisyncHeroPrompt = ({
         id="home-hero" 
         data-hero="true"
         data-hero-img={heroImage}
-        style={{ backgroundImage: `url('${heroImage}')` }}
       >
         <div className="hero-inner">
           <h1 className="hero-title">{title}</h1>

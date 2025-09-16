@@ -7,19 +7,19 @@
 
 (function() {
   const header = document.getElementById('main-header');
-  const hero = document.querySelector('.hero-image');
   
-  function updateHeader() {
-    if (hero && hero.getBoundingClientRect().bottom > 0) {
+  function checkHero() {
+    const hero = document.querySelector('.hero-image');
+    if (hero && hero.getBoundingClientRect().top <= 0) {
       header.classList.add('header-over-image');
     } else {
       header.classList.remove('header-over-image');
     }
   }
   
-  updateHeader();
-  window.addEventListener('scroll', updateHeader);
-  window.addEventListener('resize', updateHeader);
+  window.addEventListener('scroll', checkHero);
+  window.addEventListener('resize', checkHero);
+  checkHero();
 
   // 2) Mobile hamburger
   const hamburger = document.getElementById('hamburger');
@@ -29,8 +29,9 @@
   });
 
   // 3) Carregamento de imagens por página: definir imagens 4K específicas
-  // Exemplo: setar via data-hero-img em cada template
-  if (hero && hero.dataset.heroImg) {
-    hero.style.backgroundImage = `url('${hero.dataset.heroImg}')`;
-  }
+  document.querySelectorAll('.hero-image').forEach(el => {
+    if (el.dataset.heroImg) {
+      el.style.backgroundImage = `url('${el.dataset.heroImg}')`;
+    }
+  });
 })();

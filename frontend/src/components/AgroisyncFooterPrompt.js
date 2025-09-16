@@ -17,6 +17,9 @@ const AgroisyncFooterPrompt = () => {
             <Link to="/terms">Termos</Link>
             <Link to="/support">Suporte</Link>
           </div>
+          <div className="footer-copyright">
+            <p>&copy; 2024 Agroisync. Todos os direitos reservados.</p>
+          </div>
         </div>
       </footer>
     </>
