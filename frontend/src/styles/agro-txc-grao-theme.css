@@ -573,11 +573,23 @@ a:hover {
   }
   
   .navbar-menu {
-    display: none;
+    position: static;
+    transform: none;
+    width: 100%;
+    justify-content: center;
+    margin-top: var(--space-sm);
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+  }
+  
+  .navbar-link {
+    font-size: var(--text-sm);
+    padding: var(--space-xs) var(--space-sm);
   }
   
   .navbar-container {
     padding: 0 var(--space-md);
+    flex-wrap: wrap;
   }
   
   h1 {
@@ -598,6 +610,19 @@ a:hover {
   .grid-3,
   .grid-4 {
     grid-template-columns: 1fr;
+  }
+  
+  .navbar-menu {
+    gap: var(--space-xs);
+  }
+  
+  .navbar-link {
+    font-size: var(--text-xs);
+    padding: var(--space-xs);
+  }
+  
+  .navbar-container {
+    padding: 0 var(--space-sm);
   }
   
   h1 {
