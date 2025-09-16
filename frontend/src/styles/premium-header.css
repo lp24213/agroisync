@@ -67,7 +67,7 @@
 }
 
 .premium-header-link {
-  color: var(--premium-white);
+  color: var(--success);
   text-decoration: none;
   font-weight: 500;
   font-size: 0.875rem;
@@ -78,14 +78,15 @@
 }
 
 .premium-header-link:hover {
-  color: var(--neon-blue);
-  background: var(--glass-neon);
+  color: var(--success);
+  background: var(--success-glow);
+  box-shadow: var(--shadow-neon);
 }
 
 .premium-header-link.active {
-  color: var(--light-gold);
-  background: var(--glass-gold);
-  box-shadow: var(--shadow-gold);
+  color: var(--success);
+  background: var(--success-glow);
+  box-shadow: var(--shadow-neon);
 }
 
 .premium-header-link.active::after {
@@ -96,7 +97,7 @@
   transform: translateX(-50%);
   width: 20px;
   height: 2px;
-  background: var(--light-gold);
+  background: var(--success);
   border-radius: 1px;
 }
 
