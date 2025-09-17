@@ -50,6 +50,7 @@ const AgroisyncHeader = () => {
   const navigationItems = [
     { path: '/', label: t('nav.home'), icon: Home },
     { path: '/marketplace', label: t('nav.marketplace'), icon: ShoppingCart },
+    { path: '/loja', label: 'Loja', icon: ShoppingCart },
     { path: '/agroconecta', label: t('nav.agroconecta'), icon: Truck },
     { path: '/tecnologia', label: t('nav.crypto'), icon: Coins },
     { path: '/partnerships', label: t('nav.partnerships'), icon: Users },

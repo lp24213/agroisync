@@ -25,11 +25,14 @@ import './styles/agroisync-layout-clean.css';
 import './styles/agroisync-design-tokens.css';
 // Importar animações suaves e estilo moderno
 import './styles/agroisync-animations.css';
+// Importar visual futurista e profissional
+import './styles/agroisync-futuristic.css';
 
 // Pages
 import AgroisyncHome from './pages/AgroisyncHome';
 import AgroisyncHomePrompt from './pages/AgroisyncHomePrompt';
 import AgroisyncMarketplace from './pages/AgroisyncMarketplace';
+import AgroisyncLoja from './pages/AgroisyncLoja';
 import AgroisyncAgroConecta from './pages/AgroisyncAgroConecta';
 import AgroisyncCrypto from './pages/AgroisyncCrypto';
 import AgroisyncPlans from './pages/AgroisyncPlans';
@@ -92,8 +95,8 @@ function App() {
                          {/* PROMPT CERTEIRO - Pagina com header padrao */}
                          <Route path="/home-prompt" element={<AgroisyncHomePrompt />} />
                   <Route path="/marketplace" element={<AgroisyncMarketplace />} />
+                  <Route path="/loja" element={<AgroisyncLoja />} />
                   <Route path="/agroconecta" element={<AgroisyncAgroConecta />} />
-                  <Route path="/loja" element={<Store />} />
                   <Route path="/tecnologia" element={<AgroisyncCrypto />} />
                   <Route path="/intermediation" element={<IntermediationSystem />} />
                   <Route path="/plans" element={<AgroisyncPlans />} />

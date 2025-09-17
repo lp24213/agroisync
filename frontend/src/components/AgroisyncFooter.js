@@ -29,15 +29,15 @@ const AgroisyncFooter = () => {
         { label: 'Rastreamento', path: '/agroconecta/tracking' }
       ]
     },
-    {
-      title: 'Parcérias',
-      links: [
-        { label: 'Seja Parceiro', path: '/partnerships' },
-        { label: 'Parceiros Atuais', path: '/partnerships/current' },
-        { label: 'Benefícios', path: '/partnerships/benefits' },
-        { label: 'Contato Comercial', path: '/partnerships/contact' }
-      ]
-    }
+      {
+        title: 'Parcerias',
+        links: [
+          { label: 'Seja Parceiro', path: '/partnerships' },
+          { label: 'Parceiros Atuais', path: '/partnerships/current' },
+          { label: 'Benefícios', path: '/partnerships/benefits' },
+          { label: 'Contato Comercial', path: '/partnerships/contact' }
+        ]
+      }
   ];
 
   return (

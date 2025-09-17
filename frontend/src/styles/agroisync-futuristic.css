@@ -1,0 +1,546 @@
+/* ========================================
+   AGROISYNC - VISUAL FUTURISTA E PROFISSIONAL
+   Nível Apple mas ainda mais impressionante
+   Clean, organizado, mas mega chamativo
+   ======================================== */
+
+/* Importar fontes premium */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+/* Variáveis CSS para visual futurista */
+:root {
+  /* Cores principais - Paleta premium */
+  --agro-future-white: #FFFFFF;
+  --agro-future-black: #000000;
+  --agro-future-gray-50: #FAFAFA;
+  --agro-future-gray-100: #F5F5F5;
+  --agro-future-gray-200: #EEEEEE;
+  --agro-future-gray-300: #E0E0E0;
+  --agro-future-gray-400: #BDBDBD;
+  --agro-future-gray-500: #9E9E9E;
+  --agro-future-gray-600: #757575;
+  --agro-future-gray-700: #616161;
+  --agro-future-gray-800: #424242;
+  --agro-future-gray-900: #212121;
+  
+  /* Cores de destaque */
+  --agro-future-green: #00E676;
+  --agro-future-green-dark: #00C853;
+  --agro-future-blue: #00B0FF;
+  --agro-future-purple: #7C4DFF;
+  --agro-future-orange: #FF6D00;
+  --agro-future-red: #FF1744;
+  
+  /* Gradientes futuristas */
+  --agro-gradient-primary: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 50%, #E9ECEF 100%);
+  --agro-gradient-accent: linear-gradient(135deg, #00E676 0%, #00C853 100%);
+  --agro-gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+  --agro-gradient-dark: linear-gradient(135deg, #212121 0%, #424242 100%);
+  
+  /* Sombras futuristas */
+  --agro-shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --agro-shadow-floating: 0 20px 40px rgba(0, 0, 0, 0.15);
+  --agro-shadow-glow: 0 0 20px rgba(0, 230, 118, 0.3);
+  --agro-shadow-deep: 0 25px 50px rgba(0, 0, 0, 0.25);
+  
+  /* Bordas futuristas */
+  --agro-border-glass: 1px solid rgba(255, 255, 255, 0.2);
+  --agro-border-glow: 1px solid rgba(0, 230, 118, 0.3);
+  --agro-radius-glass: 20px;
+  --agro-radius-floating: 24px;
+  
+  /* Tipografia futurista */
+  --agro-font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --agro-font-display: 'Space Grotesk', 'Inter', sans-serif;
+  --agro-font-mono: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+  
+  /* Espaçamentos futuristas */
+  --agro-space-micro: 2px;
+  --agro-space-tiny: 4px;
+  --agro-space-small: 8px;
+  --agro-space-medium: 16px;
+  --agro-space-large: 24px;
+  --agro-space-xl: 32px;
+  --agro-space-2xl: 48px;
+  --agro-space-3xl: 64px;
+  --agro-space-4xl: 96px;
+  
+  /* Animações futuristas */
+  --agro-transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --agro-transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --agro-transition-elastic: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Reset e base futurista */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--agro-font-primary);
+  background: var(--agro-gradient-primary);
+  color: var(--agro-future-black);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Header futurista */
+.premium-header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: var(--agro-border-glass);
+  box-shadow: var(--agro-shadow-glass);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: var(--agro-transition-smooth);
+}
+
+.premium-header-scrolled {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  box-shadow: var(--agro-shadow-floating);
+}
+
+.premium-header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--agro-space-large);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--agro-space-xl);
+  height: 80px;
+}
+
+/* Logo futurista */
+.premium-header-logo-img {
+  height: 50px;
+  width: auto;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+  transition: var(--agro-transition-smooth);
+}
+
+.premium-header-logo-img:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.15));
+}
+
+/* Menu futurista */
+.premium-header-menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--agro-space-small);
+}
+
+.premium-header-link {
+  color: var(--agro-future-black) !important;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: var(--agro-space-medium) var(--agro-space-large);
+  border-radius: var(--agro-radius-glass);
+  transition: var(--agro-transition-smooth);
+  display: flex;
+  align-items: center;
+  gap: var(--agro-space-small);
+  font-family: var(--agro-font-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-header-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--agro-gradient-accent);
+  transition: var(--agro-transition-smooth);
+  z-index: -1;
+}
+
+.premium-header-link:hover::before {
+  left: 0;
+}
+
+.premium-header-link:hover {
+  color: var(--agro-future-white) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--agro-shadow-glow);
+}
+
+.premium-header-link.active {
+  color: var(--agro-future-white) !important;
+  background: var(--agro-gradient-accent);
+  font-weight: 700;
+  box-shadow: var(--agro-shadow-glow);
+}
+
+/* Actions futuristas */
+.premium-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--agro-space-medium);
+}
+
+.premium-language-btn {
+  background: var(--agro-gradient-glass);
+  border: var(--agro-border-glass);
+  color: var(--agro-future-black);
+  padding: var(--agro-space-small) var(--agro-space-medium);
+  border-radius: var(--agro-radius-glass);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--agro-transition-smooth);
+  display: flex;
+  align-items: center;
+  gap: var(--agro-space-tiny);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.premium-language-btn:hover {
+  background: var(--agro-gradient-accent);
+  color: var(--agro-future-white);
+  transform: translateY(-1px);
+  box-shadow: var(--agro-shadow-glow);
+}
+
+.premium-language-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: var(--agro-border-glass);
+  border-radius: var(--agro-radius-glass);
+  box-shadow: var(--agro-shadow-floating);
+  padding: var(--agro-space-small);
+  min-width: 200px;
+  z-index: 1000;
+}
+
+.premium-lang-option {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: var(--agro-space-medium);
+  border-radius: var(--agro-space-small);
+  text-align: left;
+  cursor: pointer;
+  transition: var(--agro-transition-smooth);
+  display: flex;
+  align-items: center;
+  gap: var(--agro-space-medium);
+  font-family: var(--agro-font-primary);
+  font-weight: 500;
+}
+
+.premium-lang-option:hover {
+  background: var(--agro-gradient-accent);
+  color: var(--agro-future-white);
+}
+
+.premium-lang-option.active {
+  background: var(--agro-gradient-accent);
+  color: var(--agro-future-white);
+  font-weight: 600;
+}
+
+/* Botões futuristas */
+.agro-btn-primary {
+  background: var(--agro-gradient-accent);
+  color: var(--agro-future-white);
+  border: none;
+  padding: var(--agro-space-medium) var(--agro-space-xl);
+  border-radius: var(--agro-radius-glass);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: var(--agro-transition-smooth);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--agro-space-small);
+  font-family: var(--agro-font-primary);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.agro-btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: var(--agro-transition-smooth);
+}
+
+.agro-btn-primary:hover::before {
+  left: 100%;
+}
+
+.agro-btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--agro-shadow-glow);
+}
+
+.agro-btn-secondary {
+  background: transparent;
+  color: var(--agro-future-green);
+  border: 2px solid var(--agro-future-green);
+  padding: var(--agro-space-medium) var(--agro-space-xl);
+  border-radius: var(--agro-radius-glass);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: var(--agro-transition-smooth);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--agro-space-small);
+  font-family: var(--agro-font-primary);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.agro-btn-secondary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: var(--agro-gradient-accent);
+  transition: var(--agro-transition-smooth);
+  z-index: -1;
+}
+
+.agro-btn-secondary:hover::before {
+  width: 100%;
+}
+
+.agro-btn-secondary:hover {
+  color: var(--agro-future-white);
+  transform: translateY(-3px);
+  box-shadow: var(--agro-shadow-glow);
+}
+
+/* Cards futuristas */
+.agro-card-animated {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: var(--agro-border-glass);
+  border-radius: var(--agro-radius-floating);
+  box-shadow: var(--agro-shadow-glass);
+  transition: var(--agro-transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.agro-card-animated::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--agro-gradient-accent);
+  transform: scaleX(0);
+  transition: var(--agro-transition-smooth);
+}
+
+.agro-card-animated:hover::before {
+  transform: scaleX(1);
+}
+
+.agro-card-animated:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--agro-shadow-floating);
+}
+
+/* Seções futuristas */
+.agro-section-title {
+  font-family: var(--agro-font-display);
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--agro-future-black);
+  text-align: center;
+  margin-bottom: var(--agro-space-large);
+  background: var(--agro-gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+
+.agro-section-subtitle {
+  font-size: 1.25rem;
+  color: var(--agro-future-gray-600);
+  text-align: center;
+  margin-bottom: var(--agro-space-2xl);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* Container futurista */
+.agro-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--agro-space-large);
+}
+
+/* Responsividade futurista */
+@media (max-width: 1200px) {
+  .premium-header-container {
+    padding: 0 var(--agro-space-medium);
+    gap: var(--agro-space-large);
+  }
+  
+  .agro-section-title {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .premium-header-container {
+    grid-template-columns: auto 1fr auto;
+    padding: 0 var(--agro-space-medium);
+    height: 70px;
+  }
+  
+  .premium-header-menu {
+    display: none;
+  }
+  
+  .agro-section-title {
+    font-size: 2rem;
+  }
+  
+  .agro-section-subtitle {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .premium-header-container {
+    padding: 0 var(--agro-space-small);
+  }
+  
+  .agro-section-title {
+    font-size: 1.75rem;
+  }
+  
+  .agro-container {
+    padding: 0 var(--agro-space-medium);
+  }
+}
+
+/* Animações de entrada futuristas */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Classes de animação */
+.agro-fade-in-up {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.agro-fade-in-scale {
+  animation: fadeInScale 0.6s ease-out;
+}
+
+.agro-slide-in-left {
+  animation: slideInLeft 0.8s ease-out;
+}
+
+.agro-slide-in-right {
+  animation: slideInRight 0.8s ease-out;
+}
+
+/* Efeitos de hover futuristas */
+.agro-hover-lift {
+  transition: var(--agro-transition-smooth);
+}
+
+.agro-hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--agro-shadow-floating);
+}
+
+.agro-hover-glow {
+  transition: var(--agro-transition-smooth);
+}
+
+.agro-hover-glow:hover {
+  box-shadow: var(--agro-shadow-glow);
+}
+
+/* Gradientes de texto futuristas */
+.agro-text-gradient {
+  background: var(--agro-gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.agro-text-gradient-dark {
+  background: var(--agro-gradient-dark);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
