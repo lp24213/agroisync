@@ -104,7 +104,7 @@ const AgroisyncAgroConecta = () => {
       <AgroisyncHeroPrompt 
         title="AgroConecta"
         subtitle="Logística Inteligente para o Agronegócio"
-        heroImage="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIwIiBoZWlnaHQ9IjEwODAiIHZpZXdCb3g9IjAgMCAxOTIwIDEwODAiPgogIDwhLS0gSW1hZ2VtIGRlIGNhbWluaMO1ZXMgY29tIGdyw6NvcyAtLT4KICA8cmVjdCB3aWR0aD0iMTkyMCIgaGVpZ2h0PSIxMDgwIiBmaWxsPSIjRkZGRkZGIi8+CiAgPHRleHQgeD0iOTYwIiB5PSI1NDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SW1hZ2VtIGRlIENhbWluaMO1ZXMgY29tIEdyw6NvczwvdGV4dD4KPC9zdmc+Cg=="
+        heroImage="/agroconecta.png"
         showCTA={true}
       />
 

@@ -235,6 +235,16 @@ const AgroisyncHome = () => {
         .agro-home-container {
           background: #F5F5F5; /* Fundo cinza claro da imagem */
           min-height: 100vh;
+          position: relative;
+        }
+
+        /* Hero Background com imagem inicio.png */
+        .agro-hero-section {
+          background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/inicio.png');
+          background-size: cover;
+          background-position: center;
+          background-attachment: fixed;
+          position: relative;
         }
 
         .agro-main-layout {
@@ -264,18 +274,20 @@ const AgroisyncHome = () => {
         .agro-hero-title {
           font-size: 3rem;
           font-weight: 800;
-          color: #000000;
+          color: #FFFFFF;
           margin-bottom: 1.5rem;
           line-height: 1.2;
           font-family: 'Roboto', sans-serif;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
         }
 
         .agro-hero-description {
           font-size: 1.1rem;
-          color: #666666;
+          color: #FFFFFF;
           margin-bottom: 2rem;
           line-height: 1.6;
           font-family: 'Inter', sans-serif;
+          text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
         }
 
         .agro-btn-start {

@@ -19,6 +19,8 @@ import './styles/agro-txc-grao-theme.css';
 import './styles/ui-txc-final-override.css';
 // Importar nova estetica visual
 import './styles/agroisync-new-theme.css';
+// Importar layout clean conforme design
+import './styles/agroisync-layout-clean.css';
 
 // Pages
 import AgroisyncHome from './pages/AgroisyncHome';

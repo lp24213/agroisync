@@ -262,7 +262,7 @@ const Partnerships = () => {
         <AgroisyncHeroPrompt 
           title="Seja Nosso Parceiro"
           subtitle="Junte-se à AGROISYNC e faça parte da revolução do agronegócio brasileiro"
-          heroImage="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIwIiBoZWlnaHQ9IjEwODAiIHZpZXdCb3g9IjAgMCAxOTIwIDEwODAiPgogIDwhLS0gSW1hZ2VtIGRlIGFwZXJ0byBkZSBtw6NvcyBlbSBjb25mZXLDqm5jaWEgLS0+CiAgPHJlY3Qgd2lkdGg9IjE5MjAiIGhlaWdodD0iMTA4MCIgZmlsbD0iI0ZGRkZGRiIvPgogIDx0ZXh0IHg9Ijk2MCIgeT0iNTQwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMzMzMiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlbSBkZSBBcGVydG8gZGUgTcOjb3MgZW0gQ29uZmVyw6puY2lhPC90ZXh0Pgo8L3N2Zz4K"
+          heroImage="/parceria.png"
           showCTA={true}
         />
 
