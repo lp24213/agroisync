@@ -60,7 +60,7 @@ class AdvancedSecurityService {
     // Monitorar formulários
     document.addEventListener('submit', (e) => {
       const formData = new FormData(e.target);
-      for (let [key, value] of formData.entries()) {
+      for (const [key, value] of formData.entries()) {
         if (this.detectInjectionPattern(value)) {
           e.preventDefault();
           this.logSecurityThreat('FORM_INJECTION_ATTEMPT', {
@@ -328,8 +328,8 @@ class AdvancedSecurityService {
 
   // Monitorar padrões de comportamento
   monitorBehaviorPatterns() {
-    let mouseMovements = [];
-    let keyStrokes = [];
+    const mouseMovements = [];
+    const keyStrokes = [];
     
     // Monitorar movimentos do mouse
     document.addEventListener('mousemove', (e) => {
@@ -695,7 +695,7 @@ class AdvancedSecurityService {
 
   // Detectar ferramentas de desenvolvedor
   detectDevTools() {
-    let devtools = { open: false, orientation: null };
+    const devtools = { open: false, orientation: null };
     
     setInterval(() => {
       const threshold = 160;

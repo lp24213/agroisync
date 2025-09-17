@@ -179,7 +179,7 @@ class SecurityService {
     }
     
     // Verificar console aberto (técnica anti-debug)
-    let devtools = { open: false, orientation: null };
+    const devtools = { open: false, orientation: null };
     
     setInterval(() => {
       const threshold = 160;

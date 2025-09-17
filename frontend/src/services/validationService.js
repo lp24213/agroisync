@@ -74,7 +74,7 @@ class ValidationService {
       weight = weight === 9 ? 2 : weight + 1;
     }
     let remainder = sum % 11;
-    let digit1 = remainder < 2 ? 0 : 11 - remainder;
+    const digit1 = remainder < 2 ? 0 : 11 - remainder;
     if (digit1 !== parseInt(cnpj.charAt(12))) {
       return { valid: false, error: 'CNPJ inválido' };
     }
@@ -87,7 +87,7 @@ class ValidationService {
       weight = weight === 9 ? 2 : weight + 1;
     }
     remainder = sum % 11;
-    let digit2 = remainder < 2 ? 0 : 11 - remainder;
+    const digit2 = remainder < 2 ? 0 : 11 - remainder;
     if (digit2 !== parseInt(cnpj.charAt(13))) {
       return { valid: false, error: 'CNPJ inválido' };
     }

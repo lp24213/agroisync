@@ -117,28 +117,6 @@ export const checkUserAccess = async (userId, adId) => {
   }
 };
 
-// Função para verificar acesso aos dados
-export const checkUserAccess = async (userId, adId) => {
-  try {
-    const response = await fetch(`/api/v1/data-access/check-access/${adId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Erro ao verificar acesso');
-    }
-
-    const result = await response.json();
-    return result.hasAccess;
-  } catch (error) {
-    console.error('Erro ao verificar acesso:', error);
-    return false;
-  }
-};
 
 // Função para liberar dados sensíveis após pagamento
 export const unlockSensitiveData = async (userId, adId) => {
