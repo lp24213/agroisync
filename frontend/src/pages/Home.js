@@ -92,17 +92,19 @@ const Home = () => {
       {/* Bolsa de Valores Ticker */}
       <Ticker />
       
-      {/* Imagem Full-Width Campo de Soja */}
-      <section className="relative w-full overflow-hidden">
-        <img 
-          src="/images/soja-4k.png"
-          alt="Campo de soja 4K"
-          className="w-full h-auto object-cover object-center"
-          style={{ aspectRatio: '16/9' }}
-        />
-        {/* Overlay opcional para legibilidade */}
-        <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-      </section>
+      {/* Background Image Section */}
+      <section 
+        className="w-full"
+        style={{
+          backgroundImage: "url('/assets/inicio.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          width: '100%',
+          height: '80vh',
+          minHeight: '500px'
+        }}
+      ></section>
       
       {/* Hero Section com Imagem Agrícola */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
