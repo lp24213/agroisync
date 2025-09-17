@@ -159,8 +159,11 @@ body {
 }
 
 .premium-header-logo-img {
-  height: 40px;
+  height: 50px;
   width: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
 }
 
 /* Menu Desktop */
@@ -724,8 +727,11 @@ body {
 }
 
 .agro-footer-logo-img {
-  height: 40px;
+  height: 50px;
   width: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
 }
 
 .agro-footer-description {
