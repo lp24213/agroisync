@@ -92,6 +92,47 @@ const Home = () => {
       {/* Bolsa de Valores Ticker */}
       <Ticker />
       
+      {/* Seção Seja Nosso Parceiro com Imagem */}
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
+              Seja Nosso <span className="text-gradient">Parceiro</span>
+            </h2>
+            <p className="text-xl text-muted max-w-3xl mx-auto mb-8">
+              Junte-se à AGROISYNC e faça parte da revolução do agronegócio brasileiro
+            </p>
+          </div>
+          
+          {/* Imagem Centralizada */}
+          <div className="flex justify-center mb-12">
+            <img 
+              src="/assets/inicio.png"
+              alt="Imagem de parceria AGROISYNC"
+              className="max-w-full h-auto rounded-lg shadow-2xl"
+              style={{ maxHeight: '500px' }}
+            />
+          </div>
+          
+          {/* Botões Centralizados */}
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+            <Link
+              to="/marketplace"
+              className="btn-premium px-10 py-5 text-xl font-semibold flex items-center gap-3"
+            >
+              Explorar Marketplace
+              <ArrowRight size={24} />
+            </Link>
+            <Link
+              to="/about"
+              className="btn-premium-secondary px-10 py-5 text-xl font-semibold"
+            >
+              Saiba Mais
+            </Link>
+          </div>
+        </div>
+      </section>
+      
       {/* Hero Section com Imagem Agrícola */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Imagem de Fundo Agrícola */}
