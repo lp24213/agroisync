@@ -13,7 +13,6 @@ import {
   CheckCircle,
   ArrowRight,
   Package,
-  DollarSign,
   MapPin,
   Eye
 } from 'lucide-react';

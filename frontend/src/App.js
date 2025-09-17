@@ -51,7 +51,6 @@ import TwoFactorAuth from './pages/TwoFactorAuth';
 import VerifyEmail from './pages/VerifyEmail';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCancel from './pages/PaymentCancel';
-import Store from './pages/Store';
 import FAQ from './pages/FAQ';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
