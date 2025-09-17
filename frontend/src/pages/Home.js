@@ -93,16 +93,14 @@ const Home = () => {
       <Ticker />
       
       {/* Seção Seja Nosso Parceiro com Imagem de Fundo */}
-      <section className="relative py-20 min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Imagem de Fundo do Campo de Soja */}
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="/images/agricultural-field.jpg"
-            alt="Campo de soja ao pôr do sol - AGROISYNC"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-        </div>
+      <section className="relative py-20 min-h-screen flex items-center justify-center overflow-hidden" style={{
+        backgroundImage: 'url(/assets/inicio.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}>
+        {/* Overlay escuro */}
+        <div className="absolute inset-0 bg-black bg-opacity-50 z-0"></div>
         
         {/* Conteúdo Centralizado sobre a Imagem */}
         <div className="relative z-10 text-center max-w-6xl mx-auto px-4 flex flex-col items-center justify-center min-h-screen">
