@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 const AgroisyncHome = () => {
+  // Cache busting para a imagem inicio.png
+  const inicioImageUrl = `/assets/inicio.png?v=1.0.1&t=${Date.now()}`;
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 60 },
@@ -30,6 +32,12 @@ const AgroisyncHome = () => {
     <div className="agro-home-container">
       {/* Hero Section com imagem inicio.png */}
       <section className="agro-hero-fullscreen">
+        {/* Imagem de fundo */}
+        <img 
+          src={inicioImageUrl}
+          alt="Campo agrícola ao pôr do sol"
+          className="agro-hero-background-image"
+        />
         <div className="agro-hero-overlay">
           <div className="agro-hero-content-centered agro-stagger-children">
             <motion.h1 
@@ -208,14 +216,21 @@ const AgroisyncHome = () => {
         /* Hero Fullscreen com imagem inicio.png */
         .agro-hero-fullscreen {
           height: 100vh;
-          background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/assets/inicio.png');
-          background-size: cover;
-          background-position: center;
-          background-attachment: fixed;
           position: relative;
           display: flex;
           align-items: center;
           justify-content: center;
+          overflow: hidden;
+        }
+
+        .agro-hero-background-image {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          z-index: 1;
         }
 
         .agro-hero-overlay {
@@ -224,12 +239,13 @@ const AgroisyncHome = () => {
           left: 0;
           right: 0;
           bottom: 0;
-          background: rgba(0, 0, 0, 0.3);
+          background: rgba(0, 0, 0, 0.4);
+          z-index: 2;
         }
 
         .agro-hero-content-centered {
           position: relative;
-          z-index: 2;
+          z-index: 3;
           text-align: center;
           max-width: 800px;
           padding: 0 2rem;
