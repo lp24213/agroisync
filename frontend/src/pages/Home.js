@@ -107,10 +107,10 @@ const Home = () => {
           {/* Imagem Centralizada */}
           <div className="flex justify-center mb-12">
             <img 
-              src="/assets/inicio.png"
-              alt="Imagem de parceria AGROISYNC"
+              src="/images/agricultural-field.jpg"
+              alt="Campo de soja ao pôr do sol - AGROISYNC"
               className="max-w-full h-auto rounded-lg shadow-2xl"
-              style={{ maxHeight: '500px' }}
+              style={{ maxHeight: '600px', width: '100%', objectFit: 'cover' }}
             />
           </div>
           
