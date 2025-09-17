@@ -1,5 +1,5 @@
 /* ========================================
-   AGROISYNC - NOVA ESTÉTICA VISUAL
+   AGROISYNC - NOVA ESTETICA VISUAL
    Paleta: Branco puro #FFFFFF, Verde #2e7d32, Cinza #F5F5F5
    Tipografia: Fonte sem serifa moderna
    ======================================== */
@@ -9,20 +9,20 @@
 
 /* CSS Custom Properties - Nova Paleta Agroisync */
 :root {
-  /* Cores principais conforme especificação */
+  /* Cores principais conforme especificacao */
   --agro-primary-green: #2e7d32;        /* Verde principal do logo */
   --agro-white: #FFFFFF;                 /* Branco puro */
   --agro-light-gray: #F5F5F5;           /* Cinza muito sutil */
-  --agro-black: #000000;                /* Preto puro para títulos */
+  --agro-black: #000000;                /* Preto puro para titulos */
   --agro-dark-gray: #333333;            /* Cinza escuro suave para texto */
   
   /* Cores de fundo */
   --bg-primary: var(--agro-white);       /* Fundo principal branco */
-  --bg-secondary: var(--agro-light-gray); /* Fundo de seções/painéis */
+  --bg-secondary: var(--agro-light-gray); /* Fundo de secoes/paineis */
   --bg-card: var(--agro-light-gray);     /* Fundo de cards */
   
   /* Cores de texto */
-  --text-primary: var(--agro-black);     /* Títulos e subtítulos */
+  --text-primary: var(--agro-black);     /* Titulos e subtitulos */
   --text-secondary: var(--agro-dark-gray); /* Corpo do texto */
   --text-white: var(--agro-white);        /* Texto sobre fundo escuro */
   
