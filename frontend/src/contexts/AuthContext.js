@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import useStore from '../store/useStore';
 import axios from 'axios';
 
@@ -20,11 +20,7 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const { setUser: setStoreUser, setLoading } = useStore();
 
-  useEffect(() => {
-    checkAuthState();
-  }, []);
-
-  const checkAuthState = async () => {
+  const checkAuthState = useCallback(async () => {
     try {
       setIsLoading(true);
       const token = localStorage.getItem('authToken');
@@ -60,7 +56,11 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(false);
       setLoading(false);
     }
-  };
+  }, [setStoreUser, setLoading]);
+
+  useEffect(() => {
+    checkAuthState();
+  }, [checkAuthState]);
 
   const login = async (email, password) => {
     try {
