@@ -14,7 +14,6 @@ import {
   LogIn,
   LogOut,
   User,
-  Settings,
   Globe
 } from 'lucide-react';
 
