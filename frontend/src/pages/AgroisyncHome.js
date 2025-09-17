@@ -1,10 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 
 const AgroisyncHome = () => {
-  const { t } = useTranslation();
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 60 },
@@ -170,8 +168,8 @@ const AgroisyncHome = () => {
                 <div className="agro-shop-item-info">
                   <div className="agro-shop-item-name">Semedora John Deere®</div>
                   <div className="agro-shop-item-price">R$ 60.000</div>
-                </div>
-              </div>
+          </div>
+        </div>
               
               <div className="agro-shop-item">
                 <div className="agro-shop-item-image">
@@ -186,13 +184,13 @@ const AgroisyncHome = () => {
               <div className="agro-shop-item">
                 <div className="agro-shop-item-image">
                   <div className="agro-implement-icon">⚙️</div>
-                </div>
+            </div>
                 <div className="agro-shop-item-info">
                   <div className="agro-shop-item-name">Implemento Agrícola</div>
                   <div className="agro-shop-item-price">R$ 12.600</div>
-                </div>
-              </div>
             </div>
+          </div>
+        </div>
             
             <div className="agro-shop-link">
               <Link to="/shop">Ver todos os produtos</Link>
@@ -228,9 +226,9 @@ const AgroisyncHome = () => {
                 <div className="agro-news-time">3h atrás</div>
               </div>
             </div>
+            </div>
           </div>
         </div>
-      </div>
 
       <style jsx>{`
         /* Layout Principal - Duas Colunas conforme imagem */
