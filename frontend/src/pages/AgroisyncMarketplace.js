@@ -189,6 +189,7 @@ const AgroisyncMarketplace = () => {
 
           {/* Filtros */}
           <motion.div
+            className="agro-card-animated"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -218,6 +219,7 @@ const AgroisyncMarketplace = () => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Digite o produto..."
+                  className="agro-btn-animated"
                   style={{
                     width: '100%',
                     padding: '0.75rem',
@@ -239,6 +241,7 @@ const AgroisyncMarketplace = () => {
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="agro-btn-animated"
                   style={{
                     width: '100%',
                     padding: '0.75rem',
@@ -265,6 +268,7 @@ const AgroisyncMarketplace = () => {
                 <select
                   value={selectedState}
                   onChange={(e) => setSelectedState(e.target.value)}
+                  className="agro-btn-animated"
                   style={{
                     width: '100%',
                     padding: '0.75rem',
@@ -300,6 +304,7 @@ const AgroisyncMarketplace = () => {
             {filteredProducts.map((product, index) => (
               <motion.div
                 key={product.id}
+                className="agro-card-animated"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}

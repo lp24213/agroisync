@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const AgroisyncHeroPrompt = ({ 
   title = "Agroisync", 
   subtitle = "A Plataforma de Agronegócio Mais Futurista do Mundo",
-  heroImage = "/assets/hero-plantacao-4k.jpg",
+  heroImage = "/assets/marketplace.png",
   showCTA = true 
 }) => {
   return (

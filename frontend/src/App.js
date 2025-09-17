@@ -23,6 +23,8 @@ import './styles/agroisync-new-theme.css';
 import './styles/agroisync-layout-clean.css';
 // Importar design tokens atualizados
 import './styles/agroisync-design-tokens.css';
+// Importar animações suaves e estilo moderno
+import './styles/agroisync-animations.css';
 
 // Pages
 import AgroisyncHome from './pages/AgroisyncHome';

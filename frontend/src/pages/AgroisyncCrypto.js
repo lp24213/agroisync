@@ -105,11 +105,10 @@ const AgroisyncCrypto = () => {
 
   return (
     <div>
-      {/* Hero Section TXC */}
+      {/* Hero Section Clean */}
       <section className="agro-hero-section" style={{
-        background: 'linear-gradient(rgba(31, 46, 31, 0.4), rgba(31, 46, 31, 0.4)), url("https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=1920&h=1080&fit=crop")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
+        background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
+        padding: '4rem 0'
       }}>
         <div className="agro-hero-content">
           <motion.div
@@ -137,11 +136,11 @@ const AgroisyncCrypto = () => {
               </div>
             </motion.div>
 
-            <motion.h1 className="agro-hero-title" variants={itemVariants}>
+            <motion.h1 className="agro-hero-title" variants={itemVariants} style={{ color: '#000000' }}>
               CRYPTO AGRO
             </motion.h1>
             
-            <motion.p className="agro-hero-subtitle" variants={itemVariants}>
+            <motion.p className="agro-hero-subtitle" variants={itemVariants} style={{ color: '#666666' }}>
               Tecnologia blockchain para revolucionar o agronegócio brasileiro
             </motion.p>
 
@@ -155,11 +154,34 @@ const AgroisyncCrypto = () => {
               }}
               variants={itemVariants}
             >
-              <Link to="/register" className="agro-btn-outline">
+              <Link to="/register" className="agro-btn-primary" style={{
+                background: '#4CAF50',
+                color: '#FFFFFF',
+                padding: '1rem 2rem',
+                borderRadius: '8px',
+                textDecoration: 'none',
+                fontWeight: '600',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                transition: 'all 0.3s ease'
+              }}>
                 Começar Agora
                 <ArrowRight size={20} />
               </Link>
-              <Link to="/marketplace" className="agro-btn-outline">
+              <Link to="/marketplace" className="agro-btn-secondary" style={{
+                background: 'transparent',
+                color: '#4CAF50',
+                border: '2px solid #4CAF50',
+                padding: '1rem 2rem',
+                borderRadius: '8px',
+                textDecoration: 'none',
+                fontWeight: '600',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                transition: 'all 0.3s ease'
+              }}>
                 Explorar
               </Link>
             </motion.div>

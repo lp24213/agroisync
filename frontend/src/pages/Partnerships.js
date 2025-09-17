@@ -138,7 +138,7 @@ const Partnerships = () => {
               </ul>
             </div>
             <button 
-              className="back-button"
+              className="back-button agro-btn-animated"
               onClick={() => {
                 setIsSubmitted(false);
                 setFormData({
@@ -274,7 +274,7 @@ const Partnerships = () => {
               {benefits.map((benefit, index) => (
                 <motion.div
                   key={benefit.title}
-                  className="benefit-card"
+                  className="benefit-card agro-card-animated"
                   initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -299,7 +299,7 @@ const Partnerships = () => {
               {successStories.map((story, index) => (
                 <motion.div
                   key={story.company}
-                  className="story-card"
+                  className="story-card agro-card-animated"
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
@@ -340,6 +340,7 @@ const Partnerships = () => {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
+                    className="agro-btn-animated"
                     placeholder="Seu nome completo"
                   />
                 </div>
@@ -352,6 +353,7 @@ const Partnerships = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
+                    className="agro-btn-animated"
                     placeholder="seu@email.com"
                   />
                 </div>
@@ -367,6 +369,7 @@ const Partnerships = () => {
                     value={formData.company}
                     onChange={handleInputChange}
                     required
+                    className="agro-btn-animated"
                     placeholder="Nome da sua empresa"
                   />
                 </div>
@@ -403,6 +406,7 @@ const Partnerships = () => {
                     value={formData.partnershipType}
                     onChange={handleInputChange}
                     required
+                    className="agro-btn-animated"
                   >
                     <option value="">Selecione uma opção</option>
                     {partnershipTypes.map(type => (
@@ -458,6 +462,7 @@ const Partnerships = () => {
                   onChange={handleInputChange}
                   required
                   rows={6}
+                  className="agro-btn-animated"
                   placeholder="Conte-nos sobre sua empresa, objetivos da parceria e como podemos trabalhar juntos..."
                 />
               </div>
@@ -465,7 +470,7 @@ const Partnerships = () => {
               <div className="form-submit">
                 <button 
                   type="submit" 
-                  className="submit-button"
+                  className="submit-button agro-btn-animated"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (

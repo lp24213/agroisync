@@ -28,49 +28,55 @@ const AgroisyncHome = () => {
 
   return (
     <div className="agro-home-container">
+      {/* Hero Section com imagem inicio.png */}
+      <section className="agro-hero-fullscreen">
+        <div className="agro-hero-overlay">
+          <div className="agro-hero-content-centered agro-stagger-children">
+            <motion.h1 
+              className="agro-hero-title"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              Seja Nosso Parceiro
+            </motion.h1>
+            
+            <motion.p 
+              className="agro-hero-description"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              Junte-se à AGROISYNC e faça parte da revolução do agronegócio brasileiro
+            </motion.p>
+        
+            <motion.div 
+              className="agro-hero-buttons"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              <Link to="/marketplace" className="agro-btn-primary agro-btn-animated">
+                Explorar Marketplace
+              </Link>
+              <Link to="/partnerships" className="agro-btn-secondary agro-btn-animated">
+                Saiba Mais
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* Layout Principal - Duas Colunas */}
       <div className="agro-main-layout">
         {/* Coluna Principal - Esquerda */}
         <div className="agro-main-content">
-          {/* Hero Section */}
-          <section className="agro-hero-section">
-            <div className="agro-hero-content">
-              <motion.h1 
-                className="agro-hero-title"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-              >
-                O Futuro do Agronegócio é Agora
-              </motion.h1>
-              
-              <motion.p 
-                className="agro-hero-description"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
-                A plataforma mais futurista e sofisticada do mundo para conectar produtores, compradores e transportadores. Design premium, tecnologia de ponta e performance excepcional.
-            </motion.p>
-          
-          <motion.div 
-                className="agro-hero-cta"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-              >
-                <Link to="/register" className="agro-btn-start">
-                  Começar Agora
-                </Link>
-          </motion.div>
-        </div>
-      </section>
 
       {/* Statistics Section */}
           <section className="agro-stats-section">
             <div className="agro-stats-grid">
               <motion.div 
-                className="agro-stat-item"
+                className="agro-stat-item agro-card-animated"
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
@@ -81,7 +87,7 @@ const AgroisyncHome = () => {
               </motion.div>
               
               <motion.div
-                className="agro-stat-item"
+                className="agro-stat-item agro-card-animated"
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -92,7 +98,7 @@ const AgroisyncHome = () => {
               </motion.div>
               
               <motion.div 
-                className="agro-stat-item"
+                className="agro-stat-item agro-card-animated"
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
@@ -113,28 +119,28 @@ const AgroisyncHome = () => {
               whileInView="visible"
               viewport={{ once: true }}
             >
-              <motion.div className="agro-feature-card" variants={itemVariants}>
+              <motion.div className="agro-feature-card agro-card-animated" variants={itemVariants}>
                 <h3 className="agro-feature-title">Tecnologia que Impressiona</h3>
                 <p className="agro-feature-description">
                   Recursos avançados que colocam o AgroSync anos à frente da concorrência
                 </p>
               </motion.div>
               
-              <motion.div className="agro-feature-card" variants={itemVariants}>
+              <motion.div className="agro-feature-card agro-card-animated" variants={itemVariants}>
                 <h3 className="agro-feature-title">Segurança Avançada</h3>
                 <p className="agro-feature-description">
                   Proteção de dados com criptografia de nível bancário e autenticação 2FA
                 </p>
               </motion.div>
               
-              <motion.div className="agro-feature-card" variants={itemVariants}>
+              <motion.div className="agro-feature-card agro-card-animated" variants={itemVariants}>
                 <h3 className="agro-feature-title">Performance Extrema</h3>
                 <p className="agro-feature-description">
                   Tecnologia de ponta para transações instantâneas e processamento em tempo real
                 </p>
               </motion.div>
               
-              <motion.div className="agro-feature-card" variants={itemVariants}>
+              <motion.div className="agro-feature-card agro-card-animated" variants={itemVariants}>
                 <h3 className="agro-feature-title">Global & Local</h3>
                 <p className="agro-feature-description">
                   Conectividade mundial com foco no agronegócio brasileiro e internacional
@@ -147,19 +153,19 @@ const AgroisyncHome = () => {
         {/* Sidebar - Direita */}
         <div className="agro-sidebar">
           {/* Seja Nosso Parceiro */}
-          <div className="agro-partner-card">
+          <div className="agro-partner-card agro-card-animated">
             <h3 className="agro-partner-title">Seja Nosso Parceiro</h3>
             <div className="agro-partner-image">
               <img src="/assets/parceria.png" alt="Parceria Agroisync" />
             </div>
             <div className="agro-partner-buttons">
-              <Link to="/marketplace" className="agro-btn-primary">Explorar Marketplace</Link>
-              <Link to="/partnerships" className="agro-btn-secondary">Saiba Mais</Link>
+              <Link to="/marketplace" className="agro-btn-primary agro-btn-animated">Explorar Marketplace</Link>
+              <Link to="/partnerships" className="agro-btn-secondary agro-btn-animated">Saiba Mais</Link>
             </div>
           </div>
 
           {/* Notícias do Agronegócio */}
-          <div className="agro-news-card">
+          <div className="agro-news-card agro-card-animated">
             <h3 className="agro-news-title">Notícias do Agronegócio</h3>
             
             <div className="agro-news-items">
@@ -199,13 +205,34 @@ const AgroisyncHome = () => {
           position: relative;
         }
 
-        /* Hero Background com imagem inicio.png */
-        .agro-hero-section {
+        /* Hero Fullscreen com imagem inicio.png */
+        .agro-hero-fullscreen {
+          height: 100vh;
           background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/assets/inicio.png');
           background-size: cover;
           background-position: center;
           background-attachment: fixed;
           position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .agro-hero-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.3);
+        }
+
+        .agro-hero-content-centered {
+          position: relative;
+          z-index: 2;
+          text-align: center;
+          max-width: 800px;
+          padding: 0 2rem;
         }
 
         .agro-main-layout {
@@ -233,26 +260,33 @@ const AgroisyncHome = () => {
         }
 
         .agro-hero-title {
-          font-size: 3rem;
+          font-size: 4rem;
           font-weight: 800;
           color: #FFFFFF;
           margin-bottom: 1.5rem;
           line-height: 1.2;
           font-family: 'Roboto', sans-serif;
-          text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
         }
 
         .agro-hero-description {
-          font-size: 1.1rem;
+          font-size: 1.3rem;
           color: #FFFFFF;
-          margin-bottom: 2rem;
+          margin-bottom: 2.5rem;
           line-height: 1.6;
           font-family: 'Inter', sans-serif;
-          text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+          text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
         }
 
-        .agro-btn-start {
-          background: #424242;
+        .agro-hero-buttons {
+          display: flex;
+          gap: 1rem;
+          justify-content: center;
+          flex-wrap: wrap;
+        }
+
+        .agro-btn-primary {
+          background: #4CAF50;
           color: #FFFFFF;
           padding: 1rem 2rem;
           border-radius: 8px;
@@ -261,12 +295,34 @@ const AgroisyncHome = () => {
           display: inline-block;
           transition: all 0.3s ease;
           font-family: 'Inter', sans-serif;
+          font-size: 1.1rem;
         }
 
-        .agro-btn-start:hover {
-          background: #333333;
+        .agro-btn-primary:hover {
+          background: #45a049;
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .agro-btn-secondary {
+          background: transparent;
+          color: #FFFFFF;
+          border: 2px solid #FFFFFF;
+          padding: 1rem 2rem;
+          border-radius: 8px;
+          text-decoration: none;
+          font-weight: 600;
+          display: inline-block;
+          transition: all 0.3s ease;
+          font-family: 'Inter', sans-serif;
+          font-size: 1.1rem;
+        }
+
+        .agro-btn-secondary:hover {
+          background: #FFFFFF;
+          color: #000000;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
         }
 
         /* Statistics Section */
@@ -495,10 +551,21 @@ const AgroisyncHome = () => {
           }
 
           .agro-hero-description {
-            font-size: 1rem;
+            font-size: 1.1rem;
           }
 
-          .agro-hero-section,
+          .agro-hero-buttons {
+            flex-direction: column;
+            align-items: center;
+          }
+
+          .agro-btn-primary,
+          .agro-btn-secondary {
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+          }
+
           .agro-stats-section,
           .agro-features-section {
             padding: 1.5rem;

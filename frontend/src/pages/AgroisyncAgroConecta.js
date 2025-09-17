@@ -185,7 +185,7 @@ const AgroisyncAgroConecta = () => {
             {features.map((feature, index) => (
               <motion.div
                 key={feature.title}
-                className="agro-card agro-fade-in"
+                className="agro-card agro-fade-in agro-card-animated"
                 initial={{ opacity: 0, y: 60 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -255,6 +255,7 @@ const AgroisyncAgroConecta = () => {
           >
             <button
               onClick={() => setActiveTab('buscar')}
+              className="agro-btn-animated"
               style={{
                 flex: 1,
                 padding: '1rem',
@@ -272,6 +273,7 @@ const AgroisyncAgroConecta = () => {
             </button>
             <button
               onClick={() => setActiveTab('ofertas')}
+              className="agro-btn-animated"
               style={{
                 flex: 1,
                 padding: '1rem',
@@ -324,6 +326,7 @@ const AgroisyncAgroConecta = () => {
                       value={freteForm.origem}
                       onChange={(e) => setFreteForm({...freteForm, origem: e.target.value})}
                       placeholder="Cidade, Estado"
+                      className="agro-btn-animated"
                       style={{
                         width: '100%',
                         padding: '0.75rem',
@@ -346,6 +349,7 @@ const AgroisyncAgroConecta = () => {
                       value={freteForm.destino}
                       onChange={(e) => setFreteForm({...freteForm, destino: e.target.value})}
                       placeholder="Cidade, Estado"
+                      className="agro-btn-animated"
                       style={{
                         width: '100%',
                         padding: '0.75rem',
@@ -368,6 +372,7 @@ const AgroisyncAgroConecta = () => {
                       value={freteForm.volume}
                       onChange={(e) => setFreteForm({...freteForm, volume: e.target.value})}
                       placeholder="Ex: 50 toneladas"
+                      className="agro-btn-animated"
                       style={{
                         width: '100%',
                         padding: '0.75rem',
@@ -389,6 +394,7 @@ const AgroisyncAgroConecta = () => {
                       type="date"
                       value={freteForm.data}
                       onChange={(e) => setFreteForm({...freteForm, data: e.target.value})}
+                      className="agro-btn-animated"
                       style={{
                         width: '100%',
                         padding: '0.75rem',
@@ -405,7 +411,7 @@ const AgroisyncAgroConecta = () => {
                 <div style={{ textAlign: 'center' }}>
                   <button
                     type="submit"
-                    className="btn"
+                    className="btn agro-btn-animated"
                     style={{
                       padding: '1rem 2rem',
                       fontSize: '1.1rem',
@@ -444,7 +450,7 @@ const AgroisyncAgroConecta = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="card"
+                    className="card agro-card-animated"
                     style={{
                       padding: '1.5rem',
                       background: 'var(--card-bg)',

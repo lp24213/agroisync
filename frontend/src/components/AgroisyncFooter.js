@@ -12,30 +12,30 @@ const AgroisyncFooter = () => {
 
   const footerSections = [
     {
-      title: 'A AGROISYNC',
+      title: 'Marketplace',
       links: [
-        { label: 'Sobre Nós', path: '/about' },
-        { label: 'Seja Parceiro', path: '/partnership' },
-        { label: 'Trabalhe Conosco', path: '/careers' },
-        { label: 'Política de Privacidade', path: '/privacy' }
+        { label: 'Produtos', path: '/marketplace' },
+        { label: 'Categorias', path: '/marketplace/categories' },
+        { label: 'Vendedores', path: '/marketplace/sellers' },
+        { label: 'Como Vender', path: '/marketplace/sell' }
       ]
     },
     {
-      title: 'Contato',
+      title: 'AgroConecta',
       links: [
-        { label: 'Fale Conosco', path: '/contact' },
-        { label: 'Suporte Técnico', path: '/support' },
-        { label: 'FAQ', path: '/faq' },
-        { label: 'Central de Ajuda', path: '/help' }
+        { label: 'Buscar Frete', path: '/agroconecta' },
+        { label: 'Oferecer Frete', path: '/agroconecta/offer' },
+        { label: 'Transportadores', path: '/agroconecta/carriers' },
+        { label: 'Rastreamento', path: '/agroconecta/tracking' }
       ]
     },
     {
-      title: 'Suporte',
+      title: 'Parcérias',
       links: [
-        { label: 'Documentação', path: '/docs' },
-        { label: 'Tutoriais', path: '/tutorials' },
-        { label: 'API', path: '/api' },
-        { label: 'Integrações', path: '/integrations' }
+        { label: 'Seja Parceiro', path: '/partnerships' },
+        { label: 'Parceiros Atuais', path: '/partnerships/current' },
+        { label: 'Benefícios', path: '/partnerships/benefits' },
+        { label: 'Contato Comercial', path: '/partnerships/contact' }
       ]
     }
   ];
@@ -47,13 +47,13 @@ const AgroisyncFooter = () => {
           {/* Main Footer Content */}
           <div className="agro-footer-main">
             {/* Company Info */}
-            <div className="agro-footer-brand">
+            <div className="agro-footer-brand agro-card-animated">
               <div className="agro-footer-logo">
                 <img src="/assets/LOGOTIPO-EM-BRANCO.png" alt="Agroisync" className="agro-footer-logo-img" />
               </div>
               <p className="agro-footer-description">
-                Conectando o agronegócio brasileiro através de tecnologia inovadora, 
-                facilitando transações e otimizando a cadeia produtiva.
+                A plataforma mais futurista e sofisticada do mundo para conectar produtores, 
+                compradores e transportadores. Design premium, tecnologia de ponta e performance excepcional.
               </p>
               
               {/* Contact Info */}
@@ -68,17 +68,17 @@ const AgroisyncFooter = () => {
                 </div>
                 <div className="agro-contact-item">
                   <Mail size={16} />
-                  <span>contato@agroisync.com.br</span>
+                  <span>suporte@agroisync.com</span>
                 </div>
                 <div className="agro-contact-item">
                   <Globe size={16} />
-                  <span>www.agroisync.com.br</span>
+                  <span>www.agroisync.com</span>
                 </div>
               </div>
             </div>
 
             {/* Footer Sections */}
-            <div className="agro-footer-sections">
+            <div className="agro-footer-sections agro-card-animated">
               {footerSections.map((section, index) => (
                 <div
                   key={section.title}
@@ -88,7 +88,7 @@ const AgroisyncFooter = () => {
                   <ul className="agro-footer-links">
                     {section.links.map((link) => (
                       <li key={link.path}>
-                        <Link to={link.path} className="agro-footer-link">
+                        <Link to={link.path} className="agro-footer-link agro-btn-animated">
                           {link.label}
                         </Link>
                       </li>
@@ -107,7 +107,7 @@ const AgroisyncFooter = () => {
                   © {currentYear} AGROISYNC. Todos os direitos reservados.
                 </p>
                 <p className="agro-footer-location">
-                  Sinop - MT | (66) 99236-2830
+                  Sinop - MT | suporte@agroisync.com
                 </p>
               </div>
               

@@ -71,14 +71,14 @@ const AgroisyncHeader = () => {
         transition={{ duration: 0.5 }}
       >
         <div className="premium-header-container">
-          {/* Logo */}
+          {/* Logo - Esquerda */}
           <div className="premium-header-logo">
             <Link to="/" className="premium-header-logo-link">
               <img src="/assets/LOGOTIPO-EM-BRANCO.png" alt="Agroisync" className="premium-header-logo-img" />
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - Centro */}
           <nav className="premium-header-menu">
             {navigationItems.map((item) => {
               const Icon = item.icon;
@@ -86,10 +86,10 @@ const AgroisyncHeader = () => {
               
               return (
                 <div key={item.path} className="premium-header-item">
-                  <Link
-                    to={item.path}
-                    className={`premium-header-link ${isActive ? 'active' : ''}`}
-                  >
+              <Link
+                to={item.path}
+                className={`premium-header-link agro-btn-animated ${isActive ? 'active' : ''}`}
+              >
                     <Icon size={16} />
                     <span>{item.label}</span>
                   </Link>
@@ -98,14 +98,14 @@ const AgroisyncHeader = () => {
             })}
           </nav>
 
-          {/* Actions */}
+          {/* Actions - Direita */}
           <div className="premium-header-actions">
             {/* Language Selector */}
             <div className="premium-language-selector">
-              <button
-                className="premium-language-btn"
-                onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
-              >
+          <button
+            className="premium-language-btn agro-btn-animated"
+            onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
+          >
                 <Globe size={14} />
                 <span>{i18n.language.toUpperCase()}</span>
               </button>
@@ -122,7 +122,7 @@ const AgroisyncHeader = () => {
                     {languages.map((lang) => (
                       <button
                         key={lang.code}
-                        className={`premium-lang-option ${i18n.language === lang.code ? 'active' : ''}`}
+                        className={`premium-lang-option agro-btn-animated ${i18n.language === lang.code ? 'active' : ''}`}
                         onClick={() => handleLanguageChange(lang.code)}
                       >
                         <span className="premium-lang-flag">{lang.flag}</span>
@@ -139,22 +139,22 @@ const AgroisyncHeader = () => {
               {user ? (
                 <div className="premium-user-menu">
                   <span className="premium-user-name">{user.name || user.email}</span>
-                  <Link to="/dashboard" className="premium-header-link">
+                  <Link to="/dashboard" className="premium-header-link agro-btn-animated">
                     <User size={16} />
                     <span>{t('nav.dashboard')}</span>
                   </Link>
-                  <button onClick={handleLogout} className="premium-header-link">
+                  <button onClick={handleLogout} className="premium-header-link agro-btn-animated">
                     <LogOut size={16} />
                     <span>{t('nav.logout')}</span>
                   </button>
                 </div>
               ) : (
                 <>
-                  <Link to="/login" className="premium-header-link">
+                  <Link to="/login" className="premium-header-link agro-btn-animated">
                     <LogIn size={16} />
                     <span>{t('nav.login')}</span>
                   </Link>
-                  <Link to="/register" className="premium-header-link">
+                  <Link to="/register" className="premium-header-link agro-btn-animated">
                     <span>{t('nav.register')}</span>
                   </Link>
                 </>
@@ -162,10 +162,10 @@ const AgroisyncHeader = () => {
             </div>
 
             {/* Mobile Menu Toggle */}
-            <button
-              className="premium-mobile-toggle"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
+        <button
+          className="premium-mobile-toggle agro-btn-animated"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
@@ -230,11 +230,11 @@ const AgroisyncHeader = () => {
                       <strong>{user.name || user.email}</strong>
                     </div>
                     <div>
-                      <Link to="/dashboard" className="premium-header-link">
+                      <Link to="/dashboard" className="premium-header-link agro-btn-animated">
                         <User size={16} />
                         <span>{t('nav.dashboard')}</span>
                       </Link>
-                      <button onClick={handleLogout} className="premium-header-link">
+                      <button onClick={handleLogout} className="premium-header-link agro-btn-animated">
                         <LogOut size={16} />
                         <span>{t('nav.logout')}</span>
                       </button>
@@ -242,11 +242,11 @@ const AgroisyncHeader = () => {
                   </div>
                 ) : (
                   <>
-                    <Link to="/login" className="premium-header-link">
+                    <Link to="/login" className="premium-header-link agro-btn-animated">
                       <LogIn size={16} />
                       <span>{t('nav.login')}</span>
                     </Link>
-                    <Link to="/register" className="premium-header-link">
+                    <Link to="/register" className="premium-header-link agro-btn-animated">
                       <span>{t('nav.register')}</span>
                     </Link>
                   </>
