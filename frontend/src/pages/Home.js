@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import Noticias from '../components/Noticias';
+import Ticker from '../components/Ticker';
 import { 
   PremiumScrollReveal, 
   PremiumFloatingCard, 
@@ -88,6 +89,47 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
+      {/* Bolsa de Valores Ticker */}
+      <Ticker />
+      
+      {/* Hero Section com Imagem Agrícola */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Imagem de Fundo Agrícola */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+            alt="Campo de soja ao pôr do sol"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+        </div>
+        
+        {/* Conteúdo Centralizado sobre a Imagem */}
+        <div className="relative z-10 text-center max-w-6xl mx-auto px-4">
+          <PremiumScrollReveal delay={0.2} parallax={true}>
+            <PremiumRevealText 
+              text="Junte-se à AGROISYNC e faça parte da revolução do agronegócio brasileiro"
+              className="text-4xl md:text-6xl font-bold mb-8 leading-tight text-white drop-shadow-2xl"
+              delay={0.5}
+            />
+            
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mt-12">
+              <MouseTracker intensity={0.1}>
+                <Premium3DButton variant="primary" size="lg" className="px-10 py-5 text-xl font-semibold bg-white text-gray-900 hover:bg-gray-100">
+                  Explorar Marketplace
+                  <ArrowRight size={24} className="ml-3" />
+                </Premium3DButton>
+              </MouseTracker>
+              <MouseTracker intensity={0.1}>
+                <Premium3DButton variant="secondary" size="lg" className="px-10 py-5 text-xl font-semibold border-2 border-white text-white hover:bg-white hover:text-gray-900">
+                  Saiba Mais
+                </Premium3DButton>
+              </MouseTracker>
+            </div>
+          </PremiumScrollReveal>
+        </div>
+      </section>
+
       {/* Hero Section - Premium Futuristic */}
       <section className="py-32 relative min-h-screen flex items-center">
         <div className="container-premium">

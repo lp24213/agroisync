@@ -87,14 +87,14 @@ const Ticker = () => {
       
       <style jsx>{`
         .premium-ticker-container {
-          position: fixed;
-          top: 70px;
+          position: relative;
+          top: 0;
           left: 0;
           right: 0;
-          z-index: 40;
+          z-index: 10;
           background: linear-gradient(90deg, var(--matte-black-light) 0%, var(--matte-black-lighter) 100%);
           border-bottom: 1px solid var(--glass-white);
-          height: 40px;
+          height: 50px;
           overflow: hidden;
           backdrop-filter: blur(20px);
         }
@@ -175,8 +175,8 @@ const Ticker = () => {
         
         @media (max-width: 768px) {
           .premium-ticker-container {
-            height: 36px;
-            top: 60px;
+            height: 40px;
+            top: 0;
           }
           
           .premium-ticker-item {
