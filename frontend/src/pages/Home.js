@@ -92,47 +92,16 @@ const Home = () => {
       {/* Bolsa de Valores Ticker */}
       <Ticker />
       
-      {/* Seção Seja Nosso Parceiro com Imagem de Fundo */}
-      <section className="relative py-20 min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Imagem de Fundo */}
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&h=1080&fit=crop&crop=center"
-            alt="Campo de soja ao pôr do sol"
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              e.target.src = '/images/agricultural-field.jpg';
-            }}
-          />
-          <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-        </div>
-        
-        {/* Conteúdo Centralizado sobre a Imagem */}
-        <div className="relative z-10 text-center max-w-6xl mx-auto px-4 flex flex-col items-center justify-center min-h-screen">
-          <h2 className="text-4xl md:text-6xl font-bold mb-8 leading-tight text-white drop-shadow-2xl">
-            Seja Nosso <span className="text-yellow-300">Parceiro</span>
-          </h2>
-          <p className="text-xl md:text-2xl mb-12 max-w-4xl mx-auto leading-relaxed text-white drop-shadow-lg">
-            Junte-se à AGROISYNC e faça parte da revolução do agronegócio brasileiro
-          </p>
-          
-          {/* Botões Centralizados */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <Link
-              to="/marketplace"
-              className="btn-premium px-10 py-5 text-xl font-semibold flex items-center gap-3 bg-white text-gray-900 hover:bg-gray-100"
-            >
-              Explorar Marketplace
-              <ArrowRight size={24} />
-            </Link>
-            <Link
-              to="/about"
-              className="btn-premium-secondary px-10 py-5 text-xl font-semibold border-2 border-white text-white hover:bg-white hover:text-gray-900"
-            >
-              Saiba Mais
-            </Link>
-          </div>
-        </div>
+      {/* Imagem Full-Width Campo de Soja */}
+      <section className="relative w-full overflow-hidden">
+        <img 
+          src="/images/soja-4k.png"
+          alt="Campo de soja 4K"
+          className="w-full h-auto object-cover object-center"
+          style={{ aspectRatio: '16/9' }}
+        />
+        {/* Overlay opcional para legibilidade */}
+        <div className="absolute inset-0 bg-black bg-opacity-20"></div>
       </section>
       
       {/* Hero Section com Imagem Agrícola */}
