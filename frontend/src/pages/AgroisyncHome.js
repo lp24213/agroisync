@@ -30,14 +30,8 @@ const AgroisyncHome = () => {
 
   return (
     <div className="agro-home-container">
-      {/* Hero Section com imagem inicio.png */}
+      {/* Hero Section */}
       <section className="agro-hero-fullscreen">
-        {/* Imagem de fundo */}
-        <img 
-          src={inicioImageUrl}
-          alt="Campo agrícola ao pôr do sol"
-          className="agro-hero-background-image"
-        />
         <div className="agro-hero-overlay">
           <div className="agro-hero-content-centered agro-stagger-children">
             <motion.h1 
@@ -164,7 +158,7 @@ const AgroisyncHome = () => {
           <div className="agro-partner-card agro-card-animated">
             <h3 className="agro-partner-title">Seja Nosso Parceiro</h3>
             <div className="agro-partner-image">
-              <img src="/assets/parceria.png" alt="Parceria Agroisync" />
+              <img src={inicioImageUrl} alt="Campo agrícola ao pôr do sol" />
             </div>
             <div className="agro-partner-buttons">
               <Link to="/marketplace" className="agro-btn-primary agro-btn-animated">Explorar Marketplace</Link>
@@ -213,24 +207,15 @@ const AgroisyncHome = () => {
           position: relative;
         }
 
-        /* Hero Fullscreen com imagem inicio.png */
+        /* Hero Fullscreen */
         .agro-hero-fullscreen {
           height: 100vh;
+          background: linear-gradient(135deg, #2F4F2F 0%, #3A5F3A 50%, #4A6F4A 100%);
           position: relative;
           display: flex;
           align-items: center;
           justify-content: center;
           overflow: hidden;
-        }
-
-        .agro-hero-background-image {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          z-index: 1;
         }
 
         .agro-hero-overlay {
@@ -239,7 +224,7 @@ const AgroisyncHome = () => {
           left: 0;
           right: 0;
           bottom: 0;
-          background: rgba(0, 0, 0, 0.4);
+          background: rgba(0, 0, 0, 0.2);
           z-index: 2;
         }
 
