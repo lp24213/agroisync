@@ -94,7 +94,7 @@ const Home = () => {
       
       {/* Seção Seja Nosso Parceiro com Imagem de Fundo */}
       <section className="relative py-20 min-h-screen flex items-center justify-center overflow-hidden" style={{
-        backgroundImage: 'url(/assets/inicio.png)',
+        backgroundImage: 'url(/images/campo-soja-4k.jpg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
