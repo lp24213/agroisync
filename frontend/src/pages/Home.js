@@ -97,9 +97,12 @@ const Home = () => {
         {/* Imagem de Fundo */}
         <div className="absolute inset-0 z-0">
           <img 
-            src="/images/campo-soja-4k.jpg"
-            alt="Campo de soja 4K"
+            src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&h=1080&fit=crop&crop=center"
+            alt="Campo de soja ao pôr do sol"
             className="w-full h-full object-cover"
+            onError={(e) => {
+              e.target.src = '/images/agricultural-field.jpg';
+            }}
           />
           <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         </div>
