@@ -1,106 +1,29 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { 
-  ArrowRight,
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
-  CheckCircle,
-  AlertCircle,
-  User,
-  Shield,
-  UserPlus,
-  Building
-} from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Building2 } from 'lucide-react';
+import AgroisyncHeader from '../components/AgroisyncHeader';
+import AgroisyncFooter from '../components/AgroisyncFooter';
 
 const AgroisyncRegister = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: '',
-    confirmPassword: '',
-    userType: 'producer',
     company: '',
-    phone: '',
-    acceptTerms: false
+    password: '',
+    confirmPassword: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-    setError('');
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
-
-    // Validações
-    if (formData.password !== formData.confirmPassword) {
-      setError('As senhas não coincidem');
-      setIsLoading(false);
-      return;
-    }
-
-    if (!formData.acceptTerms) {
-      setError('Você deve aceitar os termos de uso');
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      // Simular registro
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log('Registration successful:', formData);
-      // Redirecionar para login ou dashboard
-    } catch (err) {
-      setError('Erro ao criar conta. Tente novamente.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const benefits = [
-    {
-      icon: <Shield size={24} />,
-      text: 'Conta segura e protegida',
-    },
-    {
-      icon: <UserPlus size={24} />,
-      text: 'Acesso completo à plataforma',
-    },
-    {
-      icon: <CheckCircle size={24} />,
-      text: 'Suporte especializado',
-    },
-  ];
-
-  const userTypes = [
-    { value: 'producer', label: 'Produtor Rural', icon: <User size={20} /> },
-    { value: 'buyer', label: 'Comprador', icon: <Building size={20} /> },
-    { value: 'transporter', label: 'Transportador', icon: <User size={20} /> },
-  ];
+  const [errors, setErrors] = useState({});
 
   const heroVariants = {
-    hidden: { opacity: 0, y: 60 },
+    hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      y: 0,
-      transition: {
-        duration: 1,
-        ease: 'easeOut',
-        staggerChildren: 0.2,
-      },
+      transition: { duration: 0.8, ease: 'easeOut' },
     },
   };
 
@@ -113,23 +36,100 @@ const AgroisyncRegister = () => {
     },
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.name.trim()) {
+      newErrors.name = 'Nome é obrigatório';
+    }
+    
+    if (!formData.email) {
+      newErrors.email = 'Email é obrigatório';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Email inválido';
+    }
+    
+    if (!formData.company.trim()) {
+      newErrors.company = 'Empresa é obrigatória';
+    }
+    
+    if (!formData.password) {
+      newErrors.password = 'Senha é obrigatória';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Senha deve ter pelo menos 6 caracteres';
+    }
+    
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = 'Confirmação de senha é obrigatória';
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Senhas não coincidem';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Simulate successful registration
+      navigate('/login', { 
+        state: { 
+          message: 'Conta criada com sucesso! Faça login para continuar.' 
+        } 
+      });
+    } catch (error) {
+      setErrors({ general: 'Erro ao criar conta. Tente novamente.' });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div>
-      {/* Hero Section TXC */}
-      <section className="agro-hero-section" style={{
-        background: 'linear-gradient(rgba(31, 46, 31, 0.4), rgba(31, 46, 31, 0.4)), url("https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&h=1080&fit=crop")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+    <>
+      <AgroisyncHeader />
+      
+      <section style={{ 
         minHeight: '100vh',
+        background: 'var(--bg-gradient)',
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        padding: '2rem 0'
       }}>
-        <div className="agro-container">
+        <div className="container">
           <div style={{ 
             display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))', 
-            gap: 'var(--agro-space-3xl)',
-            alignItems: 'center'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', 
+            gap: '3rem',
+            alignItems: 'center',
+            maxWidth: '1000px',
+            margin: '0 auto'
           }}>
             {/* Left Side - Info */}
             <motion.div
@@ -137,187 +137,158 @@ const AgroisyncRegister = () => {
               initial="hidden"
               animate="visible"
               className="agro-text-center"
-              style={{ color: 'var(--agro-white)' }}
+              style={{ color: 'var(--text-primary)' }}
             >
               <motion.div
                 variants={itemVariants}
-                style={{ marginBottom: 'var(--agro-space-xl)' }}
+                style={{ marginBottom: '2rem' }}
               >
                 <div style={{
-                  width: '120px',
-                  height: '120px',
+                  width: '100px',
+                  height: '100px',
                   margin: '0 auto',
-                  background: 'var(--agro-gradient-accent)',
-                  borderRadius: 'var(--agro-radius-3xl)',
+                  background: 'var(--accent)',
+                  borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: 'var(--agro-dark-green)',
-                  boxShadow: 'var(--agro-shadow-lg)'
+                  color: 'white',
+                  boxShadow: '0 6px 20px rgba(42, 127, 79, 0.3)'
                 }}>
-                  <UserPlus size={48} />
+                  <Building2 size={40} />
                 </div>
               </motion.div>
 
-              <motion.h1 className="agro-hero-title" variants={itemVariants}>
-                JUNTE-SE À REVOLUÇÃO
+              <motion.h1 style={{ 
+                fontSize: '2.5rem', 
+                fontWeight: '800', 
+                marginBottom: '1rem',
+                color: 'var(--text-primary)'
+              }} variants={itemVariants}>
+                Junte-se ao Agroisync!
               </motion.h1>
               
-              <motion.p className="agro-hero-subtitle" variants={itemVariants}>
-                Crie sua conta e comece a transformar seu agronegócio hoje mesmo
+              <motion.p style={{ 
+                fontSize: '1.1rem', 
+                color: 'var(--muted)',
+                marginBottom: '2rem',
+                lineHeight: '1.6'
+              }} variants={itemVariants}>
+                Crie sua conta e comece sua jornada no futuro do agronegócio digital.
               </motion.p>
 
               <motion.div 
+                variants={itemVariants}
                 style={{ 
                   display: 'flex', 
-                  flexDirection: 'column',
-                  gap: 'var(--agro-space-md)',
-                  marginTop: 'var(--agro-space-xl)',
-                  maxWidth: '400px',
-                  margin: 'var(--agro-space-xl) auto 0 auto'
+                  gap: '1rem', 
+                  justifyContent: 'center',
+                  flexWrap: 'wrap'
                 }}
-                variants={itemVariants}
               >
-                {benefits.map((benefit, index) => (
-                  <div 
-                    key={index}
-                    style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: 'var(--agro-space-md)',
-                      justifyContent: 'center'
-                    }}
-                  >
+                <div style={{
+                  padding: '0.5rem 1rem',
+                  background: 'rgba(42, 127, 79, 0.1)',
+                  borderRadius: '20px',
+                  fontSize: '0.9rem',
+                  color: 'var(--accent)',
+                  fontWeight: '600'
+                }}>
+                  ✓ Gratuito
+                </div>
                     <div style={{
-                      width: '32px',
-                      height: '32px',
-                      background: 'rgba(57, 255, 20, 0.2)',
-                      borderRadius: 'var(--agro-radius-lg)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'var(--txc-light-green)',
-                      flexShrink: 0
-                    }}>
-                      {benefit.icon}
+                  padding: '0.5rem 1rem',
+                  background: 'rgba(42, 127, 79, 0.1)',
+                  borderRadius: '20px',
+                  fontSize: '0.9rem',
+                  color: 'var(--accent)',
+                  fontWeight: '600'
+                }}>
+                  ✓ Sem compromisso
                     </div>
-                    <span style={{ fontSize: '1rem', opacity: 0.9 }}>
-                      {benefit.text}
-                    </span>
+                <div style={{
+                  padding: '0.5rem 1rem',
+                  background: 'rgba(42, 127, 79, 0.1)',
+                  borderRadius: '20px',
+                  fontSize: '0.9rem',
+                  color: 'var(--accent)',
+                  fontWeight: '600'
+                }}>
+                  ✓ Suporte 24/7
                   </div>
-                ))}
               </motion.div>
             </motion.div>
 
-            {/* Right Side - Register Form */}
+            {/* Right Side - Form */}
             <motion.div
-              initial={{ opacity: 0, x: 60 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, delay: 0.3 }}
-              className="agro-card"
+              variants={heroVariants}
+              initial="hidden"
+              animate="visible"
               style={{ 
-                maxWidth: '500px', 
-                margin: '0 auto',
-                padding: 'var(--agro-space-3xl)',
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(57, 255, 20, 0.2)'
+                background: 'var(--card-bg)',
+                padding: '2.5rem',
+                borderRadius: '16px',
+                boxShadow: '0 12px 30px rgba(0, 0, 0, 0.08)',
+                border: '1px solid rgba(15, 15, 15, 0.05)'
               }}
             >
-              <div className="agro-text-center" style={{ marginBottom: 'var(--agro-space-2xl)' }}>
-                <h2 className="agro-section-title" style={{ fontSize: '2rem', marginBottom: 'var(--agro-space-md)' }}>
+              <motion.div
+                variants={itemVariants}
+                style={{ textAlign: 'center', marginBottom: '2rem' }}
+              >
+                <h2 style={{ 
+                  fontSize: '1.8rem', 
+                  fontWeight: '700', 
+                  marginBottom: '0.5rem',
+                  color: 'var(--text-primary)'
+                }}>
                   Criar Conta
                 </h2>
-                <p className="agro-section-subtitle" style={{ fontSize: '1rem' }}>
-                  Preencha os dados abaixo para começar
+                <p style={{ color: 'var(--muted)', fontSize: '0.95rem' }}>
+                  Preencha os dados abaixo para criar sua conta
                 </p>
-              </div>
+              </motion.div>
 
-              <form onSubmit={handleSubmit}>
-                {error && (
+              {errors.general && (
                   <motion.div
-                    initial={{ opacity: 0, y: -20 }}
+                  initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 'var(--agro-space-sm)',
-                      padding: 'var(--agro-space-md)',
-                      background: 'rgba(255, 75, 75, 0.1)',
-                      border: '1px solid rgba(255, 75, 75, 0.3)',
-                      borderRadius: 'var(--agro-radius-lg)',
-                      marginBottom: 'var(--agro-space-lg)',
-                      color: '#FF4B4B'
-                    }}
-                  >
-                    <AlertCircle size={20} />
-                    <span>{error}</span>
+                    background: 'rgba(220, 38, 38, 0.1)',
+                    border: '1px solid rgba(220, 38, 38, 0.2)',
+                    borderRadius: '8px',
+                    padding: '0.75rem',
+                    marginBottom: '1.5rem',
+                    color: '#dc2626',
+                    fontSize: '0.9rem'
+                  }}
+                >
+                  {errors.general}
                   </motion.div>
                 )}
 
-                {/* Tipo de Usuário */}
-                <div style={{ marginBottom: 'var(--agro-space-lg)' }}>
+              <form onSubmit={handleSubmit}>
+                <motion.div 
+                  variants={itemVariants}
+                  style={{ marginBottom: '1.5rem' }}
+                >
                   <label style={{
                     display: 'block',
-                    marginBottom: 'var(--agro-space-sm)',
-                    fontWeight: '500',
-                    color: 'var(--agro-text-dark)'
+                    marginBottom: '0.5rem', 
+                    fontWeight: '600',
+                    color: 'var(--text-primary)'
                   }}>
-                    Tipo de Usuário *
-                  </label>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 'var(--agro-space-sm)' }}>
-                    {userTypes.map((type) => (
-                      <label
-                        key={type.value}
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          gap: 'var(--agro-space-sm)',
-                          padding: 'var(--agro-space-md)',
-                          border: formData.userType === type.value ? '2px solid var(--txc-light-green)' : '2px solid rgba(57, 255, 20, 0.2)',
-                          borderRadius: 'var(--agro-radius-lg)',
-                          background: formData.userType === type.value ? 'rgba(57, 255, 20, 0.1)' : 'rgba(57, 255, 20, 0.05)',
-                          cursor: 'pointer',
-                          transition: 'all var(--agro-transition-normal)'
-                        }}
-                      >
-                        <input
-                          type="radio"
-                          name="userType"
-                          value={type.value}
-                          checked={formData.userType === type.value}
-                          onChange={handleInputChange}
-                          style={{ display: 'none' }}
-                        />
-                        {type.icon}
-                        <span style={{ fontSize: '0.875rem', fontWeight: '500', color: 'var(--agro-text-dark)' }}>
-                          {type.label}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Nome */}
-                <div style={{ marginBottom: 'var(--agro-space-lg)' }}>
-                  <label style={{
-                    display: 'block',
-                    marginBottom: 'var(--agro-space-sm)',
-                    fontWeight: '500',
-                    color: 'var(--agro-text-dark)'
-                  }}>
-                    Nome Completo *
+                    Nome Completo
                   </label>
                   <div style={{ position: 'relative' }}>
                     <User 
                       size={20} 
                       style={{
                         position: 'absolute',
-                        left: 'var(--agro-space-md)',
+                        left: '12px', 
                         top: '50%',
                         transform: 'translateY(-50%)',
-                        color: 'var(--agro-text-light)'
+                        color: 'var(--muted)'
                       }}
                     />
                     <input
@@ -325,42 +296,53 @@ const AgroisyncRegister = () => {
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      required
+                      placeholder="Seu nome completo"
                       style={{
                         width: '100%',
-                        padding: 'var(--agro-space-md) var(--agro-space-md) var(--agro-space-md) 3rem',
-                        border: '2px solid rgba(57, 255, 20, 0.2)',
-                        borderRadius: 'var(--agro-radius-lg)',
+                        padding: '12px 12px 12px 44px',
+                        border: `2px solid ${errors.name ? '#dc2626' : 'rgba(15, 15, 15, 0.1)'}`,
+                        borderRadius: '8px',
                         fontSize: '1rem',
-                        background: 'rgba(57, 255, 20, 0.05)',
-                        color: 'var(--agro-text-dark)',
-                        transition: 'all var(--agro-transition-normal)',
-                        backdropFilter: 'blur(10px)'
+                        background: 'white',
+                        transition: 'all 0.2s ease',
+                        outline: 'none'
                       }}
-                      placeholder="Seu nome completo"
+                      onFocus={(e) => {
+                        e.target.style.borderColor = 'var(--accent)';
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = errors.name ? '#dc2626' : 'rgba(15, 15, 15, 0.1)';
+                      }}
                     />
                   </div>
-                </div>
+                  {errors.name && (
+                    <p style={{ color: '#dc2626', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+                      {errors.name}
+                    </p>
+                  )}
+                </motion.div>
 
-                {/* Email */}
-                <div style={{ marginBottom: 'var(--agro-space-lg)' }}>
+                <motion.div 
+                  variants={itemVariants}
+                  style={{ marginBottom: '1.5rem' }}
+                >
                   <label style={{
                     display: 'block',
-                    marginBottom: 'var(--agro-space-sm)',
-                    fontWeight: '500',
-                    color: 'var(--agro-text-dark)'
+                    marginBottom: '0.5rem', 
+                    fontWeight: '600',
+                    color: 'var(--text-primary)'
                   }}>
-                    Email *
+                    Email
                   </label>
                   <div style={{ position: 'relative' }}>
                     <Mail 
                       size={20} 
                       style={{
                         position: 'absolute',
-                        left: 'var(--agro-space-md)',
+                        left: '12px', 
                         top: '50%',
                         transform: 'translateY(-50%)',
-                        color: 'var(--agro-text-light)'
+                        color: 'var(--muted)'
                       }}
                     />
                     <input
@@ -368,104 +350,107 @@ const AgroisyncRegister = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      required
+                      placeholder="seu@email.com"
                       style={{
                         width: '100%',
-                        padding: 'var(--agro-space-md) var(--agro-space-md) var(--agro-space-md) 3rem',
-                        border: '2px solid rgba(57, 255, 20, 0.2)',
-                        borderRadius: 'var(--agro-radius-lg)',
+                        padding: '12px 12px 12px 44px',
+                        border: `2px solid ${errors.email ? '#dc2626' : 'rgba(15, 15, 15, 0.1)'}`,
+                        borderRadius: '8px',
                         fontSize: '1rem',
-                        background: 'rgba(57, 255, 20, 0.05)',
-                        color: 'var(--agro-text-dark)',
-                        transition: 'all var(--agro-transition-normal)',
-                        backdropFilter: 'blur(10px)'
+                        background: 'white',
+                        transition: 'all 0.2s ease',
+                        outline: 'none'
                       }}
-                      placeholder="seu@email.com"
+                      onFocus={(e) => {
+                        e.target.style.borderColor = 'var(--accent)';
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = errors.email ? '#dc2626' : 'rgba(15, 15, 15, 0.1)';
+                      }}
                     />
                   </div>
-                </div>
+                  {errors.email && (
+                    <p style={{ color: '#dc2626', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+                      {errors.email}
+                    </p>
+                  )}
+                </motion.div>
 
-                {/* Telefone */}
-                <div style={{ marginBottom: 'var(--agro-space-lg)' }}>
+                <motion.div 
+                  variants={itemVariants}
+                  style={{ marginBottom: '1.5rem' }}
+                >
                   <label style={{
                     display: 'block',
-                    marginBottom: 'var(--agro-space-sm)',
-                    fontWeight: '500',
-                    color: 'var(--agro-text-dark)'
+                    marginBottom: '0.5rem', 
+                    fontWeight: '600',
+                    color: 'var(--text-primary)'
                   }}>
-                    Telefone
+                    Empresa
                   </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
+                  <div style={{ position: 'relative' }}>
+                    <Building2 
+                      size={20} 
                     style={{
-                      width: '100%',
-                      padding: 'var(--agro-space-md)',
-                      border: '2px solid rgba(57, 255, 20, 0.2)',
-                      borderRadius: 'var(--agro-radius-lg)',
-                      fontSize: '1rem',
-                      background: 'rgba(57, 255, 20, 0.05)',
-                      color: 'var(--agro-text-dark)',
-                      transition: 'all var(--agro-transition-normal)',
-                      backdropFilter: 'blur(10px)'
-                    }}
-                    placeholder="(11) 99999-9999"
-                  />
-                </div>
-
-                {/* Empresa */}
-                {formData.userType !== 'producer' && (
-                  <div style={{ marginBottom: 'var(--agro-space-lg)' }}>
-                    <label style={{
-                      display: 'block',
-                      marginBottom: 'var(--agro-space-sm)',
-                      fontWeight: '500',
-                      color: 'var(--agro-text-dark)'
-                    }}>
-                      Empresa
-                    </label>
+                        position: 'absolute', 
+                        left: '12px', 
+                        top: '50%', 
+                        transform: 'translateY(-50%)',
+                        color: 'var(--muted)'
+                      }} 
+                    />
                     <input
                       type="text"
                       name="company"
                       value={formData.company}
                       onChange={handleInputChange}
+                      placeholder="Nome da sua empresa"
                       style={{
                         width: '100%',
-                        padding: 'var(--agro-space-md)',
-                        border: '2px solid rgba(57, 255, 20, 0.2)',
-                        borderRadius: 'var(--agro-radius-lg)',
+                        padding: '12px 12px 12px 44px',
+                        border: `2px solid ${errors.company ? '#dc2626' : 'rgba(15, 15, 15, 0.1)'}`,
+                        borderRadius: '8px',
                         fontSize: '1rem',
-                        background: 'rgba(57, 255, 20, 0.05)',
-                        color: 'var(--agro-text-dark)',
-                        transition: 'all var(--agro-transition-normal)',
-                        backdropFilter: 'blur(10px)'
+                        background: 'white',
+                        transition: 'all 0.2s ease',
+                        outline: 'none'
                       }}
-                      placeholder="Nome da empresa"
+                      onFocus={(e) => {
+                        e.target.style.borderColor = 'var(--accent)';
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = errors.company ? '#dc2626' : 'rgba(15, 15, 15, 0.1)';
+                      }}
                     />
                   </div>
-                )}
+                  {errors.company && (
+                    <p style={{ color: '#dc2626', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+                      {errors.company}
+                    </p>
+                  )}
+                </motion.div>
 
-                {/* Senha */}
-                <div style={{ marginBottom: 'var(--agro-space-lg)' }}>
+                <motion.div 
+                  variants={itemVariants}
+                  style={{ marginBottom: '1.5rem' }}
+                >
                   <label style={{
                     display: 'block',
-                    marginBottom: 'var(--agro-space-sm)',
-                    fontWeight: '500',
-                    color: 'var(--agro-text-dark)'
+                    marginBottom: '0.5rem', 
+                    fontWeight: '600',
+                    color: 'var(--text-primary)'
                   }}>
-                    Senha *
+                    Senha
                   </label>
                   <div style={{ position: 'relative' }}>
                     <Lock 
                       size={20} 
                       style={{
                         position: 'absolute',
-                        left: 'var(--agro-space-md)',
+                        left: '12px', 
                         top: '50%',
                         transform: 'translateY(-50%)',
-                        color: 'var(--agro-text-light)'
+                        color: 'var(--muted)'
                       }}
                     />
                     <input
@@ -473,59 +458,70 @@ const AgroisyncRegister = () => {
                       name="password"
                       value={formData.password}
                       onChange={handleInputChange}
-                      required
+                      placeholder="Sua senha"
                       style={{
                         width: '100%',
-                        padding: 'var(--agro-space-md) var(--agro-space-md) var(--agro-space-md) 3rem',
-                        border: '2px solid rgba(57, 255, 20, 0.2)',
-                        borderRadius: 'var(--agro-radius-lg)',
+                        padding: '12px 44px 12px 44px',
+                        border: `2px solid ${errors.password ? '#dc2626' : 'rgba(15, 15, 15, 0.1)'}`,
+                        borderRadius: '8px',
                         fontSize: '1rem',
-                        background: 'rgba(57, 255, 20, 0.05)',
-                        color: 'var(--agro-text-dark)',
-                        transition: 'all var(--agro-transition-normal)',
-                        backdropFilter: 'blur(10px)'
+                        background: 'white',
+                        transition: 'all 0.2s ease',
+                        outline: 'none'
                       }}
-                      placeholder="Mínimo 8 caracteres"
+                      onFocus={(e) => {
+                        e.target.style.borderColor = 'var(--accent)';
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = errors.password ? '#dc2626' : 'rgba(15, 15, 15, 0.1)';
+                      }}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       style={{
                         position: 'absolute',
-                        right: 'var(--agro-space-md)',
+                        right: '12px',
                         top: '50%',
                         transform: 'translateY(-50%)',
                         background: 'none',
                         border: 'none',
-                        color: 'var(--agro-text-light)',
                         cursor: 'pointer',
-                        padding: 'var(--agro-space-sm)'
+                        color: 'var(--muted)',
+                        padding: '4px'
                       }}
                     >
                       {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
                   </div>
-                </div>
+                  {errors.password && (
+                    <p style={{ color: '#dc2626', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+                      {errors.password}
+                    </p>
+                  )}
+                </motion.div>
 
-                {/* Confirmar Senha */}
-                <div style={{ marginBottom: 'var(--agro-space-lg)' }}>
+                <motion.div 
+                  variants={itemVariants}
+                  style={{ marginBottom: '2rem' }}
+                >
                   <label style={{
                     display: 'block',
-                    marginBottom: 'var(--agro-space-sm)',
-                    fontWeight: '500',
-                    color: 'var(--agro-text-dark)'
+                    marginBottom: '0.5rem', 
+                    fontWeight: '600',
+                    color: 'var(--text-primary)'
                   }}>
-                    Confirmar Senha *
+                    Confirmar Senha
                   </label>
                   <div style={{ position: 'relative' }}>
                     <Lock 
                       size={20} 
                       style={{
                         position: 'absolute',
-                        left: 'var(--agro-space-md)',
+                        left: '12px', 
                         top: '50%',
                         transform: 'translateY(-50%)',
-                        color: 'var(--agro-text-light)'
+                        color: 'var(--muted)'
                       }}
                     />
                     <input
@@ -533,86 +529,75 @@ const AgroisyncRegister = () => {
                       name="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
-                      required
+                      placeholder="Confirme sua senha"
                       style={{
                         width: '100%',
-                        padding: 'var(--agro-space-md) var(--agro-space-md) var(--agro-space-md) 3rem',
-                        border: '2px solid rgba(57, 255, 20, 0.2)',
-                        borderRadius: 'var(--agro-radius-lg)',
+                        padding: '12px 44px 12px 44px',
+                        border: `2px solid ${errors.confirmPassword ? '#dc2626' : 'rgba(15, 15, 15, 0.1)'}`,
+                        borderRadius: '8px',
                         fontSize: '1rem',
-                        background: 'rgba(57, 255, 20, 0.05)',
-                        color: 'var(--agro-text-dark)',
-                        transition: 'all var(--agro-transition-normal)',
-                        backdropFilter: 'blur(10px)'
+                        background: 'white',
+                        transition: 'all 0.2s ease',
+                        outline: 'none'
                       }}
-                      placeholder="Confirme sua senha"
+                      onFocus={(e) => {
+                        e.target.style.borderColor = 'var(--accent)';
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = errors.confirmPassword ? '#dc2626' : 'rgba(15, 15, 15, 0.1)';
+                      }}
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       style={{
                         position: 'absolute',
-                        right: 'var(--agro-space-md)',
+                        right: '12px',
                         top: '50%',
                         transform: 'translateY(-50%)',
                         background: 'none',
                         border: 'none',
-                        color: 'var(--agro-text-light)',
                         cursor: 'pointer',
-                        padding: 'var(--agro-space-sm)'
+                        color: 'var(--muted)',
+                        padding: '4px'
                       }}
                     >
                       {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
                   </div>
-                </div>
-
-                {/* Termos */}
-                <div style={{ marginBottom: 'var(--agro-space-xl)' }}>
-                  <label style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--agro-space-sm)', cursor: 'pointer' }}>
-                    <input 
-                      type="checkbox" 
-                      name="acceptTerms"
-                      checked={formData.acceptTerms}
-                      onChange={handleInputChange}
-                      style={{ accentColor: 'var(--txc-light-green)', marginTop: '2px' }}
-                    />
-                    <span style={{ fontSize: '0.875rem', color: 'var(--agro-text-dark)', lineHeight: 1.5 }}>
-                      Eu aceito os{' '}
-                      <Link to="/terms" style={{ color: 'var(--txc-light-green)', textDecoration: 'none' }}>
-                        Termos de Uso
-                      </Link>
-                      {' '}e a{' '}
-                      <Link to="/privacy" style={{ color: 'var(--txc-light-green)', textDecoration: 'none' }}>
-                        Política de Privacidade
-                      </Link>
-                    </span>
-                  </label>
-                </div>
+                  {errors.confirmPassword && (
+                    <p style={{ color: '#dc2626', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+                      {errors.confirmPassword}
+                    </p>
+                  )}
+                </motion.div>
 
                 <motion.button
+                  variants={itemVariants}
                   type="submit"
-                  className="agro-btn agro-btn-primary"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  disabled={isLoading}
                   style={{ 
                     width: '100%', 
+                    padding: '14px',
+                    background: isLoading ? 'var(--muted)' : 'var(--accent)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '1rem',
+                    fontWeight: '600',
+                    cursor: isLoading ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    alignItems: 'center',
                     justifyContent: 'center',
-                    opacity: isLoading ? 0.7 : 1,
-                    cursor: isLoading ? 'not-allowed' : 'pointer'
+                    gap: '0.5rem'
                   }}
-                  disabled={isLoading}
+                  whileHover={!isLoading ? { scale: 1.02 } : {}}
+                  whileTap={!isLoading ? { scale: 0.98 } : {}}
                 >
                   {isLoading ? (
                     <>
-                      <div style={{
-                        width: '20px',
-                        height: '20px',
-                        border: '2px solid transparent',
-                        borderTop: '2px solid currentColor',
-                        borderRadius: '50%',
-                        animation: 'spin 1s linear infinite'
-                      }} />
+                      <div className="spin-animation" style={{ width: '20px', height: '20px', border: '2px solid transparent', borderTop: '2px solid white', borderRadius: '50%' }} />
                       Criando conta...
                     </>
                   ) : (
@@ -624,30 +609,31 @@ const AgroisyncRegister = () => {
                 </motion.button>
               </form>
 
-              <div className="agro-text-center" style={{ marginTop: 'var(--agro-space-xl)' }}>
-                <p style={{ color: 'var(--agro-text-light)', marginBottom: 'var(--agro-space-md)' }}>
-                  Já tem uma conta?
-                </p>
+              <motion.div 
+                variants={itemVariants}
+                style={{ textAlign: 'center', marginTop: '2rem' }}
+              >
+                <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>
+                  Já tem uma conta?{' '}
                 <Link 
                   to="/login" 
-                  className="agro-btn agro-btn-secondary"
-                  style={{ width: '100%', justifyContent: 'center' }}
+                    style={{ 
+                      color: 'var(--accent)', 
+                      textDecoration: 'none',
+                      fontWeight: '600'
+                    }}
                 >
                   Fazer Login
                 </Link>
-              </div>
+                </p>
+              </motion.div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      <style jsx>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
-    </div>
+      <AgroisyncFooter />
+    </>
   );
 };
 

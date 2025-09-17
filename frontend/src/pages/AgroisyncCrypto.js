@@ -10,6 +10,7 @@ import {
   Star,
   CheckCircle
 } from 'lucide-react';
+import CryptoWidget from '../components/CryptoWidget';
 
 const AgroisyncCrypto = () => {
   const [email, setEmail] = useState('');
@@ -219,6 +220,34 @@ const AgroisyncCrypto = () => {
                 </div>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Crypto Widget Section */}
+      <section className="agro-section" style={{ background: 'var(--bg-gradient)' }}>
+        <div className="agro-container">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="agro-text-center"
+            style={{ marginBottom: '2rem' }}
+          >
+            <h2 className="agro-section-title">Widget de Criptomoedas</h2>
+            <p className="agro-section-subtitle">
+              Acompanhe preços em tempo real e conecte sua carteira MetaMask
+            </p>
+          </motion.div>
+
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            maxWidth: '600px',
+            margin: '0 auto'
+          }}>
+            <CryptoWidget />
           </div>
         </div>
       </section>

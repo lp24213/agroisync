@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
@@ -11,11 +11,66 @@ import {
   ArrowRight,
   CheckCircle,
   Star,
-  Globe
+  Globe,
+  Search,
+  Calendar,
+  Package,
+  DollarSign
 } from 'lucide-react';
 import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt';
 
 const AgroisyncAgroConecta = () => {
+  const [activeTab, setActiveTab] = useState('buscar');
+  const [freteForm, setFreteForm] = useState({
+    origem: '',
+    destino: '',
+    volume: '',
+    data: '',
+    tipoCarga: ''
+  });
+
+  // Dados de ofertas de frete
+  const ofertasFrete = [
+    {
+      id: 1,
+      transportador: 'Transportadora ABC',
+      origem: 'São Paulo, SP',
+      destino: 'Mato Grosso, MT',
+      volume: '50 toneladas',
+      preco: 'R$ 2.500,00',
+      data: '15/12/2024',
+      avaliacao: 4.8,
+      veiculo: 'Caminhão Truck 6x2'
+    },
+    {
+      id: 2,
+      transportador: 'Logística XYZ',
+      origem: 'Paraná, PR',
+      destino: 'Goiás, GO',
+      volume: '30 toneladas',
+      preco: 'R$ 1.800,00',
+      data: '18/12/2024',
+      avaliacao: 4.6,
+      veiculo: 'Caminhão Bitruck'
+    },
+    {
+      id: 3,
+      transportador: 'Frete Express',
+      origem: 'Minas Gerais, MG',
+      destino: 'Bahia, BA',
+      volume: '25 toneladas',
+      preco: 'R$ 2.200,00',
+      data: '20/12/2024',
+      avaliacao: 4.9,
+      veiculo: 'Caminhão Truck 6x4'
+    }
+  ];
+
+  const handleFreteSubmit = (e) => {
+    e.preventDefault();
+    console.log('Buscar frete:', freteForm);
+    // Aqui seria feita a integração com a API
+  };
   const features = [
     {
       icon: <Truck size={32} />,
@@ -104,7 +159,7 @@ const AgroisyncAgroConecta = () => {
       <AgroisyncHeroPrompt 
         title="AgroConecta"
         subtitle="Logística Inteligente para o Agronegócio"
-        heroImage="/agroconecta.png"
+        heroImage="/assets/agroconecta.png"
         showCTA={true}
       />
 
@@ -160,6 +215,305 @@ const AgroisyncAgroConecta = () => {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Formulários Funcionais */}
+      <section className="agro-section" style={{ background: 'var(--bg-gradient)' }}>
+        <div className="agro-container">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="agro-text-center"
+            style={{ marginBottom: '2rem' }}
+          >
+            <h2 className="agro-section-title">AgroConecta em Ação</h2>
+            <p className="agro-section-subtitle">
+              Busque fretes ou ofereça seus serviços de transporte
+            </p>
+          </motion.div>
+
+          {/* Tabs */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginBottom: '2rem',
+              background: 'var(--card-bg)',
+              borderRadius: '12px',
+              padding: '0.5rem',
+              boxShadow: '0 6px 20px rgba(15, 15, 15, 0.05)',
+              maxWidth: '600px',
+              margin: '0 auto 2rem auto'
+            }}
+          >
+            <button
+              onClick={() => setActiveTab('buscar')}
+              style={{
+                flex: 1,
+                padding: '1rem',
+                border: 'none',
+                background: activeTab === 'buscar' ? 'var(--accent)' : 'transparent',
+                color: activeTab === 'buscar' ? 'white' : 'var(--muted)',
+                borderRadius: '8px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              <Search size={20} style={{ marginRight: '0.5rem', display: 'inline' }} />
+              Buscar Frete
+            </button>
+            <button
+              onClick={() => setActiveTab('ofertas')}
+              style={{
+                flex: 1,
+                padding: '1rem',
+                border: 'none',
+                background: activeTab === 'ofertas' ? 'var(--accent)' : 'transparent',
+                color: activeTab === 'ofertas' ? 'white' : 'var(--muted)',
+                borderRadius: '8px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              <Truck size={20} style={{ marginRight: '0.5rem', display: 'inline' }} />
+              Ofertas Disponíveis
+            </button>
+          </motion.div>
+
+          {/* Conteúdo das Tabs */}
+          {activeTab === 'buscar' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              style={{
+                background: 'var(--card-bg)',
+                padding: '2rem',
+                borderRadius: '12px',
+                boxShadow: '0 6px 20px rgba(15, 15, 15, 0.05)',
+                maxWidth: '800px',
+                margin: '0 auto'
+              }}
+            >
+              <h3 style={{ marginBottom: '1.5rem', textAlign: 'center', color: 'var(--accent)' }}>
+                Buscar Frete
+              </h3>
+              <form onSubmit={handleFreteSubmit}>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                  gap: '1rem',
+                  marginBottom: '1.5rem'
+                }}>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                      <MapPin size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
+                      Origem
+                    </label>
+                    <input
+                      type="text"
+                      value={freteForm.origem}
+                      onChange={(e) => setFreteForm({...freteForm, origem: e.target.value})}
+                      placeholder="Cidade, Estado"
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        border: '2px solid rgba(42, 127, 79, 0.2)',
+                        borderRadius: '8px',
+                        fontSize: '1rem',
+                        background: 'rgba(42, 127, 79, 0.05)',
+                        transition: 'all 0.3s ease'
+                      }}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                      <MapPin size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
+                      Destino
+                    </label>
+                    <input
+                      type="text"
+                      value={freteForm.destino}
+                      onChange={(e) => setFreteForm({...freteForm, destino: e.target.value})}
+                      placeholder="Cidade, Estado"
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        border: '2px solid rgba(42, 127, 79, 0.2)',
+                        borderRadius: '8px',
+                        fontSize: '1rem',
+                        background: 'rgba(42, 127, 79, 0.05)',
+                        transition: 'all 0.3s ease'
+                      }}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                      <Package size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
+                      Volume
+                    </label>
+                    <input
+                      type="text"
+                      value={freteForm.volume}
+                      onChange={(e) => setFreteForm({...freteForm, volume: e.target.value})}
+                      placeholder="Ex: 50 toneladas"
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        border: '2px solid rgba(42, 127, 79, 0.2)',
+                        borderRadius: '8px',
+                        fontSize: '1rem',
+                        background: 'rgba(42, 127, 79, 0.05)',
+                        transition: 'all 0.3s ease'
+                      }}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                      <Calendar size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
+                      Data de Coleta
+                    </label>
+                    <input
+                      type="date"
+                      value={freteForm.data}
+                      onChange={(e) => setFreteForm({...freteForm, data: e.target.value})}
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        border: '2px solid rgba(42, 127, 79, 0.2)',
+                        borderRadius: '8px',
+                        fontSize: '1rem',
+                        background: 'rgba(42, 127, 79, 0.05)',
+                        transition: 'all 0.3s ease'
+                      }}
+                      required
+                    />
+                  </div>
+                </div>
+                <div style={{ textAlign: 'center' }}>
+                  <button
+                    type="submit"
+                    className="btn"
+                    style={{
+                      padding: '1rem 2rem',
+                      fontSize: '1.1rem',
+                      fontWeight: '600'
+                    }}
+                  >
+                    <Search size={20} style={{ marginRight: '0.5rem', display: 'inline' }} />
+                    Buscar Transportadores
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          )}
+
+          {activeTab === 'ofertas' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              style={{
+                maxWidth: '1000px',
+                margin: '0 auto'
+              }}
+            >
+              <h3 style={{ marginBottom: '1.5rem', textAlign: 'center', color: 'var(--accent)' }}>
+                Ofertas de Frete Disponíveis
+              </h3>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                gap: '1.5rem'
+              }}>
+                {ofertasFrete.map((oferta, index) => (
+                  <motion.div
+                    key={oferta.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="card"
+                    style={{
+                      padding: '1.5rem',
+                      background: 'var(--card-bg)',
+                      borderRadius: '12px',
+                      boxShadow: '0 6px 20px rgba(15, 15, 15, 0.05)',
+                      border: '1px solid rgba(42, 127, 79, 0.1)'
+                    }}
+                  >
+                    <div style={{ marginBottom: '1rem' }}>
+                      <h4 style={{ color: 'var(--accent)', marginBottom: '0.5rem' }}>
+                        {oferta.transportador}
+                      </h4>
+                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+                        <Star size={16} style={{ color: '#FFD700', marginRight: '0.25rem' }} />
+                        <span style={{ fontSize: '0.9rem', color: 'var(--muted)' }}>
+                          {oferta.avaliacao}/5.0
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div style={{ marginBottom: '1rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+                        <MapPin size={16} style={{ color: 'var(--accent)', marginRight: '0.5rem' }} />
+                        <span style={{ fontSize: '0.9rem' }}>
+                          {oferta.origem} → {oferta.destino}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+                        <Package size={16} style={{ color: 'var(--accent)', marginRight: '0.5rem' }} />
+                        <span style={{ fontSize: '0.9rem' }}>{oferta.volume}</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+                        <Calendar size={16} style={{ color: 'var(--accent)', marginRight: '0.5rem' }} />
+                        <span style={{ fontSize: '0.9rem' }}>{oferta.data}</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+                        <Truck size={16} style={{ color: 'var(--accent)', marginRight: '0.5rem' }} />
+                        <span style={{ fontSize: '0.9rem' }}>{oferta.veiculo}</span>
+                      </div>
+                    </div>
+                    
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      paddingTop: '1rem',
+                      borderTop: '1px solid rgba(42, 127, 79, 0.1)'
+                    }}>
+                      <div>
+                        <DollarSign size={20} style={{ color: 'var(--accent)', display: 'inline', marginRight: '0.25rem' }} />
+                        <strong style={{ color: 'var(--accent)', fontSize: '1.2rem' }}>
+                          {oferta.preco}
+                        </strong>
+                      </div>
+                      <button
+                        className="btn small"
+                        style={{
+                          padding: '0.5rem 1rem',
+                          fontSize: '0.9rem'
+                        }}
+                      >
+                        Contratar
+                      </button>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
         </div>
       </section>
 

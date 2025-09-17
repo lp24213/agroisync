@@ -19,7 +19,7 @@ const SEOHead = ({
   const currentUrl = url || `${baseUrl}${window.location.pathname}`;
   
   // Imagem padrão
-  const defaultImage = `${baseUrl}/images/agroisync-og-image.jpg`;
+  const defaultImage = `${baseUrl}/assets/LOGOTIPO-EM-BRANCO.png`;
   const ogImage = image || defaultImage;
   
   // Títulos e descrições padrão por idioma

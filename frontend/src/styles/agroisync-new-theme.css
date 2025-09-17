@@ -328,15 +328,15 @@ a:hover {
 
 /* Menu moderno */
 .navbar {
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
-  z-index: var(--z-fixed);
-  background: var(--bg-primary);
-  border-bottom: 2px solid var(--agro-primary-green);
-  box-shadow: var(--shadow-md);
-  backdrop-filter: blur(10px);
+  z-index: 2000;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(15, 15, 15, 0.03);
+  box-shadow: 0 6px 20px rgba(15, 15, 15, 0.05);
   transition: all 0.3s ease;
 }
 

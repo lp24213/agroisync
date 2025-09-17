@@ -7,12 +7,104 @@ import {
   Shield,
   Clock,
   Star,
-  CheckCircle
+  CheckCircle,
+  Filter,
+  Search
 } from 'lucide-react';
 import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt';
+import ProductCard from '../components/ProductCard';
 
 const AgroisyncMarketplace = () => {
   const [email, setEmail] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('todos');
+  const [selectedState, setSelectedState] = useState('todos');
+
+  // Dados de produtos do marketplace
+  const products = [
+    {
+      id: 1,
+      title: 'Sementes Híbridas de Soja',
+      description: 'Sementes certificadas de alta produtividade para plantio direto',
+      price: 'R$ 180,00/saca',
+      image: '/assets/marketplace.png',
+      category: 'insumos',
+      location: 'Mato Grosso'
+    },
+    {
+      id: 2,
+      title: 'Trator John Deere 8584',
+      description: 'Trator agrícola com 180cv, ideal para grandes propriedades',
+      price: 'R$ 120.000,00',
+      image: '/assets/marketplace.png',
+      category: 'maquinas',
+      location: 'São Paulo'
+    },
+    {
+      id: 3,
+      title: 'Fertilizante NPK 20-10-10',
+      description: 'Fertilizante granulado para aplicação em pré-plantio',
+      price: 'R$ 2.800,00/ton',
+      image: '/assets/marketplace.png',
+      category: 'insumos',
+      location: 'Goiás'
+    },
+    {
+      id: 4,
+      title: 'Colheitadeira Case IH',
+      description: 'Colheitadeira com capacidade de 12 toneladas por hora',
+      price: 'R$ 850.000,00',
+      image: '/assets/marketplace.png',
+      category: 'maquinas',
+      location: 'Paraná'
+    },
+    {
+      id: 5,
+      title: 'Gado Nelore Certificado',
+      description: 'Lote de 50 cabeças de gado nelore com certificação',
+      price: 'R$ 3.500,00/cabeça',
+      image: '/assets/marketplace.png',
+      category: 'pecuaria',
+      location: 'Mato Grosso do Sul'
+    },
+    {
+      id: 6,
+      title: 'Serviço de Mapeamento com Drone',
+      description: 'Mapeamento aéreo para análise de solo e plantio',
+      price: 'R$ 150,00/hectare',
+      image: '/assets/marketplace.png',
+      category: 'servicos',
+      location: 'Minas Gerais'
+    }
+  ];
+
+  const categories = [
+    { value: 'todos', label: 'Todos' },
+    { value: 'insumos', label: 'Insumos' },
+    { value: 'maquinas', label: 'Máquinas' },
+    { value: 'pecuaria', label: 'Pecuária' },
+    { value: 'servicos', label: 'Serviços' }
+  ];
+
+  const states = [
+    { value: 'todos', label: 'Todos os Estados' },
+    { value: 'mt', label: 'Mato Grosso' },
+    { value: 'sp', label: 'São Paulo' },
+    { value: 'go', label: 'Goiás' },
+    { value: 'pr', label: 'Paraná' },
+    { value: 'ms', label: 'Mato Grosso do Sul' },
+    { value: 'mg', label: 'Minas Gerais' }
+  ];
+
+  // Filtrar produtos
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         product.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'todos' || product.category === selectedCategory;
+    const matchesState = selectedState === 'todos' || product.location.toLowerCase().includes(selectedState);
+    
+    return matchesSearch && matchesCategory && matchesState;
+  });
 
   const features = [
     {
@@ -74,9 +166,163 @@ const AgroisyncMarketplace = () => {
       <AgroisyncHeroPrompt 
         title="Marketplace Agro"
         subtitle="Conecte-se com compradores e vendedores de commodities agrícolas"
-        heroImage="/marketplace.png"
+        heroImage="/assets/marketplace.png"
         showCTA={true}
       />
+
+      {/* Filtros e Produtos */}
+      <section className="agro-section" style={{ background: 'var(--bg-gradient)' }}>
+        <div className="agro-container">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="agro-text-center"
+            style={{ marginBottom: '2rem' }}
+          >
+            <h2 className="agro-section-title">Produtos Disponíveis</h2>
+            <p className="agro-section-subtitle">
+              Encontre os melhores produtos e serviços para seu agronegócio
+            </p>
+          </motion.div>
+
+          {/* Filtros */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            style={{
+              background: 'var(--card-bg)',
+              padding: '1.5rem',
+              borderRadius: '12px',
+              boxShadow: '0 6px 20px rgba(15, 15, 15, 0.05)',
+              marginBottom: '2rem'
+            }}
+          >
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '1rem',
+              alignItems: 'end'
+            }}>
+              {/* Busca */}
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                  <Search size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
+                  Buscar
+                </label>
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Digite o produto..."
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '2px solid rgba(42, 127, 79, 0.2)',
+                    borderRadius: '8px',
+                    fontSize: '1rem',
+                    background: 'rgba(42, 127, 79, 0.05)',
+                    transition: 'all 0.3s ease'
+                  }}
+                />
+              </div>
+
+              {/* Categoria */}
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                  <Filter size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
+                  Categoria
+                </label>
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '2px solid rgba(42, 127, 79, 0.2)',
+                    borderRadius: '8px',
+                    fontSize: '1rem',
+                    background: 'rgba(42, 127, 79, 0.05)',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {categories.map(cat => (
+                    <option key={cat.value} value={cat.value}>
+                      {cat.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Estado */}
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                  📍 Estado
+                </label>
+                <select
+                  value={selectedState}
+                  onChange={(e) => setSelectedState(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '2px solid rgba(42, 127, 79, 0.2)',
+                    borderRadius: '8px',
+                    fontSize: '1rem',
+                    background: 'rgba(42, 127, 79, 0.05)',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {states.map(state => (
+                    <option key={state.value} value={state.value}>
+                      {state.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Grid de Produtos */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gap: '1.5rem'
+            }}
+          >
+            {filteredProducts.map((product, index) => (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <ProductCard product={product} />
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {filteredProducts.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="agro-text-center"
+              style={{ padding: '3rem', color: 'var(--muted)' }}
+            >
+              <h3>Nenhum produto encontrado</h3>
+              <p>Tente ajustar os filtros para encontrar o que você procura.</p>
+            </motion.div>
+          )}
+        </div>
+      </section>
 
       {/* Features Section */}
       <section className="agro-section">

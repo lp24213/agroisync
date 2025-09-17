@@ -49,7 +49,7 @@ const AgroisyncFooter = () => {
             {/* Company Info */}
             <div className="agro-footer-brand">
               <div className="agro-footer-logo">
-                <img src="/agroisync-logo-white.svg" alt="Agroisync" className="agro-footer-logo-img" />
+                <img src="/assets/LOGOTIPO-EM-BRANCO.png" alt="Agroisync" className="agro-footer-logo-img" />
               </div>
               <p className="agro-footer-description">
                 Conectando o agronegócio brasileiro através de tecnologia inovadora, 

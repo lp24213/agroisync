@@ -146,54 +146,15 @@ const AgroisyncHome = () => {
 
         {/* Sidebar - Direita */}
         <div className="agro-sidebar">
-          {/* Loja Agroisync */}
-          <div className="agro-shop-card">
-            <h3 className="agro-shop-title">Loja Agroisync</h3>
-            
-            <div className="agro-shop-items">
-              <div className="agro-shop-item">
-                <div className="agro-shop-item-image">
-                  <div className="agro-tractor-icon">🚜</div>
-                </div>
-                <div className="agro-shop-item-info">
-                  <div className="agro-shop-item-name">Trator John Deere® 8584</div>
-                  <div className="agro-shop-item-price">R$ 120.000</div>
-                </div>
-              </div>
-              
-              <div className="agro-shop-item">
-                <div className="agro-shop-item-image">
-                  <div className="agro-seeder-icon">🌱</div>
-                </div>
-                <div className="agro-shop-item-info">
-                  <div className="agro-shop-item-name">Semedora John Deere®</div>
-                  <div className="agro-shop-item-price">R$ 60.000</div>
-          </div>
-        </div>
-              
-              <div className="agro-shop-item">
-                <div className="agro-shop-item-image">
-                  <div className="agro-harvester-icon">🌾</div>
-                </div>
-                <div className="agro-shop-item-info">
-                  <div className="agro-shop-item-name">Colheitadeira Case®</div>
-                  <div className="agro-shop-item-price">R$ 850.000</div>
-                </div>
-          </div>
-          
-              <div className="agro-shop-item">
-                <div className="agro-shop-item-image">
-                  <div className="agro-implement-icon">⚙️</div>
+          {/* Seja Nosso Parceiro */}
+          <div className="agro-partner-card">
+            <h3 className="agro-partner-title">Seja Nosso Parceiro</h3>
+            <div className="agro-partner-image">
+              <img src="/assets/parceria.png" alt="Parceria Agroisync" />
             </div>
-                <div className="agro-shop-item-info">
-                  <div className="agro-shop-item-name">Implemento Agrícola</div>
-                  <div className="agro-shop-item-price">R$ 12.600</div>
-            </div>
-          </div>
-        </div>
-            
-            <div className="agro-shop-link">
-              <Link to="/shop">Ver todos os produtos</Link>
+            <div className="agro-partner-buttons">
+              <Link to="/marketplace" className="agro-btn-primary">Explorar Marketplace</Link>
+              <Link to="/partnerships" className="agro-btn-secondary">Saiba Mais</Link>
             </div>
           </div>
 
@@ -240,7 +201,7 @@ const AgroisyncHome = () => {
 
         /* Hero Background com imagem inicio.png */
         .agro-hero-section {
-          background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/inicio.png');
+          background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/assets/inicio.png');
           background-size: cover;
           background-position: center;
           background-attachment: fixed;
@@ -382,15 +343,16 @@ const AgroisyncHome = () => {
           gap: 1.5rem;
         }
 
-        /* Loja Agroisync */
-        .agro-shop-card {
+        /* Seja Nosso Parceiro */
+        .agro-partner-card {
           background: #FFFFFF;
           padding: 1.5rem;
           border-radius: 12px;
           box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+          text-align: center;
         }
 
-        .agro-shop-title {
+        .agro-partner-title {
           font-size: 1.3rem;
           font-weight: 600;
           color: #000000;
@@ -398,68 +360,58 @@ const AgroisyncHome = () => {
           font-family: 'Roboto', sans-serif;
         }
 
-        .agro-shop-items {
+        .agro-partner-image {
+          margin-bottom: 1rem;
+        }
+
+        .agro-partner-image img {
+          width: 100%;
+          height: auto;
+          border-radius: 8px;
+        }
+
+        .agro-partner-buttons {
           display: flex;
           flex-direction: column;
-          gap: 1rem;
+          gap: 0.75rem;
         }
 
-        .agro-shop-item {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          padding: 0.75rem 0;
-          border-bottom: 1px solid #E9ECEF;
-        }
-
-        .agro-shop-item:last-child {
-          border-bottom: none;
-        }
-
-        .agro-shop-item-image {
-          width: 60px;
-          height: 60px;
-          background: #E9ECEF;
+        .agro-btn-primary {
+          background: #2a7f4f;
+          color: #FFFFFF;
+          padding: 0.75rem 1.5rem;
           border-radius: 8px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.5rem;
-        }
-
-        .agro-shop-item-info {
-          flex: 1;
-        }
-
-        .agro-shop-item-name {
-          font-size: 0.9rem;
-          font-weight: 500;
-          color: #000000;
-          margin-bottom: 0.25rem;
-          font-family: 'Inter', sans-serif;
-        }
-
-        .agro-shop-item-price {
-          font-size: 0.85rem;
-          color: #4CAF50;
-          font-weight: 600;
-          font-family: 'Inter', sans-serif;
-        }
-
-        .agro-shop-link {
-          margin-top: 1rem;
-          text-align: center;
-        }
-
-        .agro-shop-link a {
-          color: #666666;
           text-decoration: none;
+          font-weight: 600;
           font-size: 0.9rem;
+          transition: all 0.3s ease;
           font-family: 'Inter', sans-serif;
         }
 
-        .agro-shop-link a:hover {
-          color: #000000;
+        .agro-btn-primary:hover {
+          background: #1f5f3a;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(42, 127, 79, 0.3);
+        }
+
+        .agro-btn-secondary {
+          background: transparent;
+          color: #2a7f4f;
+          border: 2px solid #2a7f4f;
+          padding: 0.75rem 1.5rem;
+          border-radius: 8px;
+          text-decoration: none;
+          font-weight: 600;
+          font-size: 0.9rem;
+          transition: all 0.3s ease;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .agro-btn-secondary:hover {
+          background: #2a7f4f;
+          color: #FFFFFF;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(42, 127, 79, 0.3);
         }
 
         /* Notícias do Agronegócio */
@@ -552,7 +504,7 @@ const AgroisyncHome = () => {
             padding: 1.5rem;
           }
 
-          .agro-shop-card,
+          .agro-partner-card,
           .agro-news-card {
             padding: 1rem;
           }
@@ -569,7 +521,7 @@ const AgroisyncHome = () => {
             padding: 1rem;
           }
 
-          .agro-shop-card,
+          .agro-partner-card,
           .agro-news-card {
             padding: 0.75rem;
           }

@@ -74,7 +74,7 @@ const AgroisyncHeader = () => {
           {/* Logo */}
           <div className="premium-header-logo">
             <Link to="/" className="premium-header-logo-link">
-              <img src="/agroisync-logo-white.svg" alt="Agroisync" className="premium-header-logo-img" />
+              <img src="/assets/LOGOTIPO-EM-BRANCO.png" alt="Agroisync" className="premium-header-logo-img" />
             </Link>
           </div>
 

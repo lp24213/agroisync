@@ -21,6 +21,8 @@ import './styles/ui-txc-final-override.css';
 import './styles/agroisync-new-theme.css';
 // Importar layout clean conforme design
 import './styles/agroisync-layout-clean.css';
+// Importar design tokens atualizados
+import './styles/agroisync-design-tokens.css';
 
 // Pages
 import AgroisyncHome from './pages/AgroisyncHome';
