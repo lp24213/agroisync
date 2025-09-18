@@ -256,7 +256,7 @@ const Partnerships = () => {
   }
 
   return (
-    <div className="partnerships-page">
+    <div className="partnerships-page" data-page="partnerships">
       <div className="partnerships-container">
         {/* HERO COM IMAGEM 4K DE APERTO DE MÃOS */}
         <AgroisyncHeroPrompt 

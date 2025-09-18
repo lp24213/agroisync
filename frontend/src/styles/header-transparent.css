@@ -156,7 +156,7 @@
   color: #00ffcc !important; /* verde neon no hover */
 }
 
-/* HERO SECTION - Fundo será definido pelo componente */
+/* HERO SECTION - Imagens específicas por página */
 .agro-hero-section, .agro-banner-section {
   height: 100vh;
   position: relative;
@@ -164,6 +164,31 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+}
+
+/* PÁGINA HOME - inicip.png */
+.agro-home-container .agro-hero-fullscreen {
+  background-image: url('/images/inicio.png') !important;
+}
+
+/* PÁGINA MARKETPLACE - marketplace.png */
+[data-page="marketplace"] .agro-hero-section {
+  background-image: url('/images/marketplace.png') !important;
+}
+
+/* PÁGINA AGROCONECTA - agroconecta.png */
+[data-page="agroconecta"] .agro-hero-section {
+  background-image: url('/images/agroconecta.png') !important;
+}
+
+/* PÁGINA LOJA - loja.png */
+[data-page="loja"] .agro-hero-section {
+  background-image: url('/images/Loja.png') !important;
+}
+
+/* PÁGINA PARCERIAS - parceria.png */
+[data-page="partnerships"] .agro-hero-section {
+  background-image: url('/images/parceria.png') !important;
 }
 
 /* Banner image será definido pelo componente */

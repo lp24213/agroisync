@@ -154,7 +154,7 @@ const AgroisyncAgroConecta = () => {
   };
 
   return (
-    <div>
+    <div data-page="agroconecta">
       {/* HERO COM IMAGEM 4K DE CAMINHÕES */}
       <AgroisyncHeroPrompt 
         title="AgroConecta"

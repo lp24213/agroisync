@@ -161,7 +161,7 @@ const AgroisyncMarketplace = () => {
 
 
   return (
-    <div>
+    <div data-page="marketplace">
       {/* HERO COM IMAGEM 4K DE MARKETPLACE */}
       <AgroisyncHeroPrompt 
         title="Marketplace Agro"

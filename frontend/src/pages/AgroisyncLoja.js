@@ -160,7 +160,7 @@ const AgroisyncLoja = () => {
   ];
 
   return (
-    <div className="agro-loja-container">
+    <div className="agro-loja-container" data-page="loja">
       {/* Hero Section */}
       <AgroisyncHeroPrompt 
         title="Loja Agroisync"
