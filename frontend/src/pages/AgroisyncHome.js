@@ -236,11 +236,15 @@ const AgroisyncHome = () => {
         }
 
         .agro-hero-content-centered {
-          position: relative;
+          position: absolute !important;
+          top: 50% !important;
+          left: 50% !important;
+          transform: translate(-50%, -50%) !important;
           z-index: 3;
           text-align: center;
           max-width: 800px;
           padding: 0 2rem;
+          width: 100%;
         }
 
         .agro-hero-description {
@@ -255,11 +259,6 @@ const AgroisyncHome = () => {
           margin: 0 auto !important;
           display: block !important;
           width: 100% !important;
-          position: absolute !important;
-          left: 50% !important;
-          top: 50% !important;
-          transform: translate(-50%, -50%) !important;
-          z-index: 10 !important;
         }
 
         .agro-main-layout {
