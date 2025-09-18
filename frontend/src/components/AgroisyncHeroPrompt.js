@@ -20,22 +20,29 @@ const AgroisyncHeroPrompt = ({
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '3rem',
-          alignItems: 'start',
-          maxWidth: '1400px',
-          margin: '0 auto',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+          position: 'relative',
           padding: '4rem 20px'
         }}
       >
-        <div className="agro-hero-content">
-          <h1 className="agro-hero-title">{title}</h1>
-          <p className="agro-hero-subtitle">{subtitle}</p>
+        <div className="agro-hero-content" style={{
+          textAlign: 'center',
+          maxWidth: '800px',
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          padding: '3rem',
+          borderRadius: '20px',
+          backdropFilter: 'blur(10px)',
+          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)'
+        }}>
+          <h1 className="agro-hero-title" style={{ marginBottom: '1rem', fontSize: '3rem', fontWeight: 'bold', color: '#2a7f4f' }}>{title}</h1>
+          <p className="agro-hero-subtitle" style={{ marginBottom: '2rem', fontSize: '1.2rem', color: '#666' }}>{subtitle}</p>
           {showCTA && (
-            <div className="agro-hero-buttons">
-              <Link to="/marketplace" className="agro-btn-primary">Explorar Marketplace</Link>
-              <Link to="/about" className="agro-btn-outline">Saiba Mais</Link>
+            <div className="agro-hero-buttons" style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <Link to="/marketplace" className="agro-btn-primary" style={{ padding: '1rem 2rem', backgroundColor: '#2a7f4f', color: 'white', textDecoration: 'none', borderRadius: '10px', fontWeight: '600' }}>Explorar Marketplace</Link>
+              <Link to="/about" className="agro-btn-outline" style={{ padding: '1rem 2rem', border: '2px solid #2a7f4f', color: '#2a7f4f', textDecoration: 'none', borderRadius: '10px', fontWeight: '600' }}>Saiba Mais</Link>
             </div>
           )}
         </div>
