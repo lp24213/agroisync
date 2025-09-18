@@ -159,7 +159,7 @@
 /* HERO SECTION - Garantir imagem de fundo */
 .agro-hero-section, .agro-banner-section {
   height: 100vh;
-  background: url("/images/marketplace.png") center/cover no-repeat !important;
+  background: url("../../public/images/marketplace.png") center/cover no-repeat !important;
   position: relative;
   display: flex;
   align-items: center;
@@ -169,7 +169,7 @@
 
 /* Garantir que a imagem de fundo seja visível */
 .agro-banner-image {
-  background: url("/images/marketplace.png") center/cover no-repeat !important;
+  background: url("../../public/images/marketplace.png") center/cover no-repeat !important;
 }
 
 /* HERO CONTENT */
