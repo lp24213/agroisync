@@ -255,9 +255,11 @@ const AgroisyncHome = () => {
           margin: 0 auto !important;
           display: block !important;
           width: 100% !important;
-          position: relative !important;
+          position: absolute !important;
           left: 50% !important;
-          transform: translateX(-50%) !important;
+          top: 50% !important;
+          transform: translate(-50%, -50%) !important;
+          z-index: 10 !important;
         }
 
         .agro-main-layout {
