@@ -92,13 +92,13 @@ const Home = () => {
       {/* Bolsa de Valores Ticker */}
       <Ticker />
       
-      {/* Background Image Section - Campo de Soja 4K */}
+      {/* Imagem Ultrarealista 4K - Campo de Soja */}
       <section 
-        className="w-full relative flex items-center justify-center"
+        className="w-full relative flex items-center justify-center overflow-hidden"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=4000&q=80')",
+          backgroundImage: "url('https://images.unsplash.com/photo-1574943320219-553eb213f72d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=4000&q=80')",
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
           backgroundAttachment: 'fixed',
           width: '100%',
@@ -110,13 +110,16 @@ const Home = () => {
           backgroundColor: 'transparent'
         }}
       >
+        {/* Overlay sutil para melhorar legibilidade */}
+        <div className="absolute inset-0 bg-black/20"></div>
+        
         {/* Conteúdo Centralizado */}
         <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
-            className="bg-white/90 backdrop-blur-sm rounded-2xl p-12 shadow-2xl"
+            className="bg-white/95 backdrop-blur-md rounded-3xl p-12 shadow-2xl border border-white/20"
           >
             <h1 className="text-5xl md:text-7xl font-bold mb-8 text-gray-800">
               Seja Nosso <span className="text-green-600">Parceiro</span>
@@ -131,7 +134,7 @@ const Home = () => {
                 whileTap={{ scale: 0.95 }}
                 className="bg-green-600 hover:bg-green-700 text-white px-10 py-5 text-xl font-semibold rounded-xl shadow-lg transition-colors"
               >
-                Começar Agora
+                Explorar Marketplace
                 <ArrowRight size={24} className="ml-3 inline" />
               </motion.button>
               <motion.button
