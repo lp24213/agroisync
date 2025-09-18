@@ -159,7 +159,7 @@
 /* HERO SECTION - Garantir imagem de fundo */
 .agro-hero-section, .agro-banner-section {
   height: 100vh;
-  background: url("https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1920&h=1080&fit=crop") center/cover no-repeat !important;
+  background: url("https://images.unsplash.com/photo-1542831371-d531d36971e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=4000&q=80") center/cover no-repeat !important;
   position: relative;
   display: flex;
   align-items: center;
@@ -169,7 +169,7 @@
 
 /* Garantir que a imagem de fundo seja visível */
 .agro-banner-image {
-  background: url("https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1920&h=1080&fit=crop") center/cover no-repeat !important;
+  background: url("https://images.unsplash.com/photo-1542831371-d531d36971e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=4000&q=80") center/cover no-repeat !important;
 }
 
 /* HERO CONTENT */
