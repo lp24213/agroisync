@@ -259,9 +259,20 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Performance em Tempo Real */}
-      <section className="py-20 bg-gradient-accent">
-        <div className="container">
+      {/* Campo de Soja 4K - Performance em Tempo Real */}
+      <section 
+        className="py-20 relative"
+        style={{
+          backgroundImage: "url('/assets/campo-soja-4k.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed',
+          minHeight: '80vh'
+        }}
+      >
+        <div className="absolute inset-0 bg-black/30"></div>
+        <div className="container relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -269,10 +280,10 @@ const Home = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Performance em <span className="text-gradient">Tempo Real</span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">
+              Performance em <span className="text-yellow-300">Tempo Real</span>
             </h2>
-            <p className="text-xl text-muted max-w-3xl mx-auto">
+            <p className="text-xl text-white/90 max-w-3xl mx-auto drop-shadow-md">
               Dados atualizados a cada segundo para decisões mais inteligentes
             </p>
           </motion.div>
@@ -285,15 +296,15 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="card-premium text-center p-8 hover:scale-105 transition-transform"
+                className="bg-white/90 backdrop-blur-sm rounded-2xl text-center p-8 hover:scale-105 transition-transform shadow-xl"
               >
-                <div className="w-16 h-16 bg-gradient-primary rounded-xl mx-auto mb-6 flex items-center justify-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-green-600 to-green-800 rounded-xl mx-auto mb-6 flex items-center justify-center">
                   <feature.icon size={32} className="text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-primary mb-4">
+                <h3 className="text-xl font-bold text-gray-800 mb-4">
                   {feature.title}
                 </h3>
-                <p className="text-muted leading-relaxed">
+                <p className="text-gray-600 leading-relaxed">
                   {feature.description}
                 </p>
               </motion.div>
