@@ -210,7 +210,7 @@ const AgroisyncHome = () => {
         /* Hero Fullscreen */
         .agro-hero-fullscreen {
           height: 100vh;
-          background-image: url('/assets/inicio.png');
+          background-image: url('https://images.unsplash.com/photo-1574943320219-553eb213f72d?ixlib=rb-4.0.3&auto=format&fit=crop&w=4000&q=80');
           background-size: cover;
           background-position: center center;
           background-repeat: no-repeat;
