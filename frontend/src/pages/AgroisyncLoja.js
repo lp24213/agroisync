@@ -165,7 +165,7 @@ const AgroisyncLoja = () => {
       <AgroisyncHeroPrompt 
         title="Loja Agroisync"
         subtitle="Os melhores produtos agrícolas com tecnologia de ponta e preços competitivos"
-        heroImage="/assets/loja-agroisync.jpg"
+        heroImage="./images/Loja.png"
         showCTA={true}
       />
 

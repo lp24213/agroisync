@@ -16,7 +16,7 @@ const AgroisyncHeroPrompt = ({
         data-hero="true"
         data-hero-img={heroImage}
         style={{
-          backgroundImage: heroImage === "https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=4000&q=80" ? 'url("./images/marketplace.png")' : `url(${heroImage})`,
+          backgroundImage: heroImage.includes('./images/') ? `url(${heroImage})` : `url(${heroImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
