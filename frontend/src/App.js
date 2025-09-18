@@ -17,6 +17,8 @@ import WeatherWidget from './components/WeatherWidget';
 import './styles/agro-txc-grao-theme.css';
 // Importar override CSS para correcoes especificas
 import './styles/ui-txc-final-override.css';
+// Importar correção do menu mobile
+import './styles/mobile-menu-fix.css';
 // Importar nova estetica visual
 import './styles/agroisync-new-theme.css';
 // Importar layout clean conforme design

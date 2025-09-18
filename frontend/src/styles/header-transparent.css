@@ -269,6 +269,26 @@
     color: #fff !important;
   }
 
+  /* PREMIUM MOBILE MENU - FORÇA VISIBILIDADE */
+  .premium-mobile-toggle {
+    display: block !important;
+    z-index: 1001 !important;
+  }
+
+  .premium-mobile-menu {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 999 !important;
+  }
+
+  .premium-mobile-overlay {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 998 !important;
+  }
+
   .mobile-menu {
     position: fixed;
     top: 70px;
