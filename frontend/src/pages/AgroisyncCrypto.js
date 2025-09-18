@@ -104,7 +104,7 @@ const AgroisyncCrypto = () => {
   };
 
   return (
-    <div>
+    <div data-page="crypto">
       {/* Hero Section Clean */}
       <section className="agro-hero-section" style={{
         background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
