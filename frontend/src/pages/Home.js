@@ -94,17 +94,24 @@ const Home = () => {
       
       {/* Background Image Section */}
       <section 
-        className="w-full"
+        className="w-full relative"
         style={{
           backgroundImage: "url('/assets/inicio.png')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'scroll',
           width: '100%',
           height: '80vh',
-          minHeight: '500px'
+          minHeight: '500px',
+          zIndex: 1,
+          display: 'block',
+          position: 'relative',
+          backgroundColor: 'transparent',
+          background: "url('/assets/inicio.png') center/cover no-repeat"
         }}
       ></section>
+    
       
       {/* Hero Section com Imagem Agrícola */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
