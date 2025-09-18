@@ -210,7 +210,7 @@ const AgroisyncHome = () => {
         /* Hero Fullscreen */
         .agro-hero-fullscreen {
           height: 100vh;
-          background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=4000&q=80');
+          background-image: url('https://images.unsplash.com/photo-1574943320219-553eb213f72d?ixlib=rb-4.0.3&auto=format&fit=crop&w=4000&q=80');
           background-size: cover;
           background-position: center center;
           background-repeat: no-repeat;
@@ -220,6 +220,7 @@ const AgroisyncHome = () => {
           align-items: center;
           justify-content: center;
           overflow: hidden;
+          width: 100%;
         }
 
         .agro-hero-overlay {
@@ -230,6 +231,8 @@ const AgroisyncHome = () => {
           bottom: 0;
           background: rgba(0, 0, 0, 0.2);
           z-index: 2;
+          width: 100%;
+          height: 100%;
         }
 
         .agro-hero-content-centered {
@@ -238,6 +241,12 @@ const AgroisyncHome = () => {
           text-align: center;
           max-width: 800px;
           padding: 0 2rem;
+          margin: 0 auto;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
         }
 
         .agro-main-layout {
