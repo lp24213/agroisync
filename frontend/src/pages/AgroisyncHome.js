@@ -250,6 +250,13 @@ const AgroisyncHome = () => {
           display: block;
         }
 
+        .agro-hero-title {
+          text-align: center;
+          margin: 0 auto;
+          display: block;
+          width: 100%;
+        }
+
         .agro-main-layout {
           display: grid;
           grid-template-columns: 2fr 1fr;
