@@ -39,37 +39,6 @@ const AgroisyncHeroPrompt = ({
             </div>
           )}
         </div>
-        <div className="agro-store-section">
-          <h3 className="agro-store-title">Loja Agroisync</h3>
-          <div className="agro-store-item">
-            <div className="agro-store-item-image">🚜</div>
-            <div className="agro-store-item-info">
-              <div className="agro-store-item-name">Trator John Deere 8584</div>
-              <div className="agro-store-item-price">R$ 120.000</div>
-            </div>
-          </div>
-          <div className="agro-store-item">
-            <div className="agro-store-item-image">🌱</div>
-            <div className="agro-store-item-info">
-              <div className="agro-store-item-name">Semeadora John Deere</div>
-              <div className="agro-store-item-price">R$ 60.000</div>
-            </div>
-          </div>
-          <div className="agro-store-item">
-            <div className="agro-store-item-image">🌾</div>
-            <div className="agro-store-item-info">
-              <div className="agro-store-item-name">Colheitadeira Case®</div>
-              <div className="agro-store-item-price">R$ 850.000</div>
-            </div>
-          </div>
-          <div className="agro-store-item">
-            <div className="agro-store-item-image">⚙️</div>
-            <div className="agro-store-item-info">
-              <div className="agro-store-item-name">Implemento Agrícola</div>
-              <div className="agro-store-item-price">R$ 12.600</div>
-            </div>
-          </div>
-        </div>
       </section>
     </>
   );

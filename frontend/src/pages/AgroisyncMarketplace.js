@@ -27,7 +27,7 @@ const AgroisyncMarketplace = () => {
       title: 'Sementes Híbridas de Soja',
       description: 'Sementes certificadas de alta produtividade para plantio direto',
       price: 'R$ 180,00/saca',
-      image: '/assets/marketplace.png',
+      image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       category: 'insumos',
       location: 'Mato Grosso'
     },
@@ -36,7 +36,7 @@ const AgroisyncMarketplace = () => {
       title: 'Trator John Deere 8584',
       description: 'Trator agrícola com 180cv, ideal para grandes propriedades',
       price: 'R$ 120.000,00',
-      image: '/assets/marketplace.png',
+      image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       category: 'maquinas',
       location: 'São Paulo'
     },
@@ -45,7 +45,7 @@ const AgroisyncMarketplace = () => {
       title: 'Fertilizante NPK 20-10-10',
       description: 'Fertilizante granulado para aplicação em pré-plantio',
       price: 'R$ 2.800,00/ton',
-      image: '/assets/marketplace.png',
+      image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       category: 'insumos',
       location: 'Goiás'
     },
@@ -54,7 +54,7 @@ const AgroisyncMarketplace = () => {
       title: 'Colheitadeira Case IH',
       description: 'Colheitadeira com capacidade de 12 toneladas por hora',
       price: 'R$ 850.000,00',
-      image: '/assets/marketplace.png',
+      image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       category: 'maquinas',
       location: 'Paraná'
     },
@@ -63,7 +63,7 @@ const AgroisyncMarketplace = () => {
       title: 'Gado Nelore Certificado',
       description: 'Lote de 50 cabeças de gado nelore com certificação',
       price: 'R$ 3.500,00/cabeça',
-      image: '/assets/marketplace.png',
+      image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       category: 'pecuaria',
       location: 'Mato Grosso do Sul'
     },
@@ -72,7 +72,7 @@ const AgroisyncMarketplace = () => {
       title: 'Serviço de Mapeamento com Drone',
       description: 'Mapeamento aéreo para análise de solo e plantio',
       price: 'R$ 150,00/hectare',
-      image: '/assets/marketplace.png',
+      image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       category: 'servicos',
       location: 'Minas Gerais'
     }
@@ -166,7 +166,7 @@ const AgroisyncMarketplace = () => {
       <AgroisyncHeroPrompt 
         title="Marketplace Agro"
         subtitle="Conecte-se com compradores e vendedores de commodities agrícolas"
-        heroImage="/assets/marketplace.png"
+        heroImage="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=4000&q=80"
         showCTA={true}
       />
 
