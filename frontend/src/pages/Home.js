@@ -96,7 +96,7 @@ const Home = () => {
       <section 
         className="w-full relative flex items-center justify-center"
         style={{
-          backgroundImage: "url('/assets/campo-soja-4k.png')",
+          backgroundImage: "url('/assets/campo-soja-real-4k.png')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -263,7 +263,7 @@ const Home = () => {
       <section 
         className="py-20 relative"
         style={{
-          backgroundImage: "url('/assets/campo-soja-4k.png')",
+          backgroundImage: "url('/assets/campo-soja-real-4k.png')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
