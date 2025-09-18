@@ -48,11 +48,11 @@ const AgroisyncHeader = () => {
   };
 
   const navigationItems = [
-    { path: '/', label: t('nav.home'), icon: Home },
-    { path: '/marketplace', label: t('nav.marketplace'), icon: ShoppingCart },
+    { path: '/', label: 'Início', icon: Home },
     { path: '/loja', label: 'Loja', icon: ShoppingCart },
-    { path: '/agroconecta', label: t('nav.agroconecta'), icon: Truck },
-    { path: '/tecnologia', label: t('nav.crypto'), icon: Coins },
+    { path: '/agroconecta', label: 'AgroConecta', icon: Truck },
+    { path: '/marketplace', label: 'Marketplace', icon: ShoppingCart },
+    { path: '/tecnologia', label: 'Tecnologia', icon: Coins },
     { path: '/partnerships', label: 'Parcerias', icon: Users },
   ];
 
@@ -176,17 +176,26 @@ const AgroisyncHeader = () => {
       {/* Mobile Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
-            className="premium-mobile-menu"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-          >
+          <>
+            <motion.div
+              className="premium-mobile-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <motion.div
+              className="premium-mobile-menu"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+            >
             <div className="premium-mobile-content">
               {/* Mobile Navigation */}
               <nav className="premium-mobile-nav">
-                <h3 className="premium-mobile-section-title">{t('nav.navigation')}</h3>
+                <h3 className="premium-mobile-section-title">Navegação</h3>
                 {navigationItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = location.pathname === item.path;
@@ -208,7 +217,7 @@ const AgroisyncHeader = () => {
 
               {/* Mobile Language Selector */}
               <div>
-                <h3 className="premium-mobile-section-title">{t('nav.language')}</h3>
+                <h3 className="premium-mobile-section-title">Idiomas</h3>
                 <div className="premium-mobile-lang-grid">
                   {languages.map((lang) => (
                     <button
@@ -225,36 +234,56 @@ const AgroisyncHeader = () => {
 
               {/* Mobile Auth */}
               <div className="premium-mobile-auth">
+                <h3 className="premium-mobile-section-title">Conta</h3>
                 {user ? (
                   <div className="premium-mobile-user">
-                    <div>
+                    <div className="premium-mobile-user-info">
                       <strong>{user.name || user.email}</strong>
                     </div>
-                    <div>
-                      <Link to="/dashboard" className="premium-header-link agro-btn-animated">
-                        <User size={16} />
-                        <span>{t('nav.dashboard')}</span>
+                    <div className="premium-mobile-auth-buttons">
+                      <Link 
+                        to="/dashboard" 
+                        className="premium-mobile-link"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <User size={20} />
+                        <span>Dashboard</span>
                       </Link>
-                      <button onClick={handleLogout} className="premium-header-link agro-btn-animated">
-                        <LogOut size={16} />
-                        <span>{t('nav.logout')}</span>
+                      <button 
+                        onClick={() => {
+                          handleLogout();
+                          setIsMobileMenuOpen(false);
+                        }} 
+                        className="premium-mobile-link"
+                      >
+                        <LogOut size={20} />
+                        <span>Sair</span>
                       </button>
                     </div>
                   </div>
                 ) : (
-                  <>
-                    <Link to="/login" className="premium-header-link agro-btn-animated">
-                      <LogIn size={16} />
-                      <span>{t('nav.login')}</span>
+                  <div className="premium-mobile-auth-buttons">
+                    <Link 
+                      to="/login" 
+                      className="premium-mobile-link"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <LogIn size={20} />
+                      <span>Entrar</span>
                     </Link>
-                    <Link to="/register" className="premium-header-link agro-btn-animated">
-                      <span>{t('nav.register')}</span>
+                    <Link 
+                      to="/register" 
+                      className="premium-mobile-link"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <span>Registrar</span>
                     </Link>
-                  </>
+                  </div>
                 )}
               </div>
             </div>
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 
