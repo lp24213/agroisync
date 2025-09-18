@@ -92,25 +92,59 @@ const Home = () => {
       {/* Bolsa de Valores Ticker */}
       <Ticker />
       
-      {/* Background Image Section */}
+      {/* Background Image Section - Campo de Soja 4K */}
       <section 
-        className="w-full relative"
+        className="w-full relative flex items-center justify-center"
         style={{
-          backgroundImage: "url('/assets/inicio.png')",
+          backgroundImage: "url('/assets/campo-soja-4k.png')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'scroll',
+          backgroundAttachment: 'fixed',
           width: '100%',
-          height: '80vh',
-          minHeight: '500px',
+          height: '100vh',
+          minHeight: '800px',
           zIndex: 1,
-          display: 'block',
+          display: 'flex',
           position: 'relative',
-          backgroundColor: 'transparent',
-          background: "url('/assets/inicio.png') center/cover no-repeat"
+          backgroundColor: 'transparent'
         }}
-      ></section>
+      >
+        {/* Conteúdo Centralizado */}
+        <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="bg-white/90 backdrop-blur-sm rounded-2xl p-12 shadow-2xl"
+          >
+            <h1 className="text-5xl md:text-7xl font-bold mb-8 text-gray-800">
+              Seja Nosso <span className="text-green-600">Parceiro</span>
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 text-gray-600 leading-relaxed">
+              Junte-se à revolução do agronegócio brasileiro e faça parte da maior 
+              plataforma de conectividade rural do país.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-green-600 hover:bg-green-700 text-white px-10 py-5 text-xl font-semibold rounded-xl shadow-lg transition-colors"
+              >
+                Começar Agora
+                <ArrowRight size={24} className="ml-3 inline" />
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white px-10 py-5 text-xl font-semibold rounded-xl transition-colors"
+              >
+                Saiba Mais
+              </motion.button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
     
       
       {/* Hero Section com Imagem Agrícola */}
