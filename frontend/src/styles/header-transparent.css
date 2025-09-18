@@ -168,27 +168,27 @@
 
 /* PÁGINA HOME - inicip.png */
 .agro-home-container .agro-hero-fullscreen {
-  background-image: url('/images/inicio.png') !important;
+  background-image: url('./images/inicio.png') !important;
 }
 
 /* PÁGINA MARKETPLACE - marketplace.png */
 [data-page="marketplace"] .agro-hero-section {
-  background-image: url('/images/marketplace.png') !important;
+  background-image: url('./images/marketplace.png') !important;
 }
 
 /* PÁGINA AGROCONECTA - agroconecta.png */
 [data-page="agroconecta"] .agro-hero-section {
-  background-image: url('/images/agroconecta.png') !important;
+  background-image: url('./images/agroconecta.png') !important;
 }
 
 /* PÁGINA LOJA - loja.png */
 [data-page="loja"] .agro-hero-section {
-  background-image: url('/images/Loja.png') !important;
+  background-image: url('./images/Loja.png') !important;
 }
 
 /* PÁGINA PARCERIAS - parceria.png */
 [data-page="partnerships"] .agro-hero-section {
-  background-image: url('/images/parceria.png') !important;
+  background-image: url('./images/parceria.png') !important;
 }
 
 /* Banner image será definido pelo componente */
