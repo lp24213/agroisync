@@ -251,10 +251,13 @@ const AgroisyncHome = () => {
         }
 
         .agro-hero-title {
-          text-align: center;
-          margin: 0 auto;
-          display: block;
-          width: 100%;
+          text-align: center !important;
+          margin: 0 auto !important;
+          display: block !important;
+          width: 100% !important;
+          position: relative !important;
+          left: 50% !important;
+          transform: translateX(-50%) !important;
         }
 
         .agro-main-layout {
