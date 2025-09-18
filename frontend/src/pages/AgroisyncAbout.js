@@ -40,19 +40,19 @@ const AgroisyncAbout = () => {
       name: 'João Silva',
       role: 'CEO & Fundador',
       description: '15 anos de experiência no agronegócio e tecnologia',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
+      image: '/images/logo.svg',
     },
     {
       name: 'Maria Santos',
       role: 'CTO',
       description: 'Especialista em blockchain e desenvolvimento de software',
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face',
+      image: '/images/logo.svg',
     },
     {
       name: 'Pedro Costa',
       role: 'Head de Produto',
       description: 'Experiência em produtos digitais para o agronegócio',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
+      image: '/images/logo.svg',
     },
   ];
 
@@ -100,7 +100,7 @@ const AgroisyncAbout = () => {
     <div>
       {/* Hero Section TXC */}
       <section className="agro-hero-section" style={{
-        background: 'linear-gradient(rgba(31, 46, 31, 0.4), rgba(31, 46, 31, 0.4)), url("https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=1920&h=1080&fit=crop")',
+        background: 'linear-gradient(rgba(31, 46, 31, 0.4), rgba(31, 46, 31, 0.4)), url("/images/marketplace.png")',
         backgroundSize: 'cover',
         backgroundPosition: 'center'
       }}>

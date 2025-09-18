@@ -88,7 +88,7 @@ const AgroisyncContact = () => {
     <div>
       {/* Hero Section TXC */}
       <section className="agro-hero-section" style={{
-        background: 'linear-gradient(rgba(31, 46, 31, 0.4), rgba(31, 46, 31, 0.4)), url("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&h=1080&fit=crop")',
+        background: 'linear-gradient(rgba(31, 46, 31, 0.4), rgba(31, 46, 31, 0.4)), url("/images/marketplace.png")',
         backgroundSize: 'cover',
         backgroundPosition: 'center'
       }}>

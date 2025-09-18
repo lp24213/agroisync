@@ -156,10 +156,9 @@
   color: #00ffcc !important; /* verde neon no hover */
 }
 
-/* HERO SECTION - Garantir imagem de fundo */
+/* HERO SECTION - Fundo será definido pelo componente */
 .agro-hero-section, .agro-banner-section {
   height: 100vh;
-  background: url("https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=4000&q=80") center/cover no-repeat !important;
   position: relative;
   display: flex;
   align-items: center;
@@ -167,9 +166,9 @@
   text-align: center;
 }
 
-/* Garantir que a imagem de fundo seja visível */
+/* Banner image será definido pelo componente */
 .agro-banner-image {
-  background: url("https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=4000&q=80") center/cover no-repeat !important;
+  /* Fundo será definido pelo componente individual */
 }
 
 /* HERO CONTENT */

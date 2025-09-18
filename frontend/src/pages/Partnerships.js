@@ -262,7 +262,7 @@ const Partnerships = () => {
         <AgroisyncHeroPrompt 
           title="Seja Nosso Parceiro"
           subtitle="Junte-se à AGROISYNC e faça parte da revolução do agronegócio brasileiro"
-          heroImage="./images/parceria.png"
+          heroImage="/images/parceria.png"
           showCTA={true}
         />
 

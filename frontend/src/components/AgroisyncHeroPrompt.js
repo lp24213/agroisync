@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const AgroisyncHeroPrompt = ({ 
   title = "Agroisync", 
   subtitle = "A Plataforma de Agronegócio Mais Futurista do Mundo",
-  heroImage = "/assets/marketplace.png",
+  heroImage = "/images/marketplace.png",
   showCTA = true 
 }) => {
   return (
@@ -16,7 +16,7 @@ const AgroisyncHeroPrompt = ({
         data-hero="true"
         data-hero-img={heroImage}
         style={{
-          backgroundImage: heroImage.includes('./images/') ? `url(${heroImage})` : `url(${heroImage})`,
+          backgroundImage: `url(${heroImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',

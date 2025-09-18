@@ -96,7 +96,7 @@ const Home = () => {
       <section 
         className="w-full relative flex items-center justify-center overflow-hidden"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1574943320219-553eb213f72d?ixlib=rb-4.0.3&auto=format&fit=crop&w=4000&q=80')",
+          backgroundImage: "url('/images/inicio.png')",
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
@@ -266,7 +266,7 @@ const Home = () => {
       <section 
         className="py-20 relative"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1574943320219-553eb213f72d?ixlib=rb-4.0.3&auto=format&fit=crop&w=4000&q=80')",
+          backgroundImage: "url('/images/inicio.png')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',

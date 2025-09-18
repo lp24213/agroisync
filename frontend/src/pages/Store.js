@@ -136,7 +136,7 @@ const Store = () => {
       <AgroisyncHeroPrompt 
         title="Loja Agroisync"
         subtitle="Commodities Agrícolas em Tempo Real"
-        heroImage="./images/Loja.png"
+        heroImage="/images/Loja.png"
         showCTA={true}
       />
 
