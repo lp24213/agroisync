@@ -16,7 +16,8 @@ import {
   Globe,
   Lock,
   Eye,
-  EyeOff
+  EyeOff,
+  X
 } from 'lucide-react';
 
 const RegistrationSystem = ({ type, onClose }) => {
