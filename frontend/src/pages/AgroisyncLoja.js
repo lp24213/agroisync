@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import RegistrationSystem from '../components/RegistrationSystem';
+import PlansSystem from '../components/PlansSystem';
 import { 
   ShoppingCart, 
   Star, 
@@ -16,7 +17,8 @@ import {
   Package,
   UserPlus,
   MapPin,
-  Eye
+  Eye,
+  X
 } from 'lucide-react';
 import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt';
 
@@ -25,6 +27,7 @@ const AgroisyncLoja = () => {
   const [selectedCategory, setSelectedCategory] = useState('todos');
   const [sortBy, setSortBy] = useState('relevancia');
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
+  const [showPlansModal, setShowPlansModal] = useState(false);
   // const [publicRegistrations, setPublicRegistrations] = useState([]);
 
   // Produtos da loja com imagens reais

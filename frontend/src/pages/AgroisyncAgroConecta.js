@@ -18,6 +18,7 @@ import {
   Globe,
   Search,
   Calendar,
+  X,
   Package,
   Crown,
   DollarSign,
