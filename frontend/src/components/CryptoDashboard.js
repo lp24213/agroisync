@@ -67,7 +67,7 @@ const CryptoDashboard = () => {
     }, 5000); // Atualiza a cada 5 segundos
 
     return () => clearInterval(interval);
-  }, []);
+  }, [mockCryptoData]);
 
   const connectMetaMask = async () => {
     if (window.ethereum) {

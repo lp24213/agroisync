@@ -10,12 +10,9 @@ import {
   Star,
   CheckCircle,
   RefreshCw,
-  DollarSign,
   TrendingDown,
   Activity
 } from 'lucide-react';
-import CryptoWidget from '../components/CryptoWidget';
-import CryptoDashboard from '../components/CryptoDashboard';
 import CryptoChart from '../components/CryptoChart';
 import '../styles/crypto-dashboard.css';
 
@@ -102,7 +99,7 @@ const AgroisyncCrypto = () => {
     }, 30000); // 30 segundos
     
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchCryptoData]);
 
   const features = [
     {

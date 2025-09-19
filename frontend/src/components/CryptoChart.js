@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
 
 const CryptoChart = ({ data, symbol, price, change24h, height = 200 }) => {
   const canvasRef = useRef(null);
@@ -151,9 +150,6 @@ const CryptoChart = ({ data, symbol, price, change24h, height = 200 }) => {
     // Desenhar label do eixo X
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    
-    const lastDate = new Date(data[data.length - 1].time);
-    const firstDate = new Date(data[0].time);
     
     ctx.fillText('30 dias', width / 2, chartHeight - padding + 10);
 

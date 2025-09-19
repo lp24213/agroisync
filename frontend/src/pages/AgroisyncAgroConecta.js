@@ -45,7 +45,7 @@ const AgroisyncAgroConecta = () => {
   const [trackingUpdates, setTrackingUpdates] = useState([]);
   const [aiClosureData, setAiClosureData] = useState(null);
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
-  const [publicRegistrations, setPublicRegistrations] = useState([]);
+  // const [publicRegistrations, setPublicRegistrations] = useState([]);
 
   // Dados de ofertas de frete
   const ofertasFrete = [

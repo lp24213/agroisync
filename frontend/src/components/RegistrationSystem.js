@@ -1,22 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  User, 
   Building2, 
   MapPin, 
-  FileText, 
   Truck, 
-  CreditCard,
-  Shield,
   CheckCircle,
-  AlertCircle,
   Loader,
   Search,
-  Download,
   Globe,
-  Lock,
-  Eye,
-  EyeOff,
   X
 } from 'lucide-react';
 
@@ -64,7 +55,7 @@ const RegistrationSystem = ({ type, onClose }) => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
+  // const [errors, setErrors] = useState({});
   const [autoFilled, setAutoFilled] = useState({});
 
   // Configurações por tipo
@@ -269,31 +260,31 @@ const RegistrationSystem = ({ type, onClose }) => {
   };
 
   // Buscar produtos por API
-  const searchProducts = async (query) => {
-    if (query.length > 2) {
-      setLoading(true);
-      try {
-        // Simular busca de produtos
-        const mockProducts = [
-          { id: 1, name: 'Soja', category: 'Grãos', unit: 'saca' },
-          { id: 2, name: 'Milho', category: 'Grãos', unit: 'saca' },
-          { id: 3, name: 'Trigo', category: 'Grãos', unit: 'saca' },
-          { id: 4, name: 'Café', category: 'Bebidas', unit: 'kg' },
-          { id: 5, name: 'Açúcar', category: 'Dulçor', unit: 'kg' }
-        ];
+  // const searchProducts = async (query) => {
+  //   if (query.length > 2) {
+  //     setLoading(true);
+  //     try {
+  //       // Simular busca de produtos
+  //       const mockProducts = [
+  //         { id: 1, name: 'Soja', category: 'Grãos', unit: 'saca' },
+  //         { id: 2, name: 'Milho', category: 'Grãos', unit: 'saca' },
+  //         { id: 3, name: 'Trigo', category: 'Grãos', unit: 'saca' },
+  //         { id: 4, name: 'Café', category: 'Bebidas', unit: 'kg' },
+  //         { id: 5, name: 'Açúcar', category: 'Dulçor', unit: 'kg' }
+  //       ];
 
-        return mockProducts.filter(product => 
-          product.name.toLowerCase().includes(query.toLowerCase())
-        );
-      } catch (error) {
-        console.error('Erro ao buscar produtos:', error);
-        return [];
-      } finally {
-        setLoading(false);
-      }
-    }
-    return [];
-  };
+  //       return mockProducts.filter(product => 
+  //         product.name.toLowerCase().includes(query.toLowerCase())
+  //       );
+  //     } catch (error) {
+  //       console.error('Erro ao buscar produtos:', error);
+  //       return [];
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+  //   return [];
+  // };
 
   const handleInputChange = async (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -308,6 +299,9 @@ const RegistrationSystem = ({ type, onClose }) => {
         break;
       case 'cpf':
         await validateCPF(value);
+        break;
+      default:
+        // Nenhuma ação necessária
         break;
     }
   };

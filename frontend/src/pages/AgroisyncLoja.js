@@ -25,7 +25,7 @@ const AgroisyncLoja = () => {
   const [selectedCategory, setSelectedCategory] = useState('todos');
   const [sortBy, setSortBy] = useState('relevancia');
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
-  const [publicRegistrations, setPublicRegistrations] = useState([]);
+  // const [publicRegistrations, setPublicRegistrations] = useState([]);
 
   // Produtos da loja com imagens reais
   const products = [

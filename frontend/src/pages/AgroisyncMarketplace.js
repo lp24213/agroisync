@@ -21,7 +21,7 @@ const AgroisyncMarketplace = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('todos');
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
-  const [publicRegistrations, setPublicRegistrations] = useState([]);
+  // const [publicRegistrations, setPublicRegistrations] = useState([]);
   const [selectedState, setSelectedState] = useState('todos');
 
   // Dados de produtos do marketplace
