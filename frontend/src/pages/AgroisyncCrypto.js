@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
@@ -23,7 +23,7 @@ const AgroisyncCrypto = () => {
   const [lastUpdate, setLastUpdate] = useState(new Date());
 
   // Função para buscar dados reais de criptomoedas
-  const fetchCryptoData = async () => {
+  const fetchCryptoData = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -71,7 +71,7 @@ const AgroisyncCrypto = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Função para gerar dados de gráfico
   const generateChartData = (basePrice, volatility) => {
