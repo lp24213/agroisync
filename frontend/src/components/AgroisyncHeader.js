@@ -10,8 +10,6 @@ import {
   Home,
   ShoppingCart,
   Truck,
-  Coins,
-  Users,
   LogIn,
   LogOut,
   User,

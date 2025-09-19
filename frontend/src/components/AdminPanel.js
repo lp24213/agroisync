@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 import { 
   Users, XCircle, BarChart3, Settings, Activity, Shield, 
   Eye, Bot, Truck, Download, Trash2, Search, TrendingUp, AlertCircle
@@ -32,10 +31,7 @@ const AdminPanel = () => {
   ];
 
   useEffect(() => {
-    loadAdminData();
-  }, [loadAdminData]);
-
-  const loadAdminData = async () => {
+    const loadAdminData = async () => {
     setLoading(true);
     try {
       // Carregar estatísticas gerais
@@ -71,7 +67,10 @@ const AdminPanel = () => {
     } finally {
       setLoading(false);
     }
-  };
+    };
+    
+    loadAdminData();
+  }, []);
 
   const handleExportAuditLogs = async () => {
     try {

@@ -184,23 +184,6 @@ const AgroisyncAgroConecta = () => {
     setShowTrackingModal(true);
   };
 
-  const loadMyOrders = async () => {
-    try {
-      const response = await axios.get('/api/freight-orders', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-
-      if (response.data.success) {
-        setMyOrders(response.data.data.freightOrders);
-      }
-    } catch (error) {
-      console.error('Erro ao carregar pedidos:', error);
-      // Usar dados mockados em caso de erro
-      setMyOrders(mockOrders);
-    }
-  };
 
   const handleAIClosure = async (orderId) => {
     try {
@@ -265,8 +248,25 @@ const AgroisyncAgroConecta = () => {
 
   // Carregar pedidos quando a página carregar
   useEffect(() => {
+    const loadMyOrders = async () => {
+      try {
+        const response = await axios.get('/api/freight-orders', {
+          headers: {
+            'Authorization': `Bearer ${user?.token}`
+          }
+        });
+        
+        if (response.data.success) {
+          setMyOrders(response.data.data);
+        }
+      } catch (error) {
+        console.error('Erro ao carregar pedidos:', error);
+        toast.error('Erro ao carregar pedidos');
+      }
+    };
+    
     loadMyOrders();
-  }, [loadMyOrders]);
+  }, []);
 
   const features = [
     {

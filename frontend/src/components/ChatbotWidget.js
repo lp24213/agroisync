@@ -31,7 +31,6 @@ const ChatbotWidget = () => {
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [conversationId, setConversationId] = useState(null);
   const [attachments, setAttachments] = useState([]);
-  const [isUploading, setIsUploading] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const recognitionRef = useRef(null);
@@ -88,9 +87,26 @@ const ChatbotWidget = () => {
   // Carregar conversa existente
   useEffect(() => {
     if (isOpen && conversationId) {
+      const loadConversation = async () => {
+        try {
+          const response = await axios.get(`/api/chat/${conversationId}`, {
+            headers: {
+              'Authorization': `Bearer ${user?.token}`
+            }
+          });
+          
+          if (response.data.success) {
+            const messages = response.data.data.messages || [];
+            messages.forEach(msg => addChatMessage(msg));
+          }
+        } catch (error) {
+          console.error('Erro ao carregar conversa:', error);
+        }
+      };
+      
       loadConversation();
     }
-  }, [isOpen, conversationId, loadConversation]);
+  }, [isOpen, conversationId]);
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;
@@ -238,35 +254,6 @@ const ChatbotWidget = () => {
     setAttachments(prev => prev.filter((_, i) => i !== index));
   };
 
-  const loadConversation = async () => {
-    if (!conversationId) return;
-
-    try {
-      const response = await axios.get(`/api/chat/${conversationId}`, {
-        headers: {
-          'Authorization': `Bearer ${user?.token}`
-        }
-      });
-
-      if (response.data.success) {
-        const { messages } = response.data.data;
-        // Converter mensagens da API para o formato local
-        const localMessages = messages.map(msg => ({
-          id: Date.now() + Math.random(),
-          type: msg.role === 'user' ? 'user' : 'bot',
-          content: msg.text,
-          timestamp: new Date(msg.timestamp),
-          attachments: msg.metadata?.attachments || []
-        }));
-        
-        // Limpar histórico local e carregar da API
-        // Note: Isso requer uma função no store para limpar o histórico
-        localMessages.forEach(msg => addChatMessage(msg));
-      }
-    } catch (error) {
-      console.error('Erro ao carregar conversa:', error);
-    }
-  };
 
   const toggleVoiceMode = () => {
     if (mode === 'voice') {
