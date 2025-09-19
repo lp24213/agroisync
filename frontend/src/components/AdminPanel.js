@@ -104,7 +104,7 @@ const AdminPanel = () => {
   };
 
   const handleCleanupAuditLogs = async () => {
-    if (!confirm('Tem certeza que deseja limpar logs expirados?')) {
+    if (!window.confirm('Tem certeza que deseja limpar logs expirados?')) {
       return;
     }
 
