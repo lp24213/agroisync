@@ -269,17 +269,17 @@ const AgroisyncAgroConecta = () => {
   };
 
   // Função para buscar cadastros públicos
-  const fetchPublicRegistrations = async () => {
-    try {
-      const response = await fetch('/api/registration/agroconecta/public');
-      const data = await response.json();
-      if (data.success) {
-        setPublicRegistrations(data.data);
-      }
-    } catch (error) {
-      console.error('Erro ao buscar cadastros públicos:', error);
-    }
-  };
+  // const fetchPublicRegistrations = async () => {
+  //   try {
+  //     const response = await fetch('/api/registration/agroconecta/public');
+  //     const data = await response.json();
+  //     if (data.success) {
+  //       setPublicRegistrations(data.data);
+  //     }
+  //   } catch (error) {
+  //     console.error('Erro ao buscar cadastros públicos:', error);
+  //   }
+  // };
 
   // Carregar pedidos quando a página carregar
   useEffect(() => {
@@ -301,7 +301,7 @@ const AgroisyncAgroConecta = () => {
     };
     
     // Buscar cadastros públicos
-    fetchPublicRegistrations();
+    // fetchPublicRegistrations();
     
     loadMyOrders();
   }, [user?.token]);

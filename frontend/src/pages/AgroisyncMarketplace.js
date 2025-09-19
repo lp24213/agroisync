@@ -159,21 +159,21 @@ const AgroisyncMarketplace = () => {
   ];
 
   // Função para buscar cadastros públicos
-  const fetchPublicRegistrations = async () => {
-    try {
-      const response = await fetch('/api/registration/marketplace/public');
-      const data = await response.json();
-      if (data.success) {
-        setPublicRegistrations(data.data);
-      }
-    } catch (error) {
-      console.error('Erro ao buscar cadastros públicos:', error);
-    }
-  };
+  // const fetchPublicRegistrations = async () => {
+  //   try {
+  //     const response = await fetch('/api/registration/marketplace/public');
+  //     const data = await response.json();
+  //     if (data.success) {
+  //       setPublicRegistrations(data.data);
+  //     }
+  //   } catch (error) {
+  //     console.error('Erro ao buscar cadastros públicos:', error);
+  //   }
+  // };
 
   useEffect(() => {
     // Buscar cadastros públicos
-    fetchPublicRegistrations();
+    // fetchPublicRegistrations();
   }, []);
 
   const handleEmailSubmit = (e) => {
