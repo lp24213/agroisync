@@ -161,6 +161,8 @@ const AgroisyncAgroConecta = () => {
         subtitle="Logística Inteligente para o Agronegócio"
         heroImage="/images/agroconecta.png"
         showCTA={true}
+        primaryButton={{ text: "Explorar AgroConecta", link: "/agroconecta" }}
+        secondaryButton={{ text: "Ver Transportadoras", link: "/agroconecta" }}
       />
 
       {/* Features Section */}

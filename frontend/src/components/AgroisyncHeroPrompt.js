@@ -5,7 +5,9 @@ const AgroisyncHeroPrompt = ({
   title = "Agroisync", 
   subtitle = "A Plataforma de Agronegócio Mais Futurista do Mundo",
   heroImage = "/images/marketplace.png",
-  showCTA = true 
+  showCTA = true,
+  primaryButton = { text: "Explorar Marketplace", link: "/marketplace" },
+  secondaryButton = { text: "Saiba Mais", link: "/about" }
 }) => {
   return (
     <>
@@ -41,8 +43,8 @@ const AgroisyncHeroPrompt = ({
           <p className="agro-hero-subtitle" style={{ marginBottom: '2rem', fontSize: '1.2rem', color: '#666' }}>{subtitle}</p>
           {showCTA && (
             <div className="agro-hero-buttons" style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <Link to="/marketplace" className="agro-btn-primary" style={{ padding: '1rem 2rem', backgroundColor: '#2a7f4f', color: 'white', textDecoration: 'none', borderRadius: '10px', fontWeight: '600' }}>Explorar Marketplace</Link>
-              <Link to="/about" className="agro-btn-outline" style={{ padding: '1rem 2rem', border: '2px solid #2a7f4f', color: '#2a7f4f', textDecoration: 'none', borderRadius: '10px', fontWeight: '600' }}>Saiba Mais</Link>
+              <Link to={primaryButton.link} className="agro-btn-primary" style={{ padding: '1rem 2rem', backgroundColor: '#2a7f4f', color: 'white', textDecoration: 'none', borderRadius: '10px', fontWeight: '600' }}>{primaryButton.text}</Link>
+              <Link to={secondaryButton.link} className="agro-btn-outline" style={{ padding: '1rem 2rem', border: '2px solid #2a7f4f', color: '#2a7f4f', textDecoration: 'none', borderRadius: '10px', fontWeight: '600' }}>{secondaryButton.text}</Link>
             </div>
           )}
         </div>

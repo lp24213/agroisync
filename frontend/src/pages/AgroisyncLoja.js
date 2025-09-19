@@ -167,6 +167,8 @@ const AgroisyncLoja = () => {
         subtitle="Os melhores produtos agrícolas com tecnologia de ponta e preços competitivos"
         heroImage="/images/Loja.png"
         showCTA={true}
+        primaryButton={{ text: "Explorar Loja", link: "/loja" }}
+        secondaryButton={{ text: "Ver Produtos", link: "/loja" }}
       />
 
       {/* Features Section */}

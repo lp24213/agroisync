@@ -138,6 +138,8 @@ const Store = () => {
         subtitle="Commodities Agrícolas em Tempo Real"
         heroImage="/images/Loja.png"
         showCTA={true}
+        primaryButton={{ text: "Explorar Loja", link: "/loja" }}
+        secondaryButton={{ text: "Ver Catálogo", link: "/loja" }}
       />
 
       {/* Features */}

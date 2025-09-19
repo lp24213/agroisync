@@ -264,6 +264,8 @@ const Partnerships = () => {
           subtitle="Junte-se à AGROISYNC e faça parte da revolução do agronegócio brasileiro"
           heroImage="/images/parceria.png"
           showCTA={true}
+          primaryButton={{ text: "Explorar Parcerias", link: "/partnerships" }}
+          secondaryButton={{ text: "Solicitar Parceria", link: "/contact" }}
         />
 
         {/* Benefits Section */}

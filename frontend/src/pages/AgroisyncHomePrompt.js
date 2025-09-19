@@ -15,6 +15,8 @@ const AgroisyncHomePrompt = () => {
         subtitle="A Plataforma de Agronegócio Mais Futurista do Mundo"
         heroImage="/images/inicio.png"
         showCTA={true}
+        primaryButton={{ text: "Explorar Plataforma", link: "/" }}
+        secondaryButton={{ text: "Começar Agora", link: "/register" }}
       />
       
       {/* CONTEÚDO PRINCIPAL */}
