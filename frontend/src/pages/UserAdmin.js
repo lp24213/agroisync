@@ -1,22 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Users, MessageSquare, XCircle, BarChart3, Package, DollarSign, Settings, AlertTriangle, Activity, CheckCircle, Clock, Shield, Eye, Bot, Truck, Globe } from 'lucide-react';
+import { Users, MessageSquare, XCircle, BarChart3, Package, DollarSign, Settings, AlertTriangle, Activity, CheckCircle, Clock, Shield, Eye, Bot, Truck, Globe, Lock } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
-const AdminAnonymousPanel = () => {
+const UserAdmin = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState({});
   const [recentActivity, setRecentActivity] = useState([]);
   const [users, setUsers] = useState([]);
-  const [showDevCredentials, setShowDevCredentials] = useState(false);
+  const [showDevCredentials, setShowDevCredentials] = useState(true);
   const [freightOrders, setFreightOrders] = useState([]);
   const [chatStats, setChatStats] = useState({});
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
-    loadAdminData();
+    // Verificar autorização (simulação)
+    const checkAuthorization = () => {
+      // Em produção, isso seria verificado via Cloudflare Access ou JWT
+      const secretHeader = new URLSearchParams(window.location.search).get('secret');
+      const isDev = process.env.NODE_ENV === 'development';
+      
+      if (secretHeader === 'agroisync-admin-2024' || isDev) {
+        setIsAuthorized(true);
+        loadAdminData();
+      } else {
+        toast.error('Acesso não autorizado');
+        setTimeout(() => {
+          window.location.href = '/admin';
+        }, 2000);
+      }
+    };
+
+    checkAuthorization();
   }, []);
 
   const loadAdminData = async () => {
@@ -43,14 +61,14 @@ const AdminAnonymousPanel = () => {
         {
           id: 'act-1',
           type: 'user_registration',
-user: 'João Silva',
+          user: 'João Silva',
           timestamp: new Date(Date.now() - 300000),
           status: 'success'
         },
         {
           id: 'act-2',
           type: 'product_created',
-user: 'Maria Santos',
+          user: 'Maria Santos',
           product: 'Soja Premium',
           timestamp: new Date(Date.now() - 600000),
           status: 'success'
@@ -58,7 +76,7 @@ user: 'Maria Santos',
         {
           id: 'act-3',
           type: 'payment_processed',
-user: 'Pedro Oliveira',
+          user: 'Pedro Oliveira',
           amount: 15000,
           timestamp: new Date(Date.now() - 900000),
           status: 'success'
@@ -138,12 +156,10 @@ user: 'Pedro Oliveira',
         avgResponseTime: '2.3s'
       });
 
-
-
     } catch (error) {
       console.error('Erro ao carregar dados admin:', error);
     } finally {
-setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -330,7 +346,7 @@ setLoading(false);
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-user.status === 'active' 
+                      user.status === 'active' 
                         ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                         : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                     }`}>
@@ -343,86 +359,6 @@ user.status === 'active'
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button className="text-emerald-600 hover:text-emerald-900 dark:text-emerald-400 dark:hover:text-emerald-300">
                       {t('admin.view', 'Ver')}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderFreights = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-          {t('admin.freights', 'Pedidos de Frete')}
-        </h3>
-        <div className="flex gap-2">
-          <button className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
-            {t('admin.export', 'Exportar')}
-          </button>
-        </div>
-      </div>
-
-      <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-slate-50 dark:bg-slate-700">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Pedido
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Rota
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Valor
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Ações
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-              {freightOrders.map((order) => (
-                <tr key={order.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div>
-                      <div className="text-sm font-medium text-slate-900 dark:text-slate-200">
-                        {order.orderNumber}
-                      </div>
-                      <div className="text-sm text-slate-500 dark:text-slate-400">
-                        {order.buyer} → {order.carrier}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                      order.status === 'delivered' 
-                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                        : order.status === 'in_transit'
-                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                    }`}>
-                      {order.status === 'delivered' ? 'Entregue' : 
-                       order.status === 'in_transit' ? 'Em Trânsito' : 'Pendente'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
-                    {order.origin} → {order.destination}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
-                    R$ {order.value.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button className="text-emerald-600 hover:text-emerald-900 dark:text-emerald-400 dark:hover:text-emerald-300">
-                      <Eye className="w-4 h-4" />
                     </button>
                   </td>
                 </tr>
@@ -549,47 +485,9 @@ user.status === 'active'
         return renderOverview();
       case 'users':
         return renderUsers();
-      case 'freights':
-        return renderFreights();
       case 'chat':
         return renderChat();
-      case 'products':
-        return (
-          <div className="text-center py-12">
-            <Package className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-400 mb-2">
-              {t('admin.products', 'Produtos')}
-            </h3>
-            <p className="text-slate-500 dark:text-slate-500">
-              {t('admin.productsDescription', 'Gerenciamento de produtos em desenvolvimento')}
-            </p>
-          </div>
-        );
-      case 'transactions':
-        return (
-          <div className="text-center py-12">
-            <DollarSign className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-400 mb-2">
-              {t('admin.transactions', 'Transações')}
-            </h3>
-            <p className="text-slate-500 dark:text-slate-500">
-              {t('admin.transactionsDescription', 'Gerenciamento de transações em desenvolvimento')}
-            </p>
-          </div>
-        );
-      case 'messages':
-        return (
-          <div className="text-center py-12">
-            <MessageSquare className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-400 mb-2">
-              {t('admin.messages', 'Mensagens')}
-            </h3>
-            <p className="text-slate-500 dark:text-slate-500">
-              {t('admin.messagesDescription', 'Gerenciamento de mensagens em desenvolvimento')}
-            </p>
-          </div>
-        );
-      case 'system':
+      default:
         return (
           <div className="text-center py-12">
             <Settings className="w-16 h-16 text-slate-400 mx-auto mb-4" />
@@ -601,10 +499,24 @@ user.status === 'active'
             </p>
           </div>
         );
-      default:
-        return null;
     }
   };
+
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Lock className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+            Acesso Negado
+          </h1>
+          <p className="text-slate-600 dark:text-slate-400">
+            Você não tem permissão para acessar esta página.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -627,10 +539,10 @@ user.status === 'active'
           <div className="flex justify-between items-center py-6">
             <div>
               <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-                {t('admin.title', 'Painel Admin Anônimo')}
+                🔒 {t('admin.title', 'Painel Admin Secreto')}
               </h1>
               <p className="text-slate-600 dark:text-slate-400">
-                {t('admin.subtitle', 'Visão completa do sistema AGROISYNC')}
+                {t('admin.subtitle', 'Acesso restrito ao sistema AGROISYNC')}
               </p>
             </div>
             <div className="flex items-center gap-4">
@@ -657,7 +569,7 @@ user.status === 'active'
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
-activeTab === tab.id
+                      activeTab === tab.id
                         ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'
                         : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
                     }`}
@@ -690,4 +602,4 @@ activeTab === tab.id
   );
 };
 
-export default AdminAnonymousPanel;
+export default UserAdmin;

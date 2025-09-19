@@ -77,7 +77,10 @@
     "swagger-jsdoc": "^6.2.8",
     "winston": "^3.11.0",
     "winston-daily-rotate-file": "^4.7.1",
-    "newrelic": "^11.0.0"
+    "newrelic": "^11.0.0",
+    "openai": "^4.20.1",
+    "sharp": "^0.32.6",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.2",

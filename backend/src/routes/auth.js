@@ -1,9 +1,13 @@
-const express = require('express');
-const { body, validationResult } = require('express-validator');
-const rateLimit = require('express-rate-limit');
-const User = require('../models/User');
-const { auth } = require('../middleware/auth');
-const logger = require('../utils/logger');
+import express from 'express';
+import { body, validationResult } from 'express-validator';
+import rateLimit from 'express-rate-limit';
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
+import PasswordReset from '../models/PasswordReset.js';
+import { auth } from '../middleware/auth.js';
+import logger from '../utils/logger.js';
+import emailService from '../services/emailService.js';
+import cloudflareService from '../services/cloudflareService.js';
 
 const router = express.Router();
 
@@ -105,7 +109,7 @@ router.post(
       await user.save();
 
       // Gerar token de verificação de e-mail
-      const emailToken = user.generateEmailVerificationToken();
+      user.generateEmailVerificationToken();
       await user.save();
 
       // TODO: Enviar e-mail de verificação
@@ -437,7 +441,7 @@ router.get('/verify', auth, async (req, res) => {
  * @swagger
  * /api/auth/forgot-password:
  *   post:
- *     summary: Solicitar reset de senha
+ *     summary: Solicitar reset de senha com Cloudflare Turnstile
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -447,18 +451,26 @@ router.get('/verify', auth, async (req, res) => {
  *             type: object
  *             required:
  *               - email
+ *               - turnstileToken
  *             properties:
  *               email:
+ *                 type: string
+ *               turnstileToken:
  *                 type: string
  *     responses:
  *       200:
  *         description: E-mail de reset enviado
+ *       400:
+ *         description: Token Turnstile inválido
  *       404:
  *         description: E-mail não encontrado
  */
 router.post(
   '/forgot-password',
-  [body('email').isEmail().normalizeEmail().withMessage('E-mail inválido')],
+  [
+    body('email').isEmail().normalizeEmail().withMessage('E-mail inválido'),
+    body('turnstileToken').notEmpty().withMessage('Token Turnstile é obrigatório')
+  ],
   async (req, res) => {
     try {
       const errors = validationResult(req);
@@ -470,27 +482,57 @@ router.post(
         });
       }
 
-      const { email } = req.body;
+      const { email, turnstileToken } = req.body;
 
-      const user = await User.findByEmail(email);
-      if (!user) {
-        return res.status(404).json({
+      // Verificar token Turnstile do Cloudflare
+      const turnstileValid = await cloudflareService.verifyTurnstileToken(turnstileToken, req.ip);
+      if (!turnstileValid) {
+        return res.status(400).json({
           success: false,
-          message: 'E-mail não encontrado'
+          message: 'Token de verificação inválido'
         });
       }
 
-      // Gerar token de reset
-      const resetToken = user.generatePasswordResetToken();
-      await user.save();
+      const user = await User.findByEmail(email);
+      if (!user) {
+        // Por segurança, sempre retornar sucesso mesmo se email não existir
+        logger.warn(`Tentativa de reset para email inexistente: ${email} - IP: ${req.ip}`);
+        return res.status(200).json({
+          success: true,
+          message: 'Se o e-mail estiver cadastrado, você receberá instruções de redefinição'
+        });
+      }
 
-      // TODO: Enviar e-mail com link de reset
+      // Verificar se usuário está ativo
+      if (!user.isActive || user.isBlocked) {
+        logger.warn(`Tentativa de reset para conta inativa: ${email} - IP: ${req.ip}`);
+        return res.status(200).json({
+          success: true,
+          message: 'Se o e-mail estiver cadastrado, você receberá instruções de redefinição'
+        });
+      }
 
-      logger.info(`Reset de senha solicitado para: ${email}`);
+      // Criar token de reset seguro
+      const { token, resetRecord } = await PasswordReset.createToken(user._id, {
+        ip: req.ip,
+        userAgent: req.get('User-Agent')
+      });
+
+      // Enviar e-mail de reset
+      const resetUrl = `${process.env.FRONTEND_URL}/auth/reset-password?token=${token}&id=${user._id}`;
+
+      await emailService.sendPasswordResetEmail({
+        to: user.email,
+        name: user.name,
+        resetUrl,
+        expiresIn: '1 hora'
+      });
+
+      logger.info(`Reset de senha solicitado para: ${email} - Token: ${resetRecord._id}`);
 
       res.status(200).json({
         success: true,
-        message: 'E-mail de redefinição enviado'
+        message: 'Se o e-mail estiver cadastrado, você receberá instruções de redefinição'
       });
     } catch (error) {
       logger.error('Erro no reset de senha:', error);
@@ -506,7 +548,7 @@ router.post(
  * @swagger
  * /api/auth/reset-password:
  *   post:
- *     summary: Redefinir senha
+ *     summary: Redefinir senha com validação segura
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -517,10 +559,13 @@ router.post(
  *             required:
  *               - token
  *               - password
+ *               - userId
  *             properties:
  *               token:
  *                 type: string
  *               password:
+ *                 type: string
+ *               userId:
  *                 type: string
  *     responses:
  *       200:
@@ -532,7 +577,8 @@ router.post(
   '/reset-password',
   [
     body('token').notEmpty().withMessage('Token é obrigatório'),
-    body('password').isLength({ min: 6 }).withMessage('Senha deve ter pelo menos 6 caracteres')
+    body('password').isLength({ min: 6 }).withMessage('Senha deve ter pelo menos 6 caracteres'),
+    body('userId').isMongoId().withMessage('ID de usuário inválido')
   ],
   async (req, res) => {
     try {
@@ -545,31 +591,56 @@ router.post(
         });
       }
 
-      const { token, password } = req.body;
+      const { token, password, userId } = req.body;
 
-      const user = await User.findOne({
-        passwordResetToken: token,
-        passwordResetExpires: { $gt: Date.now() }
-      });
+      // Validar token usando o modelo PasswordReset
+      const resetRecord = await PasswordReset.validateToken(token);
 
-      if (!user) {
+      if (!resetRecord || resetRecord.userId.toString() !== userId) {
+        // Incrementar tentativas se token existe mas é inválido
+        if (resetRecord) {
+          await PasswordReset.incrementAttempt(token);
+        }
+
         return res.status(400).json({
           success: false,
           message: 'Token inválido ou expirado'
         });
       }
 
+      // Buscar usuário
+      const user = await User.findById(userId);
+      if (!user || !user.isActive || user.isBlocked) {
+        return res.status(400).json({
+          success: false,
+          message: 'Usuário não encontrado ou inativo'
+        });
+      }
+
       // Atualizar senha
       user.password = password;
-      user.passwordResetToken = undefined;
-      user.passwordResetExpires = undefined;
       await user.save();
 
-      logger.info(`Senha redefinida para usuário: ${user.email}`);
+      // Marcar token como usado
+      await PasswordReset.markAsUsed(token, {
+        ip: req.ip,
+        userAgent: req.get('User-Agent')
+      });
+
+      // Limpar tokens antigos do usuário
+      await PasswordReset.updateMany(
+        { userId: user._id, status: 'pending' },
+        { status: 'revoked' }
+      );
+
+      logger.info(`Senha redefinida para usuário: ${user.email} - IP: ${req.ip}`);
 
       res.status(200).json({
         success: true,
-        message: 'Senha redefinida com sucesso'
+        message: 'Senha redefinida com sucesso',
+        data: {
+          redirectToLogin: true
+        }
       });
     } catch (error) {
       logger.error('Erro na redefinição de senha:', error);
@@ -593,7 +664,7 @@ router.post(
  *       200:
  *         description: Logout realizado com sucesso
  */
-router.post('/logout', auth, async (req, res) => {
+router.post('/logout', auth, (req, res) => {
   try {
     // TODO: Implementar blacklist de tokens se necessário
 
@@ -612,4 +683,4 @@ router.post('/logout', auth, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

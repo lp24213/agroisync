@@ -15,9 +15,19 @@ import {
   Search,
   Calendar,
   Package,
-  DollarSign
+  DollarSign,
+  Eye,
+  MessageSquare,
+  Bot,
+  FileText,
+  Download,
+  Plus,
+  Edit,
+  Trash2
 } from 'lucide-react';
 import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt';
+import { toast } from 'react-hot-toast';
+import axios from 'axios';
 
 const AgroisyncAgroConecta = () => {
   const [activeTab, setActiveTab] = useState('buscar');
@@ -28,6 +38,12 @@ const AgroisyncAgroConecta = () => {
     data: '',
     tipoCarga: ''
   });
+  const [myOrders, setMyOrders] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showTrackingModal, setShowTrackingModal] = useState(false);
+  const [showAIClosureModal, setShowAIClosureModal] = useState(false);
+  const [trackingUpdates, setTrackingUpdates] = useState([]);
+  const [aiClosureData, setAiClosureData] = useState(null);
 
   // Dados de ofertas de frete
   const ofertasFrete = [
@@ -66,10 +82,94 @@ const AgroisyncAgroConecta = () => {
     }
   ];
 
-  const handleFreteSubmit = (e) => {
+  // Dados mockados para pedidos do usuário
+  const mockOrders = [
+    {
+      id: 'FR-001',
+      orderNumber: 'FR-001',
+      status: 'in_transit',
+      origin: { city: 'São Paulo', state: 'SP' },
+      destination: { city: 'Mato Grosso', state: 'MT' },
+      pickupDate: '2024-01-15',
+      deliveryDateEstimate: '2024-01-18',
+      items: [{ name: 'Soja', quantity: 50, unit: 'toneladas' }],
+      pricing: { totalPrice: 2500 },
+      trackingEvents: [
+        { timestamp: '2024-01-15T08:00:00Z', status: 'picked_up', location: { city: 'São Paulo', state: 'SP' } },
+        { timestamp: '2024-01-16T14:30:00Z', status: 'in_transit', location: { city: 'Campinas', state: 'SP' } },
+        { timestamp: '2024-01-17T10:15:00Z', status: 'in_transit', location: { city: 'Ribeirão Preto', state: 'SP' } }
+      ]
+    },
+    {
+      id: 'FR-002',
+      orderNumber: 'FR-002',
+      status: 'delivered',
+      origin: { city: 'Paraná', state: 'PR' },
+      destination: { city: 'Goiás', state: 'GO' },
+      pickupDate: '2024-01-10',
+      deliveryDateEstimate: '2024-01-13',
+      deliveryDateActual: '2024-01-13',
+      items: [{ name: 'Milho', quantity: 30, unit: 'toneladas' }],
+      pricing: { totalPrice: 1800 },
+      trackingEvents: [
+        { timestamp: '2024-01-10T09:00:00Z', status: 'picked_up', location: { city: 'Paraná', state: 'PR' } },
+        { timestamp: '2024-01-11T16:00:00Z', status: 'in_transit', location: { city: 'São Paulo', state: 'SP' } },
+        { timestamp: '2024-01-13T11:30:00Z', status: 'delivered', location: { city: 'Goiás', state: 'GO' } }
+      ]
+    }
+  ];
+
+  const handleFreteSubmit = async (e) => {
     e.preventDefault();
-    console.log('Buscar frete:', freteForm);
-    // Aqui seria feita a integração com a API
+    try {
+      // Simular criação de pedido via chat
+      toast.success('Pedido de frete criado! Use o chat para acompanhar o status.');
+      console.log('Buscar frete:', freteForm);
+    } catch (error) {
+      toast.error('Erro ao criar pedido de frete');
+    }
+  };
+
+  const handleStartTracking = (orderId) => {
+    const order = mockOrders.find(o => o.id === orderId);
+    setSelectedOrder(order);
+    setTrackingUpdates(order.trackingEvents);
+    setShowTrackingModal(true);
+  };
+
+  const handleAIClosure = async (orderId) => {
+    try {
+      const order = mockOrders.find(o => o.id === orderId);
+      setSelectedOrder(order);
+      
+      // Simular dados de AI closure
+      const mockAIClosure = {
+        summary: 'Pedido entregue dentro do prazo estimado. Performance excelente.',
+        performanceMetrics: {
+          onTimeDelivery: true,
+          damageReport: 'Nenhum dano reportado',
+          delayReason: null,
+          overallScore: 5
+        },
+        suggestedMessage: 'Obrigado pela confiança! Pedido entregue com sucesso.',
+        invoiceDraft: 'Fatura FR-002 - R$ 1.800,00 - Entregue em 13/01/2024'
+      };
+      
+      setAiClosureData(mockAIClosure);
+      setShowAIClosureModal(true);
+    } catch (error) {
+      toast.error('Erro ao gerar análise de IA');
+    }
+  };
+
+  const handleCloseOrder = async () => {
+    try {
+      toast.success('Pedido fechado com sucesso!');
+      setShowAIClosureModal(false);
+      setAiClosureData(null);
+    } catch (error) {
+      toast.error('Erro ao fechar pedido');
+    }
   };
   const features = [
     {
@@ -290,6 +390,24 @@ const AgroisyncAgroConecta = () => {
             >
               <Truck size={20} style={{ marginRight: '0.5rem', display: 'inline' }} />
               Ofertas Disponíveis
+            </button>
+            <button
+              onClick={() => setActiveTab('meus-pedidos')}
+              className="agro-btn-animated"
+              style={{
+                flex: 1,
+                padding: '1rem',
+                border: 'none',
+                background: activeTab === 'meus-pedidos' ? 'var(--accent)' : 'transparent',
+                color: activeTab === 'meus-pedidos' ? 'white' : 'var(--muted)',
+                borderRadius: '8px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              <Package size={20} style={{ marginRight: '0.5rem', display: 'inline' }} />
+              Meus Pedidos
             </button>
           </motion.div>
 
@@ -522,6 +640,173 @@ const AgroisyncAgroConecta = () => {
               </div>
             </motion.div>
           )}
+
+          {activeTab === 'meus-pedidos' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              style={{
+                background: 'var(--card-bg)',
+                padding: '2rem',
+                borderRadius: '12px',
+                boxShadow: '0 6px 20px rgba(15, 15, 15, 0.05)',
+                maxWidth: '1000px',
+                margin: '0 auto'
+              }}
+            >
+              <div style={{ marginBottom: '2rem' }}>
+                <h3 style={{ 
+                  fontSize: '1.5rem', 
+                  fontWeight: '600', 
+                  color: 'var(--text-primary)', 
+                  marginBottom: '1rem' 
+                }}>
+                  Meus Pedidos de Frete
+                </h3>
+                <p style={{ color: 'var(--text-secondary)' }}>
+                  Acompanhe seus pedidos e use o chat para comunicação em tempo real
+                </p>
+              </div>
+
+              <div style={{ display: 'grid', gap: '1rem' }}>
+                {mockOrders.map((order) => (
+                  <div
+                    key={order.id}
+                    style={{
+                      background: 'var(--card-bg)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: '12px',
+                      padding: '1.5rem',
+                      transition: 'all 0.3s ease'
+                    }}
+                  >
+                    <div style={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'flex-start',
+                      marginBottom: '1rem'
+                    }}>
+                      <div>
+                        <h4 style={{ 
+                          fontSize: '1.1rem', 
+                          fontWeight: '600', 
+                          color: 'var(--text-primary)',
+                          marginBottom: '0.5rem'
+                        }}>
+                          Pedido {order.orderNumber}
+                        </h4>
+                        <div style={{ display: 'flex', gap: '2rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                          <span>📦 {order.origin.city}, {order.origin.state} → {order.destination.city}, {order.destination.state}</span>
+                          <span>💰 R$ {order.pricing.totalPrice.toLocaleString()}</span>
+                          <span>📅 {new Date(order.pickupDate).toLocaleDateString('pt-BR')}</span>
+                        </div>
+                      </div>
+                      <div style={{ 
+                        padding: '0.5rem 1rem', 
+                        borderRadius: '20px', 
+                        fontSize: '0.8rem',
+                        fontWeight: '600',
+                        background: order.status === 'delivered' ? '#10b981' : 
+                                   order.status === 'in_transit' ? '#3b82f6' : '#f59e0b',
+                        color: 'white'
+                      }}>
+                        {order.status === 'delivered' ? 'Entregue' : 
+                         order.status === 'in_transit' ? 'Em Trânsito' : 'Pendente'}
+                      </div>
+                    </div>
+
+                    <div style={{ 
+                      display: 'flex', 
+                      gap: '0.5rem', 
+                      flexWrap: 'wrap',
+                      marginTop: '1rem'
+                    }}>
+                      <button
+                        onClick={() => handleStartTracking(order.id)}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          padding: '0.5rem 1rem',
+                          background: 'var(--accent)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          fontSize: '0.9rem',
+                          cursor: 'pointer',
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        <Eye size={16} />
+                        Rastrear
+                      </button>
+                      
+                      <button
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          padding: '0.5rem 1rem',
+                          background: 'transparent',
+                          color: 'var(--accent)',
+                          border: '1px solid var(--accent)',
+                          borderRadius: '8px',
+                          fontSize: '0.9rem',
+                          cursor: 'pointer',
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        <MessageSquare size={16} />
+                        Chat
+                      </button>
+
+                      {order.status === 'delivered' && (
+                        <button
+                          onClick={() => handleAIClosure(order.id)}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            padding: '0.5rem 1rem',
+                            background: '#8b5cf6',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            fontSize: '0.9rem',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease'
+                          }}
+                        >
+                          <Bot size={16} />
+                          AI Closure
+                        </button>
+                      )}
+
+                      <button
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          padding: '0.5rem 1rem',
+                          background: 'transparent',
+                          color: 'var(--text-secondary)',
+                          border: '1px solid var(--border-color)',
+                          borderRadius: '8px',
+                          fontSize: '0.9rem',
+                          cursor: 'pointer',
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        <Download size={16} />
+                        Fatura
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
         </div>
       </section>
 
@@ -671,6 +956,272 @@ const AgroisyncAgroConecta = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Modal de Rastreamento */}
+      {showTrackingModal && selectedOrder && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.8)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '1rem'
+        }}>
+          <div style={{
+            background: 'var(--card-bg)',
+            borderRadius: '12px',
+            padding: '2rem',
+            maxWidth: '600px',
+            width: '100%',
+            maxHeight: '80vh',
+            overflow: 'auto'
+          }}>
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center',
+              marginBottom: '1.5rem'
+            }}>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: '600', color: 'var(--text-primary)' }}>
+                Rastreamento - {selectedOrder.orderNumber}
+              </h3>
+              <button
+                onClick={() => setShowTrackingModal(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '1.5rem',
+                  cursor: 'pointer',
+                  color: 'var(--text-secondary)'
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            <div style={{ marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', gap: '2rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                <span>📦 {selectedOrder.origin.city}, {selectedOrder.origin.state} → {selectedOrder.destination.city}, {selectedOrder.destination.state}</span>
+                <span>📅 {new Date(selectedOrder.pickupDate).toLocaleDateString('pt-BR')}</span>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {trackingUpdates.map((event, index) => (
+                <div key={index} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '1rem',
+                  padding: '1rem',
+                  background: 'var(--bg-secondary)',
+                  borderRadius: '8px',
+                  border: '1px solid var(--border-color)'
+                }}>
+                  <div style={{
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    background: event.status === 'delivered' ? '#10b981' : 
+                               event.status === 'in_transit' ? '#3b82f6' : '#f59e0b'
+                  }} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
+                      {event.status === 'picked_up' ? 'Carga Coletada' :
+                       event.status === 'in_transit' ? 'Em Trânsito' : 'Entregue'}
+                    </div>
+                    <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                      {event.location.city}, {event.location.state}
+                    </div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                      {new Date(event.timestamp).toLocaleString('pt-BR')}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ 
+              marginTop: '1.5rem', 
+              padding: '1rem', 
+              background: 'var(--accent)', 
+              borderRadius: '8px',
+              color: 'white',
+              textAlign: 'center'
+            }}>
+              <MessageSquare size={20} style={{ marginRight: '0.5rem', display: 'inline' }} />
+              Use o chat para comunicação em tempo real com o transportador
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de AI Closure */}
+      {showAIClosureModal && selectedOrder && aiClosureData && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.8)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '1rem'
+        }}>
+          <div style={{
+            background: 'var(--card-bg)',
+            borderRadius: '12px',
+            padding: '2rem',
+            maxWidth: '700px',
+            width: '100%',
+            maxHeight: '80vh',
+            overflow: 'auto'
+          }}>
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center',
+              marginBottom: '1.5rem'
+            }}>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: '600', color: 'var(--text-primary)' }}>
+                <Bot size={24} style={{ marginRight: '0.5rem', display: 'inline' }} />
+                AI Closure - {selectedOrder.orderNumber}
+              </h3>
+              <button
+                onClick={() => setShowAIClosureModal(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '1.5rem',
+                  cursor: 'pointer',
+                  color: 'var(--text-secondary)'
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            <div style={{ marginBottom: '1.5rem' }}>
+              <h4 style={{ fontSize: '1.2rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '1rem' }}>
+                Resumo da Performance
+              </h4>
+              <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+                {aiClosureData.summary}
+              </p>
+              
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+                gap: '1rem',
+                marginBottom: '1.5rem'
+              }}>
+                <div style={{ padding: '1rem', background: 'var(--bg-secondary)', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Entrega no Prazo</div>
+                  <div style={{ fontSize: '1.2rem', fontWeight: '600', color: aiClosureData.performanceMetrics.onTimeDelivery ? '#10b981' : '#ef4444' }}>
+                    {aiClosureData.performanceMetrics.onTimeDelivery ? 'Sim' : 'Não'}
+                  </div>
+                </div>
+                <div style={{ padding: '1rem', background: 'var(--bg-secondary)', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Avaliação Geral</div>
+                  <div style={{ fontSize: '1.2rem', fontWeight: '600', color: 'var(--accent)' }}>
+                    {aiClosureData.performanceMetrics.overallScore}/5
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '1.5rem' }}>
+              <h4 style={{ fontSize: '1.2rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '1rem' }}>
+                Mensagem Sugerida
+              </h4>
+              <div style={{ 
+                padding: '1rem', 
+                background: 'var(--bg-secondary)', 
+                borderRadius: '8px',
+                border: '1px solid var(--border-color)'
+              }}>
+                <p style={{ color: 'var(--text-secondary)', margin: 0 }}>
+                  {aiClosureData.suggestedMessage}
+                </p>
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '1.5rem' }}>
+              <h4 style={{ fontSize: '1.2rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '1rem' }}>
+                Rascunho da Fatura
+              </h4>
+              <div style={{ 
+                padding: '1rem', 
+                background: 'var(--bg-secondary)', 
+                borderRadius: '8px',
+                border: '1px solid var(--border-color)',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <span style={{ color: 'var(--text-secondary)' }}>
+                  {aiClosureData.invoiceDraft}
+                </span>
+                <button style={{
+                  padding: '0.5rem 1rem',
+                  background: 'var(--accent)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontSize: '0.9rem'
+                }}>
+                  <Download size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
+                  Baixar
+                </button>
+              </div>
+            </div>
+
+            <div style={{ 
+              display: 'flex', 
+              gap: '1rem', 
+              justifyContent: 'flex-end'
+            }}>
+              <button
+                onClick={() => setShowAIClosureModal(false)}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  background: 'transparent',
+                  color: 'var(--text-secondary)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '0.9rem'
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleCloseOrder}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  background: '#10b981',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '0.9rem',
+                  fontWeight: '600'
+                }}
+              >
+                Fechar Pedido
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

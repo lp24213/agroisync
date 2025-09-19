@@ -47,6 +47,7 @@ import AgroisyncDashboard from './pages/AgroisyncDashboard';
 import IntermediationSystem from './components/IntermediationSystem';
 import Messaging from './pages/Messaging';
 import AdminPanel from './pages/AdminPanel';
+import UserAdmin from './pages/UserAdmin';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import TwoFactorAuth from './pages/TwoFactorAuth';
@@ -126,6 +127,7 @@ function App() {
                   <Route path="/dashboard" element={<AgroisyncDashboard />} />
                   <Route path="/messaging" element={<Messaging />} />
                   <Route path="/admin" element={<AdminPanel />} />
+                  <Route path="/useradmin" element={<UserAdmin />} />
                   
                   {/* Error Routes */}
                   <Route path="/unauthorized" element={<Unauthorized />} />

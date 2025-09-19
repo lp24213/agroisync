@@ -9,10 +9,17 @@ import {
   Image, 
   Loader2,
   Bot,
-  User
+  User,
+  Volume2,
+  VolumeX,
+  Upload,
+  FileText
 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
 import useStore from '../store/useStore';
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
 import '../styles/modern-neutral-theme.css';
 import '../styles/premium-futuristic.css';
 
@@ -22,9 +29,17 @@ const ChatbotWidget = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [mode, setMode] = useState('text');
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [conversationId, setConversationId] = useState(null);
+  const [attachments, setAttachments] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
   const messagesEndRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const recognitionRef = useRef(null);
+  const synthesisRef = useRef(null);
   
   const { t } = useLanguage();
+  const { user } = useAuth();
   const { chatbotOpen, toggleChatbot, chatHistory, addChatMessage } = useStore();
 
   const scrollToBottom = () => {
@@ -39,6 +54,45 @@ const ChatbotWidget = () => {
     setIsOpen(chatbotOpen);
   }, [chatbotOpen]);
 
+  // Inicializar Web Speech API
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
+      recognitionRef.current.lang = 'pt-BR';
+
+      recognitionRef.current.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setMessage(transcript);
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onerror = () => {
+        setIsListening(false);
+        toast.error('Erro no reconhecimento de voz');
+      };
+    }
+
+    if ('speechSynthesis' in window) {
+      synthesisRef.current = window.speechSynthesis;
+    }
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, []);
+
+  // Carregar conversa existente
+  useEffect(() => {
+    if (isOpen && conversationId) {
+      loadConversation();
+    }
+  }, [isOpen, conversationId]);
+
   const handleSendMessage = async () => {
     if (!message.trim()) return;
 
@@ -46,14 +100,61 @@ const ChatbotWidget = () => {
       id: Date.now(),
       type: 'user',
       content: message,
-      timestamp: new Date()
+      timestamp: new Date(),
+      attachments: attachments
     };
 
     addChatMessage(userMessage);
     setMessage('');
+    setAttachments([]);
     setIsTyping(true);
 
-    setTimeout(() => {
+    try {
+      // Preparar dados para envio
+      const formData = new FormData();
+      formData.append('message', message);
+      if (conversationId) {
+        formData.append('conversationId', conversationId);
+      }
+
+      // Adicionar anexos
+      attachments.forEach((file, index) => {
+        formData.append('attachments', file);
+      });
+
+      const response = await axios.post('/api/chat/send', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${user?.token}`
+        }
+      });
+
+      if (response.data.success) {
+        const { conversationId: newConversationId, aiResponse } = response.data.data;
+        
+        if (!conversationId) {
+          setConversationId(newConversationId);
+        }
+
+        const botMessage = {
+          id: Date.now() + 1,
+          type: 'bot',
+          content: aiResponse.text,
+          timestamp: new Date(aiResponse.timestamp)
+        };
+        
+        addChatMessage(botMessage);
+
+        // Falar resposta se voz estiver habilitada
+        if (voiceEnabled && synthesisRef.current) {
+          speakText(aiResponse.text);
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao enviar mensagem:', error);
+      toast.error('Erro ao enviar mensagem');
+      
+      // Fallback para resposta local
       const botMessage = {
         id: Date.now() + 1,
         type: 'bot',
@@ -62,8 +163,9 @@ const ChatbotWidget = () => {
       };
       
       addChatMessage(botMessage);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   const generateBotResponse = (userMessage) => {
@@ -93,17 +195,87 @@ const ChatbotWidget = () => {
     }
   };
 
+  // Funções auxiliares
+  const speakText = (text) => {
+    if (synthesisRef.current && voiceEnabled) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'pt-BR';
+      utterance.rate = 0.9;
+      utterance.pitch = 1;
+      synthesisRef.current.speak(utterance);
+    }
+  };
+
+  const startVoiceInput = () => {
+    if (recognitionRef.current && !isListening) {
+      setIsListening(true);
+      recognitionRef.current.start();
+    }
+  };
+
+  const stopVoiceInput = () => {
+    if (recognitionRef.current && isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    }
+  };
+
+  const handleFileUpload = (event) => {
+    const files = Array.from(event.target.files);
+    const validFiles = files.filter(file => {
+      const isValidType = file.type.startsWith('image/') || file.type.startsWith('audio/');
+      const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB
+      return isValidType && isValidSize;
+    });
+
+    if (validFiles.length !== files.length) {
+      toast.error('Alguns arquivos são inválidos. Apenas imagens e áudios até 10MB são permitidos.');
+    }
+
+    setAttachments(prev => [...prev, ...validFiles]);
+  };
+
+  const removeAttachment = (index) => {
+    setAttachments(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const loadConversation = async () => {
+    if (!conversationId) return;
+
+    try {
+      const response = await axios.get(`/api/chat/${conversationId}`, {
+        headers: {
+          'Authorization': `Bearer ${user?.token}`
+        }
+      });
+
+      if (response.data.success) {
+        const { messages } = response.data.data;
+        // Converter mensagens da API para o formato local
+        const localMessages = messages.map(msg => ({
+          id: Date.now() + Math.random(),
+          type: msg.role === 'user' ? 'user' : 'bot',
+          content: msg.text,
+          timestamp: new Date(msg.timestamp),
+          attachments: msg.metadata?.attachments || []
+        }));
+        
+        // Limpar histórico local e carregar da API
+        // Note: Isso requer uma função no store para limpar o histórico
+        localMessages.forEach(msg => addChatMessage(msg));
+      }
+    } catch (error) {
+      console.error('Erro ao carregar conversa:', error);
+    }
+  };
+
   const toggleVoiceMode = () => {
     if (mode === 'voice') {
-      setIsListening(false);
+      stopVoiceInput();
       setMode('text');
     } else {
       setMode('voice');
-      setIsListening(true);
-      setTimeout(() => {
-        setIsListening(false);
-        setMessage('Como funciona a intermediação?');
-      }, 3000);
+      startVoiceInput();
     }
   };
 
@@ -174,20 +346,30 @@ const ChatbotWidget = () => {
                 <button
                   onClick={() => setMode('text')}
                   className={`p-1 rounded ${mode === 'text' ? 'bg-gray-600 text-white' : 'text-gray-400'}`}
+                  title="Modo texto"
                 >
-                  <MessageCircle className="w-4 h-4 text-black" />
+                  <MessageCircle className="w-4 h-4" />
                 </button>
                 <button
                   onClick={toggleVoiceMode}
                   className={`p-1 rounded ${mode === 'voice' ? 'bg-gray-600 text-white' : 'text-gray-400'}`}
+                  title="Modo voz"
                 >
                   {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
                 </button>
                 <button
-                  onClick={() => setMode('image')}
-                  className={`p-1 rounded ${mode === 'image' ? 'bg-gray-600 text-white' : 'text-gray-400'}`}
+                  onClick={() => fileInputRef.current?.click()}
+                  className="p-1 rounded text-gray-400 hover:text-white"
+                  title="Enviar arquivo"
                 >
-                  <Image className="w-4 h-4" />
+                  <Upload className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setVoiceEnabled(!voiceEnabled)}
+                  className={`p-1 rounded ${voiceEnabled ? 'text-white' : 'text-gray-400'}`}
+                  title={voiceEnabled ? 'Desativar voz' : 'Ativar voz'}
+                >
+                  {voiceEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
                 </button>
               </div>
             </div>
@@ -269,6 +451,28 @@ const ChatbotWidget = () => {
               <div ref={messagesEndRef} />
             </div>
 
+            {/* Anexos */}
+            {attachments.length > 0 && (
+              <div className="px-4 py-2 border-t border-gray-600">
+                <div className="flex flex-wrap gap-2">
+                  {attachments.map((file, index) => (
+                    <div key={index} className="flex items-center gap-2 bg-gray-700 rounded-lg px-3 py-2">
+                      <FileText className="w-4 h-4 text-gray-300" />
+                      <span className="text-xs text-gray-300 truncate max-w-32">
+                        {file.name}
+                      </span>
+                      <button
+                        onClick={() => removeAttachment(index)}
+                        className="text-red-400 hover:text-red-300"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="p-4 border-t border-gray-600">
               <div className="flex items-center space-x-2">
                 <input
@@ -276,20 +480,45 @@ const ChatbotWidget = () => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Digite sua mensagem..."
+                  placeholder={mode === 'voice' ? "Modo voz ativo..." : "Digite sua mensagem..."}
                   className="flex-1 px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-sm bg-gray-800 text-white placeholder-gray-400"
-                  disabled={mode !== 'text'}
+                  disabled={mode === 'voice'}
                 />
+                
+                {/* Input de arquivo oculto */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept="image/*,audio/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+                
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleSendMessage}
-                  disabled={!message.trim() || isTyping}
+                  disabled={!message.trim() || isTyping || isUploading}
                   className="p-2 bg-primary text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-hover"
                 >
-                  <Send className="w-4 h-4" />
+                  {isUploading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Send className="w-4 h-4" />
+                  )}
                 </motion.button>
               </div>
+              
+              {/* Indicador de modo voz */}
+              {mode === 'voice' && isListening && (
+                <div className="mt-2 flex items-center justify-center space-x-2 text-sm text-blue-400">
+                  <div className="animate-pulse">
+                    <Mic className="w-4 h-4" />
+                  </div>
+                  <span>Ouvindo...</span>
+                </div>
+              )}
             </div>
           </motion.div>
         )}
