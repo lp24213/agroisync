@@ -39,12 +39,12 @@ const AgroisyncAbout = () => {
     {
       name: 'Luis Paulo',
       role: 'CEO & Fundador',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face',
+      image: 'https://images.unsplash.com/photo-1592878995758-02b32ddabdd3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aWNvbmUlMjBtYXNjdWxpbm8lMjBidXNpbmVzc3xlbnwwfHwwfHx8MA%3D%3D',
     },
     {
       name: 'Taiza Dellazzari',
       role: 'Co-founder',
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face',
+      image: 'https://images.unsplash.com/photo-1554745028-65db781f9fa7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aWNvbmUlMjB3b21hbiUyMGJ1c2luZXNzfGVufDB8fDB8fHww',
     },
   ];
 
