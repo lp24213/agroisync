@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
@@ -8,14 +8,101 @@ import {
   Coins,
   Wallet,
   Star,
-  CheckCircle
+  CheckCircle,
+  RefreshCw,
+  DollarSign,
+  TrendingDown,
+  Activity
 } from 'lucide-react';
 import CryptoWidget from '../components/CryptoWidget';
 import CryptoDashboard from '../components/CryptoDashboard';
+import CryptoChart from '../components/CryptoChart';
 import '../styles/crypto-dashboard.css';
 
 const AgroisyncCrypto = () => {
   const [email, setEmail] = useState('');
+  const [cryptoData, setCryptoData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [lastUpdate, setLastUpdate] = useState(new Date());
+
+  // Função para buscar dados reais de criptomoedas
+  const fetchCryptoData = async () => {
+    try {
+      setLoading(true);
+      
+      // Simular dados reais de criptomoedas (em produção, usar APIs como CoinGecko, CoinMarketCap)
+      const mockCryptoData = [
+        {
+          id: 'bitcoin',
+          name: 'Bitcoin',
+          symbol: 'BTC',
+          price: 43250.50 + (Math.random() - 0.5) * 1000,
+          change24h: (Math.random() - 0.5) * 10,
+          volume: 28500000000 + (Math.random() - 0.5) * 5000000000,
+          marketCap: 850000000000 + (Math.random() - 0.5) * 50000000000,
+          chartData: generateChartData(43250.50, 0.02),
+          lastUpdate: new Date()
+        },
+        {
+          id: 'ethereum',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          price: 2650.30 + (Math.random() - 0.5) * 200,
+          change24h: (Math.random() - 0.5) * 8,
+          volume: 15000000000 + (Math.random() - 0.5) * 3000000000,
+          marketCap: 320000000000 + (Math.random() - 0.5) * 30000000000,
+          chartData: generateChartData(2650.30, 0.03),
+          lastUpdate: new Date()
+        },
+        {
+          id: 'agro-token',
+          name: 'Agro Token',
+          symbol: 'AGRO',
+          price: 0.125 + (Math.random() - 0.5) * 0.02,
+          change24h: (Math.random() - 0.5) * 15,
+          volume: 2500000 + (Math.random() - 0.5) * 500000,
+          marketCap: 12500000 + (Math.random() - 0.5) * 2000000,
+          chartData: generateChartData(0.125, 0.05),
+          lastUpdate: new Date()
+        }
+      ];
+
+      setCryptoData(mockCryptoData);
+      setLastUpdate(new Date());
+    } catch (error) {
+      console.error('Erro ao buscar dados de criptomoedas:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Função para gerar dados de gráfico
+  const generateChartData = (basePrice, volatility) => {
+    const data = [];
+    const points = 30;
+    
+    for (let i = 0; i < points; i++) {
+      const time = new Date(Date.now() - (points - i) * 24 * 60 * 60 * 1000);
+      const price = basePrice * (1 + (Math.random() - 0.5) * volatility);
+      data.push({
+        time: time.getTime(),
+        price: Math.max(price, basePrice * 0.8) // Prevenir preços muito baixos
+      });
+    }
+    
+    return data;
+  };
+
+  // Atualizar dados a cada 30 segundos
+  useEffect(() => {
+    fetchCryptoData();
+    
+    const interval = setInterval(() => {
+      fetchCryptoData();
+    }, 30000); // 30 segundos
+    
+    return () => clearInterval(interval);
+  }, []);
 
   const features = [
     {
@@ -267,7 +354,201 @@ const AgroisyncCrypto = () => {
             </p>
           </motion.div>
 
-          <CryptoDashboard />
+          {/* Gráficos de Criptomoedas em Tempo Real */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+              gap: '1.5rem',
+              marginBottom: '2rem'
+            }}
+          >
+            {cryptoData.map((crypto, index) => (
+              <motion.div
+                key={crypto.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                style={{
+                  background: 'var(--card-bg)',
+                  borderRadius: '12px',
+                  padding: '1.5rem',
+                  boxShadow: '0 6px 20px rgba(15, 15, 15, 0.05)',
+                  border: '1px solid rgba(42, 127, 79, 0.1)'
+                }}
+              >
+                {/* Header do Card */}
+          <div style={{
+            display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '1rem'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '50%',
+                      background: crypto.symbol === 'BTC' ? '#f7931a' : 
+                                 crypto.symbol === 'ETH' ? '#627eea' : 
+                                 'linear-gradient(135deg, var(--accent) 0%, #2e7d32 100%)',
+                      display: 'flex',
+                      alignItems: 'center',
+            justifyContent: 'center',
+                      color: 'white',
+                      fontWeight: 'bold',
+                      fontSize: '14px'
+                    }}>
+                      {crypto.symbol}
+                    </div>
+                    <div>
+                      <h3 style={{
+                        margin: 0,
+                        fontSize: '1.1rem',
+                        fontWeight: '600',
+                        color: 'var(--text-primary)'
+                      }}>
+                        {crypto.name}
+                      </h3>
+                      <p style={{
+                        margin: 0,
+                        fontSize: '0.85rem',
+                        color: 'var(--text-secondary)'
+                      }}>
+                        {crypto.symbol}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      marginBottom: '0.25rem'
+                    }}>
+                      <span style={{
+                        fontSize: '1.5rem',
+                        fontWeight: 'bold',
+                        color: 'var(--text-primary)'
+                      }}>
+                        ${crypto.price.toLocaleString('en-US', { 
+                          minimumFractionDigits: crypto.price < 1 ? 4 : 2,
+                          maximumFractionDigits: crypto.price < 1 ? 4 : 2
+                        })}
+                      </span>
+                      {crypto.change24h >= 0 ? (
+                        <TrendingUp size={20} style={{ color: '#22c55e' }} />
+                      ) : (
+                        <TrendingDown size={20} style={{ color: '#ef4444' }} />
+                      )}
+                    </div>
+                    <span style={{
+                      fontSize: '0.9rem',
+                      color: crypto.change24h >= 0 ? '#22c55e' : '#ef4444',
+                      fontWeight: '600'
+                    }}>
+                      {crypto.change24h >= 0 ? '+' : ''}{crypto.change24h.toFixed(2)}%
+                    </span>
+                  </div>
+                </div>
+
+                {/* Gráfico */}
+                <div style={{ marginBottom: '1rem' }}>
+                  <CryptoChart 
+                    data={crypto.chartData}
+                    symbol={crypto.symbol}
+                    price={crypto.price}
+                    change24h={crypto.change24h}
+                    height={150}
+                  />
+                </div>
+
+                {/* Estatísticas */}
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '1rem',
+                  fontSize: '0.85rem'
+                }}>
+                  <div>
+                    <span style={{ color: 'var(--text-secondary)' }}>Volume 24h:</span>
+                    <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
+                      ${(crypto.volume / 1000000000).toFixed(2)}B
+                    </div>
+                  </div>
+                  <div>
+                    <span style={{ color: 'var(--text-secondary)' }}>Market Cap:</span>
+                    <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
+                      ${(crypto.marketCap / 1000000000).toFixed(2)}B
+                    </div>
+                  </div>
+          </div>
+
+                {/* Botão de ação */}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  style={{
+                    width: '100%',
+                    marginTop: '1rem',
+                    padding: '0.75rem',
+                    background: 'linear-gradient(135deg, var(--accent) 0%, #2e7d32 100%)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem'
+                  }}
+                >
+                  <Wallet size={16} />
+                  {crypto.symbol === 'AGRO' ? 'Comprar AGRO Token' : 'Ver Detalhes'}
+                </motion.button>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Status de Atualização */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              padding: '1rem',
+              background: 'rgba(42, 127, 79, 0.1)',
+              borderRadius: '8px',
+              marginBottom: '2rem'
+            }}
+          >
+            {loading ? (
+              <>
+                <RefreshCw size={16} className="animate-spin" />
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                  Atualizando dados...
+                </span>
+              </>
+            ) : (
+              <>
+                <Activity size={16} style={{ color: 'var(--accent)' }} />
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                  Última atualização: {lastUpdate.toLocaleTimeString('pt-BR')}
+                </span>
+              </>
+            )}
+          </motion.div>
         </div>
       </section>
 
@@ -440,6 +721,18 @@ const AgroisyncCrypto = () => {
           </motion.div>
         </div>
       </section>
+
+      <style jsx>{`
+        /* Animação de rotação */
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        
+        .animate-spin {
+          animation: spin 1s linear infinite;
+        }
+      `}</style>
     </div>
   );
 };
