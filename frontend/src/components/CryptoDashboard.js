@@ -82,7 +82,7 @@ const CryptoDashboard = () => {
         // Registrar cliente na blockchain
         await registerClient(accounts[0]);
         
-      } catch (error) {
+    } catch (error) {
         console.error('Erro ao conectar MetaMask:', error);
       }
     } else {
@@ -152,17 +152,17 @@ const CryptoDashboard = () => {
               <span>Conectado: {userWallet?.slice(0, 6)}...{userWallet?.slice(-4)}</span>
               <button onClick={() => copyToClipboard(userWallet)}>
                 {copied ? <CheckCircle size={16} /> : <Copy size={16} />}
-              </button>
-            </div>
+          </button>
+        </div>
           ) : (
             <button onClick={connectMetaMask} className="connect-btn">
               <Wallet size={20} />
               Conectar MetaMask
             </button>
           )}
-        </div>
-      </div>
-
+                </div>
+              </div>
+              
       {/* Cards de Criptomoedas */}
       <div className="crypto-cards">
         {cryptoData.map((crypto, index) => (
@@ -181,13 +181,13 @@ const CryptoDashboard = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                 <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
                   ${crypto.price.toLocaleString()}
-                </span>
+                  </span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: crypto.change24h >= 0 ? 'rgb(34, 197, 94)' : 'rgb(239, 68, 68)' }}>
                   {crypto.change24h >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
                   <span>{crypto.change24h.toFixed(2)}%</span>
-                </div>
-              </div>
-            </div>
+        </div>
+      </div>
+    </div>
 
             {/* Gráfico Simulado */}
             <div style={{
@@ -217,9 +217,9 @@ const CryptoDashboard = () => {
                 fontWeight: '600'
               }}>
                 📈 Gráfico em Tempo Real
-              </div>
-            </div>
-
+                  </div>
+                </div>
+                
             {/* Botões de Ação */}
             {isConnected && (
               <div className="card-actions">
@@ -247,11 +247,11 @@ const CryptoDashboard = () => {
               <div className="info-item">
                 <span>Market Cap:</span>
                 <span>${crypto.marketCap.toLocaleString()}</span>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
 
       {/* Seção de Saldo do Cliente */}
       {isConnected && (
@@ -281,7 +281,7 @@ const CryptoDashboard = () => {
               </div>
             </div>
           )}
-        </div>
+          </div>
       )}
 
       {/* Informações do Master Wallet */}
@@ -296,8 +296,8 @@ const CryptoDashboard = () => {
         <p className="wallet-description">
           Todos os pagamentos em cripto são direcionados para esta carteira.
           Você tem controle total sobre sua blockchain.
-        </p>
-      </div>
+          </p>
+        </div>
 
       {/* Footer */}
       <div style={{
@@ -311,8 +311,8 @@ const CryptoDashboard = () => {
       }}>
         <p style={{ margin: '0px' }}>
           Dados atualizados em tempo real • Blockchain própria Agroisync
-        </p>
-      </div>
+                    </p>
+                  </div>
     </div>
   );
 };

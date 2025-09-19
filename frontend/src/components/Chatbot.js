@@ -23,7 +23,8 @@ import {
   RefreshCw,
   Sparkles,
   Lock,
-  Crown
+  Crown,
+  MessageCircle
 } from 'lucide-react';
 
 const Chatbot = () => {
@@ -356,41 +357,78 @@ const Chatbot = () => {
   // Função para iniciar gravação de áudio
   const startAudioRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Verificar limite de áudio
+      if (!checkUpgradeNeeded('audio')) return;
+
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true
+        } 
+      });
+      
       const mediaRecorder = new MediaRecorder(stream);
-      const audioChunks = [];
+      audioChunksRef.current = [];
 
       mediaRecorder.ondataavailable = (event) => {
-        audioChunks.push(event.data);
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
       };
 
       mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+        const audioUrl = URL.createObjectURL(audioBlob);
         
         // Adicionar mensagem do usuário com áudio
         const userMessage = {
           id: Date.now(),
-          type: 'user',
-          text: '🎤 Áudio enviado',
-          audio: URL.createObjectURL(audioBlob),
-          timestamp: new Date()
+          sender: 'user',
+          text: '🎤 Áudio enviado para transcrição avançada',
+          audio: audioUrl,
+          timestamp: new Date(),
+          audioDuration: '~5s'
         };
         
         setMessages(prev => [...prev, userMessage]);
+        setIsTranscribingAudio(true);
         
-        // Simular transcrição do áudio
-        setTimeout(() => {
+        try {
+          // Transcrição avançada do áudio
+          const transcriptionResult = await performAdvancedAudioTranscription(audioBlob);
+          
           const botMessage = {
             id: Date.now() + 1,
-            type: 'bot',
-            text: '🎤 **Transcrição do áudio:** "Preciso de informações sobre preços de soja na região"\n\nVou buscar as informações mais atualizadas para você!\n\n📊 **Preços atuais da soja:**\n• Soja 60kg: R$ 145,50\n• Variação 24h: +2,3%\n• Tendência: Alta',
+            sender: 'bot',
+            text: `🎤 **Transcrição Avançada de Áudio Concluída**\n\n**📝 Texto transcrito:** "${transcriptionResult.text}"\n\n**🔍 Análise de áudio:**\n${transcriptionResult.detections}\n\n**🤖 Resposta inteligente:**\n${transcriptionResult.response}\n\n**📈 Confiança:** ${transcriptionResult.confidence}%\n**⏱️ Tempo de processamento:** ${transcriptionResult.processingTime}ms\n\n**📁 Metadados:**\n• Duração: ${transcriptionResult.metadata.duration}\n• Taxa de amostragem: ${transcriptionResult.metadata.sampleRate}\n• Formato: ${transcriptionResult.metadata.format}\n• Canais: ${transcriptionResult.metadata.channels}`,
+            timestamp: new Date(),
+            isAdvanced: true
+          };
+          
+          setMessages(prev => [...prev, botMessage]);
+          
+          // Atualizar estatísticas
+          setUsageStats(prev => ({ ...prev, audioTranscribed: prev.audioTranscribed + 1 }));
+          
+        } catch (error) {
+          console.error('Erro na transcrição:', error);
+          
+          const errorMessage = {
+            id: Date.now() + 1,
+            sender: 'bot',
+            text: '❌ Erro na transcrição do áudio. Tente novamente com melhor qualidade de áudio.',
             timestamp: new Date()
           };
-          setMessages(prev => [...prev, botMessage]);
-        }, 2000);
+          
+          setMessages(prev => [...prev, errorMessage]);
+        } finally {
+          setIsTranscribingAudio(false);
+        }
       };
 
       mediaRecorder.start();
+      mediaRecorderRef.current = mediaRecorder;
       setIsRecording(true);
       
       // Parar gravação após 30 segundos
@@ -404,13 +442,17 @@ const Chatbot = () => {
 
     } catch (error) {
       console.error('Erro ao acessar microfone:', error);
-      alert('Erro ao acessar o microfone. Verifique as permissões.');
+      alert('Erro ao acessar o microfone. Verifique as permissões do navegador.');
+      setIsRecording(false);
     }
   };
 
   // Função para parar gravação de áudio
   const stopAudioRecording = () => {
-    setIsRecording(false);
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
   };
 
   // Função para obter clima por IP
@@ -719,7 +761,7 @@ const Chatbot = () => {
 
 
 
-  const handleImageUpload = (event) => {
+  const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -736,6 +778,8 @@ const Chatbot = () => {
     // Verificar limite de imagens
     if (!checkUpgradeNeeded('images')) return;
 
+    setIsAnalyzingImage(true);
+    
     const reader = new FileReader();
     reader.onload = async () => {
       const imageMessage = {
@@ -743,31 +787,45 @@ const Chatbot = () => {
         text: '📷 Imagem enviada para análise avançada',
         sender: 'user',
         timestamp: new Date(),
-        image: reader.result
+        image: reader.result,
+        fileName: file.name,
+        fileSize: (file.size / 1024 / 1024).toFixed(2) + ' MB'
       };
 
       setMessages(prev => [...prev, imageMessage]);
       setIsProcessing(true);
 
       try {
-        // Análise avançada da imagem
-        const analysisResponse = await processAdvancedFunction('image_analysis', file);
+        // Análise avançada da imagem com IA
+        const analysisResult = await performAdvancedImageAnalysis(reader.result, file);
         
-        if (analysisResponse) {
         const botMessage = {
           id: Date.now() + 1,
-          text: analysisResponse,
+          text: `🖼️ **Análise Avançada de Imagem Concluída**\n\n**📊 Detecções:**\n${analysisResult.detections}\n\n**💡 Recomendações:**\n${analysisResult.recommendations}\n\n**📈 Confiança:** ${analysisResult.confidence}%\n**⏱️ Tempo de processamento:** ${analysisResult.processingTime}ms\n\n**📁 Metadados:**\n• Tamanho: ${analysisResult.metadata.fileSize}\n• Dimensões: ${analysisResult.metadata.dimensions}\n• Formato: ${analysisResult.metadata.compression}\n• Perfil de cor: ${analysisResult.metadata.colorProfile}`,
           sender: 'bot',
-            timestamp: new Date(),
-            isAdvanced: true
+          timestamp: new Date(),
+          isAdvanced: true
         };
 
         setMessages(prev => [...prev, botMessage]);
-        }
+        
+        // Atualizar estatísticas
+        setUsageStats(prev => ({ ...prev, imagesAnalyzed: prev.imagesAnalyzed + 1 }));
+        
       } catch (error) {
         console.error('Erro ao analisar imagem:', error);
+        
+        const errorMessage = {
+          id: Date.now() + 1,
+          text: '❌ Erro ao analisar a imagem. Tente novamente com uma imagem de melhor qualidade.',
+          sender: 'bot',
+          timestamp: new Date()
+        };
+        
+        setMessages(prev => [...prev, errorMessage]);
       } finally {
         setIsProcessing(false);
+        setIsAnalyzingImage(false);
       }
     };
     reader.readAsDataURL(file);
@@ -811,7 +869,23 @@ const Chatbot = () => {
   }, [messages]);
 
   return (
-    <AnimatePresence>
+    <>
+      {/* Botão flutuante do chatbot */}
+      {!isOpen && (
+        <motion.button
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={toggleChatbot}
+          className="fixed bottom-6 right-6 z-40 w-16 h-16 bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group"
+          title="Abrir Assistente Virtual"
+        >
+          <MessageCircle size={24} className="group-hover:animate-pulse" />
+        </motion.button>
+      )}
+
+      <AnimatePresence>
       {isOpen && (
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -1275,6 +1349,7 @@ const Chatbot = () => {
         </motion.div>
       )}
     </AnimatePresence>
+    </>
   );
 };
 

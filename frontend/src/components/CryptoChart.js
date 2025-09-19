@@ -179,7 +179,7 @@ const CryptoChart = ({ data, symbol, price, change24h, height = 200 }) => {
         fontWeight: '600'
       }}>
         {symbol} • {change24h >= 0 ? '+' : ''}{change24h.toFixed(2)}%
-          </div>
+            </div>
     </div>
   );
 };
