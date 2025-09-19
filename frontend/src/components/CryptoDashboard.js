@@ -1,474 +1,318 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { 
-  TrendingUp, TrendingDown, Coins, Wallet, BarChart3,
-  RefreshCw, Star, Zap, Activity
+  DollarSign, 
+  TrendingUp, 
+  TrendingDown, 
+  Wallet, 
+  Eye,
+  EyeOff,
+  Copy,
+  CheckCircle
 } from 'lucide-react';
-import cryptoService from '../services/cryptoService';
 
 const CryptoDashboard = () => {
-  const [activeTab, setActiveTab] = useState('overview');
-  const [loading, setLoading] = useState(false);
-  const [marketData, setMarketData] = useState({});
-  const [portfolio, setPortfolio] = useState({});
-  const [recentTransactions, setRecentTransactions] = useState([]);
-  // const [watchlist, setWatchlist] = useState([]);
+  const [cryptoData, setCryptoData] = useState([]);
+  const [userWallet, setUserWallet] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [showBalance, setShowBalance] = useState(true);
+  const [copied, setCopied] = useState(false);
+  
+  // Sua MetaMask principal
+  const MASTER_WALLET = '0x5Ea5C5970e8AE23A5336d631707CF31C5916E8b1';
 
-  const tabs = [
-    { id: 'overview', label: 'Visão Geral', icon: Coins },
-    { id: 'portfolio', label: 'Portfólio', icon: Wallet },
-    { id: 'market', label: 'Mercado', icon: BarChart3 },
-    { id: 'watchlist', label: 'Favoritos', icon: Star },
-    { id: 'activity', label: 'Atividade', icon: Activity }
+  // Simulação de dados de criptomoedas (em produção, viria da API)
+  const mockCryptoData = [
+    {
+      id: 'bitcoin',
+      name: 'Bitcoin',
+      symbol: 'BTC',
+      price: 115511.956,
+      change24h: -1.92,
+      volume: 28500000000,
+      marketCap: 2270000000000
+    },
+    {
+      id: 'ethereum',
+      name: 'Ethereum',
+      symbol: 'ETH',
+      price: 3892.45,
+      change24h: 2.34,
+      volume: 15200000000,
+      marketCap: 468000000000
+    },
+    {
+      id: 'agroisync-token',
+      name: 'Agroisync Token',
+      symbol: 'AGRO',
+      price: 0.85,
+      change24h: 5.67,
+      volume: 2500000,
+      marketCap: 85000000
+    }
   ];
 
-  const loadDashboardData = useCallback(async () => {
-    setLoading(true);
-    try {
-      // Carregar dados em paralelo
-      const [marketDataResult, portfolioResult, transactionsResult] = await Promise.all([
-        cryptoService.getCryptoPrices(['bitcoin', 'ethereum', 'binancecoin', 'cardano', 'solana']),
-        cryptoService.getUserPortfolio(),
-        cryptoService.getTransactionHistory()
-      ]);
+  useEffect(() => {
+    setCryptoData(mockCryptoData);
+    
+    // Simular atualização em tempo real
+    const interval = setInterval(() => {
+      setCryptoData(prevData => 
+        prevData.map(crypto => ({
+          ...crypto,
+          price: crypto.price * (1 + (Math.random() - 0.5) * 0.02),
+          change24h: crypto.change24h + (Math.random() - 0.5) * 0.5
+        }))
+      );
+    }, 5000); // Atualiza a cada 5 segundos
 
-      setMarketData(marketDataResult.prices || {});
-      setPortfolio(portfolioResult.portfolio || {});
-      setRecentTransactions(transactionsResult.transactions || []);
-    } catch (error) {
-      console.error('Erro ao carregar dados do dashboard:', error);
-    } finally {
-      setLoading(false);
-    }
+    return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    loadDashboardData();
-    const interval = setInterval(loadDashboardData, 30000); // Atualizar a cada 30s
-    return () => clearInterval(interval);
-  }, [loadDashboardData]);
-
-  const getPriceChangeColor = (change) => {
-    if (!change) return 'text-gray-500';
-    return change > 0 ? 'text-green-600' : 'text-red-600';
+  const connectMetaMask = async () => {
+    if (window.ethereum) {
+      try {
+        const accounts = await window.ethereum.request({
+          method: 'eth_requestAccounts'
+        });
+        
+        setUserWallet(accounts[0]);
+        setIsConnected(true);
+        
+        // Registrar cliente na blockchain
+        await registerClient(accounts[0]);
+        
+      } catch (error) {
+        console.error('Erro ao conectar MetaMask:', error);
+      }
+    } else {
+      alert('MetaMask não encontrado! Instale a extensão.');
+    }
   };
 
-  const getPriceChangeIcon = (change) => {
-    if (!change) return null;
-    return change > 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />;
-  };
-
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value);
-  };
-
-  const formatPercentage = (value) => {
-    if (!value) return '0.00%';
-    return `${value > 0 ? '+' : ''}${value.toFixed(2)}%`;
-  };
-
-  const renderOverview = () => (
-    <div className="space-y-6">
-      {/* Cards de Resumo */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-xl"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-blue-100 text-sm">Valor Total</p>
-              <p className="text-2xl font-bold">
-                {portfolio.totalValue ? formatCurrency(portfolio.totalValue) : 'R$ 0,00'}
-              </p>
-            </div>
-            <Coins className="w-8 h-8 text-blue-200" />
-          </div>
-        </motion.div>
-
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-green-100 text-sm">24h %</p>
-              <p className="text-2xl font-bold">
-                {portfolio.totalChange24h ? formatPercentage(portfolio.totalChange24h) : '0.00%'}
-              </p>
-            </div>
-            <TrendingUp className="w-8 h-8 text-green-200" />
-          </div>
-        </motion.div>
-
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-xl"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-purple-100 text-sm">Ativos</p>
-              <p className="text-2xl font-bold">
-                {portfolio.assets ? portfolio.assets.length : 0}
-              </p>
-            </div>
-            <Wallet className="w-8 h-8 text-purple-200" />
-          </div>
-        </motion.div>
-
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 rounded-xl"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-orange-100 text-sm">Transações</p>
-              <p className="text-2xl font-bold">
-                {recentTransactions.length}
-              </p>
-            </div>
-            <Activity className="w-8 h-8 text-orange-200" />
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Top Criptomoedas */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Top Criptomoedas
-          </h3>
-          <button
-            onClick={loadDashboardData}
-            disabled={loading}
-            className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
-          >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-          </button>
-        </div>
-
-        <div className="space-y-3">
-          {Object.entries(marketData).map(([cryptoId, data]) => (
-            <motion.div
-              key={cryptoId}
-              whileHover={{ backgroundColor: '#f8fafc' }}
-              className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-            >
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                  <span className="text-lg">{getCryptoIcon(cryptoId)}</span>
-                </div>
-                <div>
-                  <p className="font-medium text-gray-900 dark:text-white capitalize">
-                    {cryptoId}
-                  </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {data.brl ? formatCurrency(data.brl) : 'N/A'}
-                  </p>
-                </div>
-              </div>
-              
-              <div className="text-right">
-                <div className={`flex items-center space-x-1 ${getPriceChangeColor(data.change24h)}`}>
-                  {getPriceChangeIcon(data.change24h)}
-                  <span className="font-medium">
-                    {formatPercentage(data.change24h)}
-                  </span>
-                </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {data.usd ? `$${data.usd.toLocaleString()}` : 'N/A'}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderPortfolio = () => (
-    <div className="space-y-6">
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Distribuição do Portfólio
-        </h3>
-        
-        {portfolio.assets && portfolio.assets.length > 0 ? (
-          <div className="space-y-4">
-            {portfolio.assets.map((asset) => (
-              <motion.div
-                key={asset.id}
-                whileHover={{ scale: 1.01 }}
-                className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
-              >
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
-                    {asset.symbol}
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-900 dark:text-white">
-                      {asset.name}
-                    </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {asset.amount} {asset.symbol}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="text-right">
-                  <p className="font-semibold text-gray-900 dark:text-white">
-                    {formatCurrency(asset.value)}
-                  </p>
-                  <div className={`flex items-center space-x-1 ${getPriceChangeColor(asset.change24h)}`}>
-                    {getPriceChangeIcon(asset.change24h)}
-                    <span className="text-sm">
-                      {formatPercentage(asset.change24h)}
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {asset.allocation.toFixed(1)}% do portfólio
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-8">
-            <Wallet className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 dark:text-gray-400">
-              Nenhum ativo no portfólio ainda
-            </p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-
-  const renderMarket = () => (
-    <div className="space-y-6">
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Análise de Mercado
-        </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-3">
-              Indicadores Técnicos
-            </h4>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600 dark:text-gray-400">RSI (14)</span>
-                <span className="font-medium">65.4</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600 dark:text-gray-400">MACD</span>
-                <span className="font-medium text-green-600">+0.0023</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Média Móvel (50)</span>
-                <span className="font-medium">$48,250</span>
-              </div>
-            </div>
-          </div>
-          
-          <div>
-            <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-3">
-              Estatísticas
-            </h4>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Volume 24h</span>
-                <span className="font-medium">$2.4B</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Cap. de Mercado</span>
-                <span className="font-medium">$950B</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Dominância</span>
-                <span className="font-medium">48.2%</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderWatchlist = () => (
-    <div className="space-y-6">
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Lista de Favoritos
-          </h3>
-          <button className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
-            <Star className="w-4 h-4" />
-          </button>
-        </div>
-        
-        <div className="text-center py-8">
-          <Star className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500 dark:text-gray-400">
-            Adicione criptomoedas aos seus favoritos para acompanhar mais de perto
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderActivity = () => (
-    <div className="space-y-6">
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Atividade Recente
-        </h3>
-        
-        {recentTransactions.length > 0 ? (
-          <div className="space-y-3">
-            {recentTransactions.slice(0, 5).map((tx) => (
-              <motion.div
-                key={tx.id}
-                whileHover={{ backgroundColor: '#f8fafc' }}
-                className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-              >
-                <div className="flex items-center space-x-3">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    tx.type === 'BUY' ? 'bg-green-100 text-green-600' :
-                    tx.type === 'SELL' ? 'bg-red-100 text-red-600' :
-                    'bg-blue-100 text-blue-600'
-                  }`}>
-                    {tx.type === 'BUY' ? <TrendingUp className="w-4 h-4" /> :
-                     tx.type === 'SELL' ? <TrendingDown className="w-4 h-4" /> :
-                     <Zap className="w-4 h-4" />}
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-900 dark:text-white">
-                      {tx.type} {tx.symbol}
-                    </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {new Date(tx.timestamp).toLocaleDateString('pt-BR')}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="text-right">
-                  <p className="font-medium text-gray-900 dark:text-white">
-                    {tx.amount} {tx.symbol}
-                  </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {tx.status}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-8">
-            <Activity className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 dark:text-gray-400">
-              Nenhuma transação recente
-            </p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-
-  const getCryptoIcon = (cryptoId) => {
-    const icons = {
-      bitcoin: '₿',
-      ethereum: 'Ξ',
-      binancecoin: '🟡',
-      cardano: '₳',
-      solana: '◎'
+  const registerClient = async (walletAddress) => {
+    // Aqui você faria a chamada para sua blockchain
+    // Registrando o cliente e criando seu painel
+    console.log('Registrando cliente:', walletAddress);
+    
+    // Simulação de registro
+    const clientData = {
+      address: walletAddress,
+      balance: {
+        BTC: 0.5,
+        ETH: 2.3,
+        AGRO: 1000
+      },
+      transactions: [],
+      joinDate: new Date()
     };
-    return icons[cryptoId] || cryptoId.toUpperCase().charAt(0);
+    
+    // Salvar dados do cliente (em produção, seria na blockchain)
+    localStorage.setItem(`client_${walletAddress}`, JSON.stringify(clientData));
   };
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'overview':
-        return renderOverview();
-      case 'portfolio':
-        return renderPortfolio();
-      case 'market':
-        return renderMarket();
-      case 'watchlist':
-        return renderWatchlist();
-      case 'activity':
-        return renderActivity();
-      default:
-        return renderOverview();
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const sendPayment = async (amount, currency) => {
+    if (!window.ethereum || !userWallet) return;
+
+    try {
+      const transactionParameters = {
+        to: MASTER_WALLET, // Sua MetaMask
+        from: userWallet,
+        value: '0x' + (amount * Math.pow(10, 18)).toString(16), // ETH em wei
+        gas: '0x5208', // 21000 gas
+      };
+
+      const txHash = await window.ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [transactionParameters],
+      });
+
+      console.log('Pagamento enviado:', txHash);
+      alert(`Pagamento de ${amount} ${currency} enviado com sucesso!`);
+      
+    } catch (error) {
+      console.error('Erro no pagamento:', error);
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="crypto-dashboard">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Dashboard de Criptomoedas
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400">
-            Acompanhe seus investimentos e o mercado em tempo real
-          </p>
+      <div className="dashboard-header">
+        <h2>Dashboard Crypto Agroisync</h2>
+        <div className="wallet-info">
+          {isConnected ? (
+            <div className="connected-wallet">
+              <span>Conectado: {userWallet?.slice(0, 6)}...{userWallet?.slice(-4)}</span>
+              <button onClick={() => copyToClipboard(userWallet)}>
+                {copied ? <CheckCircle size={16} /> : <Copy size={16} />}
+              </button>
+            </div>
+          ) : (
+            <button onClick={connectMetaMask} className="connect-btn">
+              <Wallet size={20} />
+              Conectar MetaMask
+            </button>
+          )}
         </div>
-        
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={loadDashboardData}
-            disabled={loading}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors flex items-center space-x-2"
+      </div>
+
+      {/* Cards de Criptomoedas */}
+      <div className="crypto-cards">
+        {cryptoData.map((crypto, index) => (
+          <motion.div
+            key={crypto.id}
+            className="crypto-card"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            <span>Atualizar</span>
+            <div className="card-header">
+              <h3 style={{ color: 'var(--accent)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <DollarSign size={24} />
+                {crypto.name} ({crypto.symbol})
+              </h3>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+                  ${crypto.price.toLocaleString()}
+                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: crypto.change24h >= 0 ? 'rgb(34, 197, 94)' : 'rgb(239, 68, 68)' }}>
+                  {crypto.change24h >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+                  <span>{crypto.change24h.toFixed(2)}%</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Gráfico Simulado */}
+            <div style={{
+              height: '200px',
+              background: 'linear-gradient(135deg, rgba(42, 127, 79, 0.1) 0%, rgba(42, 127, 79, 0.05) 100%)',
+              borderRadius: '8px',
+              marginBottom: '1.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                width: '100%',
+                height: '100%',
+                background: `linear-gradient(45deg, 
+                  rgba(42, 127, 79, 0.1) 0%, 
+                  rgba(42, 127, 79, 0.3) 50%, 
+                  rgba(42, 127, 79, 0.1) 100%)`,
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.2rem',
+                color: 'var(--accent)',
+                fontWeight: '600'
+              }}>
+                📈 Gráfico em Tempo Real
+              </div>
+            </div>
+
+            {/* Botões de Ação */}
+            {isConnected && (
+              <div className="card-actions">
+                <button 
+                  onClick={() => sendPayment(0.1, crypto.symbol)}
+                  className="buy-btn"
+                >
+                  Comprar {crypto.symbol}
+                </button>
+                <button 
+                  onClick={() => sendPayment(0.05, crypto.symbol)}
+                  className="sell-btn"
+                >
+                  Vender {crypto.symbol}
+                </button>
+              </div>
+            )}
+
+            {/* Informações Adicionais */}
+            <div className="crypto-info">
+              <div className="info-item">
+                <span>Volume 24h:</span>
+                <span>${crypto.volume.toLocaleString()}</span>
+              </div>
+              <div className="info-item">
+                <span>Market Cap:</span>
+                <span>${crypto.marketCap.toLocaleString()}</span>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Seção de Saldo do Cliente */}
+      {isConnected && (
+        <div className="client-balance">
+          <h3>Seu Saldo</h3>
+          <button 
+            onClick={() => setShowBalance(!showBalance)}
+            className="toggle-balance"
+          >
+            {showBalance ? <EyeOff size={20} /> : <Eye size={20} />}
+            {showBalance ? 'Ocultar' : 'Mostrar'} Saldo
+          </button>
+          
+          {showBalance && (
+            <div className="balance-grid">
+              <div className="balance-item">
+                <span>BTC</span>
+                <span>0.5</span>
+              </div>
+              <div className="balance-item">
+                <span>ETH</span>
+                <span>2.3</span>
+              </div>
+              <div className="balance-item">
+                <span>AGRO</span>
+                <span>1000</span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Informações do Master Wallet */}
+      <div className="master-wallet-info">
+        <h3>Master Wallet (Sua MetaMask)</h3>
+        <div className="wallet-address">
+          <span>{MASTER_WALLET}</span>
+          <button onClick={() => copyToClipboard(MASTER_WALLET)}>
+            {copied ? <CheckCircle size={16} /> : <Copy size={16} />}
           </button>
         </div>
+        <p className="wallet-description">
+          Todos os pagamentos em cripto são direcionados para esta carteira.
+          Você tem controle total sobre sua blockchain.
+        </p>
       </div>
 
-      {/* Abas de Navegação */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-2 shadow-sm">
-        <div className="flex space-x-1">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                  isActive
-                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700'
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
+      {/* Footer */}
+      <div style={{
+        marginTop: '2rem',
+        padding: '1rem',
+        background: 'rgba(42, 127, 79, 0.05)',
+        borderRadius: '8px',
+        fontSize: '0.8rem',
+        color: 'var(--muted)',
+        textAlign: 'center'
+      }}>
+        <p style={{ margin: '0px' }}>
+          Dados atualizados em tempo real • Blockchain própria Agroisync
+        </p>
       </div>
-
-      {/* Conteúdo das Abas */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.2 }}
-        >
-          {renderContent()}
-        </motion.div>
-      </AnimatePresence>
     </div>
   );
 };

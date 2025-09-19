@@ -11,6 +11,8 @@ import {
   CheckCircle
 } from 'lucide-react';
 import CryptoWidget from '../components/CryptoWidget';
+import CryptoDashboard from '../components/CryptoDashboard';
+import '../styles/crypto-dashboard.css';
 
 const AgroisyncCrypto = () => {
   const [email, setEmail] = useState('');
@@ -248,7 +250,7 @@ const AgroisyncCrypto = () => {
         </div>
       </section>
 
-      {/* Crypto Widget Section */}
+      {/* Crypto Dashboard Section */}
       <section className="agro-section" style={{ background: 'var(--bg-gradient)' }}>
         <div className="agro-container">
           <motion.div
@@ -259,20 +261,13 @@ const AgroisyncCrypto = () => {
             className="agro-text-center"
             style={{ marginBottom: '2rem' }}
           >
-            <h2 className="agro-section-title">Widget de Criptomoedas</h2>
+            <h2 className="agro-section-title">Dashboard Crypto Agroisync</h2>
             <p className="agro-section-subtitle">
-              Acompanhe preços em tempo real e conecte sua carteira MetaMask
+              Sua blockchain própria • Controle total • Pagamentos diretos
             </p>
           </motion.div>
 
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            maxWidth: '600px',
-            margin: '0 auto'
-          }}>
-            <CryptoWidget />
-          </div>
+          <CryptoDashboard />
         </div>
       </section>
 
