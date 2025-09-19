@@ -100,7 +100,7 @@ const AgroisyncAbout = () => {
     <div>
       {/* Hero Section TXC */}
       <section className="agro-hero-section" style={{
-        background: 'linear-gradient(rgba(31, 46, 31, 0.4), rgba(31, 46, 31, 0.4)), url("/images/marketplace.png")',
+        background: 'linear-gradient(rgba(31, 46, 31, 0.4), rgba(31, 46, 31, 0.4)), url("https://media.istockphoto.com/id/1364083240/pt/foto/technology-in-the-field-laptop.webp?a=1&b=1&s=612x612&w=0&k=20&c=BtnjQ7Ndc3CWQE1fi0h-80owrTk2vZb9wGQtycK-52M=")',
         backgroundSize: 'cover',
         backgroundPosition: 'center'
       }}>
