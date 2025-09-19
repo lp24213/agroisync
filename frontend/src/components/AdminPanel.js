@@ -72,6 +72,39 @@ const AdminPanel = () => {
     loadAdminData();
   }, []);
 
+  const loadAdminData = async () => {
+    setLoading(true);
+    try {
+      // Carregar estatísticas gerais
+      const [statsRes, usersRes, auditRes, freightsRes] = await Promise.all([
+        axios.get('/api/admin/stats'),
+        axios.get('/api/admin/users'),
+        axios.get('/api/audit-logs'),
+        axios.get('/api/freight-orders')
+      ]);
+
+      setStats(statsRes.data.data);
+      setUsers(usersRes.data.data);
+      setAuditLogs(auditRes.data.data);
+      setFreightOrders(freightsRes.data.data);
+
+      // Estatísticas do chat
+      setChatStats({
+        totalConversations: 1247,
+        activeConversations: 892,
+        messagesToday: 3456,
+        avgResponseTime: 2.5,
+        aiAccuracy: 94.2
+      });
+
+    } catch (error) {
+      console.error('Erro ao carregar dados administrativos:', error);
+      toast.error('Erro ao carregar dados administrativos');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleExportAuditLogs = async () => {
     try {
       const response = await axios.post('/api/audit-logs/export', {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { 
   Truck, 
   MapPin, 
@@ -26,6 +27,7 @@ import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
 const AgroisyncAgroConecta = () => {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('buscar');
   const [freteForm, setFreteForm] = useState({
     origem: '',
@@ -184,6 +186,22 @@ const AgroisyncAgroConecta = () => {
     setShowTrackingModal(true);
   };
 
+  const loadMyOrders = async () => {
+    try {
+      const response = await axios.get('/api/freight-orders', {
+        headers: {
+          'Authorization': `Bearer ${user?.token}`
+        }
+      });
+
+      if (response.data.success) {
+        setMyOrders(response.data.data);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar pedidos:', error);
+      toast.error('Erro ao carregar pedidos');
+    }
+  };
 
   const handleAIClosure = async (orderId) => {
     try {
