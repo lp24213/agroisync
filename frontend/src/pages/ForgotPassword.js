@@ -41,7 +41,7 @@ const ForgotPassword = () => {
   };
 
   if (isSubmitted) {
-    return (
+  return (
       <div className="min-h-screen bg-gradient-to-br from-dark-primary via-dark-secondary to-dark-tertiary flex items-center justify-center p-4">
         <div className="max-w-md w-full">
           <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">

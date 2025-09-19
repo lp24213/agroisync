@@ -160,7 +160,7 @@ const AdminPanel = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Total de Usuários</p>
               <p className="text-3xl font-bold text-gray-900">{stats.totalUsers || 0}</p>
-            </div>
+      </div>
             <div className="p-3 bg-blue-100 rounded-full">
               <Users className="h-6 w-6 text-blue-600" />
             </div>
@@ -171,9 +171,9 @@ const AdminPanel = () => {
           </div>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           className="bg-white rounded-xl p-6 shadow-lg border border-gray-100"
         >
@@ -184,12 +184,12 @@ const AdminPanel = () => {
             </div>
             <div className="p-3 bg-green-100 rounded-full">
               <Truck className="h-6 w-6 text-green-600" />
-            </div>
-          </div>
+      </div>
+              </div>
           <div className="mt-4 flex items-center">
             <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
             <span className="text-sm text-green-600">+8% esta semana</span>
-          </div>
+              </div>
         </motion.div>
 
         <motion.div
@@ -205,12 +205,12 @@ const AdminPanel = () => {
             </div>
             <div className="p-3 bg-purple-100 rounded-full">
               <Bot className="h-6 w-6 text-purple-600" />
-            </div>
-          </div>
+              </div>
+              </div>
           <div className="mt-4 flex items-center">
             <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
             <span className="text-sm text-green-600">+15% hoje</span>
-          </div>
+            </div>
         </motion.div>
 
         <motion.div
@@ -223,17 +223,17 @@ const AdminPanel = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Logs de Auditoria</p>
               <p className="text-3xl font-bold text-gray-900">{auditLogs.length || 0}</p>
-            </div>
+              </div>
             <div className="p-3 bg-orange-100 rounded-full">
               <Shield className="h-6 w-6 text-orange-600" />
+              </div>
             </div>
-          </div>
           <div className="mt-4 flex items-center">
             <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
             <span className="text-sm text-green-600">+5% hoje</span>
           </div>
         </motion.div>
-      </div>
+        </div>
 
       {/* Gráficos e Métricas */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -250,7 +250,7 @@ const AdminPanel = () => {
                 <div className="flex items-center">
                   <div className="p-2 bg-blue-100 rounded-full mr-3">
                     <Activity className="h-4 w-4 text-blue-600" />
-                  </div>
+                </div>
                   <div>
                     <p className="text-sm font-medium text-gray-900">{log.action}</p>
                     <p className="text-xs text-gray-500">{log.resource}</p>
@@ -275,7 +275,7 @@ const AdminPanel = () => {
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Uptime</span>
               <span className="text-sm font-medium text-green-600">99.9%</span>
-            </div>
+        </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Latência Média</span>
               <span className="text-sm font-medium text-blue-600">45ms</span>
@@ -349,12 +349,12 @@ const AdminPanel = () => {
                         <span className="text-sm font-medium text-gray-600">
                           {user.name.charAt(0).toUpperCase()}
                         </span>
-                      </div>
+        </div>
                       <div className="ml-4">
                         <div className="text-sm font-medium text-gray-900">{user.name}</div>
                         <div className="text-sm text-gray-500">ID: {user._id.slice(-8)}</div>
-                      </div>
-                    </div>
+                </div>
+                  </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {user.email}
@@ -362,14 +362,14 @@ const AdminPanel = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
                       {user.businessType || 'N/A'}
-                    </span>
+              </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                       user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                     }`}>
                       {user.isActive ? 'Ativo' : 'Inativo'}
-                    </span>
+              </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {user.lastActivityAt ? new Date(user.lastActivityAt).toLocaleDateString() : 'N/A'}
@@ -377,10 +377,10 @@ const AdminPanel = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button className="text-blue-600 hover:text-blue-900 mr-3">
                       <Eye className="h-4 w-4" />
-                    </button>
+                </button>
                     <button className="text-red-600 hover:text-red-900">
                       <XCircle className="h-4 w-4" />
-                    </button>
+                </button>
                   </td>
                 </tr>
               ))}
@@ -396,7 +396,7 @@ const AdminPanel = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">Logs de Auditoria</h2>
         <div className="flex space-x-3">
-          <input
+            <input
             type="date"
             value={dateRange.start}
             onChange={(e) => setDateRange({...dateRange, start: e.target.value})}
@@ -408,22 +408,22 @@ const AdminPanel = () => {
             onChange={(e) => setDateRange({...dateRange, end: e.target.value})}
             className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
-          <button
+                <button 
             onClick={handleExportAuditLogs}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center space-x-2"
-          >
+                >
             <Download className="h-4 w-4" />
             <span>Exportar</span>
-          </button>
-          <button
+                </button>
+                <button 
             onClick={handleCleanupAuditLogs}
             className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center space-x-2"
           >
             <Trash2 className="h-4 w-4" />
             <span>Limpar</span>
-          </button>
-        </div>
-      </div>
+                </button>
+              </div>
+            </div>
 
       <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
@@ -467,7 +467,7 @@ const AdminPanel = () => {
                       log.status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                     }`}>
                       {log.status}
-                    </span>
+              </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
@@ -544,8 +544,8 @@ const AdminPanel = () => {
               </div>
             </div>
           </div>
-        </div>
-      </div>
+            </div>
+          </div>
 
       {/* Navigation */}
       <div className="bg-white shadow-sm border-b border-gray-200">
@@ -554,23 +554,23 @@ const AdminPanel = () => {
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm ${
                     activeTab === tab.id
                       ? 'border-blue-500 text-blue-600'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
-                >
+              >
                   <Icon className="h-5 w-5" />
                   <span>{tab.label}</span>
-                </button>
+              </button>
               );
             })}
           </nav>
         </div>
-      </div>
+        </div>
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -582,10 +582,10 @@ const AdminPanel = () => {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
           >
-            {renderContent()}
+          {renderContent()}
           </motion.div>
         </AnimatePresence>
-      </div>
+        </div>
     </div>
   );
 };

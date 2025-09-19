@@ -54,7 +54,7 @@ const ResetPassword = () => {
   };
 
   if (!token || !userId) {
-    return (
+  return (
       <div className="min-h-screen bg-gradient-to-br from-dark-primary via-dark-secondary to-dark-tertiary flex items-center justify-center p-4">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-white mb-4">Link Inválido</h1>

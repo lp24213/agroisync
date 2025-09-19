@@ -3,31 +3,31 @@ import mongoose from 'mongoose';
 const auditLogSchema = new mongoose.Schema(
   {
     // Identificação do usuário
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-      index: true
-    },
-    
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    index: true
+  },
+
     // Tipo de ação realizada
-    action: {
-      type: String,
-      required: true,
-      enum: [
+  action: {
+    type: String,
+    required: true,
+    enum: [
         'create', 'read', 'update', 'delete',
         'login', 'logout', 'password_change',
         'pii_access', 'pii_encrypt', 'pii_decrypt',
         'admin_access', 'data_export', 'data_import'
-      ],
-      index: true
-    },
-    
-    // Recurso afetado
-    resource: {
-      type: String,
-      required: true,
-      enum: [
+    ],
+    index: true
+  },
+
+  // Recurso afetado
+  resource: {
+    type: String,
+    required: true,
+    enum: [
         'user', 'product', 'freight', 'payment',
         'tax_data', 'personal_info', 'financial_data',
         'admin_panel', 'audit_log'
@@ -36,12 +36,12 @@ const auditLogSchema = new mongoose.Schema(
     },
     
     // ID do recurso afetado
-    resourceId: {
-      type: mongoose.Schema.Types.ObjectId,
+  resourceId: {
+    type: mongoose.Schema.Types.ObjectId,
       default: null,
-      index: true
-    },
-    
+    index: true
+  },
+
     // Dados antes da ação (criptografado)
     beforeData: {
       type: String,
@@ -56,24 +56,24 @@ const auditLogSchema = new mongoose.Schema(
     
     // Hash de integridade
     integrityHash: {
-      type: String,
+    type: String,
       required: true
-    },
-    
+  },
+
     // Informações da sessão
     sessionInfo: {
       ip: {
-        type: String,
+    type: String,
         required: true
       },
       userAgent: String,
       country: String,
       city: String,
       isp: String
-    },
-    
-    // Metadados da ação
-    metadata: {
+  },
+
+  // Metadados da ação
+  metadata: {
       endpoint: String,
       method: String,
       statusCode: Number,
@@ -89,15 +89,15 @@ const auditLogSchema = new mongoose.Schema(
     
     // Status da ação
     status: {
-      type: String,
+    type: String,
       enum: ['success', 'failed', 'partial'],
       default: 'success',
-      index: true
-    },
-    
+    index: true
+  },
+
     // Mensagem de erro (se houver)
     errorMessage: {
-      type: String,
+    type: String,
       default: null
     },
     
@@ -111,11 +111,11 @@ const auditLogSchema = new mongoose.Schema(
     
     // Flag para dados PII
     containsPII: {
-      type: Boolean,
-      default: false,
-      index: true
-    },
-    
+    type: Boolean,
+    default: false,
+    index: true
+  },
+
     // Retenção de dados
     retentionPeriod: {
       type: Number,
@@ -123,12 +123,12 @@ const auditLogSchema = new mongoose.Schema(
     },
     
     // Data de expiração
-    expiresAt: {
-      type: Date,
+  expiresAt: {
+    type: Date,
       default: function() {
         return new Date(Date.now() + this.retentionPeriod * 24 * 60 * 60 * 1000);
       },
-      index: { expireAfterSeconds: 0 }
+    index: { expireAfterSeconds: 0 }
     }
   },
   {
@@ -195,7 +195,7 @@ auditLogSchema.statics.findPIIAccess = function(userId = null, limit = 100) {
   if (userId) {
     query.userId = userId;
   }
-  
+
   return this.find(query)
     .sort({ createdAt: -1 })
     .limit(limit);

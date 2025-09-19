@@ -13,7 +13,8 @@ import {
   LogIn,
   LogOut,
   User,
-  Info
+  Info,
+  Coins
 } from 'lucide-react';
 
 const AgroisyncHeader = () => {
@@ -49,6 +50,7 @@ const AgroisyncHeader = () => {
     { path: '/loja', label: 'Loja', icon: ShoppingCart },
     { path: '/agroconecta', label: 'AgroConecta', icon: Truck },
     { path: '/marketplace', label: 'Marketplace', icon: ShoppingCart },
+    { path: '/tecnologia', label: 'Crypto', icon: Coins },
     { path: '/about', label: 'Sobre', icon: Info },
   ];
 
@@ -254,6 +256,12 @@ const AgroisyncHeader = () => {
 
       {/* Header Spacer */}
       <div className="premium-header-spacer" />
+    </>
+  );
+};
+
+export default AgroisyncHeader;
+
     </>
   );
 };
