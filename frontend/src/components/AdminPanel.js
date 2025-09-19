@@ -70,7 +70,7 @@ const AdminPanel = () => {
     };
     
     loadAdminData();
-  }, []);
+  }, [dateRange.start, dateRange.end]);
 
   const loadAdminData = async () => {
     setLoading(true);

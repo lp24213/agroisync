@@ -284,7 +284,7 @@ const AgroisyncAgroConecta = () => {
     };
     
     loadMyOrders();
-  }, []);
+  }, [user?.token]);
 
   const features = [
     {
