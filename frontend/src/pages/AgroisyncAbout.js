@@ -44,7 +44,7 @@ const AgroisyncAbout = () => {
     },
     {
       name: 'Taiza Dellazzari',
-      role: 'Co-fundador',
+      role: 'Co-founder',
       description: 'Especialista em blockchain e desenvolvimento de software',
       image: '/assets/logo-agroisync.svg',
     },
