@@ -31,6 +31,7 @@ const ChatbotWidget = () => {
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [conversationId, setConversationId] = useState(null);
   const [attachments, setAttachments] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const recognitionRef = useRef(null);

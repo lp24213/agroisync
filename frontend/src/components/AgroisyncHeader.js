@@ -36,7 +36,6 @@ const AgroisyncHeader = () => {
 
   const handleLanguageChange = (lang) => {
     i18n.changeLanguage(lang);
-    setIsLanguageMenuOpen(false);
   };
 
   const handleLogout = async () => {
