@@ -15,17 +15,12 @@ import {
   LogIn,
   LogOut,
   User,
-  Globe,
-  Info,
-  Zap,
-  Shield,
-  Bot
+  Info
 } from 'lucide-react';
 
 const AgroisyncHeader = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const { t, i18n } = useTranslation();
   const location = useLocation();
@@ -57,9 +52,7 @@ const AgroisyncHeader = () => {
     { path: '/loja', label: 'Loja', icon: ShoppingCart },
     { path: '/agroconecta', label: 'AgroConecta', icon: Truck },
     { path: '/marketplace', label: 'Marketplace', icon: ShoppingCart },
-    { path: '/tecnologia', label: 'Tecnologia', icon: Coins },
     { path: '/about', label: 'Sobre', icon: Info },
-    { path: '/partnerships', label: 'Parcerias', icon: Users },
   ];
 
   const languages = [

@@ -6,7 +6,6 @@ import {
   Send, 
   Mic, 
   MicOff, 
-  Image, 
   Loader2,
   Bot,
   User,
@@ -32,7 +31,6 @@ const ChatbotWidget = () => {
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [conversationId, setConversationId] = useState(null);
   const [attachments, setAttachments] = useState([]);
-  const [isUploading, setIsUploading] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const recognitionRef = useRef(null);
@@ -91,7 +89,7 @@ const ChatbotWidget = () => {
     if (isOpen && conversationId) {
       loadConversation();
     }
-  }, [isOpen, conversationId]);
+  }, [isOpen, conversationId, loadConversation]);
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;

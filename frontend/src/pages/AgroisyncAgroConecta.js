@@ -19,11 +19,7 @@ import {
   Eye,
   MessageSquare,
   Bot,
-  FileText,
-  Download,
-  Plus,
-  Edit,
-  Trash2
+  Download
 } from 'lucide-react';
 import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt';
 import { toast } from 'react-hot-toast';
@@ -270,7 +266,7 @@ const AgroisyncAgroConecta = () => {
   // Carregar pedidos quando a página carregar
   useEffect(() => {
     loadMyOrders();
-  }, []);
+  }, [loadMyOrders]);
 
   const features = [
     {

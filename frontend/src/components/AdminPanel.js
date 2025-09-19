@@ -2,16 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { 
-  Users, MessageSquare, XCircle, BarChart3, Package, DollarSign, 
-  Settings, AlertTriangle, Activity, CheckCircle, Clock, Shield, 
-  Eye, Bot, Truck, Globe, Database, FileText, Download, Trash2,
-  Search, Filter, Calendar, TrendingUp, TrendingDown, AlertCircle
+  Users, XCircle, BarChart3, Settings, Activity, Shield, 
+  Eye, Bot, Truck, Download, Trash2, Search, TrendingUp, AlertCircle
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
 const AdminPanel = () => {
-  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState({});
@@ -36,7 +33,7 @@ const AdminPanel = () => {
 
   useEffect(() => {
     loadAdminData();
-  }, []);
+  }, [loadAdminData]);
 
   const loadAdminData = async () => {
     setLoading(true);
