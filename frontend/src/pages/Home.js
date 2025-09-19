@@ -134,7 +134,7 @@ const Home = () => {
                 whileTap={{ scale: 0.95 }}
                 className="bg-green-600 hover:bg-green-700 text-white px-10 py-5 text-xl font-semibold rounded-xl shadow-lg transition-colors"
               >
-                Explorar Marketplace
+                Explorar Plataforma
                 <ArrowRight size={24} className="ml-3 inline" />
               </motion.button>
               <motion.button
@@ -174,7 +174,7 @@ const Home = () => {
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mt-12">
               <MouseTracker intensity={0.1}>
                 <Premium3DButton variant="primary" size="lg" className="px-10 py-5 text-xl font-semibold bg-white text-gray-900 hover:bg-gray-100">
-                  Explorar Marketplace
+                  Explorar Plataforma
                   <ArrowRight size={24} className="ml-3" />
                 </Premium3DButton>
               </MouseTracker>

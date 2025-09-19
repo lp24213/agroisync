@@ -58,11 +58,11 @@ const AgroisyncHome = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              <Link to="/marketplace" className="agro-btn-primary agro-btn-animated">
-                Explorar Marketplace
+              <Link to="/" className="agro-btn-primary agro-btn-animated">
+                Explorar Plataforma
               </Link>
-              <Link to="/partnerships" className="agro-btn-secondary agro-btn-animated">
-                Saiba Mais
+              <Link to="/register" className="agro-btn-secondary agro-btn-animated">
+                Começar Agora
               </Link>
             </motion.div>
           </div>
