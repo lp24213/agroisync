@@ -360,7 +360,7 @@ const AgroisyncAgroConecta = () => {
       <AgroisyncHeroPrompt 
         title="AgroConecta"
         subtitle="Logística Inteligente para o Agronegócio"
-        heroImage="/images/agroconecta.png"
+        heroImage="/assets/agroconecta.png"
         showCTA={true}
         primaryButton={{ text: "Explorar AgroConecta", link: "/agroconecta" }}
         secondaryButton={{ text: "Ver Transportadoras", link: "/agroconecta" }}

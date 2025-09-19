@@ -27,7 +27,7 @@ const AgroisyncMarketplace = () => {
       title: 'Sementes Híbridas de Soja',
       description: 'Sementes certificadas de alta produtividade para plantio direto',
       price: 'R$ 180,00/saca',
-      image: '/images/agricultural-field.jpg',
+      image: '/assets/campo-soja-real-4k.png',
       category: 'insumos',
       location: 'Mato Grosso'
     },
@@ -36,7 +36,7 @@ const AgroisyncMarketplace = () => {
       title: 'Trator John Deere 8584',
       description: 'Trator agrícola com 180cv, ideal para grandes propriedades',
       price: 'R$ 120.000,00',
-      image: '/images/agricultural-field.jpg',
+      image: '/assets/campo-soja-real-4k.png',
       category: 'maquinas',
       location: 'São Paulo'
     },
@@ -45,7 +45,7 @@ const AgroisyncMarketplace = () => {
       title: 'Fertilizante NPK 20-10-10',
       description: 'Fertilizante granulado para aplicação em pré-plantio',
       price: 'R$ 2.800,00/ton',
-      image: '/images/agricultural-field.jpg',
+      image: '/assets/campo-soja-real-4k.png',
       category: 'insumos',
       location: 'Goiás'
     },
@@ -54,7 +54,7 @@ const AgroisyncMarketplace = () => {
       title: 'Colheitadeira Case IH',
       description: 'Colheitadeira com capacidade de 12 toneladas por hora',
       price: 'R$ 850.000,00',
-      image: '/images/agricultural-field.jpg',
+      image: '/assets/campo-soja-real-4k.png',
       category: 'maquinas',
       location: 'Paraná'
     },
@@ -63,7 +63,7 @@ const AgroisyncMarketplace = () => {
       title: 'Gado Nelore Certificado',
       description: 'Lote de 50 cabeças de gado nelore com certificação',
       price: 'R$ 3.500,00/cabeça',
-      image: '/images/agricultural-field.jpg',
+      image: '/assets/campo-soja-real-4k.png',
       category: 'pecuaria',
       location: 'Mato Grosso do Sul'
     },
@@ -72,7 +72,7 @@ const AgroisyncMarketplace = () => {
       title: 'Serviço de Mapeamento com Drone',
       description: 'Mapeamento aéreo para análise de solo e plantio',
       price: 'R$ 150,00/hectare',
-      image: '/images/agricultural-field.jpg',
+      image: '/assets/campo-soja-real-4k.png',
       category: 'servicos',
       location: 'Minas Gerais'
     }
@@ -166,7 +166,7 @@ const AgroisyncMarketplace = () => {
       <AgroisyncHeroPrompt 
         title="Marketplace Agro"
         subtitle="Conecte-se com compradores e vendedores de commodities agrícolas"
-        heroImage="https://media.istockphoto.com/id/1351542181/pt/foto/seedling-are-growing-from-the-rich-soil-concept-of-business-growth-profit-development-and.webp?a=1&b=1&s=612x612&w=0&k=20&c=2iJOu-cpw8MhKh2hXNVl_PRPNu7la74dIRZiX1-4tj8="
+        heroImage="/assets/marketplace.png"
         showCTA={true}
       />
 
