@@ -89,8 +89,8 @@ const AgroisyncHeader = () => {
                 to={item.path}
                 className={`premium-header-link agro-btn-animated ${isActive ? 'active' : ''}`}
               >
-                    <Icon size={16} />
-                    <span>{item.label}</span>
+                    <Icon size={14} />
+                    <span className="text-sm">{item.label}</span>
                   </Link>
                 </div>
               );
@@ -174,8 +174,8 @@ const AgroisyncHeader = () => {
                         className={`premium-mobile-link ${isActive ? 'active' : ''}`}
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        <Icon size={20} />
-                        <span>{item.label}</span>
+                        <Icon size={18} />
+                        <span className="text-sm">{item.label}</span>
                       </Link>
                     </div>
                   );
@@ -256,12 +256,6 @@ const AgroisyncHeader = () => {
 
       {/* Header Spacer */}
       <div className="premium-header-spacer" />
-    </>
-  );
-};
-
-export default AgroisyncHeader;
-
     </>
   );
 };
