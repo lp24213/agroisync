@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import RegistrationSystem from '../components/RegistrationSystem';
 import { 
   Truck, 
   MapPin, 
   Clock, 
   Users, 
-  Zap, 
+  Zap,
+  UserPlus, 
   Shield,
   ArrowRight,
   CheckCircle,
@@ -42,6 +44,8 @@ const AgroisyncAgroConecta = () => {
   const [showAIClosureModal, setShowAIClosureModal] = useState(false);
   const [trackingUpdates, setTrackingUpdates] = useState([]);
   const [aiClosureData, setAiClosureData] = useState(null);
+  const [showRegistrationModal, setShowRegistrationModal] = useState(false);
+  const [publicRegistrations, setPublicRegistrations] = useState([]);
 
   // Dados de ofertas de frete
   const ofertasFrete = [
@@ -264,6 +268,19 @@ const AgroisyncAgroConecta = () => {
     }
   };
 
+  // Função para buscar cadastros públicos
+  const fetchPublicRegistrations = async () => {
+    try {
+      const response = await fetch('/api/registration/agroconecta/public');
+      const data = await response.json();
+      if (data.success) {
+        setPublicRegistrations(data.data);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar cadastros públicos:', error);
+    }
+  };
+
   // Carregar pedidos quando a página carregar
   useEffect(() => {
     const loadMyOrders = async () => {
@@ -282,6 +299,9 @@ const AgroisyncAgroConecta = () => {
         toast.error('Erro ao carregar pedidos');
       }
     };
+    
+    // Buscar cadastros públicos
+    fetchPublicRegistrations();
     
     loadMyOrders();
   }, [user?.token]);
@@ -523,6 +543,40 @@ const AgroisyncAgroConecta = () => {
             >
               <Package size={20} style={{ marginRight: '0.5rem', display: 'inline' }} />
               Meus Pedidos
+            </button>
+          </motion.div>
+
+          {/* Botão de Cadastro */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginBottom: '2rem'
+            }}
+          >
+            <button
+              onClick={() => setShowRegistrationModal(true)}
+              className="agro-btn-animated"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '1rem 2rem',
+                background: 'linear-gradient(135deg, var(--accent) 0%, #2e7d32 100%)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 15px rgba(42, 127, 79, 0.3)'
+              }}
+            >
+              <UserPlus size={20} />
+              Cadastrar como Transportador
             </button>
           </motion.div>
 
@@ -1336,6 +1390,14 @@ const AgroisyncAgroConecta = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Modal de Cadastro */}
+      {showRegistrationModal && (
+        <RegistrationSystem 
+          type="agroconecta"
+          onClose={() => setShowRegistrationModal(false)}
+        />
       )}
     </div>
   );
