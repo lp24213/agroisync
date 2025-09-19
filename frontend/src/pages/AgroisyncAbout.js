@@ -39,13 +39,11 @@ const AgroisyncAbout = () => {
     {
       name: 'Luis Paulo',
       role: 'CEO & Fundador',
-      description: '15 anos de experiência no agronegócio e tecnologia',
       image: '/images/team-placeholder.jpg',
     },
     {
       name: 'Taiza Dellazzari',
       role: 'Co-founder',
-      description: 'Especialista em blockchain e desenvolvimento de software',
       image: '/images/team-placeholder.jpg',
     },
   ];
