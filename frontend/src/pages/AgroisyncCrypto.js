@@ -107,7 +107,9 @@ const AgroisyncCrypto = () => {
     <div data-page="crypto">
       {/* Hero Section Clean */}
       <section className="agro-hero-section" style={{
-        background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
+        background: 'linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("https://images.unsplash.com/photo-1639825752750-5061ded5503b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8R1JBRklDTyUyMENSSVBUT01PRURBfGVufDB8fDB8fHww")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
         padding: '4rem 0'
       }}>
         <div className="agro-hero-content">
@@ -136,11 +138,11 @@ const AgroisyncCrypto = () => {
               </div>
             </motion.div>
 
-            <motion.h1 className="agro-hero-title" variants={itemVariants} style={{ color: '#000000' }}>
+            <motion.h1 className="agro-hero-title" variants={itemVariants} style={{ color: '#FFFFFF' }}>
               CRYPTO AGRO
             </motion.h1>
             
-            <motion.p className="agro-hero-subtitle" variants={itemVariants} style={{ color: '#666666' }}>
+            <motion.p className="agro-hero-subtitle" variants={itemVariants} style={{ color: '#FFFFFF' }}>
               Tecnologia blockchain para revolucionar o agronegócio brasileiro
             </motion.p>
 
