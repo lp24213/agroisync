@@ -166,7 +166,7 @@ const AgroisyncMarketplace = () => {
       <AgroisyncHeroPrompt 
         title="Marketplace Agro"
         subtitle="Conecte-se com compradores e vendedores de commodities agrícolas"
-        heroImage="/images/marketplace.png"
+        heroImage="https://media.istockphoto.com/id/1351542181/pt/foto/seedling-are-growing-from-the-rich-soil-concept-of-business-growth-profit-development-and.webp?a=1&b=1&s=612x612&w=0&k=20&c=2iJOu-cpw8MhKh2hXNVl_PRPNu7la74dIRZiX1-4tj8="
         showCTA={true}
       />
 
