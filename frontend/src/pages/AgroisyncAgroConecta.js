@@ -20,7 +20,6 @@ import {
   Calendar,
   X,
   Package,
-  Crown,
   DollarSign,
   Eye,
   MessageSquare,

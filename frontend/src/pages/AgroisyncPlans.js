@@ -1,23 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { useAuth } from '../contexts/AuthContext';
 import PlansSystem from '../components/PlansSystem';
 import { 
-  Crown, 
-  Star, 
-  CheckCircle, 
-  Zap, 
-  Shield,
-  Truck,
-  Package,
-  Coins,
-  ArrowRight,
-  TrendingUp
+  Crown
 } from 'lucide-react';
 
 const AgroisyncPlans = () => {
-  const { user, isAuthenticated } = useAuth();
-  const [selectedService, setSelectedService] = useState('agroconecta');
 
   return (
     <div className="agro-plans-container" data-page="planos">

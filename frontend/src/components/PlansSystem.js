@@ -257,19 +257,20 @@ const PlansSystem = () => {
       const plan = currentPlans.find(p => p.id === selectedPlan);
       const service = services.find(s => s.id === selectedService);
       
-      const paymentData = {
-        amount: plan.price,
-        currency: selectedService === 'crypto' ? 'ETH' : 'brl',
-        paymentMethod: paymentMethod,
-        service: selectedService,
-        metadata: {
-          plan: plan.id,
-          planName: plan.name,
-          service: service.name,
-          userId: user.id,
-          userName: user.name
-        }
-      };
+      // Payment data prepared for future use
+      // const paymentData = {
+      //   amount: plan.price,
+      //   currency: selectedService === 'crypto' ? 'ETH' : 'brl',
+      //   paymentMethod: paymentMethod,
+      //   service: selectedService,
+      //   metadata: {
+      //     plan: plan.id,
+      //     planName: plan.name,
+      //     service: service.name,
+      //     userId: user.id,
+      //     userName: user.name
+      //   }
+      // };
 
       if (paymentMethod === 'stripe') {
         // Redirecionar para Stripe Checkout
