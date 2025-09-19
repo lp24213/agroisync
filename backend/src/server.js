@@ -26,6 +26,8 @@ const cryptoRoutes = require('./routes/crypto');
 const analyticsRoutes = require('./routes/analytics');
 const chatRoutes = require('./routes/chat');
 const auditLogRoutes = require('./routes/auditLogs');
+const registrationRoutes = require('./routes/registration');
+const plansRoutes = require('./routes/plans');
 
 // Importar middleware
 const errorHandler = require('./middleware/errorHandler');
@@ -172,6 +174,8 @@ app.use('/api/crypto', cryptoRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/audit-logs', auditLogRoutes);
+app.use('/api/registration', registrationRoutes);
+app.use('/api/plans', plansRoutes);
 
 // WebSocket para mensageria em tempo real
 io.on('connection', socket => {

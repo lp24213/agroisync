@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import RegistrationSystem from '../components/RegistrationSystem';
 import { 
   ShoppingCart, 
   Star, 
@@ -13,6 +14,7 @@ import {
   CheckCircle,
   ArrowRight,
   Package,
+  UserPlus,
   MapPin,
   Eye
 } from 'lucide-react';
@@ -22,6 +24,8 @@ const AgroisyncLoja = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('todos');
   const [sortBy, setSortBy] = useState('relevancia');
+  const [showRegistrationModal, setShowRegistrationModal] = useState(false);
+  const [publicRegistrations, setPublicRegistrations] = useState([]);
 
   // Produtos da loja com imagens reais
   const products = [
@@ -159,6 +163,24 @@ const AgroisyncLoja = () => {
     }
   ];
 
+  // Função para buscar cadastros públicos
+  const fetchPublicRegistrations = async () => {
+    try {
+      const response = await fetch('/api/registration/loja/public');
+      const data = await response.json();
+      if (data.success) {
+        setPublicRegistrations(data.data);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar cadastros públicos:', error);
+    }
+  };
+
+  useEffect(() => {
+    // Buscar cadastros públicos
+    fetchPublicRegistrations();
+  }, []);
+
   return (
     <div className="agro-loja-container" data-page="loja">
       {/* Hero Section */}
@@ -288,6 +310,40 @@ const AgroisyncLoja = () => {
                 </select>
               </div>
             </div>
+          </motion.div>
+
+          {/* Botão de Cadastro */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginBottom: '2rem'
+            }}
+          >
+            <button
+              onClick={() => setShowRegistrationModal(true)}
+              className="agro-btn-animated"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '1rem 2rem',
+                background: 'linear-gradient(135deg, var(--accent) 0%, #2e7d32 100%)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 15px rgba(42, 127, 79, 0.3)'
+              }}
+            >
+              <UserPlus size={20} />
+              Cadastrar como Vendedor
+            </button>
           </motion.div>
 
           {/* Grid de Produtos */}
@@ -834,6 +890,14 @@ const AgroisyncLoja = () => {
           }
         }
       `}</style>
+
+      {/* Modal de Cadastro */}
+      {showRegistrationModal && (
+        <RegistrationSystem 
+          type="loja"
+          onClose={() => setShowRegistrationModal(false)}
+        />
+      )}
     </div>
   );
 };
