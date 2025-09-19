@@ -37,22 +37,16 @@ const AgroisyncAbout = () => {
 
   const team = [
     {
-      name: 'João Silva',
+      name: 'Luis Paulo',
       role: 'CEO & Fundador',
       description: '15 anos de experiência no agronegócio e tecnologia',
-      image: '/images/logo.svg',
+      image: '/assets/logo.png',
     },
     {
-      name: 'Maria Santos',
-      role: 'CTO',
+      name: 'Taiza Dellazzari',
+      role: 'Co-fundador',
       description: 'Especialista em blockchain e desenvolvimento de software',
-      image: '/images/logo.svg',
-    },
-    {
-      name: 'Pedro Costa',
-      role: 'Head de Produto',
-      description: 'Experiência em produtos digitais para o agronegócio',
-      image: '/images/logo.svg',
+      image: '/assets/logo.png',
     },
   ];
 
