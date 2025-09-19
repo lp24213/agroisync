@@ -255,7 +255,6 @@ const PlansSystem = () => {
     
     try {
       const plan = currentPlans.find(p => p.id === selectedPlan);
-      const service = services.find(s => s.id === selectedService);
       
       // Payment data prepared for future use
       // const paymentData = {
@@ -266,7 +265,7 @@ const PlansSystem = () => {
       //   metadata: {
       //     plan: plan.id,
       //     planName: plan.name,
-      //     service: service.name,
+      //     service: services.find(s => s.id === selectedService)?.name,
       //     userId: user.id,
       //     userName: user.name
       //   }
