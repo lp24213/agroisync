@@ -17,12 +17,15 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const productRoutes = require('./routes/products');
 const freightRoutes = require('./routes/freights');
+const freightOrderRoutes = require('./routes/freightOrders');
+const addressValidationRoutes = require('./routes/addressValidation');
 const messageRoutes = require('./routes/messages');
 const paymentRoutes = require('./routes/payments');
 const adminRoutes = require('./routes/admin');
 const cryptoRoutes = require('./routes/crypto');
 const analyticsRoutes = require('./routes/analytics');
 const chatRoutes = require('./routes/chat');
+const auditLogRoutes = require('./routes/auditLogs');
 
 // Importar middleware
 const errorHandler = require('./middleware/errorHandler');
@@ -160,12 +163,15 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/freights', freightRoutes);
+app.use('/api/freight-orders', freightOrderRoutes);
+app.use('/api/address', addressValidationRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/crypto', cryptoRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/audit-logs', auditLogRoutes);
 
 // WebSocket para mensageria em tempo real
 io.on('connection', socket => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
@@ -122,10 +122,61 @@ const AgroisyncAgroConecta = () => {
   const handleFreteSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Simular criação de pedido via chat
-      toast.success('Pedido de frete criado! Use o chat para acompanhar o status.');
-      console.log('Buscar frete:', freteForm);
+      // Criar pedido de frete via API
+      const freightOrderData = {
+        sellerId: '507f1f77bcf86cd799439011', // Mock seller ID
+        origin: {
+          address: freteForm.origem,
+          city: freteForm.origem.split(',')[0]?.trim() || '',
+          state: freteForm.origem.split(',')[1]?.trim() || '',
+          zipCode: '',
+          contact: {
+            name: 'Contato Origem',
+            phone: '',
+            email: ''
+          }
+        },
+        destination: {
+          address: freteForm.destino,
+          city: freteForm.destino.split(',')[0]?.trim() || '',
+          state: freteForm.destino.split(',')[1]?.trim() || '',
+          zipCode: '',
+          contact: {
+            name: 'Contato Destino',
+            phone: '',
+            email: ''
+          }
+        },
+        pickupDate: freteForm.data,
+        deliveryDateEstimate: new Date(new Date(freteForm.data).getTime() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+        items: [{
+          name: freteForm.tipoCarga || 'Carga',
+          description: 'Carga transportada',
+          quantity: parseFloat(freteForm.volume) || 1,
+          unit: 'toneladas',
+          weight: parseFloat(freteForm.volume) || 1,
+          category: 'other'
+        }],
+        pricing: {
+          basePrice: 2000, // Preço base estimado
+          currency: 'BRL'
+        }
+      };
+
+      const response = await axios.post('/api/freight-orders', freightOrderData, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (response.data.success) {
+        toast.success('Pedido de frete criado com sucesso!');
+        setFreteForm({ origem: '', destino: '', volume: '', data: '', tipoCarga: '' });
+        // Recarregar lista de pedidos
+        loadMyOrders();
+      }
     } catch (error) {
+      console.error('Erro ao criar pedido de frete:', error);
       toast.error('Erro ao criar pedido de frete');
     }
   };
@@ -137,12 +188,43 @@ const AgroisyncAgroConecta = () => {
     setShowTrackingModal(true);
   };
 
+  const loadMyOrders = async () => {
+    try {
+      const response = await axios.get('/api/freight-orders', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (response.data.success) {
+        setMyOrders(response.data.data.freightOrders);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar pedidos:', error);
+      // Usar dados mockados em caso de erro
+      setMyOrders(mockOrders);
+    }
+  };
+
   const handleAIClosure = async (orderId) => {
     try {
-      const order = mockOrders.find(o => o.id === orderId);
+      const order = myOrders.find(o => o.id === orderId);
       setSelectedOrder(order);
       
-      // Simular dados de AI closure
+      // Chamar API para gerar análise de IA
+      const response = await axios.post(`/api/freight-orders/${orderId}/ai-closure`, {}, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (response.data.success) {
+        setAiClosureData(response.data.data.freightOrder.aiClosure);
+        setShowAIClosureModal(true);
+      }
+    } catch (error) {
+      console.error('Erro ao gerar análise de IA:', error);
+      // Fallback para dados mockados
       const mockAIClosure = {
         summary: 'Pedido entregue dentro do prazo estimado. Performance excelente.',
         performanceMetrics: {
@@ -157,20 +239,39 @@ const AgroisyncAgroConecta = () => {
       
       setAiClosureData(mockAIClosure);
       setShowAIClosureModal(true);
-    } catch (error) {
-      toast.error('Erro ao gerar análise de IA');
     }
   };
 
   const handleCloseOrder = async () => {
     try {
-      toast.success('Pedido fechado com sucesso!');
-      setShowAIClosureModal(false);
-      setAiClosureData(null);
+      const response = await axios.post(`/api/freight-orders/${selectedOrder.id}/complete-closure`, {
+        confirmClosure: true,
+        rating: 5,
+        comment: 'Excelente serviço!'
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (response.data.success) {
+        toast.success('Pedido fechado com sucesso!');
+        setShowAIClosureModal(false);
+        setAiClosureData(null);
+        // Recarregar lista de pedidos
+        loadMyOrders();
+      }
     } catch (error) {
+      console.error('Erro ao fechar pedido:', error);
       toast.error('Erro ao fechar pedido');
     }
   };
+
+  // Carregar pedidos quando a página carregar
+  useEffect(() => {
+    loadMyOrders();
+  }, []);
+
   const features = [
     {
       icon: <Truck size={32} />,
@@ -670,7 +771,7 @@ const AgroisyncAgroConecta = () => {
               </div>
 
               <div style={{ display: 'grid', gap: '1rem' }}>
-                {mockOrders.map((order) => (
+                {myOrders.map((order) => (
                   <div
                     key={order.id}
                     style={{

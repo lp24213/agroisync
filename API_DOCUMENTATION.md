@@ -450,6 +450,184 @@ Strict-Transport-Security: max-age=31536000
 }
 ```
 
+## 📊 Audit Logs
+
+### GET `/audit-logs`
+Obter logs de auditoria do usuário
+
+**Headers:**
+- `Authorization: Bearer <token>`
+
+**Query Parameters:**
+- `limit` (opcional): Número de logs a retornar (padrão: 100)
+- `page` (opcional): Número da página (padrão: 1)
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "_id": "64a1b2c3d4e5f6789abcdef0",
+      "userId": "64a1b2c3d4e5f6789abcdef1",
+      "action": "login",
+      "resource": "user",
+      "status": "success",
+      "sensitivityLevel": "medium",
+      "containsPII": false,
+      "createdAt": "2023-07-01T10:00:00.000Z",
+      "sessionInfo": {
+        "ip": "192.168.1.1",
+        "userAgent": "Mozilla/5.0...",
+        "country": "Brasil",
+        "city": "São Paulo"
+      }
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 100,
+    "total": 1
+  }
+}
+```
+
+### GET `/audit-logs/pii-access`
+Obter logs de acesso a dados PII (Admin apenas)
+
+**Headers:**
+- `Authorization: Bearer <admin_token>`
+
+**Query Parameters:**
+- `userId` (opcional): Filtrar por ID do usuário
+- `limit` (opcional): Número de logs a retornar (padrão: 100)
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "_id": "64a1b2c3d4e5f6789abcdef0",
+      "userId": "64a1b2c3d4e5f6789abcdef1",
+      "action": "pii_access",
+      "resource": "user",
+      "status": "success",
+      "sensitivityLevel": "high",
+      "containsPII": true,
+      "createdAt": "2023-07-01T10:00:00.000Z",
+      "metadata": {
+        "fieldsDecrypted": ["cpf", "cnpj"]
+      }
+    }
+  ]
+}
+```
+
+### GET `/audit-logs/stats`
+Obter estatísticas de auditoria (Admin apenas)
+
+**Headers:**
+- `Authorization: Bearer <admin_token>`
+
+**Query Parameters:**
+- `startDate`: Data de início (string ISO)
+- `endDate`: Data de fim (string ISO)
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "_id": {
+        "action": "login",
+        "resource": "user",
+        "status": "success"
+      },
+      "count": 150,
+      "piiAccess": 0,
+      "avgResponseTime": 250
+    }
+  ]
+}
+```
+
+### POST `/audit-logs/export`
+Exportar logs de auditoria (Admin apenas)
+
+**Headers:**
+- `Authorization: Bearer <admin_token>`
+
+**Request Body:**
+```json
+{
+  "startDate": "2023-07-01T00:00:00.000Z",
+  "endDate": "2023-07-31T23:59:59.999Z",
+  "userId": "64a1b2c3d4e5f6789abcdef1",
+  "action": "pii_access",
+  "resource": "user",
+  "containsPII": true
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "64a1b2c3d4e5f6789abcdef0",
+      "userId": "64a1b2c3d4e5f6789abcdef1",
+      "action": "pii_access",
+      "resource": "user",
+      "status": "success",
+      "sensitivityLevel": "high",
+      "containsPII": true,
+      "createdAt": "2023-07-01T10:00:00.000Z",
+      "sessionInfo": {
+        "ip": "192.168.1.1",
+        "country": "Brasil"
+      }
+    }
+  ],
+  "exportedAt": "2023-07-01T10:00:00.000Z",
+  "totalRecords": 1
+}
+```
+
+### DELETE `/audit-logs/cleanup`
+Limpar logs expirados (Admin apenas)
+
+**Headers:**
+- `Authorization: Bearer <admin_token>`
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "25 logs expirados foram removidos",
+  "deletedCount": 25
+}
+```
+
+### GET `/audit-logs/:id/verify`
+Verificar integridade do log (Admin apenas)
+
+**Headers:**
+- `Authorization: Bearer <admin_token>`
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "logId": "64a1b2c3d4e5f6789abcdef0",
+    "isValid": true
+  }
+}
+```
+
 ## 🧪 Testes
 
 ### Exemplo de Teste com cURL
@@ -505,6 +683,13 @@ EMAIL_FROM=noreply@agroisync.com
 
 # Cloudflare
 CLOUDFLARE_TURNSTILE_SECRET_KEY=your-secret-key
+CLOUDFLARE_ACCESS_TOKEN=your-cloudflare-access-token
+CLOUDFLARE_ACCOUNT_ID=your-cloudflare-account-id
+CLOUDFLARE_ZONE_ID=your-cloudflare-zone-id
+
+# PII Encryption
+PII_ENCRYPTION_KEY=your-super-secret-pii-encryption-key-32-chars
+AUDIT_ENCRYPTION_KEY=your-super-secret-audit-encryption-key-32-chars
 
 # Server
 PORT=3001

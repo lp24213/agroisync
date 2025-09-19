@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import AuditLog from '../models/AuditLog.js';
+import auditService from '../services/auditService.js';
 
 // Middleware para verificar se o usuário é admin
 const requireAdmin = async (req, res, next) => {
@@ -33,14 +33,23 @@ const requireAdmin = async (req, res, next) => {
     };
 
     // Log da ação
-    await AuditLog.logAction({
+    await auditService.logAdminAccess({
       userId: decoded.id,
-      userEmail: decoded.email,
-      action: 'ADMIN_ACCESS',
       resource: req.originalUrl,
-      details: 'Admin accessed protected route',
-      ip: req.ip,
-      userAgent: req.get('User-Agent')
+      resourceId: null,
+      sessionInfo: {
+        ip: req.ip,
+        userAgent: req.get('User-Agent'),
+        country: req.get('CF-IPCountry') || 'unknown',
+        city: req.get('CF-IPCity') || 'unknown',
+        isp: req.get('CF-IPISP') || 'unknown'
+      },
+      metadata: {
+        endpoint: req.originalUrl,
+        method: req.method,
+        statusCode: 200,
+        responseTime: 0
+      }
     });
 
     next();
@@ -81,15 +90,27 @@ const validateAdminAction = async (req, res, next) => {
     }
 
     // Log da ação administrativa
-    await AuditLog.logAction({
+    await auditService.logAction({
       userId: req.user.id,
-      userEmail: req.user.email,
-      action: `ADMIN_${action.toUpperCase()}`,
+      action: `admin_${action.toLowerCase()}`,
       resource: req.originalUrl,
       resourceId,
-      details: details || `Admin action: ${action}`,
-      ip: req.ip,
-      userAgent: req.get('User-Agent')
+      afterData: { details: details || `Admin action: ${action}` },
+      sessionInfo: {
+        ip: req.ip,
+        userAgent: req.get('User-Agent'),
+        country: req.get('CF-IPCountry') || 'unknown',
+        city: req.get('CF-IPCity') || 'unknown',
+        isp: req.get('CF-IPISP') || 'unknown'
+      },
+      metadata: {
+        endpoint: req.originalUrl,
+        method: req.method,
+        statusCode: 200,
+        responseTime: 0
+      },
+      sensitivityLevel: 'high',
+      containsPII: false
     });
 
     next();

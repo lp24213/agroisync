@@ -28,6 +28,13 @@ EMAIL_SERVICE=sendgrid # ou mailgun, ses
 # Cloudflare
 CLOUDFLARE_TURNSTILE_SECRET_KEY=your-turnstile-secret-key
 CLOUDFLARE_ACCESS_TEAM_DOMAIN=your-team-domain.cloudflareaccess.com
+CLOUDFLARE_ACCESS_TOKEN=your-cloudflare-access-token
+CLOUDFLARE_ACCOUNT_ID=your-cloudflare-account-id
+CLOUDFLARE_ZONE_ID=your-cloudflare-zone-id
+
+# PII Encryption
+PII_ENCRYPTION_KEY=your-super-secret-pii-encryption-key-32-chars
+AUDIT_ENCRYPTION_KEY=your-super-secret-audit-encryption-key-32-chars
 
 # Server
 PORT=3001

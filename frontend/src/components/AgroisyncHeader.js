@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
+import LanguageSelector from './LanguageSelector';
 import { 
   Menu,
   X,
@@ -104,38 +105,7 @@ const AgroisyncHeader = () => {
           {/* Actions - Direita */}
           <div className="premium-header-actions">
             {/* Language Selector */}
-            <div className="premium-language-selector">
-          <button
-            className="premium-language-btn agro-btn-animated"
-            onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
-          >
-                <Globe size={14} />
-                <span>{i18n.language.toUpperCase()}</span>
-              </button>
-              
-              <AnimatePresence>
-                {isLanguageMenuOpen && (
-                  <motion.div
-                    className="premium-language-dropdown"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {languages.map((lang) => (
-                      <button
-                        key={lang.code}
-                        className={`premium-lang-option agro-btn-animated ${i18n.language === lang.code ? 'active' : ''}`}
-                        onClick={() => handleLanguageChange(lang.code)}
-                      >
-                        <span className="premium-lang-flag">{lang.flag}</span>
-                        <span>{lang.name}</span>
-                      </button>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+            <LanguageSelector variant="minimal" showLabel={false} />
 
             {/* Auth Buttons */}
             <div className="premium-auth-buttons">

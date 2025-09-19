@@ -65,6 +65,63 @@ const userSchema = new mongoose.Schema(
     businessDocument: String, // CPF/CNPJ
     businessLicense: String,
 
+    // Dados PII criptografados
+    piiData: {
+      // Documentos pessoais
+      cpf: {
+        type: String,
+        default: null
+      },
+      cnpj: {
+        type: String,
+        default: null
+      },
+      rg: {
+        type: String,
+        default: null
+      },
+      passport: {
+        type: String,
+        default: null
+      },
+      
+      // Informações financeiras
+      bankAccount: {
+        type: String,
+        default: null
+      },
+      creditCard: {
+        type: String,
+        default: null
+      },
+      
+      // Informações fiscais
+      taxId: {
+        type: String,
+        default: null
+      },
+      businessId: {
+        type: String,
+        default: null
+      },
+      
+      // Metadados de criptografia
+      encryptionMetadata: {
+        algorithm: {
+          type: String,
+          default: 'aes-256-gcm'
+        },
+        keyVersion: {
+          type: String,
+          default: '1.0'
+        },
+        lastEncrypted: {
+          type: Date,
+          default: null
+        }
+      }
+    },
+
     // Configurações de conta
     isEmailVerified: {
       type: Boolean,
@@ -340,7 +397,89 @@ userSchema.methods.toJSON = function () {
   delete user.emailVerificationToken;
   delete user.passwordResetToken;
   delete user.phoneVerificationCode;
+  delete user.piiData; // Não incluir dados PII no JSON
   return user;
+};
+
+// Métodos para criptografia de dados PII
+userSchema.methods.encryptPIIData = function(data) {
+  const crypto = require('crypto');
+  const algorithm = 'aes-256-gcm';
+  const key = process.env.PII_ENCRYPTION_KEY || 'default-pii-key-change-in-production';
+  
+  try {
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipher(algorithm, key);
+    cipher.setAAD(Buffer.from('pii-data', 'utf8'));
+    
+    let encrypted = cipher.update(JSON.stringify(data), 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    
+    const authTag = cipher.getAuthTag();
+    
+    return {
+      encrypted,
+      iv: iv.toString('hex'),
+      authTag: authTag.toString('hex'),
+      algorithm,
+      keyVersion: '1.0'
+    };
+  } catch (error) {
+    console.error('Erro ao criptografar dados PII:', error);
+    throw error;
+  }
+};
+
+userSchema.methods.decryptPIIData = function(encryptedData) {
+  const crypto = require('crypto');
+  const key = process.env.PII_ENCRYPTION_KEY || 'default-pii-key-change-in-production';
+  
+  try {
+    const decipher = crypto.createDecipher(encryptedData.algorithm, key);
+    decipher.setAAD(Buffer.from('pii-data', 'utf8'));
+    decipher.setAuthTag(Buffer.from(encryptedData.authTag, 'hex'));
+    
+    let decrypted = decipher.update(encryptedData.encrypted, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    
+    return JSON.parse(decrypted);
+  } catch (error) {
+    console.error('Erro ao descriptografar dados PII:', error);
+    throw error;
+  }
+};
+
+userSchema.methods.setPIIData = function(field, value) {
+  if (!this.piiData) {
+    this.piiData = {};
+  }
+  
+  if (value) {
+    const encrypted = this.encryptPIIData(value);
+    this.piiData[field] = encrypted;
+    this.piiData.encryptionMetadata.lastEncrypted = new Date();
+  } else {
+    this.piiData[field] = null;
+  }
+  
+  return this;
+};
+
+userSchema.methods.getPIIData = function(field) {
+  if (!this.piiData || !this.piiData[field]) {
+    return null;
+  }
+  
+  try {
+    return this.decryptPIIData(this.piiData[field]);
+  } catch (error) {
+    console.error(`Erro ao descriptografar campo PII ${field}:`, error);
+    return null;
+  }
+};
+
+userSchema.methods.hasPIIData = function(field) {
+  return !!(this.piiData && this.piiData[field]);
 };
 
 // Métodos estáticos
