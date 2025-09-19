@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import RegistrationSystem from '../components/RegistrationSystem';
+import PlansSystem from '../components/PlansSystem';
 import { 
   Truck, 
   MapPin, 
@@ -18,6 +19,7 @@ import {
   Search,
   Calendar,
   Package,
+  Crown,
   DollarSign,
   Eye,
   MessageSquare,
@@ -45,6 +47,7 @@ const AgroisyncAgroConecta = () => {
   const [trackingUpdates, setTrackingUpdates] = useState([]);
   const [aiClosureData, setAiClosureData] = useState(null);
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
+  const [showPlansModal, setShowPlansModal] = useState(false);
   // const [publicRegistrations, setPublicRegistrations] = useState([]);
 
   // Dados de ofertas de frete
@@ -547,38 +550,62 @@ const AgroisyncAgroConecta = () => {
           </motion.div>
 
           {/* Botão de Cadastro */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              marginBottom: '2rem'
-            }}
-          >
-            <button
-              onClick={() => setShowRegistrationModal(true)}
-              className="agro-btn-animated"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '1rem 2rem',
-                background: 'linear-gradient(135deg, var(--accent) 0%, #2e7d32 100%)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '12px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                boxShadow: '0 4px 15px rgba(42, 127, 79, 0.3)'
-              }}
-            >
-              <UserPlus size={20} />
-              Cadastrar como Transportador
-            </button>
-          </motion.div>
+           <motion.div
+             initial={{ opacity: 0, y: 20 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.5, delay: 0.2 }}
+             style={{
+               display: 'flex',
+               justifyContent: 'center',
+               gap: '1rem',
+               marginBottom: '2rem',
+               flexWrap: 'wrap'
+             }}
+           >
+             <button
+               onClick={() => setShowRegistrationModal(true)}
+               className="agro-btn-animated"
+               style={{
+                 display: 'flex',
+                 alignItems: 'center',
+                 gap: '0.5rem',
+                 padding: '1rem 2rem',
+                 background: 'linear-gradient(135deg, var(--accent) 0%, #2e7d32 100%)',
+                 color: 'white',
+                 border: 'none',
+                 borderRadius: '12px',
+                 fontWeight: '600',
+                 cursor: 'pointer',
+                 transition: 'all 0.3s ease',
+                 boxShadow: '0 4px 15px rgba(42, 127, 79, 0.3)'
+               }}
+             >
+               <UserPlus size={20} />
+               Cadastrar como Transportador
+             </button>
+
+             <button
+               onClick={() => setShowPlansModal(true)}
+               className="agro-btn-animated"
+               style={{
+                 display: 'flex',
+                 alignItems: 'center',
+                 gap: '0.5rem',
+                 padding: '1rem 2rem',
+                 background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                 color: 'white',
+                 border: 'none',
+                 borderRadius: '12px',
+                 fontWeight: '600',
+                 cursor: 'pointer',
+                 transition: 'all 0.3s ease',
+                 boxShadow: '0 4px 15px rgba(245, 158, 11, 0.3)'
+               }}
+             >
+               <Star size={20} />
+               Ver Planos Premium
+             </button>
+           </motion.div>
 
           {/* Conteúdo das Tabs */}
           {activeTab === 'buscar' && (
@@ -1398,6 +1425,26 @@ const AgroisyncAgroConecta = () => {
           type="agroconecta"
           onClose={() => setShowRegistrationModal(false)}
         />
+      )}
+
+      {/* Modal de Planos */}
+      {showPlansModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">Planos Premium - AgroConecta</h2>
+                <button
+                  onClick={() => setShowPlansModal(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+              <PlansSystem />
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

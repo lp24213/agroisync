@@ -14,7 +14,8 @@ import {
   LogOut,
   User,
   Info,
-  Coins
+  Coins,
+  Crown
 } from 'lucide-react';
 
 const AgroisyncHeader = () => {
@@ -52,6 +53,7 @@ const AgroisyncHeader = () => {
     { path: '/marketplace', label: 'Marketplace', icon: ShoppingCart },
     { path: '/tecnologia', label: 'Crypto', icon: Coins },
     { path: '/about', label: 'Sobre', icon: Info },
+    { path: '/planos', label: 'Planos', icon: Crown },
   ];
 
   const languages = [

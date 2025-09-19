@@ -102,6 +102,7 @@ function App() {
                   <Route path="/tecnologia" element={<AgroisyncCrypto />} />
                   <Route path="/intermediation" element={<IntermediationSystem />} />
                   <Route path="/plans" element={<AgroisyncPlans />} />
+                  <Route path="/planos" element={<AgroisyncPlans />} />
                   <Route path="/about" element={<AgroisyncAbout />} />
                   <Route path="/contact" element={<AgroisyncContact />} />
                   <Route path="/partnerships" element={<Partnerships />} />

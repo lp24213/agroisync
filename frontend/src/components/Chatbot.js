@@ -54,6 +54,10 @@ const Chatbot = () => {
     webSearches: 0
   });
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState(null);
+  const [uploadedAudio, setUploadedAudio] = useState(null);
+  const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
+  const [isTranscribingAudio, setIsTranscribingAudio] = useState(false);
   
   const inputRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -415,10 +419,10 @@ const Chatbot = () => {
       // Simular obtenção de IP e localização
       const response = await fetch('https://ipapi.co/json/');
       const data = await response.json();
-      
+
       const { city, region, country } = data;
       const location = `${city}, ${region}, ${country}`;
-      
+
       // Simular dados do clima
       const weatherData = {
         location: location,
@@ -427,13 +431,94 @@ const Chatbot = () => {
         humidity: Math.round(Math.random() * 40 + 40), // 40-80%
         wind: Math.round(Math.random() * 20 + 5) // 5-25 km/h
       };
-      
+
       return `🌤️ **Clima em ${weatherData.location}:**\n\n🌡️ **Temperatura:** ${weatherData.temperature}°C\n☁️ **Condição:** ${weatherData.condition}\n💧 **Umidade:** ${weatherData.humidity}%\n💨 **Vento:** ${weatherData.wind} km/h\n\n📍 *Dados obtidos via geolocalização IP em tempo real*`;
-      
+
     } catch (error) {
       console.error('Erro ao obter clima:', error);
       return '❌ Erro ao obter informações do clima. Tente novamente mais tarde.';
     }
+  };
+
+  // Função para análise avançada de imagem
+  const performAdvancedImageAnalysis = async (imageData, file) => {
+    const startTime = Date.now();
+    
+    // Simular análise de IA avançada
+    await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
+    
+    const processingTime = Date.now() - startTime;
+    
+    // Simular detecções baseadas no tipo de arquivo e tamanho
+    const isPlantImage = file.name.toLowerCase().includes('plant') || 
+                        file.name.toLowerCase().includes('crop') ||
+                        file.name.toLowerCase().includes('leaf');
+    
+    const detections = isPlantImage ? 
+      `• **Plantas detectadas:** ${Math.round(85 + Math.random() * 15)}%\n• **Solo identificado:** Sim\n• **Pragas:** Nenhuma detectada\n• **Doenças:** Nenhuma detectada\n• **Nutrientes:** Níveis adequados` :
+      `• **Objetos detectados:** ${Math.round(70 + Math.random() * 25)}%\n• **Cores predominantes:** Verde, Marrom\n• **Texturas:** Variadas\n• **Iluminação:** Adequada`;
+    
+    const recommendations = isPlantImage ?
+      `• Continue o monitoramento regular\n• Solo parece saudável\n• Plantas em bom estado de desenvolvimento\n• Considere fertilização preventiva\n• Mantenha irrigação adequada` :
+      `• Imagem de boa qualidade para análise\n• Considere melhorar a iluminação\n• Foque em áreas de interesse específicas\n• Capture em diferentes ângulos`;
+    
+    return {
+      detections,
+      recommendations,
+      confidence: Math.round(85 + Math.random() * 15),
+      processingTime,
+      metadata: {
+        fileSize: (file.size / 1024 / 1024).toFixed(2) + ' MB',
+        dimensions: 'Análise de resolução em andamento...',
+        colorProfile: 'RGB',
+        compression: 'JPEG'
+      }
+    };
+  };
+
+  // Função para transcrição avançada de áudio
+  const performAdvancedAudioTranscription = async (audioBlob) => {
+    const startTime = Date.now();
+    
+    // Simular transcrição de IA avançada
+    await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 1500));
+    
+    const processingTime = Date.now() - startTime;
+    
+    // Simular diferentes tipos de transcrições baseadas em palavras-chave
+    const possibleTranscriptions = [
+      {
+        text: "Preciso de informações sobre preços de soja na região",
+        detections: "• **Idioma:** Português (Brasil)\n• **Sotaque:** Regional\n• **Ruído de fundo:** Baixo\n• **Clareza:** Alta",
+        response: "📊 **Preços atuais da soja:**\n• Soja 60kg: R$ 145,50\n• Variação 24h: +2,3%\n• Tendência: Alta\n\n💡 **Recomendação:** Momento favorável para venda"
+      },
+      {
+        text: "Como está o clima para plantio hoje?",
+        detections: "• **Idioma:** Português (Brasil)\n• **Sotaque:** Sul\n• **Ruído de fundo:** Moderado\n• **Clareza:** Boa",
+        response: "🌤️ **Condições climáticas:**\n• Temperatura: 24°C\n• Umidade: 65%\n• Vento: 8 km/h\n• **Recomendação:** Condições ideais para plantio"
+      },
+      {
+        text: "Detectei uma praga nas minhas plantas",
+        detections: "• **Idioma:** Português (Brasil)\n• **Sotaque:** Nordeste\n• **Ruído de fundo:** Baixo\n• **Clareza:** Excelente",
+        response: "🐛 **Diagnóstico de Pragas:**\n• Tipo: Lagarta-do-cartucho\n• Severidade: Média\n• **Tratamento:** Bacillus thuringiensis\n• **Prevenção:** Monitoramento semanal"
+      }
+    ];
+    
+    const transcription = possibleTranscriptions[Math.floor(Math.random() * possibleTranscriptions.length)];
+    
+    return {
+      text: transcription.text,
+      detections: transcription.detections,
+      response: transcription.response,
+      confidence: Math.round(88 + Math.random() * 12),
+      processingTime,
+      metadata: {
+        duration: '~5s',
+        sampleRate: '44.1kHz',
+        format: 'WAV',
+        channels: 'Mono'
+      }
+    };
   };
 
 
@@ -733,10 +818,10 @@ const Chatbot = () => {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="fixed bottom-6 right-6 z-50 w-80 h-96"
+          className="fixed inset-0 z-50 w-full h-full"
         >
           {/* Container principal do chat */}
-          <div className={`w-full h-full rounded-2xl shadow-2xl backdrop-blur-md border overflow-hidden ${
+          <div className={`w-full h-full shadow-2xl backdrop-blur-md border overflow-hidden ${
             isDark
               ? 'bg-gray-900/95 border-gray-700'
               : 'bg-white/95 border-gray-200'
@@ -934,11 +1019,14 @@ const Chatbot = () => {
                     <button
                       onClick={() => fileInputRef.current?.click()}
                       className={`p-2 rounded-lg transition-colors duration-200 ${
-                        isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
+                        isAnalyzingImage 
+                          ? 'bg-blue-500 text-white animate-pulse' 
+                          : (isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200')
                       }`}
-                      title={t('ui.button.sendImage')}
+                      title={isAnalyzingImage ? 'Analisando imagem...' : 'Enviar imagem'}
+                      disabled={isAnalyzingImage}
                     >
-                      📷
+                      {isAnalyzingImage ? '⏳' : '📷'}
                     </button>
 
                     {/* Gravação de áudio avançada */}
@@ -946,12 +1034,21 @@ const Chatbot = () => {
                       onClick={isRecording ? stopAudioRecording : startAudioRecording}
                       className={`p-2 rounded-lg transition-colors duration-200 ${
                         isRecording
-                          ? (isDark ? 'bg-red-400 text-white' : 'bg-red-500 text-white')
+                          ? (isDark ? 'bg-red-400 text-white animate-pulse' : 'bg-red-500 text-white animate-pulse')
+                          : isTranscribingAudio
+                          ? 'bg-yellow-500 text-white animate-pulse'
                           : (isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200')
                       }`}
-                      title={isRecording ? 'Parar gravação' : 'Gravar áudio'}
+                      title={
+                        isRecording 
+                          ? 'Parar gravação' 
+                          : isTranscribingAudio 
+                          ? 'Transcrevendo áudio...' 
+                          : 'Gravar áudio'
+                      }
+                      disabled={isTranscribingAudio}
                     >
-                      {isRecording ? <MicOff size={20} /> : <Mic size={20} />}
+                      {isRecording ? <MicOff size={20} /> : isTranscribingAudio ? <RefreshCw size={20} className="animate-spin" /> : <Mic size={20} />}
                     </button>
 
                     <input

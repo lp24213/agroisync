@@ -320,7 +320,9 @@ const AgroisyncLoja = () => {
             style={{
               display: 'flex',
               justifyContent: 'center',
-              marginBottom: '2rem'
+              gap: '1rem',
+              marginBottom: '2rem',
+              flexWrap: 'wrap'
             }}
           >
             <button
@@ -343,6 +345,28 @@ const AgroisyncLoja = () => {
             >
               <UserPlus size={20} />
               Cadastrar como Vendedor
+            </button>
+
+            <button
+              onClick={() => setShowPlansModal(true)}
+              className="agro-btn-animated"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '1rem 2rem',
+                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 15px rgba(245, 158, 11, 0.3)'
+              }}
+            >
+              <Star size={20} />
+              Ver Planos Premium
             </button>
           </motion.div>
 
@@ -897,6 +921,26 @@ const AgroisyncLoja = () => {
           type="loja"
           onClose={() => setShowRegistrationModal(false)}
         />
+      )}
+
+      {/* Modal de Planos */}
+      {showPlansModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">Planos Premium - Loja</h2>
+                <button
+                  onClick={() => setShowPlansModal(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+              <PlansSystem />
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

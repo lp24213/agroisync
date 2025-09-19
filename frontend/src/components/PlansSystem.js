@@ -271,14 +271,14 @@ const PlansSystem = () => {
         }
       };
 
-      const result = await paymentService.processPayment(paymentData);
-      
-      if (result.method === 'stripe') {
-        // Redirecionar para Stripe
-        window.location.href = result.redirectUrl;
-      } else if (result.method === 'metamask') {
-        // Redirecionar para sucesso crypto
-        window.location.href = result.redirectUrl;
+      if (paymentMethod === 'stripe') {
+        // Redirecionar para Stripe Checkout
+        const stripeUrl = `/payment/stripe?amount=${plan.price}&service=${selectedService}&plan=${plan.id}`;
+        window.location.href = stripeUrl;
+      } else if (paymentMethod === 'metamask') {
+        // Redirecionar para página de pagamento crypto
+        const cryptoUrl = `/payment/crypto?amount=${plan.price}&service=${selectedService}&plan=${plan.id}`;
+        window.location.href = cryptoUrl;
       }
       
     } catch (error) {
