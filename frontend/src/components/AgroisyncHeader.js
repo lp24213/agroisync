@@ -14,7 +14,8 @@ import {
   LogIn,
   LogOut,
   User,
-  Globe
+  Globe,
+  Info
 } from 'lucide-react';
 
 const AgroisyncHeader = () => {
@@ -53,6 +54,7 @@ const AgroisyncHeader = () => {
     { path: '/agroconecta', label: 'AgroConecta', icon: Truck },
     { path: '/marketplace', label: 'Marketplace', icon: ShoppingCart },
     { path: '/tecnologia', label: 'Tecnologia', icon: Coins },
+    { path: '/about', label: 'Sobre', icon: Info },
     { path: '/partnerships', label: 'Parcerias', icon: Users },
   ];
 
