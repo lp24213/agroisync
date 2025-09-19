@@ -20,13 +20,15 @@
 }
 
 .premium-header-logo-img {
-  height: 50px;
-  width: auto;
-  max-width: 200px;
-  object-fit: contain;
-  display: block;
+  height: 60px !important;
+  width: auto !important;
+  max-width: 250px !important;
+  object-fit: contain !important;
+  display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
+  z-index: 9999 !important;
+  position: relative !important;
 }
 
 .premium-header-menu {
