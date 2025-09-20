@@ -15,7 +15,7 @@
   padding: 0 16px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   height: 60px;
   gap: 15px;
 }
@@ -44,6 +44,7 @@
   padding: 0;
   flex-wrap: nowrap;
   max-width: 600px;
+  margin-left: 150px;
   justify-content: center;
 }
 
