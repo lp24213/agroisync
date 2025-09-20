@@ -121,7 +121,7 @@ const AgroisyncHeader = () => {
               ) : (
                 <>
                   <Link to="/login" className="premium-header-link agro-btn-animated">
-                    <LogIn size={10} />
+                    <LogIn size={8} />
                     <span>{t('nav.login')}</span>
                   </Link>
                   <Link to="/register" className="premium-header-link agro-btn-animated">
