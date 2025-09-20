@@ -461,7 +461,7 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.8 }}
         className={`fixed ${isMinimized ? 'bottom-6 right-6' : 'bottom-6 right-6'} z-50 bg-white rounded-lg shadow-2xl border border-gray-200 ${
-          isMinimized ? 'w-80 h-16' : 'w-96 h-[600px]'
+          isMinimized ? 'w-80 h-16' : 'w-96 h-[500px]'
         } transition-all duration-300`}
       >
         {/* Header */}
@@ -604,34 +604,34 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
             )}
             
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4 h-96 bg-gradient-to-b from-gray-50 to-white">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 h-80 bg-gradient-to-b from-gray-50 to-white">
               {messages.length === 0 && (
-                <div className="text-center py-12">
-                  <div className="relative mb-6">
-                    <div className="w-20 h-20 mx-auto bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center shadow-lg">
+                <div className="text-center py-8">
+                  <div className="relative mb-4">
+                    <div className="w-16 h-16 mx-auto bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center shadow-lg">
                       <img 
                         src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSIjRkZGRkZGIi8+CjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9IiMzMzMzMzMiLz4KPC9zdmc+" 
                         alt="IA" 
-                        className="w-10 h-10"
+                        className="w-8 h-8"
                       />
                     </div>
-                    <div className="absolute -top-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center">
-                      <Crown size={12} className="text-white" />
+                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center">
+                      <Crown size={10} className="text-white" />
                     </div>
                   </div>
-                  <h3 className="text-lg font-bold text-gray-800 mb-2">AGROISYNC AI</h3>
-                  <p className="text-sm text-gray-600 mb-4">Seu assistente inteligente para agronegócio</p>
-                  <div className="grid grid-cols-2 gap-2 max-w-xs mx-auto">
-                    <div className="bg-white p-2 rounded-lg shadow-sm border border-gray-200">
+                  <h3 className="text-base font-bold text-gray-800 mb-1">AGROISYNC AI</h3>
+                  <p className="text-xs text-gray-600 mb-3">Seu assistente inteligente para agronegócio</p>
+                  <div className="grid grid-cols-2 gap-1 max-w-xs mx-auto">
+                    <div className="bg-white p-1 rounded shadow-sm border border-gray-200">
                       <div className="text-xs text-gray-500">🌾 Commodities</div>
                     </div>
-                    <div className="bg-white p-2 rounded-lg shadow-sm border border-gray-200">
+                    <div className="bg-white p-1 rounded shadow-sm border border-gray-200">
                       <div className="text-xs text-gray-500">📊 Análises</div>
                     </div>
-                    <div className="bg-white p-2 rounded-lg shadow-sm border border-gray-200">
+                    <div className="bg-white p-1 rounded shadow-sm border border-gray-200">
                       <div className="text-xs text-gray-500">💻 Código</div>
                     </div>
-                    <div className="bg-white p-2 rounded-lg shadow-sm border border-gray-200">
+                    <div className="bg-white p-1 rounded shadow-sm border border-gray-200">
                       <div className="text-xs text-gray-500">🔍 Busca</div>
                     </div>
                   </div>
@@ -677,7 +677,7 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
             </div>
             
             {/* Input Area */}
-            <div className="p-4 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-white">
+            <div className="p-3 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-white">
               {/* Uploaded Files */}
               {uploadedFiles.length > 0 && (
                 <div className="mb-3">
@@ -749,14 +749,14 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
               )}
               
               {/* Botão Fechar - Parte de Baixo */}
-              <div className="mt-3 pt-3 border-t border-gray-200">
+              <div className="mt-2 pt-2 border-t border-gray-200">
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="w-full flex items-center justify-center gap-2 p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  className="w-full flex items-center justify-center gap-2 p-1.5 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                   aria-label="Fechar chatbot"
                 >
-                  <X size={16} />
-                  <span className="text-sm font-medium">Fechar Chatbot</span>
+                  <X size={14} />
+                  <span className="text-xs font-medium">Fechar Chatbot</span>
                 </button>
               </div>
             </div>
