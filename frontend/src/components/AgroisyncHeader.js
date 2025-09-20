@@ -49,8 +49,8 @@ const AgroisyncHeader = () => {
   const navigationItems = [
     { path: '/', label: 'Início', icon: Home },
     { path: '/loja', label: 'Loja', icon: ShoppingCart },
-    { path: '/agroconecta', label: 'AgroConecta', icon: Truck },
-    { path: '/marketplace', label: 'Marketplace', icon: ShoppingCart },
+    { path: '/agroconecta', label: 'Fretes', icon: Truck },
+    { path: '/marketplace', label: 'Produtos', icon: ShoppingCart },
     { path: '/tecnologia', label: 'Crypto', icon: Coins },
     { path: '/about', label: 'Sobre', icon: Info },
     { path: '/planos', label: 'Planos', icon: Crown },
