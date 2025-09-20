@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-import LGPDCompliance from './LGPDCompliance';
 import { 
   Send, 
   X, 
@@ -58,7 +57,6 @@ const AgroSyncGPT = () => {
   
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [isProUser, setIsProUser] = useState(false);
-  const [showLGPDModal, setShowLGPDModal] = useState(false);
   
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -78,13 +76,7 @@ const AgroSyncGPT = () => {
       }));
     }
     
-    // Verificar consentimento LGPD
-    const lgpdConsent = localStorage.getItem('agroisync-lgpd-consent');
-    if (lgpdConsent === 'accepted') {
-      // LGPD já aceito
-    } else {
-      setShowLGPDModal(true);
-    }
+    // Verificar consentimento LGPD já foi aceito globalmente
   }, [user]);
   
   // Inicializar APIs de voz
@@ -418,17 +410,6 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
     setUploadedFiles(files);
   };
   
-  // Handlers LGPD
-  const handleLGPDAccept = () => {
-    setShowLGPDModal(false);
-  };
-  
-  const handleLGPDDecline = () => {
-    setShowLGPDModal(false);
-    setIsOpen(false);
-    toast.error('É necessário aceitar os termos de uso para utilizar o chatbot');
-  };
-  
   // Personalidades disponíveis
   const personalities = [
     { id: 'agro-expert', name: 'Especialista Agro', icon: '🌾', description: 'Especialista em agronegócio' },
@@ -453,7 +434,7 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-green-600 to-green-700 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+        className="fixed bottom-6 right-6 z-50 bg-gray-800 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
       >
         <Bot size={24} />
       </motion.button>
@@ -682,13 +663,6 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
             </div>
           </>
         )}
-        
-        {/* LGPD Compliance Modal */}
-        <LGPDCompliance 
-          isVisible={showLGPDModal}
-          onAccept={handleLGPDAccept}
-          onDecline={handleLGPDDecline}
-        />
         
         {/* Upgrade Modal */}
         {showUpgradeModal && (

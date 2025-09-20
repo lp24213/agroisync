@@ -40,7 +40,6 @@
   padding: 0;
   flex-wrap: nowrap;
   max-width: 600px;
-  overflow-x: auto;
 }
 
 .premium-header-link {

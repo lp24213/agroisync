@@ -10,7 +10,7 @@ import AgroisyncHeader from './components/AgroisyncHeader';
 import AgroisyncFooter from './components/AgroisyncFooter';
 import PremiumCursor from './components/PremiumCursor';
 import AgroSyncGPT from './components/AgroSyncGPT';
-import LGPDCompliance from './components/LGPDCompliance';
+import GlobalLGPD from './components/GlobalLGPD';
 import Ticker from './components/Ticker';
 import WeatherWidget from './components/WeatherWidget';
 
@@ -156,8 +156,8 @@ function App() {
                 {/* Global Chatbot Widget */}
                 <AgroSyncGPT />
                 
-                {/* LGPD Compliance Modal */}
-                <LGPDCompliance />
+                {/* Global LGPD Compliance */}
+                <GlobalLGPD />
                 
                 {/* Toast Notifications */}
                 <Toaster
