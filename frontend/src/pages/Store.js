@@ -27,86 +27,8 @@ const Store = () => {
     { id: 'services', name: 'Serviços' }
   ];
 
-  const products = [
-    {
-      id: 1,
-      name: 'Sementes Premium Soja',
-      category: 'seeds',
-      price: 89.90,
-      originalPrice: 120.00,
-      rating: 4.8,
-      reviews: 124,
-      image: '/api/placeholder/300/200',
-      badge: 'Mais Vendido',
-      inStock: true,
-      description: 'Sementes de soja de alta qualidade para máxima produtividade'
-    },
-    {
-      id: 2,
-      name: 'Fertilizante NPK 20-10-10',
-      category: 'fertilizers',
-      price: 45.50,
-      originalPrice: 60.00,
-      rating: 4.6,
-      reviews: 89,
-      image: '/api/placeholder/300/200',
-      badge: 'Oferta',
-      inStock: true,
-      description: 'Fertilizante balanceado para todas as culturas'
-    },
-    {
-      id: 3,
-      name: 'Drone Agrícola DJI Agras',
-      category: 'technology',
-      price: 15990.00,
-      originalPrice: 18990.00,
-      rating: 4.9,
-      reviews: 23,
-      image: '/api/placeholder/300/200',
-      badge: 'Novidade',
-      inStock: true,
-      description: 'Drone profissional para pulverização e monitoramento'
-    },
-    {
-      id: 4,
-      name: 'Trator John Deere 6110J',
-      category: 'equipment',
-      price: 185000.00,
-      originalPrice: 210000.00,
-      rating: 4.7,
-      reviews: 15,
-      image: '/api/placeholder/300/200',
-      badge: 'Premium',
-      inStock: false,
-      description: 'Trator de alta performance para grandes propriedades'
-    },
-    {
-      id: 5,
-      name: 'Sistema de Irrigação Inteligente',
-      category: 'technology',
-      price: 2500.00,
-      originalPrice: 3200.00,
-      rating: 4.5,
-      reviews: 67,
-      image: '/api/placeholder/300/200',
-      badge: 'Eco',
-      inStock: true,
-      description: 'Controle automático de irrigação com IoT'
-    },
-    {
-      id: 6,
-      name: 'Consultoria Agronômica Premium',
-      category: 'services',
-      price: 500.00,
-      originalPrice: 750.00,
-      rating: 4.9,
-      reviews: 45,
-      image: '/api/placeholder/300/200',
-      badge: 'Especialista',
-      inStock: true,
-      description: 'Consultoria especializada para otimização da produção'
-    }
-  ];
+  // Produtos da loja - VAZIO até usuários cadastrarem seus produtos
+  const products = [];
 
   const filteredProducts = selectedCategory === 'all' 
     ? products 

@@ -24,63 +24,8 @@ const AgroisyncMarketplace = () => {
   // const [publicRegistrations, setPublicRegistrations] = useState([]);
   const [selectedState, setSelectedState] = useState('todos');
 
-  // Dados de produtos do marketplace
-  const products = [
-    {
-      id: 1,
-      title: 'Sementes Híbridas de Soja',
-      description: 'Sementes certificadas de alta produtividade para plantio direto',
-      price: 'R$ 180,00/saca',
-      image: '/assets/campo-soja-real-4k.png',
-      category: 'insumos',
-      location: 'Mato Grosso'
-    },
-    {
-      id: 2,
-      title: 'Trator John Deere 8584',
-      description: 'Trator agrícola com 180cv, ideal para grandes propriedades',
-      price: 'R$ 120.000,00',
-      image: '/assets/campo-soja-real-4k.png',
-      category: 'maquinas',
-      location: 'São Paulo'
-    },
-    {
-      id: 3,
-      title: 'Fertilizante NPK 20-10-10',
-      description: 'Fertilizante granulado para aplicação em pré-plantio',
-      price: 'R$ 2.800,00/ton',
-      image: '/assets/campo-soja-real-4k.png',
-      category: 'insumos',
-      location: 'Goiás'
-    },
-    {
-      id: 4,
-      title: 'Colheitadeira Case IH',
-      description: 'Colheitadeira com capacidade de 12 toneladas por hora',
-      price: 'R$ 850.000,00',
-      image: '/assets/campo-soja-real-4k.png',
-      category: 'maquinas',
-      location: 'Paraná'
-    },
-    {
-      id: 5,
-      title: 'Gado Nelore Certificado',
-      description: 'Lote de 50 cabeças de gado nelore com certificação',
-      price: 'R$ 3.500,00/cabeça',
-      image: '/assets/campo-soja-real-4k.png',
-      category: 'pecuaria',
-      location: 'Mato Grosso do Sul'
-    },
-    {
-      id: 6,
-      title: 'Serviço de Mapeamento com Drone',
-      description: 'Mapeamento aéreo para análise de solo e plantio',
-      price: 'R$ 150,00/hectare',
-      image: '/assets/campo-soja-real-4k.png',
-      category: 'servicos',
-      location: 'Minas Gerais'
-    }
-  ];
+  // Dados de produtos do marketplace - VAZIO até usuários cadastrarem
+  const products = [];
 
   const categories = [
     { value: 'todos', label: 'Todos' },

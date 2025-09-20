@@ -96,7 +96,7 @@ const Home = () => {
       <section 
         className="w-full relative flex items-center justify-center overflow-hidden"
         style={{
-          backgroundImage: "url('/images/inicio.png')",
+          backgroundImage: "url('https://images.unsplash.com/photo-1600747476236-76579658b1b1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Q0FNUE8lMjBERSUyMFNPSkF8ZW58MHx8MHx8fDA%3D')",
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
