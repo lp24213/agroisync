@@ -290,7 +290,7 @@ const AgroSyncGPT = () => {
     const lowerInput = input.toLowerCase();
     
     if (lowerInput.includes('javascript') || lowerInput.includes('js')) {
-      return ````javascript
+      return `\`\`\`javascript
 // Exemplo de código JavaScript para agronegócio
 class AgroSyncAPI {
   constructor(apiKey) {
@@ -316,11 +316,11 @@ class AgroSyncAPI {
 const api = new AgroSyncAPI('sua-chave-aqui');
 const profit = await api.calculateProfit(50, 80, 1000);
 console.log('Lucro:', profit);
-```\n\nEste código mostra como integrar com a API do AGROISYNC para calcular lucros e obter preços de commodities.`;
+\`\`\`\n\nEste código mostra como integrar com a API do AGROISYNC para calcular lucros e obter preços de commodities.`;
     }
     
     if (lowerInput.includes('python') || lowerInput.includes('py')) {
-      return ````python
+      return `\`\`\`python
 # Exemplo de código Python para análise agrícola
 import pandas as pd
 import numpy as np
@@ -349,10 +349,10 @@ analyzer = AgroAnalysis()
 data = analyzer.load_commodity_data('soja_data.csv')
 yield_value = analyzer.calculate_yield(100, 5000)
 print(f"Produtividade: {yield_value} kg/ha")
-```\n\nEste código Python ajuda na análise de dados agrícolas e predição de preços.`;
+\`\`\`\n\nEste código Python ajuda na análise de dados agrícolas e predição de preços.`;
     }
     
-    return ````javascript
+    return `\`\`\`javascript
 // Código genérico para agronegócio
 function calculateROI(investment, revenue) {
   return ((revenue - investment) / investment) * 100;
@@ -372,7 +372,7 @@ const roi = calculateROI(investment, revenue);
 
 console.log(\`ROI: \${roi.toFixed(2)}%\`);
 console.log(\`Receita: \${formatCurrency(revenue)}\`);
-```\n\nEste código calcula ROI (Retorno sobre Investimento) e formata valores monetários.`;
+\`\`\`\n\nEste código calcula ROI (Retorno sobre Investimento) e formata valores monetários.`;
   };
   
   // Gerar resposta de análise
