@@ -1,20 +1,6 @@
 # Cloudflare Pages Configuration
-# FORÇAR MODO PAGES - NÃO WORKERS
-
 name = "agroisync-frontend"
 compatibility_date = "2025-09-20"
 
-# FORÇAR PAGES MODE
-[pages]
-directory = "frontend/build"
-
-# DESABILITAR WORKERS
-[build]
-command = "npm run build:frontend"
-cwd = "frontend"
-watch_dir = "src"
-
-# Environment variables
-[vars]
-NODE_VERSION = "18.20.4"
-REACT_APP_API_URL = "https://agroisync-backend-prod.luispaulooliveira767.workers.dev/api"
+# Pages configuration
+pages_build_output_dir = "frontend/build"
