@@ -31,6 +31,8 @@ import './styles/agroisync-design-tokens.css';
 import './styles/agroisync-animations.css';
 // Importar configurações de acessibilidade
 import './styles/accessibility.css';
+// Importar correção do menu
+import './styles/menu-fix.css';
 
 // Pages
 import AgroisyncHome from './pages/AgroisyncHome';
