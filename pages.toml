@@ -1,0 +1,21 @@
+# Cloudflare Pages Configuration
+# This file forces Cloudflare Pages to serve only static files
+# and ignore any Worker configuration
+
+name = "agroisync-frontend"
+compatibility_date = "2025-09-20"
+
+# Force Pages mode (not Workers)
+[pages]
+directory = "frontend/build"
+
+# Disable Workers
+[build]
+command = "npm run build:frontend"
+cwd = "frontend"
+watch_dir = "src"
+
+# Environment variables
+[vars]
+NODE_VERSION = "18.20.4"
+REACT_APP_API_URL = "https://agroisync-backend-prod.luispaulooliveira767.workers.dev/api"

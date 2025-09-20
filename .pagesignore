@@ -1,0 +1,8 @@
+# Ignore backend files for Cloudflare Pages
+backend/
+*.toml
+wrangler.toml
+backend/wrangler.toml
+scripts/deploy-cloudflare.sh
+CLOUDFLARE_SETUP.md
+DEPLOY-SEPARADO.md

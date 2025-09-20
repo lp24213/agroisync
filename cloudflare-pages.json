@@ -1,4 +1,5 @@
 {
+  "name": "agroisync-frontend",
   "buildCommand": "npm run build:frontend",
   "buildOutputDirectory": "frontend/build",
   "rootDirectory": "frontend",
@@ -6,5 +7,6 @@
     "NODE_VERSION": "18.20.4",
     "CI": "false",
     "REACT_APP_API_URL": "https://agroisync-backend-prod.luispaulooliveira767.workers.dev/api"
-  }
+  },
+  "framework": "create-react-app"
 }
