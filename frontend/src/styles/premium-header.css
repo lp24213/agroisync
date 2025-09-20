@@ -21,9 +21,9 @@
 }
 
 .premium-header-logo-img {
-  height: 30px !important;
+  height: 45px !important;
   width: auto !important;
-  max-width: 120px !important;
+  max-width: 200px !important;
   object-fit: contain !important;
   display: block !important;
   visibility: visible !important;
@@ -32,6 +32,7 @@
   position: relative !important;
   margin-top: 0 !important;
   margin-bottom: 0 !important;
+  margin-left: -20px !important;
 }
 
 .premium-header-menu {
@@ -43,7 +44,7 @@
   padding: 0;
   flex-wrap: nowrap;
   max-width: 300px;
-  margin-left: 250px;
+  margin-left: 280px;
   justify-content: center;
 }
 
