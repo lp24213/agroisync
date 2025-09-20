@@ -91,8 +91,8 @@ const AgroisyncHeader = () => {
                 to={item.path}
                 className={`premium-header-link agro-btn-animated ${isActive ? 'active' : ''}`}
               >
-                    <Icon size={14} />
-                    <span className="text-sm">{item.label}</span>
+                    <Icon size={12} />
+                    <span className="text-xs">{item.label}</span>
                   </Link>
                 </div>
               );

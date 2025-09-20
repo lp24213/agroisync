@@ -12,12 +12,12 @@
 .premium-header-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 60px;
-  gap: 30px;
+  gap: 20px;
 }
 
 .premium-header-logo-img {
@@ -37,23 +37,23 @@
 .premium-header-menu {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
   list-style: none;
   margin: 0;
   padding: 0;
   flex-wrap: nowrap;
-  max-width: 800px;
-  margin-left: 60px;
+  max-width: 600px;
+  margin-left: 50px;
   justify-content: center;
 }
 
 .premium-header-link {
   color: #2e7d32;
   text-decoration: none;
-  font-weight: 600;
-  font-size: 0.75rem;
-  padding: 4px 8px;
-  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.6rem;
+  padding: 2px 4px;
+  border-radius: 4px;
   transition: all 0.3s ease;
   white-space: nowrap;
   min-width: fit-content;
