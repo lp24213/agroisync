@@ -22,7 +22,7 @@ const AgroSyncGPT = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
-  const [quickActions, setQuickActions] = useState([
+  const [quickActions] = useState([
     { id: 1, text: 'Cotações de soja', icon: TrendingUp, category: 'commodities' },
     { id: 2, text: 'Previsão do tempo', icon: Globe, category: 'weather' },
     { id: 3, text: 'Fretes disponíveis', icon: Truck, category: 'freight' },
