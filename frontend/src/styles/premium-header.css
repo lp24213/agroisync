@@ -12,18 +12,18 @@
 .premium-header-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 55px;
-  gap: 20px;
+  height: 60px;
+  gap: 30px;
 }
 
 .premium-header-logo-img {
-  height: 35px !important;
+  height: 40px !important;
   width: auto !important;
-  max-width: 150px !important;
+  max-width: 180px !important;
   object-fit: contain !important;
   display: block !important;
   visibility: visible !important;
@@ -37,22 +37,23 @@
 .premium-header-menu {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   list-style: none;
   margin: 0;
   padding: 0;
   flex-wrap: nowrap;
-  max-width: 700px;
-  margin-left: 40px;
+  max-width: 800px;
+  margin-left: 60px;
+  justify-content: center;
 }
 
 .premium-header-link {
   color: #2e7d32;
   text-decoration: none;
-  font-weight: 500;
-  font-size: 0.65rem;
-  padding: 2px 6px;
-  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 6px;
   transition: all 0.3s ease;
   white-space: nowrap;
   min-width: fit-content;
@@ -80,7 +81,7 @@
 }
 
 .premium-header-spacer {
-  height: 55px;
+  height: 60px;
 }
 
 /* Mobile Menu Styles */
