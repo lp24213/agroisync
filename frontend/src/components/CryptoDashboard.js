@@ -42,13 +42,13 @@ const CryptoDashboard = () => {
       marketCap: 468000000000
     },
     {
-      id: 'agroisync-token',
-      name: 'Agroisync Token',
-      symbol: 'AGRO',
-      price: 0.85,
-      change24h: 5.67,
-      volume: 2500000,
-      marketCap: 85000000
+      id: 'cardano',
+      name: 'Cardano',
+      symbol: 'ADA',
+      price: 0.45,
+      change24h: 3.21,
+      volume: 850000000,
+      marketCap: 15000000000
     }
   ];
 

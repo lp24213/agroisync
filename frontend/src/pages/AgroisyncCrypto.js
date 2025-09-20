@@ -52,14 +52,14 @@ const AgroisyncCrypto = () => {
           lastUpdate: new Date()
         },
         {
-          id: 'agro-token',
-          name: 'Agro Token',
-          symbol: 'AGRO',
-          price: 0.125 + (Math.random() - 0.5) * 0.02,
-          change24h: (Math.random() - 0.5) * 15,
-          volume: 2500000 + (Math.random() - 0.5) * 500000,
-          marketCap: 12500000 + (Math.random() - 0.5) * 2000000,
-          chartData: generateChartData(0.125, 0.05),
+          id: 'cardano',
+          name: 'Cardano',
+          symbol: 'ADA',
+          price: 0.45 + (Math.random() - 0.5) * 0.05,
+          change24h: (Math.random() - 0.5) * 12,
+          volume: 850000000 + (Math.random() - 0.5) * 200000000,
+          marketCap: 15000000000 + (Math.random() - 0.5) * 2000000000,
+          chartData: generateChartData(0.45, 0.08),
           lastUpdate: new Date()
         }
       ];
