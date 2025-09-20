@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-import { useLanguage } from '../contexts/LanguageContext';
 import LGPDCompliance from './LGPDCompliance';
 import { 
   Send, 
@@ -417,11 +416,6 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
   const handleFileUpload = (e) => {
     const files = Array.from(e.target.files);
     setUploadedFiles(files);
-  };
-  
-  // Limpar conversa
-  const clearConversation = () => {
-    setMessages([]);
   };
   
   // Handlers LGPD
