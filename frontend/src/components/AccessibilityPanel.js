@@ -1,19 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Eye, 
   EyeOff, 
   Volume2, 
-  VolumeX, 
   Type, 
   Contrast, 
   ZoomIn, 
   ZoomOut,
-  Settings,
   X,
   Accessibility,
-  Mic,
-  MicOff
+  Mic
 } from 'lucide-react';
 
 const AccessibilityPanel = () => {
@@ -110,7 +106,7 @@ const AccessibilityPanel = () => {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, settings.screenReader]);
+  }, [isOpen, settings.screenReader, announceToScreenReader]);
 
   return (
     <>

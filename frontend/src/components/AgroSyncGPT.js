@@ -9,7 +9,6 @@ import {
   Settings, 
   Crown,
   MessageCircle,
-  Bot,
   Loader2,
   Mic,
   MicOff,
