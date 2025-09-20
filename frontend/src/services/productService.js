@@ -84,7 +84,7 @@ export const PRODUCT_STATUS = {
 
 // Serviço de produtos
 class ProductService {
-  // Buscar todos os produtos
+  // Buscar todos os produtos (Loja)
   async getProducts(filters = {}) {
     try {
       const response = await axios.get(`${API_BASE_URL}/products`, { params: filters });
@@ -96,7 +96,29 @@ class ProductService {
     }
   }
 
-  // Buscar produto por ID
+  // Buscar produtos do AgroConecta
+  async getAgroConectaProducts(filters = {}) {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/agroconecta/products`, { params: filters });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar produtos do AgroConecta:', error);
+      return this.getMockAgroConectaProducts(filters);
+    }
+  }
+
+  // Buscar produtos do Marketplace
+  async getMarketplaceProducts(filters = {}) {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/marketplace/products`, { params: filters });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar produtos do Marketplace:', error);
+      return this.getMockMarketplaceProducts(filters);
+    }
+  }
+
+  // Buscar produto por ID (Loja)
   async getProductById(id) {
     try {
       const response = await axios.get(`${API_BASE_URL}/products/${id}`);
@@ -107,13 +129,57 @@ class ProductService {
     }
   }
 
-  // Criar novo produto
+  // Buscar produto do AgroConecta por ID
+  async getAgroConectaProductById(id) {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/agroconecta/products/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar produto do AgroConecta:', error);
+      return null;
+    }
+  }
+
+  // Buscar produto do Marketplace por ID
+  async getMarketplaceProductById(id) {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/marketplace/products/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar produto do Marketplace:', error);
+      return null;
+    }
+  }
+
+  // Criar novo produto (Loja)
   async createProduct(productData) {
     try {
       const response = await axios.post(`${API_BASE_URL}/products`, productData);
       return response.data;
     } catch (error) {
       console.error('Erro ao criar produto:', error);
+      throw error;
+    }
+  }
+
+  // Criar produto no AgroConecta
+  async createAgroConectaProduct(productData) {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/agroconecta/products`, productData);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao criar produto no AgroConecta:', error);
+      throw error;
+    }
+  }
+
+  // Criar produto no Marketplace
+  async createMarketplaceProduct(productData) {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/marketplace/products`, productData);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao criar produto no Marketplace:', error);
       throw error;
     }
   }
@@ -151,13 +217,35 @@ class ProductService {
     }
   }
 
-  // Buscar produtos por categoria
+  // Buscar produtos por categoria (Loja)
   async getProductsByCategory(category) {
     try {
       const response = await axios.get(`${API_BASE_URL}/products/category/${category}`);
       return response.data;
     } catch (error) {
       console.error('Erro ao buscar produtos por categoria:', error);
+      return [];
+    }
+  }
+
+  // Buscar produtos do AgroConecta por categoria
+  async getAgroConectaProductsByCategory(category) {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/agroconecta/products/category/${category}`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar produtos do AgroConecta por categoria:', error);
+      return [];
+    }
+  }
+
+  // Buscar produtos do Marketplace por categoria
+  async getMarketplaceProductsByCategory(category) {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/marketplace/products/category/${category}`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar produtos do Marketplace por categoria:', error);
       return [];
     }
   }
@@ -240,7 +328,7 @@ class ProductService {
     return filtered;
   }
 
-  // Produtos mock para desenvolvimento
+  // Produtos mock para desenvolvimento (Loja)
   getMockProducts(filters = {}) {
     const mockProducts = []; // VAZIO até usuários cadastrarem seus produtos
 
@@ -250,6 +338,131 @@ class ProductService {
     }
 
     return mockProducts;
+  }
+
+  // Produtos mock do AgroConecta para desenvolvimento
+  getMockAgroConectaProducts(filters = {}) {
+    const mockProducts = [
+      {
+        id: 'agroconecta-1',
+        name: 'Sementes de Soja Premium',
+        description: 'Sementes de soja de alta qualidade para máxima produtividade',
+        price: 150.00,
+        category: 'sementes',
+        location: 'Mato Grosso, MT',
+        seller: { name: 'AgroConecta MT', verified: true, rating: 4.9 },
+        rating: 4.8,
+        stock: 1000,
+        unit: 'saca',
+        images: ['https://images.unsplash.com/photo-1600747476236-76579658b1b1?w=500&auto=format&fit=crop&q=60'],
+        createdAt: new Date().toISOString(),
+        section: 'agroconecta'
+      },
+      {
+        id: 'agroconecta-2',
+        name: 'Fertilizante NPK 20-10-10',
+        description: 'Fertilizante balanceado para todas as culturas',
+        price: 85.00,
+        category: 'fertilizantes',
+        location: 'Paraná, PR',
+        seller: { name: 'AgroConecta PR', verified: true, rating: 4.7 },
+        rating: 4.6,
+        stock: 500,
+        unit: 'saca',
+        images: ['https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500&auto=format&fit=crop&q=60'],
+        createdAt: new Date().toISOString(),
+        section: 'agroconecta'
+      }
+    ];
+
+    // Aplicar filtros se fornecidos
+    if (Object.keys(filters).length > 0) {
+      return this.applyFilters(mockProducts, filters);
+    }
+
+    return mockProducts;
+  }
+
+  // Produtos mock do Marketplace para desenvolvimento
+  getMockMarketplaceProducts(filters = {}) {
+    const mockProducts = [
+      {
+        id: 'marketplace-1',
+        name: 'Trator John Deere 6110J',
+        description: 'Trator usado em excelente estado, pronto para uso',
+        price: 85000.00,
+        category: 'maquinarios',
+        location: 'São Paulo, SP',
+        seller: { name: 'Fazenda São José', verified: true, rating: 4.8 },
+        rating: 4.7,
+        stock: 1,
+        unit: 'unidade',
+        images: ['https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=500&auto=format&fit=crop&q=60'],
+        createdAt: new Date().toISOString(),
+        section: 'marketplace'
+      },
+      {
+        id: 'marketplace-2',
+        name: 'Colheitadeira Case IH 2388',
+        description: 'Colheitadeira com baixa utilização, revisada',
+        price: 120000.00,
+        category: 'maquinarios',
+        location: 'Goiás, GO',
+        seller: { name: 'Agro Máquinas GO', verified: true, rating: 4.9 },
+        rating: 4.8,
+        stock: 1,
+        unit: 'unidade',
+        images: ['https://images.unsplash.com/photo-1600747476236-76579658b1b1?w=500&auto=format&fit=crop&q=60'],
+        createdAt: new Date().toISOString(),
+        section: 'marketplace'
+      }
+    ];
+
+    // Aplicar filtros se fornecidos
+    if (Object.keys(filters).length > 0) {
+      return this.applyFilters(mockProducts, filters);
+    }
+
+    return mockProducts;
+  }
+
+  // Buscar produtos por seção (AgroConecta, Marketplace, Loja)
+  async getProductsBySection(section, filters = {}) {
+    switch (section) {
+      case 'agroconecta':
+        return await this.getAgroConectaProducts(filters);
+      case 'marketplace':
+        return await this.getMarketplaceProducts(filters);
+      case 'loja':
+      default:
+        return await this.getProducts(filters);
+    }
+  }
+
+  // Buscar produto por ID e seção
+  async getProductByIdAndSection(id, section) {
+    switch (section) {
+      case 'agroconecta':
+        return await this.getAgroConectaProductById(id);
+      case 'marketplace':
+        return await this.getMarketplaceProductById(id);
+      case 'loja':
+      default:
+        return await this.getProductById(id);
+    }
+  }
+
+  // Criar produto por seção
+  async createProductBySection(section, productData) {
+    switch (section) {
+      case 'agroconecta':
+        return await this.createAgroConectaProduct(productData);
+      case 'marketplace':
+        return await this.createMarketplaceProduct(productData);
+      case 'loja':
+      default:
+        return await this.createProduct(productData);
+    }
   }
 
   // Buscar categorias

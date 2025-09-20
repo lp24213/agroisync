@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { 
   ArrowLeft, 
   TrendingUp, 
   TrendingDown, 
   BarChart3, 
   Activity,
-  DollarSign,
-  Calendar,
   Globe,
-  Star,
   Heart,
   Share2
 } from 'lucide-react';
