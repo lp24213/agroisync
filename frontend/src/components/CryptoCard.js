@@ -19,7 +19,12 @@ const CryptoCard = ({ crypto, onFavorite, onView, onTrade, onStake, userType }) 
   };
 
   const handleView = () => {
-    if (onView) onView(crypto);
+    if (onView) {
+      onView(crypto);
+    } else {
+      // Fallback: abrir página de detalhes da criptomoeda
+      window.open(`/crypto/${crypto.id}`, '_blank');
+    }
   };
 
   const handleTrade = () => {

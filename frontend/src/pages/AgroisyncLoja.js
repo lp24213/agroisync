@@ -372,7 +372,10 @@ const AgroisyncLoja = () => {
                       <ShoppingCart size={16} />
                       Comprar Agora
                     </button>
-                    <button className="agro-btn-secondary agro-btn-animated">
+                    <button 
+                      className="agro-btn-secondary agro-btn-animated"
+                      onClick={() => window.open(`/produto/${product.id}`, '_blank')}
+                    >
                       <ArrowRight size={16} />
                       Ver Detalhes
                     </button>

@@ -232,9 +232,12 @@ const Store = () => {
                     >
                       {product.inStock ? 'Contato / Negociar' : 'Indisponível'}
                           </button>
-                    <button className="btn btn-secondary">
+                    <button 
+                      className="btn btn-secondary"
+                      onClick={() => window.open(`/produto/${product.id}`, '_blank')}
+                    >
                       Ver Detalhes
-                          </button>
+                    </button>
                     </div>
                   </div>
                 </motion.div>

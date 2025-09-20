@@ -48,6 +48,8 @@ import AgroisyncRegister from './pages/AgroisyncRegister';
 import AgroisyncDashboard from './pages/AgroisyncDashboard';
 import IntermediationSystem from './components/IntermediationSystem';
 import Messaging from './pages/Messaging';
+import ProductDetail from './pages/ProductDetail';
+import CryptoDetail from './pages/CryptoDetail';
 import AdminPanel from './pages/AdminPanel';
 import UserAdmin from './pages/UserAdmin';
 import ForgotPassword from './pages/ForgotPassword';
@@ -112,6 +114,10 @@ function App() {
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/privacy" element={<Privacy />} />
                   <Route path="/help" element={<Help />} />
+                  
+                  {/* Detail Pages */}
+                  <Route path="/produto/:id" element={<ProductDetail />} />
+                  <Route path="/crypto/:id" element={<CryptoDetail />} />
                   
                   {/* Auth Routes */}
                   <Route path="/login" element={<AgroisyncLogin />} />
