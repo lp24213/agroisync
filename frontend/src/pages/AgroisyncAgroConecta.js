@@ -1129,24 +1129,28 @@ const AgroisyncAgroConecta = () => {
             }}>
               <Globe size={32} />
             </div>
-            <h2 className="agro-section-title" style={{ marginBottom: 'var(--agro-space-lg)' }}>
+            <h2 className="agro-section-title" style={{ marginBottom: 'var(--agro-space-lg)', textAlign: 'center' }}>
               Pronto para Conectar?
             </h2>
-            <p className="agro-section-subtitle" style={{ marginBottom: 'var(--agro-space-xl)' }}>
+            <p className="agro-section-subtitle" style={{ marginBottom: 'var(--agro-space-xl)', textAlign: 'center' }}>
               Junte-se à maior rede de logística do agronegócio brasileiro
             </p>
             <div style={{ 
               display: 'flex', 
               gap: 'var(--agro-space-lg)', 
               justifyContent: 'center', 
-              flexWrap: 'wrap' 
+              flexWrap: 'wrap',
+              alignItems: 'center'
             }}>
-              <Link to="/register" className="agro-btn agro-btn-primary">
+              <Link to="/register" className="agro-btn agro-btn-primary" style={{ textAlign: 'center' }}>
                 Tenho Carga
                 <ArrowRight size={20} />
               </Link>
-              <Link to="/register" className="agro-btn agro-btn-secondary">
+              <Link to="/register" className="agro-btn agro-btn-secondary" style={{ textAlign: 'center' }}>
                 Sou Transportador
+              </Link>
+              <Link to="/weather" className="agro-btn agro-btn-outline" style={{ textAlign: 'center' }}>
+                Informações Climáticas
               </Link>
             </div>
           </motion.div>
