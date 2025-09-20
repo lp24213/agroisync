@@ -161,7 +161,7 @@ const AgroisyncHome = () => {
               <img src={inicioImageUrl} alt="Campo agrícola ao pôr do sol" />
             </div>
             <div className="agro-partner-buttons">
-              <Link to="/marketplace" className="agro-btn-primary agro-btn-animated">Explorar Marketplace</Link>
+              <Link to="/marketplace" className="agro-btn-primary agro-btn-animated">Explorar Produtos</Link>
               <Link to="/partnerships" className="agro-btn-secondary agro-btn-animated">Saiba Mais</Link>
             </div>
           </div>

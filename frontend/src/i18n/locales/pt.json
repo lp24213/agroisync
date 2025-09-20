@@ -13,8 +13,8 @@
   "nav": {
     "inicio": "Início",
     "loja": "Loja",
-    "agroconecta": "AgroConecta",
-    "marketplace": "Marketplace",
+    "agroconecta": "Fretes",
+    "marketplace": "Produtos",
     "tecnologia": "Tecnologia",
     "parcerias": "Parcerias",
     "home": "Home",
@@ -34,8 +34,8 @@
     "plans": "Planos",
     "services": "Serviços",
     "store": "Loja Agroisync",
-    "agroconecta": "AgroConecta",
-    "marketplace": "Marketplace",
+    "agroconecta": "Fretes",
+    "marketplace": "Produtos",
     "login": "Entrar",
     "register": "Cadastrar"
   },
@@ -57,11 +57,11 @@
       "title": "Recursos Revolucionários",
       "subtitle": "Tecnologia de ponta para revolucionar o agronegócio",
       "marketplace": {
-        "title": "Marketplace Inteligente",
+        "title": "Produtos Inteligentes",
         "description": "Conectamos produtores e compradores através de nossa plataforma de intermediação"
       },
       "agroconecta": {
-        "title": "AgroConecta",
+        "title": "Fretes",
         "description": "Conectamos cargas e transportadores com rastreamento em tempo real"
       },
       "crypto": {
@@ -157,7 +157,7 @@
     "visitInfo": "Visitas com agendamento"
   },
   "marketplace": {
-    "title": "Marketplace",
+    "title": "Produtos",
     "subtitle": "Nosso marketplace está em desenvolvimento para trazer a você a melhor experiência de compra e venda de produtos agrícolas.",
     "status": "Projeto em Andamento Futuro",
     "description": "Estamos trabalhando duro para criar uma plataforma revolucionária que conectará produtores e compradores de forma inteligente e segura.",
@@ -177,7 +177,7 @@
     }
   },
   "agroconecta": {
-    "title": "AgroConecta",
+    "title": "Fretes",
     "subtitle": "Intermediação inteligente de fretes agrícolas. Conectamos cargas com transportadores através de nossa plataforma. Não transportamos, facilitamos conexões.",
     "features": {
       "freight": "Intermediação de Fretes",

@@ -52,14 +52,14 @@ const Home = () => {
   const services = [
     {
       icon: Smartphone,
-      title: 'Marketplace Digital',
+      title: 'Produtos Digitais',
       description: 'Plataforma completa para compra e venda de produtos agrícolas',
       link: '/marketplace',
       status: 'Projeto em andamento futuro'
     },
     {
       icon: Truck,
-      title: 'AgroConecta',
+      title: 'Fretes',
       description: 'Intermediação inteligente de fretes agrícolas',
       link: '/agroconecta',
       status: 'Disponível'

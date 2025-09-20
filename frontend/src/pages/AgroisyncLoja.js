@@ -418,7 +418,7 @@ const AgroisyncLoja = () => {
               </Link>
               <Link to="/marketplace" className="agro-btn-secondary agro-btn-animated">
                 <Package size={20} />
-                Ver Marketplace
+                Ver Produtos
               </Link>
             </div>
           </motion.div>

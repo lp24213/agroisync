@@ -131,7 +131,7 @@ const AgroisyncMarketplace = () => {
     <div data-page="marketplace">
       {/* HERO COM IMAGEM 4K DE MARKETPLACE */}
       <AgroisyncHeroPrompt 
-        title="Marketplace Agro"
+        title="Produtos Agro"
         subtitle="Conecte-se com compradores e vendedores de commodities agrícolas"
         heroImage="/assets/marketplace.png"
         showCTA={true}
@@ -286,7 +286,7 @@ const AgroisyncMarketplace = () => {
               }}
             >
               <UserPlus size={20} />
-              Cadastrar no Marketplace
+              Cadastrar nos Produtos
             </button>
           </motion.div>
 
@@ -354,7 +354,7 @@ const AgroisyncMarketplace = () => {
             }}>
               <Clock size={32} />
             </div>
-            <h2 className="agro-section-title">Status do Marketplace</h2>
+            <h2 className="agro-section-title">Status dos Produtos</h2>
             <p className="agro-section-subtitle">
               Plataforma em desenvolvimento com tecnologia de ponta
             </p>
@@ -407,7 +407,7 @@ const AgroisyncMarketplace = () => {
             transition={{ duration: 1 }}
             className="agro-text-center"
           >
-            <h2 className="agro-section-title">Benefícios do Marketplace</h2>
+            <h2 className="agro-section-title">Benefícios dos Produtos</h2>
           </motion.div>
           
           <div style={{ 

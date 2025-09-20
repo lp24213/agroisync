@@ -395,11 +395,11 @@ const AgroisyncAgroConecta = () => {
     <div data-page="agroconecta">
       {/* HERO COM IMAGEM 4K DE CAMINHÕES */}
       <AgroisyncHeroPrompt 
-        title="AgroConecta"
+        title="Fretes"
         subtitle="Logística Inteligente para o Agronegócio"
         heroImage="/assets/agroconecta.png"
         showCTA={true}
-        primaryButton={{ text: "Explorar AgroConecta", link: "/agroconecta" }}
+        primaryButton={{ text: "Explorar Fretes", link: "/agroconecta" }}
         secondaryButton={{ text: "Ver Transportadoras", link: "/agroconecta" }}
       />
 
@@ -469,7 +469,7 @@ const AgroisyncAgroConecta = () => {
             className="agro-text-center"
             style={{ marginBottom: '2rem' }}
           >
-            <h2 className="agro-section-title">AgroConecta em Ação</h2>
+            <h2 className="agro-section-title">Fretes em Ação</h2>
             <p className="agro-section-subtitle">
               Busque fretes ou ofereça seus serviços de transporte
             </p>
@@ -1437,7 +1437,7 @@ const AgroisyncAgroConecta = () => {
           <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Planos Premium - AgroConecta</h2>
+                <h2 className="text-2xl font-bold text-gray-800">Planos Premium - Fretes</h2>
                 <button
                   onClick={() => setShowPlansModal(false)}
                   className="text-gray-500 hover:text-gray-700"

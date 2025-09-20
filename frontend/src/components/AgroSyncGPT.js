@@ -244,7 +244,7 @@ const AgroSyncGPT = () => {
     }
     
     if (lowerInput.includes('frete') || lowerInput.includes('transport')) {
-      return `🚛 **AgroConecta - Sistema de Fretes**\n\nO AGROISYNC oferece o AgroConecta para conectar produtores com transportadores.\n\n**Funcionalidades:**\n• Anunciar cargas\n• Encontrar transportes\n• Rastreamento em tempo real\n• IA para otimização de rotas\n\nGostaria de saber como usar o sistema ou anunciar uma carga?`;
+      return `🚛 **Fretes - Sistema de Logística**\n\nO AGROISYNC oferece o sistema de Fretes para conectar produtores com transportadores.\n\n**Funcionalidades:**\n• Anunciar cargas\n• Encontrar transportes\n• Rastreamento em tempo real\n• IA para otimização de rotas\n\nGostaria de saber como usar o sistema ou anunciar uma carga?`;
     }
     
     if (lowerInput.includes('pagamento') || lowerInput.includes('payment')) {
