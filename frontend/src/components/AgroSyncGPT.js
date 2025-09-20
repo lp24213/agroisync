@@ -106,7 +106,7 @@ const AgroSyncGPT = () => {
     if ('speechSynthesis' in window) {
       synthesisRef.current = window.speechSynthesis;
     }
-  }, []);
+  }, [currentLanguage, t]);
   
   // Scroll automático
   const scrollToBottom = () => {
