@@ -44,121 +44,45 @@ export default {
         return await handleApiRequest(request, env, corsHeaders);
       }
 
-      // Serve frontend files for root requests
+      // API info for root requests
       if (path === '/' || path === '/index.html') {
-        // Serve the React app index.html with proper configuration
-        const frontendHtml = `<!doctype html>
-<html lang="pt-BR">
-<head>
-  <meta charset="utf-8"/>
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <meta name="theme-color" content="#2F4F2F"/>
-  <meta name="description" content="Agroisync - A plataforma de agronegócio mais futurista do mundo. Conecte-se ao futuro do agronegócio com tecnologia blockchain, IA e marketplace inteligente."/>
-  <meta name="keywords" content="agronegócio, marketplace, fretes, cripto, blockchain, IA, agricultura, produtos agrícolas"/>
-  <meta name="author" content="Agroisync Team"/>
-  <meta property="og:type" content="website"/>
-  <meta property="og:url" content="https://agroisync.com/"/>
-  <meta property="og:title" content="AGROISYNC - Futuro do Agronegócio"/>
-  <meta property="og:description" content="A plataforma de agronegócio mais futurista do mundo. Conecte-se ao futuro do agronegócio com tecnologia blockchain, IA e marketplace inteligente."/>
-  <meta property="og:image" content="/og-image.png"/>
-  <meta property="twitter:card" content="summary_large_image"/>
-  <meta property="twitter:url" content="https://agroisync.com/"/>
-  <meta property="twitter:title" content="AGROISYNC - Futuro do Agronegócio"/>
-  <meta property="twitter:description" content="A plataforma de agronegócio mais futurista do mundo. Conecte-se ao futuro do agronegócio com tecnologia blockchain, IA e marketplace inteligente."/>
-  <meta property="twitter:image" content="/og-image.png"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="apple-touch-icon" href="/logo192.png"/>
-  <link rel="manifest" href="/manifest.json"/>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Agroisync">
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta http-equiv="X-Frame-Options" content="DENY">
-  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
-  <title>AGROISYNC - Futuro do Agronegócio</title>
-  <style>
-    .loading-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #0f0f23 0, #1a1a2e 50%, #16213e 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-    .loading-logo {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(45deg, #00d4ff, #8b5cf6, #0f8);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: pulse 2s ease-in-out infinite;
-    }
-    .loading-logo::before {
-      content: "⚡";
-      font-size: 40px;
-      color: #fff;
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-    }
-    .loading-text {
-      position: absolute;
-      bottom: 30%;
-      color: #fff;
-      font-family: Inter, sans-serif;
-      font-size: 24px;
-      font-weight: 600;
-      text-align: center;
-    }
-    .app-loaded .loading-screen {
-      display: none;
-    }
-  </style>
-</head>
-<body>
-  <noscript>
-    <div style="text-align:center;padding:50px;font-family:Arial,sans-serif">
-      <h1>JavaScript Necessário</h1>
-      <p>O Agroisync requer JavaScript para funcionar. Por favor, habilite JavaScript em seu navegador.</p>
-    </div>
-  </noscript>
-  <div class="loading-screen">
-    <div class="loading-logo"></div>
-    <div class="loading-text">Agroisync</div>
-  </div>
-  <div id="root"></div>
-  <script>
-    window.addEventListener("load", function() {
-      setTimeout(function() {
-        document.body.classList.add("app-loaded");
-      }, 1000);
-    });
-  </script>
-  <script>
-    // Configuração da API para o frontend
-    window.REACT_APP_API_URL = 'https://agroisync-prod.luispaulooliveira767.workers.dev/api';
-  </script>
-</body>
-</html>`;
-
-        return new Response(frontendHtml, {
-          headers: {
-            'Content-Type': 'text/html; charset=utf-8',
-            'Cache-Control': 'public, max-age=3600',
-            ...corsHeaders
+        return new Response(
+          JSON.stringify({
+            message: 'AgroSync Backend API funcionando',
+            version: '1.0.0',
+            frontend: 'Deploy separadamente no Cloudflare Pages',
+            endpoints: [
+              '/health',
+              '/api/auth/login',
+              '/api/auth/register',
+              '/api/auth/forgot-password',
+              '/api/auth/reset-password',
+              '/api/payments/stripe/webhook',
+              '/api/payments/stripe/create-payment-intent',
+              '/api/payments/plans',
+              '/api/plans',
+              '/api/products',
+              '/api/freight-orders',
+              '/api/chat/send',
+              '/api/register',
+              '/api/admin/stats',
+              '/api/admin/users',
+              '/api/blockchain/wallet',
+              '/api/blockchain/prices',
+              '/api/ai/recommendations',
+              '/api/notifications/subscribe',
+              '/api/address/countries',
+              '/api/audit-logs/stats',
+              '/api/feature-flags'
+            ]
+          }),
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              ...corsHeaders
+            }
           }
-        });
+        );
       }
 
       // Serve static assets (CSS, JS, images, etc.)

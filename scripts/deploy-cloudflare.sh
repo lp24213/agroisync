@@ -31,13 +31,16 @@ echo ""
 
 read -p "Pressione Enter quando tiver configurado os secrets..."
 
+# Navegar para o diretório backend
+cd backend
+
 # Deploy para staging
 echo "📦 Deploy para staging..."
 wrangler deploy --env staging
 
 if [ $? -eq 0 ]; then
     echo "✅ Deploy staging concluído!"
-    echo "URL: https://agroisync-staging.luispaulooliveira767.workers.dev"
+    echo "URL: https://agroisync-backend-staging.luispaulooliveira767.workers.dev"
 else
     echo "❌ Erro no deploy staging"
     exit 1
@@ -45,7 +48,7 @@ fi
 
 # Teste de health check
 echo "🔍 Testando health check..."
-curl -f https://agroisync-staging.luispaulooliveira767.workers.dev/health
+curl -f https://agroisync-backend-staging.luispaulooliveira767.workers.dev/health
 
 if [ $? -eq 0 ]; then
     echo "✅ Health check OK!"
@@ -59,7 +62,7 @@ if [ $? -eq 0 ]; then
         
         if [ $? -eq 0 ]; then
         echo "✅ Deploy produção concluído!"
-        echo "URL: https://agroisync-prod.luispaulooliveira767.workers.dev"
+        echo "URL: https://agroisync-backend-prod.luispaulooliveira767.workers.dev"
         else
             echo "❌ Erro no deploy produção"
             exit 1
@@ -73,10 +76,11 @@ fi
 echo ""
 echo "🎉 DEPLOY CONCLUÍDO!"
 echo "===================="
-echo "Staging: https://agroisync-staging.luispaulooliveira767.workers.dev"
-echo "Produção: https://agroisync-prod.luispaulooliveira767.workers.dev"
+echo "Staging: https://agroisync-backend-staging.luispaulooliveira767.workers.dev"
+echo "Produção: https://agroisync-backend-prod.luispaulooliveira767.workers.dev"
 echo ""
 echo "📋 PRÓXIMOS PASSOS:"
-echo "1. Configure webhook no Stripe: https://agroisync-prod.luispaulooliveira767.workers.dev/api/payments/stripe/webhook"
-echo "2. Atualize REACT_APP_API_URL no frontend"
-echo "3. Teste pagamentos"
+echo "1. Configure webhook no Stripe: https://agroisync-backend-prod.luispaulooliveira767.workers.dev/api/payments/stripe/webhook"
+echo "2. Deploy do frontend separadamente no Cloudflare Pages"
+echo "3. Atualize REACT_APP_API_URL no frontend para apontar para o backend"
+echo "4. Teste pagamentos"

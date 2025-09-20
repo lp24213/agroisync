@@ -1,15 +1,15 @@
-name = "agroisync"
+name = "agroisync-backend"
 compatibility_date = "2025-09-20"
-main = "backend/src/worker.js"
+main = "src/worker.js"
 
 # Configuração para Cloudflare Workers
 compatibility_flags = ["nodejs_compat"]
 
 [env.production]
-name = "agroisync-prod"
+name = "agroisync-backend-prod"
 
 [env.staging]
-name = "agroisync-staging"
+name = "agroisync-backend-staging"
 
 # Variáveis de ambiente (configure no dashboard do Cloudflare)
 [vars]
