@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, CheckCircle, AlertCircle, Eye, Lock, Database, User, Settings } from 'lucide-react';
+import { Shield, CheckCircle, AlertCircle, Eye, Lock, Database, User } from 'lucide-react';
 
 const LGPDCompliance = ({ onAccept, onDecline, isVisible }) => {
   const [acceptedTerms, setAcceptedTerms] = useState(false);

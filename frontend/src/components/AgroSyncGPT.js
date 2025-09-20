@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -9,39 +9,25 @@ import {
   Minimize2, 
   Maximize2, 
   Settings, 
-  Zap, 
   Crown,
   MessageCircle,
   Bot,
-  User,
   Loader2,
   Mic,
   MicOff,
   Volume2,
   VolumeX,
   Upload,
-  Download,
-  Sparkles,
-  Lock,
-  AlertCircle,
   CheckCircle,
-  Clock,
   Brain,
   Code,
-  Calculator,
   Search,
-  Image as ImageIcon,
-  FileText,
-  Globe,
-  Shield,
-  Star
+  FileText
 } from 'lucide-react';
-import axios from 'axios';
 import { toast } from 'react-hot-toast';
 
 const AgroSyncGPT = () => {
-  const { user, isAuthenticated } = useAuth();
-  const { t } = useLanguage();
+  const { user } = useAuth();
   
   // Estados principais
   const [isOpen, setIsOpen] = useState(false);
@@ -50,18 +36,13 @@ const AgroSyncGPT = () => {
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [conversationId, setConversationId] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   
   // Estados de funcionalidades
   const [selectedMode, setSelectedMode] = useState('chat');
   const [selectedPersonality, setSelectedPersonality] = useState('agro-expert');
-  const [enableWebSearch, setEnableWebSearch] = useState(false);
-  const [enableCodeGeneration, setEnableCodeGeneration] = useState(false);
-  const [enableImageAnalysis, setEnableImageAnalysis] = useState(false);
   
   // Estados de limitações
   const [usageStats, setUsageStats] = useState({
@@ -79,7 +60,6 @@ const AgroSyncGPT = () => {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [isProUser, setIsProUser] = useState(false);
   const [showLGPDModal, setShowLGPDModal] = useState(false);
-  const [lgpdAccepted, setLgpdAccepted] = useState(false);
   
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -102,7 +82,7 @@ const AgroSyncGPT = () => {
     // Verificar consentimento LGPD
     const lgpdConsent = localStorage.getItem('agroisync-lgpd-consent');
     if (lgpdConsent === 'accepted') {
-      setLgpdAccepted(true);
+      // LGPD já aceito
     } else {
       setShowLGPDModal(true);
     }
@@ -442,12 +422,10 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
   // Limpar conversa
   const clearConversation = () => {
     setMessages([]);
-    setConversationId(null);
   };
   
   // Handlers LGPD
   const handleLGPDAccept = () => {
-    setLgpdAccepted(true);
     setShowLGPDModal(false);
   };
   

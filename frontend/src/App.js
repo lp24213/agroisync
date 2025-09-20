@@ -9,7 +9,6 @@ import Layout from './components/Layout';
 import AgroisyncHeader from './components/AgroisyncHeader';
 import AgroisyncFooter from './components/AgroisyncFooter';
 import PremiumCursor from './components/PremiumCursor';
-import ChatbotWidget from './components/ChatbotWidget';
 import AgroSyncGPT from './components/AgroSyncGPT';
 import LGPDCompliance from './components/LGPDCompliance';
 import Ticker from './components/Ticker';
