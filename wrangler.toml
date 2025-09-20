@@ -1,5 +1,20 @@
-name = "agroisync"
-compatibility_date = "2025-09-12"
+name = "agroisync-backend"
+compatibility_date = "2025-09-20"
+main = "backend/src/worker.js"
 
-[assets]
-directory = "./frontend/build"
+[env.production]
+name = "agroisync-backend-prod"
+
+[env.staging]
+name = "agroisync-backend-staging"
+
+# Variáveis de ambiente (configure no dashboard do Cloudflare)
+[vars]
+NODE_ENV = "production"
+API_VERSION = "v1"
+
+# Secrets (configure via wrangler secret put)
+# STRIPE_SECRET_KEY
+# STRIPE_WEBHOOK_SECRET
+# MONGODB_URI
+# JWT_SECRET

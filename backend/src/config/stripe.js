@@ -2,14 +2,10 @@ import Stripe from 'stripe';
 import { createSecurityLog } from '../utils/securityLogger.js';
 
 // Configuração do Stripe
-const stripe = new Stripe(
-  process.env.STRIPE_SECRET_KEY ||
-    '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',
-  {
-    apiVersion: '2024-06-20',
-    typescript: true
-  }
-);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: '2024-06-20',
+  typescript: true
+});
 
 // ===== CONFIGURAÇÃO DE PREÇOS =====
 

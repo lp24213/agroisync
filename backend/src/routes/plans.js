@@ -239,54 +239,7 @@ router.post('/subscribe', auth, async (req, res) => {
   }
 });
 
-// POST /api/plans/webhook - Webhook do Stripe
-router.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
-  const sig = req.headers['stripe-signature'];
-  let event;
-  
-  try {
-    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-  } catch (err) {
-    console.error('Webhook signature verification failed:', err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
-  }
-  
-  try {
-    switch (event.type) {
-      case 'checkout.session.completed':
-        await handleCheckoutSessionCompleted(event.data.object);
-        break;
-        
-      case 'invoice.payment_succeeded':
-        await handleInvoicePaymentSucceeded(event.data.object);
-        break;
-        
-      case 'invoice.payment_failed':
-        await handleInvoicePaymentFailed(event.data.object);
-        break;
-        
-      case 'customer.subscription.updated':
-        await handleSubscriptionUpdated(event.data.object);
-        break;
-        
-      case 'customer.subscription.deleted':
-        await handleSubscriptionDeleted(event.data.object);
-        break;
-        
-      default:
-        console.log(`Unhandled event type ${event.type}`);
-    }
-    
-    res.json({ received: true });
-  } catch (error) {
-    console.error('Erro no webhook:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro no webhook',
-      error: error.message
-    });
-  }
-});
+// NOTA: Webhook movido para /api/payments/stripe/webhook para evitar duplicação
 
 // Handlers para eventos do Stripe
 async function handleCheckoutSessionCompleted(session) {
