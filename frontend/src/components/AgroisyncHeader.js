@@ -13,6 +13,7 @@ import {
   LogIn,
   LogOut,
   User,
+  Users,
   Info,
   Coins,
   Crown
