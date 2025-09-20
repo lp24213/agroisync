@@ -15,7 +15,7 @@
   padding: 0 16px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   height: 60px;
   gap: 15px;
 }
@@ -38,23 +38,22 @@
 .premium-header-menu {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 8px;
   list-style: none;
   margin: 0;
   padding: 0;
   flex-wrap: nowrap;
-  max-width: 300px;
-  margin-left: 80px;
+  max-width: 600px;
   justify-content: center;
 }
 
 .premium-header-link {
   color: #2e7d32;
   text-decoration: none;
-  font-weight: 300;
-  font-size: 0.4rem;
-  padding: 1px 2px;
-  border-radius: 2px;
+  font-weight: 400;
+  font-size: 0.6rem;
+  padding: 2px 4px;
+  border-radius: 3px;
   transition: all 0.3s ease;
   white-space: nowrap;
   min-width: fit-content;
