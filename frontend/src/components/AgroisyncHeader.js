@@ -91,7 +91,7 @@ const AgroisyncHeader = () => {
                 to={item.path}
                 className={`premium-header-link agro-btn-animated ${isActive ? 'active' : ''}`}
               >
-                    <Icon size={10} />
+                    <Icon size={8} />
                     <span className="text-xs">{item.label}</span>
                   </Link>
                 </div>
@@ -121,7 +121,7 @@ const AgroisyncHeader = () => {
               ) : (
                 <>
                   <Link to="/login" className="premium-header-link agro-btn-animated">
-                    <LogIn size={16} />
+                    <LogIn size={10} />
                     <span>{t('nav.login')}</span>
                   </Link>
                   <Link to="/register" className="premium-header-link agro-btn-animated">
