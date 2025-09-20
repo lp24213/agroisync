@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
   Send, 
   X, 
@@ -25,6 +26,7 @@ import { toast } from 'react-hot-toast';
 
 const AgroSyncGPT = () => {
   const { user } = useAuth();
+  const { t, currentLanguage } = useLanguage();
   
   // Estados principais
   const [isOpen, setIsOpen] = useState(false);
@@ -85,7 +87,9 @@ const AgroSyncGPT = () => {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = 'pt-BR';
+      recognitionRef.current.lang = currentLanguage === 'pt' ? 'pt-BR' : 
+                                    currentLanguage === 'es' ? 'es-ES' :
+                                    currentLanguage === 'zh' ? 'zh-CN' : 'en-US';
       
       recognitionRef.current.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
@@ -95,7 +99,7 @@ const AgroSyncGPT = () => {
       
       recognitionRef.current.onerror = () => {
         setIsListening(false);
-        toast.error('Erro no reconhecimento de voz');
+        toast.error(t('chatbot.error.voiceRecognition'));
       };
     }
     
@@ -443,7 +447,7 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(true)}
         className="fixed bottom-6 right-6 z-50 bg-gray-800 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
-        aria-label="Abrir assistente de IA"
+            aria-label={t('chatbot.open')}
       >
         <img 
           src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSIjRkZGRkZGIi8+CjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9IiMzMzMzMzMiLz4KPC9zdmc+" 
@@ -472,35 +476,35 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
               alt="IA" 
               className="w-5 h-5"
             />
-            <span className="font-semibold">AGROISYNC AI</span>
+            <span className="font-semibold">{t('chatbot.title')}</span>
             {isProUser && <Crown size={16} className="text-yellow-400" />}
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowSettings(!showSettings)}
               className="p-1 hover:bg-white/20 rounded"
-              aria-label="Configurações"
+              aria-label={t('chatbot.settings')}
             >
               <Settings size={16} />
             </button>
             <button
               onClick={() => setIsMinimized(!isMinimized)}
               className="p-1 hover:bg-white/20 rounded"
-              aria-label={isMinimized ? "Expandir" : "Minimizar"}
+              aria-label={isMinimized ? t('chatbot.maximize') : t('chatbot.minimize')}
             >
               {isMinimized ? <Maximize2 size={16} /> : <Minimize2 size={16} />}
             </button>
             <button
               onClick={() => setIsOpen(false)}
               className="p-1 hover:bg-white/20 rounded"
-              aria-label="Fechar chatbot"
+              aria-label={t('chatbot.closeButton')}
             >
               <X size={16} />
             </button>
             <button
               onClick={() => window.open('/', '_blank')}
               className="p-1 hover:bg-white/20 rounded"
-              aria-label="Ir para site principal"
+              aria-label={t('chatbot.goToSite')}
               title="AGROISYNC"
             >
               <img 
@@ -619,20 +623,20 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
                       <Crown size={10} className="text-white" />
                     </div>
                   </div>
-                  <h3 className="text-base font-bold text-gray-800 mb-1">AGROISYNC AI</h3>
-                  <p className="text-xs text-gray-600 mb-3">Seu assistente inteligente para agronegócio</p>
+          <h3 className="text-base font-bold text-gray-800 mb-1">{t('chatbot.title')}</h3>
+          <p className="text-xs text-gray-600 mb-3">{t('chatbot.subtitle')}</p>
                   <div className="grid grid-cols-2 gap-1 max-w-xs mx-auto">
                     <div className="bg-white p-1 rounded shadow-sm border border-gray-200">
-                      <div className="text-xs text-gray-500">🌾 Commodities</div>
+                      <div className="text-xs text-gray-500">{t('chatbot.features.commodities')}</div>
                     </div>
                     <div className="bg-white p-1 rounded shadow-sm border border-gray-200">
-                      <div className="text-xs text-gray-500">📊 Análises</div>
+                      <div className="text-xs text-gray-500">{t('chatbot.features.analysis')}</div>
                     </div>
                     <div className="bg-white p-1 rounded shadow-sm border border-gray-200">
-                      <div className="text-xs text-gray-500">💻 Código</div>
+                      <div className="text-xs text-gray-500">{t('chatbot.features.code')}</div>
                     </div>
                     <div className="bg-white p-1 rounded shadow-sm border border-gray-200">
-                      <div className="text-xs text-gray-500">🔍 Busca</div>
+                      <div className="text-xs text-gray-500">{t('chatbot.features.search')}</div>
                     </div>
                   </div>
                 </div>
@@ -667,7 +671,7 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
                       <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
                         <Loader2 size={12} className="animate-spin text-white" />
                       </div>
-                      <span className="text-sm text-gray-600 font-medium">AGROISYNC AI está digitando...</span>
+                      <span className="text-sm text-gray-600 font-medium">{t('chatbot.typing')}</span>
                     </div>
                   </div>
                 </div>
@@ -681,10 +685,10 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
               {/* Uploaded Files */}
               {uploadedFiles.length > 0 && (
                 <div className="mb-3">
-                  <div className="flex items-center gap-2 text-sm text-gray-600 bg-white p-2 rounded-lg border border-gray-200">
-                    <FileText size={16} />
-                    <span>{uploadedFiles.length} arquivo(s) anexado(s)</span>
-                  </div>
+            <div className="flex items-center gap-2 text-sm text-gray-600 bg-white p-2 rounded-lg border border-gray-200">
+              <FileText size={16} />
+              <span>{uploadedFiles.length} {t('chatbot.attachedFiles')}</span>
+            </div>
                 </div>
               )}
               
@@ -694,13 +698,13 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
                   ref={fileInputRef}
                   onChange={handleFileUpload}
                   className="hidden"
-                  accept="image/*,.pdf,.doc,.docx"
-                  aria-label="Anexar arquivo"
+            accept="image/*,.pdf,.doc,.docx"
+            aria-label={t('chatbot.attachFile')}
                 />
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   className="p-2 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-xl transition-colors"
-                  aria-label="Anexar arquivo"
+                  aria-label={t('chatbot.attachFile')}
                 >
                   <Upload size={16} />
                 </button>
@@ -710,10 +714,10 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Digite sua mensagem ou use o microfone..."
+                  placeholder={t('chatbot.placeholder')}
                   className="flex-1 p-3 border-0 focus:outline-none text-sm bg-transparent placeholder-gray-400"
                   disabled={isTyping}
-                  aria-label="Digite sua mensagem"
+                  aria-label={t('chatbot.placeholder')}
                 />
                 
                 <button
@@ -723,7 +727,7 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
                       ? 'bg-red-100 text-red-600 hover:bg-red-200' 
                       : 'text-gray-500 hover:text-green-600 hover:bg-green-50'
                   }`}
-                  aria-label={isListening ? "Parar gravação" : "Iniciar gravação de voz"}
+                  aria-label={isListening ? t('chatbot.stopRecording') : t('chatbot.startRecording')}
                 >
                   {isListening ? <MicOff size={16} /> : <Mic size={16} />}
                 </button>
@@ -732,7 +736,7 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim() || isTyping}
                   className="p-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
-                  aria-label="Enviar mensagem"
+                  aria-label={t('chatbot.sendMessage')}
                 >
                   <Send size={16} />
                 </button>
@@ -741,10 +745,10 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
               {/* Voice Status */}
               {isListening && (
                 <div className="mt-2 text-center">
-                  <div className="inline-flex items-center gap-2 text-sm text-red-600">
-                    <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
-                    Gravando... Fale agora
-                  </div>
+                <div className="inline-flex items-center gap-2 text-sm text-red-600">
+                  <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
+                  {t('chatbot.recording')}
+                </div>
                 </div>
               )}
               
@@ -753,10 +757,10 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
                 <button
                   onClick={() => setIsOpen(false)}
                   className="w-full flex items-center justify-center gap-2 p-1.5 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  aria-label="Fechar chatbot"
+                  aria-label={t('chatbot.closeButton')}
                 >
                   <X size={14} />
-                  <span className="text-xs font-medium">Fechar Chatbot</span>
+                  <span className="text-xs font-medium">{t('chatbot.close')}</span>
                 </button>
               </div>
             </div>

@@ -150,14 +150,60 @@
   "chatbot": {
     "title": "Asistente IA",
     "status": "En Línea",
-    "placeholder": "Escribe tu mensaje...",
+    "placeholder": "Escribe tu mensaje o usa el micrófono...",
     "welcome": "¡Hola! Soy el asistente IA de Agroisync. ¿Cómo puedo ayudarte hoy?",
     "thinking": "Pensando...",
+    "typing": "AGROISYNC AI está escribiendo...",
+    "recording": "Grabando... Habla ahora",
+    "close": "Cerrar Chatbot",
+    "open": "Abrir asistente IA",
+    "settings": "Configuración",
+    "minimize": "Minimizar",
+    "maximize": "Expandir",
+    "closeButton": "Cerrar chatbot",
+    "goToSite": "Ir al sitio principal",
+    "attachedFiles": "archivo(s) adjunto(s)",
+    "attachFile": "Adjuntar archivo",
+    "stopRecording": "Detener grabación",
+    "startRecording": "Iniciar grabación de voz",
+    "sendMessage": "Enviar mensaje",
     "suggestions": {
       "intermediation": "¿Cómo funciona la intermediación?",
       "plans": "¿Qué planes están disponibles?",
       "product": "¿Cómo publicar un producto?",
       "freight": "¿Cómo contratar un flete?"
+    },
+    "modes": {
+      "chat": "Chat",
+      "code": "Código",
+      "analysis": "Análisis",
+      "search": "Búsqueda"
+    },
+    "personalities": {
+      "agro-expert": "Experto Agrícola",
+      "tech-savvy": "Experto en Tecnología",
+      "business-focused": "Enfocado en Negocios",
+      "friendly": "Amigable"
+    },
+    "features": {
+      "commodities": "🌾 Commodities",
+      "analysis": "📊 Análisis",
+      "code": "💻 Código",
+      "search": "🔍 Búsqueda"
+    },
+    "subtitle": "Tu asistente inteligente para agronegocios",
+    "error": {
+      "voiceRecognition": "Error en reconocimiento de voz",
+      "voiceSynthesis": "Error en síntesis de voz",
+      "fileUpload": "Error en carga de archivo",
+      "messageSend": "Error al enviar mensaje"
+    },
+    "limits": {
+      "messagesReached": "Límite de mensajes alcanzado",
+      "imagesReached": "Límite de análisis de imágenes alcanzado",
+      "codeReached": "Límite de generación de código alcanzado",
+      "searchReached": "Límite de búsquedas alcanzado",
+      "upgradePrompt": "¡Actualiza a Pro para usar más funciones!"
     }
   }
 }

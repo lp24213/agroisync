@@ -150,14 +150,60 @@
   "chatbot": {
     "title": "AI Assistant",
     "status": "Online",
-    "placeholder": "Type your message...",
+    "placeholder": "Type your message or use microphone...",
     "welcome": "Hello! I'm Agroisync's AI assistant. How can I help you today?",
     "thinking": "Thinking...",
+    "typing": "AGROISYNC AI is typing...",
+    "recording": "Recording... Speak now",
+    "close": "Close Chatbot",
+    "open": "Open AI assistant",
+    "settings": "Settings",
+    "minimize": "Minimize",
+    "maximize": "Expand",
+    "closeButton": "Close chatbot",
+    "goToSite": "Go to main site",
+    "attachedFiles": "file(s) attached",
+    "attachFile": "Attach file",
+    "stopRecording": "Stop recording",
+    "startRecording": "Start voice recording",
+    "sendMessage": "Send message",
     "suggestions": {
       "intermediation": "How does intermediation work?",
       "plans": "What plans are available?",
       "product": "How to publish a product?",
       "freight": "How to hire freight?"
+    },
+    "modes": {
+      "chat": "Chat",
+      "code": "Code",
+      "analysis": "Analysis",
+      "search": "Search"
+    },
+    "personalities": {
+      "agro-expert": "Agricultural Expert",
+      "tech-savvy": "Technology Expert",
+      "business-focused": "Business Focused",
+      "friendly": "Friendly"
+    },
+    "features": {
+      "commodities": "🌾 Commodities",
+      "analysis": "📊 Analysis",
+      "code": "💻 Code",
+      "search": "🔍 Search"
+    },
+    "subtitle": "Your intelligent assistant for agribusiness",
+    "error": {
+      "voiceRecognition": "Voice recognition error",
+      "voiceSynthesis": "Voice synthesis error",
+      "fileUpload": "File upload error",
+      "messageSend": "Message send error"
+    },
+    "limits": {
+      "messagesReached": "Message limit reached",
+      "imagesReached": "Image analysis limit reached",
+      "codeReached": "Code generation limit reached",
+      "searchReached": "Search limit reached",
+      "upgradePrompt": "Upgrade to Pro to use more features!"
     }
   }
 }

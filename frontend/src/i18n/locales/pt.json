@@ -100,7 +100,50 @@
     "wheat": "Trigo",
     "cotton": "Algodão"
   },
-  "contact": {
+  "about": {
+    "title": "Sobre Nós",
+    "subtitle": "Conheça a história por trás da AGROISYNC",
+    "mission": {
+      "title": "Nossa Missão",
+      "description": "Revolucionar o agronegócio brasileiro através da tecnologia, conectando produtores, compradores e transportadores em uma plataforma inteligente e segura."
+    },
+    "vision": {
+      "title": "Nossa Visão",
+      "description": "Ser a principal plataforma de agronegócio do Brasil, reconhecida pela inovação, transparência e impacto positivo no setor agrícola."
+    },
+    "values": {
+      "title": "Nossos Valores",
+      "subtitle": "Os princípios que guiam nossa empresa",
+      "innovation": {
+        "title": "Inovação",
+        "description": "Sempre buscamos as melhores tecnologias para revolucionar o agronegócio"
+      },
+      "passion": {
+        "title": "Paixão",
+        "description": "Amamos o que fazemos e acreditamos no potencial do agronegócio brasileiro"
+      },
+      "collaboration": {
+        "title": "Colaboração",
+        "description": "Acreditamos que juntos podemos construir um futuro melhor para todos"
+      },
+      "transparency": {
+        "title": "Transparência",
+        "description": "Mantemos sempre a transparência em todas as nossas operações"
+      }
+    },
+    "team": {
+      "title": "Nossa Equipe",
+      "subtitle": "Conheça as pessoas por trás da AGROISYNC",
+      "ceo": "CEO & Fundador",
+      "cofounder": "Co-founder"
+    },
+    "cta": {
+      "title": "Faça Parte da Revolução",
+      "subtitle": "Junte-se a nós na missão de transformar o agronegócio brasileiro",
+      "getStarted": "Começar Agora",
+      "contact": "Fale Conosco"
+    }
+  },
     "title": "Entre em Contato",
     "subtitle": "Estamos aqui para ajudar você a transformar seu agronegócio com tecnologia de ponta",
     "email": "Email",
@@ -196,14 +239,60 @@
   "chatbot": {
     "title": "Assistente IA",
     "status": "Online",
-    "placeholder": "Digite sua mensagem...",
+    "placeholder": "Digite sua mensagem ou use o microfone...",
     "welcome": "Olá! Sou o assistente IA do Agroisync. Como posso ajudá-lo hoje?",
     "thinking": "Pensando...",
+    "typing": "AGROISYNC AI está digitando...",
+    "recording": "Gravando... Fale agora",
+    "close": "Fechar Chatbot",
+    "open": "Abrir assistente de IA",
+    "settings": "Configurações",
+    "minimize": "Minimizar",
+    "maximize": "Expandir",
+    "closeButton": "Fechar chatbot",
+    "goToSite": "Ir para site principal",
+    "attachedFiles": "arquivo(s) anexado(s)",
+    "attachFile": "Anexar arquivo",
+    "stopRecording": "Parar gravação",
+    "startRecording": "Iniciar gravação de voz",
+    "sendMessage": "Enviar mensagem",
     "suggestions": {
       "intermediation": "Como funciona a intermediação?",
       "plans": "Quais são os planos disponíveis?",
       "product": "Como publicar um produto?",
       "freight": "Como contratar um frete?"
+    },
+    "modes": {
+      "chat": "Chat",
+      "code": "Código",
+      "analysis": "Análise",
+      "search": "Busca"
+    },
+    "personalities": {
+      "agro-expert": "Especialista Agrícola",
+      "tech-savvy": "Especialista em Tecnologia",
+      "business-focused": "Focado em Negócios",
+      "friendly": "Amigável"
+    },
+    "features": {
+      "commodities": "🌾 Commodities",
+      "analysis": "📊 Análises",
+      "code": "💻 Código",
+      "search": "🔍 Busca"
+    },
+    "subtitle": "Seu assistente inteligente para agronegócio",
+    "error": {
+      "voiceRecognition": "Erro no reconhecimento de voz",
+      "voiceSynthesis": "Erro na síntese de voz",
+      "fileUpload": "Erro no upload do arquivo",
+      "messageSend": "Erro ao enviar mensagem"
+    },
+    "limits": {
+      "messagesReached": "Limite de mensagens atingido",
+      "imagesReached": "Limite de análise de imagens atingido",
+      "codeReached": "Limite de geração de código atingido",
+      "searchReached": "Limite de buscas atingido",
+      "upgradePrompt": "Faça upgrade para Pro para usar mais recursos!"
     }
   }
 }

@@ -150,14 +150,60 @@
   "chatbot": {
     "title": "AI助手",
     "status": "在线",
-    "placeholder": "输入您的消息...",
+    "placeholder": "输入您的消息或使用麦克风...",
     "welcome": "您好！我是Agroisync的AI助手。今天我能为您做些什么？",
     "thinking": "思考中...",
+    "typing": "AGROISYNC AI正在输入...",
+    "recording": "录音中... 现在说话",
+    "close": "关闭聊天机器人",
+    "open": "打开AI助手",
+    "settings": "设置",
+    "minimize": "最小化",
+    "maximize": "展开",
+    "closeButton": "关闭聊天机器人",
+    "goToSite": "前往主站",
+    "attachedFiles": "个文件已附加",
+    "attachFile": "附加文件",
+    "stopRecording": "停止录音",
+    "startRecording": "开始语音录音",
+    "sendMessage": "发送消息",
     "suggestions": {
       "intermediation": "中介如何工作？",
       "plans": "有哪些可用的计划？",
       "product": "如何发布产品？",
       "freight": "如何雇佣货运？"
+    },
+    "modes": {
+      "chat": "聊天",
+      "code": "代码",
+      "analysis": "分析",
+      "search": "搜索"
+    },
+    "personalities": {
+      "agro-expert": "农业专家",
+      "tech-savvy": "技术专家",
+      "business-focused": "商业导向",
+      "friendly": "友好"
+    },
+    "features": {
+      "commodities": "🌾 商品",
+      "analysis": "📊 分析",
+      "code": "💻 代码",
+      "search": "🔍 搜索"
+    },
+    "subtitle": "您的智能农业助手",
+    "error": {
+      "voiceRecognition": "语音识别错误",
+      "voiceSynthesis": "语音合成错误",
+      "fileUpload": "文件上传错误",
+      "messageSend": "消息发送错误"
+    },
+    "limits": {
+      "messagesReached": "消息限制已达到",
+      "imagesReached": "图像分析限制已达到",
+      "codeReached": "代码生成限制已达到",
+      "searchReached": "搜索限制已达到",
+      "upgradePrompt": "升级到Pro版本以使用更多功能！"
     }
   }
 }
