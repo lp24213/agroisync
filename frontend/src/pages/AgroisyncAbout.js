@@ -224,17 +224,35 @@ const AgroisyncAbout = () => {
             viewport={{ once: true }}
             transition={{ duration: 1 }}
             className="agro-text-center"
+            style={{ 
+              marginBottom: '4rem',
+              padding: '0 20px'
+            }}
           >
-            <h2 className="agro-section-title">Nossa Equipe</h2>
-            <p className="agro-section-subtitle">
+            <h2 className="agro-section-title" style={{
+              fontSize: '2.5rem',
+              fontWeight: '700',
+              marginBottom: '1rem'
+            }}>
+              Nossa Equipe
+            </h2>
+            <p className="agro-section-subtitle" style={{
+              fontSize: '1.25rem',
+              lineHeight: '1.6',
+              maxWidth: '600px',
+              margin: '0 auto'
+            }}>
               Conheça as pessoas por trás da AGROISYNC
             </p>
           </motion.div>
 
           <div style={{ 
             display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-            gap: 'var(--agro-space-xl)' 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', 
+            gap: '3rem',
+            maxWidth: '1200px',
+            margin: '0 auto',
+            padding: '0 20px'
           }}>
             {team.map((member, index) => (
               <motion.div
@@ -248,13 +266,13 @@ const AgroisyncAbout = () => {
                 style={{ textAlign: 'center' }}
               >
                 <div style={{
-                  width: '120px',
-                  height: '120px',
-                  margin: '0 auto var(--agro-space-lg) auto',
+                  width: '150px',
+                  height: '150px',
+                  margin: '0 auto 2rem auto',
                   borderRadius: '50%',
                   overflow: 'hidden',
                   boxShadow: 'var(--agro-shadow-lg)',
-                  border: '4px solid var(--txc-light-green)'
+                  border: '5px solid var(--txc-light-green)'
                 }}>
                   <img 
                     src={member.image} 
@@ -267,20 +285,28 @@ const AgroisyncAbout = () => {
                   />
                 </div>
                 
-                <h3 className="agro-card-title" style={{ marginBottom: 'var(--agro-space-sm)' }}>
+                <h3 className="agro-card-title" style={{ 
+                  marginBottom: '0.5rem',
+                  fontSize: '1.5rem',
+                  fontWeight: '700'
+                }}>
                   {member.name}
                 </h3>
                 
                 <div style={{
                   color: 'var(--txc-light-green)',
                   fontWeight: '600',
-                  marginBottom: 'var(--agro-space-md)',
-                  fontSize: '1.125rem'
+                  marginBottom: '1rem',
+                  fontSize: '1.25rem'
                 }}>
                   {member.role}
                 </div>
                 
-                <p className="agro-card-description">
+                <p className="agro-card-description" style={{
+                  fontSize: '1rem',
+                  lineHeight: '1.6',
+                  color: '#666'
+                }}>
                   {member.description}
                 </p>
               </motion.div>
@@ -368,12 +394,16 @@ const AgroisyncAbout = () => {
             viewport={{ once: true }}
             transition={{ duration: 1 }}
             className="agro-text-center"
-            style={{ maxWidth: '800px', margin: '0 auto' }}
+            style={{ 
+              maxWidth: '900px', 
+              margin: '0 auto',
+              padding: '0 20px'
+            }}
           >
             <div style={{
-              width: '80px',
-              height: '80px',
-              margin: '0 auto var(--agro-space-lg) auto',
+              width: '100px',
+              height: '100px',
+              margin: '0 auto 2rem auto',
               background: 'var(--agro-gradient-accent)',
               borderRadius: 'var(--agro-radius-2xl)',
               display: 'flex',
@@ -382,25 +412,44 @@ const AgroisyncAbout = () => {
               color: 'var(--agro-dark-green)',
               boxShadow: 'var(--agro-shadow-lg)'
             }}>
-              <Award size={32} />
+              <Award size={40} />
             </div>
-            <h2 className="agro-section-title" style={{ marginBottom: 'var(--agro-space-lg)' }}>
+            <h2 className="agro-section-title" style={{ 
+              marginBottom: '1.5rem',
+              fontSize: '2.5rem',
+              fontWeight: '700'
+            }}>
               Faça Parte da Revolução
             </h2>
-            <p className="agro-section-subtitle" style={{ marginBottom: 'var(--agro-space-xl)' }}>
+            <p className="agro-section-subtitle" style={{ 
+              marginBottom: '3rem',
+              fontSize: '1.25rem',
+              lineHeight: '1.6',
+              maxWidth: '600px',
+              margin: '0 auto 3rem auto'
+            }}>
               Junte-se a nós na missão de transformar o agronegócio brasileiro
             </p>
             <div style={{ 
               display: 'flex', 
-              gap: 'var(--agro-space-lg)', 
+              gap: '1.5rem', 
               justifyContent: 'center', 
-              flexWrap: 'wrap' 
+              flexWrap: 'wrap',
+              alignItems: 'center'
             }}>
-              <Link to="/register" className="agro-btn agro-btn-primary">
+              <Link to="/register" className="agro-btn agro-btn-primary" style={{
+                padding: '1rem 2rem',
+                fontSize: '1.1rem',
+                fontWeight: '600'
+              }}>
                 Começar Agora
                 <ArrowRight size={20} />
               </Link>
-              <Link to="/contact" className="agro-btn agro-btn-secondary">
+              <Link to="/contact" className="agro-btn agro-btn-secondary" style={{
+                padding: '1rem 2rem',
+                fontSize: '1.1rem',
+                fontWeight: '600'
+              }}>
                 Fale Conosco
               </Link>
             </div>
