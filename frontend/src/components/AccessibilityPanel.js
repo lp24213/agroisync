@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   EyeOff, 
@@ -78,14 +78,14 @@ const AccessibilityPanel = () => {
     }));
   };
 
-  const announceToScreenReader = (text) => {
+  const announceToScreenReader = useCallback((text) => {
     if (settings.screenReader && 'speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'pt-BR';
       utterance.rate = 0.8;
       window.speechSynthesis.speak(utterance);
     }
-  };
+  }, [settings.screenReader]);
 
   // Adicionar listeners para navegação por teclado
   useEffect(() => {
