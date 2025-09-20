@@ -17,10 +17,7 @@
     "test": "npm run test:frontend && npm run test:backend",
     "test:frontend": "cd frontend && npm test",
     "test:backend": "cd backend && npm test",
-    "deploy": "npm run build:frontend",
-    "deploy:frontend": "npm run build:frontend && npx wrangler pages deploy frontend/build --project-name=agroisync-frontend",
-    "deploy:backend": "cd backend && npx wrangler deploy",
-    "deploy:all": "npm run deploy:frontend && npm run deploy:backend"
+    "deploy": "npm run build:frontend"
   },
   "keywords": [
     "agronegócio",
