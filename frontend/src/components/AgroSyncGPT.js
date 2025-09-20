@@ -747,6 +747,18 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
                   </div>
                 </div>
               )}
+              
+              {/* Botão Fechar - Parte de Baixo */}
+              <div className="mt-3 pt-3 border-t border-gray-200">
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="w-full flex items-center justify-center gap-2 p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  aria-label="Fechar chatbot"
+                >
+                  <X size={16} />
+                  <span className="text-sm font-medium">Fechar Chatbot</span>
+                </button>
+              </div>
             </div>
           </>
         )}
