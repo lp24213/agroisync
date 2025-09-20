@@ -253,7 +253,16 @@ const AgroSyncGPT = () => {
     }
     
     // Resposta padrão inteligente
-    return `🤖 **AGROISYNC AI Assistant**\n\nOlá! Sou seu assistente de IA especializado em agronegócio.\n\n**Posso ajudar com:**\n• Informações sobre commodities\n• Análise de mercado\n• Cálculos agrícolas\n• Código e automação\n• Busca de informações\n• Análise de imagens\n\n**Comandos especiais:**\n• "calcular" - Para cálculos\n• "buscar" - Para pesquisas\n• "código" - Para programação\n• "analisar" - Para análise de dados\n\nComo posso ser útil hoje?`;
+    return `Olá! Sou seu assistente de IA especializado em agronegócio.
+
+Posso ajudar com:
+• Informações sobre commodities
+• Análise de mercado  
+• Cálculos agrícolas
+• Código e automação
+• Busca de informações
+
+Como posso ser útil hoje?`;
   };
   
   // Gerar resposta de código
@@ -435,8 +444,13 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(true)}
         className="fixed bottom-6 right-6 z-50 bg-gray-800 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+        aria-label="Abrir assistente de IA"
       >
-        <Bot size={24} />
+        <img 
+          src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSIjRkZGRkZGIi8+CjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9IiMzMzMzMzMiLz4KPC9zdmc+" 
+          alt="IA Assistant" 
+          className="w-6 h-6"
+        />
       </motion.button>
     );
   }
@@ -452,9 +466,13 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
         } transition-all duration-300`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-t-lg">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-gray-800 to-gray-900 text-white rounded-t-lg">
           <div className="flex items-center gap-2">
-            <Bot size={20} />
+            <img 
+              src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSIjRkZGRkZGIi8+CjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9IiMzMzMzMzMiLz4KPC9zdmc+" 
+              alt="IA" 
+              className="w-5 h-5"
+            />
             <span className="font-semibold">AGROISYNC AI</span>
             {isProUser && <Crown size={16} className="text-yellow-400" />}
           </div>
@@ -462,18 +480,21 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
             <button
               onClick={() => setShowSettings(!showSettings)}
               className="p-1 hover:bg-white/20 rounded"
+              aria-label="Configurações"
             >
               <Settings size={16} />
             </button>
             <button
               onClick={() => setIsMinimized(!isMinimized)}
               className="p-1 hover:bg-white/20 rounded"
+              aria-label={isMinimized ? "Expandir" : "Minimizar"}
             >
               {isMinimized ? <Maximize2 size={16} /> : <Minimize2 size={16} />}
             </button>
             <button
               onClick={() => setIsOpen(false)}
               className="p-1 hover:bg-white/20 rounded"
+              aria-label="Fechar chatbot"
             >
               <X size={16} />
             </button>
@@ -575,9 +596,13 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
             <div className="flex-1 overflow-y-auto p-4 space-y-4 h-96">
               {messages.length === 0 && (
                 <div className="text-center text-gray-500 py-8">
-                  <Bot size={48} className="mx-auto mb-4 text-gray-300" />
-                  <p className="text-sm">Olá! Sou seu assistente de IA especializado em agronegócio.</p>
-                  <p className="text-xs mt-2">Como posso ajudar hoje?</p>
+                  <img 
+                    src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSIjOUI5QjlCIi8+CjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9IiM2NjY2NjYiLz4KPC9zdmc+" 
+                    alt="IA" 
+                    className="mx-auto mb-4 w-12 h-12"
+                  />
+                  <p className="text-sm font-medium">Olá! Sou seu assistente de IA</p>
+                  <p className="text-xs mt-2 text-gray-400">Como posso ajudar hoje?</p>
                 </div>
               )}
               
@@ -634,10 +659,12 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
                   onChange={handleFileUpload}
                   className="hidden"
                   accept="image/*,.pdf,.doc,.docx"
+                  aria-label="Anexar arquivo"
                 />
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded"
+                  aria-label="Anexar arquivo"
                 >
                   <Upload size={16} />
                 </button>
@@ -647,19 +674,43 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Digite sua mensagem..."
-                  className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                  placeholder="Digite sua mensagem ou use o microfone..."
+                  className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
                   disabled={isTyping}
+                  aria-label="Digite sua mensagem"
                 />
+                
+                <button
+                  onClick={isListening ? stopVoiceInput : startVoiceInput}
+                  className={`p-2 rounded transition-colors ${
+                    isListening 
+                      ? 'bg-red-100 text-red-600 hover:bg-red-200' 
+                      : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                  }`}
+                  aria-label={isListening ? "Parar gravação" : "Iniciar gravação de voz"}
+                >
+                  {isListening ? <MicOff size={16} /> : <Mic size={16} />}
+                </button>
                 
                 <button
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim() || isTyping}
-                  className="p-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="p-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                  aria-label="Enviar mensagem"
                 >
                   <Send size={16} />
                 </button>
               </div>
+              
+              {/* Voice Status */}
+              {isListening && (
+                <div className="mt-2 text-center">
+                  <div className="inline-flex items-center gap-2 text-sm text-red-600">
+                    <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
+                    Gravando... Fale agora
+                  </div>
+                </div>
+              )}
             </div>
           </>
         )}

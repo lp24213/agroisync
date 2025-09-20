@@ -11,6 +11,7 @@ import AgroisyncFooter from './components/AgroisyncFooter';
 import PremiumCursor from './components/PremiumCursor';
 import AgroSyncGPT from './components/AgroSyncGPT';
 import GlobalLGPD from './components/GlobalLGPD';
+import AccessibilityPanel from './components/AccessibilityPanel';
 import Ticker from './components/Ticker';
 import WeatherWidget from './components/WeatherWidget';
 
@@ -28,8 +29,8 @@ import './styles/agroisync-layout-clean.css';
 import './styles/agroisync-design-tokens.css';
 // Importar animações suaves e estilo moderno
 import './styles/agroisync-animations.css';
-// Importar visual futurista e profissional
-import './styles/agroisync-futuristic.css';
+// Importar configurações de acessibilidade
+import './styles/accessibility.css';
 
 // Pages
 import AgroisyncHome from './pages/AgroisyncHome';
@@ -158,6 +159,9 @@ function App() {
                 
                 {/* Global LGPD Compliance */}
                 <GlobalLGPD />
+                
+                {/* Accessibility Panel */}
+                <AccessibilityPanel />
                 
                 {/* Toast Notifications */}
                 <Toaster
