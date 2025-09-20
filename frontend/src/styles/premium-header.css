@@ -12,17 +12,17 @@
 .premium-header-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 70px;
+  height: 55px;
 }
 
 .premium-header-logo-img {
-  height: 50px !important;
+  height: 35px !important;
   width: auto !important;
-  max-width: 200px !important;
+  max-width: 150px !important;
   object-fit: contain !important;
   display: block !important;
   visibility: visible !important;
@@ -34,23 +34,25 @@
 .premium-header-menu {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 1px;
   list-style: none;
   margin: 0;
   padding: 0;
-  flex-wrap: wrap;
-  max-width: 700px;
+  flex-wrap: nowrap;
+  max-width: 600px;
+  overflow-x: auto;
 }
 
 .premium-header-link {
   color: #2e7d32;
   text-decoration: none;
   font-weight: 500;
-  font-size: 0.65rem;
-  padding: 2px 4px;
-  border-radius: 3px;
+  font-size: 0.55rem;
+  padding: 1px 3px;
+  border-radius: 2px;
   transition: all 0.3s ease;
   white-space: nowrap;
+  min-width: fit-content;
 }
 
 .premium-header-link:hover {
@@ -61,21 +63,21 @@
 .premium-header-actions {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 12px;
 }
 
 .premium-language-btn {
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(46, 125, 50, 0.2);
   color: #333333;
-  padding: 8px 16px;
-  border-radius: 4px;
-  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-size: 0.6rem;
   cursor: pointer;
 }
 
 .premium-header-spacer {
-  height: 70px;
+  height: 55px;
 }
 
 /* Mobile Menu Styles */
