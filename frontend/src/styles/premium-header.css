@@ -12,11 +12,12 @@
 .premium-header-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 12px;
+  padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 55px;
+  gap: 20px;
 }
 
 .premium-header-logo-img {
@@ -36,12 +37,13 @@
 .premium-header-menu {
   display: flex;
   align-items: center;
-  gap: 1px;
+  gap: 8px;
   list-style: none;
   margin: 0;
   padding: 0;
   flex-wrap: nowrap;
   max-width: 600px;
+  margin-left: 20px;
 }
 
 .premium-header-link {

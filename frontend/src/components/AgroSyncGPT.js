@@ -604,33 +604,56 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
             )}
             
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 h-96">
+            <div className="flex-1 overflow-y-auto p-6 space-y-4 h-96 bg-gradient-to-b from-gray-50 to-white">
               {messages.length === 0 && (
-                <div className="text-center text-gray-500 py-8">
-                  <img 
-                    src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSIjOUI5QjlCIi8+CjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9IiM2NjY2NjYiLz4KPC9zdmc+" 
-                    alt="IA" 
-                    className="mx-auto mb-4 w-12 h-12"
-                  />
-                  <p className="text-sm font-medium">Olá! Sou seu assistente de IA</p>
-                  <p className="text-xs mt-2 text-gray-400">Como posso ajudar hoje?</p>
+                <div className="text-center py-12">
+                  <div className="relative mb-6">
+                    <div className="w-20 h-20 mx-auto bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center shadow-lg">
+                      <img 
+                        src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSIjRkZGRkZGIi8+CjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9IiMzMzMzMzMiLz4KPC9zdmc+" 
+                        alt="IA" 
+                        className="w-10 h-10"
+                      />
+                    </div>
+                    <div className="absolute -top-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center">
+                      <Crown size={12} className="text-white" />
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-800 mb-2">AGROISYNC AI</h3>
+                  <p className="text-sm text-gray-600 mb-4">Seu assistente inteligente para agronegócio</p>
+                  <div className="grid grid-cols-2 gap-2 max-w-xs mx-auto">
+                    <div className="bg-white p-2 rounded-lg shadow-sm border border-gray-200">
+                      <div className="text-xs text-gray-500">🌾 Commodities</div>
+                    </div>
+                    <div className="bg-white p-2 rounded-lg shadow-sm border border-gray-200">
+                      <div className="text-xs text-gray-500">📊 Análises</div>
+                    </div>
+                    <div className="bg-white p-2 rounded-lg shadow-sm border border-gray-200">
+                      <div className="text-xs text-gray-500">💻 Código</div>
+                    </div>
+                    <div className="bg-white p-2 rounded-lg shadow-sm border border-gray-200">
+                      <div className="text-xs text-gray-500">🔍 Busca</div>
+                    </div>
+                  </div>
                 </div>
               )}
               
               {messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'} mb-3`}
                 >
                   <div
-                    className={`max-w-[80%] p-3 rounded-lg ${
+                    className={`max-w-[85%] p-4 rounded-2xl shadow-sm ${
                       message.type === 'user'
-                        ? 'bg-green-600 text-white'
-                        : 'bg-gray-100 text-gray-800'
+                        ? 'bg-gradient-to-r from-green-500 to-green-600 text-white'
+                        : 'bg-white text-gray-800 border border-gray-200'
                     }`}
                   >
-                    <div className="text-sm whitespace-pre-wrap">{message.content}</div>
-                    <div className="text-xs opacity-70 mt-1">
+                    <div className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</div>
+                    <div className={`text-xs mt-2 ${
+                      message.type === 'user' ? 'text-green-100' : 'text-gray-400'
+                    }`}>
                       {message.timestamp.toLocaleTimeString()}
                     </div>
                   </div>
@@ -638,11 +661,13 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
               ))}
               
               {isTyping && (
-                <div className="flex justify-start">
-                  <div className="bg-gray-100 p-3 rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <Loader2 size={16} className="animate-spin" />
-                      <span className="text-sm text-gray-600">Digitando...</span>
+                <div className="flex justify-start mb-3">
+                  <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-200">
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
+                        <Loader2 size={12} className="animate-spin text-white" />
+                      </div>
+                      <span className="text-sm text-gray-600 font-medium">AGROISYNC AI está digitando...</span>
                     </div>
                   </div>
                 </div>
@@ -652,18 +677,18 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
             </div>
             
             {/* Input Area */}
-            <div className="p-4 border-t border-gray-200">
+            <div className="p-4 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-white">
               {/* Uploaded Files */}
               {uploadedFiles.length > 0 && (
                 <div className="mb-3">
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <div className="flex items-center gap-2 text-sm text-gray-600 bg-white p-2 rounded-lg border border-gray-200">
                     <FileText size={16} />
                     <span>{uploadedFiles.length} arquivo(s) anexado(s)</span>
                   </div>
                 </div>
               )}
               
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 bg-white rounded-2xl border border-gray-200 shadow-sm p-2">
                 <input
                   type="file"
                   ref={fileInputRef}
@@ -674,7 +699,7 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
                 />
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded"
+                  className="p-2 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-xl transition-colors"
                   aria-label="Anexar arquivo"
                 >
                   <Upload size={16} />
@@ -686,17 +711,17 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Digite sua mensagem ou use o microfone..."
-                  className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
+                  className="flex-1 p-3 border-0 focus:outline-none text-sm bg-transparent placeholder-gray-400"
                   disabled={isTyping}
                   aria-label="Digite sua mensagem"
                 />
                 
                 <button
                   onClick={isListening ? stopVoiceInput : startVoiceInput}
-                  className={`p-2 rounded transition-colors ${
+                  className={`p-2 rounded-xl transition-colors ${
                     isListening 
                       ? 'bg-red-100 text-red-600 hover:bg-red-200' 
-                      : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                      : 'text-gray-500 hover:text-green-600 hover:bg-green-50'
                   }`}
                   aria-label={isListening ? "Parar gravação" : "Iniciar gravação de voz"}
                 >
@@ -706,7 +731,7 @@ console.log(\`Receita: \${formatCurrency(revenue)}\`);
                 <button
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim() || isTyping}
-                  className="p-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="p-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
                   aria-label="Enviar mensagem"
                 >
                   <Send size={16} />
