@@ -1,0 +1,257 @@
+/* CORREÇÃO DEFINITIVA DO MENU - SEM SOBREPOSIÇÃO */
+
+/* ===== HEADER PRINCIPAL ===== */
+.premium-header {
+  z-index: 1000 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid rgba(46, 125, 50, 0.1) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+}
+
+.premium-header-container {
+  max-width: 1400px !important;
+  margin: 0 auto !important;
+  padding: 0 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  height: 70px !important;
+}
+
+/* ===== LOGO ===== */
+.premium-header-logo {
+  position: relative !important;
+  z-index: 1001 !important;
+  flex-shrink: 0 !important;
+}
+
+.premium-header-logo-img {
+  height: 50px !important;
+  width: auto !important;
+  max-width: 200px !important;
+  object-fit: contain !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* ===== MENU DESKTOP ===== */
+.premium-header-menu {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex-wrap: nowrap !important;
+  max-width: 600px !important;
+  margin-left: 150px !important;
+  justify-content: center !important;
+  position: relative !important;
+  z-index: 1001 !important;
+}
+
+.premium-header-item {
+  position: relative !important;
+  z-index: 1001 !important;
+}
+
+.premium-header-link {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 8px 12px !important;
+  text-decoration: none !important;
+  color: #333 !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+  white-space: nowrap !important;
+  min-width: 60px !important;
+  position: relative !important;
+  z-index: 1001 !important;
+}
+
+.premium-header-link:hover {
+  background: rgba(46, 125, 50, 0.1) !important;
+  color: #2e7d32 !important;
+}
+
+.premium-header-link.active {
+  background: rgba(46, 125, 50, 0.15) !important;
+  color: #2e7d32 !important;
+}
+
+/* ===== AÇÕES DO HEADER (DIREITA) ===== */
+.premium-header-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  position: relative !important;
+  z-index: 1001 !important;
+}
+
+/* ===== SELETOR DE IDIOMAS ===== */
+.premium-language-selector {
+  position: relative !important;
+  z-index: 1002 !important;
+}
+
+.premium-language-dropdown {
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  background: white !important;
+  border: 1px solid rgba(46, 125, 50, 0.2) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  min-width: 160px !important;
+  z-index: 1002 !important;
+  margin-top: 8px !important;
+}
+
+.premium-lang-option {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  padding: 8px 16px !important;
+  border: none !important;
+  background: none !important;
+  cursor: pointer !important;
+  text-align: left !important;
+  font-size: 14px !important;
+  color: #333 !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.premium-lang-option:hover {
+  background: rgba(46, 125, 50, 0.1) !important;
+}
+
+/* ===== BOTÕES DE AUTENTICAÇÃO ===== */
+.premium-auth-buttons {
+  display: flex !important;
+  gap: 12px !important;
+  position: relative !important;
+  z-index: 1001 !important;
+}
+
+/* ===== MENU MOBILE ===== */
+.premium-mobile-toggle {
+  display: none !important;
+  background: none !important;
+  border: none !important;
+  color: #2e7d32 !important;
+  cursor: pointer !important;
+  padding: 8px !important;
+  border-radius: 4px !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+  z-index: 1003 !important;
+}
+
+.premium-mobile-menu {
+  position: fixed !important;
+  top: 70px !important;
+  left: 0 !important;
+  right: 0 !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+  border-bottom: 1px solid rgba(46, 125, 50, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  z-index: 1004 !important;
+  overflow: hidden !important;
+  max-height: calc(100vh - 70px) !important;
+  overflow-y: auto !important;
+}
+
+.premium-mobile-overlay {
+  position: fixed !important;
+  top: 70px !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.3) !important;
+  z-index: 1005 !important;
+  backdrop-filter: blur(2px) !important;
+}
+
+.premium-mobile-content {
+  padding: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 24px !important;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 768px) {
+  .premium-header-menu {
+    display: none !important;
+  }
+  
+  .premium-mobile-toggle {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  .premium-header-container {
+    padding: 0 16px !important;
+  }
+  
+  .premium-header-actions {
+    gap: 12px !important;
+  }
+  
+  .premium-header-logo-img {
+    margin-left: 0 !important;
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .premium-header-menu {
+    gap: 16px !important;
+    margin-left: 100px !important;
+  }
+  
+  .premium-header-link {
+    font-size: 0.75rem !important;
+    padding: 5px 10px !important;
+    min-width: 50px !important;
+  }
+}
+
+/* ===== GARANTIR QUE NADA FIQUE SOBREPOSTO ===== */
+.main-content {
+  margin-top: 70px !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+[data-page="partnerships"],
+[data-page="planos"],
+[data-page="about"] {
+  margin-top: 70px !important;
+}
+
+/* ===== MODAIS E ELEMENTOS ESPECIAIS ===== */
+.modal,
+.agro-modal,
+.partnerships-success {
+  z-index: 10000 !important;
+}
+
+.toast-container {
+  z-index: 10001 !important;
+}
+
+.skip-link,
+.accessibility-panel {
+  z-index: 10002 !important;
+}

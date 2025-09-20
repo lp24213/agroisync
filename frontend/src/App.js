@@ -33,6 +33,8 @@ import './styles/agroisync-animations.css';
 import './styles/accessibility.css';
 // Importar correção do menu
 import './styles/menu-fix.css';
+// Importar correção definitiva de sobreposição
+import './styles/menu-overlay-fix.css';
 
 // Pages
 import AgroisyncHome from './pages/AgroisyncHome';
