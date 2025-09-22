@@ -1,7 +1,7 @@
 // Configurações para Cloudflare
 const config = {
   // URLs da API
-  API_BASE_URL: process.env.REACT_APP_API_URL || 'https://agroisync-backend-prod.luispaulooliveira767.workers.dev/api',
+  API_BASE_URL: process.env.REACT_APP_API_URL || 'https://agroisync-prod.luispaulooliveira767.workers.dev/api',
   
   // URLs do frontend
   FRONTEND_URL: process.env.REACT_APP_FRONTEND_URL || 'http://localhost:3000',

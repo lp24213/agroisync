@@ -1,5 +1,2 @@
-# Redirect all API calls to backend
-/api/* https://agroisync-backend-prod.luispaulooliveira767.workers.dev/api/:splat 200
-
-# SPA fallback
+# Redirects for SPA
 /* /index.html 200

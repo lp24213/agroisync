@@ -1,0 +1,6 @@
+# Cloudflare Pages Configuration
+name = "agroisync"
+compatibility_date = "2025-09-21"
+
+# Pages configuration - APENAS para frontend estático
+pages_build_output_dir = "frontend/build"
