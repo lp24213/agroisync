@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import './i18n'; // Importar configuração do i18n
+import './i18n/index'; // Importar configuração do i18n
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 

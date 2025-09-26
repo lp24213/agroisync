@@ -1,23 +1,15 @@
 {
-  "name": "agrosync-futuristic",
+  "name": "agroisync",
   "version": "1.0.0",
-  "description": "AgroSync - A plataforma de agronegócio mais futurista do mundo",
+  "description": "AgroSync Frontend - A plataforma de agronegócio mais futurista do mundo",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
-    "dev:frontend": "cd frontend && npm start",
-    "dev:backend": "cd backend && npm run dev",
-    "build": "npm run build:frontend",
-    "build:production": "npm run build:frontend:production && npm run build:backend:production",
-    "build:frontend": "cd frontend && npm run build",
-    "build:frontend:production": "cd frontend && npm run build:production",
-    "build:backend": "cd backend && npm run build",
-    "build:backend:production": "cd backend && npm run build:production",
-    "start": "cd backend && npm start",
-    "test": "npm run test:frontend && npm run test:backend",
-    "test:frontend": "cd frontend && npm test",
-    "test:backend": "cd backend && npm test",
-    "deploy": "npm run build:frontend"
+    "dev": "cd frontend && npm start",
+    "build": "cd frontend && npm run build",
+    "build:production": "cd frontend && npm run build",
+    "start": "cd frontend && npm start",
+    "test": "cd frontend && npm test",
+    "deploy": "npm run build"
   },
   "keywords": [
     "agronegócio",
@@ -27,39 +19,11 @@
     "nft",
     "defi",
     "futurista",
-    "enterprise"
+    "enterprise",
+    "frontend"
   ],
   "author": "AgroSync Team",
   "license": "MIT",
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "react-router-dom": "^6.18.0",
-    "@headlessui/react": "^1.7.17",
-    "@heroicons/react": "^2.0.18",
-    "@stripe/stripe-js": "^7.9.0",
-    "axios": "^1.6.0",
-    "date-fns": "^2.30.0",
-    "framer-motion": "^10.16.4",
-    "i18next": "^23.7.6",
-    "i18next-browser-languagedetector": "^7.2.0",
-    "i18next-http-backend": "^2.3.1",
-    "lucide-react": "^0.292.0",
-    "react-dropzone": "^14.2.3",
-    "react-hook-form": "^7.47.0",
-    "react-hot-toast": "^2.4.1",
-    "react-i18next": "^13.5.0",
-    "react-intersection-observer": "^9.5.2",
-    "react-query": "^3.39.3",
-    "recharts": "^2.8.0",
-    "socket.io-client": "^4.7.2",
-    "web-vitals": "^2.1.4",
-    "zustand": "^4.4.6"
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.2"
-  },
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"

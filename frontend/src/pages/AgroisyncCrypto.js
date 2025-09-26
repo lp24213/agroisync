@@ -13,8 +13,8 @@ import {
   TrendingDown,
   Activity
 } from 'lucide-react';
-import CryptoChart from '../components/CryptoChart';
-import '../styles/crypto-dashboard.css';
+// import CryptoChart from '../components/CryptoChart'; // Componente removido
+// import '../styles/crypto-dashboard.css'; // Arquivo removido
 
 const AgroisyncCrypto = () => {
   const [email, setEmail] = useState('');
@@ -457,13 +457,10 @@ const AgroisyncCrypto = () => {
 
                 {/* Gráfico */}
                 <div style={{ marginBottom: '1rem' }}>
-                  <CryptoChart 
-                    data={crypto.chartData}
-                    symbol={crypto.symbol}
-                    price={crypto.price}
-                    change24h={crypto.change24h}
-                    height={150}
-                  />
+                  <div className="text-center py-8">
+                    <h3 className="text-xl font-semibold text-gray-600">Gráfico de Criptomoedas em Desenvolvimento</h3>
+                    <p className="text-gray-500 mt-2">Em breve teremos gráficos interativos disponíveis!</p>
+                  </div>
                 </div>
 
                 {/* Estatísticas */}

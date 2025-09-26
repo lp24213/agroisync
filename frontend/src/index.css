@@ -2,39 +2,6 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-/* PREMIUM DESIGN SYSTEM */
-@import './styles/premium-design-system.css';
-
-/* PREMIUM HEADER */
-@import './styles/premium-header.css';
-
-/* PREMIUM PANELS */
-@import './styles/premium-panels.css';
-
-/* PREMIUM BACKGROUNDS */
-@import './styles/premium-backgrounds.css';
-
-/* NOVO REDESIGN AGROISYNC */
-@import './styles/agroisync-redesign.css';
-
-/* TEMA TXC + GRÃO DIRETO UNIFICADO */
-@import './styles/agro-txc-grao-theme.css';
-
-/* HEADER TRANSPARENTE */
-@import './styles/header-transparent.css';
-
-/* PROMPT CERTEIRO - HEADER PADRÃO */
-@import './styles/agroisync-prompt.css';
-
-/* HEADER ATUALIZADO AGROISYNC */
-@import './styles/agro-header-new.css';
-
-/* HERO ATUALIZADO AGROISYNC */
-@import './styles/agro-hero-new.css';
-
-/* FOOTER ATUALIZADO AGROISYNC */
-@import './styles/agro-footer-new.css';
-
 /* Base styles */
 * {
   margin: 0;

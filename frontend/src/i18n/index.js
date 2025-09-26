@@ -36,7 +36,7 @@ i18n
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
-      lookupLocalStorage: 'agrosync-language'
+      lookupLocalStorage: 'agroisync-language'
     },
 
     interpolation: {

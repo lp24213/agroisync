@@ -1,17 +1,16 @@
-# Cloudflare Pages Configuration
-# This file forces Cloudflare Pages to serve only static files
-# and ignore any Worker configuration
+# Cloudflare Pages Configuration - Frontend Only
+# This file configures Cloudflare Pages for the AgroSync frontend
 
-name = "agroisync-frontend"
+name = "agroisync"
 compatibility_date = "2025-09-20"
 
-# Force Pages mode (not Workers)
+# Pages configuration
 [pages]
 directory = "frontend/build"
 
-# Disable Workers
+# Build configuration
 [build]
-command = "npm run build:frontend"
+command = "npm run build"
 cwd = "frontend"
 watch_dir = "src"
 

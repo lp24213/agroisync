@@ -9,7 +9,10 @@ const config = {
   NODE_ENV: process.env.NODE_ENV || 'development',
 
   // Configurações do banco de dados MongoDB
-  MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/agrosync',
+  MONGODB_URI: process.env.MONGODB_URI || (() => {
+    console.error('❌ MONGODB_URI não configurado! Configure a variável de ambiente MONGODB_URI');
+    process.exit(1);
+  })(),
   MONGODB_OPTIONS: {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -19,7 +22,10 @@ const config = {
   },
 
   // Configurações JWT
-  JWT_SECRET: process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production',
+  JWT_SECRET: process.env.JWT_SECRET || (() => {
+    console.error('❌ JWT_SECRET não configurado! Configure a variável de ambiente JWT_SECRET');
+    process.exit(1);
+  })(),
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '24h',
   REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN || '7d',
 

@@ -4,25 +4,26 @@ class PaymentService {
     this.stripePublishableKey = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_51234567890abcdef';
     this.metaMaskAddress = '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'; // Endereço MetaMask do usuário
     this.stripeAccountId = 'acct_1ABC123DEF456GHI'; // Account ID Stripe do usuário
+    this.apiBaseUrl = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
   }
 
   // Stripe Payment Methods
   async initializeStripe() {
-    try {
-      const { loadStripe } = await import('@stripe/stripe-js');
-      return await loadStripe(this.stripePublishableKey);
-    } catch (error) {
-      console.error('Erro ao inicializar Stripe:', error);
-      throw error;
+    if (window.Stripe) {
+      return window.Stripe(this.stripePublishableKey);
     }
+    
+    const { loadStripe } = await import('@stripe/stripe-js');
+    return await loadStripe(this.stripePublishableKey);
   }
 
-  async createStripePaymentIntent(amount, currency = 'brl', metadata = {}) {
+  async createPaymentIntent(amount, currency = 'brl', metadata = {}) {
     try {
-      const response = await fetch('/api/stripe/create-payment-intent', {
+      const response = await fetch(`${this.apiBaseUrl}/payments/create-intent`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
           amount: Math.round(amount * 100), // Stripe usa centavos
@@ -71,44 +72,31 @@ class PaymentService {
 
   // MetaMask Payment Methods
   async connectMetaMask() {
-    try {
-      if (typeof window.ethereum === 'undefined') {
-        throw new Error('MetaMask não está instalado');
+    if (typeof window.ethereum !== 'undefined') {
+      try {
+        const accounts = await window.ethereum.request({
+          method: 'eth_requestAccounts'
+        });
+        
+        this.metaMaskAddress = accounts[0];
+        return accounts[0];
+      } catch (error) {
+        console.error('Erro ao conectar MetaMask:', error);
+        throw error;
       }
-
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      });
-
-      if (accounts.length === 0) {
-        throw new Error('Nenhuma conta conectada');
-      }
-
-      return accounts[0];
-    } catch (error) {
-      console.error('Erro ao conectar MetaMask:', error);
-      throw error;
+    } else {
+      throw new Error('MetaMask não está instalado');
     }
   }
 
-  async sendCryptoPayment(toAddress, amount, currency = 'ETH') {
+  async sendEthereumPayment(toAddress, amount, gasPrice = '0x4a817c800') {
     try {
-      const accounts = await window.ethereum.request({
-        method: 'eth_accounts',
-      });
-
-      if (accounts.length === 0) {
-        throw new Error('MetaMask não conectado');
-      }
-
-      // Converter valor para wei (ETH)
-      const weiAmount = window.ethereum.utils.toWei(amount.toString(), 'ether');
-
       const transactionParameters = {
         to: toAddress,
-        from: accounts[0],
-        value: weiAmount,
+        from: this.metaMaskAddress,
+        value: '0x' + (amount * Math.pow(10, 18)).toString(16), // Converter para Wei
         gas: '0x5208', // 21000 gas
+        gasPrice: gasPrice
       };
 
       const txHash = await window.ethereum.request({
@@ -116,104 +104,309 @@ class PaymentService {
         params: [transactionParameters],
       });
 
-      return {
-        success: true,
-        transactionHash: txHash,
-        amount,
-        currency,
-        toAddress
-      };
+      return { success: true, txHash };
     } catch (error) {
-      console.error('Erro ao enviar pagamento crypto:', error);
+      console.error('Erro ao enviar pagamento Ethereum:', error);
       throw error;
     }
-    }
-
-  // Payment Routing Logic
-  async processPayment(paymentData) {
-    const { amount, currency, service, metadata = {} } = paymentData;
-
-    try {
-      switch (service) {
-        case 'agroconecta':
-        case 'loja':
-          // AgroConecta e Loja → Stripe
-          const paymentIntent = await this.createStripePaymentIntent(
-            amount,
-            currency,
-            {
-              ...metadata,
-              service,
-              platform: 'agroisync'
-            }
-          );
-          return {
-            method: 'stripe',
-            paymentIntent,
-            redirectUrl: `/payment/stripe?intent=${paymentIntent.client_secret}`
-          };
-
-        case 'crypto':
-          // Crypto → MetaMask
-          const cryptoPayment = await this.sendCryptoPayment(
-            this.metaMaskAddress,
-            amount,
-            currency
-          );
-          return {
-            method: 'metamask',
-            ...cryptoPayment,
-            redirectUrl: `/payment/crypto-success?tx=${cryptoPayment.transactionHash}`
-          };
-
-        default:
-          throw new Error('Serviço de pagamento não suportado');
-      }
-    } catch (error) {
-      console.error('Erro ao processar pagamento:', error);
-      throw error;
-      }
-    }
-
-  // Plan Pricing Logic
-  getPlanPricing(planType, service) {
-    const pricing = {
-      agroconecta: {
-        basic: { price: 29.90, features: ['5 anúncios', 'Suporte básico', 'Relatórios básicos'] },
-        premium: { price: 59.90, features: ['20 anúncios', 'Suporte prioritário', 'Relatórios avançados', 'API access'] },
-        enterprise: { price: 149.90, features: ['Anúncios ilimitados', 'Suporte 24/7', 'Relatórios customizados', 'Integração completa'] }
-      },
-      loja: {
-        basic: { price: 39.90, features: ['10 produtos', 'Suporte básico', 'Dashboard básico'] },
-        premium: { price: 79.90, features: ['50 produtos', 'Suporte prioritário', 'Dashboard avançado', 'Analytics'] },
-        enterprise: { price: 199.90, features: ['Produtos ilimitados', 'Suporte 24/7', 'Dashboard customizado', 'Integração ERP'] }
-      },
-      crypto: {
-        basic: { price: 0.01, features: ['Transações básicas', 'Wallet integrado', 'Suporte básico'] },
-        premium: { price: 0.05, features: ['Transações avançadas', 'Wallet premium', 'Suporte prioritário', 'Staking'] },
-        enterprise: { price: 0.1, features: ['Transações ilimitadas', 'Wallet enterprise', 'Suporte 24/7', 'DeFi integration'] }
-      }
-    };
-
-    return pricing[service]?.[planType] || null;
   }
 
-  // Commission Calculation
-  calculateCommission(amount, service) {
-    const commissionRates = {
-      agroconecta: 0.05, // 5%
-      loja: 0.08, // 8%
-      crypto: 0.02 // 2%
+  // Subscription Management
+  async createSubscription(priceId, customerId) {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/subscriptions/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          priceId,
+          customerId,
+          metadata: {
+            platform: 'agroisync',
+            account_id: this.stripeAccountId
+          }
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao criar assinatura');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Erro ao criar assinatura:', error);
+      throw error;
+    }
+  }
+
+  async cancelSubscription(subscriptionId) {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/subscriptions/${subscriptionId}/cancel`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao cancelar assinatura');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Erro ao cancelar assinatura:', error);
+      throw error;
+    }
+  }
+
+  // Utility Methods
+  formatCurrency(amount, currency = 'BRL') {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: currency
+    }).format(amount);
+  }
+
+  calculateFee(amount, feePercentage = 2.9) {
+    return (amount * feePercentage) / 100;
+  }
+
+  calculateTotal(amount, feePercentage = 2.9) {
+    const fee = this.calculateFee(amount, feePercentage);
+    return amount + fee;
+  }
+
+  // Price calculation for different user types
+  calculatePrice(basePrice, userType = 'standard') {
+    const multipliers = {
+      'standard': 1.0,
+      'premium': 0.9,    // 10% desconto
+      'enterprise': 0.8, // 20% desconto
+      'vip': 0.7         // 30% desconto
     };
 
-    const rate = commissionRates[service] || 0.05;
-    return {
-      commission: amount * rate,
-      netAmount: amount * (1 - rate),
-      rate: rate * 100
-    };
+    const multiplier = multipliers[userType] || 1.0;
+    return basePrice * multiplier;
+  }
+
+  // Dynamic pricing based on market conditions
+  calculateDynamicPrice(basePrice, marketConditions = {}) {
+    let adjustedPrice = basePrice;
+
+    // Ajustar baseado na demanda
+    if (marketConditions.demand === 'high') {
+      adjustedPrice *= 1.1; // 10% aumento
+    } else if (marketConditions.demand === 'low') {
+      adjustedPrice *= 0.9; // 10% desconto
+    }
+
+    // Ajustar baseado na sazonalidade
+    if (marketConditions.season === 'peak') {
+      adjustedPrice *= 1.05; // 5% aumento
+    } else if (marketConditions.season === 'off') {
+      adjustedPrice *= 0.95; // 5% desconto
+    }
+
+    return adjustedPrice;
+  }
+
+  // Escrow system for secure transactions
+  async createEscrowPayment(buyerAddress, sellerAddress, amount, conditions) {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/escrow/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          buyerAddress,
+          sellerAddress,
+          amount,
+          conditions,
+          platform: 'agroisync'
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao criar escrow');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Erro ao criar escrow:', error);
+      throw error;
+    }
+  }
+
+  async releaseEscrowPayment(escrowId) {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/escrow/${escrowId}/release`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao liberar escrow');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Erro ao liberar escrow:', error);
+      throw error;
+    }
+  }
+
+  // Payment history and analytics
+  async getPaymentHistory(limit = 50, offset = 0) {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/payments/history?limit=${limit}&offset=${offset}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao buscar histórico');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Erro ao buscar histórico:', error);
+      throw error;
+    }
+  }
+
+  async getPaymentAnalytics(period = '30d') {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/payments/analytics?period=${period}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao buscar analytics');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Erro ao buscar analytics:', error);
+      throw error;
+    }
+  }
+
+  // Refund system
+  async processRefund(paymentId, amount = null, reason = '') {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/payments/${paymentId}/refund`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          amount,
+          reason,
+          platform: 'agroisync'
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao processar reembolso');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Erro ao processar reembolso:', error);
+      throw error;
+    }
+  }
+
+  // Multi-currency support
+  async convertCurrency(amount, fromCurrency, toCurrency) {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/currency/convert`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          amount,
+          from: fromCurrency,
+          to: toCurrency
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao converter moeda');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Erro ao converter moeda:', error);
+      throw error;
+    }
+  }
+
+  // Tax calculation
+  calculateTax(amount, taxRate = 0.1) {
+    return amount * taxRate;
+  }
+
+  // Final price calculation with all fees and taxes
+  calculateFinalPrice(basePrice, userType = 'standard', marketConditions = {}) {
+    let price = this.calculatePrice(basePrice, userType);
+    price = this.calculateDynamicPrice(price, marketConditions);
+    
+    const fee = this.calculateFee(price);
+    const tax = this.calculateTax(price);
+    
+    return price + fee + tax;
+  }
+
+  // Payment method validation
+  validatePaymentMethod(method) {
+    const validMethods = ['stripe', 'metamask', 'pix', 'boleto'];
+    return validMethods.includes(method);
+  }
+
+  // Security checks
+  async validateTransaction(transactionData) {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/payments/validate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(transactionData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Transação inválida');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Erro ao validar transação:', error);
+      throw error;
+    }
+  }
+
+  // Get base price for calculations
+  getBasePrice() {
+    return 100; // Preço base padrão
   }
 }
 
+// Instância única do serviço
 const paymentService = new PaymentService();
+
 export default paymentService;

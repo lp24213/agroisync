@@ -1,6 +1,7 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 
 const userSchema = new mongoose.Schema(
   {
@@ -22,13 +23,23 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, 'Senha é obrigatória'],
-      minlength: [6, 'Senha deve ter pelo menos 6 caracteres'],
-      select: false
+      minlength: [8, 'Senha deve ter pelo menos 8 caracteres'],
+      select: false,
+      validate: {
+        validator(password) {
+          // Validação de senha forte
+          const strongPasswordRegex =
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+          return strongPasswordRegex.test(password);
+        },
+        message:
+          'Senha deve conter pelo menos: 8 caracteres, 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial'
+      }
     },
     phone: {
       type: String,
       trim: true,
-      match: [/^\+?[\d\s\-\(\)]+$/, 'Telefone inválido']
+      match: [/^\+?[\d\s\-()]+$/, 'Telefone inválido']
     },
 
     // Informações de perfil
@@ -84,7 +95,7 @@ const userSchema = new mongoose.Schema(
         type: String,
         default: null
       },
-      
+
       // Informações financeiras
       bankAccount: {
         type: String,
@@ -94,7 +105,7 @@ const userSchema = new mongoose.Schema(
         type: String,
         default: null
       },
-      
+
       // Informações fiscais
       taxId: {
         type: String,
@@ -104,7 +115,7 @@ const userSchema = new mongoose.Schema(
         type: String,
         default: null
       },
-      
+
       // Metadados de criptografia
       encryptionMetadata: {
         algorithm: {
@@ -145,145 +156,125 @@ const userSchema = new mongoose.Schema(
     twoFactorSecret: String,
     twoFactorBackupCodes: [String],
 
+    // Permissões de administrador
+    isAdmin: {
+      type: Boolean,
+      default: false
+    },
+    adminPermissions: [
+      {
+        type: String,
+        enum: [
+          'users_read',
+          'users_write',
+          'users_delete',
+          'products_read',
+          'products_write',
+          'products_delete',
+          'payments_read',
+          'payments_write',
+          'payments_refund',
+          'registrations_read',
+          'registrations_write',
+          'registrations_approve',
+          'system_settings',
+          'system_backup',
+          'system_logs',
+          'system_maintenance',
+          'audit_logs',
+          'admin_users',
+          'admin_roles',
+          '*' // Super admin
+        ]
+      }
+    ],
+    adminRole: {
+      type: String,
+      enum: ['super_admin', 'admin', 'moderator', 'support'],
+      default: null
+    },
+    adminNotes: {
+      type: String,
+      maxlength: [1000, 'Notas administrativas não podem ter mais de 1000 caracteres']
+    },
+
     // Plano e pagamentos
     plan: {
       type: String,
       enum: ['free', 'basic', 'pro', 'enterprise'],
       default: 'free'
     },
-    planActive: {
-      type: Boolean,
-      default: true
-    },
     planExpiresAt: Date,
-    stripeCustomerId: String,
-    stripeSubscriptionId: String,
+    subscriptionId: String,
+    paymentMethod: String,
 
-    // Permissões
-    role: {
-      type: String,
-      enum: ['user', 'moderator', 'admin', 'super-admin'],
-      default: 'user'
+    // Configurações de privacidade
+    privacySettings: {
+      profileVisibility: {
+        type: String,
+        enum: ['public', 'private', 'contacts'],
+        default: 'public'
+      },
+      showEmail: {
+        type: Boolean,
+        default: false
+      },
+      showPhone: {
+        type: Boolean,
+        default: false
+      },
+      showLocation: {
+        type: Boolean,
+        default: true
+      },
+      allowMessages: {
+        type: Boolean,
+        default: true
+      },
+      allowNotifications: {
+        type: Boolean,
+        default: true
+      }
     },
+
+    // Configurações de notificação
+    notificationSettings: {
+      email: {
+        type: Boolean,
+        default: true
+      },
+      sms: {
+        type: Boolean,
+        default: false
+      },
+      push: {
+        type: Boolean,
+        default: true
+      },
+      marketing: {
+        type: Boolean,
+        default: false
+      }
+    },
+
+    // Status da conta
     isActive: {
       type: Boolean,
       default: true
     },
-    isBlocked: {
+    isSuspended: {
       type: Boolean,
       default: false
     },
-    blockedReason: String,
-    blockedAt: Date,
+    suspensionReason: String,
+    suspensionExpiresAt: Date,
 
-    // Preferências
-    preferences: {
-      language: {
-        type: String,
-        enum: ['pt', 'en', 'es', 'zh'],
-        default: 'pt'
-      },
-      timezone: {
-        type: String,
-        default: 'America/Sao_Paulo'
-      },
-      notifications: {
-        email: {
-          type: Boolean,
-          default: true
-        },
-        push: {
-          type: Boolean,
-          default: true
-        },
-        sms: {
-          type: Boolean,
-          default: false
-        },
-        marketing: {
-          type: Boolean,
-          default: false
-        }
-      },
-      privacy: {
-        profileVisibility: {
-          type: String,
-          enum: ['public', 'private', 'contacts'],
-          default: 'public'
-        },
-        showLocation: {
-          type: Boolean,
-          default: true
-        },
-        showBusinessInfo: {
-          type: Boolean,
-          default: true
-        }
-      }
-    },
-
-    // Estatísticas
-    stats: {
-      totalProducts: {
-        type: Number,
-        default: 0
-      },
-      totalSales: {
-        type: Number,
-        default: 0
-      },
-      totalPurchases: {
-        type: Number,
-        default: 0
-      },
-      totalFreights: {
-        type: Number,
-        default: 0
-      },
-      rating: {
-        type: Number,
-        default: 0,
-        min: 0,
-        max: 5
-      },
-      reviewsCount: {
-        type: Number,
-        default: 0
-      }
-    },
-
-    // Carteira cripto
-    wallet: {
-      address: String,
-      balance: {
-        type: Number,
-        default: 0
-      },
-      transactions: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'CryptoTransaction'
-        }
-      ]
-    },
-
-    // Última atividade
-    lastLoginAt: Date,
-    lastActivityAt: {
-      type: Date,
-      default: Date.now
-    },
-
-    // Tokens de reset
-    passwordResetToken: String,
-    passwordResetExpires: Date,
-
-    // LGPD
+    // LGPD e consentimentos
     lgpdConsent: {
       type: Boolean,
       default: false
     },
-    lgpdConsentDate: Date,
+    lgpdConsentDate: Number,
     dataProcessingConsent: {
       type: Boolean,
       default: false
@@ -291,132 +282,227 @@ const userSchema = new mongoose.Schema(
     marketingConsent: {
       type: Boolean,
       default: false
+    },
+
+    // Metadados de segurança
+    lastLoginAt: Date,
+    lastLoginIp: String,
+    loginAttempts: {
+      type: Number,
+      default: 0
+    },
+    lockUntil: Date,
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date,
+
+    // Estatísticas
+    stats: {
+      totalProducts: {
+        type: Number,
+        default: 0
+      },
+      totalTransactions: {
+        type: Number,
+        default: 0
+      },
+      totalRevenue: {
+        type: Number,
+        default: 0
+      },
+      reputation: {
+        type: Number,
+        default: 0
+      },
+      rating: {
+        type: Number,
+        default: 0
+      }
+    },
+
+    // Configurações de idioma
+    language: {
+      type: String,
+      default: 'pt-BR',
+      enum: ['pt-BR', 'en-US', 'es-ES', 'zh-CN']
+    },
+    timezone: {
+      type: String,
+      default: 'America/Sao_Paulo'
+    },
+
+    // Metadados
+    metadata: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {}
     }
   },
   {
     timestamps: true,
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true }
+    toJSON: {
+      transform(doc, ret) {
+        // Remover campos sensíveis do JSON
+        delete ret.password;
+        delete ret.twoFactorSecret;
+        delete ret.twoFactorBackupCodes;
+        delete ret.passwordResetToken;
+        delete ret.emailVerificationToken;
+        delete ret.phoneVerificationCode;
+        delete ret.piiData;
+        delete ret.adminNotes;
+        delete ret.metadata;
+        return ret;
+      }
+    }
   }
 );
 
-// Índices
+// Índices para performance e segurança
 userSchema.index({ email: 1 });
-userSchema.index({ businessDocument: 1 });
-userSchema.index({ location: '2dsphere' });
+userSchema.index({ phone: 1 });
+userSchema.index({ isActive: 1 });
+userSchema.index({ isAdmin: 1 });
+userSchema.index({ plan: 1 });
 userSchema.index({ createdAt: -1 });
-userSchema.index({ lastActivityAt: -1 });
+userSchema.index({ lastLoginAt: -1 });
 
-// Virtuals
-userSchema.virtual('isAdmin').get(function () {
-  return this.role === 'admin' || this.role === 'super-admin';
-});
-
-userSchema.virtual('isPaid').get(function () {
-  return this.plan !== 'free' && this.planActive;
-});
-
-userSchema.virtual('isVerified').get(function () {
-  return this.isEmailVerified && this.isPhoneVerified;
-});
-
-// Middleware pre-save
+// Middleware para hash da senha antes de salvar
 userSchema.pre('save', async function (next) {
-  // Hash da senha
-  if (this.isModified('password')) {
-    const salt = await bcrypt.genSalt(12);
-    this.password = await bcrypt.hash(this.password, salt);
+  // Só hash se a senha foi modificada
+  if (!this.isModified('password')) {
+    return next();
   }
 
-  // Atualizar lastActivityAt
-  if (this.isModified() && !this.isNew) {
-    this.lastActivityAt = new Date();
+  try {
+    // Hash da senha com salt rounds alto para segurança
+    const saltRounds = 12;
+    this.password = await bcrypt.hash(this.password, saltRounds);
+    this.passwordChangedAt = new Date();
+    return next();
+  } catch (error) {
+    return next(error);
   }
-
-  next();
 });
 
-// Métodos de instância
+// Middleware para atualizar timestamp de mudança de senha
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) {
+    return next();
+  }
+  this.passwordChangedAt = Date.now() - 1000;
+  return next();
+});
+
+// Método para verificar senha
 userSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
+// Método para gerar token JWT
 userSchema.methods.generateAuthToken = function () {
-  return jwt.sign(
-    {
-      id: this._id,
-      email: this.email,
-      role: this.role,
-      isAdmin: this.isAdmin
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRE || '7d' }
-  );
-};
+  const payload = {
+    userId: this._id,
+    email: this.email,
+    isAdmin: this.isAdmin,
+    adminRole: this.adminRole,
+    plan: this.plan
+  };
 
-userSchema.methods.generateRefreshToken = function () {
-  return jwt.sign({ id: this._id }, process.env.JWT_REFRESH_SECRET, {
-    expiresIn: process.env.JWT_REFRESH_EXPIRE || '30d'
+  return jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN || '24h',
+    issuer: 'agroisync',
+    audience: 'agroisync-users'
   });
 };
 
+// Método para gerar token de verificação de email
 userSchema.methods.generateEmailVerificationToken = function () {
-  const token =
-    Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  const token = jwt.sign({ userId: this._id, type: 'email_verification' }, process.env.JWT_SECRET, {
+    expiresIn: '24h'
+  });
 
   this.emailVerificationToken = token;
-  this.emailVerificationExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 horas
+  this.emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
   return token;
 };
 
-userSchema.methods.generatePasswordResetToken = function () {
-  const token =
-    Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-
-  this.passwordResetToken = token;
-  this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutos
-
-  return token;
-};
-
+// Método para gerar código de verificação de telefone
 userSchema.methods.generatePhoneVerificationCode = function () {
   const code = Math.floor(100000 + Math.random() * 900000).toString();
-
   this.phoneVerificationCode = code;
-  this.phoneVerificationExpires = Date.now() + 5 * 60 * 1000; // 5 minutos
-
+  this.phoneVerificationExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutos
   return code;
 };
 
-userSchema.methods.toJSON = function () {
-  const user = this.toObject();
-  delete user.password;
-  delete user.twoFactorSecret;
-  delete user.twoFactorBackupCodes;
-  delete user.emailVerificationToken;
-  delete user.passwordResetToken;
-  delete user.phoneVerificationCode;
-  delete user.piiData; // Não incluir dados PII no JSON
-  return user;
+// Método para gerar token de reset de senha
+userSchema.methods.generatePasswordResetToken = function () {
+  const token = jwt.sign({ userId: this._id, type: 'password_reset' }, process.env.JWT_SECRET, {
+    expiresIn: '1h'
+  });
+
+  this.passwordResetToken = token;
+  this.passwordResetExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hora
+
+  return token;
+};
+
+// Método para verificar se a conta está bloqueada
+userSchema.methods.isLocked = function () {
+  return !!(this.lockUntil && this.lockUntil > Date.now());
+};
+
+// Método para incrementar tentativas de login
+userSchema.methods.incLoginAttempts = function () {
+  // Se temos tentativas anteriores e não está bloqueado, incrementar
+  if (this.lockUntil && this.lockUntil < Date.now()) {
+    return this.updateOne({
+      $unset: { lockUntil: 1 },
+      $set: { loginAttempts: 1 }
+    });
+  }
+
+  const updates = { $inc: { loginAttempts: 1 } };
+
+  // Bloquear conta após 5 tentativas por 2 horas
+  if (this.loginAttempts + 1 >= 5 && !this.isLocked()) {
+    updates.$set = { lockUntil: Date.now() + 2 * 60 * 60 * 1000 }; // 2 horas
+  }
+
+  return this.updateOne(updates);
+};
+
+// Método para resetar tentativas de login
+userSchema.methods.resetLoginAttempts = function () {
+  return this.updateOne({
+    $unset: { loginAttempts: 1, lockUntil: 1 }
+  });
+};
+
+// Método para verificar se mudou senha após o token JWT
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+    return JWTTimestamp < changedTimestamp;
+  }
+  return false;
 };
 
 // Métodos para criptografia de dados PII
-userSchema.methods.encryptPIIData = function(data) {
-  const crypto = require('crypto');
+userSchema.methods.encryptPIIData = function (data) {
   const algorithm = 'aes-256-gcm';
   const key = process.env.PII_ENCRYPTION_KEY || 'default-pii-key-change-in-production';
-  
+
   try {
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipher(algorithm, key);
     cipher.setAAD(Buffer.from('pii-data', 'utf8'));
-    
+
     let encrypted = cipher.update(JSON.stringify(data), 'utf8', 'hex');
     encrypted += cipher.final('hex');
-    
+
     const authTag = cipher.getAuthTag();
-    
+
     return {
       encrypted,
       iv: iv.toString('hex'),
@@ -425,35 +511,36 @@ userSchema.methods.encryptPIIData = function(data) {
       keyVersion: '1.0'
     };
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Erro ao criptografar dados PII:', error);
     throw error;
   }
 };
 
-userSchema.methods.decryptPIIData = function(encryptedData) {
-  const crypto = require('crypto');
+userSchema.methods.decryptPIIData = function (encryptedData) {
   const key = process.env.PII_ENCRYPTION_KEY || 'default-pii-key-change-in-production';
-  
+
   try {
     const decipher = crypto.createDecipher(encryptedData.algorithm, key);
     decipher.setAAD(Buffer.from('pii-data', 'utf8'));
     decipher.setAuthTag(Buffer.from(encryptedData.authTag, 'hex'));
-    
+
     let decrypted = decipher.update(encryptedData.encrypted, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
-    
+
     return JSON.parse(decrypted);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Erro ao descriptografar dados PII:', error);
     throw error;
   }
 };
 
-userSchema.methods.setPIIData = function(field, value) {
+userSchema.methods.setPIIData = function (field, value) {
   if (!this.piiData) {
     this.piiData = {};
   }
-  
+
   if (value) {
     const encrypted = this.encryptPIIData(value);
     this.piiData[field] = encrypted;
@@ -461,49 +548,56 @@ userSchema.methods.setPIIData = function(field, value) {
   } else {
     this.piiData[field] = null;
   }
-  
+
   return this;
 };
 
-userSchema.methods.getPIIData = function(field) {
+userSchema.methods.getPIIData = function (field) {
   if (!this.piiData || !this.piiData[field]) {
     return null;
   }
-  
+
   try {
     return this.decryptPIIData(this.piiData[field]);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error(`Erro ao descriptografar campo PII ${field}:`, error);
     return null;
   }
 };
 
-userSchema.methods.hasPIIData = function(field) {
+userSchema.methods.hasPIIData = function (field) {
   return !!(this.piiData && this.piiData[field]);
 };
 
-// Métodos estáticos
+// Método estático para buscar usuário por email
 userSchema.statics.findByEmail = function (email) {
   return this.findOne({ email: email.toLowerCase() });
 };
 
-userSchema.statics.findActiveUsers = function () {
-  return this.find({ isActive: true, isBlocked: false });
+// Método estático para buscar usuários ativos
+userSchema.statics.findActive = function () {
+  return this.find({ isActive: true, isSuspended: false });
 };
 
-userSchema.statics.findByLocation = function (coordinates, maxDistance = 10000) {
-  return this.find({
-    location: {
-      $near: {
-        $geometry: {
-          type: 'Point',
-          coordinates
-        },
-        $maxDistance: maxDistance
-      }
-    },
-    isActive: true
-  });
+// Método estático para buscar administradores
+userSchema.statics.findAdmins = function () {
+  return this.find({ isAdmin: true, isActive: true });
 };
 
-module.exports = mongoose.model('User', userSchema);
+// Método para sanitizar dados antes de retornar
+userSchema.methods.sanitize = function () {
+  const user = this.toObject();
+  delete user.password;
+  delete user.twoFactorSecret;
+  delete user.twoFactorBackupCodes;
+  delete user.passwordResetToken;
+  delete user.emailVerificationToken;
+  delete user.phoneVerificationCode;
+  delete user.piiData;
+  return user;
+};
+
+const User = mongoose.model('User', userSchema);
+
+export default User;

@@ -1,29 +1,68 @@
 import nodemailer from 'nodemailer';
 import twilio from 'twilio';
+import devConfig from '../config/devConfig.js';
+import logger from '../utils/logger.js';
+
+// Verificar se estamos em modo de desenvolvimento
+const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.SMTP_HOST;
 
 // Configuração de email (usando SMTP genérico)
 const emailTransporter = nodemailer.createTransporter({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: process.env.SMTP_PORT || 587,
+  host: process.env.SMTP_HOST || devConfig.email.host,
+  port: process.env.SMTP_PORT || devConfig.email.port,
   secure: false, // true para 465, false para outras portas
   auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
+    user: process.env.SMTP_USER || devConfig.email.user,
+    pass: process.env.SMTP_PASS || devConfig.email.pass
   }
 });
 
 // Configuração SMS (usando Twilio)
-const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+const twilioClient = twilio(
+  process.env.TWILIO_ACCOUNT_SID || devConfig.sms.accountSid,
+  process.env.TWILIO_AUTH_TOKEN || devConfig.sms.authToken
+);
+
+// Função para enviar email via Resend
+const sendEmailViaResend = async (to, subject, html) => {
+  try {
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: 'AgroSync <onboarding@resend.dev>',
+        to,
+        subject,
+        html
+      })
+    });
+
+    const data = await response.json();
+    if (response.ok && data.id) {
+      logger.info(`Email enviado via Resend para ${to}: ${data.id}`);
+      return { success: true, messageId: data.id };
+    } else {
+      throw new Error(`Resend Error: ${data.message}`);
+    }
+  } catch (error) {
+    logger.error(`Erro ao enviar email via Resend para ${to}:`, error);
+    return { success: false, error: error.message };
+  }
+};
 
 class NotificationService {
   constructor() {
-    this.fromEmail = process.env.FROM_EMAIL || 'noreply@agrosync.com';
-    this.fromName = process.env.FROM_NAME || 'AgroSync';
-    this.twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
+    this.fromEmail = process.env.FROM_EMAIL || devConfig.email.fromEmail;
+    this.fromName = process.env.FROM_NAME || devConfig.email.fromName;
+    this.twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER || devConfig.sms.phoneNumber;
+    this.isDevelopment = isDevelopment;
   }
 
   /**
-   * Enviar email via SMTP
+   * Enviar email via Resend (prioritário) ou SMTP (fallback)
    * @param {string} to - Email do destinatário
    * @param {string} subject - Assunto do email
    * @param {string} htmlBody - Corpo HTML do email
@@ -32,6 +71,36 @@ class NotificationService {
    */
   async sendEmail(to, subject, htmlBody, textBody = null) {
     try {
+      // Modo de desenvolvimento - simular envio
+      if (this.isDevelopment) {
+        logger.info('🔧 [DEV MODE] Simulando envio de email:');
+        logger.info(`   Para: ${to}`);
+        logger.info(`   Assunto: ${subject}`);
+        logger.info(`   Corpo: ${textBody || htmlBody.substring(0, 100)}...`);
+        return {
+          success: true,
+          messageId: `dev-${Date.now()}`,
+          message: 'Email simulado (modo desenvolvimento)'
+        };
+      }
+
+      // Tentar enviar via Cloudflare Worker primeiro
+      const workerResult = await this.sendEmailViaWorker(to, subject, htmlBody);
+      if (workerResult.success) {
+        return workerResult;
+      }
+      logger.warn('Cloudflare Worker falhou, tentando Resend como fallback');
+
+      // Fallback para Resend
+      if (process.env.RESEND_API_KEY) {
+        const resendResult = await sendEmailViaResend(to, subject, htmlBody);
+        if (resendResult.success) {
+          return resendResult;
+        }
+        logger.warn('Resend falhou, tentando SMTP como fallback');
+      }
+
+      // Fallback para SMTP
       const mailOptions = {
         from: `"${this.fromName}" <${this.fromEmail}>`,
         to,
@@ -45,7 +114,7 @@ class NotificationService {
 
       const result = await emailTransporter.sendMail(mailOptions);
 
-      console.log(`✅ Email enviado com sucesso para ${to}:`, result.messageId);
+      logger.info(`✅ Email enviado com sucesso para ${to}:`, result.messageId);
 
       return {
         success: true,
@@ -53,7 +122,7 @@ class NotificationService {
         message: 'Email enviado com sucesso'
       };
     } catch (error) {
-      console.error(`❌ Erro ao enviar email para ${to}:`, error);
+      logger.error(`❌ Erro ao enviar email para ${to}:`, error);
 
       return {
         success: false,
@@ -71,6 +140,18 @@ class NotificationService {
    */
   async sendSMS(phoneNumber, message) {
     try {
+      // Modo de desenvolvimento - simular envio
+      if (this.isDevelopment) {
+        logger.info('🔧 [DEV MODE] Simulando envio de SMS:');
+        logger.info(`   Para: ${phoneNumber}`);
+        logger.info(`   Mensagem: ${message}`);
+        return {
+          success: true,
+          messageId: `dev-sms-${Date.now()}`,
+          message: 'SMS simulado (modo desenvolvimento)'
+        };
+      }
+
       // Formatar número de telefone para E.164 se necessário
       const formattedPhone = this.formatPhoneNumber(phoneNumber);
 
@@ -80,7 +161,7 @@ class NotificationService {
         to: formattedPhone
       });
 
-      console.log(`✅ SMS enviado com sucesso para ${formattedPhone}:`, result.sid);
+      logger.info(`✅ SMS enviado com sucesso para ${formattedPhone}:`, result.sid);
 
       return {
         success: true,
@@ -88,7 +169,7 @@ class NotificationService {
         message: 'SMS enviado com sucesso'
       };
     } catch (error) {
-      console.error(`❌ Erro ao enviar SMS para ${phoneNumber}:`, error);
+      logger.error(`❌ Erro ao enviar SMS para ${phoneNumber}:`, error);
 
       return {
         success: false,
@@ -99,100 +180,81 @@ class NotificationService {
   }
 
   /**
-   * Enviar email de recuperação de senha
-   * @param {string} to - Email do usuário
-   * @param {string} resetToken - Token de redefinição
+   * Enviar email via Cloudflare Worker
+   * @param {string} to - Email do destinatário
+   * @param {string} subject - Assunto do email
+   * @param {string} htmlBody - Corpo HTML do email
+   * @returns {Promise<Object>} - Resultado do envio
+   */
+  async sendEmailViaWorker(to, subject, _htmlBody) {
+    try {
+      const workerUrl =
+        process.env.CLOUDFLARE_WORKER_URL || 'https://agroisync-api.contato-00d.workers.dev';
+
+      // Determinar endpoint baseado no assunto
+      let endpoint = '/api/email/send-verification';
+      if (subject.includes('Recuperação') || subject.includes('recuperação')) {
+        endpoint = '/api/forgot-password';
+      }
+
+      const response = await fetch(`${workerUrl}${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: to })
+      });
+
+      const data = await response.json();
+      if (response.ok && data.success) {
+        logger.info(
+          `Email enviado via Cloudflare Worker para ${to}: ${data.data?.messageId || 'N/A'}`
+        );
+        return { success: true, messageId: data.data?.messageId || 'worker-sent' };
+      } else {
+        throw new Error(`Worker Error: ${data.message}`);
+      }
+    } catch (error) {
+      logger.error(`Erro ao enviar email via Cloudflare Worker para ${to}:`, error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Enviar código OTP por email
+   * @param {string} to - Email do destinatário
+   * @param {string} code - Código OTP
    * @param {string} userName - Nome do usuário
    * @returns {Promise<Object>} - Resultado do envio
    */
-  async sendPasswordResetEmail(to, resetToken, userName) {
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
-
-    const subject = 'Redefinição de Senha - AgroSync';
+  async sendOTPEmail(to, code, userName) {
+    const subject = 'Código de Verificação - AgroSync';
 
     const htmlBody = `
-      <!DOCTYPE html>
-      <html lang="pt-BR">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Redefinição de Senha - AgroSync</title>
-        <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-          .content { background: #f8fafc; padding: 30px; border-radius: 0 0 10px 10px; }
-          .button { display: inline-block; background: #1e293b; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0; }
-          .footer { text-align: center; margin-top: 30px; color: #64748b; font-size: 14px; }
-          .warning { background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 8px; margin: 20px 0; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1>🌾 AgroSync</h1>
-            <p>Plataforma de Agronegócio</p>
-          </div>
-          
-          <div class="content">
-            <h2>Olá, ${userName}!</h2>
-            
-            <p>Recebemos uma solicitação para redefinir sua senha na plataforma AgroSync.</p>
-            
-            <p>Se você não fez essa solicitação, ignore este email. Caso contrário, clique no botão abaixo para criar uma nova senha:</p>
-            
-            <div style="text-align: center;">
-              <a href="${resetUrl}" class="button">🔐 Redefinir Senha</a>
-            </div>
-            
-            <div class="warning">
-              <strong>⚠️ Importante:</strong>
-              <ul>
-                <li>Este link expira em 15 minutos</li>
-                <li>Não compartilhe este email com ninguém</li>
-                <li>Se o botão não funcionar, copie e cole este link: ${resetUrl}</li>
-              </ul>
-            </div>
-            
-            <p>Após redefinir sua senha, você poderá fazer login normalmente na plataforma.</p>
-            
-            <p>Se tiver alguma dúvida, entre em contato conosco através do suporte.</p>
-            
-            <p>Atenciosamente,<br>
-            <strong>Equipe AgroSync</strong></p>
-          </div>
-          
-          <div class="footer">
-            <p>Este email foi enviado automaticamente. Não responda a esta mensagem.</p>
-            <p>&copy; 2024 AgroSync. Todos os direitos reservados.</p>
-          </div>
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="color: #059669; margin: 0;">🌾 AgroSync</h1>
+          <p style="color: #666; margin: 10px 0 0 0;">Plataforma de Agronegócio</p>
         </div>
-      </body>
-      </html>
+        
+        <div style="background: #f8f9fa; padding: 30px; border-radius: 10px; text-align: center;">
+          <h2 style="color: #333; margin: 0 0 20px 0;">Seu código de verificação</h2>
+          <div style="background: #059669; color: white; font-size: 36px; font-weight: bold; padding: 20px; border-radius: 8px; letter-spacing: 5px; margin: 20px 0;">
+            ${code}
+          </div>
+          <p style="color: #666; margin: 20px 0 0 0;">Este código é válido por 10 minutos.</p>
+        </div>
+        
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+          <p style="color: #999; font-size: 14px; margin: 0;">
+            Se você não solicitou este código, ignore este email.<br>
+            AgroSync - Conectando o agronegócio brasileiro.
+          </p>
+        </div>
+      </div>
     `;
 
-    const textBody = `
-      Redefinição de Senha - AgroSync
-      
-      Olá, ${userName}!
-      
-      Recebemos uma solicitação para redefinir sua senha na plataforma AgroSync.
-      
-      Para redefinir sua senha, acesse: ${resetUrl}
-      
-      IMPORTANTE:
-      - Este link expira em 15 minutos
-      - Não compartilhe este email com ninguém
-      
-      Se você não fez essa solicitação, ignore este email.
-      
-      Após redefinir sua senha, você poderá fazer login normalmente.
-      
-      Atenciosamente,
-      Equipe AgroSync
-      
-      ${process.env.FRONTEND_URL}
-    `;
+    const textBody = `Código de Verificação AgroSync\n\nOlá, ${userName}!\n\nUse o código abaixo para verificar seu email:\n\n${code}\n\nEste código expira em 10 minutos.\n\nSe você não solicitou este código, ignore este email.\n\nAtenciosamente,\nEquipe AgroSync`;
 
     return await this.sendEmail(to, subject, htmlBody, textBody);
   }
@@ -210,52 +272,36 @@ class NotificationService {
     const subject = 'Verifique sua Conta - AgroSync';
 
     const htmlBody = `
-      <!DOCTYPE html>
-      <html lang="pt-BR">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Verificação de Conta - AgroSync</title>
-        <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-          .content { background: #f0fdf4; padding: 30px; border-radius: 0 0 10px 10px; }
-          .button { display: inline-block; background: #059669; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0; }
-          .footer { text-align: center; margin-top: 30px; color: #64748b; font-size: 14px; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1>🌾 AgroSync</h1>
-            <p>Plataforma de Agronegócio</p>
-          </div>
-          
-          <div class="content">
-            <h2>Bem-vindo ao AgroSync, ${userName}!</h2>
-            
-            <p>Obrigado por se cadastrar em nossa plataforma. Para ativar sua conta, clique no botão abaixo:</p>
-            
-            <div style="text-align: center;">
-              <a href="${verificationUrl}" class="button">✅ Verificar Conta</a>
-            </div>
-            
-            <p>Após verificar sua conta, você terá acesso completo a todos os recursos da plataforma.</p>
-            
-            <p>Se o botão não funcionar, copie e cole este link: ${verificationUrl}</p>
-            
-            <p>Atenciosamente,<br>
-            <strong>Equipe AgroSync</strong></p>
-          </div>
-          
-          <div class="footer">
-            <p>Este email foi enviado automaticamente. Não responda a esta mensagem.</p>
-            <p>&copy; 2024 AgroSync. Todos os direitos reservados.</p>
-          </div>
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="color: #059669; margin: 0;">🌾 AgroSync</h1>
+          <p style="color: #666; margin: 10px 0 0 0;">Plataforma de Agronegócio</p>
         </div>
-      </body>
-      </html>
+        
+        <div style="background: #f8f9fa; padding: 30px; border-radius: 10px;">
+          <h2 style="color: #333; margin: 0 0 20px 0;">Bem-vindo ao AgroSync, ${userName}!</h2>
+          
+          <p style="color: #666; margin: 0 0 20px 0;">Obrigado por se cadastrar em nossa plataforma. Para ativar sua conta, clique no botão abaixo:</p>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${verificationUrl}" style="display: inline-block; background: #059669; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">
+              ✅ Verificar Conta
+            </a>
+          </div>
+          
+          <p style="color: #666; margin: 20px 0 0 0;">Após verificar sua conta, você terá acesso completo a todos os recursos da plataforma.</p>
+          
+          <p style="color: #999; font-size: 14px; margin: 20px 0 0 0;">
+            Se o botão não funcionar, copie e cole este link: ${verificationUrl}
+          </p>
+        </div>
+        
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+          <p style="color: #999; font-size: 14px; margin: 0;">
+            AgroSync - Conectando o agronegócio brasileiro.
+          </p>
+        </div>
+      </div>
     `;
 
     const textBody = `
@@ -326,15 +372,77 @@ class NotificationService {
   }
 
   /**
+   * Enviar email de recuperação de senha
+   * @param {string} to - Email do usuário
+   * @param {string} resetCode - Código de recuperação
+   * @param {string} userName - Nome do usuário
+   * @returns {Promise<Object>} - Resultado do envio
+   */
+  async sendPasswordResetEmail(to, resetCode, userName) {
+    const subject = 'Recuperação de Senha - AgroSync';
+
+    const htmlBody = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="color: #059669; margin: 0;">🌾 AgroSync</h1>
+          <p style="color: #666; margin: 10px 0 0 0;">Recuperação de Senha</p>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 30px; border-radius: 10px; text-align: center;">
+          <h2 style="color: #333; margin: 0 0 20px 0;">Código de recuperação</h2>
+          <div style="background: #dc2626; color: white; font-size: 36px; font-weight: bold; padding: 20px; border-radius: 8px; letter-spacing: 5px; margin: 20px 0;">
+            ${resetCode}
+          </div>
+          <p style="color: #666; margin: 20px 0 0 0;">Este código é válido por 15 minutos.</p>
+        </div>
+        
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+          <p style="color: #999; font-size: 14px; margin: 0;">
+            Se você não solicitou a recuperação de senha, ignore este email.<br>
+            AgroSync - Conectando o agronegócio brasileiro.
+          </p>
+        </div>
+      </div>
+    `;
+
+    const textBody = `
+      Recuperação de Senha - AgroSync
+      
+      Olá, ${userName}!
+      
+      Recebemos uma solicitação para redefinir sua senha na plataforma AgroSync.
+      
+      Seu código de recuperação é: ${resetCode}
+      
+      Este código é válido por 15 minutos.
+      
+      Se você não fez essa solicitação, ignore este email.
+      
+      Atenciosamente,
+      Equipe AgroSync
+      
+      ${process.env.FRONTEND_URL}
+    `;
+
+    return await this.sendEmail(to, subject, htmlBody, textBody);
+  }
+
+  /**
    * Verificar configuração do serviço
    * @returns {Promise<Object>} - Status da configuração
    */
-  async checkConfiguration() {
+  checkConfiguration() {
     const config = {
+      mode: this.isDevelopment ? 'development' : 'production',
       email: {
-        configured: !!(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS),
-        host: process.env.SMTP_HOST || 'Not configured',
-        user: process.env.SMTP_USER || 'Not configured'
+        configured:
+          !!(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) ||
+          !!process.env.RESEND_API_KEY,
+        host: process.env.SMTP_HOST || devConfig.email.host,
+        user: process.env.SMTP_USER || devConfig.email.user,
+        fromEmail: this.fromEmail,
+        fromName: this.fromName,
+        resendConfigured: !!process.env.RESEND_API_KEY
       },
       sms: {
         configured: !!(
@@ -342,10 +450,12 @@ class NotificationService {
           process.env.TWILIO_AUTH_TOKEN &&
           process.env.TWILIO_PHONE_NUMBER
         ),
-        phoneNumber: process.env.TWILIO_PHONE_NUMBER || 'Not configured'
+        phoneNumber: this.twilioPhoneNumber,
+        accountSid: process.env.TWILIO_ACCOUNT_SID || devConfig.sms.accountSid
       }
     };
 
+    logger.info('📧 Configuração de Notificações:', config);
     return config;
   }
 }

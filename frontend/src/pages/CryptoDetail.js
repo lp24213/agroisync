@@ -10,8 +10,8 @@ import {
   Heart,
   Share2
 } from 'lucide-react';
-import AgroisyncHeader from '../components/AgroisyncHeader';
-import AgroisyncFooter from '../components/AgroisyncFooter';
+// import AgroisyncHeader from '../components/AgroisyncHeader'; // Já incluído no App.js
+// import AgroisyncFooter from '../components/AgroisyncFooter'; // Já incluído no App.js
 
 const CryptoDetail = () => {
   const { id } = useParams();
@@ -145,7 +145,7 @@ const CryptoDetail = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <AgroisyncHeader />
+      {/* Header já incluído no App.js */}
       
       <div className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
@@ -348,7 +348,7 @@ const CryptoDetail = () => {
         </div>
       </div>
 
-      <AgroisyncFooter />
+      {/* Footer já incluído no App.js */}
     </div>
   );
 };

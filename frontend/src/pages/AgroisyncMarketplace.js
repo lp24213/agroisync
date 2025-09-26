@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import RegistrationSystem from '../components/RegistrationSystem';
+// import RegistrationSystem from '../components/RegistrationSystem'; // Componente removido
 import { 
   ArrowRight,
   TrendingUp,
@@ -13,7 +13,7 @@ import {
   Search,
   UserPlus
 } from 'lucide-react';
-import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt';
+// import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt'; // Componente removido
 import ProductCard from '../components/ProductCard';
 
 const AgroisyncMarketplace = () => {
@@ -129,13 +129,53 @@ const AgroisyncMarketplace = () => {
 
   return (
     <div data-page="marketplace">
-      {/* HERO COM IMAGEM 4K DE MARKETPLACE */}
-      <AgroisyncHeroPrompt 
-        title="Produtos Agro"
-        subtitle="Conecte-se com compradores e vendedores de commodities agrícolas"
-        heroImage="/assets/marketplace.png"
-        showCTA={true}
-      />
+      {/* HERO COM IMAGEM DE PRODUTOS */}
+      <section 
+        className="min-h-screen flex items-center justify-center relative"
+        style={{
+          backgroundImage: `url('https://media.istockphoto.com/id/1387913618/pt/foto/modern-interface-payments-online-shopping-and-icon-customer-network-connection.jpg?s=612x612&w=0&k=20&c=VZuOaJFJxBjZYtLygWCpgGrCg1Bu2kHEm-ufWlYeeb4=')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed'
+        }}
+      >
+        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="text-center max-w-4xl mx-auto px-4 relative z-10">
+          <motion.h1 
+            className="text-6xl font-bold text-white mb-6"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            PRODUTOS
+          </motion.h1>
+          <motion.p 
+            className="text-2xl text-white/90 mb-8"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            Conectando produtores e compradores do agronegócio
+          </motion.p>
+          <motion.div 
+            className="flex gap-4 justify-center"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <button 
+              onClick={() => setShowRegistrationModal(true)}
+              className="bg-green-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+            >
+              Cadastrar Produto
+            </button>
+            <button className="bg-white text-green-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+              Explorar Categorias
+            </button>
+          </motion.div>
+        </div>
+      </section>
 
       {/* Filtros e Produtos */}
       <section className="agro-section" style={{ background: 'var(--bg-gradient)' }}>
@@ -516,10 +556,18 @@ const AgroisyncMarketplace = () => {
 
       {/* Modal de Cadastro */}
       {showRegistrationModal && (
-        <RegistrationSystem 
-          type="marketplace"
-          onClose={() => setShowRegistrationModal(false)}
-        />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg max-w-md mx-4">
+            <h3 className="text-xl font-semibold text-gray-600">Sistema de Registro em Desenvolvimento</h3>
+            <p className="text-gray-500 mt-2">Em breve teremos sistema de registro disponível!</p>
+            <button 
+              onClick={() => setShowRegistrationModal(false)}
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Fechar
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

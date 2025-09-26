@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
-import AgroisyncHeader from '../components/AgroisyncHeader';
-import AgroisyncFooter from '../components/AgroisyncFooter';
+// import AgroisyncHeader from '../components/AgroisyncHeader'; // Já incluído no App.js
+// import AgroisyncFooter from '../components/AgroisyncFooter'; // Já incluído no App.js
 
 const AgroisyncLogin = () => {
   const navigate = useNavigate();
@@ -95,7 +95,7 @@ const AgroisyncLogin = () => {
 
   return (
     <>
-      <AgroisyncHeader />
+      {/* Header já incluído no App.js */}
       
       <div style={{ 
         minHeight: '100vh', 
@@ -480,7 +480,7 @@ const AgroisyncLogin = () => {
         </div>
       </div>
 
-      <AgroisyncFooter />
+      {/* Footer já incluído no App.js */}
     </>
   );
 };

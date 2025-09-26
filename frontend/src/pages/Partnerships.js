@@ -12,7 +12,7 @@ import {
   Star,
   Award
 } from 'lucide-react';
-import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt';
+// import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt'; // Componente removido
 
 const Partnerships = () => {
   const [formData, setFormData] = useState({
@@ -258,15 +258,53 @@ const Partnerships = () => {
   return (
     <div className="partnerships-page" data-page="partnerships">
       <div className="partnerships-container">
-        {/* HERO COM IMAGEM 4K DE APERTO DE MÃOS */}
-        <AgroisyncHeroPrompt 
-          title="Seja Nosso Parceiro"
-          subtitle="Junte-se à AGROISYNC e faça parte da revolução do agronegócio brasileiro"
-          heroImage="/images/parceria.png"
-          showCTA={true}
-          primaryButton={{ text: "Explorar Parcerias", link: "/partnerships" }}
-          secondaryButton={{ text: "Solicitar Parceria", link: "/contact" }}
-        />
+        {/* HERO COM IMAGEM DE PARCERIAS */}
+        <section 
+          className="min-h-screen flex items-center justify-center relative"
+          style={{
+            backgroundImage: `url('https://media.istockphoto.com/id/1303594191/pt/foto/man-and-woman-are-working-in-office.jpg?s=612x612&w=0&k=20&c=9QxXyI4_XpVj3RnYVxQusSs0PaCfyx6X3txIkXqMrAw=')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center center',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed'
+          }}
+        >
+          <div className="absolute inset-0 bg-black/50"></div>
+          <div className="text-center max-w-4xl mx-auto px-4 relative z-10">
+            <motion.h1 
+              className="text-6xl font-bold text-white mb-6"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              PARCERIAS
+            </motion.h1>
+            <motion.p 
+              className="text-2xl text-white/90 mb-8"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              Conectando empresas do agronegócio brasileiro
+            </motion.p>
+            <motion.div 
+              className="flex gap-4 justify-center"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              <button 
+                onClick={() => scrollToForm()}
+                className="bg-green-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+              >
+                Seja Nosso Parceiro
+              </button>
+              <button className="bg-white text-green-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                Ver Parceiros
+              </button>
+            </motion.div>
+          </div>
+        </section>
 
         {/* Benefits Section */}
         <section className="benefits-section">

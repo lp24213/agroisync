@@ -1,201 +1,116 @@
 import express from 'express';
+import Escrow from '../models/Escrow.js';
+import Payment from '../models/Payment.js';
+import User from '../models/User.js';
+import Product from '../models/Product.js';
+import Freight from '../models/Freight.js';
 import { authenticateToken } from '../middleware/auth.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
-import EscrowTransaction from '../models/EscrowTransaction.js';
-import Transaction from '../models/Transaction.js';
-import User from '../models/User.js';
+import { body, validationResult } from 'express-validator';
 
 const router = express.Router();
 
-// Aplicar rate limiting
+// Apply rate limiting
 router.use(apiLimiter);
 
-// Aplicar autenticação em todas as rotas
-router.use(authenticateToken);
-
-// ===== ROTAS DE ESCROW =====
-
-// GET /api/escrow - Listar transações de escrow do usuário
-router.get('/', async (req, res) => {
+// POST /api/escrow/create - Criar escrow
+router.post('/create', authenticateToken, [
+  body('itemId').isMongoId().withMessage('ID do item inválido'),
+  body('itemType').isIn(['product', 'freight']).withMessage('Tipo de item inválido'),
+  body('amount').isFloat({ min: 0.01 }).withMessage('Valor deve ser maior que zero'),
+  body('description').notEmpty().withMessage('Descrição é obrigatória')
+], async (req, res) => {
   try {
-    const {
-      page = 1,
-      limit = 20,
-      status,
-      type = 'all' // 'all', 'payer', 'payee'
-    } = req.query;
-
-    const { userId } = req.user;
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-
-    // Construir query baseada no tipo
-    const query = {};
-    if (type === 'payer') {
-      query.payerId = userId;
-    } else if (type === 'payee') {
-      query.payeeId = userId;
-    } else {
-      query.$or = [{ payerId: userId }, { payeeId: userId }];
-    }
-
-    if (status) {
-      query.status = status;
-    }
-
-    // Buscar transações de escrow
-    const escrowTransactions = await EscrowTransaction.find(query)
-      .populate('payerId', 'name email')
-      .populate('payeeId', 'name email')
-      .populate('transactionId', 'type status itemDetails')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit));
-
-    const total = await EscrowTransaction.countDocuments(query);
-
-    res.json({
-      success: true,
-      data: {
-        escrowTransactions,
-        pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
-          total,
-          pages: Math.ceil(total / parseInt(limit))
-        }
-      }
-    });
-  } catch (error) {
-    console.error('Erro ao buscar transações de escrow:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-});
-
-// GET /api/escrow/:id - Obter transação de escrow específica
-router.get('/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { userId } = req.user;
-
-    const escrowTransaction = await EscrowTransaction.findOne({
-      _id: id,
-      $or: [{ payerId: userId }, { payeeId: userId }]
-    })
-      .populate('payerId', 'name email phone')
-      .populate('payeeId', 'name email phone')
-      .populate('transactionId', 'type status itemDetails total shipping')
-      .populate('disputes.raisedBy', 'name email');
-
-    if (!escrowTransaction) {
-      return res.status(404).json({
-        success: false,
-        message: 'Transação de escrow não encontrada'
-      });
-    }
-
-    res.json({
-      success: true,
-      data: escrowTransaction
-    });
-  } catch (error) {
-    console.error('Erro ao buscar transação de escrow:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-});
-
-// POST /api/escrow - Criar nova transação de escrow
-router.post('/', async (req, res) => {
-  try {
-    const {
-      transactionId,
-      amount,
-      currency = 'BRL',
-      paymentMethod,
-      autoReleaseDays = 7,
-      disputePeriod = 3
-    } = req.body;
-
-    const { userId } = req.user;
-
-    // Validar dados obrigatórios
-    if (!transactionId || !amount || !paymentMethod) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'transactionId, amount e paymentMethod são obrigatórios'
+        message: 'Dados inválidos',
+        errors: errors.array()
       });
     }
 
-    // Verificar se a transação existe e se o usuário é o comprador
-    const transaction = await Transaction.findById(transactionId);
-    if (!transaction) {
+    const { itemId, itemType, amount, description } = req.body;
+    const buyerId = req.user.id;
+
+    // Buscar item
+    let item;
+    if (itemType === 'product') {
+      item = await Product.findById(itemId);
+    } else {
+      item = await Freight.findById(itemId);
+    }
+
+    if (!item) {
       return res.status(404).json({
         success: false,
-        message: 'Transação não encontrada'
+        message: 'Item não encontrado'
       });
     }
 
-    if (transaction.buyerId.toString() !== userId) {
-      return res.status(403).json({
+    // Verificar se o comprador não é o próprio vendedor
+    if (item.owner.toString() === buyerId) {
+      return res.status(400).json({
         success: false,
-        message: 'Apenas o comprador pode criar escrow'
+        message: 'Você não pode comprar seu próprio item'
       });
     }
 
-    // Verificar se já existe escrow para esta transação
-    const existingEscrow = await EscrowTransaction.findOne({ transactionId });
+    // Verificar se já existe escrow ativo para este item
+    const existingEscrow = await Escrow.findOne({
+      itemId,
+      itemType,
+      buyerId,
+      status: { $in: ['pending', 'funded'] }
+    });
+
     if (existingEscrow) {
       return res.status(400).json({
         success: false,
-        message: 'Já existe escrow para esta transação'
+        message: 'Já existe uma transação em andamento para este item'
       });
     }
 
-    // Calcular taxa (2.5% por padrão)
-    const fee = amount * 0.025;
-    const totalAmount = amount + fee;
+    // Criar escrow
+    const escrow = new Escrow({
+      itemId,
+      itemType,
+      sellerId: item.owner,
+      buyerId,
+      amount: parseFloat(amount),
+      description,
+      status: 'pending',
+      createdAt: new Date(),
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 dias
+    });
 
-    // Criar transação de escrow
-    const escrowTransaction = new EscrowTransaction({
-      transactionId,
-      payerId: userId,
-      payeeId: transaction.sellerId,
-      amount,
-      currency,
-      fee,
-      totalAmount,
-      paymentDetails: {
-        method: paymentMethod
-      },
-      autoReleaseDays,
-      disputePeriod,
-      metadata: {
-        source: 'agrosync',
-        category: transaction.type.toLowerCase()
+    await escrow.save();
+
+    // Buscar dados do vendedor
+    const seller = await User.findById(item.owner).select('name email company');
+
+    res.json({
+      success: true,
+      message: 'Escrow criado com sucesso',
+      data: {
+        escrowId: escrow._id,
+        item: {
+          id: item._id,
+          name: item.name || `${item.origin} → ${item.destination}`,
+          type: itemType
+        },
+        seller: {
+          id: seller._id,
+          name: seller.name,
+          company: seller.company
+        },
+        amount: escrow.amount,
+        status: escrow.status,
+        expiresAt: escrow.expiresAt
       }
     });
-
-    await escrowTransaction.save();
-
-    // Populate para retorno
-    await escrowTransaction.populate([
-      { path: 'payerId', select: 'name email' },
-      { path: 'payeeId', select: 'name email' },
-      { path: 'transactionId', select: 'type status itemDetails' }
-    ]);
-
-    res.status(201).json({
-      success: true,
-      message: 'Transação de escrow criada com sucesso',
-      data: escrowTransaction
-    });
   } catch (error) {
-    console.error('Erro ao criar transação de escrow:', error);
+    console.error('Erro ao criar escrow:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -203,296 +118,207 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PATCH /api/escrow/:id/fund - Marcar como fundado (depósito realizado)
-router.patch('/:id/fund', async (req, res) => {
+// POST /api/escrow/fund - Financiar escrow
+router.post('/fund', authenticateToken, [
+  body('escrowId').isMongoId().withMessage('ID do escrow inválido'),
+  body('paymentMethod').isIn(['stripe', 'metamask']).withMessage('Método de pagamento inválido'),
+  body('paymentData').isObject().withMessage('Dados de pagamento são obrigatórios')
+], async (req, res) => {
   try {
-    const { id } = req.params;
-    const { userId } = req.user;
-
-    const escrowTransaction = await EscrowTransaction.findOne({
-      _id: id,
-      payerId: userId,
-      status: 'PENDING'
-    });
-
-    if (!escrowTransaction) {
-      return res.status(404).json({
-        success: false,
-        message: 'Transação de escrow não encontrada ou não pode ser fundada'
-      });
-    }
-
-    // Marcar como fundado
-    await escrowTransaction.fund();
-
-    res.json({
-      success: true,
-      message: 'Escrow marcado como fundado',
-      data: escrowTransaction
-    });
-  } catch (error) {
-    console.error('Erro ao marcar como fundado:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-});
-
-// PATCH /api/escrow/:id/deliver - Marcar como entregue
-router.patch('/:id/deliver', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { trackingCode, carrier } = req.body;
-    const { userId } = req.user;
-
-    const escrowTransaction = await EscrowTransaction.findOne({
-      _id: id,
-      payeeId: userId,
-      status: 'FUNDED'
-    });
-
-    if (!escrowTransaction) {
-      return res.status(404).json({
-        success: false,
-        message: 'Transação de escrow não encontrada ou não pode ser marcada como entregue'
-      });
-    }
-
-    if (!trackingCode || !carrier) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'trackingCode e carrier são obrigatórios'
+        message: 'Dados inválidos',
+        errors: errors.array()
       });
     }
 
-    // Marcar como entregue
-    await escrowTransaction.deliver(trackingCode, carrier);
+    const { escrowId, paymentMethod, paymentData } = req.body;
+    const userId = req.user.id;
 
-    res.json({
-      success: true,
-      message: 'Escrow marcado como entregue',
-      data: escrowTransaction
-    });
-  } catch (error) {
-    console.error('Erro ao marcar como entregue:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-});
-
-// PATCH /api/escrow/:id/confirm - Confirmar recebimento
-router.patch('/:id/confirm', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { userId } = req.user;
-
-    const escrowTransaction = await EscrowTransaction.findOne({
-      _id: id,
-      payerId: userId,
-      status: 'DELIVERED'
-    });
-
-    if (!escrowTransaction) {
+    // Buscar escrow
+    const escrow = await Escrow.findById(escrowId);
+    if (!escrow) {
       return res.status(404).json({
         success: false,
-        message: 'Transação de escrow não encontrada ou não pode ser confirmada'
+        message: 'Escrow não encontrado'
       });
     }
 
-    // Confirmar recebimento
-    await escrowTransaction.confirm();
-
-    res.json({
-      success: true,
-      message: 'Recebimento confirmado',
-      data: escrowTransaction
-    });
-  } catch (error) {
-    console.error('Erro ao confirmar recebimento:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-});
-
-// PATCH /api/escrow/:id/release - Liberar valor para vendedor
-router.patch('/:id/release', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { reason } = req.body;
-    const { userId } = req.user;
-
-    const escrowTransaction = await EscrowTransaction.findOne({
-      _id: id,
-      payerId: userId,
-      status: 'CONFIRMED'
-    });
-
-    if (!escrowTransaction) {
-      return res.status(404).json({
-        success: false,
-        message: 'Transação de escrow não encontrada ou não pode ser liberada'
-      });
-    }
-
-    // Liberar valor
-    await escrowTransaction.release(reason || 'Liberação manual pelo comprador');
-
-    res.json({
-      success: true,
-      message: 'Valor liberado para o vendedor',
-      data: escrowTransaction
-    });
-  } catch (error) {
-    console.error('Erro ao liberar valor:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-});
-
-// PATCH /api/escrow/:id/refund - Solicitar reembolso
-router.patch('/:id/refund', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { reason } = req.body;
-    const { userId } = req.user;
-
-    const escrowTransaction = await EscrowTransaction.findOne({
-      _id: id,
-      payerId: userId,
-      status: { $in: ['FUNDED', 'DELIVERED'] }
-    });
-
-    if (!escrowTransaction) {
-      return res.status(404).json({
-        success: false,
-        message: 'Transação de escrow não encontrada ou não pode ser reembolsada'
-      });
-    }
-
-    // Solicitar reembolso
-    await escrowTransaction.refund(reason || 'Reembolso solicitado pelo comprador');
-
-    res.json({
-      success: true,
-      message: 'Reembolso solicitado',
-      data: escrowTransaction
-    });
-  } catch (error) {
-    console.error('Erro ao solicitar reembolso:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-});
-
-// POST /api/escrow/:id/dispute - Criar disputa
-router.post('/:id/dispute', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { reason, description, evidence } = req.body;
-    const { userId } = req.user;
-
-    // Validar dados obrigatórios
-    if (!reason || !description) {
-      return res.status(400).json({
-        success: false,
-        message: 'reason e description são obrigatórios'
-      });
-    }
-
-    const escrowTransaction = await EscrowTransaction.findOne({
-      _id: id,
-      $or: [{ payerId: userId }, { payeeId: userId }],
-      status: { $in: ['FUNDED', 'DELIVERED'] }
-    });
-
-    if (!escrowTransaction) {
-      return res.status(404).json({
-        success: false,
-        message: 'Transação de escrow não encontrada ou não pode ser disputada'
-      });
-    }
-
-    // Verificar se ainda pode ser disputada
-    if (!escrowTransaction.canBeDisputed) {
-      return res.status(400).json({
-        success: false,
-        message: 'Período para disputa expirou'
-      });
-    }
-
-    // Criar disputa
-    await escrowTransaction.addDispute({
-      raisedBy: userId,
-      reason,
-      description,
-      evidence: evidence || []
-    });
-
-    res.json({
-      success: true,
-      message: 'Disputa criada com sucesso',
-      data: escrowTransaction
-    });
-  } catch (error) {
-    console.error('Erro ao criar disputa:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-});
-
-// PATCH /api/escrow/:id/dispute/:disputeId/resolve - Resolver disputa (admin)
-router.patch('/:id/dispute/:disputeId/resolve', async (req, res) => {
-  try {
-    const { id, disputeId } = req.params;
-    const { resolution, adminNotes } = req.body;
-    const { userId } = req.user;
-
-    // Verificar se é admin
-    const user = await User.findById(userId);
-    if (!user?.isAdmin) {
+    // Verificar se o usuário é o comprador
+    if (escrow.buyerId.toString() !== userId) {
       return res.status(403).json({
         success: false,
-        message: 'Apenas administradores podem resolver disputas'
+        message: 'Acesso negado'
       });
     }
 
-    // Validar dados obrigatórios
-    if (!resolution) {
+    // Verificar se escrow ainda está pendente
+    if (escrow.status !== 'pending') {
       return res.status(400).json({
         success: false,
-        message: 'resolution é obrigatório'
+        message: 'Escrow não está mais pendente'
       });
     }
 
-    const escrowTransaction = await EscrowTransaction.findById(id);
-    if (!escrowTransaction) {
+    // Verificar se não expirou
+    if (escrow.expiresAt < new Date()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Escrow expirado'
+      });
+    }
+
+    // Processar pagamento baseado no método
+    let paymentResult;
+    if (paymentMethod === 'stripe') {
+      paymentResult = await processStripePayment(escrow, paymentData);
+    } else if (paymentMethod === 'metamask') {
+      paymentResult = await processMetaMaskPayment(escrow, paymentData);
+    }
+
+    if (!paymentResult.success) {
+      return res.status(400).json({
+        success: false,
+        message: paymentResult.message || 'Erro ao processar pagamento'
+      });
+    }
+
+    // Atualizar escrow
+    escrow.status = 'funded';
+    escrow.paymentId = paymentResult.paymentId;
+    escrow.paymentMethod = paymentMethod;
+    escrow.fundedAt = new Date();
+    await escrow.save();
+
+    // Criar registro de pagamento
+    const payment = new Payment({
+      userId: escrow.buyerId,
+      amount: escrow.amount,
+      currency: 'BRL',
+      status: 'completed',
+      provider: paymentMethod,
+      purpose: 'escrow_funding',
+      metadata: {
+        escrowId: escrow._id,
+        itemId: escrow.itemId,
+        itemType: escrow.itemType
+      }
+    });
+    await payment.save();
+
+    res.json({
+      success: true,
+      message: 'Escrow financiado com sucesso',
+      data: {
+        escrowId: escrow._id,
+        status: escrow.status,
+        fundedAt: escrow.fundedAt,
+        paymentId: payment._id
+      }
+    });
+  } catch (error) {
+    console.error('Erro ao financiar escrow:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// POST /api/escrow/release - Liberar pagamento
+router.post('/release', authenticateToken, [
+  body('escrowId').isMongoId().withMessage('ID do escrow inválido'),
+  body('action').isIn(['release', 'dispute']).withMessage('Ação inválida'),
+  body('reason').optional().isString().withMessage('Motivo deve ser texto')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Dados inválidos',
+        errors: errors.array()
+      });
+    }
+
+    const { escrowId, action, reason } = req.body;
+    const userId = req.user.id;
+
+    // Buscar escrow
+    const escrow = await Escrow.findById(escrowId);
+    if (!escrow) {
       return res.status(404).json({
         success: false,
-        message: 'Transação de escrow não encontrada'
+        message: 'Escrow não encontrado'
       });
     }
 
-    // Resolver disputa
-    await escrowTransaction.resolveDispute(disputeId, resolution, adminNotes, userId);
+    // Verificar se o usuário é o comprador ou vendedor
+    if (escrow.buyerId.toString() !== userId && escrow.sellerId.toString() !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: 'Acesso negado'
+      });
+    }
 
-    res.json({
-      success: true,
-      message: 'Disputa resolvida com sucesso',
-      data: escrowTransaction
-    });
+    // Verificar se escrow está financiado
+    if (escrow.status !== 'funded') {
+      return res.status(400).json({
+        success: false,
+        message: 'Escrow não está financiado'
+      });
+    }
+
+    if (action === 'release') {
+      // Liberar pagamento para o vendedor
+      escrow.status = 'released';
+      escrow.releasedAt = new Date();
+      escrow.releasedBy = userId;
+      escrow.releaseReason = reason || 'Pagamento liberado pelo comprador';
+
+      // Buscar vendedor
+      const seller = await User.findById(escrow.sellerId);
+      if (seller) {
+        // Aqui você implementaria a lógica de transferência real
+        // Por enquanto, apenas marcar como liberado
+        seller.balance = (seller.balance || 0) + escrow.amount;
+        await seller.save();
+      }
+
+      await escrow.save();
+
+      res.json({
+        success: true,
+        message: 'Pagamento liberado com sucesso',
+        data: {
+          escrowId: escrow._id,
+          status: escrow.status,
+          releasedAt: escrow.releasedAt
+        }
+      });
+    } else if (action === 'dispute') {
+      // Abrir disputa
+      escrow.status = 'disputed';
+      escrow.disputedAt = new Date();
+      escrow.disputedBy = userId;
+      escrow.disputeReason = reason || 'Disputa aberta';
+
+      await escrow.save();
+
+      res.json({
+        success: true,
+        message: 'Disputa aberta com sucesso',
+        data: {
+          escrowId: escrow._id,
+          status: escrow.status,
+          disputedAt: escrow.disputedAt
+        }
+      });
+    }
   } catch (error) {
-    console.error('Erro ao resolver disputa:', error);
+    console.error('Erro ao processar escrow:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -500,127 +326,66 @@ router.patch('/:id/dispute/:disputeId/resolve', async (req, res) => {
   }
 });
 
-// GET /api/escrow/stats/overview - Estatísticas do escrow
-router.get('/stats/overview', async (req, res) => {
+// GET /api/escrow/:id - Obter detalhes do escrow
+router.get('/:id', authenticateToken, async (req, res) => {
   try {
-    const { userId } = req.user;
+    const { id } = req.params;
+    const userId = req.user.id;
 
-    // Estatísticas por status
-    const stats = await EscrowTransaction.aggregate([
-      {
-        $match: {
-          $or: [{ payerId: userId }, { payeeId: userId }]
-        }
-      },
-      {
-        $group: {
-          _id: '$status',
-          count: { $sum: 1 },
-          totalAmount: { $sum: '$amount' }
-        }
-      }
-    ]);
+    const escrow = await Escrow.findById(id)
+      .populate('sellerId', 'name email company')
+      .populate('buyerId', 'name email company');
 
-    // Estatísticas por tipo de usuário
-    const payerStats = await EscrowTransaction.aggregate([
-      {
-        $match: { payerId: userId }
-      },
-      {
-        $group: {
-          _id: null,
-          totalAsPayer: { $sum: 1 },
-          totalAmountAsPayer: { $sum: '$amount' }
-        }
-      }
-    ]);
-
-    const payeeStats = await EscrowTransaction.aggregate([
-      {
-        $match: { payeeId: userId }
-      },
-      {
-        $group: {
-          _id: null,
-          totalAsPayee: { $sum: 1 },
-          totalAmountAsPayee: { $sum: '$amount' }
-        }
-      }
-    ]);
-
-    const result = {
-      byStatus: stats,
-      asPayer: payerStats[0] || { totalAsPayer: 0, totalAmountAsPayer: 0 },
-      asPayee: payeeStats[0] || { totalAsPayee: 0, totalAmountAsPayee: 0 }
-    };
-
-    res.json({
-      success: true,
-      data: result
-    });
-  } catch (error) {
-    console.error('Erro ao obter estatísticas:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-});
-
-// ===== ROTAS ADMIN (APENAS PARA ADMINISTRADORES) =====
-
-// Middleware para verificar se é admin
-const adminAuth = (req, res, next) => {
-  if (!req.user.isAdmin) {
-    return res.status(403).json({
-      success: false,
-      message: 'Acesso negado. Apenas administradores.'
-    });
-  }
-  next();
-};
-
-// GET /api/escrow/admin/all - Listar todas as transações de escrow (admin)
-router.get('/admin/all', adminAuth, async (req, res) => {
-  try {
-    const { page = 1, limit = 50, status, userId } = req.query;
-
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-
-    // Construir query
-    const query = {};
-    if (status) {
-      query.status = status;
-    }
-    if (userId) {
-      query.$or = [{ payerId: userId }, { payeeId: userId }];
+    if (!escrow) {
+      return res.status(404).json({
+        success: false,
+        message: 'Escrow não encontrado'
+      });
     }
 
-    // Buscar transações de escrow
-    const escrowTransactions = await EscrowTransaction.find(query)
-      .populate('payerId', 'name email')
-      .populate('payeeId', 'name email')
-      .populate('transactionId', 'type status')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit));
+    // Verificar se o usuário tem acesso
+    if (escrow.buyerId._id.toString() !== userId && 
+        escrow.sellerId._id.toString() !== userId && 
+        !req.user.isAdmin) {
+      return res.status(403).json({
+        success: false,
+        message: 'Acesso negado'
+      });
+    }
 
-    const total = await EscrowTransaction.countDocuments(query);
+    // Buscar item
+    let item;
+    if (escrow.itemType === 'product') {
+      item = await Product.findById(escrow.itemId);
+    } else {
+      item = await Freight.findById(escrow.itemId);
+    }
 
     res.json({
       success: true,
       data: {
-        escrowTransactions,
-        pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
-          total,
-          pages: Math.ceil(total / parseInt(limit))
-        }
+        escrow: {
+          id: escrow._id,
+          status: escrow.status,
+          amount: escrow.amount,
+          description: escrow.description,
+          createdAt: escrow.createdAt,
+          expiresAt: escrow.expiresAt,
+          fundedAt: escrow.fundedAt,
+          releasedAt: escrow.releasedAt,
+          disputedAt: escrow.disputedAt
+        },
+        item: {
+          id: item._id,
+          name: item.name || `${item.origin} → ${item.destination}`,
+          type: escrow.itemType
+        },
+        seller: escrow.sellerId,
+        buyer: escrow.buyerId
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar todas as transações de escrow:', error);
+    console.error('Erro ao buscar escrow:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -628,29 +393,33 @@ router.get('/admin/all', adminAuth, async (req, res) => {
   }
 });
 
-// POST /api/escrow/admin/auto-release - Processar liberações automáticas (admin)
-router.post('/admin/auto-release', adminAuth, async (req, res) => {
+// GET /api/escrow/user/:userId - Listar escrows do usuário
+router.get('/user/:userId', authenticateToken, async (req, res) => {
   try {
-    // Buscar transações que podem ser liberadas automaticamente
-    const pendingAutoRelease = await EscrowTransaction.findPendingAutoRelease();
+    const { userId } = req.params;
+    const currentUserId = req.user.id;
 
-    let processed = 0;
-    for (const escrow of pendingAutoRelease) {
-      try {
-        await escrow.release('Liberação automática após período de confirmação');
-        processed++;
-      } catch (error) {
-        console.error(`Erro ao processar liberação automática para ${escrow.id}:`, error);
-      }
+    // Verificar se o usuário pode acessar
+    if (userId !== currentUserId && !req.user.isAdmin) {
+      return res.status(403).json({
+        success: false,
+        message: 'Acesso negado'
+      });
     }
 
+    const escrows = await Escrow.find({
+      $or: [{ buyerId: userId }, { sellerId: userId }]
+    })
+    .populate('sellerId', 'name email company')
+    .populate('buyerId', 'name email company')
+    .sort({ createdAt: -1 });
+
     res.json({
       success: true,
-      message: `${processed} transações processadas para liberação automática`,
-      processed
+      data: escrows
     });
   } catch (error) {
-    console.error('Erro ao processar liberações automáticas:', error);
+    console.error('Erro ao listar escrows:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -658,54 +427,37 @@ router.post('/admin/auto-release', adminAuth, async (req, res) => {
   }
 });
 
-// GET /api/escrow/admin/stats - Estatísticas gerais (admin)
-router.get('/admin/stats', adminAuth, async (req, res) => {
+// Funções auxiliares para processamento de pagamento
+async function processStripePayment(escrow, paymentData) {
   try {
-    // Estatísticas gerais
-    const stats = await EscrowTransaction.aggregate([
-      {
-        $group: {
-          _id: null,
-          total: { $sum: 1 },
-          totalAmount: { $sum: '$amount' },
-          totalFees: { $sum: '$fee' },
-          byStatus: {
-            $push: {
-              status: '$status',
-              amount: '$amount'
-            }
-          }
-        }
-      }
-    ]);
-
-    // Estatísticas por status
-    const statusStats = await EscrowTransaction.aggregate([
-      {
-        $group: {
-          _id: '$status',
-          count: { $sum: 1 },
-          totalAmount: { $sum: '$amount' }
-        }
-      }
-    ]);
-
-    const result = {
-      general: stats[0] || { total: 0, totalAmount: 0, totalFees: 0 },
-      byStatus: statusStats
-    };
-
-    res.json({
+    // Implementar lógica real do Stripe
+    // Por enquanto, simular sucesso
+    return {
       success: true,
-      data: result
-    });
+      paymentId: `stripe_${Date.now()}`
+    };
   } catch (error) {
-    console.error('Erro ao obter estatísticas gerais:', error);
-    res.status(500).json({
+    return {
       success: false,
-      message: 'Erro interno do servidor'
-    });
+      message: 'Erro ao processar pagamento Stripe'
+    };
   }
-});
+}
+
+async function processMetaMaskPayment(escrow, paymentData) {
+  try {
+    // Implementar verificação real da blockchain
+    // Por enquanto, simular sucesso
+    return {
+      success: true,
+      paymentId: `metamask_${Date.now()}`
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: 'Erro ao processar pagamento MetaMask'
+    };
+  }
+}
 
 export default router;

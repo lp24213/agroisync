@@ -1,23 +1,29 @@
 import React from 'react';
-import AgroisyncHeaderPrompt from '../components/AgroisyncHeaderPrompt';
-import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt';
-import AgroisyncFooterPrompt from '../components/AgroisyncFooterPrompt';
+// import AgroisyncHeaderPrompt from '../components/AgroisyncHeaderPrompt'; // Componente removido
+// import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt'; // Componente removido
+// import AgroisyncFooterPrompt from '../components/AgroisyncFooterPrompt'; // Componente removido
 
 const AgroisyncHomePrompt = () => {
   return (
     <div>
       {/* HEADER PADRÃO */}
-      <AgroisyncHeaderPrompt />
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <h1 className="text-2xl font-bold text-gray-800">AGROISYNC</h1>
+        </div>
+      </div>
       
       {/* HERO COM IMAGEM 4K */}
-      <AgroisyncHeroPrompt 
-        title="Agroisync"
-        subtitle="A Plataforma de Agronegócio Mais Futurista do Mundo"
-        heroImage="/images/inicio.png"
-        showCTA={true}
-        primaryButton={{ text: "Explorar Plataforma", link: "/" }}
-        secondaryButton={{ text: "Começar Agora", link: "/register" }}
-      />
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
+        <div className="text-center max-w-4xl mx-auto px-4">
+          <h1 className="text-5xl font-bold text-gray-800 mb-6">AGROISYNC</h1>
+          <p className="text-xl text-gray-600 mb-8">Conectando o agronegócio brasileiro</p>
+          <div className="bg-white p-8 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-semibold text-gray-700 mb-4">Hero Section em Desenvolvimento</h2>
+            <p className="text-gray-500">Em breve teremos uma seção hero completa disponível!</p>
+          </div>
+        </div>
+      </div>
       
       {/* CONTEÚDO PRINCIPAL */}
       <main style={{ paddingTop: '72px' }}>
@@ -113,7 +119,11 @@ const AgroisyncHomePrompt = () => {
       </main>
       
       {/* FOOTER */}
-      <AgroisyncFooterPrompt />
+      <footer className="bg-gray-800 text-white py-8">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <p>&copy; 2024 AGROISYNC. Todos os direitos reservados.</p>
+        </div>
+      </footer>
     </div>
   );
 };

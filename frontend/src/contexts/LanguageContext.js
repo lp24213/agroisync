@@ -13,7 +13,9 @@ export const useLanguage = () => {
 };
 
 export const LanguageProvider = ({ children }) => {
-  const [currentLanguage, setCurrentLanguage] = useState('pt');
+  const [currentLanguage, setCurrentLanguage] = useState(
+    typeof window !== 'undefined' ? (localStorage.getItem('agroisync-language') || 'pt') : 'pt'
+  );
   const [isLoading, setIsLoading] = useState(false);
   const { language, setLanguage } = useStore();
 

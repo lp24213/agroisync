@@ -38,13 +38,9 @@ export const environment = {
 
   // Stripe
   stripe: {
-    secretKey:
-      process.env.STRIPE_SECRET_KEY ||
-      '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',
-    publishableKey:
-      process.env.STRIPE_PUBLISHABLE_KEY ||
-      'pk_live_51QVXlZGYY0MfrP1aPEJhU9TAd2zdJ7ZIOVdhji34IzdgLyFkXHDiWUaved6J7HKQiQpXKk1E9SHrAmiJKmDnETow00omwjh2Bg',
-    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || 'whsec_your_stripe_webhook_secret_here'
+    secretKey: process.env.STRIPE_SECRET_KEY || 'sk_test_DEFAULT_KEY_NOT_SET',
+    publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_DEFAULT_KEY_NOT_SET',
+    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || 'whsec_DEFAULT_WEBHOOK_SECRET_NOT_SET'
   },
 
   // AWS Cognito

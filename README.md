@@ -2,6 +2,23 @@
 
 A plataforma de agronegócio mais futurista e completa do mundo, superando Tesla, Apple, Solana e Star Atlas em design e usabilidade, com arquitetura enterprise, backend seguro e frontend premium.
 
+## 📋 Estrutura do Projeto
+
+Este repositório contém **apenas o frontend** do AgroSync. O backend está em um repositório separado.
+
+### 🎯 Frontend (Este Repositório)
+- **Nome**: `agroisync`
+- **URL**: https://agroisync.pages.dev/
+- **Plataforma**: Cloudflare Pages
+- **Framework**: React (Create React App)
+- **Styling**: TailwindCSS + Framer Motion
+
+### 🔧 Backend (Repositório Separado)
+- **Nome**: `agroisync-backend`
+- **URL**: https://agroisync-backend-prod.luispaulooliveira767.workers.dev/api
+- **Plataforma**: Cloudflare Workers
+- **Runtime**: Node.js
+
 ## ✨ Características Principais
 
 ### 🎨 Design & UX
@@ -89,58 +106,76 @@ A plataforma de agronegócio mais futurista e completa do mundo, superando Tesla
 - MongoDB Atlas
 - Redis Cloud
 
-## 🚀 Instalação e Execução
+## 🚀 Deploy
 
-### Pré-requisitos
-- Node.js 18+
-- MongoDB
-- Redis
-- Contas: AWS, Stripe, Twilio, Cloudinary
-
-### 1. Clone o repositório
+### Frontend (Cloudflare Pages)
 ```bash
-git clone https://github.com/agrosync/agrosync.git
-cd agrosync
+# Deploy automático via GitHub
+git add .
+git commit -m "Update frontend"
+git push origin main
+
+# Ou deploy manual
+npm run build
+# Upload da pasta frontend/build para Cloudflare Pages
 ```
 
-### 2. Instale as dependências
+### Backend (Cloudflare Workers)
 ```bash
-# Frontend
+# No repositório do backend
+wrangler deploy --env production
+```
+
+## 🛠️ Desenvolvimento Local
+
+### Frontend
+```bash
 cd frontend
 npm install
-
-# Backend
-cd ../backend
-npm install
-
-# Root
-cd ..
-npm install
+npm start
 ```
 
-### 3. Configure as variáveis de ambiente
+### Backend
 ```bash
-# Copie o arquivo de exemplo
-cp env.example .env
-
-# Edite com suas credenciais
-nano .env
-```
-
-### 4. Execute o projeto
-```bash
-# Desenvolvimento (frontend + backend)
+cd backend
+npm install
 npm run dev
-
-# Ou separadamente
-npm run dev:frontend  # Frontend na porta 3000
-npm run dev:backend   # Backend na porta 5000
 ```
 
-### 5. Acesse a aplicação
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:5000
-- Documentação: http://localhost:5000/api-docs
+## 📁 Estrutura de Diretórios
+
+```
+agroisync/                    # Frontend (este repositório)
+├── frontend/                 # Código fonte do frontend
+│   ├── src/                 # Componentes React
+│   ├── public/              # Arquivos estáticos
+│   └── build/               # Build de produção
+├── cloudflare-pages.json    # Configuração Cloudflare Pages
+├── pages.toml              # Configuração adicional
+└── deploy-frontend.ps1     # Script de deploy
+
+agroisync-backend/           # Backend (repositório separado)
+├── src/                     # Código fonte do backend
+├── wrangler.toml           # Configuração Cloudflare Workers
+└── deploy-backend.ps1      # Script de deploy
+```
+
+## 🌐 URLs de Produção
+
+- **Frontend**: https://agroisync.pages.dev/
+- **API**: https://agroisync-backend-prod.luispaulooliveira767.workers.dev/api
+- **Dashboard Cloudflare**: https://dash.cloudflare.com/
+
+## 🔧 Configuração
+
+### Variáveis de Ambiente (Frontend)
+- `REACT_APP_API_URL`: URL da API do backend
+- `NODE_VERSION`: Versão do Node.js (18.20.4)
+
+### Secrets (Backend)
+- `MONGODB_URI`: String de conexão MongoDB
+- `JWT_SECRET`: Chave secreta JWT
+- `STRIPE_SECRET_KEY`: Chave secreta Stripe
 
 ## 📱 Funcionalidades
 
@@ -194,21 +229,22 @@ npm run dev:backend   # Backend na porta 5000
 - **LGPD**: Conformidade com privacidade
 - **Logs**: Auditoria completa
 
-## 🌍 Deploy
+## 🌍 Deploy em Produção
 
-### AWS Amplify
+### Frontend (Cloudflare Pages)
 ```bash
 # Deploy automático via GitHub
+git add .
+git commit -m "Update frontend"
 git push origin main
+
+# Cloudflare Pages fará deploy automaticamente
 ```
 
-### Configuração Manual
+### Backend (Cloudflare Workers)
 ```bash
-# Build
-npm run build
-
-# Deploy
-npm run deploy
+# No repositório do backend
+wrangler deploy --env production
 ```
 
 ## 📊 Monitoramento

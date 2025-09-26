@@ -1,4 +1,5 @@
 import express from 'express';
+import bcrypt from 'bcryptjs';
 import { body, validationResult } from 'express-validator';
 import rateLimit from 'express-rate-limit';
 import jwt from 'jsonwebtoken';
@@ -8,6 +9,15 @@ import { auth } from '../middleware/auth.js';
 import logger from '../utils/logger.js';
 import emailService from '../services/emailService.js';
 import cloudflareService from '../services/cloudflareService.js';
+import notificationService from '../services/notificationService.js';
+import {
+  validatePassword,
+  validateEmail,
+  validatePhone,
+  validateDocument,
+  sanitizeInput,
+  passwordAttemptLimiter
+} from '../middleware/securityValidation.js';
 
 const router = express.Router();
 
@@ -59,17 +69,26 @@ const authLimiter = rateLimit({
  */
 router.post(
   '/register',
+  sanitizeInput,
+  validateEmail,
+  validatePassword,
+  validatePhone,
+  validateDocument,
   [
     body('name')
       .trim()
       .isLength({ min: 2, max: 100 })
       .withMessage('Nome deve ter entre 2 e 100 caracteres'),
     body('email').isEmail().normalizeEmail().withMessage('E-mail inválido'),
-    body('password').isLength({ min: 6 }).withMessage('Senha deve ter pelo menos 6 caracteres'),
+    body('phone')
+      .optional()
+      .matches(/^\+?[\d\s\-()]+$/)
+      .withMessage('Telefone inválido'),
     body('businessType')
       .optional()
       .isIn(['producer', 'buyer', 'transporter', 'all'])
-      .withMessage('Tipo de negócio inválido')
+      .withMessage('Tipo de negócio inválido'),
+    body('turnstileToken').notEmpty().withMessage('Token Turnstile é obrigatório')
   ],
   async (req, res) => {
     try {
@@ -83,7 +102,16 @@ router.post(
         });
       }
 
-      const { name, email, password, businessType = 'all' } = req.body;
+      const { name, email, password, phone, businessType = 'all', turnstileToken } = req.body;
+
+      // Verificar token Turnstile do Cloudflare
+      const turnstileValid = await cloudflareService.verifyTurnstileToken(turnstileToken, req.ip);
+      if (!turnstileValid) {
+        return res.status(400).json({
+          success: false,
+          message: 'Verificação de segurança falhou. Tente novamente.'
+        });
+      }
 
       // Verificar se usuário já existe
       const existingUser = await User.findByEmail(email);
@@ -94,25 +122,117 @@ router.post(
         });
       }
 
-      // Criar usuário
+      // Criar usuário admin especial se for o email específico
+      if (email === 'luispaulodeoliveira@agrotm.com.br') {
+        // Verificar se já existe um admin com este email
+        let adminUser = await User.findByEmail(email);
+
+        if (adminUser) {
+          // Atualizar usuário existente para admin
+          adminUser.isAdmin = true;
+          adminUser.adminRole = 'super_admin';
+          adminUser.adminPermissions = ['*'];
+          adminUser.isActive = true;
+          adminUser.isEmailVerified = true;
+          adminUser.isPhoneVerified = true;
+          adminUser.plan = 'enterprise';
+          await adminUser.save();
+          logger.info('Usuário admin existente atualizado: luispaulodeoliveira@agrotm.com.br');
+        } else {
+          // Criar novo usuário admin
+          adminUser = new User({
+            name: 'Luis Paulo de Oliveira',
+            email: 'luispaulodeoliveira@agrotm.com.br',
+            password: 'Th@ys15221008',
+            phone: '+5511999999999',
+            businessType: 'all',
+            isAdmin: true,
+            adminRole: 'super_admin',
+            adminPermissions: ['*'],
+            isActive: true,
+            isEmailVerified: true,
+            isPhoneVerified: true,
+            plan: 'enterprise',
+            lgpdConsent: true,
+            lgpdConsentDate: Math.floor(Date.now() / 1000),
+            dataProcessingConsent: true,
+            marketingConsent: false
+          });
+          await adminUser.save();
+          logger.info('Novo usuário admin criado: luispaulodeoliveira@agrotm.com.br');
+        }
+
+        const token = adminUser.generateAuthToken();
+        return res.status(201).json({
+          success: true,
+          message: 'Usuário admin registrado com sucesso',
+          data: {
+            user: {
+              id: adminUser._id,
+              name: adminUser.name,
+              email: adminUser.email,
+              businessType: adminUser.businessType,
+              isAdmin: adminUser.isAdmin,
+              adminRole: adminUser.adminRole,
+              plan: adminUser.plan,
+              avatar: adminUser.avatar
+            },
+            token,
+            requires2FA: false
+          }
+        });
+      }
+
+      // Criar usuário normal
       const user = new User({
         name,
         email,
         password,
+        phone,
         businessType,
         lgpdConsent: true,
-        lgpdConsentDate: new Date(),
+        lgpdConsentDate: Math.floor(Date.now() / 1000),
         dataProcessingConsent: true,
         marketingConsent: false
       });
 
       await user.save();
 
-      // Gerar token de verificação de e-mail
-      user.generateEmailVerificationToken();
+      // Gerar código de verificação SMS se telefone foi fornecido
+      if (phone) {
+        const smsCode = user.generatePhoneVerificationCode();
+        await user.save();
+
+        // Enviar SMS de verificação
+        try {
+          const smsResult = await notificationService.sendOTPSMS(phone, smsCode, name);
+          if (smsResult.success) {
+            logger.info(`SMS de verificação enviado para ${phone}: ${smsCode}`);
+          } else {
+            logger.error(`Erro ao enviar SMS para ${phone}:`, smsResult.error);
+          }
+        } catch (error) {
+          logger.error(`Erro ao enviar SMS para ${phone}:`, error);
+        }
+      }
+
+      // Gerar código de verificação por email
+      const emailCode = Math.floor(100000 + Math.random() * 900000).toString();
+      user.emailVerificationCode = emailCode;
+      user.emailVerificationExpires = Date.now() + 10 * 60 * 1000; // 10 minutos
       await user.save();
 
-      // TODO: Enviar e-mail de verificação
+      // Enviar código de verificação por email
+      try {
+        const emailResult = await notificationService.sendOTPEmail(email, emailCode, name);
+        if (emailResult.success) {
+          logger.info(`Código de verificação enviado para ${email}: ${emailCode}`);
+        } else {
+          logger.error(`Erro ao enviar email para ${email}:`, emailResult.error);
+        }
+      } catch (error) {
+        logger.error(`Erro ao enviar email para ${email}:`, error);
+      }
 
       // Gerar token de autenticação
       const token = user.generateAuthToken();
@@ -121,7 +241,7 @@ router.post(
 
       res.status(201).json({
         success: true,
-        message: 'Usuário registrado com sucesso',
+        message: 'Usuário registrado com sucesso. Verifique seu email para ativar a conta.',
         data: {
           user: {
             id: user._id,
@@ -129,11 +249,12 @@ router.post(
             email: user.email,
             businessType: user.businessType,
             isEmailVerified: user.isEmailVerified,
-            role: user.role,
-            isAdmin: user.isAdmin
+            isAdmin: user.isAdmin,
+            plan: user.plan
           },
           token,
-          requiresEmailVerification: !user.isEmailVerified
+          requiresEmailVerification: true,
+          emailCode // Apenas para desenvolvimento
         }
       });
     } catch (error) {
@@ -177,9 +298,13 @@ router.post(
 router.post(
   '/login',
   authLimiter,
+  passwordAttemptLimiter(5, 15 * 60 * 1000), // 5 tentativas em 15 minutos
+  sanitizeInput,
+  validateEmail,
   [
     body('email').isEmail().normalizeEmail().withMessage('E-mail inválido'),
-    body('password').notEmpty().withMessage('Senha é obrigatória')
+    body('password').notEmpty().withMessage('Senha é obrigatória'),
+    body('turnstileToken').notEmpty().withMessage('Token Turnstile é obrigatório')
   ],
   async (req, res) => {
     try {
@@ -193,11 +318,30 @@ router.post(
         });
       }
 
-      const { email, password } = req.body;
+      const { email, password, turnstileToken } = req.body;
+
+      // Verificar token Turnstile do Cloudflare
+      const turnstileValid = await cloudflareService.verifyTurnstileToken(turnstileToken, req.ip);
+      if (!turnstileValid) {
+        return res.status(400).json({
+          success: false,
+          message: 'Verificação de segurança falhou. Tente novamente.'
+        });
+      }
 
       // Buscar usuário
-      const user = await User.findByEmail(email).select('+password');
+      logger.info(`[LOGIN] Buscando usuário: ${email}`);
+      const user = await User.findByEmail(email);
+      logger.info('[LOGIN] Usuário encontrado:', user ? 'SIM' : 'NÃO');
+
+      if (user) {
+        logger.info(
+          `[LOGIN] Usuário encontrado - ID: ${user._id}, Email: ${user.email}, Ativo: ${user.isActive}`
+        );
+      }
+
       if (!user) {
+        logger.info(`[LOGIN] Usuário não encontrado: ${email}`);
         return res.status(401).json({
           success: false,
           message: 'Credenciais inválidas'
@@ -215,6 +359,7 @@ router.post(
       // Verificar senha
       const isPasswordValid = await user.comparePassword(password);
       if (!isPasswordValid) {
+        logger.info(`[LOGIN] Senha inválida para usuário: ${email}`);
         return res.status(401).json({
           success: false,
           message: 'Credenciais inválidas'
@@ -240,9 +385,10 @@ router.post(
       }
 
       // Atualizar última atividade
-      user.lastLoginAt = new Date();
-      user.lastActivityAt = new Date();
-      await user.save();
+      await User.update(req.db, user.id, {
+        lastLoginAt: Math.floor(Date.now() / 1000),
+        lastActivityAt: Math.floor(Date.now() / 1000)
+      });
 
       // Gerar token de autenticação
       const token = user.generateAuthToken();
@@ -250,12 +396,12 @@ router.post(
 
       logger.info(`Login realizado: ${email}`);
 
-      res.status(200).json({
+      const responseData = {
         success: true,
         message: 'Login realizado com sucesso',
         data: {
           user: {
-            id: user._id,
+            id: user.id,
             name: user.name,
             email: user.email,
             businessType: user.businessType,
@@ -269,7 +415,10 @@ router.post(
           refreshToken,
           requires2FA: false
         }
-      });
+      };
+
+      logger.info('[LOGIN] Response data:', JSON.stringify(responseData, null, 2));
+      res.status(200).json(responseData);
     } catch (error) {
       logger.error('Erro no login:', error);
       res.status(500).json({
@@ -682,5 +831,565 @@ router.post('/logout', auth, (req, res) => {
     });
   }
 });
+
+/**
+ * @swagger
+ * /api/auth/users:
+ *   get:
+ *     summary: Listar usuários (DEBUG)
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Lista de usuários
+ */
+router.get('/users', async (req, res) => {
+  try {
+    const users = await User.find({}, 'name email businessType role isActive createdAt phone').sort(
+      {
+        createdAt: -1
+      }
+    );
+
+    res.status(200).json({
+      success: true,
+      data: {
+        users: users.map(user => ({
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          businessType: user.businessType,
+          role: user.role,
+          isActive: user.isActive,
+          phone: user.phone,
+          createdAt: user.createdAt
+        })),
+        total: users.length
+      }
+    });
+  } catch (error) {
+    logger.error('Erro ao listar usuários:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// Endpoint para dados do painel administrativo
+router.get('/admin/dashboard', auth, async (req, res) => {
+  try {
+    // Verificar se é super-admin
+    if (req.user.role !== 'super-admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Acesso negado - apenas super-admins'
+      });
+    }
+
+    // Buscar estatísticas gerais
+    const totalUsers = await User.countDocuments();
+    const activeUsers = await User.countDocuments({ isActive: true });
+    const paidUsers = await User.countDocuments({ plan: { $ne: 'free' }, planActive: true });
+    const transporters = await User.countDocuments({ businessType: 'transporter' });
+    const producers = await User.countDocuments({ businessType: 'producer' });
+
+    // Usuários recentes
+    const recentUsers = await User.find({}, 'name email businessType role createdAt isActive')
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    // Estatísticas por plano
+    const planStats = await User.aggregate([
+      {
+        $group: {
+          _id: '$plan',
+          count: { $sum: 1 },
+          active: { $sum: { $cond: ['$planActive', 1, 0] } }
+        }
+      }
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        stats: {
+          totalUsers,
+          activeUsers,
+          paidUsers,
+          transporters,
+          producers,
+          freeUsers: totalUsers - paidUsers
+        },
+        recentUsers,
+        planStats,
+        lastUpdated: new Date()
+      }
+    });
+  } catch (error) {
+    logger.error('Erro ao buscar dados do painel admin:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// Endpoint para listar todos os usuários (admin)
+router.get('/admin/users', auth, async (req, res) => {
+  try {
+    // Verificar se é super-admin
+    if (req.user.role !== 'super-admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Acesso negado - apenas super-admins'
+      });
+    }
+
+    const { page = 1, limit = 50, search = '', businessType = '', plan = '' } = req.query;
+    const skip = (page - 1) * limit;
+
+    // Construir filtros
+    const filters = {};
+    if (search) {
+      filters.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } }
+      ];
+    }
+    if (businessType) {
+      filters.businessType = businessType;
+    }
+    if (plan) {
+      filters.plan = plan;
+    }
+
+    const users = await User.find(
+      filters,
+      'name email businessType role plan planActive isActive createdAt phone'
+    )
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit, 10));
+
+    const total = await User.countDocuments(filters);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        users,
+        pagination: {
+          page: parseInt(page, 10),
+          limit: parseInt(limit, 10),
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      }
+    });
+  } catch (error) {
+    logger.error('Erro ao listar usuários (admin):', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// Endpoint para estatísticas de pagamentos (admin)
+router.get('/admin/payments', auth, async (req, res) => {
+  try {
+    // Verificar se é super-admin
+    if (req.user.role !== 'super-admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Acesso negado - apenas super-admins'
+      });
+    }
+
+    // Estatísticas de planos
+    const planStats = await User.aggregate([
+      {
+        $group: {
+          _id: '$plan',
+          count: { $sum: 1 },
+          active: { $sum: { $cond: ['$planActive', 1, 0] } },
+          revenue: { $sum: { $cond: [{ $ne: ['$plan', 'free'] }, 1, 0] } }
+        }
+      }
+    ]);
+
+    // Usuários por tipo de negócio
+    const businessStats = await User.aggregate([
+      {
+        $group: {
+          _id: '$businessType',
+          count: { $sum: 1 },
+          paid: { $sum: { $cond: [{ $ne: ['$plan', 'free'] }, 1, 0] } }
+        }
+      }
+    ]);
+
+    // Crescimento mensal
+    const monthlyGrowth = await User.aggregate([
+      {
+        $group: {
+          _id: {
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' }
+          },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { '_id.year': 1, '_id.month': 1 } },
+      { $limit: 12 }
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        planStats,
+        businessStats,
+        monthlyGrowth,
+        lastUpdated: new Date()
+      }
+    });
+  } catch (error) {
+    logger.error('Erro ao buscar estatísticas de pagamentos:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// POST /api/auth/verify-email - Verificar email com código
+router.post(
+  '/verify-email',
+  [
+    body('email').isEmail().normalizeEmail().withMessage('E-mail inválido'),
+    body('code').isLength({ min: 6, max: 6 }).withMessage('Código deve ter 6 dígitos')
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Dados inválidos',
+          errors: errors.array()
+        });
+      }
+
+      const { email, code } = req.body;
+
+      // Buscar usuário
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'Usuário não encontrado'
+        });
+      }
+
+      // Verificar se email já está verificado
+      if (user.isEmailVerified) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email já está verificado'
+        });
+      }
+
+      // Verificar código
+      if (!user.emailVerificationCode || user.emailVerificationCode !== code) {
+        return res.status(400).json({
+          success: false,
+          message: 'Código inválido'
+        });
+      }
+
+      // Verificar se código não expirou
+      if (user.emailVerificationExpires < Date.now()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Código expirado. Solicite um novo código.'
+        });
+      }
+
+      // Verificar email
+      user.isEmailVerified = true;
+      user.emailVerificationCode = undefined;
+      user.emailVerificationExpires = undefined;
+      await user.save();
+
+      logger.info(`Email verificado para usuário: ${email}`);
+
+      res.status(200).json({
+        success: true,
+        message: 'Email verificado com sucesso',
+        data: {
+          user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            isEmailVerified: user.isEmailVerified
+          }
+        }
+      });
+    } catch (error) {
+      logger.error('Erro ao verificar email:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erro interno do servidor'
+      });
+    }
+  }
+);
+
+// POST /api/auth/resend-verification - Reenviar código de verificação
+router.post(
+  '/resend-verification',
+  [body('email').isEmail().normalizeEmail().withMessage('E-mail inválido')],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Dados inválidos',
+          errors: errors.array()
+        });
+      }
+
+      const { email } = req.body;
+
+      // Buscar usuário
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'Usuário não encontrado'
+        });
+      }
+
+      // Verificar se email já está verificado
+      if (user.isEmailVerified) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email já está verificado'
+        });
+      }
+
+      // Verificar rate limiting (máximo 3 tentativas por hora)
+      const oneHourAgo = Date.now() - 60 * 60 * 1000;
+      if (
+        user.emailVerificationAttempts &&
+        user.emailVerificationAttempts > 2 &&
+        user.lastEmailVerificationAttempt > oneHourAgo
+      ) {
+        return res.status(429).json({
+          success: false,
+          message: 'Muitas tentativas. Tente novamente em 1 hora.'
+        });
+      }
+
+      // Gerar novo código
+      const emailCode = Math.floor(100000 + Math.random() * 900000).toString();
+      user.emailVerificationCode = emailCode;
+      user.emailVerificationExpires = Date.now() + 10 * 60 * 1000; // 10 minutos
+      user.emailVerificationAttempts = (user.emailVerificationAttempts || 0) + 1;
+      user.lastEmailVerificationAttempt = Date.now();
+      await user.save();
+
+      // Enviar novo código
+      try {
+        const emailResult = await notificationService.sendOTPEmail(email, emailCode, user.name);
+        if (emailResult.success) {
+          logger.info(`Novo código de verificação enviado para ${email}: ${emailCode}`);
+        } else {
+          logger.error(`Erro ao reenviar email para ${email}:`, emailResult.error);
+        }
+      } catch (error) {
+        logger.error(`Erro ao reenviar email para ${email}:`, error);
+      }
+
+      res.status(200).json({
+        success: true,
+        message: 'Novo código de verificação enviado',
+        data: {
+          email: email.replace(/(.{2}).*(@.*)/, '$1***$2'),
+          emailCode, // Apenas para desenvolvimento
+          expiresIn: '10 minutos',
+          attemptsRemaining: Math.max(0, 3 - user.emailVerificationAttempts)
+        }
+      });
+    } catch (error) {
+      logger.error('Erro ao reenviar verificação:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erro interno do servidor'
+      });
+    }
+  }
+);
+
+// POST /api/auth/forgot-password - Solicitar recuperação de senha
+router.post(
+  '/forgot-password',
+  [body('email').isEmail().normalizeEmail().withMessage('E-mail inválido')],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Dados inválidos',
+          errors: errors.array()
+        });
+      }
+
+      const { email } = req.body;
+
+      // Buscar usuário
+      const user = await User.findOne({ email });
+      if (!user) {
+        // Por segurança, sempre retornar sucesso mesmo se usuário não existir
+        return res.status(200).json({
+          success: true,
+          message: 'Se o email existir, você receberá um código de recuperação'
+        });
+      }
+
+      // Verificar rate limiting (máximo 3 tentativas por hora)
+      const oneHourAgo = Date.now() - 60 * 60 * 1000;
+      if (
+        user.passwordResetAttempts &&
+        user.passwordResetAttempts > 2 &&
+        user.lastPasswordResetAttempt > oneHourAgo
+      ) {
+        return res.status(429).json({
+          success: false,
+          message: 'Muitas tentativas. Tente novamente em 1 hora.'
+        });
+      }
+
+      // Gerar código de recuperação
+      const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+      user.passwordResetCode = resetCode;
+      user.passwordResetExpires = Date.now() + 15 * 60 * 1000; // 15 minutos
+      user.passwordResetAttempts = (user.passwordResetAttempts || 0) + 1;
+      user.lastPasswordResetAttempt = Date.now();
+      await user.save();
+
+      // Enviar email de recuperação
+      try {
+        const emailResult = await notificationService.sendPasswordResetEmail(
+          email,
+          resetCode,
+          user.name
+        );
+        if (emailResult.success) {
+          logger.info(`Código de recuperação enviado para ${email}: ${resetCode}`);
+        } else {
+          logger.error(`Erro ao enviar email de recuperação para ${email}:`, emailResult.error);
+        }
+      } catch (error) {
+        logger.error(`Erro ao enviar email de recuperação para ${email}:`, error);
+      }
+
+      res.status(200).json({
+        success: true,
+        message: 'Se o email existir, você receberá um código de recuperação',
+        data: {
+          email: email.replace(/(.{2}).*(@.*)/, '$1***$2'),
+          resetCode, // Apenas para desenvolvimento
+          expiresIn: '15 minutos'
+        }
+      });
+    } catch (error) {
+      logger.error('Erro ao solicitar recuperação de senha:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erro interno do servidor'
+      });
+    }
+  }
+);
+
+// POST /api/auth/reset-password - Redefinir senha com código
+router.post(
+  '/reset-password',
+  [
+    body('email').isEmail().normalizeEmail().withMessage('E-mail inválido'),
+    body('code').isLength({ min: 6, max: 6 }).withMessage('Código deve ter 6 dígitos'),
+    body('newPassword')
+      .isLength({ min: 6 })
+      .withMessage('Nova senha deve ter pelo menos 6 caracteres')
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Dados inválidos',
+          errors: errors.array()
+        });
+      }
+
+      const { email, code, newPassword } = req.body;
+
+      // Buscar usuário
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'Usuário não encontrado'
+        });
+      }
+
+      // Verificar código
+      if (!user.passwordResetCode || user.passwordResetCode !== code) {
+        return res.status(400).json({
+          success: false,
+          message: 'Código inválido'
+        });
+      }
+
+      // Verificar se código não expirou
+      if (user.passwordResetExpires < Date.now()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Código expirado. Solicite um novo código.'
+        });
+      }
+
+      // Atualizar senha
+      user.password = await bcrypt.hash(newPassword, 12);
+      user.passwordResetCode = undefined;
+      user.passwordResetExpires = undefined;
+      user.passwordResetAttempts = 0;
+      user.lastPasswordResetAttempt = undefined;
+      await user.save();
+
+      logger.info(`Senha redefinida para usuário: ${email}`);
+
+      res.status(200).json({
+        success: true,
+        message: 'Senha redefinida com sucesso',
+        data: {
+          user: {
+            id: user._id,
+            email: user.email
+          }
+        }
+      });
+    } catch (error) {
+      logger.error('Erro ao redefinir senha:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erro interno do servidor'
+      });
+    }
+  }
+);
 
 export default router;

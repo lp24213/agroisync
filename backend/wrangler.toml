@@ -1,0 +1,31 @@
+name = "agroisync-api"
+compatibility_date = "2025-09-20"
+main = "src/worker.js"
+
+# Configuração para Cloudflare Workers
+compatibility_flags = ["nodejs_compat"]
+
+[env.production]
+name = "agroisync-api-prod"
+
+[env.staging]
+name = "agroisync-api-staging"
+
+# Variáveis de ambiente (configure no dashboard do Cloudflare)
+[vars]
+NODE_ENV = "production"
+API_VERSION = "v1"
+
+# Rota do Worker servindo sob o domínio principal
+routes = ["agroisync.com/api/*"]
+
+# Cloudflare D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "agroisync-db"
+database_id = "a3eb1069-9c36-4689-9ee9-971245cb2d12"
+
+# Secrets (configure via wrangler secret put)
+# STRIPE_SECRET_KEY
+# STRIPE_WEBHOOK_SECRET
+# JWT_SECRET

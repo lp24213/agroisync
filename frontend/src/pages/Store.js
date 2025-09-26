@@ -12,7 +12,7 @@ import {
   Grid,
   List
 } from 'lucide-react';
-import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt';
+// import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt'; // Componente removido
 
 const Store = () => {
   const [viewMode, setViewMode] = useState('grid');
@@ -55,14 +55,16 @@ const Store = () => {
   return (
     <div className="min-h-screen">
       {/* HERO COM IMAGEM 4K DE MILHO/SOJA */}
-      <AgroisyncHeroPrompt 
-        title="Loja Agroisync"
-        subtitle="Commodities Agrícolas em Tempo Real"
-        heroImage="/images/Loja.png"
-        showCTA={true}
-        primaryButton={{ text: "Explorar Loja", link: "/loja" }}
-        secondaryButton={{ text: "Ver Catálogo", link: "/loja" }}
-      />
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
+        <div className="text-center max-w-4xl mx-auto px-4">
+          <h1 className="text-5xl font-bold text-gray-800 mb-6">LOJA AGROISYNC</h1>
+          <p className="text-xl text-gray-600 mb-8">Commodities Agrícolas em Tempo Real</p>
+          <div className="bg-white p-8 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-semibold text-gray-700 mb-4">Hero Section em Desenvolvimento</h2>
+            <p className="text-gray-500">Em breve teremos uma seção hero completa disponível!</p>
+          </div>
+        </div>
+      </div>
 
       {/* Features */}
       <section className="section-sm bg-secondary">

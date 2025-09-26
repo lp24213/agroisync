@@ -1,10 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import StockTicker from '../components/StockTicker';
+import GrainsChart from '../components/GrainsChart';
+import CompactWeatherWidget from '../components/CompactWeatherWidget';
 
 const AgroisyncHome = () => {
-  // Cache busting para a imagem inicio.png
-  const inicioImageUrl = `/assets/inicio.png?v=1.0.1&t=${Date.now()}`;
+  // Imagem de campo de soja verde vibrante com cache buster
+  const inicioImageUrl = `https://media.istockphoto.com/id/1465642013/pt/foto/a-vibrant-green-soybean-field-nestled-in-a-natural-setting.webp?a=1&b=1&s=612x612&w=0&k=20&c=Bz3SlprnpXY3r7wEKqU2NdeYoW0Ysb-itwzf4WiIuAs=&v=${Date.now()}`;
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 60 },
@@ -30,8 +33,20 @@ const AgroisyncHome = () => {
 
   return (
     <div className="agro-home-container">
+      {/* Ticker da Bolsa */}
+      <StockTicker />
+
       {/* Hero Section */}
-      <section className="agro-hero-fullscreen">
+      <section 
+        className="agro-hero-fullscreen"
+        style={{
+          backgroundImage: `url('${inicioImageUrl}')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed'
+        }}
+      >
         <div className="agro-hero-overlay">
           <div className="agro-hero-content-centered agro-stagger-children">
             <motion.h1 
@@ -69,46 +84,51 @@ const AgroisyncHome = () => {
         </div>
       </section>
 
+
       {/* Layout Principal - Duas Colunas */}
       <div className="agro-main-layout">
         {/* Coluna Principal - Esquerda */}
         <div className="agro-main-content">
 
-      {/* Statistics Section */}
-          <section className="agro-stats-section">
-            <div className="agro-stats-grid">
+      {/* Features Section */}
+          <section className="agro-features-section">
+            <div className="agro-features-grid">
               <motion.div 
-                className="agro-stat-item agro-card-animated"
+                className="agro-feature-item agro-card-animated"
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
                 viewport={{ once: true }}
               >
-                <div className="agro-stat-number">10K+</div>
-                <div className="agro-stat-label">Usuários Ativos</div>
+                <div className="agro-feature-icon">🚀</div>
+                <div className="agro-feature-title">Tecnologia Avançada</div>
+                <div className="agro-feature-desc">Plataforma moderna para o agronegócio</div>
               </motion.div>
               
               <motion.div
-                className="agro-stat-item agro-card-animated"
+                className="agro-feature-item agro-card-animated"
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
                 viewport={{ once: true }}
               >
-                <div className="agro-stat-number">R$ 50M+</div>
-                <div className="agro-stat-label">Volume Transacionado</div>
+                <div className="agro-feature-icon">🌾</div>
+                <div className="agro-feature-title">Conexão Direta</div>
+                <div className="agro-feature-desc">Produtores e compradores conectados</div>
               </motion.div>
               
-              <motion.div 
-                className="agro-stat-item agro-card-animated"
+              <motion.div
+                className="agro-feature-item agro-card-animated"
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
                 viewport={{ once: true }}
               >
-                <div className="agro-stat-number">99,9%</div>
-                <div className="agro-stat-label">Uptime Garantido</div>
+                <div className="agro-feature-icon">⚡</div>
+                <div className="agro-feature-title">Uptime Garantido</div>
+                <div className="agro-feature-desc">99,9% de disponibilidade</div>
               </motion.div>
+              
         </div>
       </section>
 
@@ -154,17 +174,11 @@ const AgroisyncHome = () => {
 
         {/* Sidebar - Direita */}
         <div className="agro-sidebar">
-          {/* Seja Nosso Parceiro */}
-          <div className="agro-partner-card agro-card-animated">
-            <h3 className="agro-partner-title">Seja Nosso Parceiro</h3>
-            <div className="agro-partner-image">
-              <img src={inicioImageUrl} alt="Campo agrícola ao pôr do sol" />
-            </div>
-            <div className="agro-partner-buttons">
-              <Link to="/marketplace" className="agro-btn-primary agro-btn-animated">Explorar Produtos</Link>
-              <Link to="/partnerships" className="agro-btn-secondary agro-btn-animated">Saiba Mais</Link>
-            </div>
-          </div>
+          {/* Ultra Gráfico de Cotações */}
+          <GrainsChart />
+
+          {/* Widget de Clima Compacto */}
+          <CompactWeatherWidget />
 
           {/* Notícias do Agronegócio */}
           <div className="agro-news-card agro-card-animated">
@@ -210,11 +224,6 @@ const AgroisyncHome = () => {
         /* Hero Fullscreen */
         .agro-hero-fullscreen {
           height: 100vh;
-          background-image: url('https://images.unsplash.com/photo-1600747476236-76579658b1b1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Q0FNUE8lMjBERSUyMFNPSkF8ZW58MHx8MHx8fDA%3D');
-          background-size: cover;
-          background-position: center center;
-          background-repeat: no-repeat;
-          background-attachment: fixed;
           position: relative;
           display: flex;
           align-items: center;

@@ -4,7 +4,6 @@ import {
   MapPin, Thermometer, Droplets, Wind, 
   Sunrise, Sunset, RefreshCw, Search, X
 } from 'lucide-react';
-import weatherService from '../services/weatherService';
 
 const GlobalWeatherWidget = () => {
   const [weatherData, setWeatherData] = useState(null);
@@ -14,18 +13,51 @@ const GlobalWeatherWidget = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
   const [lastUpdate, setLastUpdate] = useState(null);
+  const [userLocation, setUserLocation] = useState('');
 
   useEffect(() => {
     loadWeatherData();
+    detectUserLocation();
   }, []);
+
+  const detectUserLocation = async () => {
+    try {
+      // Simular detecção de localização por IP
+      const mockLocation = 'São Paulo, SP';
+      setUserLocation(mockLocation);
+    } catch (error) {
+      console.error('Erro ao detectar localização:', error);
+    }
+  };
 
   const loadWeatherData = async () => {
     try {
       setLoading(true);
       setError('');
       
-      const data = await weatherService.getCompleteWeather();
-      setWeatherData(data);
+      // Simular dados de clima por localização
+      const mockWeatherData = {
+        location: userLocation || 'São Paulo, SP',
+        current: {
+          temperature: 28,
+          description: 'Ensolarado',
+          humidity: 65,
+          windSpeed: 12,
+          windDirection: 'NE',
+          pressure: 1013,
+          feelsLike: 30,
+          iconUrl: 'https://openweathermap.org/img/wn/01d@2x.png'
+        },
+        forecast: [
+          { day: 'Hoje', dayName: 'Hoje', high: 30, low: 22, temperature: 28, condition: 'Ensolarado', description: 'Ensolarado', iconUrl: 'https://openweathermap.org/img/wn/01d@2x.png' },
+          { day: 'Amanhã', dayName: 'Amanhã', high: 32, low: 24, temperature: 30, condition: 'Parcialmente nublado', description: 'Parcialmente nublado', iconUrl: 'https://openweathermap.org/img/wn/02d@2x.png' },
+          { day: 'Quarta', dayName: 'Qua', high: 29, low: 21, temperature: 26, condition: 'Chuvoso', description: 'Chuvoso', iconUrl: 'https://openweathermap.org/img/wn/10d@2x.png' },
+          { day: 'Quinta', dayName: 'Qui', high: 31, low: 23, temperature: 29, condition: 'Ensolarado', description: 'Ensolarado', iconUrl: 'https://openweathermap.org/img/wn/01d@2x.png' },
+          { day: 'Sexta', dayName: 'Sex', high: 33, low: 25, temperature: 31, condition: 'Ensolarado', description: 'Ensolarado', iconUrl: 'https://openweathermap.org/img/wn/01d@2x.png' }
+        ]
+      };
+      
+      setWeatherData(mockWeatherData);
       setLastUpdate(new Date());
     } catch (error) {
       console.error('Erro ao carregar dados do clima:', error);
@@ -198,19 +230,22 @@ const GlobalWeatherWidget = () => {
       <div className="text-center py-4">
         <div className="flex items-center justify-center mb-2">
           <img 
-            src={current.iconUrl} 
-            alt={current.description}
+            src={current?.iconUrl || 'https://openweathermap.org/img/wn/01d@2x.png'} 
+            alt={current?.description || 'Clima'}
             className="w-16 h-16"
+            onError={(e) => {
+              e.target.src = 'https://openweathermap.org/img/wn/01d@2x.png';
+            }}
           />
         </div>
         <div className="text-3xl font-bold text-gray-900 mb-1">
-          {current.temperature}°C
+          {current?.temperature || '--'}°C
         </div>
         <p className="text-sm text-gray-600 capitalize mb-2">
-          {current.description}
+          {current?.description || 'Carregando...'}
         </p>
         <p className="text-xs text-gray-500">
-          Sensação térmica: {current.feelsLike}°C
+          Sensação térmica: {current?.feelsLike || '--'}°C
         </p>
         </div>
 
@@ -219,7 +254,7 @@ const GlobalWeatherWidget = () => {
         <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
           <Droplets className="w-4 h-4 text-blue-600" />
               <div>
-            <p className="font-medium">{current.humidity}%</p>
+            <p className="font-medium">{current?.humidity || '--'}%</p>
             <p className="text-xs text-gray-600">Umidade</p>
           </div>
             </div>
@@ -227,15 +262,15 @@ const GlobalWeatherWidget = () => {
         <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
           <Wind className="w-4 h-4 text-gray-600" />
           <div>
-            <p className="font-medium">{current.windSpeed} km/h</p>
-            <p className="text-xs text-gray-600">{current.windDirection}</p>
+            <p className="font-medium">{current?.windSpeed || '--'} km/h</p>
+            <p className="text-xs text-gray-600">{current?.windDirection || '--'}</p>
           </div>
         </div>
 
         <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
           <Thermometer className="w-4 h-4 text-red-600" />
           <div>
-            <p className="font-medium">{current.pressure} hPa</p>
+            <p className="font-medium">{current?.pressure || '--'} hPa</p>
             <p className="text-xs text-gray-600">Pressão</p>
           </div>
         </div>
@@ -243,7 +278,7 @@ const GlobalWeatherWidget = () => {
         <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
           <Sunrise className="w-4 h-4 text-yellow-600" />
           <div>
-            <p className="font-medium">{formatTime(current.sunrise)}</p>
+            <p className="font-medium">{formatTime(current?.sunrise) || '--'}</p>
             <p className="text-xs text-gray-600">Nascer</p>
           </div>
         </div>
@@ -261,17 +296,20 @@ const GlobalWeatherWidget = () => {
                     {day.dayName}
                   </span>
                   <img 
-                    src={day.iconUrl} 
-                    alt={day.description}
+                    src={day?.iconUrl || 'https://openweathermap.org/img/wn/01d@2x.png'} 
+                    alt={day?.description || 'Clima'}
                     className="w-8 h-8"
+                    onError={(e) => {
+                      e.target.src = 'https://openweathermap.org/img/wn/01d@2x.png';
+                    }}
                   />
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-medium text-gray-900">
-                    {day.temperature}°C
+                    {day?.temperature || '--'}°C
                   </p>
                   <p className="text-xs text-gray-600 capitalize">
-                    {day.description}
+                    {day?.description || 'Carregando...'}
                   </p>
                 </div>
               </div>

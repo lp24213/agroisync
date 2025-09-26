@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
-import LanguageSelector from './LanguageSelector';
+import LanguageSelectorPro from './LanguageSelectorPro';
+import AgroisyncLogo from './AgroisyncLogo';
 import { 
   Menu,
   X,
@@ -35,10 +35,6 @@ const AgroisyncHeader = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLanguageChange = (lang) => {
-    i18n.changeLanguage(lang);
-  };
-
   const handleLogout = async () => {
     try {
       await logout();
@@ -50,216 +46,189 @@ const AgroisyncHeader = () => {
   const navigationItems = [
     { path: '/', label: 'Início', icon: Home },
     { path: '/loja', label: 'Loja', icon: ShoppingCart },
-    { path: '/agroconecta', label: 'Fretes', icon: Truck },
+    { path: '/agroconecta', label: 'Frete', icon: Truck },
+    { path: '/marketplace', label: 'Produtos', icon: ShoppingCart },
+    { path: '/tecnologia', label: 'Crypto', icon: Coins },
+    { path: '/about', label: 'Sobre', icon: Info },
+    { path: '/planos', label: 'Planos', icon: Crown },
+  ];
+
+  const mobileNavigationItems = [
+    { path: '/', label: 'Início', icon: Home },
+    { path: '/loja', label: 'Loja', icon: ShoppingCart },
+    { path: '/agroconecta', label: 'Frete', icon: Truck },
     { path: '/marketplace', label: 'Produtos', icon: ShoppingCart },
     { path: '/tecnologia', label: 'Crypto', icon: Coins },
     { path: '/partnerships', label: 'Parcerias', icon: Users },
     { path: '/about', label: 'Sobre', icon: Info },
     { path: '/planos', label: 'Planos', icon: Crown },
-  ];
-
-  const languages = [
-    { code: 'pt', name: 'Português', flag: '🇧🇷' },
-    { code: 'en', name: 'English', flag: '🇺🇸' },
-    { code: 'es', name: 'Español', flag: '🇪🇸' },
-    { code: 'zh', name: '中文', flag: '🇨🇳' },
+    { path: '/login', label: 'Entrar', icon: LogIn },
+    { path: '/register', label: 'Cadastrar', icon: User },
   ];
 
   return (
     <>
-      <motion.header
-        className={`premium-header ${isScrolled ? 'premium-header-scrolled' : ''}`}
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="premium-header-container">
-          {/* Logo - Esquerda */}
-          <div className="premium-header-logo">
-            <Link to="/" className="premium-header-logo-link">
-              <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjgwIiB2aWV3Qm94PSIwIDAgMjAwIDgwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxnPjxwYXRoIGQ9Ik00NSA1NSBRNTAgNTAgNTUgNDUiIHN0cm9rZT0iI0RBQTUyMCIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTQ3IDUyIFE0MiA0OCA0MCA0NSIgc3Ryb2tlPSIjREFBNTIwIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNNDkgNTAgUTQ0IDQ2IDQyIDQzIiBzdHJva2U9IiNEQUE1MjAiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPjxlbGxpcHNlIGN4PSI1NSIgY3k9IjQ1IiByeD0iOCIgcnk9IjEyIiBmaWxsPSIjREFBNTIwIiBvcGFjaXR5PSIwLjgiLz48ZWxsaXBzZSBjeD0iNTUiIGN5PSI0NSIgcng9IjYiIHJ5PSIxMCIgZmlsbD0iI0RBQTUyMCIvPjxsaW5lIHgxPSI1MCIgeTE9IjM1IiB4Mj0iNTAiIHkyPSIzMCIgc3Ryb2tlPSIjREFBNTIwIiBzdHJva2Utd2lkdGg9IjEuNSIvPjxsaW5lIHgxPSI1MiIgeTE9IjM2IiB4Mj0iNTIiIHkyPSIzMSIgc3Ryb2tlPSIjREFBNTIwIiBzdHJva2Utd2lkdGg9IjEuNSIvPjxsaW5lIHgxPSI1NCIgeTE9IjM3IiB4Mj0iNTQiIHkyPSIzMiIgc3Ryb2tlPSIjREFBNTIwIiBzdHJva2Utd2lkdGg9IjEuNSIvPjxsaW5lIHgxPSI1NiIgeTE9IjM2IiB4Mj0iNTYiIHkyPSIzMSIgc3Ryb2tlPSIjREFBNTIwIiBzdHJva2Utd2lkdGg9IjEuNSIvPjxsaW5lIHgxPSI1OCIgeTE9IjM1IiB4Mj0iNTgiIHkyPSIzMCIgc3Ryb2tlPSIjREFBNTIwIiBzdHJva2Utd2lkdGg9IjEuNSIvPjxsaW5lIHgxPSI2MCIgeTE9IjM2IiB4Mj0iNjAiIHkyPSIzMSIgc3Ryb2tlPSIjREFBNTIwIiBzdHJva2Utd2lkdGg9IjEuNSIvPjwvZz48ZyBvcGFjaXR5PSIwLjciPjxwYXRoIGQ9Ik02NSA1OCBRNzAgNTMgNzUgNDgiIHN0cm9rZT0iI0RBQTUyMCIgc3Ryb2tlLXdpZHRoPSIyLjUiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNNjcgNTUgUTYyIDUxIDYwIDQ4IiBzdHJva2U9IiNEQUE1MjAiIHN0cm9rZS13aWR0aD0iMS41IiBmaWxsPSJub25lIi8+PGVsbGlwc2UgY3g9Ijc1IiBjeT0iNDgiIHJ4PSI2IiByeT0iOSIgZmlsbD0iI0RBQTUyMCIgb3BhY2l0eT0iMC44Ii8+PGVsbGlwc2UgY3g9Ijc1IiBjeT0iNDgiIHJ4PSI0IiByeT0iNyIgZmlsbD0iI0RBQTUyMCIvPjxsaW5lIHgxPSI3MiIgeTE9IjQwIiB4Mj0iNzIiIHkyPSIzNiIgc3Ryb2tlPSIjREFBNTIwIiBzdHJva2Utd2lkdGg9IjEiLz48bGluZSB4MT0iNzQiIHkxPSI0MSIgeDI9Ijc0IiB5Mj0iMzciIHN0cm9rZT0iI0RBQTUyMCIgc3Ryb2tlLXdpZHRoPSIxIi8+PGxpbmUgeDE9Ijc2IiB5MT0iNDIiIHgyPSI3NiIgeTI9IjM4IiBzdHJva2U9IiNEQUE1MjAiIHN0cm9rZS13aWR0aD0iMSIvPjxsaW5lIHgxPSI3OCIgeTE9IjQxIiB4Mj0iNzgiIHkyPSIzNyIgc3Ryb2tlPSIjREFBNTIwIiBzdHJva2Utd2lkdGg9IjEiLz48L2c+PHBhdGggZD0iTTQwIDYwIFE1MCA1OCA2MCA2MCBRNzAgNjIgODAgNjAiIHN0cm9rZT0iI0RBQTUyMCIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+PHRleHQgeD0iMTAwIiB5PSI3MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNjAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMDAwMDAwIj5BR1JPSVNZTkM8L3RleHQ+PC9zdmc+" alt="AGROISYNC" className="premium-header-logo-img" />
+      <header className="bg-white/95 backdrop-blur-md border-b border-gray-200/50 fixed top-0 left-0 right-0 z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <Link to="/" className="flex items-center">
+              <AgroisyncLogo />
             </Link>
-          </div>
 
-          {/* Desktop Navigation - Centro */}
-          <nav className="premium-header-menu">
-            {navigationItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.path;
-              
-              return (
-                <div key={item.path} className="premium-header-item">
-              <Link
-                to={item.path}
-                className={`premium-header-link agro-btn-animated ${isActive ? 'active' : ''}`}
-              >
-                    <Icon size={8} />
-                    <span className="text-xs">{item.label}</span>
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-1">
+              {navigationItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      isActive
+                        ? 'bg-green-500 text-white shadow-md'
+                        : 'text-gray-700 hover:text-green-600 hover:bg-green-50 hover:shadow-sm'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {item.label}
                   </Link>
-                </div>
-              );
-            })}
-          </nav>
+                );
+              })}
+            </nav>
 
-          {/* Actions - Direita */}
-          <div className="premium-header-actions">
-            {/* Language Selector */}
-            <LanguageSelector variant="minimal" showLabel={false} />
+            {/* User Menu - Apenas para usuários logados */}
+            {user ? (
+              <div className="hidden md:flex items-center gap-3">
+                <Link
+                  to="/user-dashboard"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:text-green-600 hover:bg-green-50 transition-all duration-200"
+                >
+                  <User className="w-4 h-4" />
+                  Meu Painel
+                </Link>
+                <Link
+                  to="/messaging"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:text-green-600 hover:bg-green-50 transition-all duration-200"
+                >
+                  <Users className="w-4 h-4" />
+                  Mensagens
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 transition-all duration-200"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Sair
+                </button>
+              </div>
+            ) : (
+              <div className="hidden md:flex items-center gap-3">
+                <Link
+                  to="/login"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:text-green-600 hover:bg-green-50 transition-all duration-200"
+                >
+                  <LogIn className="w-4 h-4" />
+                  Entrar
+                </Link>
+                <Link
+                  to="/register"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium bg-green-500 text-white hover:bg-green-600 transition-all duration-200"
+                >
+                  <User className="w-4 h-4" />
+                  Cadastrar
+                </Link>
+              </div>
+            )}
 
-            {/* Auth Buttons */}
-            <div className="premium-auth-buttons">
+
+            {/* Desktop Actions */}
+            <div className="hidden md:flex items-center gap-4">
+              {/* Language Selector */}
+              <div className="premium-language-selector-desktop">
+                <LanguageSelectorPro />
+              </div>
+
+              {/* Auth Buttons */}
               {user ? (
-                <div className="premium-user-menu">
-                  <span className="premium-user-name">{user.name || user.email}</span>
-                  <Link to="/dashboard" className="premium-header-link agro-btn-animated">
-                    <User size={16} />
-                    <span>{t('nav.dashboard')}</span>
-                  </Link>
-                  <button onClick={handleLogout} className="premium-header-link agro-btn-animated">
-                    <LogOut size={16} />
-                    <span>{t('nav.logout')}</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-gray-700 font-medium">
+                    Olá, {user.name || user.email}
+                  </span>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sair
                   </button>
                 </div>
               ) : (
-                <>
-                  <Link to="/login" className="premium-header-link agro-btn-animated">
-                    <LogIn size={8} />
-                    <span>{t('nav.login')}</span>
+                <div className="flex items-center gap-2">
+                  <Link
+                    to="/login"
+                    className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all duration-200"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    Entrar
                   </Link>
-                  <Link to="/register" className="premium-header-link agro-btn-animated">
-                    <span>{t('nav.register')}</span>
+                  <Link
+                    to="/register"
+                    className="flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 hover:shadow-md transition-all duration-200"
+                  >
+                    <User className="w-4 h-4" />
+                    Cadastrar
                   </Link>
-                </>
+                </div>
               )}
             </div>
 
-            {/* Mobile Menu Toggle */}
-        <button
-          className="premium-mobile-toggle agro-btn-animated"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2.5 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all duration-200"
+            >
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
-      </motion.header>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
+        {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <>
-            <motion.div
-              className="premium-mobile-overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              onClick={() => setIsMobileMenuOpen(false)}
-            />
-            <motion.div
-              className="premium-mobile-menu"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-            <div className="premium-mobile-content">
-              {/* Mobile Navigation */}
-              <nav className="premium-mobile-nav">
-                <h3 className="premium-mobile-section-title">Navegação</h3>
-                {navigationItems.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = location.pathname === item.path;
-                  
-                  return (
-                    <div key={item.path} className="premium-mobile-item">
-                      <Link
-                        to={item.path}
-                        className={`premium-mobile-link ${isActive ? 'active' : ''}`}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <Icon size={18} />
-                        <span className="text-sm">{item.label}</span>
-                      </Link>
-                    </div>
-                  );
-                })}
-              </nav>
-
+          <div className="md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200/50 shadow-lg">
+            <div className="px-6 py-4 space-y-2">
+              {mobileNavigationItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      isActive
+                        ? 'bg-green-500 text-white shadow-md'
+                        : 'text-gray-700 hover:text-green-600 hover:bg-green-50 hover:shadow-sm'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {item.label}
+                  </Link>
+                );
+              })}
+              
               {/* Mobile Language Selector */}
-              <div>
-                <h3 className="premium-mobile-section-title">Idiomas</h3>
-                <div className="premium-mobile-lang-grid">
-                  {languages.map((lang) => (
-                    <button
-                      key={lang.code}
-                      className={`premium-mobile-lang-btn ${i18n.language === lang.code ? 'active' : ''}`}
-                      onClick={() => handleLanguageChange(lang.code)}
-                    >
-                      <span className="premium-lang-flag">{lang.flag}</span>
-                      <span>{lang.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Mobile Auth */}
-              <div className="premium-mobile-auth">
-                <h3 className="premium-mobile-section-title">Conta</h3>
-                {user ? (
-                  <div className="premium-mobile-user">
-                    <div className="premium-mobile-user-info">
-                      <strong>{user.name || user.email}</strong>
-                    </div>
-                    <div className="premium-mobile-auth-buttons">
-                      <Link 
-                        to="/dashboard" 
-                        className="premium-mobile-link"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <User size={20} />
-                        <span>Dashboard</span>
-                      </Link>
-                      <button 
-                        onClick={() => {
-                          handleLogout();
-                          setIsMobileMenuOpen(false);
-                        }} 
-                        className="premium-mobile-link"
-                      >
-                        <LogOut size={20} />
-                        <span>Sair</span>
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="premium-mobile-auth-buttons">
-                    <Link 
-                      to="/login" 
-                      className="premium-mobile-link"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <LogIn size={20} />
-                      <span>Entrar</span>
-                    </Link>
-                    <Link 
-                      to="/register" 
-                      className="premium-mobile-link"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <span>Registrar</span>
-                    </Link>
-                  </div>
-                )}
+              <div className="px-4 py-3 border-t border-gray-200/50">
+                <LanguageSelectorPro />
               </div>
             </div>
-            </motion.div>
-          </>
+          </div>
         )}
-      </AnimatePresence>
-
-      {/* Header Spacer */}
-      <div className="premium-header-spacer" />
+      </header>
+      
+      {/* Spacer */}
+      <div className="h-16"></div>
     </>
   );
 };

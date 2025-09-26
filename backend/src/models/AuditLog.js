@@ -1,272 +1,272 @@
 import mongoose from 'mongoose';
 
-const auditLogSchema = new mongoose.Schema(
-  {
-    // Identificação do usuário
+const auditLogSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
-    index: true
+    required: true
   },
-
-    // Tipo de ação realizada
+  userEmail: {
+    type: String,
+    required: true
+  },
   action: {
     type: String,
     required: true,
     enum: [
-        'create', 'read', 'update', 'delete',
-        'login', 'logout', 'password_change',
-        'pii_access', 'pii_encrypt', 'pii_decrypt',
-        'admin_access', 'data_export', 'data_import'
-    ],
-    index: true
+      'ADMIN_DASHBOARD_ACCESS',
+      'ADMIN_USERS_LIST',
+      'ADMIN_USERS_VIEW',
+      'ADMIN_USER_STATUS_CHANGE',
+      'ADMIN_USER_DELETE',
+      'ADMIN_PRODUCTS_LIST',
+      'ADMIN_PRODUCTS_VIEW',
+      'ADMIN_PRODUCT_DELETE',
+      'ADMIN_PRODUCT_STATUS_CHANGE',
+      'ADMIN_PAYMENTS_LIST',
+      'ADMIN_PAYMENTS_VIEW',
+      'ADMIN_REGISTRATIONS_LIST',
+      'ADMIN_REGISTRATIONS_VIEW',
+      'ADMIN_ACTIVITY_ACCESS',
+      'ADMIN_SYSTEM_SETTINGS_CHANGE',
+      'ADMIN_BACKUP_CREATE',
+      'ADMIN_BACKUP_RESTORE',
+      'ADMIN_LOG_EXPORT',
+      'ADMIN_DATA_EXPORT',
+      'ADMIN_USER_CREATE',
+      'ADMIN_USER_UPDATE',
+      'ADMIN_PRODUCT_CREATE',
+      'ADMIN_PRODUCT_UPDATE',
+      'ADMIN_PAYMENT_PROCESS',
+      'ADMIN_PAYMENT_REFUND',
+      'ADMIN_REGISTRATION_APPROVE',
+      'ADMIN_REGISTRATION_REJECT',
+      'ADMIN_SYSTEM_MAINTENANCE',
+      'ADMIN_SECURITY_ALERT',
+      'ADMIN_PERMISSION_CHANGE',
+      'ADMIN_ROLE_CHANGE'
+    ]
   },
-
-  // Recurso afetado
   resource: {
     type: String,
     required: true,
     enum: [
-        'user', 'product', 'freight', 'payment',
-        'tax_data', 'personal_info', 'financial_data',
-        'admin_panel', 'audit_log'
-      ],
-      index: true
-    },
-    
-    // ID do recurso afetado
+      'admin_dashboard',
+      'admin_users',
+      'admin_products',
+      'admin_payments',
+      'admin_registrations',
+      'admin_activity',
+      'admin_settings',
+      'admin_backup',
+      'admin_logs',
+      'admin_security',
+      'admin_permissions',
+      'admin_roles',
+      'system_maintenance'
+    ]
+  },
   resourceId: {
-    type: mongoose.Schema.Types.ObjectId,
-      default: null,
-    index: true
-  },
-
-    // Dados antes da ação (criptografado)
-    beforeData: {
-      type: String,
-      default: null
-    },
-    
-    // Dados após a ação (criptografado)
-    afterData: {
-      type: String,
-      default: null
-    },
-    
-    // Hash de integridade
-    integrityHash: {
     type: String,
-      required: true
+    default: null
   },
-
-    // Informações da sessão
-    sessionInfo: {
-      ip: {
+  details: {
     type: String,
-        required: true
-      },
-      userAgent: String,
-      country: String,
-      city: String,
-      isp: String
+    required: true
   },
-
-  // Metadados da ação
   metadata: {
-      endpoint: String,
-      method: String,
-      statusCode: Number,
-      responseTime: Number,
-      dataSize: Number,
-      encryptionUsed: {
-        type: Boolean,
-        default: false
-      },
-      fieldsEncrypted: [String],
-      fieldsDecrypted: [String]
-    },
-    
-    // Status da ação
-    status: {
-    type: String,
-      enum: ['success', 'failed', 'partial'],
-      default: 'success',
-    index: true
+    type: mongoose.Schema.Types.Mixed,
+    default: {}
   },
-
-    // Mensagem de erro (se houver)
-    errorMessage: {
+  ip: {
     type: String,
-      default: null
-    },
-    
-    // Nível de sensibilidade
-    sensitivityLevel: {
-      type: String,
-      enum: ['low', 'medium', 'high', 'critical'],
-      default: 'medium',
-      index: true
-    },
-    
-    // Flag para dados PII
-    containsPII: {
-    type: Boolean,
-    default: false,
-    index: true
+    required: true
   },
-
-    // Retenção de dados
-    retentionPeriod: {
-      type: Number,
-      default: 2555 // 7 anos em dias
-    },
-    
-    // Data de expiração
-  expiresAt: {
+  userAgent: {
+    type: String,
+    required: true
+  },
+  timestamp: {
     type: Date,
-      default: function() {
-        return new Date(Date.now() + this.retentionPeriod * 24 * 60 * 60 * 1000);
-      },
-    index: { expireAfterSeconds: 0 }
-    }
+    default: Date.now
   },
-  {
-    timestamps: true,
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true }
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
-);
+}, {
+  timestamps: true
+});
 
-// Índices compostos para consultas eficientes
+// Índices para performance
 auditLogSchema.index({ userId: 1, createdAt: -1 });
-auditLogSchema.index({ action: 1, resource: 1, createdAt: -1 });
-auditLogSchema.index({ containsPII: 1, sensitivityLevel: 1, createdAt: -1 });
-auditLogSchema.index({ status: 1, createdAt: -1 });
+auditLogSchema.index({ action: 1, createdAt: -1 });
+auditLogSchema.index({ resource: 1, createdAt: -1 });
+auditLogSchema.index({ createdAt: -1 });
+auditLogSchema.index({ ip: 1, createdAt: -1 });
 
-// Virtual para verificar se o log está próximo do vencimento
-auditLogSchema.virtual('isExpiringSoon').get(function() {
-  const daysUntilExpiry = Math.ceil((this.expiresAt - new Date()) / (1000 * 60 * 60 * 24));
-  return daysUntilExpiry <= 30;
-});
-
-// Virtual para obter dados descriptografados (apenas para administradores)
-auditLogSchema.virtual('decryptedBeforeData').get(function() {
-  // Esta virtual só deve ser usada por administradores autorizados
-  return this.beforeData;
-});
-
-auditLogSchema.virtual('decryptedAfterData').get(function() {
-  // Esta virtual só deve ser usada por administradores autorizados
-  return this.afterData;
-});
-
-// Métodos de instância
-auditLogSchema.methods.encryptData = function(data) {
-  // Implementar criptografia usando o middleware PII
-  return data;
-};
-
-auditLogSchema.methods.decryptData = function(encryptedData) {
-  // Implementar descriptografia usando o middleware PII
-  return encryptedData;
-};
-
-auditLogSchema.methods.verifyIntegrity = function() {
-  // Verificar integridade dos dados usando hash
-  return true;
-};
-
-// Métodos estáticos
-auditLogSchema.statics.findByUser = function(userId, limit = 100) {
-  return this.find({ userId })
-    .sort({ createdAt: -1 })
-    .limit(limit);
-};
-
-auditLogSchema.statics.findByAction = function(action, limit = 100) {
-  return this.find({ action })
-    .sort({ createdAt: -1 })
-    .limit(limit);
-};
-
-auditLogSchema.statics.findPIIAccess = function(userId = null, limit = 100) {
-  const query = { containsPII: true };
-  if (userId) {
-    query.userId = userId;
-  }
-
-  return this.find(query)
-    .sort({ createdAt: -1 })
-    .limit(limit);
-};
-
-auditLogSchema.statics.findBySensitivityLevel = function(level, limit = 100) {
-  return this.find({ sensitivityLevel: level })
-    .sort({ createdAt: -1 })
-    .limit(limit);
-};
-
-auditLogSchema.statics.getAuditStats = function(startDate, endDate) {
-  return this.aggregate([
-    {
-      $match: {
-        createdAt: {
-          $gte: startDate,
-          $lte: endDate
-        }
-      }
-    },
-    {
-      $group: {
-        _id: {
-          action: '$action',
-          resource: '$resource',
-          status: '$status'
-        },
-        count: { $sum: 1 },
-        piiAccess: {
-          $sum: { $cond: ['$containsPII', 1, 0] }
-        },
-        avgResponseTime: { $avg: '$metadata.responseTime' }
-      }
-    },
-    {
-      $sort: { count: -1 }
-    }
-  ]);
-};
-
-auditLogSchema.statics.findExpiringLogs = function() {
-  const thirtyDaysFromNow = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-  
-  return this.find({
-    expiresAt: {
-      $lte: thirtyDaysFromNow,
-      $gte: new Date()
-    }
-  }).sort({ expiresAt: 1 });
-};
-
-// Middleware pre-save para gerar hash de integridade
-auditLogSchema.pre('save', function(next) {
-  if (this.isNew) {
-    // Gerar hash de integridade
-    const crypto = require('crypto');
-    const dataToHash = JSON.stringify({
-      userId: this.userId,
-      action: this.action,
-      resource: this.resource,
-      resourceId: this.resourceId,
-      timestamp: this.createdAt || new Date()
+// Método estático para registrar ações
+auditLogSchema.statics.logAction = async function(actionData) {
+  try {
+    const log = new this({
+      userId: actionData.userId,
+      userEmail: actionData.userEmail,
+      action: actionData.action,
+      resource: actionData.resource,
+      resourceId: actionData.resourceId,
+      details: actionData.details,
+      metadata: actionData.metadata || {},
+      ip: actionData.ip,
+      userAgent: actionData.userAgent,
+      timestamp: new Date()
     });
-    
-    this.integrityHash = crypto.createHash('sha256')
-      .update(dataToHash)
-      .digest('hex');
-  }
-  
-  next();
-});
 
-export default mongoose.model('AuditLog', auditLogSchema);
+    await log.save();
+    return log;
+  } catch (error) {
+    console.error('Erro ao registrar log de auditoria:', error);
+    throw error;
+  }
+};
+
+// Método para buscar logs com filtros
+auditLogSchema.statics.getLogs = async function(filters = {}) {
+  try {
+    const {
+      userId,
+      action,
+      resource,
+      startDate,
+      endDate,
+      page = 1,
+      limit = 50,
+      sortBy = 'createdAt',
+      sortOrder = 'desc'
+    } = filters;
+
+    const query = {};
+    
+    if (userId) query.userId = userId;
+    if (action) query.action = action;
+    if (resource) query.resource = resource;
+    if (startDate || endDate) {
+      query.createdAt = {};
+      if (startDate) query.createdAt.$gte = new Date(startDate);
+      if (endDate) query.createdAt.$lte = new Date(endDate);
+    }
+
+    const skip = (page - 1) * limit;
+    const sort = { [sortBy]: sortOrder === 'desc' ? -1 : 1 };
+
+    const [logs, total] = await Promise.all([
+      this.find(query)
+        .populate('userId', 'name email')
+        .sort(sort)
+        .skip(skip)
+        .limit(parseInt(limit)),
+      this.countDocuments(query)
+    ]);
+
+    return {
+      logs,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    };
+  } catch (error) {
+    console.error('Erro ao buscar logs:', error);
+    throw error;
+  }
+};
+
+// Método para estatísticas de auditoria
+auditLogSchema.statics.getAuditStats = async function(period = '7d') {
+  try {
+    const now = new Date();
+    let startDate;
+
+    switch (period) {
+      case '1d':
+        startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        break;
+      case '7d':
+        startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        break;
+      case '30d':
+        startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        break;
+      case '90d':
+        startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+        break;
+      default:
+        startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    }
+
+    const [
+      totalActions,
+      actionsByType,
+      actionsByUser,
+      actionsByResource,
+      recentActions
+    ] = await Promise.all([
+      this.countDocuments({ createdAt: { $gte: startDate } }),
+      this.aggregate([
+        { $match: { createdAt: { $gte: startDate } } },
+        { $group: { _id: '$action', count: { $sum: 1 } } },
+        { $sort: { count: -1 } }
+      ]),
+      this.aggregate([
+        { $match: { createdAt: { $gte: startDate } } },
+        { $group: { _id: '$userId', count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 10 }
+      ]),
+      this.aggregate([
+        { $match: { createdAt: { $gte: startDate } } },
+        { $group: { _id: '$resource', count: { $sum: 1 } } },
+        { $sort: { count: -1 } }
+      ]),
+      this.find({ createdAt: { $gte: startDate } })
+        .populate('userId', 'name email')
+        .sort({ createdAt: -1 })
+        .limit(10)
+    ]);
+
+    return {
+      period,
+      totalActions,
+      actionsByType,
+      actionsByUser,
+      actionsByResource,
+      recentActions
+    };
+  } catch (error) {
+    console.error('Erro ao buscar estatísticas de auditoria:', error);
+    throw error;
+  }
+};
+
+// Método para limpeza de logs antigos
+auditLogSchema.statics.cleanupOldLogs = async function(retentionDays = 365) {
+  try {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - retentionDays);
+
+    const result = await this.deleteMany({
+      createdAt: { $lt: cutoffDate }
+    });
+
+    console.log(`Logs de auditoria limpos: ${result.deletedCount} registros removidos`);
+    return result.deletedCount;
+  } catch (error) {
+    console.error('Erro ao limpar logs antigos:', error);
+    throw error;
+  }
+};
+
+const AuditLog = mongoose.model('AuditLog', auditLogSchema);
+
+export default AuditLog;

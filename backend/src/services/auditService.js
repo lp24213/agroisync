@@ -1,408 +1,655 @@
-import AuditLog from '../models/AuditLog.js';
-import crypto from 'crypto';
+// Sistema de Logs e Auditoria Completo - AGROISYNC
+// Logging centralizado, auditoria de segurança e monitoramento de atividades
 
-class AuditService {
+import mongoose from 'mongoose';
+import winston from 'winston';
+import { createWriteStream } from 'fs';
+import { join } from 'path';
+import { AuditLog } from '../models/AuditLog.js';
+import { SecurityLog } from '../models/SecurityLog.js';
+
+// ===== CONFIGURAÇÃO DE LOGS =====
+
+const logConfig = {
+  level: process.env.LOG_LEVEL || 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.errors({ stack: true }),
+    winston.format.json()
+  ),
+  transports: [
+    // Console transport
+    new winston.transports.Console({
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.simple()
+      )
+    }),
+    
+    // File transports
+    new winston.transports.File({
+      filename: 'logs/error.log',
+      level: 'error',
+      maxsize: 5242880, // 5MB
+      maxFiles: 5
+    }),
+    
+    new winston.transports.File({
+      filename: 'logs/combined.log',
+      maxsize: 5242880, // 5MB
+      maxFiles: 10
+    }),
+    
+    new winston.transports.File({
+      filename: 'logs/security.log',
+      level: 'warn',
+      maxsize: 5242880, // 5MB
+      maxFiles: 20
+    })
+  ]
+};
+
+// Criar logger principal
+const logger = winston.createLogger(logConfig);
+
+// ===== SISTEMA DE AUDITORIA =====
+
+class AuditSystem {
   constructor() {
-    this.encryptionKey = process.env.AUDIT_ENCRYPTION_KEY || 'default-audit-key-change-in-production';
-    this.algorithm = 'aes-256-gcm';
+    this.logger = logger;
+    this.securityLogger = winston.createLogger({
+      ...logConfig,
+      transports: [
+        new winston.transports.File({
+          filename: 'logs/security-audit.log',
+          maxsize: 5242880,
+          maxFiles: 30
+        })
+      ]
+    });
   }
 
-  /**
-   * Criptografa dados sensíveis para armazenamento
-   */
-  encryptData(data) {
-    if (!data || typeof data !== 'object') {
-      return data;
-    }
-
+  // Log de atividade do usuário
+  async logUserActivity(userId, action, resource, details = {}) {
     try {
-      const iv = crypto.randomBytes(16);
-      const cipher = crypto.createCipher(this.algorithm, this.encryptionKey);
-      cipher.setAAD(Buffer.from('audit-data', 'utf8'));
-      
-      let encrypted = cipher.update(JSON.stringify(data), 'utf8', 'hex');
-      encrypted += cipher.final('hex');
-      
-      const authTag = cipher.getAuthTag();
-      
-      return {
-        encrypted,
-        iv: iv.toString('hex'),
-        authTag: authTag.toString('hex')
-      };
-    } catch (error) {
-      console.error('Erro ao criptografar dados de auditoria:', error);
-      return data;
-    }
-  }
-
-  /**
-   * Descriptografa dados sensíveis
-   */
-  decryptData(encryptedData) {
-    if (!encryptedData || typeof encryptedData !== 'object') {
-      return encryptedData;
-    }
-
-    try {
-      const decipher = crypto.createDecipher(this.algorithm, this.encryptionKey);
-      decipher.setAAD(Buffer.from('audit-data', 'utf8'));
-      decipher.setAuthTag(Buffer.from(encryptedData.authTag, 'hex'));
-      
-      let decrypted = decipher.update(encryptedData.encrypted, 'hex', 'utf8');
-      decrypted += decipher.final('utf8');
-      
-      return JSON.parse(decrypted);
-    } catch (error) {
-      console.error('Erro ao descriptografar dados de auditoria:', error);
-      return encryptedData;
-    }
-  }
-
-  /**
-   * Registra uma ação de auditoria
-   */
-  async logAction({
-    userId,
-    action,
-    resource,
-    resourceId = null,
-    beforeData = null,
-    afterData = null,
-    sessionInfo = {},
-    metadata = {},
-    status = 'success',
-    errorMessage = null,
-    sensitivityLevel = 'medium',
-    containsPII = false
-  }) {
-    try {
-      // Criptografar dados sensíveis se necessário
-      let encryptedBeforeData = null;
-      let encryptedAfterData = null;
-
-      if (beforeData && containsPII) {
-        encryptedBeforeData = this.encryptData(beforeData);
-      }
-
-      if (afterData && containsPII) {
-        encryptedAfterData = this.encryptData(afterData);
-      }
-
-      // Criar log de auditoria
-      const auditLog = new AuditLog({
+      const auditEntry = {
         userId,
+        userEmail: details.userEmail || 'unknown',
         action,
         resource,
-        resourceId,
-        beforeData: encryptedBeforeData,
-        afterData: encryptedAfterData,
-        sessionInfo: {
-          ip: sessionInfo.ip || 'unknown',
-          userAgent: sessionInfo.userAgent || 'unknown',
-          country: sessionInfo.country || 'unknown',
-          city: sessionInfo.city || 'unknown',
-          isp: sessionInfo.isp || 'unknown'
-        },
+        resourceId: details.resourceId || null,
+        details: JSON.stringify(details),
+        ip: details.ip || 'unknown',
+        userAgent: details.userAgent || 'unknown',
+        timestamp: new Date(),
         metadata: {
-          endpoint: metadata.endpoint || 'unknown',
-          method: metadata.method || 'unknown',
-          statusCode: metadata.statusCode || 200,
-          responseTime: metadata.responseTime || 0,
-          dataSize: metadata.dataSize || 0,
-          encryptionUsed: containsPII,
-          fieldsEncrypted: metadata.fieldsEncrypted || [],
-          fieldsDecrypted: metadata.fieldsDecrypted || []
-        },
-        status,
-        errorMessage,
-        sensitivityLevel,
-        containsPII
-      });
-
-      await auditLog.save();
-      
-      console.log(`Audit log created: ${action} on ${resource} by user ${userId}`);
-      
-      return auditLog;
-    } catch (error) {
-      console.error('Erro ao criar log de auditoria:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Registra acesso a dados PII
-   */
-  async logPIIAccess({
-    userId,
-    resource,
-    resourceId,
-    fieldsAccessed,
-    sessionInfo,
-    metadata = {}
-  }) {
-    return this.logAction({
-      userId,
-      action: 'pii_access',
-      resource,
-      resourceId,
-      afterData: { fieldsAccessed },
-      sessionInfo,
-      metadata: {
-        ...metadata,
-        fieldsDecrypted: fieldsAccessed
-      },
-      sensitivityLevel: 'high',
-      containsPII: true
-    });
-  }
-
-  /**
-   * Registra criptografia de dados PII
-   */
-  async logPIIEncryption({
-    userId,
-    resource,
-    resourceId,
-    fieldsEncrypted,
-    sessionInfo,
-    metadata = {}
-  }) {
-    return this.logAction({
-      userId,
-      action: 'pii_encrypt',
-      resource,
-      resourceId,
-      afterData: { fieldsEncrypted },
-      sessionInfo,
-      metadata: {
-        ...metadata,
-        fieldsEncrypted
-      },
-      sensitivityLevel: 'high',
-      containsPII: true
-    });
-  }
-
-  /**
-   * Registra descriptografia de dados PII
-   */
-  async logPIIDecryption({
-    userId,
-    resource,
-    resourceId,
-    fieldsDecrypted,
-    sessionInfo,
-    metadata = {}
-  }) {
-    return this.logAction({
-      userId,
-      action: 'pii_decrypt',
-      resource,
-      resourceId,
-      beforeData: { fieldsDecrypted },
-      sessionInfo,
-      metadata: {
-        ...metadata,
-        fieldsDecrypted
-      },
-      sensitivityLevel: 'critical',
-      containsPII: true
-    });
-  }
-
-  /**
-   * Registra login de usuário
-   */
-  async logLogin({
-    userId,
-    sessionInfo,
-    metadata = {}
-  }) {
-    return this.logAction({
-      userId,
-      action: 'login',
-      resource: 'user',
-      resourceId: userId,
-      sessionInfo,
-      metadata,
-      sensitivityLevel: 'medium',
-      containsPII: false
-    });
-  }
-
-  /**
-   * Registra logout de usuário
-   */
-  async logLogout({
-    userId,
-    sessionInfo,
-    metadata = {}
-  }) {
-    return this.logAction({
-      userId,
-      action: 'logout',
-      resource: 'user',
-      resourceId: userId,
-      sessionInfo,
-      metadata,
-      sensitivityLevel: 'low',
-      containsPII: false
-    });
-  }
-
-  /**
-   * Registra mudança de senha
-   */
-  async logPasswordChange({
-    userId,
-    sessionInfo,
-    metadata = {}
-  }) {
-    return this.logAction({
-      userId,
-      action: 'password_change',
-      resource: 'user',
-      resourceId: userId,
-      sessionInfo,
-      metadata,
-      sensitivityLevel: 'high',
-      containsPII: false
-    });
-  }
-
-  /**
-   * Registra acesso ao painel administrativo
-   */
-  async logAdminAccess({
-    userId,
-    resource,
-    resourceId = null,
-    sessionInfo,
-    metadata = {}
-  }) {
-    return this.logAction({
-      userId,
-      action: 'admin_access',
-      resource,
-      resourceId,
-      sessionInfo,
-      metadata,
-      sensitivityLevel: 'high',
-      containsPII: false
-    });
-  }
-
-  /**
-   * Obtém logs de auditoria por usuário
-   */
-  async getUserAuditLogs(userId, limit = 100) {
-    return AuditLog.findByUser(userId, limit);
-  }
-
-  /**
-   * Obtém logs de acesso a dados PII
-   */
-  async getPIIAccessLogs(userId = null, limit = 100) {
-    return AuditLog.findPIIAccess(userId, limit);
-  }
-
-  /**
-   * Obtém estatísticas de auditoria
-   */
-  async getAuditStats(startDate, endDate) {
-    return AuditLog.getAuditStats(startDate, endDate);
-  }
-
-  /**
-   * Obtém logs próximos do vencimento
-   */
-  async getExpiringLogs() {
-    return AuditLog.findExpiringLogs();
-  }
-
-  /**
-   * Limpa logs expirados
-   */
-  async cleanExpiredLogs() {
-    try {
-      const result = await AuditLog.deleteMany({
-        expiresAt: { $lt: new Date() }
-      });
-      
-      console.log(`Cleaned ${result.deletedCount} expired audit logs`);
-      return result.deletedCount;
-    } catch (error) {
-      console.error('Erro ao limpar logs expirados:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Verifica integridade dos logs
-   */
-  async verifyLogIntegrity(logId) {
-    try {
-      const log = await AuditLog.findById(logId);
-      if (!log) {
-        throw new Error('Log não encontrado');
-      }
-
-      return log.verifyIntegrity();
-    } catch (error) {
-      console.error('Erro ao verificar integridade do log:', error);
-      return false;
-    }
-  }
-
-  /**
-   * Exporta logs de auditoria para análise
-   */
-  async exportAuditLogs({
-    startDate,
-    endDate,
-    userId = null,
-    action = null,
-    resource = null,
-    containsPII = null
-  }) {
-    try {
-      const query = {
-        createdAt: {
-          $gte: startDate,
-          $lte: endDate
+          sessionId: details.sessionId,
+          requestId: details.requestId,
+          duration: details.duration
         }
       };
 
-      if (userId) query.userId = userId;
-      if (action) query.action = action;
-      if (resource) query.resource = resource;
-      if (containsPII !== null) query.containsPII = containsPII;
+      // Salvar no banco de dados
+      await AuditLog.create(auditEntry);
 
-      const logs = await AuditLog.find(query)
-        .sort({ createdAt: -1 })
-        .limit(10000); // Limite para evitar exportações muito grandes
+      // Log no arquivo
+      this.logger.info('User Activity', auditEntry);
 
-      return logs.map(log => ({
-        id: log._id,
-        userId: log.userId,
-        action: log.action,
-        resource: log.resource,
-        resourceId: log.resourceId,
-        status: log.status,
-        sensitivityLevel: log.sensitivityLevel,
-        containsPII: log.containsPII,
-        createdAt: log.createdAt,
-        sessionInfo: log.sessionInfo,
-        metadata: log.metadata
-        // Não incluir dados criptografados na exportação
-      }));
+      return auditEntry;
     } catch (error) {
-      console.error('Erro ao exportar logs de auditoria:', error);
+      this.logger.error('Error logging user activity:', error);
       throw error;
     }
   }
+
+  // Log de segurança
+  async logSecurityEvent(eventType, severity, description, details = {}) {
+    try {
+      const securityEntry = {
+        eventType,
+        severity,
+        description,
+        userId: details.userId || null,
+        ipAddress: details.ip || 'unknown',
+        userAgent: details.userAgent || 'unknown',
+        requestMethod: details.method || null,
+        requestUrl: details.url || null,
+        requestHeaders: details.headers || {},
+        requestBody: details.body ? JSON.stringify(details.body).substring(0, 1000) : null,
+        details: JSON.stringify(details),
+        timestamp: new Date(),
+        threatLevel: details.threatLevel || 'low'
+      };
+
+      // Salvar no banco de dados
+      await SecurityLog.create(securityEntry);
+
+      // Log no arquivo de segurança
+      this.securityLogger.warn('Security Event', securityEntry);
+
+      // Log no console se for crítico
+      if (severity === 'critical') {
+        console.error('🚨 CRITICAL SECURITY EVENT:', securityEntry);
+      }
+
+      return securityEntry;
+    } catch (error) {
+      this.logger.error('Error logging security event:', error);
+      throw error;
+    }
+  }
+
+  // Log de performance
+  async logPerformance(operation, duration, details = {}) {
+    try {
+      const perfEntry = {
+        operation,
+        duration,
+        timestamp: new Date(),
+        details: JSON.stringify(details),
+        metadata: {
+          memoryUsage: process.memoryUsage(),
+          cpuUsage: process.cpuUsage(),
+          uptime: process.uptime()
+        }
+      };
+
+      // Log no arquivo
+      this.logger.info('Performance', perfEntry);
+
+      // Alertar se performance estiver ruim
+      if (duration > 5000) { // 5 segundos
+        this.logger.warn('Slow Operation', perfEntry);
+      }
+
+      return perfEntry;
+    } catch (error) {
+      this.logger.error('Error logging performance:', error);
+      throw error;
+    }
+  }
+
+  // Log de erro
+  async logError(error, context = {}) {
+    try {
+      const errorEntry = {
+        message: error.message,
+        stack: error.stack,
+        timestamp: new Date(),
+        context: JSON.stringify(context),
+        metadata: {
+          url: context.url,
+          method: context.method,
+          userId: context.userId,
+          ip: context.ip,
+          userAgent: context.userAgent
+        }
+      };
+
+      // Log no arquivo de erro
+      this.logger.error('Application Error', errorEntry);
+
+      // Salvar no banco se for crítico
+      if (context.severity === 'critical') {
+        await SecurityLog.create({
+          eventType: 'system_error',
+          severity: 'critical',
+          description: `Critical error: ${error.message}`,
+          details: JSON.stringify(errorEntry),
+          timestamp: new Date()
+        });
+      }
+
+      return errorEntry;
+    } catch (logError) {
+      console.error('Error logging error:', logError);
+      throw logError;
+    }
+  }
+
+  // Log de transação financeira
+  async logFinancialTransaction(transactionId, type, amount, details = {}) {
+    try {
+      const transactionEntry = {
+        transactionId,
+        type,
+        amount,
+        currency: details.currency || 'BRL',
+        userId: details.userId,
+        userEmail: details.userEmail,
+        paymentMethod: details.paymentMethod,
+        status: details.status,
+        timestamp: new Date(),
+        details: JSON.stringify(details),
+        ip: details.ip,
+        userAgent: details.userAgent
+      };
+
+      // Salvar no banco
+      await AuditLog.create({
+        userId: details.userId,
+        userEmail: details.userEmail,
+        action: 'FINANCIAL_TRANSACTION',
+        resource: 'payment',
+        resourceId: transactionId,
+        details: JSON.stringify(transactionEntry),
+        ip: details.ip,
+        userAgent: details.userAgent,
+        timestamp: new Date()
+      });
+
+      // Log no arquivo
+      this.logger.info('Financial Transaction', transactionEntry);
+
+      return transactionEntry;
+    } catch (error) {
+      this.logger.error('Error logging financial transaction:', error);
+      throw error;
+    }
+  }
+
+  // Log de acesso a dados sensíveis
+  async logDataAccess(userId, dataType, action, details = {}) {
+    try {
+      const accessEntry = {
+        userId,
+        userEmail: details.userEmail,
+        dataType,
+        action,
+        timestamp: new Date(),
+        details: JSON.stringify(details),
+        ip: details.ip,
+        userAgent: details.userAgent,
+        reason: details.reason || 'Business need'
+      };
+
+      // Salvar no banco
+      await AuditLog.create({
+        userId,
+        userEmail: details.userEmail,
+        action: 'DATA_ACCESS',
+        resource: dataType,
+        resourceId: details.resourceId,
+        details: JSON.stringify(accessEntry),
+        ip: details.ip,
+        userAgent: details.userAgent,
+        timestamp: new Date()
+      });
+
+      // Log no arquivo
+      this.logger.info('Data Access', accessEntry);
+
+      return accessEntry;
+    } catch (error) {
+      this.logger.error('Error logging data access:', error);
+      throw error;
+    }
+  }
+
+  // Log de mudança de configuração
+  async logConfigurationChange(userId, configKey, oldValue, newValue, details = {}) {
+    try {
+      const configEntry = {
+        userId,
+        userEmail: details.userEmail,
+        configKey,
+        oldValue: typeof oldValue === 'object' ? JSON.stringify(oldValue) : oldValue,
+        newValue: typeof newValue === 'object' ? JSON.stringify(newValue) : newValue,
+        timestamp: new Date(),
+        details: JSON.stringify(details),
+        ip: details.ip,
+        userAgent: details.userAgent
+      };
+
+      // Salvar no banco
+      await AuditLog.create({
+        userId,
+        userEmail: details.userEmail,
+        action: 'CONFIGURATION_CHANGE',
+        resource: 'system_config',
+        resourceId: configKey,
+        details: JSON.stringify(configEntry),
+        ip: details.ip,
+        userAgent: details.userAgent,
+        timestamp: new Date()
+      });
+
+      // Log no arquivo
+      this.logger.info('Configuration Change', configEntry);
+
+      return configEntry;
+    } catch (error) {
+      this.logger.error('Error logging configuration change:', error);
+      throw error;
+    }
+  }
+
+  // Obter logs de auditoria
+  async getAuditLogs(filters = {}) {
+    try {
+      const query = {};
+      
+      if (filters.userId) {
+        query.userId = filters.userId;
+      }
+      
+      if (filters.action) {
+        query.action = filters.action;
+      }
+      
+      if (filters.resource) {
+        query.resource = filters.resource;
+      }
+      
+      if (filters.startDate && filters.endDate) {
+        query.timestamp = {
+          $gte: new Date(filters.startDate),
+          $lte: new Date(filters.endDate)
+        };
+      }
+      
+      const logs = await AuditLog.find(query)
+        .sort({ timestamp: -1 })
+        .limit(filters.limit || 100)
+        .skip(filters.skip || 0);
+      
+      return logs;
+    } catch (error) {
+      this.logger.error('Error getting audit logs:', error);
+      throw error;
+    }
+  }
+
+  // Obter logs de segurança
+  async getSecurityLogs(filters = {}) {
+    try {
+      const query = {};
+      
+      if (filters.eventType) {
+        query.eventType = filters.eventType;
+      }
+      
+      if (filters.severity) {
+        query.severity = filters.severity;
+      }
+      
+      if (filters.userId) {
+        query.userId = filters.userId;
+      }
+      
+      if (filters.startDate && filters.endDate) {
+        query.timestamp = {
+          $gte: new Date(filters.startDate),
+          $lte: new Date(filters.endDate)
+        };
+      }
+      
+      const logs = await SecurityLog.find(query)
+        .sort({ timestamp: -1 })
+        .limit(filters.limit || 100)
+        .skip(filters.skip || 0);
+      
+      return logs;
+    } catch (error) {
+      this.logger.error('Error getting security logs:', error);
+      throw error;
+    }
+  }
+
+  // Gerar relatório de auditoria
+  async generateAuditReport(startDate, endDate, filters = {}) {
+    try {
+      const query = {
+        timestamp: {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate)
+        }
+      };
+      
+      if (filters.userId) {
+        query.userId = filters.userId;
+      }
+      
+      if (filters.action) {
+        query.action = filters.action;
+      }
+      
+      // Agregação para estatísticas
+      const stats = await AuditLog.aggregate([
+        { $match: query },
+        {
+          $group: {
+            _id: '$action',
+            count: { $sum: 1 },
+            uniqueUsers: { $addToSet: '$userId' }
+          }
+        },
+        {
+          $project: {
+            action: '$_id',
+            count: 1,
+            uniqueUsers: { $size: '$uniqueUsers' }
+          }
+        }
+      ]);
+      
+      // Logs detalhados
+      const logs = await AuditLog.find(query)
+        .sort({ timestamp: -1 })
+        .limit(1000);
+      
+      return {
+        period: { startDate, endDate },
+        statistics: stats,
+        logs: logs,
+        totalLogs: logs.length,
+        generatedAt: new Date()
+      };
+    } catch (error) {
+      this.logger.error('Error generating audit report:', error);
+      throw error;
+    }
+  }
+
+  // Limpar logs antigos
+  async cleanupOldLogs(retentionDays = 90) {
+    try {
+      const cutoffDate = new Date();
+      cutoffDate.setDate(cutoffDate.getDate() - retentionDays);
+      
+      // Limpar logs de auditoria antigos
+      const auditResult = await AuditLog.deleteMany({
+        timestamp: { $lt: cutoffDate }
+      });
+      
+      // Limpar logs de segurança antigos
+      const securityResult = await SecurityLog.deleteMany({
+        timestamp: { $lt: cutoffDate }
+      });
+      
+      this.logger.info('Log cleanup completed', {
+        auditLogsDeleted: auditResult.deletedCount,
+        securityLogsDeleted: securityResult.deletedCount,
+        cutoffDate
+      });
+      
+      return {
+        auditLogsDeleted: auditResult.deletedCount,
+        securityLogsDeleted: securityResult.deletedCount
+      };
+    } catch (error) {
+      this.logger.error('Error cleaning up old logs:', error);
+      throw error;
+    }
+  }
+
+  // Exportar logs
+  async exportLogs(startDate, endDate, format = 'json') {
+    try {
+      const query = {
+        timestamp: {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate)
+        }
+      };
+      
+      const auditLogs = await AuditLog.find(query).sort({ timestamp: -1 });
+      const securityLogs = await SecurityLog.find(query).sort({ timestamp: -1 });
+      
+      const exportData = {
+        auditLogs,
+        securityLogs,
+        exportedAt: new Date(),
+        period: { startDate, endDate }
+      };
+      
+      if (format === 'csv') {
+        // Implementar exportação CSV
+        return this.exportToCSV(exportData);
+      }
+      
+      return exportData;
+    } catch (error) {
+      this.logger.error('Error exporting logs:', error);
+      throw error;
+    }
+  }
+
+  // Exportar para CSV
+  exportToCSV(data) {
+    // Implementar exportação CSV
+    const csv = this.convertToCSV(data);
+    return csv;
+  }
+
+  // Converter para CSV
+  convertToCSV(data) {
+    // Implementar conversão para CSV
+    return JSON.stringify(data, null, 2);
+  }
 }
 
-export default new AuditService();
+// ===== MIDDLEWARE DE LOGGING =====
+
+export const loggingMiddleware = (req, res, next) => {
+  const startTime = Date.now();
+  const requestId = Math.random().toString(36).substr(2, 9);
+  
+  // Adicionar request ID ao request
+  req.requestId = requestId;
+  
+  // Log da requisição
+  logger.info('Request started', {
+    requestId,
+    method: req.method,
+    url: req.originalUrl,
+    ip: req.ip,
+    userAgent: req.get('User-Agent'),
+    userId: req.user?.id,
+    timestamp: new Date()
+  });
+  
+  // Interceptar resposta
+  const originalSend = res.send;
+  res.send = function(data) {
+    const duration = Date.now() - startTime;
+    
+    // Log da resposta
+    logger.info('Request completed', {
+      requestId,
+      method: req.method,
+      url: req.originalUrl,
+      statusCode: res.statusCode,
+      duration,
+      responseSize: data ? data.length : 0,
+      userId: req.user?.id
+    });
+    
+    return originalSend.call(this, data);
+  };
+  
+  next();
+};
+
+// ===== MIDDLEWARE DE AUDITORIA =====
+
+export const auditMiddleware = (action, resource) => {
+  return async (req, res, next) => {
+    try {
+      const auditSystem = new AuditSystem();
+      
+      // Log da ação
+      await auditSystem.logUserActivity(
+        req.user?.id,
+        action,
+        resource,
+        {
+          userEmail: req.user?.email,
+          ip: req.ip,
+          userAgent: req.get('User-Agent'),
+          method: req.method,
+          url: req.originalUrl,
+          requestId: req.requestId,
+          body: req.body,
+          params: req.params,
+          query: req.query
+        }
+      );
+      
+      next();
+    } catch (error) {
+      logger.error('Error in audit middleware:', error);
+      next();
+    }
+  };
+};
+
+// ===== MIDDLEWARE DE SEGURANÇA =====
+
+export const securityLoggingMiddleware = (req, res, next) => {
+  const auditSystem = new AuditSystem();
+  
+  // Detectar atividade suspeita
+  const suspiciousPatterns = [
+    /union\s+select/i,
+    /<script/i,
+    /javascript:/i,
+    /\.\.\//i,
+    /eval\s*\(/i
+  ];
+  
+  const requestData = JSON.stringify({
+    url: req.originalUrl,
+    body: req.body,
+    query: req.query,
+    headers: req.headers
+  });
+  
+  const isSuspicious = suspiciousPatterns.some(pattern => pattern.test(requestData));
+  
+  if (isSuspicious) {
+    auditSystem.logSecurityEvent(
+      'suspicious_activity',
+      'high',
+      'Suspicious pattern detected in request',
+      {
+        ip: req.ip,
+        userAgent: req.get('User-Agent'),
+        method: req.method,
+        url: req.originalUrl,
+        body: req.body,
+        query: req.query,
+        headers: req.headers,
+        threatLevel: 'high'
+      }
+    );
+  }
+  
+  next();
+};
+
+// Instância única do sistema de auditoria
+const auditSystem = new AuditSystem();
+
+export default auditSystem;
+export { AuditSystem, loggingMiddleware, auditMiddleware, securityLoggingMiddleware };

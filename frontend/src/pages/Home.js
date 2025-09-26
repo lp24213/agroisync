@@ -12,8 +12,8 @@ import {
   BarChart3
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
-import Noticias from '../components/Noticias';
-import Ticker from '../components/Ticker';
+// import Noticias from '../components/Noticias'; // Componente removido
+// import Ticker from '../components/Ticker'; // Componente removido
 import { 
   PremiumScrollReveal, 
   PremiumFloatingCard, 
@@ -90,7 +90,10 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* Bolsa de Valores Ticker */}
-      <Ticker />
+      <div className="text-center py-8">
+        <h3 className="text-xl font-semibold text-gray-600">Ticker de Cotações em Desenvolvimento</h3>
+        <p className="text-gray-500 mt-2">Em breve teremos ticker de cotações disponível!</p>
+      </div>
       
       {/* Imagem Ultrarealista 4K - Campo de Soja */}
       <section 
@@ -373,7 +376,10 @@ const Home = () => {
       </section>
 
       {/* News Section - Discreta e elegante */}
-      <Noticias />
+      <div className="text-center py-8">
+        <h3 className="text-xl font-semibold text-gray-600">Notícias em Desenvolvimento</h3>
+        <p className="text-gray-500 mt-2">Em breve teremos notícias do agronegócio disponíveis!</p>
+      </div>
 
       {/* CTA Section - Premium */}
       <section className="py-20 bg-gradient-hero">

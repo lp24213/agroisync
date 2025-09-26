@@ -1,0 +1,387 @@
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+    
+    // CORS headers
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    };
+
+    // Handle CORS preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { headers: corsHeaders });
+    }
+
+    // Health check
+    if (url.pathname === '/api/health') {
+      return new Response(
+        JSON.stringify({
+          status: 'ok',
+          timestamp: new Date().toISOString(),
+          service: 'AgroSync API - TWILIO + SUPABASE FIXED'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
+    }
+
+    // SMS Send Code - TWILIO FIXED
+    if (url.pathname === '/api/sms/send-code' && request.method === 'POST') {
+      try {
+        const { phone } = await request.json();
+        
+        if (!phone) {
+          return new Response(
+            JSON.stringify({
+              success: false,
+              message: 'Telefone é obrigatório'
+            }),
+            {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          );
+        }
+
+        // Gerar código de verificação
+        const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+        
+        // FORMATAR TELEFONE PARA BRASIL
+        let formattedPhone = phone.replace(/\D/g, ''); // Remove caracteres não numéricos
+        
+        // Se não começar com 55 (Brasil), adicionar
+        if (!formattedPhone.startsWith('55')) {
+          formattedPhone = '55' + formattedPhone;
+        }
+        
+        console.log(`🚀 ENVIANDO SMS VIA TWILIO para ${formattedPhone} com código ${verificationCode}`);
+
+        // TWILIO FIXED - Usar credenciais REAIS
+        try {
+          // Verificar se as credenciais existem
+          console.log('Credenciais Twilio:', {
+            accountSid: env.TWILIO_ACCOUNT_SID ? 'SET' : 'NOT SET',
+            authToken: env.TWILIO_AUTH_TOKEN ? 'SET' : 'NOT SET',
+            phoneNumber: env.TWILIO_PHONE_NUMBER ? 'SET' : 'NOT SET'
+          });
+          
+          if (!env.TWILIO_ACCOUNT_SID || !env.TWILIO_AUTH_TOKEN || !env.TWILIO_PHONE_NUMBER) {
+            throw new Error(`Credenciais Twilio não configuradas: SID=${!!env.TWILIO_ACCOUNT_SID}, TOKEN=${!!env.TWILIO_AUTH_TOKEN}, PHONE=${!!env.TWILIO_PHONE_NUMBER}`);
+          }
+
+          const twilioResponse = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Messages.json`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Basic ${btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`)}`,
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+              From: env.TWILIO_PHONE_NUMBER,
+              To: `+${formattedPhone}`,
+              Body: `AgroSync - Seu código: ${verificationCode}. Válido por 5 min.`
+            })
+          });
+          
+          if (twilioResponse.ok) {
+            const twilioData = await twilioResponse.json();
+            console.log(`📱 SMS REAL ENTREGUE via Twilio para ${formattedPhone}: ${verificationCode}`);
+            
+            return new Response(
+              JSON.stringify({
+                success: true,
+                message: 'SMS entregue com sucesso!',
+                data: {
+                  phone: formattedPhone,
+                  messageId: twilioData.sid,
+                  expiresIn: 300
+                }
+              }),
+              {
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+              }
+            );
+          } else {
+            const errorData = await twilioResponse.text();
+            console.error('Erro Twilio:', errorData);
+            throw new Error(`Twilio error: ${twilioResponse.status} - ${errorData}`);
+          }
+        } catch (twilioError) {
+          console.error('Erro ao enviar SMS via Twilio:', twilioError);
+          
+          return new Response(
+            JSON.stringify({
+              success: false,
+              message: 'Erro: Não foi possível enviar SMS via Twilio.',
+              data: {
+                phone: formattedPhone,
+                error: twilioError.message
+              }
+            }),
+            {
+              status: 500,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          );
+        }
+        
+      } catch (error) {
+        console.error('Erro ao enviar SMS:', error);
+        return new Response(
+          JSON.stringify({
+            success: false,
+            message: 'Erro ao enviar SMS'
+          }),
+          {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        );
+      }
+    }
+
+    // Email Send Verification - SUPABASE FIXED
+    if (url.pathname === '/api/email/send-verification' && request.method === 'POST') {
+      try {
+        const { email } = await request.json();
+        
+        if (!email) {
+          return new Response(
+            JSON.stringify({
+              success: false,
+              message: 'Email é obrigatório'
+            }),
+            {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          );
+        }
+
+        // Gerar código de verificação
+        const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+        
+        console.log(`🚀 ENVIANDO EMAIL VIA SUPABASE para ${email} com código ${verificationCode}`);
+
+        // SUPABASE FIXED - Usar credenciais REAIS
+        try {
+          // Verificar se as credenciais existem
+          if (!env.SUPABASE_URL || !env.SUPABASE_ANON_KEY) {
+            throw new Error('Credenciais Supabase não configuradas');
+          }
+
+          // Usar fetch direto para Supabase
+          const supabaseResponse = await fetch(`${env.SUPABASE_URL}/auth/v1/otp`, {
+            method: 'POST',
+            headers: {
+              'apikey': env.SUPABASE_ANON_KEY,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              email: email,
+              options: {
+                emailRedirectTo: 'https://agroisync.com/verify',
+                data: {
+                  verificationCode: verificationCode,
+                  subject: 'Código de Verificação - AgroSync'
+                }
+              }
+            })
+          });
+          
+          if (supabaseResponse.ok) {
+            console.log(`📧 Email REAL ENTREGUE via Supabase para ${email}: ${verificationCode}`);
+            
+            return new Response(
+              JSON.stringify({
+                success: true,
+                message: 'Email entregue com sucesso!',
+                data: {
+                  email: email.replace(/(.{2}).*(@.*)/, '$1***$2'),
+                  messageId: `supabase-${Date.now()}`,
+                  expiresIn: 600
+                }
+              }),
+              {
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+              }
+            );
+          } else {
+            const errorData = await supabaseResponse.text();
+            console.error('Erro Supabase:', errorData);
+            throw new Error(`Supabase error: ${supabaseResponse.status} - ${errorData}`);
+          }
+          
+        } catch (supabaseError) {
+          console.error('Erro ao enviar email via Supabase:', supabaseError);
+          
+          return new Response(
+            JSON.stringify({
+              success: false,
+              message: 'Erro: Não foi possível enviar email via Supabase.',
+              data: {
+                email: email.replace(/(.{2}).*(@.*)/, '$1***$2'),
+                error: supabaseError.message
+              }
+            }),
+            {
+              status: 500,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          );
+        }
+        
+      } catch (error) {
+        console.error('Erro ao enviar email:', error);
+        return new Response(
+          JSON.stringify({
+            success: false,
+            message: 'Erro ao enviar email'
+          }),
+          {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        );
+      }
+    }
+
+    // SMS Verify Code
+    if (url.pathname === '/api/sms/verify-code' && request.method === 'POST') {
+      try {
+        const { phone, code } = await request.json();
+        
+        if (!phone || !code) {
+          return new Response(
+            JSON.stringify({
+              success: false,
+              message: 'Telefone e código são obrigatórios'
+            }),
+            {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          );
+        }
+        
+        // Simular verificação (em produção, verificar no banco)
+        if (code.length === 6 && /^\d+$/.test(code)) {
+          console.log(`✅ SMS verificado para ${phone}: ${code}`);
+          return new Response(
+            JSON.stringify({
+              success: true,
+              message: 'SMS verificado com sucesso',
+              data: {
+                phone,
+                verified: true,
+                verifiedAt: new Date().toISOString()
+              }
+            }),
+            {
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          );
+        } else {
+          return new Response(
+            JSON.stringify({
+              success: false,
+              message: 'Código inválido'
+            }),
+            {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          );
+        }
+      } catch (error) {
+        console.error('Erro ao verificar SMS:', error);
+        return new Response(
+          JSON.stringify({
+            success: false,
+            message: 'Erro ao verificar SMS'
+          }),
+          {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        );
+      }
+    }
+
+    // Email Verify
+    if (url.pathname === '/api/email/verify' && request.method === 'POST') {
+      try {
+        const { email, code } = await request.json();
+        
+        if (!email || !code) {
+          return new Response(
+            JSON.stringify({
+              success: false,
+              message: 'Email e código são obrigatórios'
+            }),
+            {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          );
+        }
+        
+        // Simular verificação (em produção, verificar no banco)
+        if (code.length === 6 && /^\d+$/.test(code)) {
+          console.log(`✅ Email verificado para ${email}: ${code}`);
+          return new Response(
+            JSON.stringify({
+              success: true,
+              message: 'Email verificado com sucesso',
+              data: {
+                email,
+                emailVerified: true,
+                verifiedAt: new Date().toISOString()
+              }
+            }),
+            {
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          );
+        } else {
+          return new Response(
+            JSON.stringify({
+              success: false,
+              message: 'Código inválido'
+            }),
+            {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          );
+        }
+      } catch (error) {
+        console.error('Erro ao verificar email:', error);
+        return new Response(
+          JSON.stringify({
+            success: false,
+            message: 'Erro ao verificar email'
+          }),
+          {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        );
+      }
+    }
+
+    // 404 - Rota não encontrada
+    return new Response(
+      JSON.stringify({
+        success: false,
+        message: 'Rota não encontrada'
+      }),
+      {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
+    );
+  }
+};

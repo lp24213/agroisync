@@ -1,7 +1,7 @@
 {
   "name": "agroisync-frontend",
   "buildCommand": "npm run build",
-  "buildOutputDirectory": "build",
+  "buildOutputDirectory": "dist",
   "rootDirectory": "frontend",
   "environmentVariables": {
     "NODE_VERSION": "18.20.4",

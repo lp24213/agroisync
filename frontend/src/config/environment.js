@@ -2,8 +2,8 @@
 export const environment = {
   // Configuração da API
   api: {
-    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1',
-    wsURL: process.env.REACT_APP_WS_URL || 'ws://localhost:5000'
+    baseURL: process.env.REACT_APP_API_URL || 'https://agroisync.com/api/v1',
+    wsURL: process.env.REACT_APP_WS_URL || 'wss://agroisync.com'
   },
 
   // Ambiente
@@ -20,7 +20,7 @@ export const environment = {
 
   // Stripe
   stripe: {
-    publishableKey: process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_live_51QVXlZGYY0MfrP1aPEJhU9TAd2zdJ7ZIOVdhji34IzdgLyFkXHDiWUaved6J7HKQiQpXKk1E9SHrAmiJKmDnETow00omwjh2Bg',
+    publishableKey: process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_DEFAULT_KEY_NOT_SET',
     priceIds: {
       store: {
         basic: process.env.REACT_APP_STRIPE_STORE_BASIC_PRICE_ID || 'price_store_basic',

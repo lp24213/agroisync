@@ -4,7 +4,7 @@ import axios from 'axios';
 class WeatherService {
   constructor() {
     this.baseURL = 'https://api.openweathermap.org/data/2.5';
-    this.apiKey = process.env.REACT_APP_WEATHER_API_KEY || 'demo';
+    this.apiKey = process.env.REACT_APP_WEATHER_API_KEY || process.env.VITE_WEATHER_API_KEY || '';
     this.cache = new Map();
     this.cacheTimeout = 10 * 60 * 1000; // 10 minutos
   }

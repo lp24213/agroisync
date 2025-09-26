@@ -1,23 +1,46 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Building2 } from 'lucide-react';
-import AgroisyncHeader from '../components/AgroisyncHeader';
-import AgroisyncFooter from '../components/AgroisyncFooter';
+import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Building2, MapPin, Phone, CreditCard, Truck } from 'lucide-react';
+import validationService from '../services/validationService';
 
 const AgroisyncRegister = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    // Dados Pessoais
     name: '',
     email: '',
-    company: '',
+    phone: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    
+    // Dados da Empresa
+    company: '',
+    cnpj: '',
+    ie: '',
+    
+    // Endereço
+    cep: '',
+    address: '',
+    city: '',
+    state: '',
+    
+    // Tipo de Usuário
+    userType: 'producer', // producer, buyer, carrier
+    
+    // Dados Específicos por Tipo
+    carrierData: {
+      licensePlate: '',
+      vehicleType: '',
+      capacity: ''
+    }
   });
+  
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [validations, setValidations] = useState({});
 
   const heroVariants = {
     hidden: { opacity: 0 },
@@ -36,7 +59,7 @@ const AgroisyncRegister = () => {
     },
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = async (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -48,6 +71,51 @@ const AgroisyncRegister = () => {
       setErrors(prev => ({
         ...prev,
         [name]: ''
+      }));
+    }
+
+    // Validações em tempo real
+    await validateField(name, value);
+  };
+
+  const validateField = async (fieldName, value) => {
+    let validation = null;
+    
+    switch (fieldName) {
+      case 'cnpj':
+        if (value.length >= 14) {
+          validation = await validationService.validateCNPJ(value);
+        }
+        break;
+      case 'cep':
+        if (value.length >= 8) {
+          validation = await validationService.validateCEP(value);
+          if (validation.valid) {
+            // Preencher endereço automaticamente
+            setFormData(prev => ({
+              ...prev,
+              address: validation.address || '',
+              city: validation.city || '',
+              state: validation.state || ''
+            }));
+          }
+        }
+        break;
+      case 'phone':
+        validation = validationService.validatePhone(value);
+        break;
+      case 'email':
+        validation = validationService.validateEmail(value);
+        break;
+      case 'password':
+        validation = validationService.validatePassword(value);
+        break;
+    }
+
+    if (validation) {
+      setValidations(prev => ({
+        ...prev,
+        [fieldName]: validation
       }));
     }
   };
@@ -113,7 +181,7 @@ const AgroisyncRegister = () => {
 
   return (
     <>
-      <AgroisyncHeader />
+      {/* Header já incluído no App.js */}
       
       <section style={{ 
         minHeight: '100vh',
@@ -632,7 +700,7 @@ const AgroisyncRegister = () => {
         </div>
       </section>
 
-      <AgroisyncFooter />
+      {/* Footer já incluído no App.js */}
     </>
   );
 };

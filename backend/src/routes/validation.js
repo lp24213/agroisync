@@ -1,21 +1,13 @@
-const express = require('express');
+import express from 'express';
+import axios from 'axios';
+import { apiLimiter } from '../middleware/rateLimiter.js';
+
 const router = express.Router();
-const axios = require('axios');
-const rateLimit = require('express-rate-limit');
 
-// Rate limiting para evitar abuso das APIs externas
-const validationLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // máximo 100 requisições por IP
-  message: 'Muitas requisições de validação. Tente novamente em 15 minutos.',
-  standardHeaders: true,
-  legacyHeaders: false
-});
+// Apply rate limiting
+router.use(apiLimiter);
 
-// Middleware para aplicar rate limiting em todas as rotas
-router.use(validationLimiter);
-
-// Validação de CPF via ReceitaWS (simulada)
+// POST /api/validation/cpf - Validar CPF
 router.post('/cpf', async (req, res) => {
   try {
     const { cpf } = req.body;
@@ -27,46 +19,66 @@ router.post('/cpf', async (req, res) => {
       });
     }
 
-    // Limpar CPF (remover pontos e traços)
-    const cleanCpf = cpf.replace(/\D/g, '');
-
+    // Remove caracteres não numéricos
+    const cleanCpf = cpf.replace(/[^\d]/g, '');
+    
+    // Verifica se tem 11 dígitos
     if (cleanCpf.length !== 11) {
-      return res.status(400).json({
+      return res.json({
         success: false,
+        valid: false,
         error: 'CPF deve ter 11 dígitos'
       });
     }
-
-    // Validação básica de CPF
-    if (!isValidCPF(cleanCpf)) {
-      return res.status(400).json({
+    
+    // Verifica se todos os dígitos são iguais
+    if (/^(\d)\1{10}$/.test(cleanCpf)) {
+      return res.json({
         success: false,
+        valid: false,
+        error: 'CPF inválido'
+      });
+    }
+    
+    // Validação do primeiro dígito verificador
+    let sum = 0;
+    for (let i = 0; i < 9; i++) {
+      sum += parseInt(cleanCpf.charAt(i)) * (10 - i);
+    }
+    let remainder = 11 - (sum % 11);
+    let digit1 = remainder < 2 ? 0 : remainder;
+    
+    if (parseInt(cleanCpf.charAt(9)) !== digit1) {
+      return res.json({
+        success: false,
+        valid: false,
+        error: 'CPF inválido'
+      });
+    }
+    
+    // Validação do segundo dígito verificador
+    sum = 0;
+    for (let i = 0; i < 10; i++) {
+      sum += parseInt(cleanCpf.charAt(i)) * (11 - i);
+    }
+    remainder = 11 - (sum % 11);
+    let digit2 = remainder < 2 ? 0 : remainder;
+    
+    if (parseInt(cleanCpf.charAt(10)) !== digit2) {
+      return res.json({
+        success: false,
+        valid: false,
         error: 'CPF inválido'
       });
     }
 
-    // Simular consulta à ReceitaWS
-    // Em produção, usar: https://receita.fazenda.df.gov.br/servicos/cnpj/
-    const mockReceitaResponse = {
-      cpf: cleanCpf,
-      nome: 'Nome do Titular',
-      dataNascimento: '1980-01-01',
-      situacao: 'REGULAR',
-      dataConsulta: new Date().toISOString(),
-      origem: 'ReceitaWS'
-    };
-
-    // Simular delay da API
-    await new Promise(resolve => setTimeout(resolve, 500));
-
     res.json({
       success: true,
       valid: true,
-      data: mockReceitaResponse,
-      message: 'CPF válido e regular'
+      message: 'CPF válido'
     });
   } catch (error) {
-    console.error('Erro na validação de CPF:', error);
+    console.error('Erro ao validar CPF:', error);
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -74,7 +86,7 @@ router.post('/cpf', async (req, res) => {
   }
 });
 
-// Validação de CNPJ via ReceitaWS (simulada)
+// POST /api/validation/cnpj - Validar CNPJ
 router.post('/cnpj', async (req, res) => {
   try {
     const { cnpj } = req.body;
@@ -86,49 +98,94 @@ router.post('/cnpj', async (req, res) => {
       });
     }
 
-    // Limpar CNPJ (remover pontos, traços e barras)
-    const cleanCnpj = cnpj.replace(/\D/g, '');
-
+    // Remove caracteres não numéricos
+    const cleanCnpj = cnpj.replace(/[^\d]/g, '');
+    
+    // Verifica se tem 14 dígitos
     if (cleanCnpj.length !== 14) {
-      return res.status(400).json({
+      return res.json({
         success: false,
+        valid: false,
         error: 'CNPJ deve ter 14 dígitos'
       });
     }
-
-    // Validação básica de CNPJ
-    if (!isValidCNPJ(cleanCnpj)) {
-      return res.status(400).json({
+    
+    // Verifica se todos os dígitos são iguais
+    if (/^(\d)\1{13}$/.test(cleanCnpj)) {
+      return res.json({
         success: false,
+        valid: false,
+        error: 'CNPJ inválido'
+      });
+    }
+    
+    // Validação do primeiro dígito verificador
+    let sum = 0;
+    let weight = 5;
+    for (let i = 0; i < 12; i++) {
+      sum += parseInt(cleanCnpj.charAt(i)) * weight;
+      weight = weight === 2 ? 9 : weight - 1;
+    }
+    let remainder = sum % 11;
+    let digit1 = remainder < 2 ? 0 : 11 - remainder;
+    
+    if (parseInt(cleanCnpj.charAt(12)) !== digit1) {
+      return res.json({
+        success: false,
+        valid: false,
+        error: 'CNPJ inválido'
+      });
+    }
+    
+    // Validação do segundo dígito verificador
+    sum = 0;
+    weight = 6;
+    for (let i = 0; i < 13; i++) {
+      sum += parseInt(cleanCnpj.charAt(i)) * weight;
+      weight = weight === 2 ? 9 : weight - 1;
+    }
+    remainder = sum % 11;
+    let digit2 = remainder < 2 ? 0 : 11 - remainder;
+    
+    if (parseInt(cleanCnpj.charAt(13)) !== digit2) {
+      return res.json({
+        success: false,
+        valid: false,
         error: 'CNPJ inválido'
       });
     }
 
-    // Simular consulta à ReceitaWS
-    const mockReceitaResponse = {
-      cnpj: cleanCnpj,
-      razaoSocial: 'Empresa Exemplo LTDA',
-      nomeFantasia: 'Empresa Exemplo',
-      dataAbertura: '2010-01-01',
-      situacao: 'ATIVA',
-      tipo: 'MATRIZ',
-      porte: 'MEDIO PORTE',
-      naturezaJuridica: '206-2 - LTDA',
-      dataConsulta: new Date().toISOString(),
-      origem: 'ReceitaWS'
-    };
+    // Buscar dados na Receita Federal
+    try {
+      const response = await axios.get(`https://www.receitaws.com.br/v1/cnpj/${cleanCnpj}`);
+      const data = response.data;
 
-    // Simular delay da API
-    await new Promise(resolve => setTimeout(resolve, 800));
-
-    res.json({
-      success: true,
-      valid: true,
-      data: mockReceitaResponse,
-      message: 'CNPJ válido e ativo'
-    });
+      res.json({
+        success: true,
+        valid: true,
+        message: 'CNPJ válido',
+        data: {
+          company: data.nome,
+          fantasy: data.fantasia,
+          address: data.logradouro,
+          city: data.municipio,
+          state: data.uf,
+          zipCode: data.cep,
+          phone: data.telefone,
+          email: data.email,
+          status: data.status
+        }
+      });
+    } catch (apiError) {
+      // Se a API da Receita falhar, retorna apenas validação básica
+      res.json({
+        success: true,
+        valid: true,
+        message: 'CNPJ válido (dados não disponíveis)'
+      });
+    }
   } catch (error) {
-    console.error('Erro na validação de CNPJ:', error);
+    console.error('Erro ao validar CNPJ:', error);
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -136,7 +193,7 @@ router.post('/cnpj', async (req, res) => {
   }
 });
 
-// Validação de CEP via IBGE + fallback ViaCEP
+// POST /api/validation/cep - Buscar CEP
 router.post('/cep', async (req, res) => {
   try {
     const { cep } = req.body;
@@ -148,90 +205,52 @@ router.post('/cep', async (req, res) => {
       });
     }
 
-    // Limpar CEP (remover traços)
-    const cleanCep = cep.replace(/\D/g, '');
-
+    const cleanCep = cep.replace(/[^\d]/g, '');
+    
     if (cleanCep.length !== 8) {
-      return res.status(400).json({
+      return res.json({
         success: false,
+        valid: false,
         error: 'CEP deve ter 8 dígitos'
       });
     }
 
-    let addressData = null;
-    let source = '';
-
     try {
-      // Primeiro tentar IBGE API
-      const ibgeResponse = await axios.get(
-        `https://servicodados.ibge.gov.br/api/v1/localidades/cep/${cleanCep}`,
-        {
-          timeout: 5000
-        }
-      );
+      const response = await axios.get(`https://viacep.com.br/ws/${cleanCep}/json/`);
+      const data = response.data;
 
-      if (ibgeResponse.data && ibgeResponse.data.length > 0) {
-        const ibgeData = ibgeResponse.data[0];
-        addressData = {
-          cep: cleanCep,
-          logradouro: ibgeData.logradouro || '',
-          bairro: ibgeData.bairro || '',
-          cidade: ibgeData.localidade || '',
-          uf: ibgeData.uf || '',
-          estado: ibgeData.estado || '',
-          ibge: ibgeData.id || '',
-          ddd: ibgeData.ddd || '',
-          source: 'IBGE'
-        };
-        source = 'IBGE';
-      }
-    } catch (ibgeError) {
-      console.log('IBGE API falhou, tentando ViaCEP...');
-    }
-
-    // Fallback para ViaCEP se IBGE falhar
-    if (!addressData) {
-      try {
-        const viaCepResponse = await axios.get(`https://viacep.com.br/ws/${cleanCep}/json/`, {
-          timeout: 5000
+      if (data.erro) {
+        return res.json({
+          success: false,
+          valid: false,
+          error: 'CEP não encontrado'
         });
-
-        if (viaCepResponse.data && !viaCepResponse.data.erro) {
-          const viaCepData = viaCepResponse.data;
-          addressData = {
-            cep: viaCepData.cep,
-            logradouro: viaCepData.logradouro || '',
-            bairro: viaCepData.bairro || '',
-            cidade: viaCepData.localidade || '',
-            uf: viaCepData.uf || '',
-            estado: viaCepData.uf || '',
-            ibge: viaCepData.ibge || '',
-            ddd: viaCepData.ddd || '',
-            source: 'ViaCEP'
-          };
-          source = 'ViaCEP';
-        }
-      } catch (viaCepError) {
-        console.log('ViaCEP também falhou');
       }
-    }
 
-    if (!addressData) {
-      return res.status(404).json({
+      res.json({
+        success: true,
+        valid: true,
+        data: {
+          zipCode: data.cep,
+          address: data.logradouro,
+          neighborhood: data.bairro,
+          city: data.localidade,
+          state: data.uf,
+          ibge: data.ibge,
+          gia: data.gia,
+          ddd: data.ddd,
+          siafi: data.siafi
+        }
+      });
+    } catch (apiError) {
+      res.json({
         success: false,
-        error: 'CEP não encontrado'
+        valid: false,
+        error: 'Erro ao buscar CEP'
       });
     }
-
-    res.json({
-      success: true,
-      valid: true,
-      address: addressData,
-      source,
-      message: `CEP válido - ${addressData.cidade}/${addressData.uf}`
-    });
   } catch (error) {
-    console.error('Erro na validação de CEP:', error);
+    console.error('Erro ao buscar CEP:', error);
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -239,55 +258,43 @@ router.post('/cep', async (req, res) => {
   }
 });
 
-// Validação de IE (Inscrição Estadual) via Sefaz (simulada)
-router.post('/ie', async (req, res) => {
+// POST /api/validation/plate - Validar placa de veículo
+router.post('/plate', async (req, res) => {
   try {
-    const { ie, state } = req.body;
+    const { plate } = req.body;
 
-    if (!ie || !state) {
+    if (!plate) {
       return res.status(400).json({
         success: false,
-        error: 'IE e estado são obrigatórios'
+        error: 'Placa é obrigatória'
       });
     }
 
-    // Limpar IE (remover pontos e traços)
-    const cleanIE = ie.replace(/\D/g, '');
-
-    if (cleanIE.length < 8 || cleanIE.length > 12) {
-      return res.status(400).json({
+    const cleanPlate = plate.replace(/[^A-Z0-9]/g, '').toUpperCase();
+    
+    // Validar formato antigo (ABC-1234) ou novo (ABC1D23)
+    const oldFormat = /^[A-Z]{3}[0-9]{4}$/;
+    const newFormat = /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/;
+    
+    if (!oldFormat.test(cleanPlate) && !newFormat.test(cleanPlate)) {
+      return res.json({
         success: false,
-        error: 'IE deve ter entre 8 e 12 dígitos'
+        valid: false,
+        error: 'Formato de placa inválido'
       });
     }
-
-    // Simular consulta à Sefaz
-    // Em produção, usar APIs específicas de cada estado
-    const mockSefazResponse = {
-      ie: cleanIE,
-      estado: state,
-      razaoSocial: 'Empresa Exemplo LTDA',
-      cnpj: '12345678000199',
-      situacao: 'ATIVA',
-      dataEmissao: '2010-01-01',
-      dataVencimento: '2025-12-31',
-      tipo: 'CONTRIBUINTE',
-      regime: 'SIMPLES NACIONAL',
-      dataConsulta: new Date().toISOString(),
-      origem: 'Sefaz'
-    };
-
-    // Simular delay da API
-    await new Promise(resolve => setTimeout(resolve, 600));
 
     res.json({
       success: true,
       valid: true,
-      data: mockSefazResponse,
-      message: 'IE válida e ativa'
+      message: 'Placa válida',
+      data: {
+        plate: cleanPlate,
+        format: oldFormat.test(cleanPlate) ? 'antigo' : 'novo'
+      }
     });
   } catch (error) {
-    console.error('Erro na validação de IE:', error);
+    console.error('Erro ao validar placa:', error);
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -295,75 +302,86 @@ router.post('/ie', async (req, res) => {
   }
 });
 
-// Funções auxiliares de validação
-function isValidCPF(cpf) {
-  // Verificar se todos os dígitos são iguais
-  if (/^(\d)\1{10}$/.test(cpf)) {
-    return false;
-  }
+// POST /api/validation/phone - Validar telefone
+router.post('/phone', async (req, res) => {
+  try {
+    const { phone } = req.body;
 
-  // Validar primeiro dígito verificador
-  let sum = 0;
-  for (let i = 0; i < 9; i++) {
-    sum += parseInt(cpf.charAt(i)) * (10 - i);
-  }
-  let remainder = (sum * 10) % 11;
-  if (remainder === 10 || remainder === 11) {
-    remainder = 0;
-  }
-  if (remainder !== parseInt(cpf.charAt(9))) {
-    return false;
-  }
+    if (!phone) {
+      return res.status(400).json({
+        success: false,
+        error: 'Telefone é obrigatório'
+      });
+    }
 
-  // Validar segundo dígito verificador
-  sum = 0;
-  for (let i = 0; i < 10; i++) {
-    sum += parseInt(cpf.charAt(i)) * (11 - i);
-  }
-  remainder = (sum * 10) % 11;
-  if (remainder === 10 || remainder === 11) {
-    remainder = 0;
-  }
-  if (remainder !== parseInt(cpf.charAt(10))) {
-    return false;
-  }
+    const cleanPhone = phone.replace(/[^\d]/g, '');
+    
+    // Validar formato brasileiro (10 ou 11 dígitos)
+    if (cleanPhone.length < 10 || cleanPhone.length > 11) {
+      return res.json({
+        success: false,
+        valid: false,
+        error: 'Telefone deve ter 10 ou 11 dígitos'
+      });
+    }
 
-  return true;
-}
+    // Verificar se começa com DDD válido
+    const ddd = cleanPhone.substring(0, 2);
+    const validDdds = [
+      '11', '12', '13', '14', '15', '16', '17', '18', '19', // SP
+      '21', '22', '24', // RJ
+      '27', '28', // ES
+      '31', '32', '33', '34', '35', '37', '38', // MG
+      '41', '42', '43', '44', '45', '46', // PR
+      '47', '48', '49', // SC
+      '51', '53', '54', '55', // RS
+      '61', // DF
+      '62', '64', // GO
+      '63', // TO
+      '65', '66', // MT
+      '67', // MS
+      '68', // AC
+      '69', // RO
+      '71', '73', '74', '75', '77', // BA
+      '79', // SE
+      '81', '87', // PE
+      '82', // AL
+      '83', // PB
+      '84', // RN
+      '85', '88', // CE
+      '86', '89', // PI
+      '91', '93', '94', // PA
+      '92', '97', // AM
+      '95', // RR
+      '96', // AP
+      '98', '99' // MA
+    ];
 
-function isValidCNPJ(cnpj) {
-  // Verificar se todos os dígitos são iguais
-  if (/^(\d)\1{13}$/.test(cnpj)) {
-    return false;
-  }
+    if (!validDdds.includes(ddd)) {
+      return res.json({
+        success: false,
+        valid: false,
+        error: 'DDD inválido'
+      });
+    }
 
-  // Validar primeiro dígito verificador
-  let sum = 0;
-  let weight = 2;
-  for (let i = 11; i >= 0; i--) {
-    sum += parseInt(cnpj.charAt(i)) * weight;
-    weight = weight === 9 ? 2 : weight + 1;
+    res.json({
+      success: true,
+      valid: true,
+      message: 'Telefone válido',
+      data: {
+        phone: cleanPhone,
+        ddd: ddd,
+        type: cleanPhone.length === 11 ? 'celular' : 'fixo'
+      }
+    });
+  } catch (error) {
+    console.error('Erro ao validar telefone:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Erro interno do servidor'
+    });
   }
-  let remainder = sum % 11;
-  const digit1 = remainder < 2 ? 0 : 11 - remainder;
-  if (digit1 !== parseInt(cnpj.charAt(12))) {
-    return false;
-  }
+});
 
-  // Validar segundo dígito verificador
-  sum = 0;
-  weight = 2;
-  for (let i = 12; i >= 0; i--) {
-    sum += parseInt(cnpj.charAt(i)) * weight;
-    weight = weight === 9 ? 2 : weight + 1;
-  }
-  remainder = sum % 11;
-  const digit2 = remainder < 2 ? 0 : 11 - remainder;
-  if (digit2 !== parseInt(cnpj.charAt(13))) {
-    return false;
-  }
-
-  return true;
-}
-
-module.exports = router;
+export default router;

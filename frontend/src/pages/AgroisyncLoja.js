@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import RegistrationSystem from '../components/RegistrationSystem';
-import PlansSystem from '../components/PlansSystem';
+// import RegistrationSystem from '../components/RegistrationSystem'; // Componente removido
+// import PlansSystem from '../components/PlansSystem'; // Componente removido
 import { 
   ShoppingCart, 
   Star, 
@@ -20,7 +20,7 @@ import {
   Eye,
   X
 } from 'lucide-react';
-import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt';
+// import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt'; // Componente removido
 
 const AgroisyncLoja = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -102,14 +102,49 @@ const AgroisyncLoja = () => {
   return (
     <div className="agro-loja-container" data-page="loja">
       {/* Hero Section */}
-      <AgroisyncHeroPrompt 
-        title="Loja Agroisync"
-        subtitle="Os melhores produtos agrícolas com tecnologia de ponta e preços competitivos"
-        heroImage="/images/Loja.png"
-        showCTA={true}
-        primaryButton={{ text: "Explorar Loja", link: "/loja" }}
-        secondaryButton={{ text: "Ver Produtos", link: "/loja" }}
-      />
+      <section 
+        className="min-h-screen flex items-center justify-center relative"
+        style={{
+          backgroundImage: `url('https://media.istockphoto.com/id/2235929731/pt/foto/e-commerce-business-with-digital-shopping-cart-icons-for-online-store-digital-marketing-and.jpg?s=612x612&w=0&k=20&c=PuPwyebMsSW7UFTurrlronetuOOwQBbcB_zT8Jki7VM=')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed'
+        }}
+      >
+        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="text-center max-w-4xl mx-auto px-4 relative z-10">
+          <motion.h1 
+            className="text-6xl font-bold text-white mb-6"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            AGROISYNC LOJA
+          </motion.h1>
+          <motion.p 
+            className="text-2xl text-white/90 mb-8"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            A maior loja online do agronegócio brasileiro
+          </motion.p>
+          <motion.div 
+            className="flex gap-4 justify-center"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <Link to="/register" className="bg-green-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+              Começar a Vender
+            </Link>
+            <Link to="/marketplace" className="bg-white text-green-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+              Explorar Produtos
+            </Link>
+          </motion.div>
+        </div>
+      </section>
 
       {/* Features Section */}
       <section className="agro-features-section">
@@ -838,10 +873,18 @@ const AgroisyncLoja = () => {
 
       {/* Modal de Cadastro */}
       {showRegistrationModal && (
-        <RegistrationSystem 
-          type="loja"
-          onClose={() => setShowRegistrationModal(false)}
-        />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg max-w-md mx-4">
+            <h3 className="text-xl font-semibold text-gray-600">Sistema de Registro em Desenvolvimento</h3>
+            <p className="text-gray-500 mt-2">Em breve teremos sistema de registro disponível!</p>
+            <button 
+              onClick={() => setShowRegistrationModal(false)}
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Fechar
+            </button>
+          </div>
+        </div>
       )}
 
       {/* Modal de Planos */}
@@ -858,7 +901,10 @@ const AgroisyncLoja = () => {
                   <X size={24} />
                 </button>
               </div>
-              <PlansSystem />
+              <div className="text-center py-8">
+                <h3 className="text-xl font-semibold text-gray-600">Sistema de Planos em Desenvolvimento</h3>
+                <p className="text-gray-500 mt-2">Em breve teremos planos disponíveis para você!</p>
+              </div>
             </div>
           </div>
         </div>
