@@ -576,12 +576,12 @@ const AgroisyncRegister = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.3 }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={(isLoading || !turnstileToken) ? {} : { scale: 1.02 }}
+                  whileTap={(isLoading || !turnstileToken) ? {} : { scale: 0.98 }}
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isLoading || !turnstileToken}
                   className={`w-full py-3 sm:py-4 px-4 sm:px-6 rounded-xl font-bold text-base sm:text-lg transition-all duration-300 flex items-center justify-center gap-3 ${
-                    isLoading
+                    (isLoading || !turnstileToken)
                       ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
                       : 'bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500 hover:from-emerald-600 hover:via-teal-600 hover:to-blue-600 text-white shadow-xl hover:shadow-2xl'
                   }`}

@@ -9,6 +9,7 @@ import { auth } from '../middleware/auth.js';
 import logger from '../utils/logger.js';
 import emailService from '../services/emailService.js';
 import cloudflareService from '../services/cloudflareService.js';
+import { verifyTurnstile } from '../utils/verifyTurnstile.js';
 import notificationService from '../services/notificationService.js';
 import {
   validatePassword,
@@ -105,9 +106,9 @@ router.post(
       const { name, email, password, phone, businessType = 'all', turnstileToken } = req.body;
 
       // Verificar token Turnstile do Cloudflare
-      const turnstileValid = await cloudflareService.verifyTurnstileToken(turnstileToken, req.ip);
-      if (!turnstileValid) {
-        return res.status(400).json({
+      const turnstileResult = await verifyTurnstile(turnstileToken, req.ip);
+      if (!turnstileResult.success) {
+        return res.status(401).json({
           success: false,
           message: 'Verificação de segurança falhou. Tente novamente.'
         });
@@ -321,9 +322,9 @@ router.post(
       const { email, password, turnstileToken } = req.body;
 
       // Verificar token Turnstile do Cloudflare
-      const turnstileValid = await cloudflareService.verifyTurnstileToken(turnstileToken, req.ip);
-      if (!turnstileValid) {
-        return res.status(400).json({
+      const turnstileResult = await verifyTurnstile(turnstileToken, req.ip);
+      if (!turnstileResult.success) {
+        return res.status(401).json({
           success: false,
           message: 'Verificação de segurança falhou. Tente novamente.'
         });
@@ -634,9 +635,9 @@ router.post(
       const { email, turnstileToken } = req.body;
 
       // Verificar token Turnstile do Cloudflare
-      const turnstileValid = await cloudflareService.verifyTurnstileToken(turnstileToken, req.ip);
-      if (!turnstileValid) {
-        return res.status(400).json({
+      const turnstileResult = await verifyTurnstile(turnstileToken, req.ip);
+      if (!turnstileResult.success) {
+        return res.status(401).json({
           success: false,
           message: 'Token de verificação inválido'
         });

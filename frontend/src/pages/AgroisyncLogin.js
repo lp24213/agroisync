@@ -482,25 +482,25 @@ const AgroisyncLogin = () => {
                 <motion.button
                   variants={itemVariants}
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isLoading || !turnstileToken}
                   style={{
                     width: '100%',
                     padding: '14px',
-                    background: isLoading ? 'var(--muted)' : 'var(--accent)',
+                    background: (isLoading || !turnstileToken) ? 'var(--muted)' : 'var(--accent)',
                     color: 'white',
                     border: 'none',
                     borderRadius: '8px',
                     fontSize: '1rem',
                     fontWeight: '600',
-                    cursor: isLoading ? 'not-allowed' : 'pointer',
+                    cursor: (isLoading || !turnstileToken) ? 'not-allowed' : 'pointer',
                     transition: 'all 0.2s ease',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '0.5rem'
                   }}
-                  whileHover={!isLoading ? { scale: 1.02 } : {}}
-                  whileTap={!isLoading ? { scale: 0.98 } : {}}
+                  whileHover={(!isLoading && turnstileToken) ? { scale: 1.02 } : {}}
+                  whileTap={(!isLoading && turnstileToken) ? { scale: 0.98 } : {}}
                 >
                   {isLoading ? (
                     <>

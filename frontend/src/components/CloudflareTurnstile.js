@@ -11,12 +11,15 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
       const script = document.createElement('script');
       script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
       script.async = true;
+      script.defer = true;
       script.onload = () => {
         setIsLoaded(true);
-        setTimeout(() => renderTurnstile(), 100); // Pequeno delay para garantir que o DOM está pronto
+        setTimeout(() => renderTurnstile(), 100);
       };
       script.onerror = () => {
-        console.error('Erro ao carregar Cloudflare Turnstile');
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Erro ao carregar Cloudflare Turnstile');
+        }
         onError && onError('Erro ao carregar verificação');
       };
       document.head.appendChild(script);
@@ -53,7 +56,7 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
     try {
       // Renderizar novo widget
       widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
-        sitekey: siteKey || process.env.REACT_APP_CLOUDFLARE_TURNSTILE_SITE_KEY || '0x4AAAAAAA2rOqUOZqKxZqKx', // Site key padrão para desenvolvimento
+        sitekey: siteKey || process.env.REACT_APP_CLOUDFLARE_TURNSTILE_SITE_KEY || '0x4AAAAAAA2rOqUOZqKxZqKx',
         callback: (token) => {
           if (process.env.NODE_ENV !== 'production') {
             console.log('Turnstile verificado:', token);
@@ -61,7 +64,9 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
           onVerify && onVerify(token);
         },
         'error-callback': (error) => {
-          console.error('Turnstile error:', error);
+          if (process.env.NODE_ENV !== 'production') {
+            console.error('Turnstile error:', error);
+          }
           onError && onError(error);
         },
         'expired-callback': () => {
@@ -80,7 +85,9 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
         console.log('Turnstile renderizado com sucesso');
       }
     } catch (error) {
-      console.error('Erro ao renderizar Turnstile:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao renderizar Turnstile:', error);
+      }
       onError && onError(error);
     }
   };
