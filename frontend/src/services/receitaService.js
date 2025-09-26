@@ -739,7 +739,9 @@ class ReceitaService {
     try {
       this.isInitialized = false;
       this.clearCache();
-      console.log('Serviço da Receita Federal desconectado');
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Serviço da Receita Federal desconectado');
+      }
       return { success: true };
     } catch (error) {
       console.error('Erro ao desconectar serviço da Receita Federal:', error);

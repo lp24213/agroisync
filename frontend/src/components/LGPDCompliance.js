@@ -1,292 +1,130 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, CheckCircle, AlertCircle, Eye, Lock, Database, User } from 'lucide-react';
 
+// Componente substituto: Banner de Cookies (fixo embaixo), clean e objetivo
 const LGPDCompliance = ({ onAccept, onDecline, isVisible }) => {
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [acceptedCookies, setAcceptedCookies] = useState(false);
-  const [acceptedDataProcessing, setAcceptedDataProcessing] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
+  const [showConfig, setShowConfig] = useState(false);
+  const [prefs, setPrefs] = useState({
+    necessary: true,
+    performance: true,
+    marketing: false,
+  });
 
-  // Verificar se já aceitou anteriormente
   useEffect(() => {
-    const lgpdConsent = localStorage.getItem('agroisync-lgpd-consent');
-    if (lgpdConsent === 'accepted') {
-      onAccept();
+    const stored = localStorage.getItem('agroisync-cookie-consent');
+    if (stored === 'accepted' || stored === 'custom') {
+      onAccept && onAccept();
     }
   }, [onAccept]);
 
-  const handleAccept = () => {
-    if (acceptedTerms && acceptedCookies && acceptedDataProcessing) {
-      localStorage.setItem('agroisync-lgpd-consent', 'accepted');
-      localStorage.setItem('agroisync-lgpd-timestamp', new Date().toISOString());
-      onAccept();
-    }
-  };
-
-  const handleDecline = () => {
-    localStorage.setItem('agroisync-lgpd-consent', 'declined');
-    onDecline();
-  };
-
   if (!isVisible) return null;
 
+  const acceptAll = () => {
+    localStorage.setItem('agroisync-cookie-consent', 'accepted');
+    localStorage.setItem('agroisync-cookie-prefs', JSON.stringify({
+      necessary: true,
+      performance: true,
+      marketing: true,
+    }));
+    onAccept && onAccept();
+  };
+
+  const saveCustom = () => {
+    localStorage.setItem('agroisync-cookie-consent', 'custom');
+    localStorage.setItem('agroisync-cookie-prefs', JSON.stringify(prefs));
+    onAccept && onAccept();
+  };
+
+  const declineAll = () => {
+    localStorage.setItem('agroisync-cookie-consent', 'declined');
+    localStorage.setItem('agroisync-cookie-prefs', JSON.stringify({
+      necessary: true,
+      performance: false,
+      marketing: false,
+    }));
+    onDecline && onDecline();
+  };
+
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-      >
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.9, opacity: 0 }}
-          className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-        >
-          {/* Header */}
-          <div className="bg-gradient-to-r from-green-600 to-green-700 text-white p-6 rounded-t-lg">
-            <div className="flex items-center gap-3">
-              <Shield size={32} />
-              <div>
-                <h2 className="text-xl font-bold">Conformidade LGPD</h2>
-                <p className="text-green-100 text-sm">Proteção de Dados Pessoais</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="p-6 space-y-6">
-            {/* Introdução */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <AlertCircle size={20} className="text-blue-600 mt-0.5" />
-                <div>
-                  <h3 className="font-semibold text-blue-800 mb-2">Importante - Lei Geral de Proteção de Dados</h3>
-                  <p className="text-blue-700 text-sm">
-                    O AGROISYNC está comprometido com a proteção dos seus dados pessoais conforme a Lei Geral de Proteção de Dados (LGPD).
-                    Para continuar usando nossos serviços, precisamos do seu consentimento para o processamento dos seus dados.
-                  </p>
+    <>
+      {/* Banner inferior */}
+      <AnimatePresence>
+        {!showConfig && (
+          <motion.div
+            initial={{ y: 40, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 40, opacity: 0 }}
+            className="fixed inset-x-0 bottom-0 z-[2000]"
+          >
+            <div className="mx-auto max-w-5xl px-4 py-6 md:py-7">
+              <div className="rounded-xl border border-gray-200 bg-white shadow-xl md:px-8 md:py-7 px-5 py-6">
+                <p className="text-gray-700 text-lg md:text-xl text-center leading-relaxed">
+                  Nós usamos cookies para melhorar a sua experiência em nossos serviços. Ao utilizar nossos serviços, você está ciente dessa funcionalidade. <a href="/privacy" className="text-green-600 font-medium hover:underline">Saiba mais</a>
+                </p>
+                <div className="mt-6 flex flex-col md:flex-row items-center justify-center gap-4">
+                  <button onClick={acceptAll} className="btn px-8 text-lg" aria-label="Aceitar todos os cookies">Continuar</button>
+                  <button onClick={() => setShowConfig(true)} className="btn outline px-6 text-lg" aria-label="Configurar cookies">Configurar Cookies</button>
+                  <button onClick={declineAll} className="btn link text-base" aria-label="Recusar cookies opcionais">Recusar opcionais</button>
                 </div>
               </div>
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-            {/* Dados Coletados */}
-            <div>
-              <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                <Database size={20} className="text-green-600" />
-                Dados Coletados pelo Chatbot IA
-              </h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-medium text-gray-700 mb-2">Dados de Identificação</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• Nome e sobrenome</li>
-                    <li>• Endereço de e-mail</li>
-                    <li>• Telefone (opcional)</li>
-                    <li>• Localização (opcional)</li>
-                  </ul>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-medium text-gray-700 mb-2">Dados de Uso</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• Mensagens do chatbot</li>
-                    <li>• Histórico de conversas</li>
-                    <li>• Preferências de IA</li>
-                    <li>• Arquivos enviados</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
+      {/* Painel de configuração simples */}
+      <AnimatePresence>
+        {showConfig && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[2100] bg-black/50 flex items-end md:items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 30, opacity: 0 }}
+              className="w-full max-w-2xl rounded-2xl bg-white shadow-2xl p-6 md:p-8"
+            >
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Preferências de Cookies</h3>
+              <p className="text-gray-600 mb-4">Escolha como deseja que usemos cookies opcionais.</p>
 
-            {/* Finalidades */}
-            <div>
-              <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                <Eye size={20} className="text-green-600" />
-                Finalidades do Processamento
-              </h3>
-              
-              <div className="space-y-3">
-                <div className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
-                  <CheckCircle size={16} className="text-green-600 mt-1" />
+              <div className="space-y-4">
+                <label className="flex items-start gap-3 p-4 rounded-lg border border-gray-200">
+                  <input type="checkbox" checked readOnly className="mt-1" />
                   <div>
-                    <h4 className="font-medium text-green-800">Melhoria do Serviço</h4>
-                    <p className="text-sm text-green-700">Análise das conversas para melhorar as respostas da IA</p>
+                    <p className="font-medium text-gray-900">Necessários</p>
+                    <p className="text-sm text-gray-600">Essenciais para o funcionamento do site.</p>
                   </div>
-                </div>
-                
-                <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
-                  <CheckCircle size={16} className="text-blue-600 mt-1" />
+                </label>
+
+                <label className="flex items-start gap-3 p-4 rounded-lg border border-gray-200">
+                  <input type="checkbox" checked={prefs.performance} onChange={(e)=>setPrefs(p=>({...p,performance:e.target.checked}))} className="mt-1" />
                   <div>
-                    <h4 className="font-medium text-blue-800">Personalização</h4>
-                    <p className="text-sm text-blue-700">Adaptar as respostas às suas necessidades específicas</p>
+                    <p className="font-medium text-gray-900">Desempenho</p>
+                    <p className="text-sm text-gray-600">Ajuda a entender uso e melhorar a experiência.</p>
                   </div>
-                </div>
-                
-                <div className="flex items-start gap-3 p-3 bg-purple-50 rounded-lg">
-                  <CheckCircle size={16} className="text-purple-600 mt-1" />
+                </label>
+
+                <label className="flex items-start gap-3 p-4 rounded-lg border border-gray-200">
+                  <input type="checkbox" checked={prefs.marketing} onChange={(e)=>setPrefs(p=>({...p,marketing:e.target.checked}))} className="mt-1" />
                   <div>
-                    <h4 className="font-medium text-purple-800">Suporte Técnico</h4>
-                    <p className="text-sm text-purple-700">Fornecer suporte e resolver problemas</p>
+                    <p className="font-medium text-gray-900">Marketing</p>
+                    <p className="text-sm text-gray-600">Ofertas e conteúdos relevantes para você.</p>
                   </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Direitos do Usuário */}
-            <div>
-              <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                <User size={20} className="text-green-600" />
-                Seus Direitos
-              </h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="flex items-center gap-2 text-sm">
-                  <CheckCircle size={16} className="text-green-600" />
-                  <span>Acesso aos seus dados</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <CheckCircle size={16} className="text-green-600" />
-                  <span>Correção de dados incorretos</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <CheckCircle size={16} className="text-green-600" />
-                  <span>Exclusão dos seus dados</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <CheckCircle size={16} className="text-green-600" />
-                  <span>Portabilidade dos dados</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <CheckCircle size={16} className="text-green-600" />
-                  <span>Revogação do consentimento</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <CheckCircle size={16} className="text-green-600" />
-                  <span>Informações sobre o processamento</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Segurança */}
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                <Lock size={20} className="text-green-600" />
-                Medidas de Segurança
-              </h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-600">
-                <div>• Criptografia de dados em trânsito</div>
-                <div>• Criptografia de dados em repouso</div>
-                <div>• Acesso restrito aos dados</div>
-                <div>• Auditoria regular de segurança</div>
-                <div>• Backup seguro dos dados</div>
-                <div>• Monitoramento de acesso</div>
-              </div>
-            </div>
-
-            {/* Checkboxes de Consentimento */}
-            <div className="space-y-4 border-t pt-6">
-              <div className="flex items-start gap-3">
-                <input
-                  type="checkbox"
-                  id="terms"
-                  checked={acceptedTerms}
-                  onChange={(e) => setAcceptedTerms(e.target.checked)}
-                  className="mt-1"
-                />
-                <label htmlFor="terms" className="text-sm text-gray-700">
-                  <strong>Termos de Uso:</strong> Li e aceito os termos de uso do AGROISYNC e do chatbot IA.
                 </label>
               </div>
-              
-              <div className="flex items-start gap-3">
-                <input
-                  type="checkbox"
-                  id="cookies"
-                  checked={acceptedCookies}
-                  onChange={(e) => setAcceptedCookies(e.target.checked)}
-                  className="mt-1"
-                />
-                <label htmlFor="cookies" className="text-sm text-gray-700">
-                  <strong>Cookies:</strong> Autorizo o uso de cookies para melhorar a experiência e personalizar o chatbot.
-                </label>
-              </div>
-              
-              <div className="flex items-start gap-3">
-                <input
-                  type="checkbox"
-                  id="data-processing"
-                  checked={acceptedDataProcessing}
-                  onChange={(e) => setAcceptedDataProcessing(e.target.checked)}
-                  className="mt-1"
-                />
-                <label htmlFor="data-processing" className="text-sm text-gray-700">
-                  <strong>Processamento de Dados:</strong> Autorizo o processamento dos meus dados pessoais conforme descrito acima.
-                </label>
-              </div>
-            </div>
 
-            {/* Detalhes Adicionais */}
-            <div>
-              <button
-                onClick={() => setShowDetails(!showDetails)}
-                className="text-sm text-green-600 hover:text-green-800 font-medium"
-              >
-                {showDetails ? 'Ocultar detalhes' : 'Ver detalhes completos'}
-              </button>
-              
-              <AnimatePresence>
-                {showDetails && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="mt-4 p-4 bg-gray-50 rounded-lg"
-                  >
-                    <div className="space-y-3 text-sm text-gray-600">
-                      <p><strong>Responsável pelo tratamento:</strong> AGROISYNC LTDA</p>
-                      <p><strong>CNPJ:</strong> 00.000.000/0001-00</p>
-                      <p><strong>E-mail:</strong> privacidade@agroisync.com</p>
-                      <p><strong>Telefone:</strong> (11) 99999-9999</p>
-                      <p><strong>Endereço:</strong> Rua Exemplo, 123 - São Paulo/SP</p>
-                      <p><strong>Prazo de retenção:</strong> Os dados serão mantidos pelo tempo necessário para cumprir as finalidades descritas ou conforme exigido por lei.</p>
-                      <p><strong>Compartilhamento:</strong> Seus dados não serão compartilhados com terceiros sem seu consentimento, exceto quando exigido por lei.</p>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="bg-gray-50 p-6 rounded-b-lg">
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={handleDecline}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                Recusar
-              </button>
-              <button
-                onClick={handleAccept}
-                disabled={!acceptedTerms || !acceptedCookies || !acceptedDataProcessing}
-                className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                Aceitar e Continuar
-              </button>
-            </div>
-            
-            <p className="text-xs text-gray-500 mt-3 text-center">
-              Ao continuar, você concorda com nossa Política de Privacidade e os Termos de Uso.
-            </p>
-          </div>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+              <div className="mt-6 flex flex-col md:flex-row gap-3">
+                <button onClick={()=>setShowConfig(false)} className="btn outline flex-1">Voltar</button>
+                <button onClick={saveCustom} className="btn flex-1">Salvar Preferências</button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 

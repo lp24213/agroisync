@@ -229,7 +229,7 @@ const AgroisyncCrypto = () => {
             </motion.h1>
             
             <motion.p className="agro-hero-subtitle" variants={itemVariants} style={{ color: '#FFFFFF' }}>
-              Tecnologia blockchain para revolucionar o agronegócio brasileiro
+              Em construção: A primeira criptomoeda do agronegócio do planeta
             </motion.p>
 
             <motion.div 

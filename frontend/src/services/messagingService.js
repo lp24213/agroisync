@@ -25,7 +25,9 @@ class MessagingService {
     this.websocket = new WebSocket(wsUrl);
 
     this.websocket.onopen = () => {
-      console.log('WebSocket conectado para mensageria');
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('WebSocket conectado para mensageria');
+      }
     };
 
     this.websocket.onmessage = (event) => {
@@ -38,7 +40,9 @@ class MessagingService {
     };
 
     this.websocket.onclose = () => {
-      console.log('WebSocket desconectado');
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('WebSocket desconectado');
+      }
       // Tentar reconectar após 5 segundos
       setTimeout(() => {
         if (this.websocket?.readyState === WebSocket.CLOSED) {

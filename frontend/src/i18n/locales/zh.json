@@ -10,6 +10,119 @@
     "confirm": "确认",
     "close": "关闭"
   },
+  "home": {
+    "ticker": {
+      "title": "股票行情开发中",
+      "description": "很快我们将提供股票行情功能！"
+    },
+    "partner": {
+      "title": "成为我们的",
+      "highlight": "合作伙伴",
+      "description": "加入巴西农业综合企业革命，成为该国最大农村连接平台的一部分。"
+    },
+    "performance": {
+      "title": "实时",
+      "highlight": "性能",
+      "description": "每秒更新的数据，助力更智能的决策"
+    },
+    "services": {
+      "title": "我们的",
+      "highlight": "服务",
+      "description": "满足现代农业综合企业所有需求的完整解决方案"
+    },
+    "news": {
+      "title": "新闻开发中",
+      "description": "很快我们将提供农业综合企业新闻！"
+    },
+    "cta": {
+      "title": "准备好迎接",
+      "highlight": "未来",
+      "description": "加入数千名已经发现Agroisync技术力量的农业综合企业专业人士。今天就改变您的业务。"
+    }
+  },
+  "about": {
+    "hero": {
+      "title": "关于AGROISYNC",
+      "subtitle": "用技术和创新革命巴西农业综合企业"
+    },
+    "mission": {
+      "title": "我们的使命",
+      "description": "在单一、安全、高效的平台上连接生产者、买家和运输商，利用区块链技术和人工智能革命巴西农业综合企业。"
+    },
+    "values": {
+      "title": "我们的价值观",
+      "subtitle": "指导我们公司的原则",
+      "innovation": "创新",
+      "innovationDesc": "我们始终寻求最佳技术来革命农业综合企业",
+      "passion": "激情",
+      "passionDesc": "我们热爱我们所做的，相信巴西农业综合企业的潜力",
+      "collaboration": "合作",
+      "collaborationDesc": "我们相信我们可以共同为每个人建设更美好的未来",
+      "transparency": "透明度",
+      "transparencyDesc": "我们在所有运营中始终保持透明度"
+    },
+    "team": {
+      "title": "认识AGROISYNC背后的人们",
+      "agroisyncTeam": "AGROISYNC团队",
+      "agroExperts": "农业综合企业专家",
+      "agroisyncDesc": "一个致力于巴西农业综合企业的专业团队，不知疲倦地工作，在革命性平台上连接生产者、买家和运输商。",
+      "techInnovation": "技术与创新",
+      "continuousDev": "持续开发",
+      "techDesc": "我们的开发团队不断努力实施最先进的技术，包括区块链、人工智能和农业综合企业的可持续解决方案。"
+    },
+    "milestones": {
+      "ideaBirth": "想法的诞生",
+      "ideaDesc": "AGROISYNC的想法是由热爱农业综合企业的朋友们创造的，旨在革命巴西生产者和买家的连接方式。",
+      "executionStart": "执行开始",
+      "executionDesc": "我们开始开发平台，专注于可持续性、先进技术以及对小农和大农的支持。",
+      "fullImplementation": "全面实施",
+      "implementationDesc": "推出具有区块链、人工智能和所有功能的完整平台，以改变巴西农业综合企业。"
+    },
+    "features": {
+      "sustainableTech": "可持续技术",
+      "sustainableDesc": "我们实施促进可持续农业和自然资源高效利用的解决方案。",
+      "democratization": "农业综合企业民主化",
+      "democratizationDesc": "我们将小家庭生产者与大型买家连接，为每个人创造平等机会。",
+      "globalInnovation": "全球创新",
+      "globalDesc": "我们使用适应巴西现实的最先进国际技术。",
+      "guaranteedQuality": "质量保证",
+      "qualityDesc": "保证商业化产品质量的验证和认证系统。"
+    },
+    "differentiation": {
+      "title": "我们的差异化",
+      "subtitle": "改变农业综合企业的创新"
+    },
+    "journey": {
+      "title": "我们的旅程",
+      "subtitle": "我们历史上的重要里程碑"
+    }
+  },
+  "contact": {
+    "email": "电子邮件",
+    "phone": "电话",
+    "address": "地址",
+    "hours": "营业时间",
+    "emailDescription": "给我们发邮件，我们会在24小时内回复",
+    "phoneDescription": "周一至周五服务，上午8点至下午6点",
+    "addressDescription": "Rua das Flores, 123 - Jardim Verde",
+    "hoursDescription": "周六：上午8点至12点",
+    "fullName": "全名",
+    "fullNamePlaceholder": "您的全名",
+    "emailPlaceholder": "your@email.com",
+    "subject": "主题",
+    "selectSubject": "选择一个主题",
+    "support": "技术支持",
+    "plans": "计划信息",
+    "partnership": "合作伙伴关系",
+    "other": "其他",
+    "message": "消息",
+    "messagePlaceholder": "告诉我们如何帮助您...",
+    "sendMessage": "发送消息",
+    "messageSent": "消息已发送！"
+  },
+  "buyerPanel": {
+    "emailNotifications": "邮件通知"
+  },
   "nav": {
     "inicio": "首页",
     "loja": "商店",

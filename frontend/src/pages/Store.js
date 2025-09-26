@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import productService from '../services/productService';
 import { 
   Search, 
-  // ShoppingCart, // Removido para evitar warning
   Star, 
   Heart,
   Truck,
@@ -12,23 +12,30 @@ import {
   Grid,
   List
 } from 'lucide-react';
-// import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt'; // Componente removido
 
 const Store = () => {
   const [viewMode, setViewMode] = useState('grid');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const categories = [
-    { id: 'all', name: 'Todos os Produtos' },
-    { id: 'seeds', name: 'Sementes' },
-    { id: 'fertilizers', name: 'Fertilizantes' },
-    { id: 'equipment', name: 'Equipamentos' },
-    { id: 'technology', name: 'Tecnologia' },
-    { id: 'services', name: 'Serviços' }
-  ];
+  // Carregar produtos reais do backend
+  useEffect(() => {
+    loadProducts();
+  }, []);
 
-  // Produtos da loja - VAZIO até usuários cadastrarem seus produtos
-  const products = [];
+  const loadProducts = async () => {
+    try {
+      setLoading(true);
+      const productsData = await productService.getProducts();
+      setProducts(productsData.products || productsData || []);
+    } catch (error) {
+      console.error('Erro ao carregar produtos:', error);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredProducts = selectedCategory === 'all' 
     ? products 
@@ -114,7 +121,13 @@ const Store = () => {
 
               {/* Categories */}
               <div className="flex flex-wrap gap-2">
-                {categories.map((category) => (
+                {[
+                  { id: 'all', name: 'Todos' },
+                  { id: 'grains', name: 'Grãos' },
+                  { id: 'vegetables', name: 'Vegetais' },
+                  { id: 'fruits', name: 'Frutas' },
+                  { id: 'seeds', name: 'Sementes' }
+                ].map((category) => (
                   <button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}

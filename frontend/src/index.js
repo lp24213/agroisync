@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import './styles/mobile-fixes.css'; // Importar correções para mobile
+import './styles/header-fixes.css'; // Importar correções para header
 import './i18n/index'; // Importar configuração do i18n
 import App from './App';
 import reportWebVitals from './reportWebVitals';

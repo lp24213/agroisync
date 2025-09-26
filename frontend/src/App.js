@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
@@ -12,7 +12,7 @@ import AIChatbot from './components/ai/AIChatbot';
 import LGPDCompliance from './components/LGPDCompliance';
 import GlobalWeatherWidget from './components/GlobalWeatherWidget';
 import AccessibilityPanel from './components/AccessibilityPanel';
-import { Accessibility } from 'lucide-react'; // Importar o ícone de acessibilidade
+import { Accessibility } from 'lucide-react';
 
 // CSS unificado (5 arquivos)
 import './styles/base.css';
@@ -35,6 +35,14 @@ import AgroisyncContact from './pages/AgroisyncContact';
 import Partnerships from './pages/Partnerships';
 import AgroisyncLogin from './pages/AgroisyncLogin';
 import AgroisyncRegister from './pages/AgroisyncRegister';
+import AgroisyncForgotPassword from './pages/AgroisyncForgotPassword';
+import SignupType from './pages/SignupType';
+import SignupFreight from './pages/SignupFreight';
+import SignupStore from './pages/SignupStore';
+import SignupProduct from './pages/SignupProduct';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import Payment from './pages/Payment';
 import ProtectedRoute from './components/ProtectedRoute';
 import ProductDetail from './pages/ProductDetail';
 import CryptoDetail from './pages/CryptoDetail';
@@ -42,8 +50,6 @@ import AdminPanel from './pages/AdminPanel';
 import UserAdmin from './pages/UserAdmin';
 import UserDashboard from './pages/UserDashboard';
 import Messaging from './pages/Messaging';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
 import TwoFactorAuth from './pages/TwoFactorAuth';
 import VerifyEmail from './pages/VerifyEmail';
 import PaymentSuccess from './pages/PaymentSuccess';
@@ -55,9 +61,12 @@ import Help from './pages/Help';
 import LoginRedirect from './pages/LoginRedirect';
 import Unauthorized from './pages/Unauthorized';
 import NotFound from './pages/NotFound';
+import SecureRedirect from './components/SecureRedirect';
+import UniversalSecurity from './components/UniversalSecurity';
 import Home from './pages/Home';
 import Insumos from './pages/Insumos';
 import Store from './pages/Store';
+import StorePlans from './pages/StorePlans';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -115,53 +124,59 @@ function App() {
                 <Layout>
                   <main id="main-content" role="main">
                     <Routes>
-                    {/* Public Routes */}
-                    <Route path="/" element={<AgroisyncHome />} />
-                    <Route path="/home" element={<Home />} />
-                    <Route path="/home-prompt" element={<AgroisyncHomePrompt />} />
-                    <Route path="/marketplace" element={<AgroisyncMarketplace />} />
-                    <Route path="/loja" element={<AgroisyncLoja />} />
-                    <Route path="/store" element={<Store />} />
-                    <Route path="/agroconecta" element={<AgroisyncAgroConecta />} />
-                    <Route path="/tecnologia" element={<AgroisyncCrypto />} />
-                    <Route path="/insumos" element={<Insumos />} />
-                    <Route path="/plans" element={<AgroisyncPlans />} />
-                    <Route path="/planos" element={<AgroisyncPlans />} />
-                    <Route path="/about" element={<AgroisyncAbout />} />
-                    <Route path="/contact" element={<AgroisyncContact />} />
-                    <Route path="/partnerships" element={<Partnerships />} />
-                    <Route path="/faq" element={<FAQ />} />
-                    <Route path="/terms" element={<Terms />} />
-                    <Route path="/privacy" element={<Privacy />} />
-                    <Route path="/help" element={<Help />} />
+                    {/* Public Routes - 100% Secure */}
+                    <Route path="/" element={<UniversalSecurity><AgroisyncHome /></UniversalSecurity>} />
+                    <Route path="/home" element={<UniversalSecurity><Home /></UniversalSecurity>} />
+                    <Route path="/home-prompt" element={<UniversalSecurity><AgroisyncHomePrompt /></UniversalSecurity>} />
+                    <Route path="/marketplace" element={<UniversalSecurity><AgroisyncMarketplace /></UniversalSecurity>} />
+                    <Route path="/loja" element={<UniversalSecurity><AgroisyncLoja /></UniversalSecurity>} />
+                    <Route path="/store" element={<UniversalSecurity><Store /></UniversalSecurity>} />
+                    <Route path="/agroconecta" element={<UniversalSecurity><AgroisyncAgroConecta /></UniversalSecurity>} />
+                    <Route path="/tecnologia" element={<UniversalSecurity><AgroisyncCrypto /></UniversalSecurity>} />
+                    <Route path="/insumos" element={<UniversalSecurity><Insumos /></UniversalSecurity>} />
+                    <Route path="/plans" element={<UniversalSecurity><AgroisyncPlans /></UniversalSecurity>} />
+                    <Route path="/planos" element={<UniversalSecurity><AgroisyncPlans /></UniversalSecurity>} />
+                    <Route path="/about" element={<UniversalSecurity><AgroisyncAbout /></UniversalSecurity>} />
+                    <Route path="/contact" element={<UniversalSecurity><AgroisyncContact /></UniversalSecurity>} />
+                    <Route path="/partnerships" element={<UniversalSecurity><Partnerships /></UniversalSecurity>} />
+                    <Route path="/faq" element={<UniversalSecurity><FAQ /></UniversalSecurity>} />
+                    <Route path="/terms" element={<UniversalSecurity><Terms /></UniversalSecurity>} />
+                    <Route path="/privacy" element={<UniversalSecurity><Privacy /></UniversalSecurity>} />
+                    <Route path="/help" element={<UniversalSecurity><Help /></UniversalSecurity>} />
                     
-                    {/* Detail Pages */}
-                    <Route path="/produto/:id" element={<ProductDetail />} />
-                    <Route path="/crypto/:id" element={<CryptoDetail />} />
+                    {/* Detail Pages - 100% Secure */}
+                    <Route path="/produto/:id" element={<UniversalSecurity><ProductDetail /></UniversalSecurity>} />
+                    <Route path="/crypto/:id" element={<UniversalSecurity><CryptoDetail /></UniversalSecurity>} />
                     
-                    {/* Auth Routes */}
-                    <Route path="/login" element={<AgroisyncLogin />} />
-                    <Route path="/register" element={<AgroisyncRegister />} />
-                    <Route path="/forgot-password" element={<ForgotPassword />} />
-                    <Route path="/reset-password" element={<ResetPassword />} />
-                    <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
-                    <Route path="/verify-email" element={<VerifyEmail />} />
-                    <Route path="/login-redirect" element={<LoginRedirect />} />
+                    {/* Auth Routes - 100% Secure */}
+                    <Route path="/login" element={<UniversalSecurity><AgroisyncLogin /></UniversalSecurity>} />
+                    <Route path="/register" element={<UniversalSecurity><AgroisyncRegister /></UniversalSecurity>} />
+                    <Route path="/signup" element={<UniversalSecurity><SignupType /></UniversalSecurity>} />
+                    <Route path="/signup/freight" element={<SecureRedirect />} />
+                    <Route path="/signup/store" element={<SecureRedirect />} />
+                    <Route path="/signup/product" element={<SecureRedirect />} />
+                    <Route path="/store-plans" element={<UniversalSecurity><StorePlans /></UniversalSecurity>} />
+                    <Route path="/payment" element={<SecureRedirect />} />
+                    <Route path="/forgot-password" element={<UniversalSecurity><AgroisyncForgotPassword /></UniversalSecurity>} />
+                    <Route path="/reset-password" element={<UniversalSecurity><ResetPassword /></UniversalSecurity>} />
+                    <Route path="/two-factor-auth" element={<SecureRedirect />} />
+                    <Route path="/verify-email" element={<UniversalSecurity><VerifyEmail /></UniversalSecurity>} />
+                    <Route path="/login-redirect" element={<UniversalSecurity><LoginRedirect /></UniversalSecurity>} />
                     
-                    {/* Payment Routes */}
-                    <Route path="/payment/success" element={<PaymentSuccess />} />
-                    <Route path="/payment/cancel" element={<PaymentCancel />} />
+                    {/* Payment Routes - 100% Secure */}
+                    <Route path="/payment/success" element={<UniversalSecurity><PaymentSuccess /></UniversalSecurity>} />
+                    <Route path="/payment/cancel" element={<UniversalSecurity><PaymentCancel /></UniversalSecurity>} />
                     
-                    {/* Protected Routes */}
-                    <Route path="/dashboard" element={<ProtectedRoute><AgroisyncDashboard /></ProtectedRoute>} />
-                    <Route path="/user-dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
-                    <Route path="/messaging" element={<ProtectedRoute><Messaging /></ProtectedRoute>} />
-                    <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
-                    <Route path="/useradmin" element={<ProtectedRoute><UserAdmin /></ProtectedRoute>} />
+                    {/* Protected Routes - 100% Secure + User-Specific */}
+                    <Route path="/dashboard" element={<UniversalSecurity><ProtectedRoute><AgroisyncDashboard /></ProtectedRoute></UniversalSecurity>} />
+                    <Route path="/user-dashboard" element={<UniversalSecurity><ProtectedRoute><UserDashboard /></ProtectedRoute></UniversalSecurity>} />
+                    <Route path="/messaging" element={<UniversalSecurity><ProtectedRoute><Messaging /></ProtectedRoute></UniversalSecurity>} />
+                    <Route path="/admin" element={<UniversalSecurity><ProtectedRoute><AdminPanel /></ProtectedRoute></UniversalSecurity>} />
+                    <Route path="/useradmin" element={<UniversalSecurity><ProtectedRoute><UserAdmin /></ProtectedRoute></UniversalSecurity>} />
                     
-                    {/* Error Routes */}
-                    <Route path="/unauthorized" element={<Unauthorized />} />
-                    <Route path="*" element={<NotFound />} />
+                    {/* Error Routes - 100% Secure */}
+                    <Route path="/unauthorized" element={<UniversalSecurity><Unauthorized /></UniversalSecurity>} />
+                    <Route path="*" element={<UniversalSecurity><NotFound /></UniversalSecurity>} />
                     </Routes>
                   </main>
                 </Layout>
@@ -195,14 +210,18 @@ function App() {
                        {/* Botão do Chatbot Preto */}
                        <button
                          onClick={() => setIsChatbotOpen(true)}
-                         className="fixed bottom-6 right-6 z-50 bg-black text-white p-4 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110"
+                         className="fixed bottom-6 right-6 z-50 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 border border-black"
                          aria-label="Abrir chatbot AI"
+                         style={{
+                           background: 'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)',
+                           padding: '14px',
+                         }}
                        >
-                         <div className="relative">
+                         <div className="relative flex items-center justify-center">
                            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14c3.866 0 7-2.015 7-4.5S15.866 5 12 5 5 7.015 5 9.5c0 1.264.79 2.402 2.084 3.213-.031 1.02-.337 1.982-.938 2.787 1.31-.172 2.52-.557 3.449-1.078.761.108 1.558.178 2.405.178z" />
                            </svg>
-                           <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                           <div className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full animate-pulse"></div>
                          </div>
                        </button>
                 

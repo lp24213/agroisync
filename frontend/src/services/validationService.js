@@ -208,6 +208,26 @@ class ValidationService {
     }
   }
 
+  // Validar CEP (método simplificado para uso em tempo real)
+  async validateCEP(cep) {
+    try {
+      const cepData = await this.fetchCEP(cep);
+      return {
+        valid: true,
+        cep: cepData.cep,
+        address: cepData.logradouro,
+        city: cepData.localidade,
+        state: cepData.uf,
+        neighborhood: cepData.bairro
+      };
+    } catch (error) {
+      return {
+        valid: false,
+        error: error.message
+      };
+    }
+  }
+
   // Buscar municípios por UF
   async fetchMunicipiosByUF(uf) {
     const cacheKey = `municipios-${uf}`;

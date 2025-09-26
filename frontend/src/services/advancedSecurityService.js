@@ -457,7 +457,7 @@ class AdvancedSecurityService {
         <p>Ameaça crítica detectada. Acesso bloqueado por segurança.</p>
         <p>Entre em contato com o suporte técnico.</p>
                         <p>Email: contato@agrosync.com</p>
-        <p>WhatsApp: (66) 99236-2830</p>
+        <p>Suporte: contato@agroisync.com</p>
       </div>
     `;
     

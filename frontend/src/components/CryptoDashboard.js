@@ -64,7 +64,7 @@ const CryptoDashboard = () => {
           change24h: crypto.change24h + (Math.random() - 0.5) * 0.5
         }))
       );
-    }, 5000); // Atualiza a cada 5 segundos
+    }, 30000); // Atualiza a cada 30 segundos
 
     return () => clearInterval(interval);
   }, [mockCryptoData]);

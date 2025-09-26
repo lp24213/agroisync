@@ -10,6 +10,119 @@
     "confirm": "Confirm",
     "close": "Close"
   },
+  "home": {
+    "ticker": {
+      "title": "Stock Ticker in Development",
+      "description": "Soon we will have stock ticker available!"
+    },
+    "partner": {
+      "title": "Be Our",
+      "highlight": "Partner",
+      "description": "Join the Brazilian agribusiness revolution and be part of the largest rural connectivity platform in the country."
+    },
+    "performance": {
+      "title": "Real-time",
+      "highlight": "Performance",
+      "description": "Data updated every second for smarter decisions"
+    },
+    "services": {
+      "title": "Our",
+      "highlight": "Services",
+      "description": "Complete solutions for all modern agribusiness needs"
+    },
+    "news": {
+      "title": "News in Development",
+      "description": "Soon we will have agribusiness news available!"
+    },
+    "cta": {
+      "title": "Ready for the",
+      "highlight": "Future",
+      "description": "Join thousands of agribusiness professionals who have already discovered the power of Agroisync technology. Transform your business today."
+    }
+  },
+  "about": {
+    "hero": {
+      "title": "ABOUT AGROISYNC",
+      "subtitle": "Revolutionizing Brazilian agribusiness with technology and innovation"
+    },
+    "mission": {
+      "title": "Our Mission",
+      "description": "Connect producers, buyers and transporters on a single, secure and efficient platform, using blockchain technology and artificial intelligence to revolutionize Brazilian agribusiness."
+    },
+    "values": {
+      "title": "Our Values",
+      "subtitle": "The principles that guide our company",
+      "innovation": "Innovation",
+      "innovationDesc": "We always seek the best technologies to revolutionize agribusiness",
+      "passion": "Passion",
+      "passionDesc": "We love what we do and believe in the potential of Brazilian agribusiness",
+      "collaboration": "Collaboration",
+      "collaborationDesc": "We believe that together we can build a better future for everyone",
+      "transparency": "Transparency",
+      "transparencyDesc": "We always maintain transparency in all our operations"
+    },
+    "team": {
+      "title": "Meet the people behind AGROISYNC",
+      "agroisyncTeam": "AGROISYNC Team",
+      "agroExperts": "Agribusiness Specialists",
+      "agroisyncDesc": "A dedicated team of professionals passionate about Brazilian agribusiness, working tirelessly to connect producers, buyers and transporters on a revolutionary platform.",
+      "techInnovation": "Technology & Innovation",
+      "continuousDev": "Continuous Development",
+      "techDesc": "Our development team is constantly working to implement the most advanced technologies, including blockchain, AI and sustainable solutions for agribusiness."
+    },
+    "milestones": {
+      "ideaBirth": "Birth of the Idea",
+      "ideaDesc": "The AGROISYNC idea was created by friends passionate about agribusiness, aiming to revolutionize how producers and buyers connect in Brazil.",
+      "executionStart": "Start of Execution",
+      "executionDesc": "We started developing the platform focusing on sustainability, advanced technology and support for both small and large farmers.",
+      "fullImplementation": "Full Implementation",
+      "implementationDesc": "Launch of the complete platform with blockchain, AI, and all functionalities to transform Brazilian agribusiness."
+    },
+    "features": {
+      "sustainableTech": "Sustainable Technology",
+      "sustainableDesc": "We implement solutions that promote sustainable agriculture and efficient use of natural resources.",
+      "democratization": "Agribusiness Democratization",
+      "democratizationDesc": "We connect small family producers to large buyers, creating equal opportunities for everyone.",
+      "globalInnovation": "Global Innovation",
+      "globalDesc": "We use the most advanced international technologies adapted to the Brazilian reality.",
+      "guaranteedQuality": "Guaranteed Quality",
+      "qualityDesc": "Verification and certification system that guarantees the quality of commercialized products."
+    },
+    "differentiation": {
+      "title": "What Sets Us Apart",
+      "subtitle": "Innovations that transform agribusiness"
+    },
+    "journey": {
+      "title": "Our Journey",
+      "subtitle": "Important milestones in our history"
+    }
+  },
+  "contact": {
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "hours": "Hours",
+    "emailDescription": "Send us an email and we'll respond within 24 hours",
+    "phoneDescription": "Monday to Friday service, 8am to 6pm",
+    "addressDescription": "Rua das Flores, 123 - Jardim Verde",
+    "hoursDescription": "Saturday: 8am to 12pm",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Your full name",
+    "emailPlaceholder": "your@email.com",
+    "subject": "Subject",
+    "selectSubject": "Select a subject",
+    "support": "Technical Support",
+    "plans": "Plan Information",
+    "partnership": "Partnerships",
+    "other": "Other",
+    "message": "Message",
+    "messagePlaceholder": "Tell us how we can help...",
+    "sendMessage": "Send Message",
+    "messageSent": "Message Sent!"
+  },
+  "buyerPanel": {
+    "emailNotifications": "Email Notifications"
+  },
   "nav": {
     "inicio": "Home",
     "loja": "Store",

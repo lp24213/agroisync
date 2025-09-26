@@ -251,7 +251,7 @@ const BuyerPanel = () => {
               <label className="flex items-center">
                 <input type="checkbox" defaultChecked className="mr-2" />
                 <span className="text-sm text-slate-600 dark:text-slate-400">
-                  {t('buyerPanel.smsNotifications', 'Notificações por SMS')}
+                  {t('buyerPanel.emailNotifications', 'Notificações por Email')}
                 </span>
               </label>
             </div>

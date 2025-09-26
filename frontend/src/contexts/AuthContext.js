@@ -24,32 +24,26 @@ export const AuthProvider = ({ children }) => {
     try {
       setIsLoading(true);
       const token = localStorage.getItem('authToken');
+      const userData = localStorage.getItem('user');
       
-      if (token) {
-        // Verificar se o token ainda é válido fazendo uma chamada para o backend
-        const response = await axios.get(`${API_BASE_URL}/auth/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        
-        if (response.data.success) {
-          const userData = response.data.user;
-          setUser(userData);
-          setStoreUser(userData);
-        } else {
-          // Token inválido, remover do localStorage
-          localStorage.removeItem('authToken');
-          setUser(null);
-          setStoreUser(null);
+      if (token && userData) {
+        // Usar dados do localStorage diretamente após login
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
+        setStoreUser(parsedUser);
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('User loaded from localStorage:', parsedUser);
         }
       } else {
         setUser(null);
         setStoreUser(null);
       }
     } catch (error) {
-      console.log('No authenticated user:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Error loading user from localStorage:', error);
+      }
       localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
       setUser(null);
       setStoreUser(null);
     } finally {
@@ -61,6 +55,16 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     checkAuthState();
   }, [checkAuthState]);
+
+  const updateUserState = useCallback((userData, token) => {
+    setUser(userData);
+    setStoreUser(userData);
+    localStorage.setItem('authToken', token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('User state updated:', userData);
+    }
+  }, [setStoreUser]);
 
   const login = async (email, password) => {
     try {
@@ -253,7 +257,8 @@ export const AuthProvider = ({ children }) => {
     logout,
     resetPassword,
     enable2FA,
-    checkAuthState
+    checkAuthState,
+    updateUserState
   };
 
   return (

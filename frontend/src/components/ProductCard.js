@@ -22,6 +22,10 @@ const ProductCard = ({ product }) => {
             borderTopLeftRadius: '10px',
             borderTopRightRadius: '10px'
           }}
+          loading="lazy"
+          onError={(e) => {
+            e.target.src = 'https://images.unsplash.com/photo-1600747476236-76579658b1b1?w=300&auto=format&fit=crop&q=60';
+          }}
         />
       </div>
       <div style={{ padding: 16 }}>

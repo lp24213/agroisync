@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import CloudflareTurnstile from '../components/CloudflareTurnstile';
 // import AgroisyncHeader from '../components/AgroisyncHeader'; // Já incluído no App.js
 // import AgroisyncFooter from '../components/AgroisyncFooter'; // Já incluído no App.js
 
 const AgroisyncLogin = () => {
   const navigate = useNavigate();
+  const { updateUserState } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -14,6 +17,7 @@ const AgroisyncLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [turnstileToken, setTurnstileToken] = useState('');
 
   const heroVariants = {
     hidden: { opacity: 0 },
@@ -73,18 +77,66 @@ const AgroisyncLogin = () => {
     if (!validateForm()) {
       return;
     }
+
+    if (!turnstileToken) {
+      setErrors({ general: 'Por favor, complete a verificação "Não sou um robô"' });
+      return;
+    }
     
     setIsLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const api = process.env.REACT_APP_API_URL || '/api';
+      const payloadToSend = {
+        email: (formData.email || '').trim().toLowerCase(),
+        password: (formData.password || '').trim(),
+        turnstileToken: turnstileToken
+      };
+      const res = await fetch(`${api}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payloadToSend)
+      });
       
-      // Demo credentials check
-      if (formData.email === 'demo@agroisync.com' && formData.password === 'demo123') {
-        navigate('/dashboard');
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Response status:', res.status);
+        console.log('Response ok:', res.ok);
+      }
+      
+      if (res.ok) {
+        const payload = await res.json();
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('Full response payload:', payload);
+        }
+        
+        const envelope = payload && payload.data ? payload.data : {};
+        const token = envelope.token;
+        const user = envelope.user;
+        
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('Token:', token);
+          console.log('User:', user);
+        }
+
+        if (token && user) {
+          updateUserState(user, token);
+          if (process.env.NODE_ENV !== 'production') {
+            console.log('Login successful, navigating to dashboard');
+          }
+          // Forçar reload da página para atualizar o AuthContext
+          window.location.href = '/user-dashboard';
+        } else {
+          if (process.env.NODE_ENV !== 'production') {
+            console.log('Missing token or user in response');
+          }
+          setErrors({ general: payload.message || 'Credenciais inválidas' });
+        }
       } else {
-        setErrors({ general: 'Credenciais inválidas' });
+        const errorData = await res.json();
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('Error response:', errorData);
+        }
+        setErrors({ general: errorData.message || 'Credenciais inválidas' });
       }
     } catch (error) {
       setErrors({ general: 'Erro ao fazer login. Tente novamente.' });
@@ -411,6 +463,22 @@ const AgroisyncLogin = () => {
                   </Link>
                 </motion.div>
 
+                {/* Cloudflare Turnstile */}
+                <CloudflareTurnstile
+                  onVerify={(token) => {
+                    setTurnstileToken(token);
+                    setErrors(prev => ({ ...prev, general: '' })); // Limpar erro quando verificação for completada
+                  }}
+                  onError={(error) => {
+                    setErrors({ general: 'Erro na verificação. Tente novamente.' });
+                    setTurnstileToken('');
+                  }}
+                  onExpire={() => {
+                    setTurnstileToken('');
+                    setErrors({ general: 'Verificação expirada. Tente novamente.' });
+                  }}
+                />
+
                 <motion.button
                   variants={itemVariants}
                   type="submit"
@@ -448,6 +516,24 @@ const AgroisyncLogin = () => {
                 </motion.button>
               </form>
 
+              {/* Esqueci minha senha */}
+              <motion.div 
+                variants={itemVariants}
+                style={{ textAlign: 'center', marginTop: '1rem' }}
+              >
+                <Link 
+                  to="/forgot-password" 
+                  style={{ 
+                    color: 'var(--accent)', 
+                    textDecoration: 'none',
+                    fontWeight: '600',
+                    fontSize: '0.9rem'
+                  }}
+                >
+                  Esqueci minha senha
+                </Link>
+              </motion.div>
+
               <motion.div 
                 variants={itemVariants}
                 style={{ textAlign: 'center', marginTop: '2rem' }}
@@ -467,14 +553,6 @@ const AgroisyncLogin = () => {
                 </p>
               </motion.div>
 
-              <motion.div 
-                variants={itemVariants}
-                style={{ textAlign: 'center', marginTop: '1.5rem' }}
-              >
-                <p style={{ fontSize: '0.9rem', color: 'var(--muted)' }}>
-                  Demo: demo@agroisync.com / demo123
-                </p>
-              </motion.div>
             </motion.div>
           </div>
         </div>

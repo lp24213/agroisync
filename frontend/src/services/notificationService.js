@@ -40,7 +40,6 @@ export const NOTIFICATION_TYPES = {
 // Canais de notificação
 export const NOTIFICATION_CHANNELS = {
   'EMAIL': 'E-mail',
-  'SMS': 'SMS',
   'PUSH': 'Push',
   'IN_APP': 'No App'
 };
@@ -95,7 +94,9 @@ class NotificationService {
       // });
 
       this.isConnected = true;
-      console.log('Conectado ao serviço de notificações');
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Conectado ao serviço de notificações');
+      }
       
       return { success: true };
     } catch (error) {
@@ -114,7 +115,6 @@ class NotificationService {
         // Preferências padrão
         this.userPreferences = {
           email: true,
-          sms: true,
           push: true,
           inApp: true,
           frequency: 'immediate', // immediate, hourly, daily
@@ -196,8 +196,6 @@ class NotificationService {
       switch (channel) {
         case 'EMAIL':
           return await this.sendEmail(notification);
-        case 'SMS':
-          return await this.sendSMS(notification);
         case 'PUSH':
           return await this.sendPush(notification);
         case 'IN_APP':
@@ -236,27 +234,6 @@ class NotificationService {
     }
   }
 
-  // Enviar SMS via AWS SNS
-  async sendSMS(notification) {
-    try {
-      // Em produção, chamar endpoint do backend que usa AWS SNS
-      // const response = await axios.post(`${API_BASE_URL}/notifications/sms`, {
-      //   to: this.userPhone,
-      //   message: notification.message
-      // });
-
-      // Simular envio para desenvolvimento
-      console.log('📱 SMS enviado via AWS SNS:', {
-        to: this.userPhone,
-        message: notification.message
-      });
-
-      return { success: true, channel: 'SMS' };
-    } catch (error) {
-      console.error('Erro ao enviar SMS:', error);
-      throw error;
-    }
-  }
 
   // Enviar push via Firebase Cloud Messaging
   async sendPush(notification) {
@@ -563,7 +540,7 @@ class NotificationService {
         title: 'Status da Transação Alterado',
         message: 'Sua transação #TXN_456 foi alterada para "Em Negociação"',
         payload: { transactionId: 'TXN_456', oldStatus: 'PENDING', newStatus: 'NEGOTIATING' },
-        channels: ['IN_APP', 'EMAIL', 'SMS'],
+        channels: ['IN_APP', 'EMAIL'],
         status: 'PENDING',
         createdAt: new Date().toISOString(),
         sentAt: null,
@@ -587,7 +564,9 @@ class NotificationService {
       this.userId = null;
       this.notificationHandlers.clear();
       
-      console.log('Desconectado do serviço de notificações');
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Desconectado do serviço de notificações');
+      }
       return { success: true };
     } catch (error) {
       console.error('Erro ao desconectar:', error);

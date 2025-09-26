@@ -1,0 +1,301 @@
+/* Mobile Fixes for Agroisync */
+
+/* Fix for Turnstile on mobile */
+.cf-turnstile {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  transform: scale(0.9) !important;
+  transform-origin: center !important;
+}
+
+.cf-turnstile iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 200px !important;
+  height: 65px !important;
+}
+
+/* Fix for Turnstile container */
+@media (max-width: 768px) {
+  .cf-turnstile {
+    transform: scale(0.8) !important;
+    margin: 0.5rem 0 !important;
+  }
+}
+
+/* Fix for images on mobile */
+@media (max-width: 768px) {
+  .product-image img,
+  .hero-image,
+  .background-image {
+    background-attachment: scroll !important;
+    background-size: cover !important;
+    background-position: center !important;
+  }
+  
+  /* Fix for background images that don't show on mobile */
+  .hero-section {
+    background-image: url('https://images.unsplash.com/photo-1600747476236-76579658b1b1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Q0FNUE8lMjBERSUyMFNPSkF8ZW58MHx8MHx8fDA%3D') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+  }
+}
+
+/* Fix for red lines/borders on mobile */
+@media (max-width: 768px) {
+  * {
+    border-color: transparent !important;
+    outline: none !important;
+  }
+  
+  .border-red-500,
+  .border-red-600,
+  .border-red-700 {
+    border-color: #e5e7eb !important;
+  }
+  
+  .text-red-500,
+  .text-red-600,
+  .text-red-700 {
+    color: #6b7280 !important;
+  }
+  
+  .bg-red-50,
+  .bg-red-100 {
+    background-color: #f9fafb !important;
+  }
+}
+
+/* Fix for form elements on mobile */
+@media (max-width: 768px) {
+  input, textarea, select {
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+    padding: 12px !important;
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+  }
+  
+  input:focus, textarea:focus, select:focus {
+    border-color: #10b981 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  
+  /* Fix for iOS input zoom */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="number"] {
+    font-size: 16px !important;
+    transform: translateZ(0) !important;
+  }
+}
+
+/* Fix for buttons on mobile */
+@media (max-width: 768px) {
+  button, .btn {
+    min-height: 44px !important; /* iOS touch target */
+    min-width: 44px !important;
+    padding: 12px 16px !important;
+    font-size: 16px !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+  }
+  
+  /* Fix for button active states */
+  button:active, .btn:active {
+    transform: scale(0.98) !important;
+    transition: transform 0.1s ease !important;
+  }
+}
+
+/* Fix for text on mobile */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+  }
+  
+  h1 {
+    font-size: 2rem !important;
+  }
+  
+  h2 {
+    font-size: 1.5rem !important;
+  }
+  
+  h3 {
+    font-size: 1.25rem !important;
+  }
+}
+
+/* Fix for containers on mobile */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  
+  .px-4 {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  
+  .px-6 {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+/* Fix for grid layouts on mobile */
+@media (max-width: 768px) {
+  .grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .grid-cols-3 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Fix for flex layouts on mobile */
+@media (max-width: 768px) {
+  .flex-row {
+    flex-direction: column !important;
+  }
+  
+  .space-x-4 > * + * {
+    margin-left: 0 !important;
+    margin-top: 1rem !important;
+  }
+  
+  .space-x-6 > * + * {
+    margin-left: 0 !important;
+    margin-top: 1.5rem !important;
+  }
+}
+
+/* Fix for shadows and effects on mobile */
+@media (max-width: 768px) {
+  .shadow-lg,
+  .shadow-xl {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+  }
+}
+
+/* Fix for animations on mobile */
+@media (max-width: 768px) {
+  * {
+    animation-duration: 0.2s !important;
+    transition-duration: 0.2s !important;
+  }
+}
+
+/* Fix for overflow on mobile */
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden !important;
+    position: relative !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  .overflow-hidden {
+    overflow: hidden !important;
+  }
+  
+  /* Fix for scroll issues */
+  html {
+    -webkit-overflow-scrolling: touch !important;
+    scroll-behavior: smooth !important;
+  }
+  
+  /* Fix for iOS bounce scroll */
+  body {
+    overscroll-behavior: none !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+}
+
+/* Fix for z-index issues on mobile */
+@media (max-width: 768px) {
+  .z-50 {
+    z-index: 50 !important;
+  }
+  
+  .z-40 {
+    z-index: 40 !important;
+  }
+  
+  .z-30 {
+    z-index: 30 !important;
+  }
+}
+
+/* Fix for touch events on mobile */
+@media (max-width: 768px) {
+  * {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+  }
+  
+  /* Fix for long press issues */
+  a, button, input, textarea, select {
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+  }
+  
+  /* Allow text selection in inputs */
+  input, textarea {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+  }
+}
+
+/* Fix for keyboard issues on mobile */
+@media (max-width: 768px) {
+  /* Prevent zoom on input focus */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="number"],
+  textarea,
+  select {
+    font-size: 16px !important;
+    transform: translateZ(0) !important;
+  }
+  
+  /* Fix for viewport height issues */
+  .min-h-screen {
+    min-height: 100vh !important;
+    min-height: -webkit-fill-available !important;
+  }
+  
+  /* Fix for safe area insets */
+  .safe-area-inset {
+    padding-top: env(safe-area-inset-top) !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+    padding-left: env(safe-area-inset-left) !important;
+    padding-right: env(safe-area-inset-right) !important;
+  }
+}

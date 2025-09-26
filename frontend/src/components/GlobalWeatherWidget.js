@@ -4,6 +4,7 @@ import {
   MapPin, Thermometer, Droplets, Wind, 
   Sunrise, Sunset, RefreshCw, Search, X
 } from 'lucide-react';
+import weatherService from '../services/weatherService';
 
 const GlobalWeatherWidget = () => {
   const [weatherData, setWeatherData] = useState(null);

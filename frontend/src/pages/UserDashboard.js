@@ -23,6 +23,15 @@ const UserDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newItem, setNewItem] = useState({
+    name: '',
+    description: '',
+    price: '',
+    category: '',
+    quantity: '',
+    image: null
+  });
 
   useEffect(() => {
     loadUserData();
@@ -88,6 +97,40 @@ const UserDashboard = () => {
       ];
     }
     return [];
+  };
+
+  const handleAddItem = async () => {
+    try {
+      const api = process.env.REACT_APP_API_URL || '/api';
+      const token = localStorage.getItem('authToken');
+      
+      const endpoint = userType === 'carrier' ? '/freights' : '/products';
+      const payload = {
+        ...newItem,
+        type: userType,
+        userId: JSON.parse(localStorage.getItem('user') || '{}').id
+      };
+
+      const res = await fetch(`${api}${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        alert('✅ Item cadastrado com sucesso!');
+        setShowAddModal(false);
+        setNewItem({ name: '', description: '', price: '', category: '', quantity: '', image: null });
+        loadUserData(); // Recarregar dados
+      } else {
+        alert('❌ Erro ao cadastrar item');
+      }
+    } catch (error) {
+      alert('❌ Erro de conexão');
+    }
   };
 
   const tabs = [
@@ -183,7 +226,10 @@ const UserDashboard = () => {
         <h3 className="text-lg font-semibold text-gray-900">
           {userType === 'producer' ? 'Meus Produtos' : 'Meus Fretes'}
         </h3>
-        <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2">
+        <button 
+          onClick={() => setShowAddModal(true)}
+          className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+        >
           <Plus className="w-4 h-4" />
           Adicionar Novo
         </button>
@@ -324,6 +370,103 @@ const UserDashboard = () => {
           {renderContent()}
         </motion.div>
       </div>
+
+      {/* Modal de Adicionar Item */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <h3 className="text-lg font-semibold mb-4">
+              Cadastrar {userType === 'producer' ? 'Produto' : 'Frete'}
+            </h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nome *
+                </label>
+                <input
+                  type="text"
+                  value={newItem.name}
+                  onChange={(e) => setNewItem({...newItem, name: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  placeholder="Nome do produto/frete"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Descrição *
+                </label>
+                <textarea
+                  value={newItem.description}
+                  onChange={(e) => setNewItem({...newItem, description: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  rows="3"
+                  placeholder="Descrição detalhada"
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Preço (R$) *
+                  </label>
+                  <input
+                    type="number"
+                    value={newItem.price}
+                    onChange={(e) => setNewItem({...newItem, price: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="0.00"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Categoria *
+                  </label>
+                  <input
+                    type="text"
+                    value={newItem.category}
+                    onChange={(e) => setNewItem({...newItem, category: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="Categoria"
+                  />
+                </div>
+              </div>
+              
+              {userType === 'producer' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Quantidade
+                  </label>
+                  <input
+                    type="number"
+                    value={newItem.quantity}
+                    onChange={(e) => setNewItem({...newItem, quantity: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="Quantidade disponível"
+                  />
+                </div>
+              )}
+            </div>
+            
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setShowAddModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleAddItem}
+                className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >
+                Cadastrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

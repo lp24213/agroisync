@@ -147,6 +147,10 @@ const ProductDetail = () => {
                 src={product.images[selectedImage]} 
                 alt={product.name}
                 className="w-full h-full object-cover"
+                loading="lazy"
+                onError={(e) => {
+                  e.target.src = 'https://images.unsplash.com/photo-1600747476236-76579658b1b1?w=500&auto=format&fit=crop&q=60';
+                }}
               />
             </div>
             
@@ -163,6 +167,10 @@ const ProductDetail = () => {
                     src={image} 
                     alt={`${product.name} ${index + 1}`}
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    onError={(e) => {
+                      e.target.src = 'https://images.unsplash.com/photo-1600747476236-76579658b1b1?w=200&auto=format&fit=crop&q=60';
+                    }}
                   />
                 </button>
               ))}

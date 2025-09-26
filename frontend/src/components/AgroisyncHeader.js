@@ -63,21 +63,21 @@ const AgroisyncHeader = () => {
     { path: '/about', label: 'Sobre', icon: Info },
     { path: '/planos', label: 'Planos', icon: Crown },
     { path: '/login', label: 'Entrar', icon: LogIn },
-    { path: '/register', label: 'Cadastrar', icon: User },
+    { path: '/signup', label: 'Cadastrar', icon: User },
   ];
 
   return (
     <>
-      <header className="bg-white/95 backdrop-blur-md border-b border-gray-200/50 fixed top-0 left-0 right-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-between h-16">
+      <header id="main-header" className="bg-white/95 backdrop-blur-md border-b border-gray-200/50 fixed top-0 left-0 right-0 z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-16 flex-wrap md:flex-nowrap">
             {/* Logo */}
             <Link to="/" className="flex items-center">
               <AgroisyncLogo />
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-1">
+            <nav id="main-nav" className="hidden md:flex items-center space-x-1">
               {navigationItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.path;
@@ -85,7 +85,7 @@ const AgroisyncHeader = () => {
                   <Link
                     key={item.path}
                     to={item.path}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                       isActive
                         ? 'bg-green-500 text-white shadow-md'
                         : 'text-gray-700 hover:text-green-600 hover:bg-green-50 hover:shadow-sm'
@@ -123,35 +123,18 @@ const AgroisyncHeader = () => {
                   Sair
                 </button>
               </div>
-            ) : (
-              <div className="hidden md:flex items-center gap-3">
-                <Link
-                  to="/login"
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:text-green-600 hover:bg-green-50 transition-all duration-200"
-                >
-                  <LogIn className="w-4 h-4" />
-                  Entrar
-                </Link>
-                <Link
-                  to="/register"
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium bg-green-500 text-white hover:bg-green-600 transition-all duration-200"
-                >
-                  <User className="w-4 h-4" />
-                  Cadastrar
-                </Link>
-              </div>
-            )}
+            ) : null}
 
 
             {/* Desktop Actions */}
             <div className="hidden md:flex items-center gap-4">
               {/* Language Selector */}
-              <div className="premium-language-selector-desktop">
+              <div className="lang-selector premium-language-selector-desktop">
                 <LanguageSelectorPro />
               </div>
 
               {/* Auth Buttons */}
-              {user ? (
+              {user && (
                 <div className="flex items-center gap-3">
                   <span className="text-sm text-gray-700 font-medium">
                     Olá, {user.name || user.email}
@@ -164,18 +147,19 @@ const AgroisyncHeader = () => {
                     Sair
                   </button>
                 </div>
-              ) : (
+              )}
+              {!user && (
                 <div className="flex items-center gap-2">
                   <Link
                     to="/login"
-                    className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all duration-200"
+                    className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all duration-200"
                   >
                     <LogIn className="w-4 h-4" />
                     Entrar
                   </Link>
                   <Link
-                    to="/register"
-                    className="flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 hover:shadow-md transition-all duration-200"
+                    to="/signup"
+                    className="flex items-center gap-2 px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 hover:shadow-md transition-all duration-200"
                   >
                     <User className="w-4 h-4" />
                     Cadastrar
@@ -184,7 +168,7 @@ const AgroisyncHeader = () => {
               )}
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button + Acesso rápido (login/register só no drawer) */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="md:hidden p-2.5 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all duration-200"
@@ -219,7 +203,7 @@ const AgroisyncHeader = () => {
               })}
               
               {/* Mobile Language Selector */}
-              <div className="px-4 py-3 border-t border-gray-200/50">
+              <div className="lang-selector px-4 py-3 border-t border-gray-200/50">
                 <LanguageSelectorPro />
               </div>
             </div>

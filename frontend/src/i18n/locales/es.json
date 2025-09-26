@@ -10,6 +10,119 @@
     "confirm": "Confirmar",
     "close": "Cerrar"
   },
+  "home": {
+    "ticker": {
+      "title": "Ticker de Cotizaciones en Desarrollo",
+      "description": "¡Pronto tendremos ticker de cotizaciones disponible!"
+    },
+    "partner": {
+      "title": "Sé Nuestro",
+      "highlight": "Socio",
+      "description": "Únete a la revolución del agronegocio brasileño y forma parte de la mayor plataforma de conectividad rural del país."
+    },
+    "performance": {
+      "title": "Rendimiento en",
+      "highlight": "Tiempo Real",
+      "description": "Datos actualizados cada segundo para decisiones más inteligentes"
+    },
+    "services": {
+      "title": "Nuestros",
+      "highlight": "Servicios",
+      "description": "Soluciones completas para todas las necesidades del agronegocio moderno"
+    },
+    "news": {
+      "title": "Noticias en Desarrollo",
+      "description": "¡Pronto tendremos noticias del agronegocio disponibles!"
+    },
+    "cta": {
+      "title": "¿Listo para el",
+      "highlight": "Futuro",
+      "description": "Únete a miles de profesionales del agronegocio que ya han descubierto el poder de la tecnología Agroisync. Transforma tu negocio hoy mismo."
+    }
+  },
+  "about": {
+    "hero": {
+      "title": "SOBRE AGROISYNC",
+      "subtitle": "Revolucionando el agronegocio brasileño con tecnología e innovación"
+    },
+    "mission": {
+      "title": "Nuestra Misión",
+      "description": "Conectar productores, compradores y transportadores en una plataforma única, segura y eficiente, utilizando tecnología blockchain e inteligencia artificial para revolucionar el agronegocio brasileño."
+    },
+    "values": {
+      "title": "Nuestros Valores",
+      "subtitle": "Los principios que guían nuestra empresa",
+      "innovation": "Innovación",
+      "innovationDesc": "Siempre buscamos las mejores tecnologías para revolucionar el agronegocio",
+      "passion": "Pasión",
+      "passionDesc": "Amamos lo que hacemos y creemos en el potencial del agronegocio brasileño",
+      "collaboration": "Colaboración",
+      "collaborationDesc": "Creemos que juntos podemos construir un futuro mejor para todos",
+      "transparency": "Transparencia",
+      "transparencyDesc": "Mantenemos siempre la transparencia en todas nuestras operaciones"
+    },
+    "team": {
+      "title": "Conoce a las personas detrás de AGROISYNC",
+      "agroisyncTeam": "Equipo AGROISYNC",
+      "agroExperts": "Especialistas en Agronegocio",
+      "agroisyncDesc": "Un equipo dedicado de profesionales apasionados por el agronegocio brasileño, trabajando incansablemente para conectar productores, compradores y transportadores en una plataforma revolucionaria.",
+      "techInnovation": "Tecnología e Innovación",
+      "continuousDev": "Desarrollo Continuo",
+      "techDesc": "Nuestro equipo de desarrollo está constantemente trabajando para implementar las tecnologías más avanzadas, incluyendo blockchain, IA y soluciones sostenibles para el agronegocio."
+    },
+    "milestones": {
+      "ideaBirth": "Nacimiento de la Idea",
+      "ideaDesc": "La idea de AGROISYNC fue creada por amigos apasionados por el agronegocio, con el objetivo de revolucionar la forma en que productores y compradores se conectan en Brasil.",
+      "executionStart": "Inicio de la Ejecución",
+      "executionDesc": "Comenzamos a desarrollar la plataforma enfocándonos en la sostenibilidad, tecnología avanzada y apoyo tanto a pequeños como a grandes agricultores.",
+      "fullImplementation": "Implementación Completa",
+      "implementationDesc": "Lanzamiento de la plataforma completa con blockchain, IA, y todas las funcionalidades para transformar el agronegocio brasileño."
+    },
+    "features": {
+      "sustainableTech": "Tecnología Sostenible",
+      "sustainableDesc": "Implementamos soluciones que promueven la agricultura sostenible y el uso eficiente de los recursos naturales.",
+      "democratization": "Democratización del Agronegocio",
+      "democratizationDesc": "Conectamos pequeños productores familiares con grandes compradores, creando oportunidades iguales para todos.",
+      "globalInnovation": "Innovación Global",
+      "globalDesc": "Utilizamos las tecnologías internacionales más avanzadas adaptadas a la realidad brasileña.",
+      "guaranteedQuality": "Calidad Garantizada",
+      "qualityDesc": "Sistema de verificación y certificación que garantiza la calidad de los productos comercializados."
+    },
+    "differentiation": {
+      "title": "Lo Que Nos Diferencia",
+      "subtitle": "Innovaciones que transforman el agronegocio"
+    },
+    "journey": {
+      "title": "Nuestro Viaje",
+      "subtitle": "Hitos importantes en nuestra historia"
+    }
+  },
+  "contact": {
+    "email": "Email",
+    "phone": "Teléfono",
+    "address": "Dirección",
+    "hours": "Horario",
+    "emailDescription": "Envíanos un email y responderemos en 24 horas",
+    "phoneDescription": "Atención de lunes a viernes, 8h a 18h",
+    "addressDescription": "Rua das Flores, 123 - Jardim Verde",
+    "hoursDescription": "Sábado: 8h a 12h",
+    "fullName": "Nombre Completo",
+    "fullNamePlaceholder": "Tu nombre completo",
+    "emailPlaceholder": "tu@email.com",
+    "subject": "Asunto",
+    "selectSubject": "Selecciona un asunto",
+    "support": "Soporte Técnico",
+    "plans": "Información de Planes",
+    "partnership": "Alianzas",
+    "other": "Otro",
+    "message": "Mensaje",
+    "messagePlaceholder": "Cuéntanos cómo podemos ayudar...",
+    "sendMessage": "Enviar Mensaje",
+    "messageSent": "¡Mensaje Enviado!"
+  },
+  "buyerPanel": {
+    "emailNotifications": "Notificaciones por Email"
+  },
   "nav": {
     "inicio": "Inicio",
     "loja": "Tienda",

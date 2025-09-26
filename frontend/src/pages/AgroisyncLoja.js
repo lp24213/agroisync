@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-// import RegistrationSystem from '../components/RegistrationSystem'; // Componente removido
-// import PlansSystem from '../components/PlansSystem'; // Componente removido
+import productService from '../services/productService';
 import { 
   ShoppingCart, 
   Star, 
@@ -20,7 +19,6 @@ import {
   Eye,
   X
 } from 'lucide-react';
-// import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt'; // Componente removido
 
 const AgroisyncLoja = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -28,10 +26,26 @@ const AgroisyncLoja = () => {
   const [sortBy, setSortBy] = useState('relevancia');
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
   const [showPlansModal, setShowPlansModal] = useState(false);
-  // const [publicRegistrations, setPublicRegistrations] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Produtos da loja - VAZIO até usuários cadastrarem seus produtos
-  const products = [];
+  // Carregar produtos reais do backend
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  const loadProducts = async () => {
+    try {
+      setLoading(true);
+      const productsData = await productService.getProducts();
+      setProducts(productsData.products || productsData || []);
+    } catch (error) {
+      console.error('Erro ao carregar produtos:', error);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const categories = [
     { value: 'todos', label: 'Todos os Produtos' },
@@ -109,7 +123,7 @@ const AgroisyncLoja = () => {
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed'
+          backgroundAttachment: 'scroll'
         }}
       >
         <div className="absolute inset-0 bg-black/50"></div>
@@ -350,7 +364,7 @@ const AgroisyncLoja = () => {
 
                 {/* Imagem do Produto */}
                 <div className="agro-product-image">
-                  <img src={product.image} alt={product.name} />
+                  <img src={product.image} alt={product.name} loading="lazy" />
                   <div className="agro-product-overlay">
                     <button className="agro-product-quick-view">
                       <Eye size={20} />

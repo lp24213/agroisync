@@ -27,18 +27,6 @@
     "login": "Entrar",
     "register": "Cadastrar"
   },
-  "navigation": {
-    "home": "Home",
-    "about": "Sobre",
-    "contact": "Contato",
-    "plans": "Planos",
-    "services": "Serviços",
-    "store": "Loja Agroisync",
-    "agroconecta": "Fretes",
-    "marketplace": "Produtos",
-    "login": "Entrar",
-    "register": "Cadastrar"
-  },
   "home": {
     "title": "Agroisync",
     "subtitle": "A Plataforma de Agronegócio Mais Futurista do Mundo",
@@ -91,6 +79,29 @@
       "contact": "Falar com Especialista",
       "startFree": "Começar Gratuitamente",
       "talkExpert": "Falar com Especialista"
+    },
+    "ticker": {
+      "title": "Ticker de Cotações em Desenvolvimento",
+      "description": "Em breve teremos ticker de cotações disponível!"
+    },
+    "partner": {
+      "title": "Seja Nosso",
+      "highlight": "Parceiro",
+      "description": "Junte-se à revolução do agronegócio brasileiro e faça parte da maior plataforma de conectividade rural do país."
+    },
+    "performance": {
+      "title": "Performance em",
+      "highlight": "Tempo Real",
+      "description": "Dados atualizados a cada segundo para decisões mais inteligentes"
+    },
+    "services": {
+      "title": "Nossos",
+      "highlight": "Serviços",
+      "description": "Soluções completas para todas as necessidades do agronegócio moderno"
+    },
+    "news": {
+      "title": "Notícias em Desenvolvimento",
+      "description": "Em breve teremos notícias do agronegócio disponíveis!"
     }
   },
   "quotations": {
@@ -99,50 +110,6 @@
     "corn": "Milho",
     "wheat": "Trigo",
     "cotton": "Algodão"
-  },
-  "about": {
-    "title": "Sobre Nós",
-    "subtitle": "Conheça a história por trás da AGROISYNC",
-    "mission": {
-      "title": "Nossa Missão",
-      "description": "Revolucionar o agronegócio brasileiro através da tecnologia, conectando produtores, compradores e transportadores em uma plataforma inteligente e segura."
-    },
-    "vision": {
-      "title": "Nossa Visão",
-      "description": "Ser a principal plataforma de agronegócio do Brasil, reconhecida pela inovação, transparência e impacto positivo no setor agrícola."
-    },
-    "values": {
-      "title": "Nossos Valores",
-      "subtitle": "Os princípios que guiam nossa empresa",
-      "innovation": {
-        "title": "Inovação",
-        "description": "Sempre buscamos as melhores tecnologias para revolucionar o agronegócio"
-      },
-      "passion": {
-        "title": "Paixão",
-        "description": "Amamos o que fazemos e acreditamos no potencial do agronegócio brasileiro"
-      },
-      "collaboration": {
-        "title": "Colaboração",
-        "description": "Acreditamos que juntos podemos construir um futuro melhor para todos"
-      },
-      "transparency": {
-        "title": "Transparência",
-        "description": "Mantemos sempre a transparência em todas as nossas operações"
-      }
-    },
-    "team": {
-      "title": "Nossa Equipe",
-      "subtitle": "Conheça as pessoas por trás da AGROISYNC",
-      "ceo": "CEO & Fundador",
-      "cofounder": "Co-founder"
-    },
-    "cta": {
-      "title": "Faça Parte da Revolução",
-      "subtitle": "Junte-se a nós na missão de transformar o agronegócio brasileiro",
-      "getStarted": "Começar Agora",
-      "contact": "Fale Conosco"
-    }
   },
   "contact": {
     "title": "Entre em Contato",
@@ -294,6 +261,66 @@
       "codeReached": "Limite de geração de código atingido",
       "searchReached": "Limite de buscas atingido",
       "upgradePrompt": "Faça upgrade para Pro para usar mais recursos!"
+    }
+  },
+  "buyerPanel": {
+    "emailNotifications": "Notificações por Email"
+  },
+  "about": {
+    "hero": {
+      "title": "SOBRE A AGROISYNC",
+      "subtitle": "Revolucionando o agronegócio brasileiro com tecnologia e inovação"
+    },
+    "mission": {
+      "title": "Nossa Missão",
+      "description": "Conectar produtores, compradores e transportadores em uma plataforma única, segura e eficiente, utilizando tecnologia blockchain e inteligência artificial para revolucionar o agronegócio brasileiro."
+    },
+    "values": {
+      "title": "Nossos Valores",
+      "subtitle": "Os princípios que guiam nossa empresa",
+      "innovation": "Inovação",
+      "innovationDesc": "Sempre buscamos as melhores tecnologias para revolucionar o agronegócio",
+      "passion": "Paixão",
+      "passionDesc": "Amamos o que fazemos e acreditamos no potencial do agronegócio brasileiro",
+      "collaboration": "Colaboração",
+      "collaborationDesc": "Acreditamos que juntos podemos construir um futuro melhor para todos",
+      "transparency": "Transparência",
+      "transparencyDesc": "Mantemos sempre a transparência em todas as nossas operações"
+    },
+    "team": {
+      "title": "Conheça as pessoas por trás da AGROISYNC",
+      "agroisyncTeam": "Equipe AGROISYNC",
+      "agroExperts": "Especialistas em Agronegócio",
+      "agroisyncDesc": "Uma equipe dedicada de profissionais apaixonados pelo agronegócio brasileiro, trabalhando incansavelmente para conectar produtores, compradores e transportadores em uma plataforma revolucionária.",
+      "techInnovation": "Tecnologia & Inovação",
+      "continuousDev": "Desenvolvimento Contínuo",
+      "techDesc": "Nossa equipe de desenvolvimento está constantemente trabalhando para implementar as mais avançadas tecnologias, incluindo blockchain, IA e soluções sustentáveis para o agronegócio."
+    },
+    "milestones": {
+      "ideaBirth": "Nascimento da Ideia",
+      "ideaDesc": "A ideia da AGROISYNC foi criada por amigos apaixonados pelo agronegócio, visando revolucionar a forma como produtores e compradores se conectam no Brasil.",
+      "executionStart": "Início da Execução",
+      "executionDesc": "Começamos a desenvolver a plataforma com foco na sustentabilidade, tecnologia avançada e apoio tanto ao pequeno quanto ao grande agricultor.",
+      "fullImplementation": "Implementação Completa",
+      "implementationDesc": "Lançamento da plataforma completa com blockchain, IA, e todas as funcionalidades para transformar o agronegócio brasileiro."
+    },
+    "features": {
+      "sustainableTech": "Tecnologia Sustentável",
+      "sustainableDesc": "Implementamos soluções que promovem a agricultura sustentável e o uso eficiente de recursos naturais.",
+      "democratization": "Democratização do Agronegócio",
+      "democratizationDesc": "Conectamos pequenos produtores familiares aos grandes compradores, criando oportunidades iguais para todos.",
+      "globalInnovation": "Inovação Global",
+      "globalDesc": "Utilizamos as mais avançadas tecnologias internacionais adaptadas para a realidade brasileira.",
+      "guaranteedQuality": "Qualidade Garantida",
+      "qualityDesc": "Sistema de verificação e certificação que garante a qualidade dos produtos comercializados."
+    },
+    "differentiation": {
+      "title": "O Que Nos Diferencia",
+      "subtitle": "Inovações que transformam o agronegócio"
+    },
+    "journey": {
+      "title": "Nossa Jornada",
+      "subtitle": "Marcos importantes da nossa história"
     }
   }
 }

@@ -137,7 +137,7 @@ const AgroisyncMarketplace = () => {
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed'
+          backgroundAttachment: 'scroll'
         }}
       >
         <div className="absolute inset-0 bg-black/50"></div>

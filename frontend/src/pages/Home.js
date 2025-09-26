@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { 
   ArrowRight, 
   Shield, 
@@ -25,6 +26,7 @@ import {
 } from '../components/animations/PremiumAnimations';
 
 const Home = () => {
+  const { t } = useTranslation();
   const { isDarkMode } = useTheme();
   const features = [
     {
@@ -91,8 +93,8 @@ const Home = () => {
     <div className="min-h-screen">
       {/* Bolsa de Valores Ticker */}
       <div className="text-center py-8">
-        <h3 className="text-xl font-semibold text-gray-600">Ticker de Cotações em Desenvolvimento</h3>
-        <p className="text-gray-500 mt-2">Em breve teremos ticker de cotações disponível!</p>
+        <h3 className="text-xl font-semibold text-gray-600">{t('home.ticker.title', 'Ticker de Cotações em Desenvolvimento')}</h3>
+        <p className="text-gray-500 mt-2">{t('home.ticker.description', 'Em breve teremos ticker de cotações disponível!')}</p>
       </div>
       
       {/* Imagem Ultrarealista 4K - Campo de Soja */}
@@ -103,7 +105,7 @@ const Home = () => {
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed',
+          backgroundAttachment: 'scroll',
           width: '100%',
           height: '100vh',
           minHeight: '800px',
@@ -116,6 +118,15 @@ const Home = () => {
         {/* Overlay sutil para melhorar legibilidade */}
         <div className="absolute inset-0 bg-black/20"></div>
         
+        {/* Imagem de fallback para mobile */}
+        <img 
+          src="https://images.unsplash.com/photo-1600747476236-76579658b1b1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Q0FNUE8lMjBERSUyMFNPSkF8ZW58MHx8MHx8fDA%3D"
+          alt="Campo de Soja"
+          loading="lazy"
+          className="absolute inset-0 w-full h-full object-cover md:hidden"
+          style={{ zIndex: -1 }}
+        />
+        
         {/* Conteúdo Centralizado */}
         <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
           <motion.div
@@ -125,11 +136,10 @@ const Home = () => {
             className="bg-white/95 backdrop-blur-md rounded-3xl p-12 shadow-2xl border border-white/20"
           >
             <h1 className="text-5xl md:text-7xl font-bold mb-8 text-gray-800">
-              Seja Nosso <span className="text-green-600">Parceiro</span>
+{t('home.partner.title', 'Seja Nosso')} <span className="text-green-600">{t('home.partner.highlight', 'Parceiro')}</span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-gray-600 leading-relaxed">
-              Junte-se à revolução do agronegócio brasileiro e faça parte da maior 
-              plataforma de conectividade rural do país.
+              {t('home.partner.description', 'Junte-se à revolução do agronegócio brasileiro e faça parte da maior plataforma de conectividade rural do país.')}
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <motion.button
@@ -161,6 +171,7 @@ const Home = () => {
             src="/images/agricultural-field.jpg"
             alt="Campo de soja ao pôr do sol"
             className="w-full h-full object-cover"
+            loading="lazy"
           />
           <div className="absolute inset-0 bg-black bg-opacity-40"></div>
         </div>
@@ -273,7 +284,7 @@ const Home = () => {
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed',
+          backgroundAttachment: 'scroll',
           minHeight: '80vh'
         }}
       >
@@ -287,10 +298,10 @@ const Home = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">
-              Performance em <span className="text-yellow-300">Tempo Real</span>
+{t('home.performance.title', 'Performance em')} <span className="text-yellow-300">{t('home.performance.highlight', 'Tempo Real')}</span>
             </h2>
             <p className="text-xl text-white/90 max-w-3xl mx-auto drop-shadow-md">
-              Dados atualizados a cada segundo para decisões mais inteligentes
+              {t('home.performance.description', 'Dados atualizados a cada segundo para decisões mais inteligentes')}
             </p>
           </motion.div>
           
@@ -330,10 +341,10 @@ const Home = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Nossos <span className="text-gradient">Serviços</span>
+{t('home.services.title', 'Nossos')} <span className="text-gradient">{t('home.services.highlight', 'Serviços')}</span>
             </h2>
             <p className="text-xl text-muted max-w-3xl mx-auto">
-              Soluções completas para todas as necessidades do agronegócio moderno
+              {t('home.services.description', 'Soluções completas para todas as necessidades do agronegócio moderno')}
             </p>
           </motion.div>
           
@@ -377,8 +388,8 @@ const Home = () => {
 
       {/* News Section - Discreta e elegante */}
       <div className="text-center py-8">
-        <h3 className="text-xl font-semibold text-gray-600">Notícias em Desenvolvimento</h3>
-        <p className="text-gray-500 mt-2">Em breve teremos notícias do agronegócio disponíveis!</p>
+        <h3 className="text-xl font-semibold text-gray-600">{t('home.news.title', 'Notícias em Desenvolvimento')}</h3>
+        <p className="text-gray-500 mt-2">{t('home.news.description', 'Em breve teremos notícias do agronegócio disponíveis!')}</p>
       </div>
 
       {/* CTA Section - Premium */}
@@ -391,11 +402,10 @@ const Home = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Pronto para o <span className="text-gradient">Futuro</span>?
+{t('home.cta.title', 'Pronto para o')} <span className="text-gradient">{t('home.cta.highlight', 'Futuro')}</span>?
             </h2>
             <p className={`text-xl mb-12 max-w-3xl mx-auto leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-              Junte-se a milhares de profissionais do agronegócio que já descobriram 
-              o poder da tecnologia Agroisync. Transforme seu negócio hoje mesmo.
+              {t('home.cta.description', 'Junte-se a milhares de profissionais do agronegócio que já descobriram o poder da tecnologia Agroisync. Transforme seu negócio hoje mesmo.')}
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <Link

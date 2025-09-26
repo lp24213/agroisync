@@ -15,7 +15,9 @@ import {
   Zap,
   MessageCircle,
   Minimize2,
-  Maximize2
+  Maximize2,
+  Image as ImageIcon,
+  ShieldCheck
 } from 'lucide-react';
 
 const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
@@ -28,9 +30,19 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
   const [aiMode, setAiMode] = useState('general');
   const [isMinimized, setIsMinimized] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [uploadPreview, setUploadPreview] = useState(null);
+  const [uploadFile, setUploadFile] = useState(null);
+  const [dailyCount, setDailyCount] = useState(0);
+  const [plan, setPlan] = useState('free'); // free | pro
+  const [limits, setLimits] = useState({ free: 20, pro: 200 });
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
   const inputRef = useRef(null);
+
+  // Whitelist de intents públicas
+  const allowedPublicIntents = [
+    'preços','cotação','clima','tempo','ajuda','contato','planos','frete','produtos','como funciona','sobre','cadastro','login'
+  ];
 
   // Inicializar mensagens
   useEffect(() => {
@@ -77,7 +89,63 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
   }, []);
 
   const handleSendMessage = useCallback(async (message = inputMessage) => {
+    // Limites por plano
+    const todayKey = `agroisync-ai-count-${new Date().toISOString().slice(0,10)}`;
+    const current = parseInt(localStorage.getItem(todayKey) || '0', 10);
+    const planType = localStorage.getItem('agroisync-plan') || plan; // free | pro
+    const maxAllowed = planType === 'pro' ? limits.pro : limits.free;
+    if (current >= maxAllowed) {
+      const limitMsg = {
+        id: Date.now(),
+        type: 'ai',
+        content: '⚠️ Limite diário de mensagens atingido. Faça login/upgrade para aumentar seus limites.',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, limitMsg]);
+      return;
+    }
+
+    // Se houver imagem anexada, prioriza reconhecimento
+    if (!message.trim() && uploadFile) {
+      try {
+        setIsLoading(true);
+        setIsTyping(true);
+        const form = new FormData();
+        form.append('image', uploadFile);
+        const api = (window.__ENV__ && window.__ENV__.REACT_APP_API_URL) || process.env.REACT_APP_API_URL || '/api';
+        const res = await fetch(`${api}/ai/recognize`, { method: 'POST', body: form });
+        const data = await res.json().catch(() => ({}));
+        const text = data?.label ? `🖼️ Reconhecimento: ${data.label}` : '🖼️ Não consegui identificar o produto na imagem ainda.';
+        setMessages(prev => [...prev, { id: Date.now(), type: 'ai', content: text, timestamp: new Date() }]);
+      } catch (e) {
+        setMessages(prev => [...prev, { id: Date.now(), type: 'ai', content: 'Erro ao processar imagem.', timestamp: new Date() }]);
+      } finally {
+        setIsLoading(false);
+        setIsTyping(false);
+        setUploadFile(null);
+        setUploadPreview(null);
+        localStorage.setItem(todayKey, String(current + 1));
+        setDailyCount(current + 1);
+      }
+      return;
+    }
+
     if (!message.trim()) return;
+
+    // Whitelist (apenas público)
+    if (planType === 'free') {
+      const safe = allowedPublicIntents.some((kw) => message.toLowerCase().includes(kw));
+      if (!safe) {
+        const guardMsg = {
+          id: Date.now(),
+          type: 'ai',
+          content: '🔒 Para esse tipo de pergunta, faça login e assine um plano para ter acesso aos recursos avançados.',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, guardMsg]);
+        return;
+      }
+    }
 
     const userMessage = {
       id: Date.now(),
@@ -108,6 +176,8 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
     } finally {
       setIsLoading(false);
       setIsTyping(false);
+      localStorage.setItem(todayKey, String(current + 1));
+      setDailyCount(current + 1);
     }
   }, [inputMessage]);
 
@@ -241,51 +311,51 @@ Como posso ajudá-lo melhor?`;
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.8, y: 20 }}
         transition={{ duration: 0.3 }}
-        className={`fixed bottom-6 right-6 w-96 ${isMinimized ? 'h-16' : 'h-[600px]'} bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col z-50 transition-all duration-300`}
+        className={`fixed bottom-4 right-4 w-80 md:w-96 ${isMinimized ? 'h-16' : 'h-[500px] md:h-[600px]'} bg-black text-white rounded-2xl shadow-2xl border border-black flex flex-col z-40 md:z-50 transition-all duration-300 chatbot-button`}
         style={{
-          background: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(20px)',
-          boxShadow: '0 8px 40px rgba(0, 0, 0, 0.12)'
+          background: 'rgba(0, 0, 0, 0.92)',
+          backdropFilter: 'blur(16px)',
+          boxShadow: '0 12px 40px rgba(0, 0, 0, 0.35)'
         }}
       >
         {/* Header Clean Agronegócio */}
         <div 
-          className="flex items-center justify-between p-4 border-b border-gray-200 text-gray-900 rounded-t-2xl"
+          className="flex items-center justify-between p-4 border-b border-black rounded-t-2xl"
           style={{
-            background: 'linear-gradient(135deg, #38a169, #48bb78)',
-            boxShadow: '0 4px 20px rgba(56, 161, 105, 0.3)'
+            background: 'linear-gradient(135deg, #0f0f0f, #1a1a1a)',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.5)'
           }}
         >
           <div className="flex items-center gap-3">
             <div 
-              className="w-10 h-10 bg-white rounded-full flex items-center justify-center"
+              className="w-10 h-10 bg-black rounded-full flex items-center justify-center border border-white/10"
               style={{
-                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)'
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
               }}
             >
-              <Sparkles className="w-6 h-6 text-green-600" />
+              <Sparkles className="w-6 h-6 text-white" />
             </div>
             <div>
               <h3 className="font-semibold text-sm text-white">AGROISYNC AI</h3>
-              <p className="text-xs text-white/80">Assistente Inteligente</p>
+              <p className="text-xs text-white/60">Assistente Inteligente</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowSettings(!showSettings)}
-              className="p-2 hover:bg-white/20 rounded-lg transition-colors text-white"
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white"
             >
               <Settings className="w-4 h-4" />
             </button>
             <button
               onClick={() => setIsMinimized(!isMinimized)}
-              className="p-2 hover:bg-white/20 rounded-lg transition-colors text-white"
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white"
             >
               {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
             </button>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-lg transition-colors text-white"
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white"
             >
               <X className="w-4 h-4" />
             </button>
@@ -419,9 +489,17 @@ Como posso ajudá-lo melhor?`;
                   {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
                 </button>
               </div>
+              {/* Upload de imagem */}
+              <label className="p-3 rounded-lg border border-gray-700 hover:bg-gray-800 cursor-pointer text-gray-300">
+                <input type="file" accept="image/*" className="hidden" onChange={(e)=>{
+                  const f = e.target.files && e.target.files[0];
+                  if (f) { setUploadFile(f); setUploadPreview(URL.createObjectURL(f)); }
+                }} />
+                <ImageIcon className="w-4 h-4" />
+              </label>
               <button
                 onClick={() => handleSendMessage()}
-                disabled={!inputMessage.trim() || isLoading}
+                disabled={(!inputMessage.trim() && !uploadFile) || isLoading}
                 className="p-3 bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-lg hover:from-green-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105"
                 style={{
                   boxShadow: '0 4px 20px rgba(0, 255, 136, 0.3)'
@@ -430,6 +508,13 @@ Como posso ajudá-lo melhor?`;
                 <Send className="w-4 h-4" />
               </button>
             </div>
+            {uploadPreview && (
+              <div className="mt-2 flex items-center gap-3 text-xs text-gray-400">
+                <img src={uploadPreview} alt="preview" className="w-10 h-10 object-cover rounded" />
+                <span>1 arquivo anexado</span>
+                <button className="text-red-400 hover:underline" onClick={()=>{ setUploadFile(null); setUploadPreview(null); }}>remover</button>
+              </div>
+            )}
             
             <div className="flex items-center justify-between mt-2 text-xs text-gray-400">
               <span>Pressione Enter para enviar</span>

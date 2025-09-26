@@ -3,9 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.svg" type="image/svg+xml" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#2F4F2F" />
-    <meta name="description" content="Agroisync - A plataforma de agronegócio mais futurista do mundo. Conecte-se ao futuro do agronegócio com tecnologia blockchain, IA e marketplace inteligente." />
+    <meta name="description" content="Agroisync — soluções para o agronegócio" />
+    <link rel="canonical" href="https://agroisync.com/" />
     <meta name="keywords" content="agronegócio, marketplace, fretes, cripto, blockchain, IA, agricultura, produtos agrícolas" />
     <meta name="author" content="Agroisync Team" />
     
@@ -28,22 +29,22 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
     <!-- Fontes do Google -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     
     <!-- Favicon -->
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     
     <!-- PWA -->
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Agroisync">
     
     <!-- Segurança -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     
     <title>AGROISYNC - Futuro do Agronegócio</title>
@@ -100,13 +101,97 @@
       .app-loaded .loading-screen {
         display: none;
       }
+      
+      /* Mobile responsive styles for fallback */
+      @media (max-width: 880px) {
+        #main-header { 
+          flex-wrap: wrap; 
+          padding: 12px; 
+        }
+        #main-nav { 
+          width: 100%; 
+          order: 3; 
+          justify-content: center;
+          margin-top: 1rem;
+        }
+        .lang-selector { 
+          order: 2; 
+          margin-left: 0; 
+        }
+        #logo { 
+          order: 1; 
+        }
+      }
     </style>
   </head>
   <body>
+    <!-- Fallback HTML para usuários sem JavaScript -->
+    <div id="fallback-content" style="display: none;">
+      <header id="main-header" style="position: relative; z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #000; color: white;">
+        <div id="logo" style="font-size: 24px; font-weight: bold; color: #10b981;">AGROISYNC</div>
+        <nav id="main-nav" style="display: flex; gap: 16px;">
+          <a href="/" style="color: white; text-decoration: none;">Home</a>
+          <a href="/marketplace" style="color: white; text-decoration: none;">Marketplace</a>
+          <a href="/fretes" style="color: white; text-decoration: none;">Fretes</a>
+          <a href="/sobre" style="color: white; text-decoration: none;">Sobre</a>
+          <a href="/contato" style="color: white; text-decoration: none;">Contato</a>
+        </nav>
+        <div class="lang-selector" style="margin-left: 12px; z-index: 1010;">
+          <select style="background: #333; color: white; border: 1px solid #555; padding: 4px 8px; border-radius: 4px;">
+            <option value="pt-BR">🇧🇷 Português</option>
+            <option value="en-US">🇺🇸 English</option>
+            <option value="es-ES">🇪🇸 Español</option>
+            <option value="zh-CN">🇨🇳 中文</option>
+          </select>
+        </div>
+      </header>
+      
+      <main style="min-height: 80vh; padding: 40px 20px; background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);">
+        <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+          <h1 style="font-size: 3rem; font-weight: bold; color: #065f46; margin-bottom: 1rem;">AGROISYNC</h1>
+          <p style="font-size: 1.25rem; color: #047857; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+            A plataforma de agronegócio mais avançada do Brasil. Conectamos produtores, compradores e transportadores em uma rede inteligente e segura.
+          </p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 3rem;">
+            <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              <h2 style="color: #065f46; margin-bottom: 1rem;">🌾 Marketplace</h2>
+              <p style="color: #666;">Compre e venda produtos agrícolas com segurança e transparência.</p>
+            </div>
+            <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              <h2 style="color: #065f46; margin-bottom: 1rem;">🚛 Fretes</h2>
+              <p style="color: #666;">Encontre transportadores confiáveis para seus produtos.</p>
+            </div>
+            <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              <h2 style="color: #065f46; margin-bottom: 1rem;">💎 Cripto</h2>
+              <p style="color: #666;">Pagamentos seguros com tecnologia blockchain.</p>
+            </div>
+          </div>
+        </div>
+      </main>
+      
+      <footer style="background: #1f2937; color: white; padding: 2rem; text-align: center;">
+        <p>&copy; 2024 Agroisync. Todos os direitos reservados.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #9ca3af;">
+          Conectando o agronegócio brasileiro com tecnologia de ponta.
+        </p>
+      </footer>
+    </div>
+
     <noscript>
-      <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
-        <h1>JavaScript Necessário</h1>
-        <p>O Agroisync requer JavaScript para funcionar. Por favor, habilite JavaScript em seu navegador.</p>
+      <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif; background: #f3f4f6; min-height: 100vh;">
+        <div style="max-width: 600px; margin: 0 auto; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+          <h1 style="color: #065f46; margin-bottom: 1rem;">🌾 Agroisync</h1>
+          <h2 style="color: #047857; margin-bottom: 1rem;">JavaScript Necessário</h2>
+          <p style="color: #666; margin-bottom: 1.5rem;">
+            O Agroisync requer JavaScript para funcionalidades avançadas como marketplace, 
+            sistema de fretes e pagamentos cripto. Por favor, habilite JavaScript em seu navegador.
+          </p>
+          <div style="background: #fef3c7; border: 1px solid #f59e0b; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+            <p style="color: #92400e; margin: 0; font-size: 0.9rem;">
+              <strong>Dica:</strong> Mesmo sem JavaScript, você pode navegar pelas informações básicas do site.
+            </p>
+          </div>
+        </div>
       </div>
     </noscript>
     
@@ -118,22 +203,30 @@
     
     <div id="root"></div>
     
-    <!-- Script para remover loading screen -->
-    <script>
+    <!-- Script para remover loading screen e mostrar fallback se JS falhar -->
+    <script defer>
       window.addEventListener('load', function() {
         setTimeout(function() {
           document.body.classList.add('app-loaded');
         }, 1000);
       });
+      
+      // Se o React não carregar em 5 segundos, mostrar fallback
+      setTimeout(function() {
+        if (!document.getElementById('root').hasChildNodes()) {
+          document.getElementById('fallback-content').style.display = 'block';
+          document.querySelector('.loading-screen').style.display = 'none';
+        }
+      }, 5000);
     </script>
     
     <!-- UI TXC Final Behaviors Script -->
-    <script src="%PUBLIC_URL%/ui-txc-final-behaviors.js"></script>
+    <script src="%PUBLIC_URL%/ui-txc-final-behaviors.js" defer></script>
     
     <!-- Force Reload Images Script -->
-    <script src="%PUBLIC_URL%/force-reload-images.js"></script>
+    <script src="%PUBLIC_URL%/force-reload-images.js" defer></script>
     
     <!-- Cloudflare Turnstile -->
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
   </body>
 </html>

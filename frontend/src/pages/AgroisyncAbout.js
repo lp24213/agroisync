@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { 
   ArrowRight,
   Users,
@@ -12,57 +13,83 @@ import {
 } from 'lucide-react';
 
 const AgroisyncAbout = () => {
+  const { t } = useTranslation();
   const values = [
     {
       icon: <Target size={32} />,
-      title: 'Inovação',
-      description: 'Sempre buscamos as melhores tecnologias para revolucionar o agronegócio',
+      title: t('about.values.innovation', 'Inovação'),
+      description: t('about.values.innovationDesc', 'Sempre buscamos as melhores tecnologias para revolucionar o agronegócio'),
     },
     {
       icon: <Heart size={32} />,
-      title: 'Paixão',
-      description: 'Amamos o que fazemos e acreditamos no potencial do agronegócio brasileiro',
+      title: t('about.values.passion', 'Paixão'),
+      description: t('about.values.passionDesc', 'Amamos o que fazemos e acreditamos no potencial do agronegócio brasileiro'),
     },
     {
       icon: <Users size={32} />,
-      title: 'Colaboração',
-      description: 'Acreditamos que juntos podemos construir um futuro melhor para todos',
+      title: t('about.values.collaboration', 'Colaboração'),
+      description: t('about.values.collaborationDesc', 'Acreditamos que juntos podemos construir um futuro melhor para todos'),
     },
     {
       icon: <Shield size={32} />,
-      title: 'Transparência',
-      description: 'Mantemos sempre a transparência em todas as nossas operações',
+      title: t('about.values.transparency', 'Transparência'),
+      description: t('about.values.transparencyDesc', 'Mantemos sempre a transparência em todas as nossas operações'),
     },
   ];
 
   const team = [
     {
-      name: 'Luis Paulo',
-      role: 'CEO & Fundador',
-      image: 'https://images.unsplash.com/photo-1592878995758-02b32ddabdd3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aWNvbmUlMjBtYXNjdWxpbm8lMjBidXNpbmVzc3xlbnwwfHwwfHx8MA%3D%3D',
+      name: t('about.team.agroisyncTeam', 'Equipe AGROISYNC'),
+      role: t('about.team.agroExperts', 'Especialistas em Agronegócio'),
+      description: t('about.team.agroisyncDesc', 'Uma equipe dedicada de profissionais apaixonados pelo agronegócio brasileiro, trabalhando incansavelmente para conectar produtores, compradores e transportadores em uma plataforma revolucionária.'),
+      image: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8ZmFybSUyMHRlYW0lMjB3b3JraW5nfGVufDB8fDB8fHww',
     },
     {
-      name: 'Taiza Dellazzari',
-      role: 'Co-founder',
-      image: 'https://images.unsplash.com/photo-1554745028-65db781f9fa7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aWNvbmUlMjB3b21hbiUyMGJ1c2luZXNzfGVufDB8fDB8fHww',
+      name: t('about.team.techInnovation', 'Tecnologia & Inovação'),
+      role: t('about.team.continuousDev', 'Desenvolvimento Contínuo'),
+      description: t('about.team.techDesc', 'Nossa equipe de desenvolvimento está constantemente trabalhando para implementar as mais avançadas tecnologias, incluindo blockchain, IA e soluções sustentáveis para o agronegócio.'),
+      image: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dGVjaCUyMHRlYW18ZW58MHx8MHx8fDA%3D',
     },
   ];
 
   const milestones = [
     {
       year: '2023',
-      title: 'Fundação da AGROISYNC',
-      description: 'Nascimento da ideia de revolucionar o agronegócio brasileiro',
+      title: t('about.milestones.ideaBirth', 'Nascimento da Ideia'),
+      description: t('about.milestones.ideaDesc', 'A ideia da AGROISYNC foi criada por amigos apaixonados pelo agronegócio, visando revolucionar a forma como produtores e compradores se conectam no Brasil.'),
     },
     {
       year: '2024',
-      title: 'Primeiro MVP',
-      description: 'Lançamento da primeira versão da plataforma',
+      title: t('about.milestones.executionStart', 'Início da Execução'),
+      description: t('about.milestones.executionDesc', 'Começamos a desenvolver a plataforma com foco na sustentabilidade, tecnologia avançada e apoio tanto ao pequeno quanto ao grande agricultor.'),
     },
     {
       year: '2025',
-      title: 'Expansão Nacional',
-      description: 'Plataforma disponível em todo o território nacional',
+      title: t('about.milestones.fullImplementation', 'Implementação Completa'),
+      description: t('about.milestones.implementationDesc', 'Lançamento da plataforma completa com blockchain, IA, e todas as funcionalidades para transformar o agronegócio brasileiro.'),
+    },
+  ];
+
+  const features = [
+    {
+      icon: <Target size={32} />,
+      title: t('about.features.sustainableTech', 'Tecnologia Sustentável'),
+      description: t('about.features.sustainableDesc', 'Implementamos soluções que promovem a agricultura sustentável e o uso eficiente de recursos naturais.'),
+    },
+    {
+      icon: <Users size={32} />,
+      title: t('about.features.democratization', 'Democratização do Agronegócio'),
+      description: t('about.features.democratizationDesc', 'Conectamos pequenos produtores familiares aos grandes compradores, criando oportunidades iguais para todos.'),
+    },
+    {
+      icon: <Globe size={32} />,
+      title: t('about.features.globalInnovation', 'Inovação Global'),
+      description: t('about.features.globalDesc', 'Utilizamos as mais avançadas tecnologias internacionais adaptadas para a realidade brasileira.'),
+    },
+    {
+      icon: <Award size={32} />,
+      title: t('about.features.guaranteedQuality', 'Qualidade Garantida'),
+      description: t('about.features.qualityDesc', 'Sistema de verificação e certificação que garante a qualidade dos produtos comercializados.'),
     },
   ];
 
@@ -123,11 +150,11 @@ const AgroisyncAbout = () => {
             </motion.div>
 
             <motion.h1 className="agro-hero-title" variants={itemVariants}>
-              SOBRE A AGROISYNC
+              {t('about.hero.title', 'SOBRE A AGROISYNC')}
             </motion.h1>
             
             <motion.p className="agro-hero-subtitle" variants={itemVariants}>
-              Revolucionando o agronegócio brasileiro com tecnologia e inovação
+              {t('about.hero.subtitle', 'Revolucionando o agronegócio brasileiro com tecnologia e inovação')}
             </motion.p>
 
             <motion.div 
@@ -162,11 +189,9 @@ const AgroisyncAbout = () => {
             transition={{ duration: 1 }}
             className="agro-text-center"
           >
-            <h2 className="agro-section-title">Nossa Missão</h2>
+            <h2 className="agro-section-title">{t('about.mission.title', 'Nossa Missão')}</h2>
             <p className="agro-section-subtitle" style={{ maxWidth: '800px', margin: '0 auto' }}>
-              Conectar produtores, compradores e transportadores em uma plataforma única, 
-              segura e eficiente, utilizando tecnologia blockchain e inteligência artificial 
-              para revolucionar o agronegócio brasileiro.
+              {t('about.mission.description', 'Conectar produtores, compradores e transportadores em uma plataforma única, segura e eficiente, utilizando tecnologia blockchain e inteligência artificial para revolucionar o agronegócio brasileiro.')}
             </p>
           </motion.div>
         </div>
@@ -182,9 +207,9 @@ const AgroisyncAbout = () => {
             transition={{ duration: 1 }}
             className="agro-text-center"
           >
-            <h2 className="agro-section-title">Nossos Valores</h2>
+            <h2 className="agro-section-title">{t('about.values.title', 'Nossos Valores')}</h2>
             <p className="agro-section-subtitle">
-              Os princípios que guiam nossa empresa
+              {t('about.values.subtitle', 'Os princípios que guiam nossa empresa')}
             </p>
           </motion.div>
 
@@ -215,8 +240,51 @@ const AgroisyncAbout = () => {
         </div>
       </section>
 
-      {/* Team Section */}
+      {/* Features Section */}
       <section className="agro-section">
+        <div className="agro-container">
+          <motion.div
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1 }}
+            className="agro-text-center"
+          >
+            <h2 className="agro-section-title">{t('about.differentiation.title', 'O Que Nos Diferencia')}</h2>
+            <p className="agro-section-subtitle">
+              {t('about.differentiation.subtitle', 'Inovações que transformam o agronegócio')}
+            </p>
+          </motion.div>
+
+          <div className="agro-cards-grid">
+            {features.map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                className="agro-card agro-fade-in"
+                initial={{ opacity: 0, y: 60 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+                whileHover={{ y: -12, scale: 1.02 }}
+                style={{ textAlign: 'center' }}
+              >
+                <div className="agro-card-icon" style={{ color: 'var(--txc-light-green)' }}>
+                  {feature.icon}
+                </div>
+                <h3 className="agro-card-title">
+                  {feature.title}
+                </h3>
+                <p className="agro-card-description">
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Team Section */}
+      <section className="agro-section" style={{ background: 'var(--agro-light-beige)' }}>
         <div className="agro-container">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
@@ -242,7 +310,7 @@ const AgroisyncAbout = () => {
               maxWidth: '600px',
               margin: '0 auto'
             }}>
-              Conheça as pessoas por trás da AGROISYNC
+              {t('about.team.title', 'Conheça as pessoas por trás da AGROISYNC')}
             </p>
           </motion.div>
 
@@ -325,9 +393,9 @@ const AgroisyncAbout = () => {
             transition={{ duration: 1 }}
             className="agro-text-center"
           >
-            <h2 className="agro-section-title">Nossa Jornada</h2>
+            <h2 className="agro-section-title">{t('about.journey.title', 'Nossa Jornada')}</h2>
             <p className="agro-section-subtitle">
-              Marcos importantes da nossa história
+              {t('about.journey.subtitle', 'Marcos importantes da nossa história')}
             </p>
           </motion.div>
 

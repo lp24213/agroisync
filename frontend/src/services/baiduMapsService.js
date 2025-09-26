@@ -50,11 +50,15 @@ class BaiduMapsService {
       // Em produção, verificar se o script do Baidu Maps foi carregado
       if (typeof window !== 'undefined' && window.BMap) {
         this.isInitialized = true;
-        console.log('Baidu Maps inicializado com sucesso');
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('Baidu Maps inicializado com sucesso');
+        }
         return { success: true };
       } else {
         // Fallback para desenvolvimento
-        console.log('Baidu Maps não disponível, usando serviço mockado');
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('Baidu Maps não disponível, usando serviço mockado');
+        }
         this.isInitialized = true;
         return { success: true, mock: true };
       }
@@ -523,7 +527,9 @@ class BaiduMapsService {
       this.placeSearch = null;
       this.routeSearch = null;
       
-      console.log('Serviço de Baidu Maps desconectado');
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Serviço de Baidu Maps desconectado');
+      }
       return { success: true };
     } catch (error) {
       console.error('Erro ao desconectar serviço de Baidu Maps:', error);

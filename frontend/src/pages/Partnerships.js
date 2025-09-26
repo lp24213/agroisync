@@ -266,7 +266,7 @@ const Partnerships = () => {
             backgroundSize: 'cover',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',
-            backgroundAttachment: 'fixed'
+            backgroundAttachment: 'scroll'
           }}
         >
           <div className="absolute inset-0 bg-black/50"></div>
@@ -294,7 +294,12 @@ const Partnerships = () => {
               transition={{ duration: 0.8, delay: 0.4 }}
             >
               <button 
-                onClick={() => scrollToForm()}
+                onClick={() => {
+                  const formElement = document.getElementById('partnership-form');
+                  if (formElement) {
+                    formElement.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
                 className="bg-green-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-green-700 transition-colors"
               >
                 Seja Nosso Parceiro

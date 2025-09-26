@@ -561,7 +561,9 @@ class ChatbotService {
       }
       
       this.isListening = false;
-      console.log('Serviços do chatbot desconectados');
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Serviços do chatbot desconectados');
+      }
       return { success: true };
     } catch (error) {
       console.error('Erro ao desconectar serviços:', error);

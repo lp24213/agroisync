@@ -189,23 +189,23 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: 300 }}
         transition={{ duration: 0.3 }}
-        className="fixed top-0 right-0 h-full w-96 bg-gray-900 text-white shadow-2xl z-50 overflow-y-auto"
+        className="fixed top-0 right-0 h-full w-96 bg-black text-white shadow-2xl z-40 md:z-50 overflow-y-auto border-l border-black accessibility-panel-button"
         role="dialog"
         aria-labelledby="accessibility-panel-title"
         aria-modal="true"
       >
         {/* Header */}
-        <div className="p-6 border-b border-gray-700">
+        <div className="p-6 border-b border-black" style={{background:'linear-gradient(135deg,#0f0f0f,#1a1a1a)'}}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Accessibility className="w-6 h-6 text-green-400" />
+              <Accessibility className="w-6 h-6 text-yellow-400" />
               <h2 id="accessibility-panel-title" className="text-xl font-bold">
                 Painel de Acessibilidade
               </h2>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
               aria-label="Fechar painel de acessibilidade"
             >
               <X className="w-5 h-5" />
@@ -214,7 +214,7 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-gray-700">
+        <div className="flex border-b border-black">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (

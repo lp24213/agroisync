@@ -120,6 +120,18 @@
     padding: 20px;
   }
   
+  /* Ajustes Mobile Gerais */
+  .premium-header { min-height: 64px; }
+  .premium-header-logo-img { height: 28px; }
+  .agro-hero-section img, .agro-hero-section video { max-height: 42vh; object-fit: cover; width: 100%; }
+  .agro-hero-title { font-size: 1.75rem !important; }
+  .agro-hero-description { font-size: 0.95rem !important; }
+  /* Botões flutuantes não cobrirem conteúdo */
+  .chatbot-button, .accessibility-panel-button { bottom: 18px !important; }
+  .chatbot-button { right: 18px !important; }
+  .accessibility-panel-button { left: 18px !important; }
+  /* Espaço extra no final para flutuantes */
+  main { padding-bottom: 80px; }
   /* Footer Mobile */
   .agro-footer-container {
     padding: 32px 20px 24px;

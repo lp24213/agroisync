@@ -14,6 +14,9 @@ const AdminAnonymousPanel = () => {
   const [showDevCredentials, setShowDevCredentials] = useState(false);
   const [freightOrders, setFreightOrders] = useState([]);
   const [chatStats, setChatStats] = useState({});
+  const [products, setProducts] = useState([]);
+  const [payments, setPayments] = useState([]);
+  const [registrations, setRegistrations] = useState([]);
 
   useEffect(() => {
     loadAdminData();
@@ -22,114 +25,58 @@ const AdminAnonymousPanel = () => {
   const loadAdminData = async () => {
     setLoading(true);
     try {
-      // Simular carregamento de dados
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Buscar dados REAIS do backend através das rotas protegidas
+      const token = localStorage.getItem('authToken');
       
-      // Dados mockados
-      setStats({
-        totalUsers: 1247,
-        activeUsers: 892,
-        totalProducts: 3456,
-        activeProducts: 2890,
-        totalTransactions: 15678,
-        totalRevenue: 2450000,
-        pendingEscrow: 125000,
-        totalMessages: 8945,
-        systemHealth: 98.5,
-        uptime: '99.9%'
-      });
+      if (!token) {
+        toast.error('Token de autenticação não encontrado');
+        return;
+      }
 
-      setRecentActivity([
-        {
-          id: 'act-1',
-          type: 'user_registration',
-user: 'João Silva',
-          timestamp: new Date(Date.now() - 300000),
-          status: 'success'
-        },
-        {
-          id: 'act-2',
-          type: 'product_created',
-user: 'Maria Santos',
-          product: 'Soja Premium',
-          timestamp: new Date(Date.now() - 600000),
-          status: 'success'
-        },
-        {
-          id: 'act-3',
-          type: 'payment_processed',
-user: 'Pedro Oliveira',
-          amount: 15000,
-          timestamp: new Date(Date.now() - 900000),
-          status: 'success'
-        },
-        {
-          id: 'act-4',
-          type: 'system_alert',
-          message: 'High CPU usage detected',
-          timestamp: new Date(Date.now() - 1200000),
-          status: 'warning'
-        }
-      ]);
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      };
 
-      setUsers([
-        {
-          id: 'user-1',
-          name: 'João Silva',
-          email: 'joao@example.com',
-          role: 'buyer',
-          status: 'active',
-          lastLogin: new Date(Date.now() - 3600000),
-          totalOrders: 12,
-          totalSpent: 45000
-        },
-        {
-          id: 'user-2',
-          name: 'Maria Santos',
-          email: 'maria@example.com',
-          role: 'seller',
-          status: 'active',
-          lastLogin: new Date(Date.now() - 7200000),
-          totalProducts: 8,
-          totalRevenue: 125000
-        },
-        {
-          id: 'user-admin',
-          name: 'Admin Dev',
-          email: process.env.REACT_APP_ADMIN_EMAIL || 'luispaulodeoliveira@agrotm.com.br',
-          role: 'admin',
-          status: 'active',
-          lastLogin: new Date(Date.now() - 1800000),
-          totalOrders: 0,
-          totalSpent: 0
-        }
-      ]);
+      // Buscar dados do dashboard
+      const dashboardResponse = await axios.get(`${API_BASE_URL}/admin/dashboard`, { headers });
+      
+      if (dashboardResponse.data.success) {
+        setStats(dashboardResponse.data.data.stats);
+        setRecentActivity(dashboardResponse.data.data.recentRegistrations || []);
+      }
 
-      setFreightOrders([
-        {
-          id: 'FR-001',
-          orderNumber: 'FR-001',
-          status: 'in_transit',
-          buyer: 'João Silva',
-          carrier: 'Transportadora ABC',
-          origin: 'São Paulo, SP',
-          destination: 'Mato Grosso, MT',
-          value: 2500,
-          createdAt: new Date(Date.now() - 86400000)
-        },
-        {
-          id: 'FR-002',
-          orderNumber: 'FR-002',
-          status: 'delivered',
-          buyer: 'Maria Santos',
-          carrier: 'Logística XYZ',
-          origin: 'Paraná, PR',
-          destination: 'Goiás, GO',
-          value: 1800,
-          createdAt: new Date(Date.now() - 172800000)
-        }
-      ]);
+      // Buscar usuários
+      const usersResponse = await axios.get(`${API_BASE_URL}/admin/users?limit=50`, { headers });
+      if (usersResponse.data.success) {
+        setUsers(usersResponse.data.data.users || []);
+      }
 
+      // Buscar produtos
+      const productsResponse = await axios.get(`${API_BASE_URL}/admin/products?limit=50`, { headers });
+      if (productsResponse.data.success) {
+        setProducts(productsResponse.data.data.products || []);
+      }
+
+      // Buscar pagamentos
+      const paymentsResponse = await axios.get(`${API_BASE_URL}/admin/payments?limit=50`, { headers });
+      if (paymentsResponse.data.success) {
+        setPayments(paymentsResponse.data.data.payments || []);
+      }
+
+      // Buscar cadastros
+      const registrationsResponse = await axios.get(`${API_BASE_URL}/admin/registrations?limit=50`, { headers });
+      if (registrationsResponse.data.success) {
+        setRegistrations(registrationsResponse.data.data.registrations || []);
+      }
+
+      // Buscar atividade recente
+      const activityResponse = await axios.get(`${API_BASE_URL}/admin/activity?limit=20`, { headers });
+      if (activityResponse.data.success) {
+        setRecentActivity(activityResponse.data.data.activities || []);
+      }
+
+      // Estatísticas de chat (simuladas por enquanto)
       setChatStats({
         totalConversations: 156,
         activeConversations: 23,
@@ -138,12 +85,41 @@ user: 'Pedro Oliveira',
         avgResponseTime: '2.3s'
       });
 
-
+      toast.success('Dados administrativos carregados com sucesso!');
 
     } catch (error) {
       console.error('Erro ao carregar dados admin:', error);
+      
+      if (error.response?.status === 401) {
+        toast.error('Sessão expirada. Faça login novamente.');
+        // Redirecionar para login
+        window.location.href = '/login';
+      } else if (error.response?.status === 403) {
+        toast.error('Acesso negado. Você não tem permissão de administrador.');
+      } else {
+        toast.error('Erro ao carregar dados administrativos');
+      }
+      
+      // Fallback para dados vazios
+      setUsers([]);
+      setProducts([]);
+      setPayments([]);
+      setRegistrations([]);
+      setStats({
+        totalUsers: 0,
+        activeUsers: 0,
+        totalProducts: 0,
+        activeProducts: 0,
+        totalTransactions: 0,
+        totalRevenue: 0,
+        pendingEscrow: 0,
+        totalMessages: 0,
+        systemHealth: 0,
+        uptime: '0%'
+      });
+      setRecentActivity([]);
     } finally {
-setLoading(false);
+      setLoading(false);
     }
   };
 

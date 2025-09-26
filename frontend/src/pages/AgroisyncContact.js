@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { 
   Mail,
   Phone,
@@ -11,6 +12,7 @@ import {
 } from 'lucide-react';
 
 const AgroisyncContact = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,27 +25,27 @@ const AgroisyncContact = () => {
   const contactInfo = [
     {
       icon: <Mail size={32} />,
-      title: 'Email',
+      title: t('contact.email', 'Email'),
       info: 'contato@agroisync.com',
-      description: 'Envie-nos um email e responderemos em até 24h',
+      description: t('contact.emailDescription', 'Envie-nos um email e responderemos em até 24h'),
     },
     {
       icon: <Phone size={32} />,
-      title: 'Telefone',
+      title: t('contact.phone', 'Telefone'),
       info: '+55 (11) 99999-9999',
-      description: 'Atendimento de segunda a sexta, 8h às 18h',
+      description: t('contact.phoneDescription', 'Atendimento de segunda a sexta, 8h às 18h'),
     },
     {
       icon: <MapPin size={32} />,
-      title: 'Endereço',
+      title: t('contact.address', 'Endereço'),
       info: 'São Paulo, SP - Brasil',
-      description: 'Rua das Flores, 123 - Jardim Verde',
+      description: t('contact.addressDescription', 'Rua das Flores, 123 - Jardim Verde'),
     },
     {
       icon: <Clock size={32} />,
-      title: 'Horário',
+      title: t('contact.hours', 'Horário'),
       info: 'Seg - Sex: 8h às 18h',
-      description: 'Sábado: 8h às 12h',
+      description: t('contact.hoursDescription', 'Sábado: 8h às 12h'),
     },
   ];
 
@@ -211,7 +213,7 @@ const AgroisyncContact = () => {
                   fontWeight: '500',
                   color: 'var(--agro-text-dark)'
                 }}>
-                  Nome Completo *
+                  {t('contact.fullName', 'Nome Completo')} *
                 </label>
                 <input
                   type="text"
@@ -230,7 +232,7 @@ const AgroisyncContact = () => {
                     transition: 'all var(--agro-transition-normal)',
                     backdropFilter: 'blur(10px)'
                   }}
-                  placeholder="Seu nome completo"
+                  placeholder={t('contact.fullNamePlaceholder', 'Seu nome completo')}
                 />
               </div>
 
@@ -241,7 +243,7 @@ const AgroisyncContact = () => {
                   fontWeight: '500',
                   color: 'var(--agro-text-dark)'
                 }}>
-                  Email *
+                  {t('contact.email', 'Email')} *
                 </label>
                 <input
                   type="email"
@@ -260,7 +262,7 @@ const AgroisyncContact = () => {
                     transition: 'all var(--agro-transition-normal)',
                     backdropFilter: 'blur(10px)'
                   }}
-                  placeholder="seu@email.com"
+                  placeholder={t('contact.emailPlaceholder', 'seu@email.com')}
                 />
               </div>
 
@@ -271,7 +273,7 @@ const AgroisyncContact = () => {
                   fontWeight: '500',
                   color: 'var(--agro-text-dark)'
                 }}>
-                  Assunto *
+                  {t('contact.subject', 'Assunto')} *
                 </label>
                 <select
                   name="subject"
@@ -290,11 +292,11 @@ const AgroisyncContact = () => {
                     backdropFilter: 'blur(10px)'
                   }}
                 >
-                  <option value="">Selecione um assunto</option>
-                  <option value="suporte">Suporte Técnico</option>
-                  <option value="vendas">Informações sobre Planos</option>
-                  <option value="parceria">Parcerias</option>
-                  <option value="outro">Outro</option>
+                  <option value="">{t('contact.selectSubject', 'Selecione um assunto')}</option>
+                  <option value="suporte">{t('contact.support', 'Suporte Técnico')}</option>
+                  <option value="vendas">{t('contact.plans', 'Informações sobre Planos')}</option>
+                  <option value="parceria">{t('contact.partnership', 'Parcerias')}</option>
+                  <option value="outro">{t('contact.other', 'Outro')}</option>
                 </select>
               </div>
 
@@ -305,7 +307,7 @@ const AgroisyncContact = () => {
                   fontWeight: '500',
                   color: 'var(--agro-text-dark)'
                 }}>
-                  Mensagem *
+                  {t('contact.message', 'Mensagem')} *
                 </label>
                 <textarea
                   name="message"
@@ -326,7 +328,7 @@ const AgroisyncContact = () => {
                     resize: 'vertical',
                     fontFamily: 'inherit'
                   }}
-                  placeholder="Conte-nos como podemos ajudar..."
+                  placeholder={t('contact.messagePlaceholder', 'Conte-nos como podemos ajudar...')}
                 />
               </div>
 
@@ -341,11 +343,11 @@ const AgroisyncContact = () => {
                 {isSubmitted ? (
                   <>
                     <CheckCircle size={20} />
-                    Mensagem Enviada!
+                    {t('contact.messageSent', 'Mensagem Enviada!')}
                   </>
                 ) : (
                   <>
-                    Enviar Mensagem
+                    {t('contact.sendMessage', 'Enviar Mensagem')}
                     <Send size={20} />
                   </>
                 )}

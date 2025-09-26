@@ -80,7 +80,9 @@ class EscrowService {
   // Habilitar/desabilitar escrow (apenas para desenvolvimento)
   setEscrowEnabled(enabled) {
     this.isEnabled = enabled;
-    console.log(`Escrow ${enabled ? 'habilitado' : 'desabilitado'}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`Escrow ${enabled ? 'habilitado' : 'desabilitado'}`);
+    }
   }
 
   // Criar transação de escrow
@@ -114,7 +116,9 @@ class EscrowService {
       // Simular salvamento local
       this.transactions.set(escrowTransaction.id, escrowTransaction);
       
-      console.log('Transação de escrow criada:', escrowTransaction.id);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Transação de escrow criada:', escrowTransaction.id);
+      }
       return { success: true, escrowTransaction };
     } catch (error) {
       console.error('Erro ao criar transação de escrow:', error);
@@ -204,7 +208,9 @@ class EscrowService {
       // Em produção, atualizar no banco
       // await axios.put(`${API_BASE_URL}/escrow/transactions/${escrowId}`, escrowTransaction);
 
-      console.log(`Escrow ${escrowId} fundado com sucesso`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`Escrow ${escrowId} fundado com sucesso`);
+      }
       return { success: true, escrowTransaction };
     } catch (error) {
       console.error('Erro ao fundar escrow:', error);
@@ -243,7 +249,9 @@ class EscrowService {
       // Em produção, atualizar no banco
       // await axios.put(`${API_BASE_URL}/escrow/transactions/${escrowId}`, escrowTransaction);
 
-      console.log(`Escrow ${escrowId} liberado com sucesso`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`Escrow ${escrowId} liberado com sucesso`);
+      }
       return { success: true, escrowTransaction };
     } catch (error) {
       console.error('Erro ao liberar escrow:', error);
@@ -286,7 +294,9 @@ class EscrowService {
       escrowTransaction.disputeId = dispute.id;
       escrowTransaction.updatedAt = new Date().toISOString();
 
-      console.log(`Disputa iniciada para escrow ${escrowId}`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`Disputa iniciada para escrow ${escrowId}`);
+      }
       return { success: true, dispute, escrowTransaction };
     } catch (error) {
       console.error('Erro ao iniciar disputa:', error);
@@ -328,7 +338,9 @@ class EscrowService {
         await this.refundEscrow(escrowTransaction.id, `Reembolso por admin: ${resolution.reason}`);
       }
 
-      console.log(`Disputa ${disputeId} resolvida`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`Disputa ${disputeId} resolvida`);
+      }
       return { success: true, dispute, escrowTransaction };
     } catch (error) {
       console.error('Erro ao resolver disputa:', error);
@@ -367,7 +379,9 @@ class EscrowService {
       // Em produção, atualizar no banco
       // await axios.put(`${API_BASE_URL}/escrow/transactions/${escrowId}`, escrowTransaction);
 
-      console.log(`Escrow ${escrowId} reembolsado com sucesso`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`Escrow ${escrowId} reembolsado com sucesso`);
+      }
       return { success: true, escrowTransaction };
     } catch (error) {
       console.error('Erro ao reembolsar escrow:', error);
@@ -402,7 +416,9 @@ class EscrowService {
       // Em produção, atualizar no banco
       // await axios.put(`${API_BASE_URL}/escrow/transactions/${escrowId}`, escrowTransaction);
 
-      console.log(`Escrow ${escrowId} cancelado com sucesso`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`Escrow ${escrowId} cancelado com sucesso`);
+      }
       return { success: true, escrowTransaction };
     } catch (error) {
       console.error('Erro ao cancelar escrow:', error);
@@ -490,7 +506,9 @@ class EscrowService {
         if (this.canAutoRelease(transaction)) {
           try {
             await this.releaseEscrow(transaction.id, 'Liberação automática por prazo');
-            console.log(`Escrow ${transaction.id} liberado automaticamente`);
+            if (process.env.NODE_ENV !== 'production') {
+              console.log(`Escrow ${transaction.id} liberado automaticamente`);
+            }
           } catch (error) {
             console.error(`Erro ao liberar escrow ${transaction.id} automaticamente:`, error);
           }
@@ -505,14 +523,18 @@ class EscrowService {
   clearDevelopmentData() {
     this.transactions.clear();
     this.disputes.clear();
-    console.log('Dados de desenvolvimento do escrow limpos');
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Dados de desenvolvimento do escrow limpos');
+    }
   }
 
   // Desconectar serviço
   disconnect() {
     try {
       this.clearDevelopmentData();
-      console.log('Serviço de escrow desconectado');
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Serviço de escrow desconectado');
+      }
       return { success: true };
     } catch (error) {
       console.error('Erro ao desconectar serviço de escrow:', error);

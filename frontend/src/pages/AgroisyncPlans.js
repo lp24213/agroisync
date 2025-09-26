@@ -21,14 +21,13 @@ const AgroisyncPlans = () => {
   const plans = [
     {
       name: 'Básico',
-      price: 29.90, // Preço mensal normal
-      semiannualPrice: 170.43, // 29.90 x 6 meses - 5% = 179.40 - 8.97 = 170.43
-      annualPrice: 322.92, // 29.90 x 12 meses - 10% = 358.80 - 35.88 = 322.92
-      annualPixPrice: 287.04, // 29.90 x 12 meses - 20% = 358.80 - 71.76 = 287.04
+      price: 14.99, // Preço mensal normal
+      semiannualPrice: 85.44, // 14.99 x 6 meses - 5% = 89.94 - 4.50 = 85.44
+      annualPrice: 161.88, // 14.99 x 12 meses - 10% = 179.88 - 18.00 = 161.88
+      annualPixPrice: 143.88, // 14.99 x 12 meses - 20% = 179.88 - 36.00 = 143.88
       description: 'Ideal para começar no agronegócio',
       features: [
-        'Até 1 frete por mês',
-        'Até 1 produto cadastrado',
+        '1 anúncio de produto por mês',
         'Suporte por email',
         'Dashboard básico',
         'Relatórios simples'
@@ -38,43 +37,59 @@ const AgroisyncPlans = () => {
     },
     {
       name: 'Profissional',
-      price: 149.99, // Preço mensal normal
-      semiannualPrice: 854.94, // 149.99 x 6 meses - 5% = 899.94 - 45.00 = 854.94
-      annualPrice: 1619.88, // 149.99 x 12 meses - 10% = 1799.88 - 180.00 = 1619.88
-      annualPixPrice: 1439.88, // 149.99 x 12 meses - 20% = 1799.88 - 360.00 = 1439.88
+      price: 29.99, // Preço mensal normal
+      semiannualPrice: 170.94, // 29.99 x 6 meses - 5% = 179.94 - 9.00 = 170.94
+      annualPrice: 323.88, // 29.99 x 12 meses - 10% = 359.88 - 36.00 = 323.88
+      annualPixPrice: 287.88, // 29.99 x 12 meses - 20% = 359.88 - 72.00 = 287.88
       description: 'Para produtores em crescimento',
       features: [
-        'Até 10 fretes por mês',
-        'Até 10 produtos cadastrados',
+        '3 anúncios de produtos por mês',
         'Suporte prioritário',
         'Dashboard avançado',
         'Relatórios detalhados',
-        'API de integração',
-        'Notificações push'
+        'Prioridade nas buscas'
       ],
       popular: true,
       color: 'blue'
     },
     {
       name: 'Empresarial',
-      price: 259.99, // Preço mensal normal
-      semiannualPrice: 1481.94, // 259.99 x 6 meses - 5% = 1559.94 - 78.00 = 1481.94
-      annualPrice: 2807.88, // 259.99 x 12 meses - 10% = 3119.88 - 312.00 = 2807.88
-      annualPixPrice: 2495.88, // 259.99 x 12 meses - 20% = 3119.88 - 624.00 = 2495.88
+      price: 149.99, // Preço mensal normal
+      semiannualPrice: 854.94, // 149.99 x 6 meses - 5% = 899.94 - 45.00 = 854.94
+      annualPrice: 1619.88, // 149.99 x 12 meses - 10% = 1799.88 - 180.00 = 1619.88
+      annualPixPrice: 1439.88, // 149.99 x 12 meses - 20% = 1799.88 - 360.00 = 1439.88
       description: 'Para grandes operações',
       features: [
-        'Até 20 fretes por mês',
-        'Até 20 produtos cadastrados',
+        '20 anúncios de produtos por mês',
         'Suporte 24/7',
+        'Dashboard personalizado',
+        'Relatórios avançados',
+        'API de integração',
+        'Notificações personalizadas'
+      ],
+      popular: false,
+      color: 'purple'
+    },
+    {
+      name: 'Premium',
+      price: 459.99, // Preço mensal normal
+      semiannualPrice: 2621.94, // 459.99 x 6 meses - 5% = 2759.94 - 138.00 = 2621.94
+      annualPrice: 4959.88, // 459.99 x 12 meses - 10% = 5519.88 - 560.00 = 4959.88
+      annualPixPrice: 4419.88, // 459.99 x 12 meses - 20% = 5519.88 - 1100.00 = 4419.88
+      description: 'Para grandes empresas',
+      features: [
+        'Anúncios ilimitados',
+        'Suporte 24/7 dedicado',
         'Dashboard personalizado',
         'Relatórios avançados',
         'API completa',
         'Notificações personalizadas',
         'Gerente de conta dedicado',
-        'Treinamento especializado'
+        'Treinamento especializado',
+        'Prioridade máxima'
       ],
       popular: false,
-      color: 'purple'
+      color: 'gold'
     }
   ];
 
@@ -111,7 +126,7 @@ const AgroisyncPlans = () => {
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed'
+          backgroundAttachment: 'scroll'
         }}
       >
         <div className="absolute inset-0 bg-black/50"></div>

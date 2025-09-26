@@ -47,11 +47,8 @@ const AgroisyncFooter = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Company Info */}
           <div className="md:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">A</span>
-              </div>
-              <span className="text-xl font-bold text-green-600">agroisync</span>
+            <div className="flex items-center gap-3 mb-4">
+              <img src="/agroisync-logo.svg" alt="Agroisync" className="h-8 w-auto" loading="eager" />
             </div>
             <p className="text-sm text-gray-600 mb-4">
               A plataforma mais futurista e sofisticada do mundo para conectar produtores, compradores e transportadores.

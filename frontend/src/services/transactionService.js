@@ -249,7 +249,7 @@ class TransactionService {
   // Notificar usuários sobre nova transação
   async notifyUsers(transaction) {
     try {
-      // Aqui seria implementada a notificação real (email, SMS, push)
+      // Aqui seria implementada a notificação real (email, push)
       const notifications = [];
 
       if (transaction.buyerId) {
