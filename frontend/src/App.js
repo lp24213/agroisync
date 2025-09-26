@@ -62,7 +62,7 @@ import LoginRedirect from './pages/LoginRedirect';
 import Unauthorized from './pages/Unauthorized';
 import NotFound from './pages/NotFound';
 import SecureRedirect from './components/SecureRedirect';
-import UniversalSecurity from './components/UniversalSecurity';
+// import UniversalSecurity from './components/UniversalSecurity'; // REMOVIDO - estava bloqueando login/cadastro
 import Home from './pages/Home';
 import Insumos from './pages/Insumos';
 import Store from './pages/Store';
@@ -124,59 +124,59 @@ function App() {
                 <Layout>
                   <main id="main-content" role="main">
                     <Routes>
-                    {/* Public Routes - 100% Secure */}
-                    <Route path="/" element={<UniversalSecurity><AgroisyncHome /></UniversalSecurity>} />
-                    <Route path="/home" element={<UniversalSecurity><Home /></UniversalSecurity>} />
-                    <Route path="/home-prompt" element={<UniversalSecurity><AgroisyncHomePrompt /></UniversalSecurity>} />
-                    <Route path="/marketplace" element={<UniversalSecurity><AgroisyncMarketplace /></UniversalSecurity>} />
-                    <Route path="/loja" element={<UniversalSecurity><AgroisyncLoja /></UniversalSecurity>} />
-                    <Route path="/store" element={<UniversalSecurity><Store /></UniversalSecurity>} />
-                    <Route path="/agroconecta" element={<UniversalSecurity><AgroisyncAgroConecta /></UniversalSecurity>} />
-                    <Route path="/tecnologia" element={<UniversalSecurity><AgroisyncCrypto /></UniversalSecurity>} />
-                    <Route path="/insumos" element={<UniversalSecurity><Insumos /></UniversalSecurity>} />
-                    <Route path="/plans" element={<UniversalSecurity><AgroisyncPlans /></UniversalSecurity>} />
-                    <Route path="/planos" element={<UniversalSecurity><AgroisyncPlans /></UniversalSecurity>} />
-                    <Route path="/about" element={<UniversalSecurity><AgroisyncAbout /></UniversalSecurity>} />
-                    <Route path="/contact" element={<UniversalSecurity><AgroisyncContact /></UniversalSecurity>} />
-                    <Route path="/partnerships" element={<UniversalSecurity><Partnerships /></UniversalSecurity>} />
-                    <Route path="/faq" element={<UniversalSecurity><FAQ /></UniversalSecurity>} />
-                    <Route path="/terms" element={<UniversalSecurity><Terms /></UniversalSecurity>} />
-                    <Route path="/privacy" element={<UniversalSecurity><Privacy /></UniversalSecurity>} />
-                    <Route path="/help" element={<UniversalSecurity><Help /></UniversalSecurity>} />
+                    {/* Public Routes - Acesso direto */}
+                    <Route path="/" element={<AgroisyncHome />} />
+                    <Route path="/home" element={<Home />} />
+                    <Route path="/home-prompt" element={<AgroisyncHomePrompt />} />
+                    <Route path="/marketplace" element={<AgroisyncMarketplace />} />
+                    <Route path="/loja" element={<AgroisyncLoja />} />
+                    <Route path="/store" element={<Store />} />
+                    <Route path="/agroconecta" element={<AgroisyncAgroConecta />} />
+                    <Route path="/tecnologia" element={<AgroisyncCrypto />} />
+                    <Route path="/insumos" element={<Insumos />} />
+                    <Route path="/plans" element={<AgroisyncPlans />} />
+                    <Route path="/planos" element={<AgroisyncPlans />} />
+                    <Route path="/about" element={<AgroisyncAbout />} />
+                    <Route path="/contact" element={<AgroisyncContact />} />
+                    <Route path="/partnerships" element={<Partnerships />} />
+                    <Route path="/faq" element={<FAQ />} />
+                    <Route path="/terms" element={<Terms />} />
+                    <Route path="/privacy" element={<Privacy />} />
+                    <Route path="/help" element={<Help />} />
                     
-                    {/* Detail Pages - 100% Secure */}
-                    <Route path="/produto/:id" element={<UniversalSecurity><ProductDetail /></UniversalSecurity>} />
-                    <Route path="/crypto/:id" element={<UniversalSecurity><CryptoDetail /></UniversalSecurity>} />
+                    {/* Detail Pages - Acesso direto */}
+                    <Route path="/produto/:id" element={<ProductDetail />} />
+                    <Route path="/crypto/:id" element={<CryptoDetail />} />
                     
-                    {/* Auth Routes - 100% Secure */}
-                    <Route path="/login" element={<UniversalSecurity><AgroisyncLogin /></UniversalSecurity>} />
-                    <Route path="/register" element={<UniversalSecurity><AgroisyncRegister /></UniversalSecurity>} />
-                    <Route path="/signup" element={<UniversalSecurity><SignupType /></UniversalSecurity>} />
+                    {/* Auth Routes - SEM BLOQUEIO */}
+                    <Route path="/login" element={<AgroisyncLogin />} />
+                    <Route path="/register" element={<AgroisyncRegister />} />
+                    <Route path="/signup" element={<SignupType />} />
                     <Route path="/signup/freight" element={<SecureRedirect />} />
                     <Route path="/signup/store" element={<SecureRedirect />} />
                     <Route path="/signup/product" element={<SecureRedirect />} />
-                    <Route path="/store-plans" element={<UniversalSecurity><StorePlans /></UniversalSecurity>} />
+                    <Route path="/store-plans" element={<StorePlans />} />
                     <Route path="/payment" element={<SecureRedirect />} />
                     <Route path="/forgot-password" element={<AgroisyncForgotPassword />} />
                     <Route path="/reset-password" element={<ResetPassword />} />
                     <Route path="/two-factor-auth" element={<SecureRedirect />} />
-                    <Route path="/verify-email" element={<UniversalSecurity><VerifyEmail /></UniversalSecurity>} />
-                    <Route path="/login-redirect" element={<UniversalSecurity><LoginRedirect /></UniversalSecurity>} />
+                    <Route path="/verify-email" element={<VerifyEmail />} />
+                    <Route path="/login-redirect" element={<LoginRedirect />} />
                     
-                    {/* Payment Routes - 100% Secure */}
-                    <Route path="/payment/success" element={<UniversalSecurity><PaymentSuccess /></UniversalSecurity>} />
-                    <Route path="/payment/cancel" element={<UniversalSecurity><PaymentCancel /></UniversalSecurity>} />
+                    {/* Payment Routes - Acesso direto */}
+                    <Route path="/payment/success" element={<PaymentSuccess />} />
+                    <Route path="/payment/cancel" element={<PaymentCancel />} />
                     
-                    {/* Protected Routes - 100% Secure + User-Specific */}
-                    <Route path="/dashboard" element={<UniversalSecurity><ProtectedRoute><AgroisyncDashboard /></ProtectedRoute></UniversalSecurity>} />
-                    <Route path="/user-dashboard" element={<UniversalSecurity><ProtectedRoute><UserDashboard /></ProtectedRoute></UniversalSecurity>} />
-                    <Route path="/messaging" element={<UniversalSecurity><ProtectedRoute><Messaging /></ProtectedRoute></UniversalSecurity>} />
-                    <Route path="/admin" element={<UniversalSecurity><ProtectedRoute><AdminPanel /></ProtectedRoute></UniversalSecurity>} />
-                    <Route path="/useradmin" element={<UniversalSecurity><ProtectedRoute><UserAdmin /></ProtectedRoute></UniversalSecurity>} />
+                    {/* Protected Routes - Apenas ProtectedRoute */}
+                    <Route path="/dashboard" element={<ProtectedRoute><AgroisyncDashboard /></ProtectedRoute>} />
+                    <Route path="/user-dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
+                    <Route path="/messaging" element={<ProtectedRoute><Messaging /></ProtectedRoute>} />
+                    <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
+                    <Route path="/useradmin" element={<ProtectedRoute><UserAdmin /></ProtectedRoute>} />
                     
-                    {/* Error Routes - 100% Secure */}
-                    <Route path="/unauthorized" element={<UniversalSecurity><Unauthorized /></UniversalSecurity>} />
-                    <Route path="*" element={<UniversalSecurity><NotFound /></UniversalSecurity>} />
+                    {/* Error Routes - Acesso direto */}
+                    <Route path="/unauthorized" element={<Unauthorized />} />
+                    <Route path="*" element={<NotFound />} />
                     </Routes>
                   </main>
                 </Layout>

@@ -1,5 +1,7 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import logger from '../utils/logger.js';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 class EmailService {
   constructor() {
@@ -66,16 +68,15 @@ class EmailService {
 
   async sendEmail({ to, subject, html, text, from = null }) {
     try {
-      const mailOptions = {
-        from: from || process.env.SMTP_FROM || 'noreply@agroisync.com',
-        to,
+      const result = await resend.emails.send({
+        from: from || process.env.RESEND_FROM || 'AgroSync <noreply@agroisync.com>',
+        to: [to],
         subject,
         html,
         text
-      };
-
-      const result = await this.transporter.sendMail(mailOptions);
-      logger.info(`Email enviado para ${to}: ${result.messageId}`);
+      });
+      
+      logger.info(`Email enviado para ${to}: ${result.data?.id}`);
       return result;
     } catch (error) {
       logger.error('Erro ao enviar email:', error);
