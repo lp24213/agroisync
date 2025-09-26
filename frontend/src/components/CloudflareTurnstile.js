@@ -56,7 +56,7 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
     try {
       // Renderizar novo widget
       widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
-        sitekey: siteKey || process.env.REACT_APP_CLOUDFLARE_TURNSTILE_SITE_KEY || '0x4AAAAAAABkMYinukE8nzY',
+        sitekey: siteKey || process.env.REACT_APP_CLOUDFLARE_TURNSTILE_SITE_KEY || '0x4AAAAAAA2rOqUOZqKxZqKx',
         callback: (token) => {
           if (process.env.NODE_ENV !== 'production') {
             console.log('Turnstile verificado:', token);

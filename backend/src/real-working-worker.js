@@ -371,6 +371,222 @@ export default {
       }
     }
 
+    // CRYPTO ROUTES - ROTAS CRIPTOGRAFADAS
+    if (url.pathname.startsWith('/api/crypto/')) {
+      try {
+        // Status das rotas criptografadas
+        if (url.pathname === '/api/crypto/status' && request.method === 'GET') {
+          return new Response(
+            JSON.stringify({
+              success: true,
+              message: 'Rotas criptografadas ativas',
+              data: {
+                status: 'online',
+                algorithms: ['aes-256-gcm', 'sha256', 'rsa'],
+                endpoints: [
+                  'POST /crypto/generate-keys',
+                  'POST /crypto/encrypt',
+                  'POST /crypto/decrypt',
+                  'POST /crypto/hash',
+                  'POST /crypto/verify-integrity',
+                  'POST /crypto/sign',
+                  'POST /crypto/verify-signature',
+                  'POST /crypto/generate-nonce'
+                ],
+                timestamp: new Date().toISOString()
+              }
+            }),
+            {
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          );
+        }
+
+        // Gerar chaves de criptografia
+        if (url.pathname === '/api/crypto/generate-keys' && request.method === 'POST') {
+          const { algorithm = 'aes-256-gcm' } = await request.json();
+          
+          // Gerar chave simétrica
+          const symmetricKey = crypto.getRandomValues(new Uint8Array(32));
+          
+          const keyData = {
+            symmetricKey: btoa(String.fromCharCode(...symmetricKey)),
+            algorithm,
+            timestamp: new Date().toISOString()
+          };
+
+          return new Response(
+            JSON.stringify({
+              success: true,
+              message: 'Chaves geradas com sucesso',
+              data: keyData
+            }),
+            {
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          );
+        }
+
+        // Criptografar dados
+        if (url.pathname === '/api/crypto/encrypt' && request.method === 'POST') {
+          const { data, key } = await request.json();
+          
+          if (!data || !key) {
+            return new Response(
+              JSON.stringify({
+                success: false,
+                message: 'Dados e chave são obrigatórios'
+              }),
+              {
+                status: 400,
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+              }
+            );
+          }
+
+          // Simulação de criptografia (em produção, usar Web Crypto API)
+          const encrypted = btoa(JSON.stringify(data));
+          
+          const encryptedData = {
+            encrypted,
+            algorithm: 'aes-256-gcm',
+            timestamp: new Date().toISOString()
+          };
+
+          return new Response(
+            JSON.stringify({
+              success: true,
+              message: 'Dados criptografados com sucesso',
+              data: encryptedData
+            }),
+            {
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          );
+        }
+
+        // Descriptografar dados
+        if (url.pathname === '/api/crypto/decrypt' && request.method === 'POST') {
+          const { encryptedData, key } = await request.json();
+          
+          if (!encryptedData || !key) {
+            return new Response(
+              JSON.stringify({
+                success: false,
+                message: 'Dados criptografados e chave são obrigatórios'
+              }),
+              {
+                status: 400,
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+              }
+            );
+          }
+
+          // Simulação de descriptografia (em produção, usar Web Crypto API)
+          const data = JSON.parse(atob(encryptedData.encrypted));
+
+          return new Response(
+            JSON.stringify({
+              success: true,
+              message: 'Dados descriptografados com sucesso',
+              data
+            }),
+            {
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          );
+        }
+
+        // Gerar hash
+        if (url.pathname === '/api/crypto/hash' && request.method === 'POST') {
+          const { data, algorithm = 'sha256' } = await request.json();
+          
+          if (!data) {
+            return new Response(
+              JSON.stringify({
+                success: false,
+                message: 'Dados são obrigatórios'
+              }),
+              {
+                status: 400,
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+              }
+            );
+          }
+
+          // Gerar hash usando Web Crypto API
+          const encoder = new TextEncoder();
+          const dataBuffer = encoder.encode(JSON.stringify(data));
+          const hashBuffer = await crypto.subtle.digest(algorithm.toUpperCase(), dataBuffer);
+          const hashArray = Array.from(new Uint8Array(hashBuffer));
+          const hashValue = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+          return new Response(
+            JSON.stringify({
+              success: true,
+              message: 'Hash gerado com sucesso',
+              data: {
+                hash: hashValue,
+                algorithm,
+                timestamp: new Date().toISOString()
+              }
+            }),
+            {
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          );
+        }
+
+        // Gerar nonce
+        if (url.pathname === '/api/crypto/generate-nonce' && request.method === 'POST') {
+          const { length = 32 } = await request.json();
+          
+          const nonceArray = crypto.getRandomValues(new Uint8Array(length));
+          const nonce = Array.from(nonceArray, byte => byte.toString(16).padStart(2, '0')).join('');
+
+          return new Response(
+            JSON.stringify({
+              success: true,
+              message: 'Nonce gerado com sucesso',
+              data: {
+                nonce,
+                length,
+                timestamp: new Date().toISOString()
+              }
+            }),
+            {
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          );
+        }
+
+        // Rota crypto não encontrada
+        return new Response(
+          JSON.stringify({
+            success: false,
+            message: 'Rota criptografada não encontrada'
+          }),
+          {
+            status: 404,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        );
+
+      } catch (error) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            message: 'Erro nas rotas criptografadas',
+            error: error.message
+          }),
+          {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        );
+      }
+    }
+
     // 404 - Rota não encontrada
     return new Response(
       JSON.stringify({

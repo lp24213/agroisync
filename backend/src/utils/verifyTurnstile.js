@@ -2,10 +2,10 @@ import fetch from 'node-fetch';
 
 export async function verifyTurnstile(token, remoteip = null) {
   try {
-    const secret = process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY;
+    const secret = process.env.CLOUDFLARE_TURNSTILE_SECRET;
     if (!secret) {
       if (process.env.NODE_ENV !== 'production') {
-        console.warn('CLOUDFLARE_TURNSTILE_SECRET_KEY não configurado, pulando verificação');
+        console.warn('CLOUDFLARE_TURNSTILE_SECRET não configurado, pulando verificação');
       }
       return { success: true }; // Em desenvolvimento, sempre retorna true
     }
