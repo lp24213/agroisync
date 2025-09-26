@@ -157,8 +157,8 @@ function App() {
                     <Route path="/signup/product" element={<SecureRedirect />} />
                     <Route path="/store-plans" element={<UniversalSecurity><StorePlans /></UniversalSecurity>} />
                     <Route path="/payment" element={<SecureRedirect />} />
-                    <Route path="/forgot-password" element={<UniversalSecurity><AgroisyncForgotPassword /></UniversalSecurity>} />
-                    <Route path="/reset-password" element={<UniversalSecurity><ResetPassword /></UniversalSecurity>} />
+                    <Route path="/forgot-password" element={<AgroisyncForgotPassword />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
                     <Route path="/two-factor-auth" element={<SecureRedirect />} />
                     <Route path="/verify-email" element={<UniversalSecurity><VerifyEmail /></UniversalSecurity>} />
                     <Route path="/login-redirect" element={<UniversalSecurity><LoginRedirect /></UniversalSecurity>} />

@@ -184,6 +184,10 @@ router.post(
         });
       }
 
+      // Gerar código de verificação
+      const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+      const codeExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutos
+
       // Criar usuário normal
       const user = new User({
         name,
@@ -194,7 +198,10 @@ router.post(
         lgpdConsent: true,
         lgpdConsentDate: Math.floor(Date.now() / 1000),
         dataProcessingConsent: true,
-        marketingConsent: false
+        marketingConsent: false,
+        verificationCode,
+        codeExpires,
+        isEmailVerified: false
       });
 
       await user.save();
@@ -217,20 +224,14 @@ router.post(
         }
       }
 
-      // Gerar código de verificação por email
-      const emailCode = Math.floor(100000 + Math.random() * 900000).toString();
-      user.emailVerificationCode = emailCode;
-      user.emailVerificationExpires = Date.now() + 10 * 60 * 1000; // 10 minutos
-      await user.save();
-
       // Enviar código de verificação por email
       try {
-        const emailResult = await notificationService.sendOTPEmail(email, emailCode, name);
-        if (emailResult.success) {
-          logger.info(`Código de verificação enviado para ${email}: ${emailCode}`);
-        } else {
-          logger.error(`Erro ao enviar email para ${email}:`, emailResult.error);
-        }
+        await emailService.sendVerificationCode({
+          to: email,
+          name: name,
+          code: verificationCode
+        });
+        logger.info(`Código de verificação enviado para ${email}: ${verificationCode}`);
       } catch (error) {
         logger.error(`Erro ao enviar email para ${email}:`, error);
       }
@@ -255,7 +256,7 @@ router.post(
           },
           token,
           requiresEmailVerification: true,
-          emailCode // Apenas para desenvolvimento
+          verificationCode // Apenas para desenvolvimento
         }
       });
     } catch (error) {

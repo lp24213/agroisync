@@ -1,5 +1,5 @@
-const nodemailer = require('nodemailer');
-const logger = require('../utils/logger');
+import nodemailer from 'nodemailer';
+import logger from '../utils/logger.js';
 
 class EmailService {
   constructor() {
@@ -245,6 +245,71 @@ class EmailService {
     });
   }
 
+  async sendVerificationCode({ to, name, code }) {
+    const subject = 'Código de Verificação - AgroSync';
+    
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Código de Verificação</title>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: linear-gradient(135deg, #2a7f4f 0%, #1e5f3a 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+          .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+          .code { background: #2a7f4f; color: white; padding: 20px; text-align: center; font-size: 2rem; font-weight: bold; border-radius: 8px; margin: 20px 0; letter-spacing: 5px; }
+          .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
+          .warning { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🔐 Código de Verificação</h1>
+            <p>AgroSync - Plataforma Inteligente de Agronegócio</p>
+          </div>
+          
+          <div class="content">
+            <h2>Olá, ${name}!</h2>
+            
+            <p>Seu código de verificação para completar o cadastro é:</p>
+            
+            <div class="code">${code}</div>
+            
+            <div class="warning">
+              <strong>⚠️ Importante:</strong>
+              <ul>
+                <li>Este código expira em <strong>10 minutos</strong></li>
+                <li>Não compartilhe este código com outras pessoas</li>
+                <li>Se você não solicitou este código, ignore este email</li>
+              </ul>
+            </div>
+            
+            <p>Digite este código na tela de verificação para ativar sua conta.</p>
+            
+            <p>Atenciosamente,<br>Equipe AgroSync</p>
+          </div>
+          
+          <div class="footer">
+            <p>Este é um email automático, não responda a esta mensagem.</p>
+            <p>© 2024 AgroSync. Todos os direitos reservados.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    return await this.sendEmail({
+      to,
+      subject,
+      html,
+      text: `Código de verificação AgroSync: ${code}\n\nOlá, ${name}!\n\nSeu código de verificação é: ${code}\n\nEste código expira em 10 minutos.`
+    });
+  }
+
   async sendNotificationEmail({ to, name, subject, message, actionUrl = null, actionText = null }) {
     const html = `
       <!DOCTYPE html>
@@ -299,4 +364,4 @@ class EmailService {
   }
 }
 
-module.exports = new EmailService();
+export default new EmailService();

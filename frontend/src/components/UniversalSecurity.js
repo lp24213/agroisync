@@ -11,6 +11,13 @@ const UniversalSecurity = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Para páginas de login e cadastro, pular verificação de segurança
+    if (location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/signup') {
+      setIsSecure(true);
+      setIsLoading(false);
+      return;
+    }
+
     const generateSecureURL = () => {
       const timestamp = Date.now();
       const randomId = Math.random().toString(36).substring(2, 15);

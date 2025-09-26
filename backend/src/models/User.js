@@ -140,6 +140,8 @@ const userSchema = new mongoose.Schema(
     },
     emailVerificationToken: String,
     emailVerificationExpires: Date,
+    verificationCode: String,
+    codeExpires: Date,
 
     isPhoneVerified: {
       type: Boolean,
