@@ -26,6 +26,7 @@ import {
   Bot,
   Download
 } from 'lucide-react';
+import CryptoHash from '../components/CryptoHash';
 // import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt'; // Componente removido
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
@@ -1499,6 +1500,9 @@ const AgroisyncAgroConecta = () => {
           </div>
         </div>
       )}
+      <div className="mt-8 flex justify-center">
+        <CryptoHash pageName="agro-conecta" />
+      </div>
     </div>
   );
 };

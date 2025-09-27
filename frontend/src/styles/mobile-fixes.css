@@ -45,6 +45,7 @@
 
 /* Fix for red lines/borders on mobile */
 @media (max-width: 768px) {
+  /* Remove all red borders and lines */
   * {
     border-color: transparent !important;
     outline: none !important;
@@ -52,18 +53,49 @@
   
   .border-red-500,
   .border-red-600,
-  .border-red-700 {
+  .border-red-700,
+  .border-red-300,
+  .border-red-400,
+  .border-red-800,
+  .border-red-900 {
     border-color: #e5e7eb !important;
   }
   
   .text-red-500,
   .text-red-600,
-  .text-red-700 {
+  .text-red-700,
+  .text-red-300,
+  .text-red-400,
+  .text-red-800,
+  .text-red-900 {
     color: #6b7280 !important;
   }
   
   .bg-red-50,
-  .bg-red-100 {
+  .bg-red-100,
+  .bg-red-200,
+  .bg-red-300 {
+    background-color: #f9fafb !important;
+  }
+
+  /* Fix for footer specific red lines */
+  footer * {
+    border-color: #e5e7eb !important;
+  }
+
+  /* Fix for any remaining red elements */
+  [class*="red"] {
+    border-color: #e5e7eb !important;
+    color: #6b7280 !important;
+    background-color: #f9fafb !important;
+  }
+
+  /* Fix for error states that might show red */
+  .error,
+  .invalid,
+  .danger {
+    border-color: #e5e7eb !important;
+    color: #6b7280 !important;
     background-color: #f9fafb !important;
   }
 }

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import StockTicker from '../components/StockTicker';
 import GrainsChart from '../components/GrainsChart';
 import CompactWeatherWidget from '../components/CompactWeatherWidget';
+import CryptoHash from '../components/CryptoHash';
 
 const AgroisyncHome = () => {
   // Imagem de campo de soja verde vibrante com cache buster
@@ -634,6 +635,9 @@ const AgroisyncHome = () => {
           }
         }
       `}</style>
+      <div className="mt-8 flex justify-center">
+        <CryptoHash pageName="agroisync-home" />
+      </div>
     </div>
   );
 };

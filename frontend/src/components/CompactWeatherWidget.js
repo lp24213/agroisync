@@ -17,20 +17,18 @@ const CompactWeatherWidget = () => {
 
   const detectUserLocation = async () => {
     try {
-      // Detectar localização real por IP
-      const response = await fetch('https://ipapi.co/json/');
+      // Detectar localização real via nosso proxy
+      const response = await fetch('/api/geolocation');
       const data = await response.json();
       
       if (data.city && data.region) {
         setUserLocation(`${data.city}, ${data.region}`);
       } else {
-        // Fallback para Mato Grosso se não conseguir detectar
-        setUserLocation('Sinop, MT');
+        setUserLocation('São Paulo, SP');
       }
     } catch (error) {
       console.error('Erro ao detectar localização:', error);
-      // Fallback para Mato Grosso
-      setUserLocation('Sinop, MT');
+      setUserLocation('São Paulo, SP');
     }
   };
 
@@ -38,12 +36,12 @@ const CompactWeatherWidget = () => {
     try {
       setLoading(true);
       
-      // Detectar localização por IP primeiro
-      const response = await fetch('https://ipapi.co/json/');
+      // Detectar localização real via nosso proxy
+      const response = await fetch('/api/geolocation');
       const locationData = await response.json();
       
-      let city = 'Sinop';
-      let region = 'MT';
+      let city = 'São Paulo';
+      let region = 'SP';
       
       if (locationData.city && locationData.region) {
         city = locationData.city;

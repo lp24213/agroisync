@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 // import CryptoChart from '../components/CryptoChart'; // Componente removido
 // import '../styles/crypto-dashboard.css'; // Arquivo removido
+import CryptoHash from '../components/CryptoHash';
 
 const AgroisyncCrypto = () => {
   const [email, setEmail] = useState('');
@@ -727,6 +728,9 @@ const AgroisyncCrypto = () => {
           animation: spin 1s linear infinite;
         }
       `}</style>
+      <div className="mt-8 flex justify-center">
+        <CryptoHash pageName="crypto" />
+      </div>
     </div>
   );
 };

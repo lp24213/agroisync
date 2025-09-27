@@ -464,20 +464,25 @@ const AgroisyncLogin = () => {
                 </motion.div>
 
                 {/* Cloudflare Turnstile */}
-                <CloudflareTurnstile
-                  onVerify={(token) => {
-                    setTurnstileToken(token);
-                    setErrors(prev => ({ ...prev, general: '' })); // Limpar erro quando verificação for completada
-                  }}
-                  onError={(error) => {
-                    setErrors({ general: 'Erro na verificação. Tente novamente.' });
-                    setTurnstileToken('');
-                  }}
-                  onExpire={() => {
-                    setTurnstileToken('');
-                    setErrors({ general: 'Verificação expirada. Tente novamente.' });
-                  }}
-                />
+                <motion.div 
+                  variants={itemVariants}
+                  style={{ marginBottom: '1.5rem' }}
+                >
+                  <CloudflareTurnstile
+                    onVerify={(token) => {
+                      setTurnstileToken(token);
+                      setErrors(prev => ({ ...prev, general: '' }));
+                    }}
+                    onError={(error) => {
+                      setErrors({ general: 'Erro na verificação. Tente novamente.' });
+                      setTurnstileToken('');
+                    }}
+                    onExpire={() => {
+                      setTurnstileToken('');
+                      setErrors({ general: 'Verificação expirada. Tente novamente.' });
+                    }}
+                  />
+                </motion.div>
 
                 <motion.button
                   variants={itemVariants}

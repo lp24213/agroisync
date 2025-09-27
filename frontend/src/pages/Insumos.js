@@ -8,6 +8,7 @@ import {
   Droplets,
   Zap
 } from 'lucide-react';
+import CryptoHash from '../components/CryptoHash';
 
 const Insumos = () => {
   const insumosCategories = [
@@ -339,6 +340,9 @@ const Insumos = () => {
           }
         }
       `}</style>
+      <div className="mt-8 flex justify-center">
+        <CryptoHash pageName="insumos" />
+      </div>
     </div>
   );
 };

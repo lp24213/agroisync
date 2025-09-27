@@ -10,12 +10,12 @@ const GrainsChart = () => {
   useEffect(() => {
     const fetchGrainsData = async () => {
       try {
-        // Detectar localização real por IP
-        const response = await fetch('https://ipapi.co/json/');
+        // Detectar localização real via nosso proxy
+        const response = await fetch('/api/geolocation');
         const locationData = await response.json();
         
-        let userRegion = 'Mato Grosso';
-        let userCity = 'Sinop';
+        let userRegion = 'São Paulo';
+        let userCity = 'São Paulo';
         
         if (locationData.region) {
           // Mapear regiões para estados brasileiros
@@ -30,8 +30,8 @@ const GrainsChart = () => {
             'Maranhão': 'Maranhão'
           };
           
-          userRegion = regionMap[locationData.region] || 'Mato Grosso';
-          userCity = locationData.city || 'Sinop';
+          userRegion = regionMap[locationData.region] || 'São Paulo';
+          userCity = locationData.city || 'São Paulo';
         }
         
         // Simulando dados da Agrolink por região REAL (baseado em IP)

@@ -13,6 +13,7 @@ import {
   Gift,
   TrendingUp
 } from 'lucide-react';
+import CryptoHash from '../components/CryptoHash';
 
 const AgroisyncPlans = () => {
   const [billingCycle, setBillingCycle] = useState('monthly'); // monthly, semiannual, annual
@@ -452,6 +453,9 @@ const AgroisyncPlans = () => {
           </div>
         </div>
       </section>
+      <div className="mt-8 flex justify-center">
+        <CryptoHash pageName="plans" />
+      </div>
     </div>
   );
 };

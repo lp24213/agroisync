@@ -1,0 +1,12 @@
+name = "agroisync"
+compatibility_date = "2025-01-20"
+main = "dist/index.html"
+
+# Configuração para Cloudflare Pages
+[env.production]
+routes = ["agroisync.com/*"]
+
+# Variáveis de ambiente
+[vars]
+NODE_ENV = "production"
+REACT_APP_API_URL = "https://agroisync.com/api"

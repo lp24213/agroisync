@@ -6,6 +6,7 @@ import {
   Mail, 
   Globe
 } from 'lucide-react';
+import CryptoHash from './CryptoHash';
 
 const AgroisyncFooter = () => {
   const currentYear = new Date().getFullYear();
@@ -98,13 +99,14 @@ const AgroisyncFooter = () => {
           <div className="text-sm text-gray-600 mb-4 md:mb-0">
             © {currentYear} AGROISYNC. Todos os direitos reservados.
           </div>
-          <div className="flex gap-6">
+          <div className="flex gap-6 items-center">
             <Link to="/terms" className="text-sm text-gray-600 hover:text-green-600 transition-colors">
               Termos de Uso
             </Link>
             <Link to="/privacy" className="text-sm text-gray-600 hover:text-green-600 transition-colors">
               Privacidade
             </Link>
+            <CryptoHash pageName="footer" />
           </div>
         </div>
       </div>

@@ -1,9 +1,10 @@
-// Serviço para dados de criptomoedas em tempo real
+// Serviço para dados de criptomoedas em tempo real + Rotas Criptografadas
 import axios from 'axios';
 
 class CryptoService {
   constructor() {
     this.baseURL = 'https://api.coingecko.com/api/v3';
+    this.cryptoAPI = 'https://agroisync.contato-00d.workers.dev/api/crypto';
     this.cache = new Map();
     this.cacheTimeout = 2 * 60 * 1000; // 2 minutos
   }
@@ -224,6 +225,147 @@ class CryptoService {
     if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
     if (num >= 1e3) return (num / 1e3).toFixed(2) + 'K';
     return num.toFixed(2);
+  }
+
+  // ===== ROTAS CRIPTOGRAFADAS =====
+
+  // Verificar status das rotas criptografadas
+  async getCryptoRoutesStatus() {
+    try {
+      const response = await axios.get(`${this.cryptoAPI}/status`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao verificar status das rotas criptografadas:', error);
+      return { success: false, message: 'Erro ao conectar com rotas criptografadas' };
+    }
+  }
+
+  // Gerar chaves de criptografia
+  async generateKeys(algorithm = 'aes-256-gcm') {
+    try {
+      const response = await axios.post(`${this.cryptoAPI}/generate-keys`, { algorithm });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao gerar chaves:', error);
+      return { success: false, message: 'Erro ao gerar chaves de criptografia' };
+    }
+  }
+
+  // Criptografar dados
+  async encryptData(data, key) {
+    try {
+      const response = await axios.post(`${this.cryptoAPI}/encrypt`, { data, key });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao criptografar dados:', error);
+      return { success: false, message: 'Erro ao criptografar dados' };
+    }
+  }
+
+  // Descriptografar dados
+  async decryptData(encryptedData, key) {
+    try {
+      const response = await axios.post(`${this.cryptoAPI}/decrypt`, { encryptedData, key });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao descriptografar dados:', error);
+      return { success: false, message: 'Erro ao descriptografar dados' };
+    }
+  }
+
+  // Gerar hash
+  async generateHash(data, algorithm = 'sha256') {
+    try {
+      const response = await axios.post(`${this.cryptoAPI}/hash`, { data, algorithm });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao gerar hash:', error);
+      return { success: false, message: 'Erro ao gerar hash' };
+    }
+  }
+
+  // Gerar nonce
+  async generateNonce(length = 32) {
+    try {
+      const response = await axios.post(`${this.cryptoAPI}/generate-nonce`, { length });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao gerar nonce:', error);
+      return { success: false, message: 'Erro ao gerar nonce' };
+    }
+  }
+
+  // Criptografar dados sensíveis do usuário
+  async encryptUserData(userData) {
+    try {
+      // Gerar chaves
+      const keysResult = await this.generateKeys();
+      if (!keysResult.success) {
+        return { success: false, message: 'Erro ao gerar chaves' };
+      }
+
+      // Criptografar dados
+      const encryptResult = await this.encryptData(userData, keysResult.data.symmetricKey);
+      if (!encryptResult.success) {
+        return { success: false, message: 'Erro ao criptografar dados' };
+      }
+
+      return {
+        success: true,
+        data: {
+          encrypted: encryptResult.data,
+          key: keysResult.data.symmetricKey,
+          algorithm: keysResult.data.algorithm
+        }
+      };
+    } catch (error) {
+      console.error('Erro ao criptografar dados do usuário:', error);
+      return { success: false, message: 'Erro ao criptografar dados do usuário' };
+    }
+  }
+
+  // Descriptografar dados sensíveis do usuário
+  async decryptUserData(encryptedData, key) {
+    try {
+      const result = await this.decryptData(encryptedData, key);
+      return result;
+    } catch (error) {
+      console.error('Erro ao descriptografar dados do usuário:', error);
+      return { success: false, message: 'Erro ao descriptografar dados do usuário' };
+    }
+  }
+
+  // Verificar integridade de dados
+  async verifyDataIntegrity(data, hash) {
+    try {
+      const response = await axios.post(`${this.cryptoAPI}/verify-integrity`, { data, hash });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao verificar integridade:', error);
+      return { success: false, message: 'Erro ao verificar integridade' };
+    }
+  }
+
+  // Assinar dados digitalmente
+  async signData(data, privateKey) {
+    try {
+      const response = await axios.post(`${this.cryptoAPI}/sign`, { data, privateKey });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao assinar dados:', error);
+      return { success: false, message: 'Erro ao assinar dados' };
+    }
+  }
+
+  // Verificar assinatura digital
+  async verifySignature(data, signature, publicKey) {
+    try {
+      const response = await axios.post(`${this.cryptoAPI}/verify-signature`, { data, signature, publicKey });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao verificar assinatura:', error);
+      return { success: false, message: 'Erro ao verificar assinatura' };
+    }
   }
 }
 

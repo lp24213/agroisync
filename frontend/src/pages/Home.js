@@ -13,6 +13,7 @@ import {
   BarChart3
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import CryptoHash from '../components/CryptoHash';
 // import Noticias from '../components/Noticias'; // Componente removido
 // import Ticker from '../components/Ticker'; // Componente removido
 import { 
@@ -421,6 +422,9 @@ const Home = () => {
               >
                 Falar com Especialista
               </Link>
+            </div>
+            <div className="mt-8 flex justify-center">
+              <CryptoHash pageName="home" />
             </div>
           </motion.div>
         </div>

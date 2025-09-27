@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { Mail, ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react';
 import authService from '../services/authService';
 import { toast } from 'react-hot-toast';
+import CloudflareTurnstile from '../components/CloudflareTurnstile';
+import CryptoHash from '../components/CryptoHash';
 
 const AgroisyncForgotPassword = () => {
   const navigate = useNavigate();
@@ -16,6 +18,7 @@ const AgroisyncForgotPassword = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [turnstileToken, setTurnstileToken] = useState('');
 
   const heroVariants = {
     hidden: { opacity: 0 },
@@ -164,9 +167,25 @@ const AgroisyncForgotPassword = () => {
           )}
         </div>
 
+        {/* Cloudflare Turnstile */}
+        <CloudflareTurnstile
+          onVerify={(token) => {
+            setTurnstileToken(token);
+            setErrors(prev => ({ ...prev, general: '' }));
+          }}
+          onError={(error) => {
+            setErrors({ general: 'Erro na verificação. Tente novamente.' });
+            setTurnstileToken('');
+          }}
+          onExpire={() => {
+            setTurnstileToken('');
+            setErrors({ general: 'Verificação expirada. Tente novamente.' });
+          }}
+        />
+
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isLoading || !turnstileToken}
           className="w-full bg-emerald-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? 'Enviando...' : 'Enviar Código'}
@@ -339,6 +358,9 @@ const AgroisyncForgotPassword = () => {
         {step === 1 && renderStep1()}
         {step === 2 && renderStep2()}
         {step === 3 && renderStep3()}
+        <div className="mt-8 flex justify-center">
+          <CryptoHash pageName="forgot-password" />
+        </div>
       </motion.div>
     </div>
   );

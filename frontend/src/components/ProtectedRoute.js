@@ -1,12 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Navigate, useLocation } from 'react-router-dom';
 
 export default function ProtectedRoute({ children }) {
   const { isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
+  const [isValidToken, setIsValidToken] = useState(false);
+  const [tokenLoading, setTokenLoading] = useState(true);
 
-  if (isLoading) {
+  useEffect(() => {
+    const validateToken = () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          setIsValidToken(false);
+          setTokenLoading(false);
+          return;
+        }
+
+        // Verificar se o token é válido (decodificar base64 sem verificar assinatura)
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          if (!payload || payload.exp < Date.now() / 1000) {
+            localStorage.removeItem('authToken');
+            setIsValidToken(false);
+          } else {
+            setIsValidToken(true);
+          }
+        } catch (decodeError) {
+          localStorage.removeItem('authToken');
+          setIsValidToken(false);
+        }
+      } catch (error) {
+        localStorage.removeItem('authToken');
+        setIsValidToken(false);
+      } finally {
+        setTokenLoading(false);
+      }
+    };
+
+    validateToken();
+  }, []);
+
+  if (isLoading || tokenLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-teal-50">
         <div className="text-center">
@@ -22,8 +58,8 @@ export default function ProtectedRoute({ children }) {
     );
   }
 
-  if (!isAuthenticated) {
-    // Criar URL com parâmetros de query para evitar URLs diretas
+  if (!isAuthenticated || !isValidToken) {
+    // Redirecionar para login com parâmetros de query
     const timestamp = Date.now();
     const randomId = Math.random().toString(36).substring(7);
     const loginUrl = `/login?redirect=${encodeURIComponent(location.pathname)}&t=${timestamp}&id=${randomId}`;

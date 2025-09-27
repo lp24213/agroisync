@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Lock, Eye, EyeOff, CheckCircle, XCircle } from 'lucide-react';
 import authService from '../services/authService';
+import CloudflareTurnstile from '../components/CloudflareTurnstile';
+import CryptoHash from '../components/CryptoHash';
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -16,6 +18,7 @@ const ResetPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [turnstileToken, setTurnstileToken] = useState('');
 
   useEffect(() => {
     // Verificar se há token de recuperação na URL
@@ -284,10 +287,26 @@ const ResetPassword = () => {
             </motion.div>
           )}
 
+          {/* Cloudflare Turnstile */}
+          <CloudflareTurnstile
+            onVerify={(token) => {
+              setTurnstileToken(token);
+              setError('');
+            }}
+            onError={(error) => {
+              setError('Erro na verificação. Tente novamente.');
+              setTurnstileToken('');
+            }}
+            onExpire={() => {
+              setTurnstileToken('');
+              setError('Verificação expirada. Tente novamente.');
+            }}
+          />
+
           {/* Submit Button */}
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || !turnstileToken}
             style={{
               width: '100%',
               padding: '1rem',
@@ -323,6 +342,9 @@ const ResetPassword = () => {
           >
             Voltar para o Login
           </Link>
+        </div>
+        <div className="mt-8 flex justify-center">
+          <CryptoHash pageName="reset-password" />
         </div>
       </motion.div>
     </div>

@@ -11,6 +11,7 @@ import {
   Award,
   Shield
 } from 'lucide-react';
+import CryptoHash from '../components/CryptoHash';
 
 const AgroisyncAbout = () => {
   const { t } = useTranslation();
@@ -520,6 +521,9 @@ const AgroisyncAbout = () => {
               }}>
                 Fale Conosco
               </Link>
+            </div>
+            <div className="mt-8 flex justify-center">
+              <CryptoHash pageName="about" />
             </div>
           </motion.div>
         </div>

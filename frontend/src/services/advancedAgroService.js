@@ -12,24 +12,30 @@ class AdvancedAgroService {
     if (this.location) return this.location;
 
     try {
-      const response = await fetch('https://ipapi.co/json/');
-      const data = await response.json();
-      this.location = {
-        city: data.city || 'São Paulo',
-        state: data.region || 'SP',
-        country: data.country_name || 'Brasil',
-        region: data.region_code || 'SP'
-      };
-      return this.location;
+      // Tentar via nosso backend primeiro (proxy)
+      const response = await fetch('/api/geolocation');
+      if (response.ok) {
+        const data = await response.json();
+        this.location = {
+          city: data.city || 'São Paulo',
+          state: data.region || 'SP',
+          country: data.country_name || 'Brasil',
+          region: data.region_code || 'SP'
+        };
+        return this.location;
+      }
     } catch (error) {
-      console.error('Erro ao obter localização:', error);
-      return {
-        city: 'São Paulo',
-        state: 'SP',
-        country: 'Brasil',
-        region: 'SP'
-      };
+      console.warn('Proxy de geolocalização falhou, usando padrão');
     }
+
+    // Fallback para localização padrão
+    this.location = {
+      city: 'São Paulo',
+      state: 'SP',
+      country: 'Brasil',
+      region: 'SP'
+    };
+    return this.location;
   }
 
   // Obter cotações dos principais grãos

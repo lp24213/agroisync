@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 // import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt'; // Componente removido
 import ProductCard from '../components/ProductCard';
+import CryptoHash from '../components/CryptoHash';
 
 const AgroisyncMarketplace = () => {
   const [email, setEmail] = useState('');
@@ -569,6 +570,9 @@ const AgroisyncMarketplace = () => {
           </div>
         </div>
       )}
+      <div className="mt-8 flex justify-center">
+        <CryptoHash pageName="marketplace" />
+      </div>
     </div>
   );
 };

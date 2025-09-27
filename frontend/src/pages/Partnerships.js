@@ -13,6 +13,8 @@ import {
   Award
 } from 'lucide-react';
 // import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt'; // Componente removido
+import CloudflareTurnstile from '../components/CloudflareTurnstile';
+import CryptoHash from '../components/CryptoHash';
 
 const Partnerships = () => {
   const [formData, setFormData] = useState({
@@ -28,6 +30,7 @@ const Partnerships = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState('');
 
   const partnershipTypes = [
     { value: 'technology', label: 'Parceria Tecnológica' },
@@ -512,11 +515,24 @@ const Partnerships = () => {
                 />
               </div>
 
+              {/* Cloudflare Turnstile */}
+              <CloudflareTurnstile
+                onVerify={(token) => {
+                  setTurnstileToken(token);
+                }}
+                onError={(error) => {
+                  setTurnstileToken('');
+                }}
+                onExpire={() => {
+                  setTurnstileToken('');
+                }}
+              />
+
               <div className="form-submit">
                 <button 
                   type="submit" 
                   className="submit-button agro-btn-animated"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !turnstileToken}
                 >
                   {isSubmitting ? (
                     <>
@@ -939,6 +955,9 @@ const Partnerships = () => {
           }
         }
       `}</style>
+      <div className="mt-8 flex justify-center">
+        <CryptoHash pageName="partnerships" />
+      </div>
     </div>
   );
 };

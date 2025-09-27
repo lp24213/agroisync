@@ -12,6 +12,7 @@ import AIChatbot from './components/ai/AIChatbot';
 import LGPDCompliance from './components/LGPDCompliance';
 import GlobalWeatherWidget from './components/GlobalWeatherWidget';
 import AccessibilityPanel from './components/AccessibilityPanel';
+import DynamicCryptoURL from './components/DynamicCryptoURL';
 import { Accessibility } from 'lucide-react';
 
 // CSS unificado (5 arquivos)
@@ -27,6 +28,7 @@ import AgroisyncHomePrompt from './pages/AgroisyncHomePrompt';
 import AgroisyncMarketplace from './pages/AgroisyncMarketplace';
 import AgroisyncLoja from './pages/AgroisyncLoja';
 import AgroisyncAgroConecta from './pages/AgroisyncAgroConecta';
+import UsuarioGeral from './pages/UsuarioGeral';
 import AgroisyncCrypto from './pages/AgroisyncCrypto';
 import AgroisyncDashboard from './pages/AgroisyncDashboard';
 import AgroisyncPlans from './pages/AgroisyncPlans';
@@ -48,6 +50,7 @@ import ProductDetail from './pages/ProductDetail';
 import CryptoDetail from './pages/CryptoDetail';
 import AdminPanel from './pages/AdminPanel';
 import UserAdmin from './pages/UserAdmin';
+import CryptoRoutesStatus from './components/CryptoRoutesStatus';
 import UserDashboard from './pages/UserDashboard';
 import Messaging from './pages/Messaging';
 import TwoFactorAuth from './pages/TwoFactorAuth';
@@ -105,7 +108,7 @@ function App() {
       <ThemeProvider>
         <AuthProvider>
           <LanguageProvider>
-            <Router>
+            <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
               <div className="App">
                 {/* Skip Links para Acessibilidade */}
                 <a href="#main-content" className="skip-link">
@@ -123,8 +126,9 @@ function App() {
                 
                 <Layout>
                   <main id="main-content" role="main">
-                    <Routes>
-                    {/* Public Routes - Acesso direto */}
+                    <DynamicCryptoURL>
+                      <Routes>
+                    {/* Public Routes - COM CRIPTOGRAFIA AUTOMÁTICA */}
                     <Route path="/" element={<AgroisyncHome />} />
                     <Route path="/home" element={<Home />} />
                     <Route path="/home-prompt" element={<AgroisyncHomePrompt />} />
@@ -132,6 +136,7 @@ function App() {
                     <Route path="/loja" element={<AgroisyncLoja />} />
                     <Route path="/store" element={<Store />} />
                     <Route path="/agroconecta" element={<AgroisyncAgroConecta />} />
+                    <Route path="/usuario-geral" element={<UsuarioGeral />} />
                     <Route path="/tecnologia" element={<AgroisyncCrypto />} />
                     <Route path="/insumos" element={<Insumos />} />
                     <Route path="/plans" element={<AgroisyncPlans />} />
@@ -144,11 +149,11 @@ function App() {
                     <Route path="/privacy" element={<Privacy />} />
                     <Route path="/help" element={<Help />} />
                     
-                    {/* Detail Pages - Acesso direto */}
+                    {/* Detail Pages - COM CRIPTOGRAFIA */}
                     <Route path="/produto/:id" element={<ProductDetail />} />
                     <Route path="/crypto/:id" element={<CryptoDetail />} />
                     
-                    {/* Auth Routes - SEM BLOQUEIO */}
+                    {/* Auth Routes - COM TURNSTILE */}
                     <Route path="/login" element={<AgroisyncLogin />} />
                     <Route path="/register" element={<AgroisyncRegister />} />
                     <Route path="/signup" element={<SignupType />} />
@@ -163,21 +168,23 @@ function App() {
                     <Route path="/verify-email" element={<VerifyEmail />} />
                     <Route path="/login-redirect" element={<LoginRedirect />} />
                     
-                    {/* Payment Routes - Acesso direto */}
+                    {/* Payment Routes - COM CRIPTOGRAFIA */}
                     <Route path="/payment/success" element={<PaymentSuccess />} />
                     <Route path="/payment/cancel" element={<PaymentCancel />} />
                     
-                    {/* Protected Routes - Apenas ProtectedRoute */}
-                    <Route path="/dashboard" element={<ProtectedRoute><AgroisyncDashboard /></ProtectedRoute>} />
-                    <Route path="/user-dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
-                    <Route path="/messaging" element={<ProtectedRoute><Messaging /></ProtectedRoute>} />
-                    <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
-                    <Route path="/useradmin" element={<ProtectedRoute><UserAdmin /></ProtectedRoute>} />
+            {/* Protected Routes - COM CRIPTOGRAFIA */}
+            <Route path="/dashboard" element={<ProtectedRoute><AgroisyncDashboard /></ProtectedRoute>} />
+            <Route path="/user-dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
+            <Route path="/messaging" element={<ProtectedRoute><Messaging /></ProtectedRoute>} />
+            <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
+            <Route path="/useradmin" element={<ProtectedRoute><UserAdmin /></ProtectedRoute>} />
+            <Route path="/crypto-routes" element={<ProtectedRoute><CryptoRoutesStatus /></ProtectedRoute>} />
                     
-                    {/* Error Routes - Acesso direto */}
+                    {/* Error Routes - COM CRIPTOGRAFIA */}
                     <Route path="/unauthorized" element={<Unauthorized />} />
                     <Route path="*" element={<NotFound />} />
-                    </Routes>
+                      </Routes>
+                    </DynamicCryptoURL>
                   </main>
                 </Layout>
                 

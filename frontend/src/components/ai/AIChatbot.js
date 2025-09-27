@@ -49,7 +49,7 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
     const welcomeMessage = {
       id: Date.now(),
       type: 'ai',
-      content: t('ai.welcome', '👋 Olá! Sou o assistente IA da AGROISYNC. Como posso ajudá-lo hoje?'),
+      content: t('ai.welcome'),
       timestamp: new Date()
     };
     setMessages([welcomeMessage]);
@@ -311,7 +311,7 @@ Como posso ajudá-lo melhor?`;
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.8, y: 20 }}
         transition={{ duration: 0.3 }}
-        className={`fixed bottom-4 right-4 w-80 md:w-96 ${isMinimized ? 'h-16' : 'h-[500px] md:h-[600px]'} bg-black text-white rounded-2xl shadow-2xl border border-black flex flex-col z-40 md:z-50 transition-all duration-300 chatbot-button`}
+        className={`chatbot-modal fixed bottom-4 right-4 w-80 md:w-96 ${isMinimized ? 'h-16' : 'h-[500px] md:h-[600px]'} bg-black text-white rounded-2xl shadow-2xl border border-black flex flex-col z-40 md:z-50 transition-all duration-300`}
         style={{
           background: 'rgba(0, 0, 0, 0.92)',
           backdropFilter: 'blur(16px)',
@@ -394,7 +394,7 @@ Como posso ajudá-lo melhor?`;
 
         {/* Messages Futuristas */}
         {!isMinimized && (
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className="chatbot-messages flex-1 overflow-y-auto p-4 space-y-4">
             {messages.map((message) => (
               <motion.div
                 key={message.id}
@@ -466,7 +466,7 @@ Como posso ajudá-lo melhor?`;
 
         {/* Input Futurista */}
         {!isMinimized && (
-          <div className="p-4 border-t border-gray-700">
+          <div className="chatbot-input p-4 border-t border-gray-700">
             <div className="flex items-center gap-2">
               <div className="flex-1 relative">
                 <textarea

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, DollarSign, TrendingUp, UserCheck, Truck, Store, Crown, Shield, BarChart3, RefreshCw } from 'lucide-react';
+import { Users, DollarSign, TrendingUp, UserCheck, Truck, Store, Crown, Shield, BarChart3, RefreshCw, Key, Lock } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import CryptoRoutesStatus from '../components/CryptoRoutesStatus';
+import CryptoHash from '../components/CryptoHash';
 
 const AgroisyncDashboard = () => {
   const { user } = useAuth();
@@ -10,6 +12,7 @@ const AgroisyncDashboard = () => {
   const [paymentsData, setPaymentsData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+  const [showCryptoRoutes, setShowCryptoRoutes] = useState(false);
 
   const fetchDashboardData = async () => {
     // Verificar se é super-admin
@@ -128,7 +131,8 @@ const AgroisyncDashboard = () => {
           {[
             { id: 'overview', label: 'Visão Geral', icon: BarChart3 },
             { id: 'users', label: 'Usuários', icon: Users },
-            { id: 'payments', label: 'Pagamentos', icon: DollarSign }
+            { id: 'payments', label: 'Pagamentos', icon: DollarSign },
+            { id: 'crypto', label: 'Rotas Criptografadas', icon: Lock }
           ].map(tab => (
             <button
               key={tab.id}
@@ -340,7 +344,17 @@ const AgroisyncDashboard = () => {
               </motion.div>
             </div>
           )}
+
+          {/* Rotas Criptografadas */}
+          {activeTab === 'crypto' && (
+            <motion.div variants={itemVariants}>
+              <CryptoRoutesStatus />
+            </motion.div>
+          )}
         </motion.div>
+        <div className="mt-8 flex justify-center">
+          <CryptoHash pageName="dashboard" />
+        </div>
       </div>
     </div>
   );

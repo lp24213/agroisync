@@ -10,6 +10,7 @@ import {
   Send,
   CheckCircle
 } from 'lucide-react';
+import CryptoHash from '../components/CryptoHash';
 
 const AgroisyncContact = () => {
   const { t } = useTranslation();
@@ -409,6 +410,9 @@ const AgroisyncContact = () => {
                 </p>
               </motion.div>
             ))}
+          </div>
+          <div className="mt-8 flex justify-center">
+            <CryptoHash pageName="contact" />
           </div>
         </div>
       </section>

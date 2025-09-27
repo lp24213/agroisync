@@ -19,6 +19,7 @@ import {
   Eye,
   X
 } from 'lucide-react';
+import CryptoHash from '../components/CryptoHash';
 
 const AgroisyncLoja = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -923,6 +924,9 @@ const AgroisyncLoja = () => {
           </div>
         </div>
       )}
+      <div className="mt-8 flex justify-center">
+        <CryptoHash pageName="loja" />
+      </div>
     </div>
   );
 };

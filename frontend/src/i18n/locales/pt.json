@@ -190,10 +190,14 @@
     },
     "copyright": "Todos os direitos reservados."
   },
-  "auth": {
-    "login": "Entrar",
-    "register": "Cadastrar",
-    "logout": "Sair"
+  "ai": {
+    "welcome": "👋 Olá! Sou o assistente IA da AGROISYNC. Como posso ajudá-lo hoje?",
+    "placeholder": "Digite sua pergunta sobre agricultura...",
+    "send": "Enviar",
+    "thinking": "Pensando...",
+    "error": "Erro ao processar sua pergunta. Tente novamente.",
+    "limit_reached": "Você atingiu o limite de perguntas para hoje.",
+    "upgrade": "Faça upgrade do seu plano para mais perguntas!"
   },
   "weather": {
     "conditions": {
