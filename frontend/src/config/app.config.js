@@ -15,8 +15,9 @@ export const APP_CONFIG = {
   
   // Configurações de admin
   admin: {
-    email: 'luispaulodeoliveira@agrotm.com.br',
-    password: 'Th@ys15221008'
+    // Credenciais removidas por segurança - apenas no backend
+    email: process.env.REACT_APP_ADMIN_EMAIL || '',
+    password: process.env.REACT_APP_ADMIN_PASSWORD || ''
   },
   
   // Configurações de API

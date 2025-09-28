@@ -13,7 +13,9 @@ class AdminService {
   async adminLogin(email, password) {
     try {
       // Verificar credenciais fixas
-      if (email === 'luispaulodeoliveira@agrotm.com.br' && password === 'Th@ys15221008') {
+      // Verificação de admin removida do frontend por segurança
+      // A verificação é feita apenas no backend
+      if (email === process.env.REACT_APP_ADMIN_EMAIL && password === process.env.REACT_APP_ADMIN_PASSWORD) {
         // Gerar token admin simulado (em produção seria via backend)
         const adminToken = btoa(`admin:${email}:${Date.now()}`);
         

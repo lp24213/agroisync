@@ -29,6 +29,38 @@ export default {
       );
     }
 
+    // Geolocation proxy (evita CORS)
+    if (url.pathname === '/api/geolocation' && request.method === 'GET') {
+      try {
+        const response = await fetch('https://ipapi.co/json/');
+        const data = await response.json();
+        
+        return new Response(
+          JSON.stringify(data),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        );
+      } catch (error) {
+        // Fallback para São Paulo
+        return new Response(
+          JSON.stringify({
+            city: 'São Paulo',
+            region: 'São Paulo',
+            country_name: 'Brasil',
+            country_code: 'BR',
+            latitude: -23.5505,
+            longitude: -46.6333,
+            timezone: 'America/Sao_Paulo',
+            currency: 'BRL'
+          }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        );
+      }
+    }
+
     // SMS Send Code
     if (url.pathname === '/api/sms/send-code' && request.method === 'POST') {
       try {
@@ -166,8 +198,37 @@ export default {
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
         
-        // Simular envio de email (em produção, usar Nodemailer)
-        console.log(`📧 Email enviado para ${email}: ${verificationCode}`);
+        // Enviar email real via Resend
+        const resendResponse = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer re_f9XgEUAJ_2FwkAe87mmUZJhTTAy8xuWg8`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            from: 'AgroSync <onboarding@resend.dev>',
+            to: [email],
+            subject: 'Código de Verificação AgroSync',
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #2d5016;">🔐 Código de Verificação AgroSync</h2>
+                <p>Olá!</p>
+                <p>Seu código de verificação é:</p>
+                <div style="background: #f0f8ff; padding: 20px; text-align: center; margin: 20px 0;">
+                  <h1 style="color: #2d5016; font-size: 32px; margin: 0;">${verificationCode}</h1>
+                </div>
+                <p>Este código expira em 10 minutos.</p>
+                <p>Se você não solicitou este código, ignore este email.</p>
+                <hr style="margin: 20px 0;">
+                <p style="color: #666; font-size: 12px;">AgroSync - Plataforma Agropecuária</p>
+              </div>
+            `,
+            text: `Código de verificação AgroSync: ${verificationCode}\n\nEste código expira em 10 minutos.`
+          })
+        });
+
+        const resendData = await resendResponse.json();
+        console.log(`📧 Email enviado via Resend para ${email}:`, resendData);
         
         return new Response(
           JSON.stringify({
@@ -175,9 +236,8 @@ export default {
             message: 'Código de verificação enviado para seu email',
             data: {
               email: email.replace(/(.{2}).*(@.*)/, '$1***$2'),
-              verificationCode, // Apenas para desenvolvimento
               expiresIn: 600,
-              messageId: `email-${Date.now()}`
+              messageId: resendData.id || `email-${Date.now()}`
             }
           }),
           {

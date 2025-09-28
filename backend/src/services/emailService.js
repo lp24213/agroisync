@@ -1,81 +1,30 @@
 import { Resend } from 'resend';
 import logger from '../utils/logger.js';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || 're_f9XgEUAJ_2FwkAe87mmUZJhTTAy8xuWg8');
 
 class EmailService {
   constructor() {
     this.transporter = null;
-    this.initializeTransporter();
   }
 
-  async initializeTransporter() {
-    try {
-      // Configuração para diferentes provedores
-      const emailConfig = {
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-        port: parseInt(process.env.SMTP_PORT) || 587,
-        secure: process.env.SMTP_SECURE === 'true',
-    auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS
-        }
-      };
-
-      // Se usando SendGrid
-      if (process.env.EMAIL_PROVIDER === 'sendgrid') {
-        emailConfig.service = 'SendGrid';
-        emailConfig.auth = {
-          user: 'apikey',
-          pass: process.env.SENDGRID_API_KEY
-        };
-      }
-
-      // Se usando Mailgun
-      if (process.env.EMAIL_PROVIDER === 'mailgun') {
-        emailConfig.service = 'Mailgun';
-        emailConfig.auth = {
-          user: process.env.MAILGUN_SMTP_USER,
-          pass: process.env.MAILGUN_SMTP_PASS
-        };
-      }
-
-      // Se usando AWS SES
-      if (process.env.EMAIL_PROVIDER === 'ses') {
-        emailConfig.service = 'SES';
-        emailConfig.auth = {
-          user: process.env.AWS_ACCESS_KEY_ID,
-          pass: process.env.AWS_SECRET_ACCESS_KEY
-        };
-        emailConfig.region = process.env.AWS_REGION || 'us-east-1';
-      }
-
-      this.transporter = nodemailer.createTransporter(emailConfig);
-
-      // Verificar conexão
-      await this.transporter.verify();
-      logger.info('Serviço de email inicializado com sucesso');
-    } catch (error) {
-      logger.error('Erro ao inicializar serviço de email:', error);
-      // Fallback para desenvolvimento
-      this.transporter = nodemailer.createTransporter({
-        host: 'localhost',
-        port: 1025,
-        ignoreTLS: true
-      });
-    }
+  initializeTransporter() {
+    logger.info('Resend Email Service initialized.');
   }
 
   async sendEmail({ to, subject, html, text, from = null }) {
     try {
+      // RESEND CONFIGURADO E FUNCIONANDO
+      logger.info(`Enviando email para ${to} via Resend`);
+
       const result = await resend.emails.send({
-        from: from || process.env.RESEND_FROM || 'AgroSync <noreply@agroisync.com>',
+        from: from || process.env.RESEND_FROM || 'AgroSync <onboarding@resend.dev>',
         to: [to],
         subject,
         html,
         text
       });
-      
+
       logger.info(`Email enviado para ${to}: ${result.data?.id}`);
       return result;
     } catch (error) {
@@ -84,9 +33,10 @@ class EmailService {
     }
   }
 
-  async sendPasswordResetEmail({ to, name, resetUrl, expiresIn }) {
+  async sendPasswordResetEmail({ to, name, resetToken }) {
     const subject = 'Redefinição de Senha - AgroSync';
-    
+    const resetUrl = `${process.env.FRONTEND_URL || 'https://agroisync.com'}/reset-password?token=${resetToken}`;
+
     const html = `
       <!DOCTYPE html>
       <html>
@@ -97,9 +47,9 @@ class EmailService {
         <style>
           body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
           .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+          .header { background: linear-gradient(135deg, #2a7f4f 0%, #1e5f3a 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
           .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-          .button { display: inline-block; background: #667eea; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+          .button { background: #2a7f4f; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; display: inline-block; margin: 20px 0; }
           .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
           .warning { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin: 20px 0; }
         </style>
@@ -110,35 +60,31 @@ class EmailService {
             <h1>🔐 Redefinição de Senha</h1>
             <p>AgroSync - Plataforma Inteligente de Agronegócio</p>
           </div>
-          
+
           <div class="content">
             <h2>Olá, ${name}!</h2>
-            
-            <p>Recebemos uma solicitação para redefinir a senha da sua conta no AgroSync.</p>
-            
-            <p>Para criar uma nova senha, clique no botão abaixo:</p>
-            
-            <div style="text-align: center;">
-              <a href="${resetUrl}" class="button">Redefinir Minha Senha</a>
-      </div>
-            
+
+            <p>Recebemos uma solicitação para redefinir a senha da sua conta AgroSync.</p>
+
+            <p>Clique no botão abaixo para criar uma nova senha:</p>
+
+            <a href="${resetUrl}" class="button">Redefinir Senha</a>
+
             <div class="warning">
               <strong>⚠️ Importante:</strong>
               <ul>
-                <li>Este link expira em <strong>${expiresIn}</strong></li>
+                <li>Este link expira em <strong>1 hora</strong></li>
                 <li>Se você não solicitou esta redefinição, ignore este email</li>
-                <li>Nunca compartilhe este link com outras pessoas</li>
+                <li>Não compartilhe este link com outras pessoas</li>
               </ul>
             </div>
-            
-            <p>Se o botão não funcionar, copie e cole este link no seu navegador:</p>
-            <p style="word-break: break-all; background: #f0f0f0; padding: 10px; border-radius: 5px;">${resetUrl}</p>
-            
-            <p>Se você tiver alguma dúvida, entre em contato conosco através do nosso suporte.</p>
-            
+
+            <p>Se o botão não funcionar, copie e cole o link abaixo no seu navegador:</p>
+            <p style="word-break: break-all; color: #666;">${resetUrl}</p>
+
             <p>Atenciosamente,<br>Equipe AgroSync</p>
           </div>
-          
+
           <div class="footer">
             <p>Este é um email automático, não responda a esta mensagem.</p>
             <p>© 2024 AgroSync. Todos os direitos reservados.</p>
@@ -148,37 +94,17 @@ class EmailService {
       </html>
     `;
 
-    const text = `
-      Redefinição de Senha - AgroSync
-      
-      Olá, ${name}!
-      
-      Recebemos uma solicitação para redefinir a senha da sua conta no AgroSync.
-      
-      Para criar uma nova senha, acesse este link: ${resetUrl}
-      
-      IMPORTANTE:
-      - Este link expira em ${expiresIn}
-      - Se você não solicitou esta redefinição, ignore este email
-      - Nunca compartilhe este link com outras pessoas
-      
-      Se você tiver alguma dúvida, entre em contato conosco através do nosso suporte.
-      
-      Atenciosamente,
-      Equipe AgroSync
-    `;
-
     return await this.sendEmail({
       to,
       subject,
       html,
-      text
+      text: `Redefinição de senha AgroSync\n\nOlá, ${name}!\n\nClique no link para redefinir sua senha: ${resetUrl}\n\nEste link expira em 1 hora.`
     });
   }
 
-  async sendWelcomeEmail({ to, name, verificationUrl }) {
+  async sendWelcomeEmail({ to, name }) {
     const subject = 'Bem-vindo ao AgroSync!';
-    
+
     const html = `
       <!DOCTYPE html>
       <html>
@@ -189,46 +115,54 @@ class EmailService {
         <style>
           body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
           .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+          .header { background: linear-gradient(135deg, #2a7f4f 0%, #1e5f3a 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
           .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-          .button { display: inline-block; background: #667eea; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+          .button { background: #2a7f4f; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; display: inline-block; margin: 20px 0; }
           .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
-          .features { background: white; padding: 20px; border-radius: 5px; margin: 20px 0; }
+          .features { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+          .feature { background: white; padding: 20px; border-radius: 8px; text-align: center; }
         </style>
       </head>
       <body>
         <div class="container">
           <div class="header">
-            <h1>🚀 Bem-vindo ao AgroSync!</h1>
+            <h1>🌱 Bem-vindo ao AgroSync!</h1>
             <p>Plataforma Inteligente de Agronegócio</p>
           </div>
-          
+
           <div class="content">
             <h2>Olá, ${name}!</h2>
-            
-            <p>É um prazer tê-lo(a) conosco na AgroSync! Sua conta foi criada com sucesso.</p>
-            
+
+            <p>Seja muito bem-vindo ao AgroSync! Estamos felizes em tê-lo conosco nesta jornada de transformação do agronegócio.</p>
+
             <div class="features">
-              <h3>🌟 Recursos disponíveis:</h3>
-              <ul>
-                <li><strong>Marketplace:</strong> Compre e venda produtos agrícolas</li>
-                <li><strong>AgroConecta:</strong> Sistema de logística e rastreamento</li>
-                <li><strong>Chat Inteligente:</strong> Assistente IA para suas necessidades</li>
-                <li><strong>Análises:</strong> Dados e insights do mercado</li>
-              </ul>
-        </div>
-            
-            <p>Para começar a usar sua conta, verifique seu email clicando no botão abaixo:</p>
-            
-            <div style="text-align: center;">
-              <a href="${verificationUrl}" class="button">Verificar Email</a>
-      </div>
-            
-            <p>Se você tiver alguma dúvida ou precisar de ajuda, nossa equipe de suporte está sempre disponível.</p>
-            
-            <p>Bem-vindo(a) à revolução do agronegócio!<br>Equipe AgroSync</p>
+              <div class="feature">
+                <h3>🏪 Marketplace</h3>
+                <p>Compre e venda produtos agrícolas com segurança</p>
+              </div>
+              <div class="feature">
+                <h3>🚛 Frete</h3>
+                <p>Encontre transportadores confiáveis</p>
+              </div>
+              <div class="feature">
+                <h3>💎 Crypto</h3>
+                <p>Pagamentos seguros com criptomoedas</p>
+              </div>
+              <div class="feature">
+                <h3>📊 Analytics</h3>
+                <p>Dados em tempo real para suas decisões</p>
+              </div>
+            </div>
+
+            <p>Comece explorando nossa plataforma:</p>
+
+            <a href="https://agroisync.com/dashboard" class="button">Acessar Dashboard</a>
+
+            <p>Se tiver alguma dúvida, nossa equipe de suporte está sempre pronta para ajudar!</p>
+
+            <p>Atenciosamente,<br>Equipe AgroSync</p>
           </div>
-          
+
           <div class="footer">
             <p>Este é um email automático, não responda a esta mensagem.</p>
             <p>© 2024 AgroSync. Todos os direitos reservados.</p>
@@ -242,13 +176,13 @@ class EmailService {
       to,
       subject,
       html,
-      text: `Bem-vindo ao AgroSync, ${name}! Verifique seu email em: ${verificationUrl}`
+      text: `Bem-vindo ao AgroSync!\n\nOlá, ${name}!\n\nSeja muito bem-vindo ao AgroSync! Acesse seu dashboard: https://agroisync.com/dashboard`
     });
   }
 
   async sendVerificationCode({ to, name, code }) {
     const subject = 'Código de Verificação - AgroSync';
-    
+
     const html = `
       <!DOCTYPE html>
       <html>
@@ -272,14 +206,14 @@ class EmailService {
             <h1>🔐 Código de Verificação</h1>
             <p>AgroSync - Plataforma Inteligente de Agronegócio</p>
           </div>
-          
+
           <div class="content">
             <h2>Olá, ${name}!</h2>
-            
+
             <p>Seu código de verificação para completar o cadastro é:</p>
-            
+
             <div class="code">${code}</div>
-            
+
             <div class="warning">
               <strong>⚠️ Importante:</strong>
               <ul>
@@ -288,12 +222,12 @@ class EmailService {
                 <li>Se você não solicitou este código, ignore este email</li>
               </ul>
             </div>
-            
+
             <p>Digite este código na tela de verificação para ativar sua conta.</p>
-            
+
             <p>Atenciosamente,<br>Equipe AgroSync</p>
           </div>
-          
+
           <div class="footer">
             <p>Este é um email automático, não responda a esta mensagem.</p>
             <p>© 2024 AgroSync. Todos os direitos reservados.</p>
@@ -303,65 +237,20 @@ class EmailService {
       </html>
     `;
 
-    return await this.sendEmail({
-      to,
-      subject,
-      html,
-      text: `Código de verificação AgroSync: ${code}\n\nOlá, ${name}!\n\nSeu código de verificação é: ${code}\n\nEste código expira em 10 minutos.`
-    });
-  }
+    try {
+      const result = await this.sendEmail({
+        to,
+        subject,
+        html,
+        text: `Código de verificação AgroSync: ${code}\n\nOlá, ${name}!\n\nSeu código de verificação é: ${code}\n\nEste código expira em 10 minutos.`
+      });
 
-  async sendNotificationEmail({ to, name, subject, message, actionUrl = null, actionText = null }) {
-    const html = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>${subject}</title>
-        <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-          .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-          .button { display: inline-block; background: #667eea; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
-          .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1>📢 Notificação AgroSync</h1>
-          </div>
-          
-          <div class="content">
-            <h2>Olá, ${name}!</h2>
-            
-            <p>${message}</p>
-            
-            ${actionUrl && actionText ? `
-              <div style="text-align: center;">
-                <a href="${actionUrl}" class="button">${actionText}</a>
-              </div>
-            ` : ''}
-            
-            <p>Atenciosamente,<br>Equipe AgroSync</p>
-          </div>
-          
-          <div class="footer">
-            <p>© 2024 AgroSync. Todos os direitos reservados.</p>
-          </div>
-        </div>
-      </body>
-      </html>
-    `;
-
-    return await this.sendEmail({
-      to,
-      subject,
-      html,
-      text: `${subject}\n\nOlá, ${name}!\n\n${message}${actionUrl ? `\n\nAcesse: ${actionUrl}` : ''}`
-    });
+      logger.info(`Código de verificação enviado para ${to}: ${code}`);
+      return result;
+    } catch (error) {
+      logger.error(`Erro ao enviar código de verificação para ${to}:`, error);
+      throw error;
+    }
   }
 }
 

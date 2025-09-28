@@ -8,7 +8,7 @@ import PasswordReset from '../models/PasswordReset.js';
 import { auth } from '../middleware/auth.js';
 import logger from '../utils/logger.js';
 import emailService from '../services/emailService.js';
-import cloudflareService from '../services/cloudflareService.js';
+// import cloudflareService from '../services/cloudflareService.js'; // Removido - não usado
 import { verifyTurnstile } from '../utils/verifyTurnstile.js';
 import notificationService from '../services/notificationService.js';
 import {
@@ -108,6 +108,9 @@ router.post(
       // Verificar token Turnstile do Cloudflare
       const turnstileResult = await verifyTurnstile(turnstileToken, req.ip);
       if (!turnstileResult.success) {
+        logger.warn(
+          `Turnstile verification failed for IP ${req.ip}: ${turnstileResult['error-codes']?.join(', ')}`
+        );
         return res.status(401).json({
           success: false,
           message: 'Verificação de segurança falhou. Tente novamente.'
@@ -228,7 +231,7 @@ router.post(
       try {
         await emailService.sendVerificationCode({
           to: email,
-          name: name,
+          name,
           code: verificationCode
         });
         logger.info(`Código de verificação enviado para ${email}: ${verificationCode}`);
@@ -325,6 +328,9 @@ router.post(
       // Verificar token Turnstile do Cloudflare
       const turnstileResult = await verifyTurnstile(turnstileToken, req.ip);
       if (!turnstileResult.success) {
+        logger.warn(
+          `Turnstile verification failed for IP ${req.ip}: ${turnstileResult['error-codes']?.join(', ')}`
+        );
         return res.status(401).json({
           success: false,
           message: 'Verificação de segurança falhou. Tente novamente.'
@@ -729,7 +735,8 @@ router.post(
   [
     body('token').notEmpty().withMessage('Token é obrigatório'),
     body('password').isLength({ min: 6 }).withMessage('Senha deve ter pelo menos 6 caracteres'),
-    body('userId').isMongoId().withMessage('ID de usuário inválido')
+    body('userId').isMongoId().withMessage('ID de usuário inválido'),
+    body('turnstileToken').notEmpty().withMessage('Token Turnstile é obrigatório')
   ],
   async (req, res) => {
     try {
@@ -742,7 +749,16 @@ router.post(
         });
       }
 
-      const { token, password, userId } = req.body;
+      const { token, password, userId, turnstileToken } = req.body;
+
+      // Verificar token Turnstile do Cloudflare
+      const turnstileResult = await verifyTurnstile(turnstileToken, req.ip);
+      if (!turnstileResult.success) {
+        return res.status(401).json({
+          success: false,
+          message: 'Token de verificação inválido'
+        });
+      }
 
       // Validar token usando o modelo PasswordReset
       const resetRecord = await PasswordReset.validateToken(token);
@@ -1174,7 +1190,7 @@ router.post(
 
       // Verificar se email já está verificado
       if (user.isEmailVerified) {
-        return res.status(400).json({
+        return res.status(409).json({
           success: false,
           message: 'Email já está verificado'
         });
@@ -1203,14 +1219,18 @@ router.post(
 
       // Enviar novo código
       try {
-        const emailResult = await notificationService.sendOTPEmail(email, emailCode, user.name);
-        if (emailResult.success) {
-          logger.info(`Novo código de verificação enviado para ${email}: ${emailCode}`);
-        } else {
-          logger.error(`Erro ao reenviar email para ${email}:`, emailResult.error);
-        }
+        await emailService.sendVerificationCode({
+          to: email,
+          name: user.name,
+          code: emailCode
+        });
+        logger.info(`Novo código de verificação enviado para ${email}: ${emailCode}`);
       } catch (error) {
         logger.error(`Erro ao reenviar email para ${email}:`, error);
+        return res.status(500).json({
+          success: false,
+          message: 'Erro ao enviar email de verificação'
+        });
       }
 
       res.status(200).json({

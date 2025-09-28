@@ -431,10 +431,10 @@ user.status === 'active'
           </h4>
           <div className="space-y-2 text-sm">
             <div>
-              <strong>Email:</strong> {process.env.REACT_APP_ADMIN_EMAIL || 'luispaulodeoliveira@agrotm.com.br'}
+              <strong>Email:</strong> {process.env.REACT_APP_ADMIN_EMAIL || '***@agrotm.com.br'}
             </div>
             <div>
-              <strong>Senha:</strong> {process.env.REACT_APP_ADMIN_PASSWORD || 'Th@ys15221008'}
+              <strong>Senha:</strong> {process.env.REACT_APP_ADMIN_PASSWORD || '********'}
             </div>
             <div className="text-yellow-700 dark:text-yellow-300 text-xs mt-2">
               ⚠️ Estas credenciais são apenas para desenvolvimento. Em produção, use variáveis de ambiente.

@@ -1,4 +1,4 @@
-name = "agroisync-api"
+name = "agroisync-backend"
 compatibility_date = "2025-09-20"
 main = "src/email-only-worker.js"
 
@@ -24,9 +24,10 @@ INFOBIP_WHATSAPP_HOST = "51rwgg.api.infobip.com"
 INFOBIP_EMAIL_HOST = "51rwgg.api.infobip.com"
 # Email - Resend (GRATUITO - 3.000 emails/mês)
 RESEND_API_KEY = "re_f9XgEUAJ_2FwkAe87mmUZJhTTAy8xuWg8"
+RESEND_FROM = "AgroSync <onboarding@resend.dev>"
 # Cloudflare Turnstile
-CLOUDFLARE_TURNSTILE_SECRET = "0x4AAAAAAA2rOqUOZqKxZqKx"
-CLOUDFLARE_TURNSTILE_SITE_KEY = "0x4AAAAAAA2rOqUOZqKxZqKx"
+CLOUDFLARE_TURNSTILE_SECRET_KEY = "0x4AAAAAAB3pdkPMyeyfUQQaEpNBMb0NYhk"
+NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY = "0x4AAAAAAB3pdjs4jRKvAtaA"
 
 # Rota da API
 routes = ["agroisync.com/api/*"]

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import StockTicker from '../components/StockTicker';
@@ -9,6 +9,7 @@ import CryptoHash from '../components/CryptoHash';
 const AgroisyncHome = () => {
   // Imagem de campo de soja verde vibrante com cache buster
   const inicioImageUrl = `https://media.istockphoto.com/id/1465642013/pt/foto/a-vibrant-green-soybean-field-nestled-in-a-natural-setting.webp?a=1&b=1&s=612x612&w=0&k=20&c=Bz3SlprnpXY3r7wEKqU2NdeYoW0Ysb-itwzf4WiIuAs=&v=${Date.now()}`;
+
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 60 },
@@ -434,6 +435,7 @@ const AgroisyncHome = () => {
           flex-direction: column;
           gap: 1.5rem;
         }
+
 
         /* Seja Nosso Parceiro */
         .agro-partner-card {

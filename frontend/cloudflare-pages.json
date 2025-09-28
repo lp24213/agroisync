@@ -1,8 +1,9 @@
 {
   "buildCommand": "npm run build",
-  "buildOutputDirectory": "dist",
-  "rootDirectory": "frontend",
+  "buildOutputDirectory": "build",
+  "rootDirectory": ".",
   "environmentVariables": {
-    "NODE_VERSION": "18.20.4"
+    "NODE_VERSION": "18.20.4",
+    "REACT_APP_API_URL": "https://api.agroisync.com"
   }
 }

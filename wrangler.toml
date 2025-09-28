@@ -1,0 +1,23 @@
+name = "agroisync-email-final"
+main = "backend/src/email-only-worker.js"
+compatibility_date = "2024-09-01"
+
+# Configuração para Cloudflare Workers
+compatibility_flags = ["nodejs_compat"]
+
+# Cloudflare D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "agroisync-db"
+database_id = "a3eb1069-9c36-4689-9ee9-971245cb2d12"
+
+# Variáveis de ambiente
+[vars]
+NODE_ENV = "production"
+API_VERSION = "v1"
+RESEND_API_KEY = "re_f9XgEUAJ_2FwkAe87mmUZJhTTAy8xuWg8"
+RESEND_FROM = "Agroisync <contato@agroisync.com>"
+CLOUDFLARE_TURNSTILE_SECRET = "0x4AAAAAAB3pdkPMyeyfUQQaEpNBMb0NYhk"
+
+# Rota do Worker servindo sob o domínio principal
+routes = ["agroisync.com/api/*"]

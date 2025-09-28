@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const DynamicCryptoURL = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [isGenerating, setIsGenerating] = useState(true);
 
   const generateCryptoHash = useCallback(async () => {
     const pageData = {
@@ -36,24 +35,32 @@ const DynamicCryptoURL = ({ children }) => {
 
   const updateCryptoURL = useCallback(async () => {
     try {
-      setIsGenerating(true);
+      // Verificar se já tem hash na URL
+      const pathParts = location.pathname.split('/');
+      const hasHash = pathParts.length > 1 && pathParts[pathParts.length - 1].length === 32;
       
-      // SEMPRE gerar novo hash a cada chamada
-      const cryptoHash = await generateCryptoHash();
+      // Rotas que NÃO devem ter criptografia (rotas estáticas e especiais)
+      const excludeCrypto = [
+        '/payment/success', '/payment/cancel', '/unauthorized'
+      ];
       
-      // Construir nova URL com hash
-      const newPath = `${location.pathname}/${cryptoHash}`;
+      const shouldExclude = excludeCrypto.some(route => location.pathname.startsWith(route));
       
-      // Navegar para a nova URL com hash
-      navigate(newPath, { replace: true });
+      // Se deve excluir da criptografia, não fazer nada
+      if (shouldExclude) {
+        return;
+      }
       
-      // Loading mínimo
-      setTimeout(() => {
-        setIsGenerating(false);
-      }, 10);
+      // Aplicar criptografia em TODAS as outras rotas
+      if (!hasHash) {
+        const cryptoHash = await generateCryptoHash();
+        const newPath = `${location.pathname}/${cryptoHash}`;
+        // Usar replace: true para evitar loops de redirecionamento
+        navigate(newPath, { replace: true });
+      }
+      
     } catch (error) {
       console.error('Erro ao gerar URL criptografada:', error);
-      setIsGenerating(false);
     }
   }, [location.pathname, navigate, generateCryptoHash]);
 
@@ -61,54 +68,28 @@ const DynamicCryptoURL = ({ children }) => {
     updateCryptoURL();
   }, [updateCryptoURL]);
 
-  // Interceptar cliques em links para regenerar URL
-  useEffect(() => {
-    const handleClick = (event) => {
-      const target = event.target.closest('a');
-      if (target && target.href && !target.href.includes('http') && !target.href.includes('mailto:')) {
-        // Regenerar URL imediatamente
-        updateCryptoURL();
-      }
-    };
-
-    document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
-  }, [updateCryptoURL]);
-
-  // Regenerar URL periodicamente (a cada 5 segundos)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      updateCryptoURL();
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [updateCryptoURL]);
-
-  // Interceptar mudanças de rota
+  // Interceptar mudanças de rota para aplicar criptografia
   useEffect(() => {
     const handleRouteChange = () => {
-      updateCryptoURL();
+      // Rotas que NÃO devem ter criptografia
+      const excludeCrypto = [
+        '/payment/success', '/payment/cancel', '/unauthorized'
+      ];
+      
+      const shouldExclude = excludeCrypto.some(route => location.pathname.startsWith(route));
+      
+      // Aplicar criptografia em todas as rotas exceto as excluídas
+      if (!shouldExclude) {
+        // Usar setTimeout para evitar loops infinitos
+        setTimeout(() => {
+          updateCryptoURL();
+        }, 50);
+      }
     };
 
     window.addEventListener('popstate', handleRouteChange);
     return () => window.removeEventListener('popstate', handleRouteChange);
-  }, [updateCryptoURL]);
-
-  if (isGenerating) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-teal-50">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-            <svg className="w-8 h-8 text-white animate-spin" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-          </div>
-          <p className="text-gray-600 font-medium">Criptografando URL...</p>
-        </div>
-      </div>
-    );
-  }
+  }, [location.pathname, updateCryptoURL]);
 
   return children;
 };

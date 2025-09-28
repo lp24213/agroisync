@@ -17,8 +17,8 @@ const CompactWeatherWidget = () => {
 
   const detectUserLocation = async () => {
     try {
-      // Detectar localização real via nosso proxy
-      const response = await fetch('/api/geolocation');
+      // Detectar localização real via IP
+      const response = await fetch('https://ipapi.co/json/');
       const data = await response.json();
       
       if (data.city && data.region) {
@@ -36,8 +36,8 @@ const CompactWeatherWidget = () => {
     try {
       setLoading(true);
       
-      // Detectar localização real via nosso proxy
-      const response = await fetch('/api/geolocation');
+      // Detectar localização real via IP
+      const response = await fetch('https://ipapi.co/json/');
       const locationData = await response.json();
       
       let city = 'São Paulo';
@@ -49,16 +49,36 @@ const CompactWeatherWidget = () => {
       }
       
       // Simular dados de clima baseados na localização real
+      const getRegionalWeather = (region) => {
+        const weatherData = {
+          'Mato Grosso': { temp: 32, desc: 'Ensolarado', humidity: 45, wind: 8, feels: 35 },
+          'Paraná': { temp: 28, desc: 'Parcialmente nublado', humidity: 65, wind: 12, feels: 30 },
+          'Rio Grande do Sul': { temp: 25, desc: 'Nublado', humidity: 70, wind: 15, feels: 27 },
+          'Goiás': { temp: 30, desc: 'Ensolarado', humidity: 50, wind: 10, feels: 32 },
+          'Bahia': { temp: 29, desc: 'Parcialmente nublado', humidity: 60, wind: 11, feels: 31 },
+          'Minas Gerais': { temp: 27, desc: 'Parcialmente nublado', humidity: 68, wind: 13, feels: 29 },
+          'São Paulo': { temp: 28, desc: 'Parcialmente nublado', humidity: 65, wind: 12, feels: 30 },
+          'Rio de Janeiro': { temp: 29, desc: 'Ensolarado', humidity: 62, wind: 10, feels: 31 },
+          'Santa Catarina': { temp: 24, desc: 'Nublado', humidity: 72, wind: 16, feels: 26 },
+          'Espírito Santo': { temp: 28, desc: 'Parcialmente nublado', humidity: 67, wind: 12, feels: 30 },
+          'default': { temp: 28, desc: 'Parcialmente nublado', humidity: 65, wind: 12, feels: 30 }
+        };
+        
+        return weatherData[region] || weatherData['default'];
+      };
+      
+      const regionalWeather = getRegionalWeather(region);
+      
       const mockWeatherData = {
         location: `${city}, ${region}`,
         current: {
-          temperature: region === 'MT' ? 32 : 28, // Mais quente no MT
-          description: region === 'MT' ? 'Ensolarado' : 'Parcialmente nublado',
-          humidity: region === 'MT' ? 45 : 65, // Mais seco no MT
-          windSpeed: region === 'MT' ? 8 : 12,
+          temperature: regionalWeather.temp,
+          description: regionalWeather.desc,
+          humidity: regionalWeather.humidity,
+          windSpeed: regionalWeather.wind,
           windDirection: 'NE',
           pressure: 1013,
-          feelsLike: region === 'MT' ? 35 : 30,
+          feelsLike: regionalWeather.feels,
           sunrise: '06:15',
           sunset: '18:45',
           iconUrl: 'https://openweathermap.org/img/wn/01d@2x.png'

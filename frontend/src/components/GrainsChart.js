@@ -10,8 +10,8 @@ const GrainsChart = () => {
   useEffect(() => {
     const fetchGrainsData = async () => {
       try {
-        // Detectar localização real via nosso proxy
-        const response = await fetch('/api/geolocation');
+        // Detectar localização real via IP
+        const response = await fetch('https://ipapi.co/json/');
         const locationData = await response.json();
         
         let userRegion = 'São Paulo';
@@ -27,52 +27,107 @@ const GrainsChart = () => {
             'Minas Gerais': 'Minas Gerais',
             'Goiás': 'Goiás',
             'Bahia': 'Bahia',
-            'Maranhão': 'Maranhão'
+            'Maranhão': 'Maranhão',
+            'Pernambuco': 'Pernambuco',
+            'Ceará': 'Ceará',
+            'Pará': 'Pará',
+            'Amazonas': 'Amazonas',
+            'Rondônia': 'Rondônia',
+            'Acre': 'Acre',
+            'Roraima': 'Roraima',
+            'Amapá': 'Amapá',
+            'Tocantins': 'Tocantins',
+            'Piauí': 'Piauí',
+            'Alagoas': 'Alagoas',
+            'Sergipe': 'Sergipe',
+            'Paraíba': 'Paraíba',
+            'Rio Grande do Norte': 'Rio Grande do Norte',
+            'Espírito Santo': 'Espírito Santo',
+            'Rio de Janeiro': 'Rio de Janeiro',
+            'Santa Catarina': 'Santa Catarina',
+            'Distrito Federal': 'Distrito Federal'
           };
           
-          userRegion = regionMap[locationData.region] || 'São Paulo';
+          userRegion = regionMap[locationData.region] || locationData.region || 'São Paulo';
           userCity = locationData.city || 'São Paulo';
         }
         
         // Simulando dados da Agrolink por região REAL (baseado em IP)
+        const getRegionalPrices = (grain, region) => {
+          const basePrices = {
+            'Soja': { 
+              'Mato Grosso': { price: 148.50, change: 3.20, changePercent: 2.20 },
+              'Paraná': { price: 145.50, change: 2.30, changePercent: 1.60 },
+              'Rio Grande do Sul': { price: 142.80, change: 1.80, changePercent: 1.28 },
+              'Goiás': { price: 147.20, change: 2.90, changePercent: 2.01 },
+              'Bahia': { price: 144.30, change: 2.10, changePercent: 1.48 },
+              'default': { price: 145.50, change: 2.30, changePercent: 1.60 }
+            },
+            'Milho': { 
+              'Mato Grosso': { price: 82.20, change: -0.80, changePercent: -0.96 },
+              'Paraná': { price: 78.20, change: -1.20, changePercent: -1.51 },
+              'Rio Grande do Sul': { price: 79.50, change: -0.90, changePercent: -1.12 },
+              'Goiás': { price: 80.80, change: -0.70, changePercent: -0.86 },
+              'Bahia': { price: 77.90, change: -1.30, changePercent: -1.64 },
+              'default': { price: 78.20, change: -1.20, changePercent: -1.51 }
+            },
+            'Algodão': { 
+              'Mato Grosso': { price: 285.40, change: 4.60, changePercent: 1.64 },
+              'Bahia': { price: 275.20, change: 2.80, changePercent: 1.03 },
+              'Goiás': { price: 280.30, change: 3.50, changePercent: 1.26 },
+              'Piauí': { price: 278.90, change: 3.20, changePercent: 1.16 },
+              'Maranhão': { price: 277.50, change: 2.90, changePercent: 1.06 },
+              'default': { price: 275.20, change: 2.80, changePercent: 1.03 }
+            },
+            'Arroz': { 
+              'Rio Grande do Sul': { price: 98.80, change: 1.20, changePercent: 1.23 },
+              'Santa Catarina': { price: 96.50, change: 0.90, changePercent: 0.94 },
+              'Paraná': { price: 95.80, change: 0.80, changePercent: 0.84 },
+              'Maranhão': { price: 97.20, change: 1.00, changePercent: 1.04 },
+              'Tocantins': { price: 96.80, change: 0.95, changePercent: 0.99 },
+              'default': { price: 95.80, change: 0.80, changePercent: 0.84 }
+            },
+            'Feijão': { 
+              'Minas Gerais': { price: 192.20, change: 4.40, changePercent: 2.34 },
+              'Paraná': { price: 185.20, change: 3.40, changePercent: 1.87 },
+              'Goiás': { price: 188.50, change: 3.80, changePercent: 2.05 },
+              'Bahia': { price: 186.80, change: 3.60, changePercent: 1.96 },
+              'São Paulo': { price: 187.90, change: 3.70, changePercent: 2.00 },
+              'default': { price: 185.20, change: 3.40, changePercent: 1.87 }
+            }
+          };
+
+          return basePrices[grain][region] || basePrices[grain]['default'];
+        };
+
         const mockGrainsData = [
           { 
             grain: 'Soja', 
-            price: userRegion === 'Mato Grosso' ? 148.50 : 145.50, // Preço maior no MT
-            change: userRegion === 'Mato Grosso' ? 3.20 : 2.30,
-            changePercent: userRegion === 'Mato Grosso' ? 2.20 : 1.60,
+            ...getRegionalPrices('Soja', userRegion),
             region: userRegion,
             unit: 'R$/saca'
           },
           { 
             grain: 'Milho', 
-            price: userRegion === 'Mato Grosso' ? 82.20 : 78.20, // Preço maior no MT
-            change: userRegion === 'Mato Grosso' ? -0.80 : -1.20,
-            changePercent: userRegion === 'Mato Grosso' ? -0.96 : -1.51,
+            ...getRegionalPrices('Milho', userRegion),
             region: userRegion,
             unit: 'R$/saca'
           },
           { 
             grain: 'Algodão', 
-            price: userRegion === 'Mato Grosso' ? 285.40 : 275.20, // MT é grande produtor
-            change: userRegion === 'Mato Grosso' ? 4.60 : 2.80,
-            changePercent: userRegion === 'Mato Grosso' ? 1.64 : 1.03,
+            ...getRegionalPrices('Algodão', userRegion),
             region: userRegion,
             unit: 'R$/saca'
           },
           { 
             grain: 'Arroz', 
-            price: userRegion === 'Rio Grande do Sul' ? 98.80 : 95.80,
-            change: userRegion === 'Rio Grande do Sul' ? 1.20 : 0.80,
-            changePercent: userRegion === 'Rio Grande do Sul' ? 1.23 : 0.84,
+            ...getRegionalPrices('Arroz', userRegion),
             region: userRegion,
             unit: 'R$/saca'
           },
           { 
             grain: 'Feijão', 
-            price: userRegion === 'Minas Gerais' ? 192.20 : 185.20,
-            change: userRegion === 'Minas Gerais' ? 4.40 : 3.40,
-            changePercent: userRegion === 'Minas Gerais' ? 2.34 : 1.87,
+            ...getRegionalPrices('Feijão', userRegion),
             region: userRegion,
             unit: 'R$/saca'
           }

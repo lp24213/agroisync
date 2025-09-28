@@ -1,6 +1,20 @@
 name = "agroisync"
 compatibility_date = "2025-01-20"
-main = "dist/index.html"
+main = "build/index.html"
+
+[[pages_build_config]]
+assets = { not_found_handling = "single-page-application" }
+
+# Configuração para SPA com rotas criptografadas
+[build]
+command = "npm run build"
+cwd = "frontend"
+
+# Configuração de redirecionamento para SPA
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
 
 # Configuração para Cloudflare Pages
 [env.production]
@@ -9,4 +23,4 @@ routes = ["agroisync.com/*"]
 # Variáveis de ambiente
 [vars]
 NODE_ENV = "production"
-REACT_APP_API_URL = "https://agroisync.com/api"
+REACT_APP_API_URL = "https://api.agroisync.com"

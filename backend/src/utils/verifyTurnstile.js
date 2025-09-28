@@ -1,41 +1,39 @@
 import fetch from 'node-fetch';
+import logger from './logger.js';
 
 export async function verifyTurnstile(token, remoteip = null) {
   try {
-    const secret = process.env.CLOUDFLARE_TURNSTILE_SECRET;
-    if (!secret) {
+    const secret = process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY;
+    if (!secret || secret === 'your-turnstile-secret-key') {
       if (process.env.NODE_ENV !== 'production') {
-        console.warn('CLOUDFLARE_TURNSTILE_SECRET não configurado, pulando verificação');
+        logger.warn('CLOUDFLARE_TURNSTILE_SECRET_KEY não configurado, pulando verificação');
       }
       return { success: true }; // Em desenvolvimento, sempre retorna true
-    }
-
-    const formData = new URLSearchParams();
-    formData.append('secret', secret);
-    formData.append('response', token);
-    if (remoteip) {
-      formData.append('remoteip', remoteip);
     }
 
     const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/json'
       },
-      body: formData
+      body: JSON.stringify({
+        secret,
+        response: token,
+        ...(remoteip && { remoteip })
+      })
     });
 
     const result = await response.json();
-    
+
     if (process.env.NODE_ENV !== 'production') {
-      console.log('Turnstile verification result:', result);
+      logger.info('Turnstile verification result:', result);
     }
 
     return result;
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao verificar token Turnstile:', error);
+      logger.error('Erro na verificação Turnstile:', error);
     }
-    return { success: false, error: error.message };
+    return { success: false, 'error-codes': ['internal-error'] };
   }
 }

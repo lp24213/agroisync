@@ -1,8 +1,8 @@
 {
   "name": "agroisync",
-  "buildCommand": "npm run build",
-  "buildOutputDirectory": "build",
-  "rootDirectory": "frontend",
+  "buildCommand": "cd frontend && npm run build",
+  "buildOutputDirectory": "frontend/build",
+  "rootDirectory": ".",
   "environmentVariables": {
     "NODE_VERSION": "18.20.4",
     "CI": "false",
