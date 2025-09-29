@@ -15,15 +15,80 @@ async function verifyPassword(password, hash) {
   return passwordHash === hash;
 }
 
+// Função para sanitizar entrada
+function sanitizeInput(input) {
+  if (typeof input !== 'string') {
+    return input;
+  }
+  return input
+    .replace(/[<>]/g, '') // Remove < e >
+    .replace(/javascript:/gi, '') // Remove javascript:
+    .replace(/on\w+=/gi, '') // Remove event handlers
+    .trim();
+}
+
+// Função para validar email
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+// Função para validar senha (para uso futuro)
+// function _isValidPassword(password) {
+//   return password && password.length >= 6;
+// }
+
+// Rate limiting simples
+const rateLimitMap = new Map();
+
+function checkRateLimit(ip, endpoint) {
+  const key = `${ip}:${endpoint}`;
+  const now = Date.now();
+  const windowMs = 60000; // 1 minuto
+  const maxRequests = 10; // 10 requests por minuto
+
+  if (!rateLimitMap.has(key)) {
+    rateLimitMap.set(key, { count: 1, resetTime: now + windowMs });
+    return true;
+  }
+
+  const data = rateLimitMap.get(key);
+  if (now > data.resetTime) {
+    rateLimitMap.set(key, { count: 1, resetTime: now + windowMs });
+    return true;
+  }
+
+  if (data.count >= maxRequests) {
+    return false;
+  }
+
+  data.count++;
+  return true;
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const clientIP = request.headers.get('CF-Connecting-IP') || '127.0.0.1';
 
-    // CORS headers
+    // CORS headers - Segurança restrita
+    const allowedOrigins = [
+      'https://agroisync.com',
+      'https://www.agroisync.com',
+      'https://b72aba08.agroisync.pages.dev',
+      'http://localhost:3000',
+      'http://localhost:3001'
+    ];
+
+    const origin = request.headers.get('Origin');
     const corsHeaders = {
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': allowedOrigins.includes(origin)
+        ? origin
+        : 'https://agroisync.com',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+      'Access-Control-Allow-Credentials': 'true',
+      'Access-Control-Max-Age': '86400'
     };
 
     // Handle CORS preflight
@@ -34,8 +99,21 @@ export default {
     // Criar Usuário Admin - APENAS UMA VEZ
     if (url.pathname === '/api/create-admin' && request.method === 'POST') {
       try {
-        const adminEmail = 'luispaulodeoliveira@agrotm.com.br';
-        const adminPassword = 'Th@ys15221008';
+        const adminEmail = env.ADMIN_EMAIL || 'admin@agroisync.com';
+        const adminPassword = env.ADMIN_PASSWORD;
+
+        // Verificar se a senha do admin foi configurada
+        if (!adminPassword) {
+          return new Response(
+            JSON.stringify({
+              error: 'ADMIN_PASSWORD environment variable not configured'
+            }),
+            {
+              status: 500,
+              headers: corsHeaders
+            }
+          );
+        }
 
         // Verificar se admin já existe
         const existingAdmin = await env.DB.prepare(
@@ -368,16 +446,32 @@ export default {
       );
     }
 
+
     // Email Send Verification - RESEND
     if (url.pathname === '/api/email/send-verification' && request.method === 'POST') {
+      // Rate limiting
+      if (!checkRateLimit(clientIP, 'email-verification')) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            message: 'Muitas tentativas. Tente novamente em 1 minuto.'
+          }),
+          {
+            status: 429,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        );
+      }
+
       try {
         const { email } = await request.json();
 
-        if (!email) {
+        // Validar e sanitizar entrada
+        if (!email || !isValidEmail(email)) {
           return new Response(
             JSON.stringify({
               success: false,
-              message: 'Email é obrigatório'
+              message: 'Email inválido'
             }),
             {
               status: 400,
@@ -385,6 +479,8 @@ export default {
             }
           );
         }
+
+        const sanitizedEmail = sanitizeInput(email.toLowerCase());
 
         // Gerar código de verificação de 6 dígitos
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
@@ -400,20 +496,22 @@ export default {
             VALUES (?, ?, ?, ?, ?)
           `
           )
-            .bind(email, verificationCode, 'signup', expiresAt, now)
+            .bind(sanitizedEmail, verificationCode, 'signup', expiresAt, now)
             .run();
         } catch (dbError) {
           console.log('Erro ao salvar no banco (continuando):', dbError.message);
         }
 
-        console.log(`🚀 ENVIANDO EMAIL via RESEND para ${email} com código ${verificationCode}`);
+        console.log(
+          `🚀 ENVIANDO EMAIL via RESEND para ${sanitizedEmail} com código ${verificationCode}`
+        );
 
         // RESEND EMAIL - VERIFICAÇÃO DE CADASTRO
         try {
           console.log(
             `🔑 Usando API Key: ${env.RESEND_API_KEY ? 'CONFIGURADA' : 'NÃO CONFIGURADA'}`
           );
-          console.log(`📧 Enviando para: ${email}`);
+          console.log(`📧 Enviando para: ${sanitizedEmail}`);
           console.log(
             `🔑 API Key: ${env.RESEND_API_KEY ? `${env.RESEND_API_KEY.substring(0, 10)}...` : 'NÃO CONFIGURADA'}`
           );
@@ -485,7 +583,8 @@ export default {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${apiKey}`,
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'User-Agent': 'Agroisync/1.0'
             },
             body: JSON.stringify(emailData)
           });
@@ -503,7 +602,7 @@ export default {
                 success: true,
                 message: 'Email ENTREGUE! Verifique sua caixa de entrada.',
                 data: {
-                  email,
+                  email: sanitizedEmail,
                   verificationCode,
                   messageId: resendData.id,
                   status: 'SENT',
@@ -582,13 +681,12 @@ export default {
       try {
         const { email } = await request.json();
 
-        console.log(`📧 Processando recuperação de senha para: ${email}`);
-
-        if (!email) {
+        // Validar e sanitizar entrada
+        if (!email || !isValidEmail(email)) {
           return new Response(
             JSON.stringify({
               success: false,
-              message: 'Email é obrigatório'
+              message: 'Email inválido'
             }),
             {
               status: 400,
@@ -596,6 +694,9 @@ export default {
             }
           );
         }
+
+        const sanitizedEmail = sanitizeInput(email.toLowerCase());
+        console.log(`📧 Processando recuperação de senha para: ${sanitizedEmail}`);
 
         // Gerar código de recuperação de 6 dígitos
         const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
@@ -611,14 +712,14 @@ export default {
             VALUES (?, ?, ?, ?, ?)
           `
           )
-            .bind(email, resetCode, 'recovery', expiresAt, now)
+            .bind(sanitizedEmail, resetCode, 'recovery', expiresAt, now)
             .run();
         } catch (dbError) {
           console.log('Erro ao salvar no banco (continuando):', dbError.message);
         }
 
         console.log(
-          `🚀 ENVIANDO EMAIL DE RECUPERAÇÃO via RESEND para ${email} com código ${resetCode}`
+          `🚀 ENVIANDO EMAIL DE RECUPERAÇÃO via RESEND para ${sanitizedEmail} com código ${resetCode}`
         );
 
         // RESEND EMAIL - RECUPERAÇÃO DE SENHA
@@ -630,11 +731,12 @@ export default {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${apiKey}`,
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'User-Agent': 'Agroisync/1.0'
             },
             body: JSON.stringify({
               from: env.RESEND_FROM || 'contato@agroisync.com',
-              to: email,
+              to: sanitizedEmail,
               subject: 'Recuperação de Senha - Agroisync',
               html: `
                 <!DOCTYPE html>
@@ -947,7 +1049,8 @@ export default {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${apiKey}`,
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'User-Agent': 'Agroisync/1.0'
             },
             body: JSON.stringify({
               from: env.RESEND_FROM || 'contato@agroisync.com',
@@ -1211,7 +1314,8 @@ export default {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${apiKey}`,
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'User-Agent': 'Agroisync/1.0'
             },
             body: JSON.stringify({
               from: env.RESEND_FROM || 'contato@agroisync.com',
@@ -1311,7 +1415,7 @@ export default {
       }
     }
 
-    // Cadastro de Produto - DADOS COMPLETOS COM RESEND
+    // Cadastro de Produto - DADOS COMPLETOS COM RESEND E TURNSTILE
     if (url.pathname === '/api/products/register' && request.method === 'POST') {
       try {
         const {
@@ -1328,7 +1432,8 @@ export default {
           certifications,
           images,
           email,
-          userEmail
+          userEmail,
+          turnstileToken
         } = await request.json();
 
         if (!userId || !name) {
@@ -1342,6 +1447,38 @@ export default {
               headers: { ...corsHeaders, 'Content-Type': 'application/json' }
             }
           );
+        }
+
+        // Validar Turnstile se fornecido
+        if (turnstileToken) {
+          const turnstileResponse = await fetch(
+            'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: new URLSearchParams({
+                secret: env.CLOUDFLARE_TURNSTILE_SECRET || '0x4AAAAAAB3pdkPMyeyfUQQaEpNBMb0NYhk',
+                response: turnstileToken,
+                remoteip: request.headers.get('CF-Connecting-IP') || '127.0.0.1'
+              })
+            }
+          );
+
+          const turnstileResult = await turnstileResponse.json();
+          if (!turnstileResult.success) {
+            return new Response(
+              JSON.stringify({
+                success: false,
+                message: 'Verificação Turnstile falhou'
+              }),
+              {
+                status: 401,
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+              }
+            );
+          }
         }
 
         const now = Math.floor(Date.now() / 1000);
@@ -2521,46 +2658,7 @@ export default {
       }
     }
 
-    // SETUP DATABASE
-    if (url.pathname === '/api/setup-db' && request.method === 'POST') {
-      try {
-        await env.DB.prepare(
-          `
-          CREATE TABLE IF NOT EXISTS verification_codes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT NOT NULL,
-            code TEXT NOT NULL,
-            type TEXT NOT NULL,
-            expiresAt INTEGER NOT NULL,
-            used INTEGER DEFAULT 0,
-            createdAt INTEGER NOT NULL
-          )
-        `
-        ).run();
-
-        return new Response(
-          JSON.stringify({
-            success: true,
-            message: 'Tabela verification_codes criada com sucesso'
-          }),
-          {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-          }
-        );
-      } catch (error) {
-        console.error('Erro ao criar tabela:', error);
-        return new Response(
-          JSON.stringify({
-            success: false,
-            message: 'Erro ao criar tabela'
-          }),
-          {
-            status: 500,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-          }
-        );
-      }
-    }
+    // SETUP DATABASE - DUPLICATA REMOVIDA
 
     // VERIFICAR CÓDIGO DE CADASTRO
     if (url.pathname === '/api/verify-code' && request.method === 'POST') {

@@ -42,7 +42,7 @@ import SignupType from './pages/SignupType';
 import SignupFreight from './pages/SignupFreight';
 import SignupStore from './pages/SignupStore';
 import SignupProduct from './pages/SignupProduct';
-import ForgotPassword from './pages/ForgotPassword';
+import SignupGeneral from './pages/SignupGeneral';
 import ResetPassword from './pages/ResetPassword';
 import Payment from './pages/Payment';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -64,11 +64,19 @@ import Help from './pages/Help';
 import LoginRedirect from './pages/LoginRedirect';
 import Unauthorized from './pages/Unauthorized';
 import NotFound from './pages/NotFound';
-import SecureRedirect from './components/SecureRedirect';
 import Home from './pages/Home';
 import Insumos from './pages/Insumos';
 import Store from './pages/Store';
 import StorePlans from './pages/StorePlans';
+import AgroconectaTracking from './pages/AgroconectaTracking';
+import MarketplaceCategories from './pages/MarketplaceCategories';
+import MarketplaceSellers from './pages/MarketplaceSellers';
+import MarketplaceSell from './pages/MarketplaceSell';
+import AgroconectaOffer from './pages/AgroconectaOffer';
+import AgroconectaCarriers from './pages/AgroconectaCarriers';
+import PartnershipsCurrent from './pages/PartnershipsCurrent';
+import PartnershipsBenefits from './pages/PartnershipsBenefits';
+import PartnershipsContact from './pages/PartnershipsContact';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -136,12 +144,24 @@ function App() {
                     <Route path="/home-prompt/:cryptoHash" element={<AgroisyncHomePrompt />} />
                     <Route path="/marketplace" element={<AgroisyncMarketplace />} />
                     <Route path="/marketplace/:cryptoHash" element={<AgroisyncMarketplace />} />
+                    <Route path="/marketplace/categories" element={<MarketplaceCategories />} />
+                    <Route path="/marketplace/categories/:cryptoHash" element={<MarketplaceCategories />} />
+                    <Route path="/marketplace/sellers" element={<MarketplaceSellers />} />
+                    <Route path="/marketplace/sellers/:cryptoHash" element={<MarketplaceSellers />} />
+                    <Route path="/marketplace/sell" element={<MarketplaceSell />} />
+                    <Route path="/marketplace/sell/:cryptoHash" element={<MarketplaceSell />} />
                     <Route path="/loja" element={<AgroisyncLoja />} />
                     <Route path="/loja/:cryptoHash" element={<AgroisyncLoja />} />
                     <Route path="/store" element={<Store />} />
                     <Route path="/store/:cryptoHash" element={<Store />} />
                     <Route path="/agroconecta" element={<AgroisyncAgroConecta />} />
                     <Route path="/agroconecta/:cryptoHash" element={<AgroisyncAgroConecta />} />
+                    <Route path="/agroconecta/offer" element={<AgroconectaOffer />} />
+                    <Route path="/agroconecta/offer/:cryptoHash" element={<AgroconectaOffer />} />
+                    <Route path="/agroconecta/carriers" element={<AgroconectaCarriers />} />
+                    <Route path="/agroconecta/carriers/:cryptoHash" element={<AgroconectaCarriers />} />
+                    <Route path="/agroconecta/tracking" element={<AgroconectaTracking />} />
+                    <Route path="/agroconecta/tracking/:cryptoHash" element={<AgroconectaTracking />} />
                     <Route path="/usuario-geral" element={<UsuarioGeral />} />
                     <Route path="/usuario-geral/:cryptoHash" element={<UsuarioGeral />} />
                     <Route path="/tecnologia" element={<AgroisyncCrypto />} />
@@ -154,10 +174,18 @@ function App() {
                     <Route path="/planos/:cryptoHash" element={<AgroisyncPlans />} />
                     <Route path="/about" element={<AgroisyncAbout />} />
                     <Route path="/about/:cryptoHash" element={<AgroisyncAbout />} />
+                    <Route path="/sobre" element={<AgroisyncAbout />} />
+                    <Route path="/sobre/:cryptoHash" element={<AgroisyncAbout />} />
                     <Route path="/contact" element={<AgroisyncContact />} />
                     <Route path="/contact/:cryptoHash" element={<AgroisyncContact />} />
                     <Route path="/partnerships" element={<Partnerships />} />
                     <Route path="/partnerships/:cryptoHash" element={<Partnerships />} />
+                    <Route path="/partnerships/current" element={<PartnershipsCurrent />} />
+                    <Route path="/partnerships/current/:cryptoHash" element={<PartnershipsCurrent />} />
+                    <Route path="/partnerships/benefits" element={<PartnershipsBenefits />} />
+                    <Route path="/partnerships/benefits/:cryptoHash" element={<PartnershipsBenefits />} />
+                    <Route path="/partnerships/contact" element={<PartnershipsContact />} />
+                    <Route path="/partnerships/contact/:cryptoHash" element={<PartnershipsContact />} />
                     <Route path="/faq" element={<FAQ />} />
                     <Route path="/faq/:cryptoHash" element={<FAQ />} />
                     <Route path="/terms" element={<Terms />} />
@@ -174,14 +202,18 @@ function App() {
                     <Route path="/crypto/:id/:cryptoHash" element={<CryptoDetail />} />
                     
                     {/* Auth Routes - TODAS CRIPTOGRAFADAS */}
-                    <Route path="/login" element={<AgroisyncLogin />} />
-                    <Route path="/login/:cryptoHash" element={<AgroisyncLogin />} />
                     <Route path="/register" element={<AgroisyncRegister />} />
                     <Route path="/register/:cryptoHash" element={<AgroisyncRegister />} />
+                    <Route path="/login" element={<AgroisyncLogin />} />
+                    <Route path="/login/:cryptoHash" element={<AgroisyncLogin />} />
                     <Route path="/signup" element={<SignupType />} />
                     <Route path="/signup/:cryptoHash" element={<SignupType />} />
+                    <Route path="/signup/general" element={<SignupGeneral />} />
+                    <Route path="/signup/general/:cryptoHash" element={<SignupGeneral />} />
                     <Route path="/signup/freight" element={<SignupFreight />} />
                     <Route path="/signup/freight/:cryptoHash" element={<SignupFreight />} />
+                    <Route path="/frete" element={<SignupFreight />} />
+                    <Route path="/frete/:cryptoHash" element={<SignupFreight />} />
                     <Route path="/signup/store" element={<SignupStore />} />
                     <Route path="/signup/store/:cryptoHash" element={<SignupStore />} />
                     <Route path="/signup/product" element={<SignupProduct />} />
@@ -232,10 +264,10 @@ function App() {
                        <div className="bg-gray-50 py-8">
                          <div className="container mx-auto px-4">
                            <div className="text-center mb-8">
-                             <h2 className="text-2xl font-bold mb-2 text-gray-900">
+                             <h2 className="text-2xl font-bold mb-2 text-gray-900" style={{ textAlign: 'center' }}>
                                Informações Climáticas
                              </h2>
-                             <p className="text-sm text-gray-600">Dados meteorológicos em tempo real para otimizar suas decisões agrícolas</p>
+                             <p className="text-sm text-gray-600" style={{ textAlign: 'center' }}>Dados meteorológicos em tempo real para otimizar suas decisões agrícolas</p>
                            </div>
                            <div className="flex justify-center">
                              <GlobalWeatherWidget />

@@ -47,6 +47,13 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     
+    <!-- Polyfill para process.env -->
+    <script>
+      if (typeof process === 'undefined') {
+        window.process = { env: { NODE_ENV: 'production' } };
+      }
+    </script>
+    
     <title>AGROISYNC - Futuro do Agronegócio</title>
     
     <!-- Estilos críticos inline -->
@@ -220,6 +227,9 @@
       }, 5000);
     </script>
     
+    <!-- API Fallback System - Carregar primeiro -->
+    <script src="%PUBLIC_URL%/api-fallback.js"></script>
+    
     <!-- UI TXC Final Behaviors Script -->
     <script src="%PUBLIC_URL%/ui-txc-final-behaviors.js" defer></script>
     
@@ -228,5 +238,17 @@
     
     <!-- Cloudflare Turnstile -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+    
+    <!-- Hide Tracking Code Protection -->
+    <script src="%PUBLIC_URL%/hide-tracking-code.js" defer></script>
+    
+    <!-- Security Audit -->
+    <script src="%PUBLIC_URL%/security-audit.js" defer></script>
+    
+    <!-- Security Enhancements -->
+    <script src="%PUBLIC_URL%/security-enhancements.js" defer></script>
+    
+    <!-- Error Detection -->
+    <script src="%PUBLIC_URL%/error-detection.js" defer></script>
   </body>
 </html>

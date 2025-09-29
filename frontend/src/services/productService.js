@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Configuração da API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
 
 // Categorias principais do agronegócio
 export const PRODUCT_CATEGORIES = {
@@ -90,7 +90,12 @@ class ProductService {
       const response = await axios.get(`${API_BASE_URL}/products`, { params: filters });
       return response.data;
     } catch (error) {
-      console.error('Erro ao buscar produtos:', error);
+      // Silenciar erro de rede em produção
+      if (process.env.NODE_ENV === 'production') {
+        console.log('Usando produtos mock em produção');
+      } else {
+        console.error('Erro ao buscar produtos:', error);
+      }
       // Retornar produtos mock para desenvolvimento
       return this.getMockProducts(filters);
     }
@@ -102,7 +107,12 @@ class ProductService {
       const response = await axios.get(`${API_BASE_URL}/fretes/products`, { params: filters });
       return response.data;
     } catch (error) {
-      console.error('Erro ao buscar produtos do AgroConecta (Fretes):', error);
+      // Silenciar erro de rede em produção
+      if (process.env.NODE_ENV === 'production') {
+        console.log('Usando produtos mock do AgroConecta em produção');
+      } else {
+        console.error('Erro ao buscar produtos do AgroConecta (Fretes):', error);
+      }
       return this.getMockAgroConectaProducts(filters);
     }
   }
@@ -113,7 +123,12 @@ class ProductService {
       const response = await axios.get(`${API_BASE_URL}/produtos/products`, { params: filters });
       return response.data;
     } catch (error) {
-      console.error('Erro ao buscar produtos do Marketplace (Produtos):', error);
+      // Silenciar erro de rede em produção
+      if (process.env.NODE_ENV === 'production') {
+        console.log('Usando produtos mock do Marketplace em produção');
+      } else {
+        console.error('Erro ao buscar produtos do Marketplace (Produtos):', error);
+      }
       return this.getMockMarketplaceProducts(filters);
     }
   }

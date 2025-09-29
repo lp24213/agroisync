@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-';
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { Send, Paperclip, Loader, User, CheckCircle, Mail, Phone, FileText, AlertCircle } from 'lucide-react';

@@ -71,24 +71,52 @@ const StockTicker = () => {
       <div style={{ 
         display: 'flex', 
         alignItems: 'center', 
-        gap: '32px',
-        animation: 'scroll 60s linear infinite',
-        whiteSpace: 'nowrap'
+        gap: '60px',
+        animation: 'scroll 120s linear infinite',
+        whiteSpace: 'nowrap',
+        width: 'max-content',
+        padding: '0 20px'
       }}>
         {stocks.map((stock, index) => (
           <div key={stock.symbol} style={{ 
             display: 'flex', 
             alignItems: 'center', 
-            gap: '8px',
-            minWidth: '200px'
+            gap: '16px',
+            minWidth: '280px',
+            flexShrink: 0,
+            padding: '0 16px',
+            height: '40px',
+            borderRight: '1px solid #333'
           }}>
-            <span style={{ fontWeight: 'bold', fontSize: '14px' }}>{stock.symbol}</span>
-            <span style={{ fontSize: '12px', color: '#ccc' }}>{stock.name}</span>
-            <span style={{ fontFamily: 'monospace', fontSize: '14px' }}>R$ {stock.price.toFixed(2)}</span>
+            <span style={{ 
+              fontWeight: 'bold', 
+              fontSize: '14px',
+              minWidth: '70px',
+              textAlign: 'left',
+              color: '#ffffff'
+            }}>{stock.symbol}</span>
+            <span style={{ 
+              fontSize: '12px', 
+              color: '#ccc',
+              minWidth: '100px',
+              textAlign: 'left',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
+            }}>{stock.name}</span>
+            <span style={{ 
+              fontFamily: 'monospace', 
+              fontSize: '14px',
+              minWidth: '80px',
+              textAlign: 'right',
+              color: '#ffffff'
+            }}>R$ {stock.price.toFixed(2)}</span>
             <span style={{ 
               fontSize: '12px', 
               fontWeight: 'bold',
-              color: stock.change >= 0 ? '#4ade80' : '#f87171'
+              color: stock.change >= 0 ? '#4ade80' : '#f87171',
+              minWidth: '90px',
+              textAlign: 'right'
             }}>
               {stock.change >= 0 ? '+' : ''}{stock.change.toFixed(2)} ({stock.changePercent >= 0 ? '+' : ''}{stock.changePercent.toFixed(2)}%)
             </span>
@@ -104,6 +132,13 @@ const StockTicker = () => {
         @keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.5; }
+        }
+        /* Reduzir ou desativar rolagem no mobile/landscape e em preferências de movimento reduzido */
+        @media (max-width: 768px) {
+          div[style*="animation: scroll"] { animation-duration: 180s !important; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          div[style*="animation: scroll"] { animation: none !important; }
         }
       `}</style>
     </div>

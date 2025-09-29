@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
 
 class MessagingService {
   constructor() {
@@ -21,7 +21,7 @@ class MessagingService {
       this.websocket.close();
     }
 
-    const wsUrl = `${process.env.REACT_APP_WS_URL || 'ws://localhost:3001'}/messaging/${userId}`;
+    const wsUrl = `${process.env.REACT_APP_WS_URL || 'wss://agroisync.com'}/messaging/${userId}`;
     this.websocket = new WebSocket(wsUrl);
 
     this.websocket.onopen = () => {

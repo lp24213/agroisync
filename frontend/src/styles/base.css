@@ -99,6 +99,14 @@
   --agro-space-large: 24px;
   --agro-space-xl: 32px;
   --agro-space-2xl: 48px;
+  
+  /* Variáveis adicionais */
+  --agro-radius-3xl: 24px;
+  --agro-dark-green: #2f855a;
+  --agro-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+  --agro-text-dark: #1a202c;
+  --agro-light-beige: #f7fafc;
+  --agro-transition-normal: 0.3s ease;
   --agro-space-3xl: 64px;
   --agro-space-4xl: 96px;
   

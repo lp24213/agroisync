@@ -1,22 +1,61 @@
 import axios from 'axios';
+import apiConfig from '../config/api.config.js';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://agroisync-api.contato-00d.workers.dev/api';
-const PAYMENT_API_URL = process.env.REACT_APP_PAYMENT_URL || 'https://agroisync-payment.contato-00d.workers.dev/api';
+const API_BASE_URL = apiConfig.baseURL;
+const PAYMENT_API_URL = apiConfig.baseURL;
 
 class AuthService {
   constructor() {
     this.api = axios.create({
       baseURL: API_BASE_URL,
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      timeout: apiConfig.timeout,
+      headers: apiConfig.defaultHeaders
     });
     this.paymentApi = axios.create({
       baseURL: PAYMENT_API_URL,
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      timeout: apiConfig.timeout,
+      headers: apiConfig.defaultHeaders
     });
+    
+    // Interceptor para retry automático
+    this.setupInterceptors();
+  }
+  
+  setupInterceptors() {
+    // Request interceptor
+    this.api.interceptors.request.use(
+      (config) => {
+        // Adicionar token se disponível
+        const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+    
+    // Response interceptor com retry
+    this.api.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
+        
+        if (!originalRequest._retry && apiConfig.retryConfig.retryCondition(error)) {
+          originalRequest._retry = true;
+          
+          // Aguardar antes de tentar novamente
+          await new Promise(resolve => 
+            setTimeout(resolve, apiConfig.retryConfig.retryDelay(originalRequest._retryCount || 1))
+          );
+          
+          originalRequest._retryCount = (originalRequest._retryCount || 1) + 1;
+          return this.api(originalRequest);
+        }
+        
+        return Promise.reject(error);
+      }
+    );
   }
 
 
@@ -73,13 +112,13 @@ class AuthService {
   // Reenviar código de verificação
   async resendVerificationEmail(email) {
     try {
-      const response = await this.api.post('/auth/resend-verification', {
+      const response = await this.api.post('/email/send-verification', {
         email
       });
       
       return {
         success: true,
-        emailCode: response.data.data.emailCode, // Para desenvolvimento
+        emailCode: response.data.data.verificationCode || response.data.data.emailCode, // Para desenvolvimento
         message: response.data.message
       };
     } catch (error) {
@@ -87,6 +126,27 @@ class AuthService {
       return {
         success: false,
         error: error.response?.data?.message || 'Erro ao reenviar verificação'
+      };
+    }
+  }
+
+  // Verificar código de email
+  async verifyEmailCode(email, code) {
+    try {
+      const response = await this.api.post('/email/verify', {
+        email,
+        code
+      });
+      
+      return {
+        success: true,
+        message: response.data.message
+      };
+    } catch (error) {
+      console.error('Erro ao verificar código:', error);
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Erro ao verificar código'
       };
     }
   }

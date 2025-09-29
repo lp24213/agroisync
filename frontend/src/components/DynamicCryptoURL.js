@@ -1,95 +1,112 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const DynamicCryptoURL = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  const generateCryptoHash = useCallback(async () => {
-    const pageData = {
-      path: location.pathname,
-      timestamp: Date.now(),
-      userAgent: navigator.userAgent,
-      sessionId: sessionStorage.getItem('sessionId') || Math.random().toString(36).substring(2, 15),
-      random: Math.random().toString(36).substring(2, 15),
-      clickCount: Date.now() + Math.random()
-    };
+  const generateCryptoHash = useCallback(() => {
+    // Gerar hash único e limpo
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substring(2, 15);
+    return `${timestamp}_${random}`.substring(0, 20);
+  }, []);
 
-    let cryptoHash;
+  const hasValidHash = useCallback((pathname) => {
+    // Verificar se a URL já tem um hash válido
+    const pathParts = pathname.split('/').filter(part => part.length > 0);
+    if (pathParts.length < 2) return false;
     
-    try {
-      // Tentar usar Web Crypto API
-      const encoder = new TextEncoder();
-      const data = encoder.encode(JSON.stringify(pageData));
-      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-      cryptoHash = hashHex.substring(0, 32);
-    } catch (error) {
-      // Fallback: gerar hash local simples
-      cryptoHash = Math.random().toString(36).substring(2, 34).toLowerCase();
+    const lastPart = pathParts[pathParts.length - 1];
+    // Hash deve ter formato: timestamp_random (ex: 1759102035_xe410no4lf)
+    return /^\d+_[a-z0-9]+$/i.test(lastPart) && lastPart.length >= 15;
+  }, []);
+
+  const cleanPath = useCallback((pathname) => {
+    // Remove hash existente da URL para obter o path limpo
+    const pathParts = pathname.split('/').filter(part => part.length > 0);
+    
+    // Se o último segmento é um hash, removê-lo
+    if (pathParts.length > 0) {
+      const lastPart = pathParts[pathParts.length - 1];
+      if (/^\d+_[a-z0-9]+$/i.test(lastPart)) {
+        pathParts.pop();
+      }
     }
     
-    return cryptoHash;
-  }, [location.pathname]);
+    return '/' + pathParts.join('/');
+  }, []);
 
-  const updateCryptoURL = useCallback(async () => {
+  const updateCryptoURL = useCallback(() => {
+    if (isUpdating) return; // Evitar múltiplas atualizações simultâneas
+    
     try {
-      // Verificar se já tem hash na URL
-      const pathParts = location.pathname.split('/');
-      const hasHash = pathParts.length > 1 && pathParts[pathParts.length - 1].length === 32;
-      
-      // Rotas que NÃO devem ter criptografia (rotas estáticas e especiais)
+      // Rotas que NÃO devem ter criptografia
       const excludeCrypto = [
-        '/payment/success', '/payment/cancel', '/unauthorized'
+        '/payment/success', '/payment/cancel', '/unauthorized', 
+        '/contact', '/privacy', '/terms',
+        '/faq', '/help', '/'
       ];
       
-      const shouldExclude = excludeCrypto.some(route => location.pathname.startsWith(route));
+      const shouldExclude = excludeCrypto.some(route => 
+        location.pathname === route || location.pathname.startsWith(route + '/')
+      );
       
       // Se deve excluir da criptografia, não fazer nada
       if (shouldExclude) {
+        setIsInitialized(true);
         return;
       }
       
-      // Aplicar criptografia em TODAS as outras rotas
-      if (!hasHash) {
-        const cryptoHash = await generateCryptoHash();
-        const newPath = `${location.pathname}/${cryptoHash}`;
+      // Verificar se já tem hash válido
+      if (hasValidHash(location.pathname)) {
+        setIsInitialized(true);
+        return;
+      }
+      
+      // Aplicar criptografia sempre que necessário
+      if (isInitialized && !isUpdating) {
+        setIsUpdating(true);
+        
+        const cryptoHash = generateCryptoHash();
+        const basePath = cleanPath(location.pathname);
+        const newPath = `${basePath}/${cryptoHash}`;
+        
         // Usar replace: true para evitar loops de redirecionamento
-        navigate(newPath, { replace: true });
+        // Evitar redirecionar imediatamente na primeira renderização da Home
+        const isHome = basePath === '' || basePath === '/';
+        if (!isHome) {
+          navigate(newPath, { replace: true });
+        }
+        
+        // Reset flag após navegação
+        setTimeout(() => setIsUpdating(false), 200);
       }
       
     } catch (error) {
-      console.error('Erro ao gerar URL criptografada:', error);
-    }
-  }, [location.pathname, navigate, generateCryptoHash]);
-
-  useEffect(() => {
-    updateCryptoURL();
-  }, [updateCryptoURL]);
-
-  // Interceptar mudanças de rota para aplicar criptografia
-  useEffect(() => {
-    const handleRouteChange = () => {
-      // Rotas que NÃO devem ter criptografia
-      const excludeCrypto = [
-        '/payment/success', '/payment/cancel', '/unauthorized'
-      ];
-      
-      const shouldExclude = excludeCrypto.some(route => location.pathname.startsWith(route));
-      
-      // Aplicar criptografia em todas as rotas exceto as excluídas
-      if (!shouldExclude) {
-        // Usar setTimeout para evitar loops infinitos
-        setTimeout(() => {
-          updateCryptoURL();
-        }, 50);
+      setIsUpdating(false);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao gerar URL criptografada:', error);
       }
-    };
+    }
+  }, [location.pathname, navigate, generateCryptoHash, hasValidHash, cleanPath, isInitialized, isUpdating]);
 
-    window.addEventListener('popstate', handleRouteChange);
-    return () => window.removeEventListener('popstate', handleRouteChange);
-  }, [location.pathname, updateCryptoURL]);
+  useEffect(() => {
+    // Marcar como inicializado após um pequeno delay
+    const timer = setTimeout(() => {
+      setIsInitialized(true);
+    }, 200);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (isInitialized) {
+      updateCryptoURL();
+    }
+  }, [isInitialized, updateCryptoURL]);
 
   return children;
 };

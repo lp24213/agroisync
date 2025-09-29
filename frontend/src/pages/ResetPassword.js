@@ -344,7 +344,7 @@ const ResetPassword = () => {
           </Link>
         </div>
         <div className="mt-8 flex justify-center">
-          <CryptoHash pageName="reset-password" />
+          <CryptoHash pageName="reset-password" style={{ display: 'none' }} />
         </div>
       </motion.div>
     </div>

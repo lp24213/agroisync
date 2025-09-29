@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://agroisync.com';
 
 // Webhook para confirmação de pagamento
 export const confirmPayment = async (paymentData) => {

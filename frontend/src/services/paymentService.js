@@ -4,7 +4,7 @@ class PaymentService {
     this.stripePublishableKey = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_51234567890abcdef';
     this.metaMaskAddress = '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'; // Endereço MetaMask do usuário
     this.stripeAccountId = 'acct_1ABC123DEF456GHI'; // Account ID Stripe do usuário
-    this.apiBaseUrl = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+    this.apiBaseUrl = process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
   }
 
   // Stripe Payment Methods

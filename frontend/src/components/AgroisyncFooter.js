@@ -4,9 +4,9 @@ import {
   MapPin, 
   Phone, 
   Mail, 
-  Globe
+  Instagram,
+  MessageCircle
 } from 'lucide-react';
-import CryptoHash from './CryptoHash';
 
 const AgroisyncFooter = () => {
   const currentYear = new Date().getFullYear();
@@ -65,11 +65,7 @@ const AgroisyncFooter = () => {
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Mail className="w-4 h-4 text-green-600" />
-                <span>suporte@agroisync.com</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <Globe className="w-4 h-4 text-green-600" />
-                <span>www.agroisync.com</span>
+                <span>contato@agroisync.com</span>
               </div>
             </div>
           </div>
@@ -106,7 +102,24 @@ const AgroisyncFooter = () => {
             <Link to="/privacy" className="text-sm text-gray-600 hover:text-green-600 transition-colors">
               Privacidade
             </Link>
-            <CryptoHash pageName="footer" />
+            <a 
+              href="https://instagram.com/agroisync" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-gray-600 hover:text-pink-600 transition-colors"
+              aria-label="Instagram"
+            >
+              <Instagram className="w-5 h-5" />
+            </a>
+            <a 
+              href="https://wa.me/5566992362830" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-gray-600 hover:text-green-600 transition-colors"
+              aria-label="WhatsApp"
+            >
+              <MessageCircle className="w-5 h-5" />
+            </a>
           </div>
         </div>
       </div>

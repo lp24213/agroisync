@@ -5,7 +5,7 @@
   "rootDirectory": "frontend",
   "environmentVariables": {
     "NODE_VERSION": "18.20.4",
-    "REACT_APP_API_URL": "https://agroisync-api.contato-00d.workers.dev/api"
+    "REACT_APP_API_URL": "https://agroisync.com/api"
   },
   "deployCommand": null,
   "framework": "create-react-app"

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   MapPin, Thermometer, Droplets, Wind, 
-  Sunrise, Sunset, RefreshCw, Search, X
+  Sunrise, RefreshCw, Search, X
 } from 'lucide-react';
 import weatherService from '../services/weatherService';
 

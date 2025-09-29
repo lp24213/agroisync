@@ -925,7 +925,7 @@ const AgroisyncLoja = () => {
         </div>
       )}
       <div className="mt-8 flex justify-center">
-        <CryptoHash pageName="loja" />
+        <CryptoHash pageName="loja" style={{ display: 'none' }} />
       </div>
     </div>
   );

@@ -26,35 +26,24 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
       setIsLoaded(true);
       setIsLoading(false);
     }
-
-    // Configurar callbacks globais
-    window.onTurnstileSuccess = onVerify;
-    window.onTurnstileError = onError;
-    window.onTurnstileExpire = onExpire;
-
-    return () => {
-      // Cleanup
-      delete window.onTurnstileSuccess;
-      delete window.onTurnstileError;
-      delete window.onTurnstileExpire;
-    };
-  }, [onVerify, onError, onExpire]);
+  }, []); // Remove callback dependencies
 
   useEffect(() => {
-    if (isLoaded && window.turnstile && turnstileRef.current) {
-      // Limpar widget anterior se existir
-      if (widgetId) {
-        window.turnstile.remove(widgetId);
-      }
-      
-      // Renderizar o Turnstile
+    if (isLoaded && window.turnstile && turnstileRef.current && !widgetId) {
+      // Renderizar o Turnstile apenas uma vez
       const id = window.turnstile.render(turnstileRef.current, {
         sitekey: siteKey || '0x4AAAAAAB3pdjs4jRKvAtaA',
         theme: theme,
         size: 'compact',
-        callback: onVerify,
-        'error-callback': onError,
-        'expired-callback': onExpire
+        callback: (token) => {
+          if (onVerify) onVerify(token);
+        },
+        'error-callback': (error) => {
+          if (onError) onError(error);
+        },
+        'expired-callback': () => {
+          if (onExpire) onExpire();
+        }
       });
       setWidgetId(id);
     }
@@ -62,10 +51,15 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
     return () => {
       // Limpar widget quando componente for desmontado
       if (widgetId && window.turnstile) {
-        window.turnstile.remove(widgetId);
+        try {
+          window.turnstile.remove(widgetId);
+        } catch (e) {
+          console.warn('Erro ao remover widget Turnstile:', e);
+        }
+        setWidgetId(null);
       }
     };
-  }, [isLoaded, siteKey, theme, onVerify, onError, onExpire]);
+  }, [isLoaded, siteKey, theme]); // Remove callback dependencies
 
   if (isLoading) {
     return (

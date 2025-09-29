@@ -1,5 +1,5 @@
 name = "agroisync-backend"
-main = "src/email-only-worker.js"
+main = "src/universal-working-worker.js"
 compatibility_date = "2024-09-01"
 
 # Configuração para Cloudflare Workers
@@ -18,23 +18,26 @@ API_VERSION = "v1"
 # Email - Resend (CONFIGURADO DEFINITIVAMENTE)
 RESEND_API_KEY = "re_f9XgEUAJ_2FwkAe87mmUZJhTTAy8xuWg8"
 RESEND_FROM = "contato@agroisync.com"
-# SMS - Twilio (FUNCIONA PARA QUALQUER PAÍS)
-TWILIO_ACCOUNT_SID = "ACe505b5ec08f28194cc48089843d7ab9f"
-TWILIO_AUTH_TOKEN = "0bc59fd25db86b171f6ac5a8f545eaa6"
-TWILIO_PHONE_NUMBER = "+16816623184"
+# SMS - Twilio (REMOVIDO)
+# TWILIO_ACCOUNT_SID = "ACe505b5ec08f28194cc48089843d7ab9f"
+# TWILIO_AUTH_TOKEN = "0bc59fd25db86b171f6ac5a8f545eaa6"
+# TWILIO_PHONE_NUMBER = "+16816623184"
 # Email - Supabase (FUNCIONA PARA QUALQUER EMAIL)
 SUPABASE_URL = "https://agroisync.supabase.co"
 SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFncm9pc3luYyIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzI3Mjc5ODUwLCJleHAiOjIwNDI4NTU4NTB9"
-# Infobip - SMS, WhatsApp e Email
+# Infobip - Email (SMS e WhatsApp REMOVIDOS)
 INFOBIP_API_KEY = "933c6e14d060c3fca84fc6e3c1ca80b7-9cebc74e-84f0-4643-97ed-3885e92d6634"
 INFOBIP_BASE_URL = "51rwgg.api.infobip.com"
-INFOBIP_SMS_HOST = "api.infobip.com"
-INFOBIP_WHATSAPP_HOST = "51rwgg.api.infobip.com"
+# INFOBIP_SMS_HOST = "api.infobip.com"
+# INFOBIP_WHATSAPP_HOST = "51rwgg.api.infobip.com"
 INFOBIP_EMAIL_HOST = "51rwgg.api.infobip.com"
 # Cloudflare Turnstile
 CLOUDFLARE_TURNSTILE_SECRET = "0x4AAAAAAB3pdkPMyeyfUQQaEpNBMb0NYhk"
 NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY = "0x4AAAAAAB3pdjs4jRKvAtaA"
 FRONTEND_URL = "https://agroisync.com"
+# Admin Configuration (SECURITY: Use strong password)
+ADMIN_EMAIL = "admin@agroisync.com"
+ADMIN_PASSWORD = "AgroSync2024!@#SecureAdmin"
 
 # Rotas do Worker servindo sob o domínio principal
 routes = [

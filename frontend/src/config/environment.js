@@ -2,7 +2,7 @@
 export const environment = {
   // Configuração da API
   api: {
-    baseURL: process.env.REACT_APP_API_URL || 'https://agroisync-api.contato-00d.workers.dev/api',
+    baseURL: process.env.REACT_APP_API_URL || 'https://agroisync.com/api',
     wsURL: process.env.REACT_APP_WS_URL || 'wss://agroisync.com'
   },
 

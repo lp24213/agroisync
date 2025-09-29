@@ -160,7 +160,7 @@ const AgroisyncContact = () => {
                 whileHover={{ y: -12, scale: 1.02 }}
                 style={{ textAlign: 'center' }}
               >
-                <div className="agro-card-icon" style={{ color: 'var(--txc-light-green)' }}>
+                <div className="agro-card-icon" style={{ color: 'var(--agro-green)' }}>
                   {contact.icon}
                 </div>
                 <h3 className="agro-card-title">
@@ -412,7 +412,7 @@ const AgroisyncContact = () => {
             ))}
           </div>
           <div className="mt-8 flex justify-center">
-            <CryptoHash pageName="contact" />
+            <CryptoHash pageName="contact" style={{ display: 'none' }} />
           </div>
         </div>
       </section>

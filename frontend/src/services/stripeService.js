@@ -4,7 +4,7 @@
 import { loadStripe } from '@stripe/stripe-js';
 
 // Chave pública do Stripe (deve ser a chave publicável)
-const STRIPE_PUBLISHABLE_KEY = 'pk_live_51QVXlZGYY0MfrP1anFzugW5vwON3FAMt1lNmJymqfLA4qLhS6FaZiqDIRV4Pp3hhdtzbDzbFXiURqt6jHCtT82TX000u4uxsEr';
+const STRIPE_PUBLISHABLE_KEY = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_DEFAULT_KEY_NOT_SET';
 
 // Inicializar Stripe
 let stripe = null;

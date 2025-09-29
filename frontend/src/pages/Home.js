@@ -424,7 +424,7 @@ const Home = () => {
               </Link>
             </div>
             <div className="mt-8 flex justify-center">
-              <CryptoHash pageName="home" />
+              <CryptoHash pageName="home" style={{ display: 'none' }} />
             </div>
           </motion.div>
         </div>

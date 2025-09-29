@@ -12,6 +12,7 @@ import { toast } from 'react-hot-toast';
 import CloudflareTurnstile from '../components/CloudflareTurnstile';
 
 const AgroisyncRegister = () => {
+  console.log('AgroisyncRegister component loaded');
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',

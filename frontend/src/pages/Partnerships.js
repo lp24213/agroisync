@@ -956,7 +956,7 @@ const Partnerships = () => {
         }
       `}</style>
       <div className="mt-8 flex justify-center">
-        <CryptoHash pageName="partnerships" />
+        <CryptoHash pageName="partnerships" style={{ display: 'none' }} />
       </div>
     </div>
   );

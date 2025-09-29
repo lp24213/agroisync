@@ -5,6 +5,7 @@ import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Building2, MapPin, Phone, Cr
 import validationService from '../services/validationService';
 import authService from '../services/authService';
 import { toast } from 'react-hot-toast';
+import CloudflareTurnstile from '../components/CloudflareTurnstile';
 
 const SignupProduct = () => {
   const navigate = useNavigate();
@@ -44,6 +45,7 @@ const SignupProduct = () => {
     businessType: 'buyer'
   });
   
+  const [turnstileToken, setTurnstileToken] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -271,10 +273,13 @@ const SignupProduct = () => {
     try {
       // Chamada real de cadastro
       const api = process.env.REACT_APP_API_URL || '/api';
-      const res = await fetch(`${api}/auth/register`, {
+      const res = await fetch(`${api}/products/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          turnstileToken
+        })
       });
       if (!res.ok) throw new Error('Falha no cadastro');
       const data = await res.json();
@@ -1165,10 +1170,21 @@ const SignupProduct = () => {
                   )}
                 </motion.div>
 
+                {/* Turnstile */}
+                <motion.div 
+                  variants={itemVariants}
+                  style={{ marginBottom: '1.5rem' }}
+                >
+                  <CloudflareTurnstile 
+                    onVerify={setTurnstileToken}
+                    onError={() => setTurnstileToken('')}
+                  />
+                </motion.div>
+
                 <motion.button
                   variants={itemVariants}
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isLoading || !turnstileToken}
                   style={{ 
                     width: '100%', 
                     padding: '14px',

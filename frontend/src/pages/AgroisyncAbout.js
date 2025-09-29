@@ -150,7 +150,7 @@ const AgroisyncAbout = () => {
               </div>
             </motion.div>
 
-            <motion.h1 className="agro-hero-title" variants={itemVariants}>
+            <motion.h1 className="agro-hero-title" variants={itemVariants} style={{ textAlign: 'center' }}>
               {t('about.hero.title', 'SOBRE A AGROISYNC')}
             </motion.h1>
             
@@ -226,7 +226,7 @@ const AgroisyncAbout = () => {
                 whileHover={{ y: -12, scale: 1.02 }}
                 style={{ textAlign: 'center' }}
               >
-                <div className="agro-card-icon" style={{ color: 'var(--txc-light-green)' }}>
+                <div className="agro-card-icon" style={{ color: 'var(--agro-green)' }}>
                   {value.icon}
                 </div>
                 <h3 className="agro-card-title">
@@ -269,7 +269,7 @@ const AgroisyncAbout = () => {
                 whileHover={{ y: -12, scale: 1.02 }}
                 style={{ textAlign: 'center' }}
               >
-                <div className="agro-card-icon" style={{ color: 'var(--txc-light-green)' }}>
+                <div className="agro-card-icon" style={{ color: 'var(--agro-green)' }}>
                   {feature.icon}
                 </div>
                 <h3 className="agro-card-title">
@@ -341,7 +341,7 @@ const AgroisyncAbout = () => {
                   borderRadius: '50%',
                   overflow: 'hidden',
                   boxShadow: 'var(--agro-shadow-lg)',
-                  border: '5px solid var(--txc-light-green)'
+                  border: '5px solid var(--agro-green)'
                 }}>
                   <img 
                     src={member.image} 
@@ -363,7 +363,7 @@ const AgroisyncAbout = () => {
                 </h3>
                 
                 <div style={{
-                  color: 'var(--txc-light-green)',
+                  color: 'var(--agro-green)',
                   fontWeight: '600',
                   marginBottom: '1rem',
                   fontSize: '1.25rem'
@@ -423,7 +423,7 @@ const AgroisyncAbout = () => {
                   left: 0,
                   right: 0,
                   height: '4px',
-                  background: 'var(--txc-light-green)',
+                  background: 'var(--agro-green)',
                   borderRadius: 'var(--agro-radius-xl) var(--agro-radius-xl) 0 0'
                 }} />
                 
@@ -523,7 +523,7 @@ const AgroisyncAbout = () => {
               </Link>
             </div>
             <div className="mt-8 flex justify-center">
-              <CryptoHash pageName="about" />
+              <CryptoHash pageName="about" style={{ display: 'none' }} />
             </div>
           </motion.div>
         </div>

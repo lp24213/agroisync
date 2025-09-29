@@ -171,7 +171,7 @@ const AgroisyncAgroConecta = () => {
 
       const response = await axios.post('/api/freight-orders', freightOrderData, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${localStorage.getItem('authToken') || localStorage.getItem('token')}`
         }
       });
 
@@ -198,7 +198,7 @@ const AgroisyncAgroConecta = () => {
     try {
       const response = await axios.get('/api/freight-orders', {
         headers: {
-          'Authorization': `Bearer ${user?.token}`
+          'Authorization': `Bearer ${user?.token || localStorage.getItem('authToken') || localStorage.getItem('token')}`
         }
       });
 
@@ -219,7 +219,7 @@ const AgroisyncAgroConecta = () => {
       // Chamar API para gerar análise de IA
       const response = await axios.post(`/api/freight-orders/${orderId}/ai-closure`, {}, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${localStorage.getItem('authToken') || localStorage.getItem('token')}`
         }
       });
 
@@ -315,37 +315,37 @@ const AgroisyncAgroConecta = () => {
       icon: <Truck size={32} />,
       title: 'Frete Inteligente',
       description: 'Conecte-se com transportadores confiáveis e otimize seus custos de frete',
-      color: 'var(--txc-light-green)',
+      color: 'var(--agro-green)',
     },
     {
       icon: <MapPin size={32} />,
       title: 'Rastreamento em Tempo Real',
       description: 'Acompanhe sua carga em tempo real com tecnologia GPS avançada',
-      color: 'var(--txc-light-green)',
+      color: 'var(--agro-green)',
     },
     {
       icon: <Users size={32} />,
       title: 'Rede de Parceiros',
       description: 'Conecte-se com uma rede confiável de transportadores e produtores',
-      color: 'var(--txc-light-green)',
+      color: 'var(--agro-green)',
     },
     {
       icon: <Zap size={32} />,
       title: 'IA para Logística',
       description: 'Algoritmos inteligentes para otimizar rotas e reduzir custos',
-      color: 'var(--txc-light-green)',
+      color: 'var(--agro-green)',
     },
     {
       icon: <Shield size={32} />,
       title: 'Segurança Total',
       description: 'Proteção completa para sua carga com seguro e monitoramento',
-      color: 'var(--txc-light-green)',
+      color: 'var(--agro-green)',
     },
     {
       icon: <Clock size={32} />,
       title: 'Entrega Rápida',
       description: 'Entregas mais rápidas com otimização de rotas e gestão eficiente',
-      color: 'var(--txc-light-green)',
+      color: 'var(--agro-green)',
     },
   ];
 
@@ -1168,10 +1168,10 @@ const AgroisyncAgroConecta = () => {
             }}>
               <Globe size={32} />
             </div>
-            <h2 className="agro-section-title" style={{ marginBottom: 'var(--agro-space-lg)', textAlign: 'center' }}>
+            <h2 className="agro-section-title" style={{ marginBottom: 'var(--agro-space-lg)' }}>
               Pronto para Conectar?
             </h2>
-            <p className="agro-section-subtitle" style={{ marginBottom: 'var(--agro-space-xl)', textAlign: 'center' }}>
+            <p className="agro-section-subtitle" style={{ marginBottom: 'var(--agro-space-xl)' }}>
               Junte-se à maior rede de logística do agronegócio brasileiro
             </p>
             <div style={{ 
@@ -1501,7 +1501,7 @@ const AgroisyncAgroConecta = () => {
         </div>
       )}
       <div className="mt-8 flex justify-center">
-        <CryptoHash pageName="agro-conecta" />
+        <CryptoHash pageName="agro-conecta" style={{ display: 'none' }} />
       </div>
     </div>
   );

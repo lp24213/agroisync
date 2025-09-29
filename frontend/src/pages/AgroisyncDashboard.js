@@ -353,7 +353,7 @@ const AgroisyncDashboard = () => {
           )}
         </motion.div>
         <div className="mt-8 flex justify-center">
-          <CryptoHash pageName="dashboard" />
+          <CryptoHash pageName="dashboard" style={{ display: 'none' }} />
         </div>
       </div>
     </div>

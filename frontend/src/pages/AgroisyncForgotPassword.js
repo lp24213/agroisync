@@ -359,7 +359,7 @@ const AgroisyncForgotPassword = () => {
         {step === 2 && renderStep2()}
         {step === 3 && renderStep3()}
         <div className="mt-8 flex justify-center">
-          <CryptoHash pageName="forgot-password" />
+          <CryptoHash pageName="forgot-password" style={{ display: 'none' }} />
         </div>
       </motion.div>
     </div>

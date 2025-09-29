@@ -22,7 +22,7 @@ export const APP_CONFIG = {
   
   // Configurações de API
   api: {
-    baseUrl: process.env.REACT_APP_API_URL || 'http://localhost:3001/api',
+    baseUrl: process.env.REACT_APP_API_URL || 'https://agroisync.com/api',
     timeout: 10000
   },
   

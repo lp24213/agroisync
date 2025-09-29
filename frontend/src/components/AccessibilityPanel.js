@@ -1,21 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Eye, 
-  EyeOff, 
-  Volume2, 
-  VolumeX, 
-  Type, 
-  Palette, 
-  MousePointer, 
-  Keyboard, 
-  Settings,
+  Eye,
+  Volume2,
+  MousePointer,
   X,
-  Check,
-  AlertCircle,
-  Info,
-  Zap,
-  Shield,
   Accessibility,
   Brain
 } from 'lucide-react';
@@ -137,6 +126,8 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
     announcement.className = 'sr-only';
     announcement.textContent = message;
     document.body.appendChild(announcement);
+    // Registrar anúncio para ferramentas assistivas (mantém estado usado)
+    setAnnouncements((prev) => [...prev, { id: Date.now(), message }]);
     
     setTimeout(() => {
       document.body.removeChild(announcement);

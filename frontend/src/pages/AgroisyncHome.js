@@ -8,7 +8,7 @@ import CryptoHash from '../components/CryptoHash';
 
 const AgroisyncHome = () => {
   // Imagem de campo de soja verde vibrante com cache buster
-  const inicioImageUrl = `https://media.istockphoto.com/id/1465642013/pt/foto/a-vibrant-green-soybean-field-nestled-in-a-natural-setting.webp?a=1&b=1&s=612x612&w=0&k=20&c=Bz3SlprnpXY3r7wEKqU2NdeYoW0Ysb-itwzf4WiIuAs=&v=${Date.now()}`;
+  const inicioImageUrl = `https://media.istockphoto.com/id/1465642013/pt/foto/a-vibrant-green-soybean-field-nestled-in-a-natural-setting.webp?a=1&b=1&s=612x612&w=0&k=20&c=Bz3SlprnpXY3r7wEKqU2NdeYoW0Ysb-itwzf4WiIuAs=`;
 
 
   const sectionVariants = {
@@ -92,48 +92,6 @@ const AgroisyncHome = () => {
         {/* Coluna Principal - Esquerda */}
         <div className="agro-main-content">
 
-      {/* Features Section */}
-          <section className="agro-features-section">
-            <div className="agro-features-grid">
-              <motion.div 
-                className="agro-feature-item agro-card-animated"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                viewport={{ once: true }}
-              >
-                <div className="agro-feature-icon">🚀</div>
-                <div className="agro-feature-title">Tecnologia Avançada</div>
-                <div className="agro-feature-desc">Plataforma moderna para o agronegócio</div>
-              </motion.div>
-              
-              <motion.div
-                className="agro-feature-item agro-card-animated"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                viewport={{ once: true }}
-              >
-                <div className="agro-feature-icon">🌾</div>
-                <div className="agro-feature-title">Conexão Direta</div>
-                <div className="agro-feature-desc">Produtores e compradores conectados</div>
-              </motion.div>
-              
-              <motion.div
-                className="agro-feature-item agro-card-animated"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                viewport={{ once: true }}
-              >
-                <div className="agro-feature-icon">⚡</div>
-                <div className="agro-feature-title">Uptime Garantido</div>
-                <div className="agro-feature-desc">99,9% de disponibilidade</div>
-              </motion.div>
-              
-        </div>
-      </section>
-
           {/* Features Section */}
           <section className="agro-features-section">
             <motion.div 
@@ -184,7 +142,7 @@ const AgroisyncHome = () => {
 
           {/* Notícias do Agronegócio */}
           <div className="agro-news-card agro-card-animated">
-            <h3 className="agro-news-title">Notícias do Agronegócio</h3>
+            <h3 className="agro-news-title" style={{ textAlign: 'center' }}>Notícias do Agronegócio</h3>
             
             <div className="agro-news-items">
               <div className="agro-news-item">
@@ -201,7 +159,7 @@ const AgroisyncHome = () => {
                   Tecnologia SG revoluciona monitoramento de safras no Brasil
                 </div>
                 <div className="agro-news-time">3h atrás</div>
-        </div>
+              </div>
               
               <div className="agro-news-item">
                 <div className="agro-news-category">CLIMA</div>
@@ -211,9 +169,9 @@ const AgroisyncHome = () => {
                 <div className="agro-news-time">3h atrás</div>
               </div>
             </div>
-            </div>
           </div>
         </div>
+      </div>
 
       <style jsx>{`
         /* Layout Principal - Duas Colunas conforme imagem */
@@ -637,8 +595,8 @@ const AgroisyncHome = () => {
           }
         }
       `}</style>
-      <div className="mt-8 flex justify-center">
-        <CryptoHash pageName="agroisync-home" />
+      <div className="mt-8 flex justify-center" aria-hidden>
+        <CryptoHash pageName="agroisync-home" visible={false} />
       </div>
     </div>
   );

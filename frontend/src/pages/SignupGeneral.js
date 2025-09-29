@@ -3,6 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Building2, MapPin, Phone, CreditCard, Truck } from 'lucide-react';
 import validationService from '../services/validationService';
+import authService from '../services/authService';
+import { toast } from 'react-hot-toast';
+import CloudflareTurnstile from '../components/CloudflareTurnstile';
 
 const SignupGeneral = () => {
   const navigate = useNavigate();
@@ -16,8 +19,6 @@ const SignupGeneral = () => {
     
     // Dados da Empresa
     company: '',
-    cnpj: '',
-    ie: '',
     
     // Endereço
     cep: '',
@@ -25,16 +26,72 @@ const SignupGeneral = () => {
     city: '',
     state: '',
     
+    // Documentos
+    cpf: '',
+    cnpj: '',
+    ie: '',
+    
     // Tipo de Usuário - SEMPRE GERAL
     userType: 'buyer',
     businessType: 'all'
   });
+  
+  const [turnstileToken, setTurnstileToken] = useState('');
   
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [validations, setValidations] = useState({});
+  
+  // Estados para validação Email
+  const [emailCode, setEmailCode] = useState('');
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
+
+  const sendEmailCode = async () => {
+    if (!formData.email) {
+      toast.error('Por favor, insira seu email primeiro');
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      const result = await authService.resendVerificationEmail(formData.email);
+      if (result.success) {
+        setEmailSent(true);
+        toast.success(`Código Email enviado! Código: ${result.verificationCode}`, { duration: 10000 });
+      } else {
+        toast.error(result.error || 'Erro ao enviar email');
+      }
+    } catch (error) {
+      toast.error('Erro ao enviar email');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const verifyEmailCode = async () => {
+    if (!emailCode) {
+      toast.error('Por favor, insira o código de verificação');
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      const result = await authService.verifyEmailCode(formData.email, emailCode);
+      if (result.success) {
+        setEmailVerified(true);
+        toast.success('Email verificado com sucesso!');
+      } else {
+        toast.error(result.error || 'Código inválido');
+      }
+    } catch (error) {
+      toast.error('Erro ao verificar código');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const heroVariants = {
     hidden: { opacity: 0 },
@@ -125,6 +182,8 @@ const SignupGeneral = () => {
       newErrors.email = 'Email é obrigatório';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email inválido';
+    } else if (!emailVerified) {
+      newErrors.email = 'Email deve ser verificado';
     }
     
     if (!formData.company.trim()) {
@@ -180,7 +239,10 @@ const SignupGeneral = () => {
       const res = await fetch(`${api}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          turnstileToken
+        })
       });
       if (!res.ok) throw new Error('Falha no cadastro');
       const data = await res.json();
@@ -461,6 +523,73 @@ const SignupGeneral = () => {
                     <p style={{ color: '#dc2626', fontSize: '0.85rem', marginTop: '0.25rem' }}>
                       {errors.email}
                     </p>
+                  )}
+                  
+                  {/* Email Verification */}
+                  {formData.email && (
+                    <div style={{ marginTop: '1rem' }}>
+                      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                        <button
+                          type="button"
+                          onClick={sendEmailCode}
+                          disabled={emailSent || isLoading}
+                          style={{
+                            padding: '8px 12px',
+                            background: emailSent ? '#6b7280' : '#3b82f6',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: emailSent || isLoading ? 'not-allowed' : 'pointer',
+                            fontSize: '0.85rem',
+                            fontWeight: '600'
+                          }}
+                        >
+                          {emailSent ? 'Reenviar' : 'Enviar Código'}
+                        </button>
+                        {emailVerified && (
+                          <span style={{ color: '#10b981', fontSize: '0.85rem', alignSelf: 'center' }}>
+                            ✓ Verificado
+                          </span>
+                        )}
+                      </div>
+                      
+                      {emailSent && !emailVerified && (
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <input
+                            type="text"
+                            value={emailCode}
+                            onChange={(e) => setEmailCode(e.target.value)}
+                            placeholder="Código de 6 dígitos"
+                            maxLength="6"
+                            style={{
+                              flex: 1,
+                              padding: '8px 12px',
+                              border: '2px solid rgba(15, 15, 15, 0.1)',
+                              borderRadius: '6px',
+                              fontSize: '0.9rem',
+                              outline: 'none'
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={verifyEmailCode}
+                            disabled={!emailCode || isLoading}
+                            style={{
+                              padding: '8px 12px',
+                              background: '#10b981',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '6px',
+                              cursor: !emailCode || isLoading ? 'not-allowed' : 'pointer',
+                              fontSize: '0.85rem',
+                              fontWeight: '600'
+                            }}
+                          >
+                            Verificar
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   )}
                 </motion.div>
 
@@ -837,10 +966,21 @@ const SignupGeneral = () => {
                   )}
                 </motion.div>
 
+                {/* Turnstile */}
+                <motion.div 
+                  variants={itemVariants}
+                  style={{ marginBottom: '1.5rem' }}
+                >
+                  <CloudflareTurnstile 
+                    onVerify={setTurnstileToken}
+                    onError={() => setTurnstileToken('')}
+                  />
+                </motion.div>
+
                 <motion.button
                   variants={itemVariants}
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isLoading || !turnstileToken || !emailVerified}
                   style={{ 
                     width: '100%', 
                     padding: '14px',

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import cryptoService from '../services/cryptoService';
 
-const CryptoHash = ({ pageName = 'default' }) => {
+// Por padrão não exibe visualmente o hash para não poluir a UI
+// Pode ser exibido passando visible={true}
+const CryptoHash = ({ pageName = 'default', visible = false, style = {}, className = '' }) => {
   const [hash, setHash] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -43,19 +45,14 @@ const CryptoHash = ({ pageName = 'default' }) => {
     generatePageHash();
   }, [pageName]);
 
-  if (loading) {
-    return (
-      <div className="crypto-hash-loading">
-        <span className="text-xs text-gray-400">Gerando hash...</span>
-      </div>
-    );
+  if (loading || !visible) {
+    // Não renderiza nada visual enquanto carrega ou quando não for para exibir
+    return null;
   }
 
   return (
-    <div className="crypto-hash-display">
-      <span className="text-xs text-gray-500 font-mono">
-        {hash}
-      </span>
+    <div className={`crypto-hash-display ${className}`} style={style} aria-hidden={!visible}>
+      <span className="text-xs text-gray-500 font-mono">{hash}</span>
     </div>
   );
 };

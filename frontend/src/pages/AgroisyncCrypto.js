@@ -107,25 +107,25 @@ const AgroisyncCrypto = () => {
       icon: <Coins size={32} />,
       title: 'Crypto Agro Token',
       description: 'Token digital exclusivo para transações no agronegócio com valorização garantida',
-      color: 'var(--txc-light-green)',
+      color: 'var(--agro-green)',
     },
     {
       icon: <Shield size={32} />,
       title: 'Blockchain Seguro',
       description: 'Tecnologia blockchain para garantir transparência e segurança em todas as operações',
-      color: 'var(--txc-light-green)',
+      color: 'var(--agro-green)',
     },
     {
       icon: <Wallet size={32} />,
       title: 'Wallet Integrado',
       description: 'Carteira digital integrada para gerenciar seus tokens e fazer transações',
-      color: 'var(--txc-light-green)',
+      color: 'var(--agro-green)',
     },
     {
       icon: <TrendingUp size={32} />,
       title: 'Staking Rewards',
       description: 'Ganhe recompensas ao manter seus tokens bloqueados na plataforma',
-      color: 'var(--txc-light-green)',
+      color: 'var(--agro-green)',
     },
   ];
 
@@ -225,11 +225,11 @@ const AgroisyncCrypto = () => {
               </div>
             </motion.div>
 
-            <motion.h1 className="agro-hero-title" variants={itemVariants} style={{ color: '#FFFFFF' }}>
+            <motion.h1 className="agro-hero-title" variants={itemVariants} style={{ color: '#FFFFFF', textAlign: 'center' }}>
               CRYPTO AGRO
             </motion.h1>
             
-            <motion.p className="agro-hero-subtitle" variants={itemVariants} style={{ color: '#FFFFFF' }}>
+            <motion.p className="agro-hero-subtitle" variants={itemVariants} style={{ color: '#FFFFFF', textAlign: 'center' }}>
               Em construção: A primeira criptomoeda do agronegócio do planeta
             </motion.p>
 
@@ -729,7 +729,7 @@ const AgroisyncCrypto = () => {
         }
       `}</style>
       <div className="mt-8 flex justify-center">
-        <CryptoHash pageName="crypto" />
+        <CryptoHash pageName="crypto" style={{ display: 'none' }} />
       </div>
     </div>
   );
