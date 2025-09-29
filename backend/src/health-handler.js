@@ -47,7 +47,7 @@ async function checkDynamoDB(): Promise<'healthy' | 'unhealthy' | 'degraded'> {
 function checkMemory(): 'healthy' | 'unhealthy' {
   const memoryUsage = process.memoryUsage();
   const memoryUsageMB = memoryUsage.heapUsed / 1024 / 1024;
-  const maxMemoryMB = parseInt(process.env.AWS_LAMBDA_FUNCTION_MEMORY_SIZE || '1024');
+  const maxMemoryMB = parseInt(process.env.AWS_LAMBDA_FUNCTION_MEMORY_SIZE || '1024', 10);
   
   // Consider unhealthy if using more than 80% of allocated memory
   if (memoryUsageMB > maxMemoryMB * 0.8) {

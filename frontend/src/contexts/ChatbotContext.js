@@ -31,7 +31,7 @@ export const ChatbotProvider = ({ children }) => {
   }, []);
 
   // Enviar mensagem de texto
-  const sendTextMessage = async (content) => {
+  const sendTextMessage = async content => {
     if (!content.trim()) return;
 
     const userMessage = {
@@ -48,7 +48,7 @@ export const ChatbotProvider = ({ children }) => {
     try {
       // Simular resposta da IA
       const response = await simulateAIResponse(content);
-      
+
       const botMessage = {
         id: Date.now() + 1,
         type: 'bot',
@@ -57,11 +57,13 @@ export const ChatbotProvider = ({ children }) => {
         mode: 'text'
       };
 
-      setTimeout(() => {
-        setMessages(prev => [...prev, botMessage]);
-        setIsTyping(false);
-      }, 1000 + Math.random() * 2000); // Simular tempo de processamento
-
+      setTimeout(
+        () => {
+          setMessages(prev => [...prev, botMessage]);
+          setIsTyping(false);
+        },
+        1000 + Math.random() * 2000
+      ); // Simular tempo de processamento
     } catch (error) {
       console.error('Erro ao enviar mensagem:', error);
       setIsTyping(false);
@@ -69,13 +71,13 @@ export const ChatbotProvider = ({ children }) => {
   };
 
   // Enviar mensagem de voz
-  const sendVoiceMessage = async (audioBlob) => {
+  const sendVoiceMessage = async audioBlob => {
     setIsTyping(true);
 
     try {
       // Simular processamento de áudio
       const transcription = await simulateVoiceTranscription(audioBlob);
-      
+
       const userMessage = {
         id: Date.now(),
         type: 'user',
@@ -89,7 +91,7 @@ export const ChatbotProvider = ({ children }) => {
 
       // Simular resposta da IA
       const response = await simulateAIResponse(transcription);
-      
+
       const botMessage = {
         id: Date.now() + 1,
         type: 'bot',
@@ -102,7 +104,6 @@ export const ChatbotProvider = ({ children }) => {
         setMessages(prev => [...prev, botMessage]);
         setIsTyping(false);
       }, 2000);
-
     } catch (error) {
       console.error('Erro ao processar áudio:', error);
       setIsTyping(false);
@@ -127,7 +128,7 @@ export const ChatbotProvider = ({ children }) => {
 
       // Simular análise de imagem
       const analysis = await simulateImageAnalysis(imageFile);
-      
+
       const botMessage = {
         id: Date.now() + 1,
         type: 'bot',
@@ -140,7 +141,6 @@ export const ChatbotProvider = ({ children }) => {
         setMessages(prev => [...prev, botMessage]);
         setIsTyping(false);
       }, 3000);
-
     } catch (error) {
       console.error('Erro ao processar imagem:', error);
       setIsTyping(false);
@@ -148,56 +148,56 @@ export const ChatbotProvider = ({ children }) => {
   };
 
   // Simular resposta da IA
-  const simulateAIResponse = async (userInput) => {
+  const simulateAIResponse = async userInput => {
     const input = userInput.toLowerCase();
-    
+
     // Respostas baseadas em palavras-chave
     if (input.includes('preço') || input.includes('cotação')) {
       return 'Posso ajudá-lo com informações sobre preços de commodities. Acesse a seção de cotações para ver os preços em tempo real.';
     }
-    
+
     if (input.includes('frete') || input.includes('transporte')) {
       return 'Para fretes, use o AgroConecta. Lá você pode publicar cargas ou encontrar transportadores disponíveis.';
     }
-    
+
     if (input.includes('produto') || input.includes('vender') || input.includes('comprar')) {
       return 'O marketplace é o local ideal para comprar e vender produtos agrícolas. Você pode filtrar por categoria, localização e preço.';
     }
-    
+
     if (input.includes('cripto') || input.includes('blockchain') || input.includes('nft')) {
       return 'O AGROISYNC oferece pagamentos em criptomoedas, staking e NFTs agrícolas. Acesse a seção Crypto para mais informações.';
     }
-    
+
     if (input.includes('conta') || input.includes('perfil') || input.includes('cadastro')) {
       return 'Para gerenciar sua conta, acesse o dashboard. Lá você pode atualizar suas informações, ver histórico de transações e gerenciar assinaturas.';
     }
-    
+
     if (input.includes('ajuda') || input.includes('suporte')) {
       return 'Estou aqui para ajudar! Você pode me fazer perguntas sobre qualquer funcionalidade do AGROISYNC ou acessar a seção de ajuda para mais informações.';
     }
-    
+
     if (input.includes('planos') || input.includes('assinatura') || input.includes('premium')) {
       return 'O AGROISYNC oferece planos gratuitos e premium. Os planos premium incluem recursos avançados como mensageria, analytics e suporte prioritário.';
     }
-    
+
     // Resposta padrão
     return 'Entendi sua pergunta. Posso ajudá-lo com informações sobre produtos, fretes, criptomoedas, preços e muito mais. O que gostaria de saber especificamente?';
   };
 
   // Simular transcrição de voz
-  const simulateVoiceTranscription = async (audioBlob) => {
+  const simulateVoiceTranscription = async audioBlob => {
     // Em uma implementação real, aqui seria feita a transcrição usando uma API como Google Speech-to-Text
     return 'Mensagem de voz transcrita (simulação)';
   };
 
   // Simular análise de imagem
-  const simulateImageAnalysis = async (imageFile) => {
+  const simulateImageAnalysis = async imageFile => {
     // Em uma implementação real, aqui seria feita a análise usando uma API como Google Vision
     return 'Analisei sua imagem. Parece ser relacionada ao agronegócio. Como posso ajudá-lo com base nesta imagem?';
   };
 
   // Alternar modo do chatbot
-  const toggleMode = (mode) => {
+  const toggleMode = mode => {
     setCurrentMode(mode);
     if (mode === 'voice') {
       setVoiceEnabled(true);
@@ -243,9 +243,5 @@ export const ChatbotProvider = ({ children }) => {
     toggleChatbot
   };
 
-  return (
-    <ChatbotContext.Provider value={value}>
-      {children}
-    </ChatbotContext.Provider>
-  );
+  return <ChatbotContext.Provider value={value}>{children}</ChatbotContext.Provider>;
 };

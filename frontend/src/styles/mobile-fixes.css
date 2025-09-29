@@ -33,7 +33,7 @@
     background-size: cover !important;
     background-position: center !important;
   }
-  
+
   /* Fix for background images that don't show on mobile */
   .hero-section {
     background-image: url('https://images.unsplash.com/photo-1600747476236-76579658b1b1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Q0FNUE8lMjBERSUyMFNPSkF8ZW58MHx8MHx8fDA%3D') !important;
@@ -50,7 +50,7 @@
     border-color: transparent !important;
     outline: none !important;
   }
-  
+
   .border-red-500,
   .border-red-600,
   .border-red-700,
@@ -60,7 +60,7 @@
   .border-red-900 {
     border-color: #e5e7eb !important;
   }
-  
+
   .text-red-500,
   .text-red-600,
   .text-red-700,
@@ -70,7 +70,7 @@
   .text-red-900 {
     color: #6b7280 !important;
   }
-  
+
   .bg-red-50,
   .bg-red-100,
   .bg-red-200,
@@ -84,7 +84,7 @@
   }
 
   /* Fix for any remaining red elements */
-  [class*="red"] {
+  [class*='red'] {
     border-color: #e5e7eb !important;
     color: #6b7280 !important;
     background-color: #f9fafb !important;
@@ -102,7 +102,9 @@
 
 /* Fix for form elements on mobile */
 @media (max-width: 768px) {
-  input, textarea, select {
+  input,
+  textarea,
+  select {
     border: 1px solid #d1d5db !important;
     border-radius: 8px !important;
     padding: 12px !important;
@@ -111,20 +113,22 @@
     -moz-appearance: none !important;
     appearance: none !important;
   }
-  
-  input:focus, textarea:focus, select:focus {
+
+  input:focus,
+  textarea:focus,
+  select:focus {
     border-color: #10b981 !important;
     outline: none !important;
     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
     -webkit-tap-highlight-color: transparent !important;
   }
-  
+
   /* Fix for iOS input zoom */
-  input[type="text"],
-  input[type="email"],
-  input[type="password"],
-  input[type="tel"],
-  input[type="number"] {
+  input[type='text'],
+  input[type='email'],
+  input[type='password'],
+  input[type='tel'],
+  input[type='number'] {
     font-size: 16px !important;
     transform: translateZ(0) !important;
   }
@@ -132,7 +136,8 @@
 
 /* Fix for buttons on mobile */
 @media (max-width: 768px) {
-  button, .btn {
+  button,
+  .btn {
     min-height: 44px !important; /* iOS touch target */
     min-width: 44px !important;
     padding: 12px 16px !important;
@@ -144,9 +149,10 @@
     -ms-user-select: none !important;
     user-select: none !important;
   }
-  
+
   /* Fix for button active states */
-  button:active, .btn:active {
+  button:active,
+  .btn:active {
     transform: scale(0.98) !important;
     transition: transform 0.1s ease !important;
   }
@@ -158,15 +164,15 @@
     font-size: 16px !important;
     line-height: 1.5 !important;
   }
-  
+
   h1 {
     font-size: 2rem !important;
   }
-  
+
   h2 {
     font-size: 1.5rem !important;
   }
-  
+
   h3 {
     font-size: 1.25rem !important;
   }
@@ -178,12 +184,12 @@
     padding-left: 16px !important;
     padding-right: 16px !important;
   }
-  
+
   .px-4 {
     padding-left: 16px !important;
     padding-right: 16px !important;
   }
-  
+
   .px-6 {
     padding-left: 16px !important;
     padding-right: 16px !important;
@@ -195,11 +201,11 @@
   .grid-cols-2 {
     grid-template-columns: 1fr !important;
   }
-  
+
   .grid-cols-3 {
     grid-template-columns: 1fr !important;
   }
-  
+
   .grid-cols-4 {
     grid-template-columns: 1fr !important;
   }
@@ -210,12 +216,12 @@
   .flex-row {
     flex-direction: column !important;
   }
-  
+
   .space-x-4 > * + * {
     margin-left: 0 !important;
     margin-top: 1rem !important;
   }
-  
+
   .space-x-6 > * + * {
     margin-left: 0 !important;
     margin-top: 1.5rem !important;
@@ -226,7 +232,9 @@
 @media (max-width: 768px) {
   .shadow-lg,
   .shadow-xl {
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+    box-shadow:
+      0 1px 3px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
   }
 }
 
@@ -245,17 +253,17 @@
     position: relative !important;
     -webkit-overflow-scrolling: touch !important;
   }
-  
+
   .overflow-hidden {
     overflow: hidden !important;
   }
-  
+
   /* Fix for scroll issues */
   html {
     -webkit-overflow-scrolling: touch !important;
     scroll-behavior: smooth !important;
   }
-  
+
   /* Fix for iOS bounce scroll */
   body {
     overscroll-behavior: none !important;
@@ -268,11 +276,11 @@
   .z-50 {
     z-index: 50 !important;
   }
-  
+
   .z-40 {
     z-index: 40 !important;
   }
-  
+
   .z-30 {
     z-index: 30 !important;
   }
@@ -284,18 +292,23 @@
     -webkit-tap-highlight-color: transparent !important;
     -webkit-touch-callout: none !important;
   }
-  
+
   /* Fix for long press issues */
-  a, button, input, textarea, select {
+  a,
+  button,
+  input,
+  textarea,
+  select {
     -webkit-touch-callout: none !important;
     -webkit-user-select: none !important;
     -moz-user-select: none !important;
     -ms-user-select: none !important;
     user-select: none !important;
   }
-  
+
   /* Allow text selection in inputs */
-  input, textarea {
+  input,
+  textarea {
     -webkit-user-select: text !important;
     -moz-user-select: text !important;
     -ms-user-select: text !important;
@@ -306,23 +319,23 @@
 /* Fix for keyboard issues on mobile */
 @media (max-width: 768px) {
   /* Prevent zoom on input focus */
-  input[type="text"],
-  input[type="email"],
-  input[type="password"],
-  input[type="tel"],
-  input[type="number"],
+  input[type='text'],
+  input[type='email'],
+  input[type='password'],
+  input[type='tel'],
+  input[type='number'],
   textarea,
   select {
     font-size: 16px !important;
     transform: translateZ(0) !important;
   }
-  
+
   /* Fix for viewport height issues */
   .min-h-screen {
     min-height: 100vh !important;
     min-height: -webkit-fill-available !important;
   }
-  
+
   /* Fix for safe area insets */
   .safe-area-inset {
     padding-top: env(safe-area-inset-top) !important;

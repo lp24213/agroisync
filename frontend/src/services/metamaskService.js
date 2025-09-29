@@ -48,17 +48,17 @@ class MetamaskService {
       }
 
       this.account = accounts[0];
-      
+
       // Obter provider e signer
       this.provider = new ethers.BrowserProvider(window.ethereum);
       this.signer = await this.provider.getSigner();
-      
+
       // Obter chainId
       const network = await this.provider.getNetwork();
       this.chainId = network.chainId;
 
       // Escutar mudanças de conta
-      window.ethereum.on('accountsChanged', (accounts) => {
+      window.ethereum.on('accountsChanged', accounts => {
         if (accounts.length === 0) {
           this.disconnect();
         } else {
@@ -67,7 +67,7 @@ class MetamaskService {
       });
 
       // Escutar mudanças de rede
-      window.ethereum.on('chainChanged', (chainId) => {
+      window.ethereum.on('chainChanged', chainId => {
         this.chainId = parseInt(chainId, 16);
       });
 
@@ -76,7 +76,6 @@ class MetamaskService {
         chainId: this.chainId,
         provider: this.provider
       };
-
     } catch (error) {
       console.error('Erro ao conectar Metamask:', error);
       throw error;
@@ -136,7 +135,7 @@ class MetamaskService {
 
       // Enviar transação
       const transaction = await this.signer.sendTransaction(tx);
-      
+
       return {
         hash: transaction.hash,
         from: this.account,
@@ -144,7 +143,6 @@ class MetamaskService {
         value: amount,
         planId: planId
       };
-
     } catch (error) {
       console.error('Erro ao enviar pagamento:', error);
       throw error;
@@ -155,15 +153,13 @@ class MetamaskService {
   encodePlanData(planId) {
     try {
       // Criar uma interface simples para codificar os dados
-      const abi = [
-        "function activatePlan(string planId)"
-      ];
-      
+      const abi = ['function activatePlan(string planId)'];
+
       const iface = new ethers.Interface(abi);
-      return iface.encodeFunctionData("activatePlan", [planId]);
+      return iface.encodeFunctionData('activatePlan', [planId]);
     } catch (error) {
       // Se falhar a codificação, retornar dados vazios
-      return "0x";
+      return '0x';
     }
   }
 
@@ -175,7 +171,7 @@ class MetamaskService {
       }
 
       const receipt = await this.provider.getTransactionReceipt(hash);
-      
+
       if (!receipt) {
         return { status: 'pending', confirmations: 0 };
       }
@@ -194,7 +190,6 @@ class MetamaskService {
         confirmations,
         receipt
       };
-
     } catch (error) {
       console.error('Erro ao verificar status da transação:', error);
       throw error;
@@ -216,7 +211,6 @@ class MetamaskService {
         name: network.name,
         gasPrice: gasPrice.gasPrice ? ethers.formatUnits(gasPrice.gasPrice, 'gwei') : null
       };
-
     } catch (error) {
       console.error('Erro ao obter informações da rede:', error);
       throw error;
@@ -234,7 +228,6 @@ class MetamaskService {
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: `0x${chainId.toString(16)}` }]
       });
-
     } catch (error) {
       console.error('Erro ao trocar rede:', error);
       throw error;
@@ -250,7 +243,6 @@ class MetamaskService {
 
       const signature = await this.signer.signMessage(message);
       return signature;
-
     } catch (error) {
       console.error('Erro ao assinar mensagem:', error);
       throw error;

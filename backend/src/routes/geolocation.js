@@ -7,17 +7,17 @@ const router = express.Router();
 router.get('/api/geolocation', async (req, res) => {
   try {
     logger.info('Solicitando geolocalização por IP');
-    
+
     // Fazer requisição do servidor (sem CORS)
     const response = await fetch('https://ipapi.co/json/');
     const data = await response.json();
-    
+
     logger.info(`Geolocalização obtida: ${data.city}, ${data.region}`);
-    
+
     res.json(data);
   } catch (error) {
     logger.error('Erro ao obter geolocalização:', error);
-    
+
     // Fallback para São Paulo
     res.json({
       city: 'São Paulo',

@@ -1,5 +1,8 @@
 // Serviço de API para integrar frontend com backend existente
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
+import { API_CONFIG, getAuthToken } from '../config/constants.js';
+
+// Usar configuração centralizada com fallback
+const API_BASE_URL = API_CONFIG?.baseURL || process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
 
 class ApiService {
   constructor() {
@@ -8,15 +11,16 @@ class ApiService {
 
   // Método para fazer requisições autenticadas
   async request(endpoint, options = {}) {
-    const token = localStorage.getItem('token');
-    
+    // Usar helper centralizado que mantém compatibilidade
+    const token = getAuthToken();
+
     const config = {
       headers: {
         'Content-Type': 'application/json',
         ...(token && { Authorization: `Bearer ${token}` }),
-        ...options.headers,
+        ...options.headers
       },
-      ...options,
+      ...options
     };
 
     try {
@@ -43,20 +47,20 @@ class ApiService {
   async createProduct(productData) {
     return this.request('/products', {
       method: 'POST',
-      body: JSON.stringify(productData),
+      body: JSON.stringify(productData)
     });
   }
 
   async updateProduct(id, productData) {
     return this.request(`/products/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(productData),
+      body: JSON.stringify(productData)
     });
   }
 
   async deleteProduct(id) {
     return this.request(`/products/${id}`, {
-      method: 'DELETE',
+      method: 'DELETE'
     });
   }
 
@@ -69,14 +73,14 @@ class ApiService {
   async createFreight(freightData) {
     return this.request('/freights', {
       method: 'POST',
-      body: JSON.stringify(freightData),
+      body: JSON.stringify(freightData)
     });
   }
 
   async updateFreight(id, freightData) {
     return this.request(`/freights/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(freightData),
+      body: JSON.stringify(freightData)
     });
   }
 
@@ -88,7 +92,7 @@ class ApiService {
   async sendMessage(messageData) {
     return this.request('/messages', {
       method: 'POST',
-      body: JSON.stringify(messageData),
+      body: JSON.stringify(messageData)
     });
   }
 
@@ -104,7 +108,7 @@ class ApiService {
   async createStripeSession(planData) {
     return this.request('/payments/stripe/create-session', {
       method: 'POST',
-      body: JSON.stringify(planData),
+      body: JSON.stringify(planData)
     });
   }
 
@@ -116,7 +120,7 @@ class ApiService {
   async updateUserProfile(profileData) {
     return this.request('/users/profile', {
       method: 'PUT',
-      body: JSON.stringify(profileData),
+      body: JSON.stringify(profileData)
     });
   }
 

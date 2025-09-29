@@ -15,17 +15,21 @@ router.use(apiLimiter);
 router.get('/products/public', async (req, res) => {
   try {
     const { page = 1, limit = 20, category, location } = req.query;
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     const query = { status: 'active' };
-    if (category) query.category = category;
-    if (location) query.location = { $regex: location, $options: 'i' };
+    if (category) {
+      query.category = category;
+    }
+    if (location) {
+      query.location = { $regex: location, $options: 'i' };
+    }
 
     const products = await Product.find(query)
       .select('name location category image createdAt')
       .populate('owner', 'name company')
       .skip(skip)
-      .limit(parseInt(limit))
+      .limit(parseInt(limit, 10))
       .sort({ createdAt: -1 });
 
     const total = await Product.countDocuments(query);
@@ -34,10 +38,10 @@ router.get('/products/public', async (req, res) => {
       success: true,
       data: products,
       pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
         total,
-        pages: Math.ceil(total / parseInt(limit))
+        pages: Math.ceil(total / parseInt(limit, 10))
       }
     });
   } catch (error) {
@@ -53,17 +57,21 @@ router.get('/products/public', async (req, res) => {
 router.get('/freights/public', async (req, res) => {
   try {
     const { page = 1, limit = 20, origin, destination } = req.query;
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     const query = { status: 'active' };
-    if (origin) query.origin = { $regex: origin, $options: 'i' };
-    if (destination) query.destination = { $regex: destination, $options: 'i' };
+    if (origin) {
+      query.origin = { $regex: origin, $options: 'i' };
+    }
+    if (destination) {
+      query.destination = { $regex: destination, $options: 'i' };
+    }
 
     const freights = await Freight.find(query)
       .select('origin destination value vehicleType createdAt')
       .populate('owner', 'name company')
       .skip(skip)
-      .limit(parseInt(limit))
+      .limit(parseInt(limit, 10))
       .sort({ createdAt: -1 });
 
     const total = await Freight.countDocuments(query);
@@ -72,10 +80,10 @@ router.get('/freights/public', async (req, res) => {
       success: true,
       data: freights,
       pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
         total,
-        pages: Math.ceil(total / parseInt(limit))
+        pages: Math.ceil(total / parseInt(limit, 10))
       }
     });
   } catch (error) {
@@ -106,12 +114,14 @@ router.get('/products/:id/full', authenticateToken, async (req, res) => {
         success: false,
         message: 'Pagamento necessário para acessar dados completos',
         paymentRequired: true,
-        amount: 29.90 // Preço para liberar dados do produto
+        amount: 29.9 // Preço para liberar dados do produto
       });
     }
 
-    const product = await Product.findById(id)
-      .populate('owner', 'name email phone company cnpj ie address city state');
+    const product = await Product.findById(id).populate(
+      'owner',
+      'name email phone company cnpj ie address city state'
+    );
 
     if (!product) {
       return res.status(404).json({
@@ -152,12 +162,14 @@ router.get('/freights/:id/full', authenticateToken, async (req, res) => {
         success: false,
         message: 'Pagamento necessário para acessar dados completos',
         paymentRequired: true,
-        amount: 19.90 // Preço para liberar dados do frete
+        amount: 19.9 // Preço para liberar dados do frete
       });
     }
 
-    const freight = await Freight.findById(id)
-      .populate('owner', 'name email phone company cnpj ie address city state');
+    const freight = await Freight.findById(id).populate(
+      'owner',
+      'name email phone company cnpj ie address city state'
+    );
 
     if (!freight) {
       return res.status(404).json({
@@ -202,8 +214,8 @@ router.post('/unlock', authenticateToken, async (req, res) => {
     }
 
     // Criar novo pagamento
-    const amount = itemType === 'product' ? 29.90 : 19.90;
-    
+    const amount = itemType === 'product' ? 29.9 : 19.9;
+
     const payment = new Payment({
       userId,
       itemId,

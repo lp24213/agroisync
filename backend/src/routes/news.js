@@ -127,24 +127,24 @@ router.get('/', async (req, res) => {
     });
 
     // Pagination
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-    const paginatedNews = filteredNews.slice(skip, skip + parseInt(limit));
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const paginatedNews = filteredNews.slice(skip, skip + parseInt(limit, 10));
 
     // Calculate pagination info
     const total = filteredNews.length;
-    const totalPages = Math.ceil(total / parseInt(limit));
+    const totalPages = Math.ceil(total / parseInt(limit, 10));
 
     res.json({
       success: true,
       data: {
         news: paginatedNews,
         pagination: {
-          currentPage: parseInt(page),
+          currentPage: parseInt(page, 10),
           totalPages,
           totalItems: total,
-          itemsPerPage: parseInt(limit),
-          hasNextPage: parseInt(page) < totalPages,
-          hasPrevPage: parseInt(page) > 1
+          itemsPerPage: parseInt(limit, 10),
+          hasNextPage: parseInt(page, 10) < totalPages,
+          hasPrevPage: parseInt(page, 10) > 1
         }
       }
     });
@@ -213,7 +213,7 @@ router.get('/categories', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const news = mockNews.find(n => n.id === parseInt(id) && n.isActive);
+    const news = mockNews.find(n => n.id === parseInt(id, 10) && n.isActive);
 
     if (!news) {
       return res.status(404).json({
@@ -224,7 +224,7 @@ router.get('/:id', async (req, res) => {
 
     // Get related news (same category, excluding current)
     const relatedNews = mockNews
-      .filter(n => n.id !== parseInt(id) && n.category === news.category && n.isActive)
+      .filter(n => n.id !== parseInt(id, 10) && n.category === news.category && n.isActive)
       .slice(0, 3);
 
     res.json({
@@ -443,7 +443,7 @@ router.get(
   apiLimiter, // Use the existing apiLimiter
   async (req, res) => {
     try {
-      const limit = parseInt(req.query.limit) || 20;
+      const limit = parseInt(req.query.limit, 10) || 20;
       const sources = Object.keys(RSS_URLS);
       const allNews = [];
 

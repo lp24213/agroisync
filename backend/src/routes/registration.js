@@ -19,18 +19,18 @@ const registrationLimiter = rateLimit({
 });
 
 // Função para buscar dados por CEP
-const fetchCEPData = async (cep) => {
+const fetchCEPData = async cep => {
   try {
     // Simular API dos Correios (substituir por API real)
     const cleanCEP = cep.replace(/\D/g, '');
-    
+
     if (cleanCEP.length !== 8) {
       throw new Error('CEP inválido');
     }
 
     // Mock data - substituir por chamada real para API dos Correios
     const mockData = {
-      cep: cep,
+      cep,
       logradouro: 'Avenida Paulista',
       bairro: 'Bela Vista',
       localidade: 'São Paulo',
@@ -48,10 +48,10 @@ const fetchCEPData = async (cep) => {
 };
 
 // Função para validar CPF na Receita Federal
-const validateCPF = async (cpf) => {
+const validateCPF = async cpf => {
   try {
     const cleanCPF = cpf.replace(/\D/g, '');
-    
+
     if (cleanCPF.length !== 11) {
       throw new Error('CPF deve ter 11 dígitos');
     }
@@ -59,7 +59,7 @@ const validateCPF = async (cpf) => {
     // Simular validação na Receita Federal
     // Em produção, usar API real da Receita Federal
     const isValid = true; // Mock validation
-    
+
     if (!isValid) {
       throw new Error('CPF inválido na Receita Federal');
     }
@@ -76,10 +76,10 @@ const validateCPF = async (cpf) => {
 };
 
 // Função para validar CNPJ na Receita Federal
-const validateCNPJ = async (cnpj) => {
+const validateCNPJ = async cnpj => {
   try {
     const cleanCNPJ = cnpj.replace(/\D/g, '');
-    
+
     if (cleanCNPJ.length !== 14) {
       throw new Error('CNPJ deve ter 14 dígitos');
     }
@@ -87,7 +87,7 @@ const validateCNPJ = async (cnpj) => {
     // Simular validação na Receita Federal
     // Em produção, usar API real da Receita Federal
     const isValid = true; // Mock validation
-    
+
     if (!isValid) {
       throw new Error('CNPJ inválido na Receita Federal');
     }
@@ -115,11 +115,11 @@ const validateCNPJ = async (cnpj) => {
 };
 
 // Função para buscar localização por IP
-const fetchLocationByIP = async (ip) => {
+const fetchLocationByIP = async ip => {
   try {
     // Simular busca por IP (substituir por API real como ipapi.co)
     const mockData = {
-      ip: ip,
+      ip,
       city: 'São Paulo',
       region: 'São Paulo',
       country: 'BR',
@@ -137,24 +137,61 @@ const fetchLocationByIP = async (ip) => {
 };
 
 // Função para buscar produtos por API
-const searchProducts = async (query) => {
+const searchProducts = async query => {
   try {
     // Simular busca de produtos (substituir por API real)
     const mockProducts = [
-      { id: '1', name: 'Soja', category: 'Grãos', unit: 'saca', description: 'Soja para alimentação animal' },
-      { id: '2', name: 'Milho', category: 'Grãos', unit: 'saca', description: 'Milho para alimentação animal' },
-      { id: '3', name: 'Trigo', category: 'Grãos', unit: 'saca', description: 'Trigo para panificação' },
+      {
+        id: '1',
+        name: 'Soja',
+        category: 'Grãos',
+        unit: 'saca',
+        description: 'Soja para alimentação animal'
+      },
+      {
+        id: '2',
+        name: 'Milho',
+        category: 'Grãos',
+        unit: 'saca',
+        description: 'Milho para alimentação animal'
+      },
+      {
+        id: '3',
+        name: 'Trigo',
+        category: 'Grãos',
+        unit: 'saca',
+        description: 'Trigo para panificação'
+      },
       { id: '4', name: 'Café', category: 'Bebidas', unit: 'kg', description: 'Café em grão' },
       { id: '5', name: 'Açúcar', category: 'Dulçor', unit: 'kg', description: 'Açúcar cristal' },
-      { id: '6', name: 'Fertilizante NPK', category: 'Insumos', unit: 'kg', description: 'Fertilizante NPK 20-10-10' },
-      { id: '7', name: 'Sementes de Soja', category: 'Insumos', unit: 'kg', description: 'Sementes de soja certificadas' },
-      { id: '8', name: 'Defensivo Agrícola', category: 'Insumos', unit: 'L', description: 'Defensivo para controle de pragas' }
+      {
+        id: '6',
+        name: 'Fertilizante NPK',
+        category: 'Insumos',
+        unit: 'kg',
+        description: 'Fertilizante NPK 20-10-10'
+      },
+      {
+        id: '7',
+        name: 'Sementes de Soja',
+        category: 'Insumos',
+        unit: 'kg',
+        description: 'Sementes de soja certificadas'
+      },
+      {
+        id: '8',
+        name: 'Defensivo Agrícola',
+        category: 'Insumos',
+        unit: 'L',
+        description: 'Defensivo para controle de pragas'
+      }
     ];
 
-    const filtered = mockProducts.filter(product =>
-      product.name.toLowerCase().includes(query.toLowerCase()) ||
-      product.category.toLowerCase().includes(query.toLowerCase()) ||
-      product.description.toLowerCase().includes(query.toLowerCase())
+    const filtered = mockProducts.filter(
+      product =>
+        product.name.toLowerCase().includes(query.toLowerCase()) ||
+        product.category.toLowerCase().includes(query.toLowerCase()) ||
+        product.description.toLowerCase().includes(query.toLowerCase())
     );
 
     return filtered;
@@ -168,10 +205,10 @@ router.get('/cep/:cep', apiLimiter, async (req, res) => {
   try {
     const { cep } = req.params;
     const data = await fetchCEPData(cep);
-    
+
     res.json({
       success: true,
-      data: data
+      data
     });
   } catch (error) {
     res.status(400).json({
@@ -186,10 +223,10 @@ router.get('/validate/cpf/:cpf', apiLimiter, async (req, res) => {
   try {
     const { cpf } = req.params;
     const data = await validateCPF(cpf);
-    
+
     res.json({
       success: true,
-      data: data
+      data
     });
   } catch (error) {
     res.status(400).json({
@@ -204,10 +241,10 @@ router.get('/validate/cnpj/:cnpj', apiLimiter, async (req, res) => {
   try {
     const { cnpj } = req.params;
     const data = await validateCNPJ(cnpj);
-    
+
     res.json({
       success: true,
-      data: data
+      data
     });
   } catch (error) {
     res.status(400).json({
@@ -222,10 +259,10 @@ router.get('/location/:ip', apiLimiter, async (req, res) => {
   try {
     const { ip } = req.params;
     const data = await fetchLocationByIP(ip);
-    
+
     res.json({
       success: true,
-      data: data
+      data
     });
   } catch (error) {
     res.status(400).json({
@@ -240,7 +277,7 @@ router.get('/products/search/:query', apiLimiter, async (req, res) => {
   try {
     const { query } = req.params;
     const products = await searchProducts(query);
-    
+
     res.json({
       success: true,
       data: products
@@ -336,19 +373,8 @@ router.post('/agroconecta', registrationLimiter, async (req, res) => {
 // POST /api/registration/loja - Cadastrar na Loja
 router.post('/loja', registrationLimiter, async (req, res) => {
   try {
-    const {
-      name,
-      email,
-      phone,
-      cpf,
-      companyName,
-      cnpj,
-      ie,
-      address,
-      products,
-      plan,
-      isPublic
-    } = req.body;
+    const { name, email, phone, cpf, companyName, cnpj, ie, address, products, plan, isPublic } =
+      req.body;
 
     // Verificar se já existe cadastro
     const existingEmail = await Loja.findOne({ email });
@@ -414,19 +440,8 @@ router.post('/loja', registrationLimiter, async (req, res) => {
 // POST /api/registration/marketplace - Cadastrar no Marketplace
 router.post('/marketplace', registrationLimiter, async (req, res) => {
   try {
-    const {
-      name,
-      email,
-      phone,
-      cpf,
-      companyName,
-      cnpj,
-      ie,
-      address,
-      offerings,
-      plan,
-      isPublic
-    } = req.body;
+    const { name, email, phone, cpf, companyName, cnpj, ie, address, offerings, plan, isPublic } =
+      req.body;
 
     // Verificar se já existe cadastro
     const existingEmail = await Marketplace.findOne({ email });
@@ -563,20 +578,26 @@ router.post('/fazenda', registrationLimiter, async (req, res) => {
 router.get('/agroconecta/public', async (req, res) => {
   try {
     const { page = 1, limit = 20, city, state, vehicleType } = req.query;
-    
+
     const filter = { isPublic: true, isActive: true };
-    
-    if (city) filter['address.city'] = new RegExp(city, 'i');
-    if (state) filter['address.state'] = state;
-    if (vehicleType) filter['vehicle.type'] = vehicleType;
+
+    if (city) {
+      filter['address.city'] = new RegExp(city, 'i');
+    }
+    if (state) {
+      filter['address.state'] = state;
+    }
+    if (vehicleType) {
+      filter['vehicle.type'] = vehicleType;
+    }
 
     const skip = (page - 1) * limit;
-    
+
     const [agroconectas, total] = await Promise.all([
       AgroConecta.find(filter)
         .select('name companyName address vehicle services stats plan')
         .skip(skip)
-        .limit(parseInt(limit))
+        .limit(parseInt(limit, 10))
         .sort({ createdAt: -1 }),
       AgroConecta.countDocuments(filter)
     ]);
@@ -585,8 +606,8 @@ router.get('/agroconecta/public', async (req, res) => {
       success: true,
       data: agroconectas,
       pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
         total,
         pages: Math.ceil(total / limit)
       }
@@ -605,19 +626,23 @@ router.get('/agroconecta/public', async (req, res) => {
 router.get('/loja/public', async (req, res) => {
   try {
     const { page = 1, limit = 20, city, state, category } = req.query;
-    
+
     const filter = { isPublic: true, isActive: true };
-    
-    if (city) filter['address.city'] = new RegExp(city, 'i');
-    if (state) filter['address.state'] = state;
+
+    if (city) {
+      filter['address.city'] = new RegExp(city, 'i');
+    }
+    if (state) {
+      filter['address.state'] = state;
+    }
 
     const skip = (page - 1) * limit;
-    
+
     const [lojas, total] = await Promise.all([
       Loja.find(filter)
         .select('name companyName address products stats plan')
         .skip(skip)
-        .limit(parseInt(limit))
+        .limit(parseInt(limit, 10))
         .sort({ createdAt: -1 }),
       Loja.countDocuments(filter)
     ]);
@@ -625,7 +650,7 @@ router.get('/loja/public', async (req, res) => {
     // Filtrar produtos por categoria se especificado
     if (category) {
       lojas.forEach(loja => {
-        loja.products = loja.products.filter(product => 
+        loja.products = loja.products.filter(product =>
           product.category.toLowerCase().includes(category.toLowerCase())
         );
       });
@@ -635,8 +660,8 @@ router.get('/loja/public', async (req, res) => {
       success: true,
       data: lojas,
       pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
         total,
         pages: Math.ceil(total / limit)
       }
@@ -655,19 +680,23 @@ router.get('/loja/public', async (req, res) => {
 router.get('/marketplace/public', async (req, res) => {
   try {
     const { page = 1, limit = 20, city, state, type } = req.query;
-    
+
     const filter = { isPublic: true, isActive: true };
-    
-    if (city) filter['address.city'] = new RegExp(city, 'i');
-    if (state) filter['address.state'] = state;
+
+    if (city) {
+      filter['address.city'] = new RegExp(city, 'i');
+    }
+    if (state) {
+      filter['address.state'] = state;
+    }
 
     const skip = (page - 1) * limit;
-    
+
     const [marketplaces, total] = await Promise.all([
       Marketplace.find(filter)
         .select('name companyName address offerings stats plan')
         .skip(skip)
-        .limit(parseInt(limit))
+        .limit(parseInt(limit, 10))
         .sort({ createdAt: -1 }),
       Marketplace.countDocuments(filter)
     ]);
@@ -675,9 +704,7 @@ router.get('/marketplace/public', async (req, res) => {
     // Filtrar ofertas por tipo se especificado
     if (type) {
       marketplaces.forEach(marketplace => {
-        marketplace.offerings = marketplace.offerings.filter(offering => 
-          offering.type === type
-        );
+        marketplace.offerings = marketplace.offerings.filter(offering => offering.type === type);
       });
     }
 
@@ -685,8 +712,8 @@ router.get('/marketplace/public', async (req, res) => {
       success: true,
       data: marketplaces,
       pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
         total,
         pages: Math.ceil(total / limit)
       }
@@ -705,20 +732,26 @@ router.get('/marketplace/public', async (req, res) => {
 router.get('/fazenda/public', async (req, res) => {
   try {
     const { page = 1, limit = 20, city, state, farmType } = req.query;
-    
+
     const filter = { isPublic: true, isActive: true };
-    
-    if (city) filter['address.city'] = new RegExp(city, 'i');
-    if (state) filter['address.state'] = state;
-    if (farmType) filter.farmType = farmType;
+
+    if (city) {
+      filter['address.city'] = new RegExp(city, 'i');
+    }
+    if (state) {
+      filter['address.state'] = state;
+    }
+    if (farmType) {
+      filter.farmType = farmType;
+    }
 
     const skip = (page - 1) * limit;
-    
+
     const [fazendas, total] = await Promise.all([
       Fazenda.find(filter)
         .select('name farmName farmSize farmType address products stats plan')
         .skip(skip)
-        .limit(parseInt(limit))
+        .limit(parseInt(limit, 10))
         .sort({ createdAt: -1 }),
       Fazenda.countDocuments(filter)
     ]);
@@ -727,8 +760,8 @@ router.get('/fazenda/public', async (req, res) => {
       success: true,
       data: fazendas,
       pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
         total,
         pages: Math.ceil(total / limit)
       }

@@ -14,42 +14,47 @@ export const useLanguage = () => {
 
 export const LanguageProvider = ({ children }) => {
   const [currentLanguage, setCurrentLanguage] = useState(
-    typeof window !== 'undefined' ? (localStorage.getItem('agroisync-language') || 'pt') : 'pt'
+    typeof window !== 'undefined' ? localStorage.getItem('agroisync-language') || 'pt' : 'pt'
   );
   const [isLoading, setIsLoading] = useState(false);
   const { language, setLanguage } = useStore();
 
-  const supportedLanguages = useMemo(() => [
-    { code: 'pt', name: 'Português', flag: '🇧🇷' },
-    { code: 'en', name: 'English', flag: '🇺🇸' },
-    { code: 'es', name: 'Español', flag: '🇪🇸' },
-    { code: 'zh', name: '中文', flag: '🇨🇳' }
-  ], []);
+  const supportedLanguages = useMemo(
+    () => [
+      { code: 'pt', name: 'Português', flag: '🇧🇷' },
+      { code: 'en', name: 'English', flag: '🇺🇸' },
+      { code: 'es', name: 'Español', flag: '🇪🇸' },
+      { code: 'zh', name: '中文', flag: '🇨🇳' }
+    ],
+    []
+  );
 
-  const changeLanguage = useCallback(async (langCode) => {
-    if (!supportedLanguages.find(lang => lang.code === langCode)) {
-      console.error(`Unsupported language: ${langCode}`);
-      return;
-    }
+  const changeLanguage = useCallback(
+    async langCode => {
+      if (!supportedLanguages.find(lang => lang.code === langCode)) {
+        console.error(`Unsupported language: ${langCode}`);
+        return;
+      }
 
-    try {
-      setIsLoading(true);
-      await i18n.changeLanguage(langCode);
-      setCurrentLanguage(langCode);
-      setLanguage(langCode);
-      
-      // Salvar preferência no localStorage
-      localStorage.setItem('agroisync-language', langCode);
-      
-      // Atualizar atributo lang do HTML
-      document.documentElement.lang = langCode;
-      
-    } catch (error) {
-      console.error('Error changing language:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [setLanguage, supportedLanguages]);
+      try {
+        setIsLoading(true);
+        await i18n.changeLanguage(langCode);
+        setCurrentLanguage(langCode);
+        setLanguage(langCode);
+
+        // Salvar preferência no localStorage
+        localStorage.setItem('agroisync-language', langCode);
+
+        // Atualizar atributo lang do HTML
+        document.documentElement.lang = langCode;
+      } catch (error) {
+        console.error('Error changing language:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [setLanguage, supportedLanguages]
+  );
 
   useEffect(() => {
     // Sincronizar com o store
@@ -63,10 +68,15 @@ export const LanguageProvider = ({ children }) => {
   };
 
   const formatDate = (date, options = {}) => {
-    const locale = currentLanguage === 'pt' ? 'pt-BR' : 
-                   currentLanguage === 'es' ? 'es-ES' :
-                   currentLanguage === 'zh' ? 'zh-CN' : 'en-US';
-    
+    const locale =
+      currentLanguage === 'pt'
+        ? 'pt-BR'
+        : currentLanguage === 'es'
+          ? 'es-ES'
+          : currentLanguage === 'zh'
+            ? 'zh-CN'
+            : 'en-US';
+
     return new Intl.DateTimeFormat(locale, {
       year: 'numeric',
       month: 'long',
@@ -76,10 +86,15 @@ export const LanguageProvider = ({ children }) => {
   };
 
   const formatCurrency = (amount, currency = 'BRL') => {
-    const locale = currentLanguage === 'pt' ? 'pt-BR' : 
-                   currentLanguage === 'es' ? 'es-ES' :
-                   currentLanguage === 'zh' ? 'zh-CN' : 'en-US';
-    
+    const locale =
+      currentLanguage === 'pt'
+        ? 'pt-BR'
+        : currentLanguage === 'es'
+          ? 'es-ES'
+          : currentLanguage === 'zh'
+            ? 'zh-CN'
+            : 'en-US';
+
     return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency: currency
@@ -87,10 +102,15 @@ export const LanguageProvider = ({ children }) => {
   };
 
   const formatNumber = (number, options = {}) => {
-    const locale = currentLanguage === 'pt' ? 'pt-BR' : 
-                   currentLanguage === 'es' ? 'es-ES' :
-                   currentLanguage === 'zh' ? 'zh-CN' : 'en-US';
-    
+    const locale =
+      currentLanguage === 'pt'
+        ? 'pt-BR'
+        : currentLanguage === 'es'
+          ? 'es-ES'
+          : currentLanguage === 'zh'
+            ? 'zh-CN'
+            : 'en-US';
+
     return new Intl.NumberFormat(locale, options).format(number);
   };
 
@@ -110,9 +130,5 @@ export const LanguageProvider = ({ children }) => {
     getCurrentLanguageInfo
   };
 
-  return (
-    <LanguageContext.Provider value={value}>
-      {children}
-    </LanguageContext.Provider>
-  );
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 };

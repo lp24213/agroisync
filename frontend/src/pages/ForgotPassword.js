@@ -12,9 +12,9 @@ const ForgotPassword = () => {
   const [success, setSuccess] = useState('');
   const [turnstileToken, setTurnstileToken] = useState('');
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    
+
     if (!email) {
       setError('Email é obrigatório');
       return;
@@ -27,27 +27,29 @@ const ForgotPassword = () => {
 
     setIsLoading(true);
     setError('');
-    
+
     const result = await authService.forgotPassword(email, turnstileToken);
-    
+
     if (result.success) {
       setSuccess('Email de recuperação enviado! Verifique sua caixa de entrada.');
     } else {
       setError(result.error || 'Erro ao enviar email de recuperação');
     }
-    
+
     setIsLoading(false);
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'var(--bg-gradient)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '2rem 1rem'
-    }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'var(--bg-gradient)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '2rem 1rem'
+      }}
+    >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -62,34 +64,40 @@ const ForgotPassword = () => {
       >
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '80px',
-            height: '80px',
-            background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
-            borderRadius: '20px',
-            marginBottom: '1rem',
-            color: 'white'
-          }}>
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '80px',
+              height: '80px',
+              background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+              borderRadius: '20px',
+              marginBottom: '1rem',
+              color: 'white'
+            }}
+          >
             <Mail size={40} />
           </div>
-          
-          <h1 style={{
-            fontSize: '2rem',
-            fontWeight: '700',
-            color: '#1f2937',
-            marginBottom: '0.5rem'
-          }}>
+
+          <h1
+            style={{
+              fontSize: '2rem',
+              fontWeight: '700',
+              color: '#1f2937',
+              marginBottom: '0.5rem'
+            }}
+          >
             Recuperar Senha
           </h1>
-          
-          <p style={{
-            color: '#6b7280',
-            fontSize: '1rem',
-            lineHeight: '1.6'
-          }}>
+
+          <p
+            style={{
+              color: '#6b7280',
+              fontSize: '1rem',
+              lineHeight: '1.6'
+            }}
+          >
             Digite seu email e enviaremos um link para redefinir sua senha
           </p>
         </div>
@@ -97,20 +105,22 @@ const ForgotPassword = () => {
         {/* Form */}
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{
-              display: 'block',
-              marginBottom: '0.5rem',
-              fontWeight: '600',
-              color: '#1f2937'
-            }}>
+            <label
+              style={{
+                display: 'block',
+                marginBottom: '0.5rem',
+                fontWeight: '600',
+                color: '#1f2937'
+              }}
+            >
               Email
             </label>
-            
+
             <input
-              type="email"
+              type='email'
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="seu@email.com"
+              onChange={e => setEmail(e.target.value)}
+              placeholder='seu@email.com'
               style={{
                 width: '100%',
                 padding: '1rem',
@@ -126,11 +136,11 @@ const ForgotPassword = () => {
 
           {/* Cloudflare Turnstile */}
           <CloudflareTurnstile
-            onVerify={(token) => {
+            onVerify={token => {
               setTurnstileToken(token);
               setError(''); // Limpar erro quando verificação for completada
             }}
-            onError={(error) => {
+            onError={error => {
               setError('Erro na verificação. Tente novamente.');
               setTurnstileToken('');
             }}
@@ -185,14 +195,12 @@ const ForgotPassword = () => {
 
           {/* Submit Button */}
           <button
-            type="submit"
+            type='submit'
             disabled={isLoading}
             style={{
               width: '100%',
               padding: '1rem',
-              background: isLoading
-                ? '#d1d5db'
-                : 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+              background: isLoading ? '#d1d5db' : 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
               color: 'white',
               border: 'none',
               borderRadius: '12px',
@@ -211,7 +219,7 @@ const ForgotPassword = () => {
         {/* Back to Login */}
         <div style={{ textAlign: 'center' }}>
           <Link
-            to="/login"
+            to='/login'
             style={{
               display: 'inline-flex',
               alignItems: 'center',

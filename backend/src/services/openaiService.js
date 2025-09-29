@@ -7,7 +7,7 @@ class OpenAIService {
     this.client = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY
     });
-    
+
     this.systemPrompt = `Você é um assistente inteligente especializado em agronegócio da plataforma AgroSync. Suas responsabilidades incluem:
 
 1. **Conhecimento do Agronegócio:**
@@ -72,7 +72,7 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
       });
 
       const aiResponse = response.choices[0]?.message?.content;
-      
+
       if (!aiResponse) {
         throw new Error('Resposta vazia da OpenAI');
       }
@@ -81,22 +81,26 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
       return aiResponse;
     } catch (error) {
       logger.error('Erro ao gerar resposta IA:', error);
-      
+
       // Respostas de fallback baseadas em palavras-chave
       const lastMessage = messages[messages.length - 1]?.text?.toLowerCase() || '';
-      
+
       if (lastMessage.includes('preço') || lastMessage.includes('valor')) {
         return '💰 Para consultar preços de commodities, recomendo acessar nossa seção de análises de mercado na plataforma. Lá você encontrará dados atualizados sobre preços de grãos, frutas e outros produtos agrícolas.';
       }
-      
+
       if (lastMessage.includes('frete') || lastMessage.includes('transporte')) {
         return '🚛 Para criar pedidos de frete ou consultar logística, acesse a seção AgroConecta da nossa plataforma. Lá você pode criar pedidos, rastrear cargas e gerenciar toda a logística do seu negócio.';
       }
-      
-      if (lastMessage.includes('produto') || lastMessage.includes('vender') || lastMessage.includes('comprar')) {
+
+      if (
+        lastMessage.includes('produto') ||
+        lastMessage.includes('vender') ||
+        lastMessage.includes('comprar')
+      ) {
         return '🛒 Nossa plataforma oferece um marketplace completo para compra e venda de produtos agrícolas. Acesse a seção Marketplace para listar seus produtos ou encontrar o que precisa.';
       }
-      
+
       return 'Olá! Sou o assistente inteligente da AgroSync. Como posso ajudá-lo hoje? Posso auxiliar com informações sobre produtos agrícolas, logística, preços de commodities e muito mais! 🌱';
     }
   }
@@ -153,7 +157,7 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
       }
 
       const audioFile = fs.createReadStream(audioPath);
-      
+
       const response = await this.client.audio.transcriptions.create({
         file: audioFile,
         model: 'whisper-1',
@@ -301,7 +305,8 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
         messages: [
           {
             role: 'system',
-            content: `Forneça informações sobre preços de commodities agrícolas no Brasil. Seja específico sobre a região e fonte dos dados.`
+            content:
+              'Forneça informações sobre preços de commodities agrícolas no Brasil. Seja específico sobre a região e fonte dos dados.'
           },
           {
             role: 'user',

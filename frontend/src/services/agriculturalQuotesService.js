@@ -9,7 +9,7 @@ class AgriculturalQuotesService {
     this.error = null;
     this.apiBaseUrl = process.env.REACT_APP_AGROLINK_API_URL || 'https://api.agrolink.com.br';
     this.apiKey = process.env.REACT_APP_AGROLINK_API_KEY;
-    
+
     // Configuração de commodities
     this.commodities = {
       soy: {
@@ -84,13 +84,13 @@ class AgriculturalQuotesService {
     try {
       // Obter localização do usuário
       await geolocationService.getLocation();
-      
+
       // Carregar cotações iniciais
       await this.loadQuotes();
-      
+
       // Configurar atualização automática
       this.startAutoUpdate();
-      
+
       return true;
     } catch (error) {
       console.error('Erro ao inicializar serviço de cotações:', error);
@@ -118,19 +118,19 @@ class AgriculturalQuotesService {
         console.warn('Erro na API do AgroLink, usando dados mockados:', apiError);
         quotes = await this.getMockQuotes(location);
       }
-      
+
       this.quotes = quotes;
       this.lastUpdate = new Date();
-      
+
       return this.quotes;
     } catch (error) {
       console.error('Erro ao carregar cotações:', error);
       this.error = error.message;
-      
+
       // Fallback para dados estáticos
       this.quotes = this.getFallbackQuotes();
       this.lastUpdate = new Date();
-      
+
       return this.quotes;
     } finally {
       this.isLoading = false;
@@ -140,14 +140,14 @@ class AgriculturalQuotesService {
   // Buscar cotações da API do AgroLink com fallback
   async fetchAgroLinkQuotes(location) {
     const { region, country } = location;
-    
+
     // Tentar múltiplas APIs
     const apis = [
       {
         name: 'AgroLink API',
         url: `${this.apiBaseUrl}/api/v1/quotes`,
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
+          Authorization: `Bearer ${this.apiKey}`,
           'Content-Type': 'application/json',
           'X-Region': this.mapRegionToAgroLinkCode(region, country)
         }
@@ -175,7 +175,7 @@ class AgriculturalQuotesService {
         }
 
         const data = await response.json();
-        
+
         if (api.name === 'AgroLink API') {
           return this.processAgroLinkData(data);
         } else {
@@ -194,20 +194,20 @@ class AgriculturalQuotesService {
   processAgroSyncData(data) {
     return {
       soybeans: {
-        price: data.soybeans?.price || 148.50,
-        change: data.soybeans?.change || 3.20,
-        changePercent: data.soybeans?.changePercent || 2.20,
+        price: data.soybeans?.price || 148.5,
+        change: data.soybeans?.change || 3.2,
+        changePercent: data.soybeans?.changePercent || 2.2,
         unit: 'R$/sc'
       },
       corn: {
-        price: data.corn?.price || 85.30,
-        change: data.corn?.change || -1.50,
+        price: data.corn?.price || 85.3,
+        change: data.corn?.change || -1.5,
         changePercent: data.corn?.changePercent || -1.73,
         unit: 'R$/sc'
       },
       wheat: {
-        price: data.wheat?.price || 92.80,
-        change: data.wheat?.change || 0.80,
+        price: data.wheat?.price || 92.8,
+        change: data.wheat?.change || 0.8,
         changePercent: data.wheat?.changePercent || 0.87,
         unit: 'R$/sc'
       }
@@ -218,16 +218,16 @@ class AgriculturalQuotesService {
   mapRegionToAgroLinkCode(region, country) {
     const regionMap = {
       'Mato Grosso': 'MT',
-      'Paraná': 'PR',
+      Paraná: 'PR',
       'Rio Grande do Sul': 'RS',
-      'Goiás': 'GO',
+      Goiás: 'GO',
       'Mato Grosso do Sul': 'MS',
       'Minas Gerais': 'MG',
       'São Paulo': 'SP',
-      'Bahia': 'BA',
-      'Maranhão': 'MA',
-      'Piauí': 'PI',
-      'Tocantins': 'TO'
+      Bahia: 'BA',
+      Maranhão: 'MA',
+      Piauí: 'PI',
+      Tocantins: 'TO'
     };
 
     return regionMap[region] || 'BR';
@@ -236,17 +236,17 @@ class AgriculturalQuotesService {
   // Processar dados da API do AgroLink
   processAgroLinkData(data) {
     const quotes = {};
-    
+
     // Mapear dados da API para nosso formato
     const commodityMap = {
-      'SOJA': 'soy',
-      'MILHO': 'corn',
-      'CAFE': 'coffee',
-      'ALGODAO': 'cotton',
-      'TRIGO': 'wheat',
-      'ACUCAR': 'sugar',
-      'BOI': 'cattle',
-      'SUINO': 'hog'
+      SOJA: 'soy',
+      MILHO: 'corn',
+      CAFE: 'coffee',
+      ALGODAO: 'cotton',
+      TRIGO: 'wheat',
+      ACUCAR: 'sugar',
+      BOI: 'cattle',
+      SUINO: 'hog'
     };
 
     if (data.quotes && Array.isArray(data.quotes)) {
@@ -274,13 +274,13 @@ class AgriculturalQuotesService {
   async getMockQuotes(location) {
     const { region, country } = location;
     const basePrices = this.getBasePricesByRegion(region, country);
-    
+
     const quotes = {};
-    
+
     for (const [key, commodity] of Object.entries(this.commodities)) {
       const basePrice = basePrices[key] || basePrices.default;
       const variation = this.generatePriceVariation();
-      
+
       quotes[key] = {
         ...commodity,
         currentPrice: basePrice * (1 + variation),
@@ -294,7 +294,7 @@ class AgriculturalQuotesService {
         confidence: 'high'
       };
     }
-    
+
     return quotes;
   }
 
@@ -302,57 +302,57 @@ class AgriculturalQuotesService {
   getBasePricesByRegion(region, country) {
     if (country !== 'Brasil') {
       return {
-        soy: 120.00,
-        corn: 85.00,
-        coffee: 450.00,
-        cotton: 180.00,
-        wheat: 95.00,
-        sugar: 75.00,
-        default: 100.00
+        soy: 120.0,
+        corn: 85.0,
+        coffee: 450.0,
+        cotton: 180.0,
+        wheat: 95.0,
+        sugar: 75.0,
+        default: 100.0
       };
     }
 
     // Preços base por região do Brasil (em reais)
     const regionalPrices = {
       'Centro-Oeste': {
-        soy: 135.50,
-        corn: 92.30,
-        coffee: 480.00,
-        cotton: 195.00,
-        wheat: 98.50,
-        sugar: 78.00
+        soy: 135.5,
+        corn: 92.3,
+        coffee: 480.0,
+        cotton: 195.0,
+        wheat: 98.5,
+        sugar: 78.0
       },
-      'Sul': {
-        soy: 128.00,
-        corn: 88.00,
-        coffee: 465.00,
-        cotton: 188.00,
-        wheat: 102.00,
-        sugar: 76.50
+      Sul: {
+        soy: 128.0,
+        corn: 88.0,
+        coffee: 465.0,
+        cotton: 188.0,
+        wheat: 102.0,
+        sugar: 76.5
       },
-      'Sudeste': {
-        soy: 132.00,
-        corn: 90.00,
-        coffee: 475.00,
-        cotton: 192.00,
-        wheat: 100.00,
-        sugar: 77.50
+      Sudeste: {
+        soy: 132.0,
+        corn: 90.0,
+        coffee: 475.0,
+        cotton: 192.0,
+        wheat: 100.0,
+        sugar: 77.5
       },
-      'Nordeste': {
-        soy: 125.00,
-        corn: 86.00,
-        coffee: 460.00,
-        cotton: 185.00,
-        wheat: 97.00,
-        sugar: 75.00
+      Nordeste: {
+        soy: 125.0,
+        corn: 86.0,
+        coffee: 460.0,
+        cotton: 185.0,
+        wheat: 97.0,
+        sugar: 75.0
       },
-      'Norte': {
-        soy: 130.00,
-        corn: 89.00,
-        coffee: 470.00,
-        cotton: 190.00,
-        wheat: 99.00,
-        sugar: 76.00
+      Norte: {
+        soy: 130.0,
+        corn: 89.0,
+        coffee: 470.0,
+        cotton: 190.0,
+        wheat: 99.0,
+        sugar: 76.0
       }
     };
 
@@ -368,12 +368,12 @@ class AgriculturalQuotesService {
   // Obter cotações de fallback
   getFallbackQuotes() {
     const quotes = {};
-    
+
     for (const [key, commodity] of Object.entries(this.commodities)) {
       quotes[key] = {
         ...commodity,
-        currentPrice: 100.00,
-        previousPrice: 100.00,
+        currentPrice: 100.0,
+        previousPrice: 100.0,
         variation: 0,
         variationType: 'stable',
         lastUpdate: new Date(),
@@ -383,7 +383,7 @@ class AgriculturalQuotesService {
         confidence: 'low'
       };
     }
-    
+
     return quotes;
   }
 
@@ -399,16 +399,12 @@ class AgriculturalQuotesService {
 
   // Obter cotações por categoria
   getQuotesByCategory(category) {
-    return Object.values(this.quotes).filter(
-      commodity => commodity.category === category
-    );
+    return Object.values(this.quotes).filter(commodity => commodity.category === category);
   }
 
   // Obter cotações por região
   getQuotesByRegion(region) {
-    return Object.values(this.quotes).filter(
-      commodity => commodity.region === region
-    );
+    return Object.values(this.quotes).filter(commodity => commodity.region === region);
   }
 
   // Atualizar cotações manualmente
@@ -422,10 +418,13 @@ class AgriculturalQuotesService {
       clearInterval(this.updateInterval);
     }
 
-    this.updateInterval = setInterval(async () => {
-      console.log('Atualizando cotações automaticamente...');
-      await this.loadQuotes();
-    }, intervalMinutes * 60 * 1000);
+    this.updateInterval = setInterval(
+      async () => {
+        console.log('Atualizando cotações automaticamente...');
+        await this.loadQuotes();
+      },
+      intervalMinutes * 60 * 1000
+    );
   }
 
   // Parar atualização automática
@@ -443,46 +442,46 @@ class AgriculturalQuotesService {
 
     const history = [];
     const basePrice = commodity.currentPrice;
-    
+
     for (let i = days; i >= 0; i--) {
       const date = new Date();
       date.setDate(date.getDate() - i);
-      
+
       const variation = this.generatePriceVariation();
       const price = basePrice * (1 + variation);
-      
+
       history.push({
         date: date.toISOString().split('T')[0],
         price: price,
         volume: Math.floor(Math.random() * 1000) + 100
       });
     }
-    
+
     return history;
   }
 
   // Obter estatísticas de mercado
   getMarketStats() {
     const commodities = Object.values(this.quotes);
-    
+
     if (commodities.length === 0) return null;
-    
+
     const totalVariation = commodities.reduce((sum, commodity) => {
       return sum + commodity.variation;
     }, 0);
-    
+
     const avgVariation = totalVariation / commodities.length;
-    
+
     const topGainers = commodities
       .filter(c => c.variationType === 'up')
       .sort((a, b) => b.variation - a.variation)
       .slice(0, 3);
-    
+
     const topLosers = commodities
       .filter(c => c.variationType === 'down')
       .sort((a, b) => a.variation - b.variation)
       .slice(0, 3);
-    
+
     return {
       totalCommodities: commodities.length,
       averageVariation: avgVariation,
@@ -497,28 +496,28 @@ class AgriculturalQuotesService {
   convertToLocalCurrency(price, fromCurrency = 'BRL') {
     const location = geolocationService.getCurrentLocation();
     if (!location) return { price, currency: fromCurrency };
-    
+
     const localCurrency = location.currency;
-    
+
     // Taxas de câmbio simplificadas (em produção, usar API de câmbio)
     const exchangeRates = {
-      'USD': 0.21,
-      'EUR': 0.19,
-      'GBP': 0.16,
-      'ARS': 58.50,
-      'CLP': 185.00,
-      'COP': 850.00,
-      'PEN': 0.78,
-      'UYU': 8.20
+      USD: 0.21,
+      EUR: 0.19,
+      GBP: 0.16,
+      ARS: 58.5,
+      CLP: 185.0,
+      COP: 850.0,
+      PEN: 0.78,
+      UYU: 8.2
     };
-    
+
     if (fromCurrency === 'BRL' && exchangeRates[localCurrency]) {
       return {
         price: price * exchangeRates[localCurrency],
         currency: localCurrency
       };
     }
-    
+
     return { price, currency: fromCurrency };
   }
 
@@ -526,9 +525,9 @@ class AgriculturalQuotesService {
   getRegionalMarketInfo() {
     const location = geolocationService.getCurrentLocation();
     if (!location) return null;
-    
+
     const { region, country } = location;
-    
+
     if (country === 'Brasil') {
       const regionalInfo = {
         'Centro-Oeste': {
@@ -537,35 +536,35 @@ class AgriculturalQuotesService {
           season: 'Safra 2024/2025',
           weather: 'Favorável para plantio'
         },
-        'Sul': {
+        Sul: {
           description: 'Região tradicional na produção de grãos',
           mainProducts: ['Soja', 'Milho', 'Trigo'],
           season: 'Safra 2024/2025',
           weather: 'Estável'
         },
-        'Sudeste': {
+        Sudeste: {
           description: 'Diversificação agrícola e pecuária',
           mainProducts: ['Café', 'Cana-de-açúcar', 'Laranja'],
           season: 'Safra 2024/2025',
           weather: 'Adequado'
         },
-        'Nordeste': {
+        Nordeste: {
           description: 'Agricultura irrigada e fruticultura',
           mainProducts: ['Cana-de-açúcar', 'Frutas', 'Cacau'],
           season: 'Safra 2024/2025',
           weather: 'Variável'
         },
-        'Norte': {
+        Norte: {
           description: 'Agricultura familiar e extrativismo',
           mainProducts: ['Açaí', 'Castanha', 'Pimenta'],
           season: 'Safra 2024/2025',
           weather: 'Úmido'
         }
       };
-      
+
       return regionalInfo[region] || regionalInfo['Centro-Oeste'];
     }
-    
+
     return {
       description: 'Mercado internacional',
       mainProducts: ['Commodities globais'],

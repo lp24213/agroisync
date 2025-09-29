@@ -1,12 +1,21 @@
 // Serviço para dados meteorológicos em tempo real
 import axios from 'axios';
+import { EXTERNAL_APIS, CACHE_CONFIG, isApiConfigured, isDevelopment } from '../config/constants.js';
 
 class WeatherService {
   constructor() {
-    this.baseURL = 'https://api.openweathermap.org/data/2.5';
-    this.apiKey = process.env.REACT_APP_WEATHER_API_KEY || process.env.VITE_WEATHER_API_KEY || '';
+    // Usar configuração centralizada com fallback
+    this.baseURL = EXTERNAL_APIS.weather.baseUrl;
+    this.apiKey = EXTERNAL_APIS.weather.apiKey;
+    this.timeout = EXTERNAL_APIS.weather.timeout;
     this.cache = new Map();
-    this.cacheTimeout = 10 * 60 * 1000; // 10 minutos
+    this.cacheTimeout = EXTERNAL_APIS.weather.cacheDuration || CACHE_CONFIG.durations.weather;
+    this.isConfigured = isApiConfigured('weather');
+    
+    // Log de aviso se API não estiver configurada
+    if (!this.isConfigured && isDevelopment()) {
+      console.warn('⚠️ OpenWeather API key não configurada. Usando dados simulados.');
+    }
   }
 
   // Buscar clima atual por IP (localização automática)
@@ -14,8 +23,14 @@ class WeatherService {
     const cacheKey = city ? `weather-${city}` : 'weather-by-ip';
     const cached = this.cache.get(cacheKey);
     
+    // Retornar cache se disponível e válido
     if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
       return cached.data;
+    }
+
+    // Se API não estiver configurada, retornar dados simulados
+    if (!this.isConfigured) {
+      return this.getMockWeatherData(city);
     }
 
     try {
@@ -29,16 +44,20 @@ class WeatherService {
             appid: this.apiKey,
             units: 'metric',
             lang: 'pt_br'
-          }
+          },
+          timeout: this.timeout
         });
       } else {
-        // Buscar por IP (localização automática)
+        // Buscar por IP (localização automática) ou cidade padrão
+        const defaultCity = 'São Paulo';
         response = await axios.get(`${this.baseURL}/weather`, {
           params: {
+            q: defaultCity,
             appid: this.apiKey,
             units: 'metric',
             lang: 'pt_br'
-          }
+          },
+          timeout: this.timeout
         });
       }
 
@@ -54,8 +73,9 @@ class WeatherService {
         description: response.data.weather[0].description,
         icon: response.data.weather[0].icon,
         visibility: response.data.visibility / 1000, // em km
-        uvIndex: await this.getUVIndex(response.data.coord.lat, response.data.coord.lon),
-        timestamp: Date.now()
+        uvIndex: await this.getUVIndex(response.data.coord.lat, response.data.coord.lon).catch(() => 5),
+        timestamp: Date.now(),
+        isMock: false
       };
 
       // Cache dos resultados
@@ -67,8 +87,39 @@ class WeatherService {
       return weatherData;
     } catch (error) {
       console.error('Erro ao buscar dados do clima:', error);
+      
+      // Tentar retornar dados do cache antigo se disponível
+      if (cached) {
+        console.warn('Usando dados do clima em cache (podem estar desatualizados)');
+        return { ...cached.data, isStale: true };
+      }
+      
+      // Caso contrário, retornar fallback
       return this.getFallbackWeather(city);
     }
+  }
+  
+  /**
+   * Retorna dados simulados para desenvolvimento/testes
+   */
+  getMockWeatherData(city = null) {
+    return {
+      city: city || 'São Paulo',
+      country: 'BR',
+      temperature: 25,
+      feelsLike: 27,
+      humidity: 60,
+      pressure: 1013,
+      windSpeed: 3.5,
+      windDirection: 180,
+      description: 'Ensolarado',
+      icon: '01d',
+      visibility: 10,
+      uvIndex: 7,
+      timestamp: Date.now(),
+      isMock: true,
+      message: 'Dados simulados - Configure REACT_APP_WEATHER_API_KEY'
+    };
   }
 
   // Buscar previsão de 5 dias

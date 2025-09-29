@@ -32,7 +32,7 @@ i18n
     resources,
     fallbackLng: 'pt',
     debug: process.env.NODE_ENV === 'development',
-    
+
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
@@ -43,17 +43,18 @@ i18n
       escapeValue: false,
       format: (value, format, lng) => {
         if (format === 'currency') {
-          return new Intl.NumberFormat(lng === 'pt' ? 'pt-BR' : 
-                                      lng === 'es' ? 'es-ES' :
-                                      lng === 'zh' ? 'zh-CN' : 'en-US', {
-            style: 'currency',
-            currency: 'BRL'
-          }).format(value);
+          return new Intl.NumberFormat(
+            lng === 'pt' ? 'pt-BR' : lng === 'es' ? 'es-ES' : lng === 'zh' ? 'zh-CN' : 'en-US',
+            {
+              style: 'currency',
+              currency: 'BRL'
+            }
+          ).format(value);
         }
         if (format === 'date') {
-          return new Intl.DateTimeFormat(lng === 'pt' ? 'pt-BR' : 
-                                        lng === 'es' ? 'es-ES' :
-                                        lng === 'zh' ? 'zh-CN' : 'en-US').format(new Date(value));
+          return new Intl.DateTimeFormat(
+            lng === 'pt' ? 'pt-BR' : lng === 'es' ? 'es-ES' : lng === 'zh' ? 'zh-CN' : 'en-US'
+          ).format(new Date(value));
         }
         return value;
       }

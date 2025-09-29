@@ -228,7 +228,7 @@ router.get('/', authenticateToken, checkMessagingAccess, async (req, res) => {
       .populate('destinatario', 'name email')
       .sort({ timestamp: -1 })
       .skip(skip)
-      .limit(parseInt(limit));
+      .limit(parseInt(limit, 10));
 
     // Contar total
     const total = await Message.countDocuments(query);
@@ -249,10 +249,10 @@ router.get('/', authenticateToken, checkMessagingAccess, async (req, res) => {
       data: {
         messages,
         pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
+          page: parseInt(page, 10),
+          limit: parseInt(limit, 10),
           total,
-          pages: Math.ceil(total / parseInt(limit))
+          pages: Math.ceil(total / parseInt(limit, 10))
         }
       }
     });
@@ -332,7 +332,7 @@ router.get('/conversations', authenticateToken, checkMessagingAccess, async (req
         $skip: skip
       },
       {
-        $limit: parseInt(limit)
+        $limit: parseInt(limit, 10)
       }
     ]);
 
@@ -388,10 +388,10 @@ router.get('/conversations', authenticateToken, checkMessagingAccess, async (req
       data: {
         conversations,
         pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
+          page: parseInt(page, 10),
+          limit: parseInt(limit, 10),
           total,
-          pages: Math.ceil(total / parseInt(limit))
+          pages: Math.ceil(total / parseInt(limit, 10))
         }
       }
     });
@@ -443,7 +443,7 @@ router.get(
         .populate('remetente', 'name email')
         .populate('destinatario', 'name email')
         .skip(skip)
-        .limit(parseInt(limit));
+        .limit(parseInt(limit, 10));
 
       // Contar total
       const total = await Message.countDocuments({
@@ -478,10 +478,10 @@ router.get(
             email: otherUser.email
           },
           pagination: {
-            page: parseInt(page),
-            limit: parseInt(limit),
+            page: parseInt(page, 10),
+            limit: parseInt(limit, 10),
             total,
-            pages: Math.ceil(total / parseInt(limit))
+            pages: Math.ceil(total / parseInt(limit, 10))
           }
         }
       });

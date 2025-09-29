@@ -26,7 +26,7 @@ export const usePWA = () => {
 
   // Gerenciar evento de instalação
   useEffect(() => {
-    const handleBeforeInstallPrompt = (e) => {
+    const handleBeforeInstallPrompt = e => {
       e.preventDefault();
       setDeferredPrompt(e);
       setIsInstallable(true);
@@ -73,8 +73,9 @@ export const usePWA = () => {
   // Registrar Service Worker
   useEffect(() => {
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js')
-        .then((registration) => {
+      navigator.serviceWorker
+        .register('/sw.js')
+        .then(registration => {
           setSwRegistration(registration);
           analytics.trackEvent('pwa_sw_registered');
 
@@ -91,7 +92,7 @@ export const usePWA = () => {
             }
           });
         })
-        .catch((error) => {
+        .catch(error => {
           console.error('Service Worker registration failed:', error);
           analytics.trackError('pwa_sw_registration_failed', error.message);
         });
@@ -105,13 +106,13 @@ export const usePWA = () => {
     try {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
-      
+
       if (outcome === 'accepted') {
         analytics.trackEvent('pwa_install_accepted');
       } else {
         analytics.trackEvent('pwa_install_declined');
       }
-      
+
       setDeferredPrompt(null);
       setIsInstallable(false);
       return outcome === 'accepted';
@@ -136,12 +137,12 @@ export const usePWA = () => {
     // Para iOS, mostrar instruções
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches;
-    
+
     if (isIOS && !isInStandaloneMode) {
       analytics.trackEvent('pwa_ios_instructions_shown');
       return 'ios';
     }
-    
+
     return false;
   }, [analytics]);
 
@@ -161,22 +162,25 @@ export const usePWA = () => {
   }, []);
 
   // Compartilhar conteúdo
-  const shareContent = useCallback(async (data) => {
-    if (navigator.share) {
-      try {
-        await navigator.share(data);
-        analytics.trackEvent('pwa_share_success', { type: data.type || 'unknown' });
-        return true;
-      } catch (error) {
-        if (error.name !== 'AbortError') {
-          console.error('Error sharing:', error);
-          analytics.trackError('pwa_share_error', error.message);
+  const shareContent = useCallback(
+    async data => {
+      if (navigator.share) {
+        try {
+          await navigator.share(data);
+          analytics.trackEvent('pwa_share_success', { type: data.type || 'unknown' });
+          return true;
+        } catch (error) {
+          if (error.name !== 'AbortError') {
+            console.error('Error sharing:', error);
+            analytics.trackError('pwa_share_error', error.message);
+          }
+          return false;
         }
-        return false;
       }
-    }
-    return false;
-  }, [analytics]);
+      return false;
+    },
+    [analytics]
+  );
 
   // Obter informações do dispositivo
   const getDeviceInfo = useCallback(() => {
@@ -195,32 +199,33 @@ export const usePWA = () => {
   }, []);
 
   // Cache de recursos
-  const cacheResources = useCallback(async (urls) => {
-    if (swRegistration && swRegistration.active) {
-      try {
-        swRegistration.active.postMessage({
-          type: 'CACHE_URLS',
-          urls: urls
-        });
-        analytics.trackEvent('pwa_resources_cached', { count: urls.length });
-        return true;
-      } catch (error) {
-        console.error('Error caching resources:', error);
-        analytics.trackError('pwa_cache_error', error.message);
-        return false;
+  const cacheResources = useCallback(
+    async urls => {
+      if (swRegistration && swRegistration.active) {
+        try {
+          swRegistration.active.postMessage({
+            type: 'CACHE_URLS',
+            urls: urls
+          });
+          analytics.trackEvent('pwa_resources_cached', { count: urls.length });
+          return true;
+        } catch (error) {
+          console.error('Error caching resources:', error);
+          analytics.trackError('pwa_cache_error', error.message);
+          return false;
+        }
       }
-    }
-    return false;
-  }, [swRegistration, analytics]);
+      return false;
+    },
+    [swRegistration, analytics]
+  );
 
   // Limpar cache
   const clearCache = useCallback(async () => {
     if ('caches' in window) {
       try {
         const cacheNames = await caches.keys();
-        await Promise.all(
-          cacheNames.map(cacheName => caches.delete(cacheName))
-        );
+        await Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)));
         analytics.trackEvent('pwa_cache_cleared');
         return true;
       } catch (error) {
@@ -238,7 +243,7 @@ export const usePWA = () => {
       try {
         const cacheNames = await caches.keys();
         const cacheInfo = await Promise.all(
-          cacheNames.map(async (cacheName) => {
+          cacheNames.map(async cacheName => {
             const cache = await caches.open(cacheName);
             const keys = await cache.keys();
             return {
@@ -293,7 +298,7 @@ export const usePWA = () => {
     isOnline,
     isUpdateAvailable,
     swRegistration,
-    
+
     // Ações
     installPWA,
     updatePWA,
@@ -304,7 +309,7 @@ export const usePWA = () => {
     getCacheInfo,
     checkConnectivity,
     syncOfflineData,
-    
+
     // Informações
     getPWACapabilities,
     getDeviceInfo

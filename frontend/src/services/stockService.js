@@ -13,7 +13,7 @@ class StockService {
   async getBrazilianStocks() {
     const cacheKey = 'brazilian-stocks';
     const cached = this.cache.get(cacheKey);
-    
+
     if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
       return cached.data;
     }
@@ -30,12 +30,12 @@ class StockService {
         'MGLU3.SAO', // Magazine Luiza
         'SUZB3.SAO', // Suzano
         'JBSS3.SAO', // JBS
-        'RENT3.SAO'  // Localiza
+        'RENT3.SAO' // Localiza
       ];
 
       const promises = stocks.map(symbol => this.getStockQuote(symbol));
       const results = await Promise.allSettled(promises);
-      
+
       const stockData = results
         .filter(result => result.status === 'fulfilled')
         .map(result => result.value)
@@ -91,7 +91,7 @@ class StockService {
   async getHistoricalData(symbol, interval = 'daily') {
     const cacheKey = `historical-${symbol}-${interval}`;
     const cached = this.cache.get(cacheKey);
-    
+
     if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
       return cached.data;
     }
@@ -110,14 +110,16 @@ class StockService {
       const timeSeries = response.data[interval === 'daily' ? 'Time Series (Daily)' : 'Time Series (5min)'];
       if (!timeSeries) return null;
 
-      const historicalData = Object.entries(timeSeries).map(([date, data]) => ({
-        date: new Date(date),
-        open: parseFloat(data['1. open']),
-        high: parseFloat(data['2. high']),
-        low: parseFloat(data['3. low']),
-        close: parseFloat(data['4. close']),
-        volume: parseInt(data['5. volume'])
-      })).reverse();
+      const historicalData = Object.entries(timeSeries)
+        .map(([date, data]) => ({
+          date: new Date(date),
+          open: parseFloat(data['1. open']),
+          high: parseFloat(data['2. high']),
+          low: parseFloat(data['3. low']),
+          close: parseFloat(data['4. close']),
+          volume: parseInt(data['5. volume'])
+        }))
+        .reverse();
 
       // Cache dos resultados
       this.cache.set(cacheKey, {
@@ -136,7 +138,7 @@ class StockService {
   async getBovespaIndex() {
     const cacheKey = 'bovespa-index';
     const cached = this.cache.get(cacheKey);
-    
+
     if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
       return cached.data;
     }
@@ -201,25 +203,25 @@ class StockService {
       {
         symbol: 'VALE3',
         name: 'Vale',
-        price: 65.50,
-        change: 1.20,
+        price: 65.5,
+        change: 1.2,
         changePercent: 1.87,
         volume: 45000000,
-        high: 66.00,
-        low: 64.30,
-        open: 64.50,
-        previousClose: 64.30,
+        high: 66.0,
+        low: 64.3,
+        open: 64.5,
+        previousClose: 64.3,
         timestamp: Date.now()
       },
       {
         symbol: 'PETR4',
         name: 'Petrobras',
-        price: 32.80,
+        price: 32.8,
         change: -0.45,
         changePercent: -1.35,
         volume: 38000000,
-        high: 33.20,
-        low: 32.50,
+        high: 33.2,
+        low: 32.5,
         open: 33.25,
         previousClose: 33.25,
         timestamp: Date.now()
@@ -246,7 +248,7 @@ class StockService {
     const now = Date.now();
     for (let i = 30; i >= 0; i--) {
       data.push({
-        date: new Date(now - (i * 24 * 60 * 60 * 1000)),
+        date: new Date(now - i * 24 * 60 * 60 * 1000),
         open: 65 + (Math.random() - 0.5) * 5,
         high: 66 + (Math.random() - 0.5) * 3,
         low: 64 + (Math.random() - 0.5) * 3,

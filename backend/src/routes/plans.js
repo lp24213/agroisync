@@ -12,21 +12,16 @@ const PLANS = {
   basic: {
     id: 'basic',
     name: 'Básico',
-    price: 29.90,
+    price: 29.9,
     products: 1,
     description: '1 produto ou 1 frete',
-    features: [
-      '1 produto/frete',
-      'Visibilidade básica',
-      'Suporte por email',
-      'Dashboard básico'
-    ],
+    features: ['1 produto/frete', 'Visibilidade básica', 'Suporte por email', 'Dashboard básico'],
     stripePriceId: process.env.STRIPE_BASIC_PRICE_ID || 'price_basic_monthly'
   },
   standard: {
     id: 'standard',
     name: 'Padrão',
-    price: 99.90,
+    price: 99.9,
     products: 5,
     description: '5 produtos ou 5 fretes',
     features: [
@@ -41,7 +36,7 @@ const PLANS = {
   premium: {
     id: 'premium',
     name: 'Premium',
-    price: 499.90,
+    price: 499.9,
     products: 25,
     description: '25 produtos ou 25 fretes',
     features: [
@@ -60,7 +55,7 @@ const PLANS = {
 router.get('/', (req, res) => {
   try {
     const plans = Object.values(PLANS);
-    
+
     res.json({
       success: true,
       data: plans,
@@ -80,9 +75,9 @@ router.get('/:type', (req, res) => {
   try {
     const { type } = req.params;
     const { frequency = 'monthly' } = req.query;
-    
+
     let plans = Object.values(PLANS);
-    
+
     // Aplicar desconto anual
     if (frequency === 'annual') {
       plans = plans.map(plan => ({
@@ -98,7 +93,7 @@ router.get('/:type', (req, res) => {
         frequency: 'monthly'
       }));
     }
-    
+
     res.json({
       success: true,
       data: plans,
@@ -119,7 +114,7 @@ router.post('/subscribe', auth, async (req, res) => {
   try {
     const { planId, frequency = 'monthly', type, registrationId } = req.body;
     const userId = req.user.id;
-    
+
     // Validar plano
     const plan = PLANS[planId];
     if (!plan) {
@@ -128,13 +123,13 @@ router.post('/subscribe', auth, async (req, res) => {
         message: 'Plano inválido'
       });
     }
-    
+
     // Calcular preço
-    let price = plan.price;
+    let { price } = plan;
     if (frequency === 'annual') {
       price = plan.price * 12 * (1 - 0.15); // 15% de desconto
     }
-    
+
     // Buscar dados do usuário
     let registration;
     switch (type) {
@@ -156,14 +151,14 @@ router.post('/subscribe', auth, async (req, res) => {
           message: 'Tipo de cadastro inválido'
         });
     }
-    
+
     if (!registration) {
       return res.status(404).json({
         success: false,
         message: 'Cadastro não encontrado'
       });
     }
-    
+
     // Criar ou buscar customer no Stripe
     let customer;
     if (registration.payment?.stripeCustomerId) {
@@ -173,17 +168,17 @@ router.post('/subscribe', auth, async (req, res) => {
         email: registration.email,
         name: registration.name,
         metadata: {
-          registrationId: registrationId,
-          type: type,
-          userId: userId
+          registrationId,
+          type,
+          userId
         }
       });
-      
+
       // Atualizar customer ID no banco
       registration.payment.stripeCustomerId = customer.id;
       await registration.save();
     }
-    
+
     // Criar sessão de checkout
     const session = await stripe.checkout.sessions.create({
       customer: customer.id,
@@ -196,17 +191,20 @@ router.post('/subscribe', auth, async (req, res) => {
               name: `${plan.name} - ${type.charAt(0).toUpperCase() + type.slice(1)}`,
               description: plan.description,
               metadata: {
-                planId: planId,
-                frequency: frequency,
-                type: type
+                planId,
+                frequency,
+                type
               }
             },
             unit_amount: Math.round(price * 100), // Converter para centavos
-            recurring: frequency === 'monthly' ? {
-              interval: 'month'
-            } : {
-              interval: 'year'
-            }
+            recurring:
+              frequency === 'monthly'
+                ? {
+                    interval: 'month'
+                  }
+                : {
+                    interval: 'year'
+                  }
           },
           quantity: 1
         }
@@ -215,13 +213,13 @@ router.post('/subscribe', auth, async (req, res) => {
       success_url: `${process.env.FRONTEND_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.FRONTEND_URL}/payment/cancel`,
       metadata: {
-        registrationId: registrationId,
-        type: type,
-        planId: planId,
-        frequency: frequency
+        registrationId,
+        type,
+        planId,
+        frequency
       }
     });
-    
+
     res.json({
       success: true,
       data: {
@@ -245,7 +243,7 @@ router.post('/subscribe', auth, async (req, res) => {
 async function handleCheckoutSessionCompleted(session) {
   try {
     const { registrationId, type, planId, frequency } = session.metadata;
-    
+
     // Buscar cadastro
     let registration;
     switch (type) {
@@ -262,17 +260,17 @@ async function handleCheckoutSessionCompleted(session) {
         registration = await Fazenda.findById(registrationId);
         break;
     }
-    
+
     if (!registration) {
       throw new Error('Cadastro não encontrado');
     }
-    
+
     // Atualizar dados de pagamento
     registration.payment.subscriptionId = session.subscription;
     registration.payment.lastPayment = new Date();
     registration.plan = planId;
     registration.isPublic = true; // Tornar público após pagamento
-    
+
     // Calcular próxima cobrança
     const nextPayment = new Date();
     if (frequency === 'monthly') {
@@ -281,9 +279,9 @@ async function handleCheckoutSessionCompleted(session) {
       nextPayment.setFullYear(nextPayment.getFullYear() + 1);
     }
     registration.payment.nextPayment = nextPayment;
-    
+
     await registration.save();
-    
+
     console.log(`Pagamento processado para ${type} ID: ${registrationId}`);
   } catch (error) {
     console.error('Erro ao processar checkout session:', error);
@@ -294,13 +292,13 @@ async function handleInvoicePaymentSucceeded(invoice) {
   try {
     const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
     const customer = await stripe.customers.retrieve(subscription.customer);
-    
+
     if (!customer.metadata.registrationId || !customer.metadata.type) {
       return;
     }
-    
+
     const { registrationId, type } = customer.metadata;
-    
+
     // Buscar cadastro
     let registration;
     switch (type) {
@@ -317,7 +315,7 @@ async function handleInvoicePaymentSucceeded(invoice) {
         registration = await Fazenda.findById(registrationId);
         break;
     }
-    
+
     if (registration) {
       registration.payment.lastPayment = new Date();
       await registration.save();
@@ -331,13 +329,13 @@ async function handleInvoicePaymentFailed(invoice) {
   try {
     const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
     const customer = await stripe.customers.retrieve(subscription.customer);
-    
+
     if (!customer.metadata.registrationId || !customer.metadata.type) {
       return;
     }
-    
+
     const { registrationId, type } = customer.metadata;
-    
+
     // Buscar cadastro
     let registration;
     switch (type) {
@@ -354,7 +352,7 @@ async function handleInvoicePaymentFailed(invoice) {
         registration = await Fazenda.findById(registrationId);
         break;
     }
-    
+
     if (registration) {
       // Opcional: desativar conta após falha no pagamento
       // registration.isActive = false;
@@ -368,13 +366,13 @@ async function handleInvoicePaymentFailed(invoice) {
 async function handleSubscriptionUpdated(subscription) {
   try {
     const customer = await stripe.customers.retrieve(subscription.customer);
-    
+
     if (!customer.metadata.registrationId || !customer.metadata.type) {
       return;
     }
-    
+
     const { registrationId, type } = customer.metadata;
-    
+
     // Buscar cadastro
     let registration;
     switch (type) {
@@ -391,15 +389,15 @@ async function handleSubscriptionUpdated(subscription) {
         registration = await Fazenda.findById(registrationId);
         break;
     }
-    
+
     if (registration) {
       registration.payment.subscriptionId = subscription.id;
       registration.isActive = subscription.status === 'active';
-      
+
       // Calcular próxima cobrança
       const nextPayment = new Date(subscription.current_period_end * 1000);
       registration.payment.nextPayment = nextPayment;
-      
+
       await registration.save();
     }
   } catch (error) {
@@ -410,13 +408,13 @@ async function handleSubscriptionUpdated(subscription) {
 async function handleSubscriptionDeleted(subscription) {
   try {
     const customer = await stripe.customers.retrieve(subscription.customer);
-    
+
     if (!customer.metadata.registrationId || !customer.metadata.type) {
       return;
     }
-    
+
     const { registrationId, type } = customer.metadata;
-    
+
     // Buscar cadastro
     let registration;
     switch (type) {
@@ -433,7 +431,7 @@ async function handleSubscriptionDeleted(subscription) {
         registration = await Fazenda.findById(registrationId);
         break;
     }
-    
+
     if (registration) {
       registration.payment.subscriptionId = null;
       registration.isActive = false;
@@ -450,7 +448,7 @@ router.get('/subscription/:id', auth, async (req, res) => {
   try {
     const { id } = req.params;
     const { type } = req.query;
-    
+
     // Buscar cadastro
     let registration;
     switch (type) {
@@ -472,14 +470,14 @@ router.get('/subscription/:id', auth, async (req, res) => {
           message: 'Tipo de cadastro inválido'
         });
     }
-    
+
     if (!registration) {
       return res.status(404).json({
         success: false,
         message: 'Cadastro não encontrado'
       });
     }
-    
+
     if (!registration.payment?.stripeCustomerId) {
       return res.json({
         success: true,
@@ -489,15 +487,15 @@ router.get('/subscription/:id', auth, async (req, res) => {
         }
       });
     }
-    
+
     // Buscar assinatura no Stripe
     const subscriptions = await stripe.subscriptions.list({
       customer: registration.payment.stripeCustomerId,
       status: 'all'
     });
-    
+
     const activeSubscription = subscriptions.data.find(sub => sub.status === 'active');
-    
+
     if (!activeSubscription) {
       return res.json({
         success: true,
@@ -507,9 +505,9 @@ router.get('/subscription/:id', auth, async (req, res) => {
         }
       });
     }
-    
+
     const plan = PLANS[registration.plan];
-    
+
     res.json({
       success: true,
       data: {
@@ -538,7 +536,7 @@ router.get('/subscription/:id', auth, async (req, res) => {
 router.post('/cancel', auth, async (req, res) => {
   try {
     const { registrationId, type } = req.body;
-    
+
     // Buscar cadastro
     let registration;
     switch (type) {
@@ -560,26 +558,26 @@ router.post('/cancel', auth, async (req, res) => {
           message: 'Tipo de cadastro inválido'
         });
     }
-    
+
     if (!registration) {
       return res.status(404).json({
         success: false,
         message: 'Cadastro não encontrado'
       });
     }
-    
+
     if (!registration.payment?.subscriptionId) {
       return res.status(400).json({
         success: false,
         message: 'Nenhuma assinatura ativa encontrada'
       });
     }
-    
+
     // Cancelar assinatura no Stripe
     await stripe.subscriptions.update(registration.payment.subscriptionId, {
       cancel_at_period_end: true
     });
-    
+
     res.json({
       success: true,
       message: 'Assinatura cancelada com sucesso. Você manterá acesso até o final do período atual.'

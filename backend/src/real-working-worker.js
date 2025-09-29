@@ -1,7 +1,7 @@
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    
+
     // CORS headers
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
@@ -32,7 +32,7 @@ export default {
     if (url.pathname === '/api/sms/send-code' && request.method === 'POST') {
       try {
         const { phone } = await request.json();
-        
+
         if (!phone) {
           return new Response(
             JSON.stringify({
@@ -48,16 +48,18 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         // FORMATAR TELEFONE PARA BRASIL
         let formattedPhone = phone.replace(/\D/g, ''); // Remove caracteres não numéricos
-        
+
         // Se não começar com 55 (Brasil), adicionar
         if (!formattedPhone.startsWith('55')) {
-          formattedPhone = '55' + formattedPhone;
+          formattedPhone = `55${formattedPhone}`;
         }
-        
-        console.log(`🚀 ENVIANDO SMS REAL via TWILIO para ${formattedPhone} com código ${verificationCode}`);
+
+        console.log(
+          `🚀 ENVIANDO SMS REAL via TWILIO para ${formattedPhone} com código ${verificationCode}`
+        );
 
         // VERIFICAR CREDENCIAIS TWILIO
         if (!env.TWILIO_ACCOUNT_SID || !env.TWILIO_AUTH_TOKEN || !env.TWILIO_PHONE_NUMBER) {
@@ -75,31 +77,36 @@ export default {
         }
 
         // USAR TWILIO REAL - SEM FALLBACK
-        const twilioResponse = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Messages.json`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Basic ${btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`)}`,
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: new URLSearchParams({
-            From: env.TWILIO_PHONE_NUMBER,
-            To: `+${formattedPhone}`,
-            Body: `AgroSync - Seu código: ${verificationCode}. Válido por 5 min.`
-          })
-        });
-        
+        const twilioResponse = await fetch(
+          `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Messages.json`,
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Basic ${btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`)}`,
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+              From: env.TWILIO_PHONE_NUMBER,
+              To: `+${formattedPhone}`,
+              Body: `AgroSync - Seu código: ${verificationCode}. Válido por 5 min.`
+            })
+          }
+        );
+
         const twilioData = await twilioResponse.json();
-        
+
         if (twilioResponse.ok) {
-          console.log(`📱 SMS REAL ENTREGUE via Twilio para ${formattedPhone}: ${verificationCode}`);
-          
+          console.log(
+            `📱 SMS REAL ENTREGUE via Twilio para ${formattedPhone}: ${verificationCode}`
+          );
+
           return new Response(
             JSON.stringify({
               success: true,
               message: 'SMS entregue com sucesso!',
               data: {
                 phone: formattedPhone,
-                verificationCode: verificationCode,
+                verificationCode,
                 messageId: twilioData.sid,
                 expiresIn: 300
               }
@@ -110,7 +117,7 @@ export default {
           );
         } else {
           console.error(`❌ TWILIO ERRO: ${twilioData.message} (${twilioData.code})`);
-          
+
           return new Response(
             JSON.stringify({
               success: false,
@@ -123,7 +130,6 @@ export default {
             }
           );
         }
-        
       } catch (error) {
         console.error('❌ ERRO AO ENVIAR SMS:', error);
         return new Response(
@@ -143,7 +149,7 @@ export default {
     if (url.pathname === '/api/email/send-verification' && request.method === 'POST') {
       try {
         const { email } = await request.json();
-        
+
         if (!email) {
           return new Response(
             JSON.stringify({
@@ -159,8 +165,10 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
-        console.log(`🚀 ENVIANDO EMAIL REAL via SUPABASE para ${email} com código ${verificationCode}`);
+
+        console.log(
+          `🚀 ENVIANDO EMAIL REAL via SUPABASE para ${email} com código ${verificationCode}`
+        );
 
         // VERIFICAR CREDENCIAIS SUPABASE
         if (!env.SUPABASE_URL || !env.SUPABASE_ANON_KEY) {
@@ -181,33 +189,33 @@ export default {
         const supabaseResponse = await fetch(`${env.SUPABASE_URL}/auth/v1/otp`, {
           method: 'POST',
           headers: {
-            'apikey': env.SUPABASE_ANON_KEY,
+            apikey: env.SUPABASE_ANON_KEY,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            email: email,
+            email,
             options: {
               emailRedirectTo: 'https://agroisync.com/verify',
               data: {
-                verificationCode: verificationCode,
+                verificationCode,
                 subject: 'Código de Verificação - AgroSync'
               }
             }
           })
         });
-        
+
         const supabaseData = await supabaseResponse.json();
-        
+
         if (supabaseResponse.ok) {
           console.log(`📧 EMAIL REAL ENTREGUE via Supabase para ${email}: ${verificationCode}`);
-          
+
           return new Response(
             JSON.stringify({
               success: true,
               message: 'Email entregue com sucesso!',
               data: {
-                email: email,
-                verificationCode: verificationCode,
+                email,
+                verificationCode,
                 messageId: supabaseData.id || `supabase-${Date.now()}`,
                 expiresIn: 600
               }
@@ -218,7 +226,7 @@ export default {
           );
         } else {
           console.error(`❌ SUPABASE ERRO: ${supabaseData.error?.message || supabaseData.message}`);
-          
+
           return new Response(
             JSON.stringify({
               success: false,
@@ -231,7 +239,6 @@ export default {
             }
           );
         }
-        
       } catch (error) {
         console.error('❌ ERRO AO ENVIAR EMAIL:', error);
         return new Response(
@@ -251,7 +258,7 @@ export default {
     if (url.pathname === '/api/sms/verify-code' && request.method === 'POST') {
       try {
         const { phone, code } = await request.json();
-        
+
         if (!phone || !code) {
           return new Response(
             JSON.stringify({
@@ -264,7 +271,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ SMS verificado para ${phone}: ${code}`);
@@ -313,7 +320,7 @@ export default {
     if (url.pathname === '/api/email/verify' && request.method === 'POST') {
       try {
         const { email, code } = await request.json();
-        
+
         if (!email || !code) {
           return new Response(
             JSON.stringify({
@@ -326,7 +333,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ Email verificado para ${email}: ${code}`);
@@ -405,10 +412,10 @@ export default {
         // Gerar chaves de criptografia
         if (url.pathname === '/api/crypto/generate-keys' && request.method === 'POST') {
           const { algorithm = 'aes-256-gcm' } = await request.json();
-          
+
           // Gerar chave simétrica
           const symmetricKey = crypto.getRandomValues(new Uint8Array(32));
-          
+
           const keyData = {
             symmetricKey: btoa(String.fromCharCode(...symmetricKey)),
             algorithm,
@@ -430,7 +437,7 @@ export default {
         // Criptografar dados
         if (url.pathname === '/api/crypto/encrypt' && request.method === 'POST') {
           const { data, key } = await request.json();
-          
+
           if (!data || !key) {
             return new Response(
               JSON.stringify({
@@ -446,7 +453,7 @@ export default {
 
           // Simulação de criptografia (em produção, usar Web Crypto API)
           const encrypted = btoa(JSON.stringify(data));
-          
+
           const encryptedData = {
             encrypted,
             algorithm: 'aes-256-gcm',
@@ -468,7 +475,7 @@ export default {
         // Descriptografar dados
         if (url.pathname === '/api/crypto/decrypt' && request.method === 'POST') {
           const { encryptedData, key } = await request.json();
-          
+
           if (!encryptedData || !key) {
             return new Response(
               JSON.stringify({
@@ -500,7 +507,7 @@ export default {
         // Gerar hash
         if (url.pathname === '/api/crypto/hash' && request.method === 'POST') {
           const { data, algorithm = 'sha256' } = await request.json();
-          
+
           if (!data) {
             return new Response(
               JSON.stringify({
@@ -540,7 +547,7 @@ export default {
         // Gerar nonce
         if (url.pathname === '/api/crypto/generate-nonce' && request.method === 'POST') {
           const { length = 32 } = await request.json();
-          
+
           const nonceArray = crypto.getRandomValues(new Uint8Array(length));
           const nonce = Array.from(nonceArray, byte => byte.toString(16).padStart(2, '0')).join('');
 
@@ -571,7 +578,6 @@ export default {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
         );
-
       } catch (error) {
         return new Response(
           JSON.stringify({

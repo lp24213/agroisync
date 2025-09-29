@@ -23,7 +23,7 @@ describe('ProtectedRoute', () => {
   });
 
   it('should handle plan requirements', () => {
-    const hasActivePlan = (user) => {
+    const hasActivePlan = user => {
       return user && user.isPaid && user.planActive;
     };
 

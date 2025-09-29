@@ -19,7 +19,7 @@ router.get('/dashboard', authenticateToken, async (req, res) => {
 
     // Buscar dados do usuário
     const user = await User.findById(userId).select('-password');
-    
+
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -29,16 +29,16 @@ router.get('/dashboard', authenticateToken, async (req, res) => {
 
     // Contar produtos do usuário
     const productsCount = await Product.countDocuments({ owner: userId });
-    const publicProductsCount = await Product.countDocuments({ 
-      owner: userId, 
-      visibility: 'public' 
+    const publicProductsCount = await Product.countDocuments({
+      owner: userId,
+      visibility: 'public'
     });
 
     // Contar fretes do usuário
     const freightsCount = await Freight.countDocuments({ owner: userId });
-    const publicFreightsCount = await Freight.countDocuments({ 
-      owner: userId, 
-      visibility: 'public' 
+    const publicFreightsCount = await Freight.countDocuments({
+      owner: userId,
+      visibility: 'public'
     });
 
     // Contar conversas ativas
@@ -109,7 +109,7 @@ router.get('/items', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.user;
     const { type = 'all', page = 1, limit = 20 } = req.query;
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     let items = [];
 
@@ -117,26 +117,30 @@ router.get('/items', authenticateToken, async (req, res) => {
       const products = await Product.find({ owner: userId })
         .select('name category location price visibility status createdAt')
         .skip(skip)
-        .limit(parseInt(limit))
+        .limit(parseInt(limit, 10))
         .sort({ createdAt: -1 });
 
-      items = items.concat(products.map(product => ({
-        ...product.toObject(),
-        type: 'product'
-      })));
+      items = items.concat(
+        products.map(product => ({
+          ...product.toObject(),
+          type: 'product'
+        }))
+      );
     }
 
     if (type === 'all' || type === 'freights') {
       const freights = await Freight.find({ owner: userId })
         .select('origin destination value vehicleType visibility status createdAt')
         .skip(skip)
-        .limit(parseInt(limit))
+        .limit(parseInt(limit, 10))
         .sort({ createdAt: -1 });
 
-      items = items.concat(freights.map(freight => ({
-        ...freight.toObject(),
-        type: 'freight'
-      })));
+      items = items.concat(
+        freights.map(freight => ({
+          ...freight.toObject(),
+          type: 'freight'
+        }))
+      );
     }
 
     // Ordenar por data de criação
@@ -164,7 +168,7 @@ router.get('/statistics', authenticateToken, async (req, res) => {
     // Calcular data de início baseada no período
     const now = new Date();
     let startDate;
-    
+
     switch (period) {
       case '7d':
         startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -207,18 +211,26 @@ router.get('/statistics', authenticateToken, async (req, res) => {
 
     // Estatísticas de mensagens
     const messagesStats = await PrivateMessage.aggregate([
-      { 
-        $match: { 
+      {
+        $match: {
           $or: [{ senderId: userId }, { receiverId: userId }],
           createdAt: { $gte: startDate }
-        } 
+        }
       },
       {
         $group: {
           _id: null,
           sent: { $sum: { $cond: [{ $eq: ['$senderId', userId] }, 1, 0] } },
           received: { $sum: { $cond: [{ $eq: ['$receiverId', userId] }, 1, 0] } },
-          unread: { $sum: { $cond: [{ $and: [{ $eq: ['$receiverId', userId] }, { $eq: ['$isRead', false] }] }, 1, 0] } }
+          unread: {
+            $sum: {
+              $cond: [
+                { $and: [{ $eq: ['$receiverId', userId] }, { $eq: ['$isRead', false] }] },
+                1,
+                0
+              ]
+            }
+          }
         }
       }
     ]);
@@ -295,11 +307,10 @@ router.put('/profile', authenticateToken, async (req, res) => {
     delete updateData.createdAt;
     delete updateData.updatedAt;
 
-    const user = await User.findByIdAndUpdate(
-      userId,
-      updateData,
-      { new: true, runValidators: true }
-    ).select('-password');
+    const user = await User.findByIdAndUpdate(userId, updateData, {
+      new: true,
+      runValidators: true
+    }).select('-password');
 
     if (!user) {
       return res.status(404).json({

@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    
+
     // CORS headers
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
@@ -34,7 +34,7 @@ export default {
     if (url.pathname === '/api/sms/send-code' && request.method === 'POST') {
       try {
         const { phone } = await request.json();
-        
+
         if (!phone) {
           return new Response(
             JSON.stringify({
@@ -50,13 +50,13 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         try {
           // MÉTODO 1: SMS Global (FUNCIONA NO BRASIL)
           const smsGlobalResponse = await fetch('https://api.smsglobal.com/v2/sms/', {
             method: 'POST',
             headers: {
-              'Authorization': `Basic ${btoa(`${env.SMS_GLOBAL_USER}:${env.SMS_GLOBAL_PASS}`)}`,
+              Authorization: `Basic ${btoa(`${env.SMS_GLOBAL_USER}:${env.SMS_GLOBAL_PASS}`)}`,
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -65,10 +65,10 @@ export default {
               origin: 'AgroSync'
             })
           });
-          
+
           if (smsGlobalResponse.ok) {
             console.log(`📱 SMS REAL enviado via SMS Global para ${phone}: ${verificationCode}`);
-            
+
             return new Response(
               JSON.stringify({
                 success: true,
@@ -94,23 +94,25 @@ export default {
             const zenviaResponse = await fetch('https://api.zenvia.com/v2/channels/sms/messages', {
               method: 'POST',
               headers: {
-                'Authorization': `Bearer ${env.ZENVIA_TOKEN}`,
+                Authorization: `Bearer ${env.ZENVIA_TOKEN}`,
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({
                 from: 'AgroSync',
                 to: phone.startsWith('+') ? phone : `+55${phone}`,
-                contents: [{
-                  type: 'text',
-                  text: `Seu código de verificação AgroSync: ${verificationCode}. Válido por 5 minutos.`
-                }]
+                contents: [
+                  {
+                    type: 'text',
+                    text: `Seu código de verificação AgroSync: ${verificationCode}. Válido por 5 minutos.`
+                  }
+                ]
               })
             });
-            
+
             if (zenviaResponse.ok) {
               const zenviaData = await zenviaResponse.json();
               console.log(`📱 SMS REAL enviado via Zenvia para ${phone}: ${verificationCode}`);
-              
+
               return new Response(
                 JSON.stringify({
                   success: true,
@@ -146,11 +148,11 @@ export default {
                 resposta_usuario: false
               })
             });
-            
+
             if (totalVoiceResponse.ok) {
               const totalVoiceData = await totalVoiceResponse.json();
               console.log(`📱 SMS REAL enviado via TotalVoice para ${phone}: ${verificationCode}`);
-              
+
               return new Response(
                 JSON.stringify({
                   success: true,
@@ -173,7 +175,7 @@ export default {
 
         // FALLBACK: Mostrar código no toast
         console.log(`📱 [FALLBACK] SMS para ${phone}: ${verificationCode}`);
-        
+
         return new Response(
           JSON.stringify({
             success: true,
@@ -189,7 +191,6 @@ export default {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
         );
-        
       } catch (error) {
         console.error('Erro ao enviar SMS:', error);
         return new Response(
@@ -209,7 +210,7 @@ export default {
     if (url.pathname === '/api/email/send-verification' && request.method === 'POST') {
       try {
         const { email } = await request.json();
-        
+
         if (!email) {
           return new Response(
             JSON.stringify({
@@ -225,26 +226,26 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         try {
           // SUPABASE REAL
           const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
-          
+
           // Tentar enviar via Supabase Auth
           const { error: authError } = await supabase.auth.signInWithOtp({
-            email: email,
+            email,
             options: {
               emailRedirectTo: 'https://agroisync.com/verify',
               data: {
-                verificationCode: verificationCode,
+                verificationCode,
                 subject: 'Código de Verificação - AgroSync'
               }
             }
           });
-          
+
           if (!authError) {
             console.log(`📧 Email REAL enviado via Supabase para ${email}: ${verificationCode}`);
-            
+
             return new Response(
               JSON.stringify({
                 success: true,
@@ -260,15 +261,14 @@ export default {
               }
             );
           }
-          
+
           throw new Error('Supabase falhou');
-          
         } catch (supabaseError) {
           console.error('Erro Supabase:', supabaseError);
-          
+
           // FALLBACK: Mostrar código no toast
           console.log(`📧 [FALLBACK] Email para ${email}: ${verificationCode}`);
-          
+
           return new Response(
             JSON.stringify({
               success: true,
@@ -285,7 +285,6 @@ export default {
             }
           );
         }
-        
       } catch (error) {
         console.error('Erro ao enviar email:', error);
         return new Response(
@@ -305,7 +304,7 @@ export default {
     if (url.pathname === '/api/sms/verify-code' && request.method === 'POST') {
       try {
         const { phone, code } = await request.json();
-        
+
         if (!phone || !code) {
           return new Response(
             JSON.stringify({
@@ -318,7 +317,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ SMS verificado para ${phone}: ${code}`);
@@ -367,7 +366,7 @@ export default {
     if (url.pathname === '/api/email/verify' && request.method === 'POST') {
       try {
         const { email, code } = await request.json();
-        
+
         if (!email || !code) {
           return new Response(
             JSON.stringify({
@@ -380,7 +379,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ Email verificado para ${email}: ${code}`);

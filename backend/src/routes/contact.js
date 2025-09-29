@@ -292,7 +292,7 @@ router.get('/admin/messages', async (req, res) => {
   try {
     // Verificar se é admin (será feito pelo middleware de autenticação)
     const { page = 1, limit = 20, status, category, priority } = req.query;
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     const query = {};
     if (status) {
@@ -308,7 +308,7 @@ router.get('/admin/messages', async (req, res) => {
     const messages = await ContactMessage.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit))
+      .limit(parseInt(limit, 10))
       .lean();
 
     const total = await ContactMessage.countDocuments(query);
@@ -318,10 +318,10 @@ router.get('/admin/messages', async (req, res) => {
       data: {
         messages,
         pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
+          currentPage: parseInt(page, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit)
+          itemsPerPage: parseInt(limit, 10)
         }
       }
     });
@@ -338,7 +338,7 @@ router.get('/admin/messages', async (req, res) => {
 router.get('/admin/partnerships', async (req, res) => {
   try {
     const { page = 1, limit = 20, status, partnershipType, budget } = req.query;
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     const query = {};
     if (status) {
@@ -354,7 +354,7 @@ router.get('/admin/partnerships', async (req, res) => {
     const messages = await PartnershipMessage.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit))
+      .limit(parseInt(limit, 10))
       .lean();
 
     const total = await PartnershipMessage.countDocuments(query);
@@ -364,10 +364,10 @@ router.get('/admin/partnerships', async (req, res) => {
       data: {
         messages,
         pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
+          currentPage: parseInt(page, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit)
+          itemsPerPage: parseInt(limit, 10)
         }
       }
     });

@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
     const userId = req.user?.id || 'anonymous';
     const uploadPath = path.join('uploads', 'chats', userId);
-    
+
     try {
       await fs.mkdir(uploadPath, { recursive: true });
       cb(null, uploadPath);
@@ -40,8 +40,16 @@ const upload = multer({
     files: 5
   },
   fileFilter: (req, file, cb) => {
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'audio/mpeg', 'audio/wav', 'audio/ogg'];
-    
+    const allowedTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'image/webp',
+      'audio/mpeg',
+      'audio/wav',
+      'audio/ogg'
+    ];
+
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
@@ -154,7 +162,7 @@ router.post(
 
       // Verificar se é comando especial (logística)
       const isLogisticsCommand = await handleLogisticsCommand(message, userId, chat);
-      
+
       let aiResponse = '';
       if (!isLogisticsCommand) {
         // Gerar resposta da IA
@@ -224,7 +232,7 @@ router.get('/:conversationId', auth, async (req, res) => {
     const userId = req.user.id;
 
     const chat = await Chat.findByConversationId(conversationId);
-    
+
     if (!chat || (chat.userId && chat.userId.toString() !== userId)) {
       return res.status(404).json({
         success: false,
@@ -342,7 +350,7 @@ router.post('/upload', auth, upload.single('file'), async (req, res) => {
         filename: req.file.originalname,
         size: req.file.size,
         mimeType: req.file.mimetype,
-        caption: caption
+        caption
       }
     });
   } catch (error) {
@@ -407,13 +415,13 @@ router.post('/voice', auth, upload.single('audio'), async (req, res) => {
 // Função auxiliar para lidar com comandos de logística
 async function handleLogisticsCommand(message, userId, chat) {
   const lowerMessage = message.toLowerCase();
-  
+
   // Verificar se é comando de criação de frete
   if (lowerMessage.includes('criar frete') || lowerMessage.includes('criar pedido de frete')) {
     try {
       // Extrair informações do comando usando IA
       const freightInfo = await openaiService.extractFreightInfo(message);
-      
+
       if (freightInfo) {
         // Criar pedido de frete
         const freightOrder = new FreightOrder({
@@ -442,10 +450,10 @@ async function handleLogisticsCommand(message, userId, chat) {
     try {
       // Extrair número do pedido da mensagem
       const orderNumber = message.match(/FR-\d+-\w+/)?.[0];
-      
+
       if (orderNumber) {
         const freightOrder = await FreightOrder.findOne({ orderNumber });
-        
+
         if (freightOrder) {
           const lastEvent = freightOrder.trackingEvents[freightOrder.trackingEvents.length - 1];
           return `📦 **Status do Frete ${orderNumber}:**\n\n🚛 Status atual: ${freightOrder.status}\n📍 Última localização: ${lastEvent?.location?.city || 'Não informada'}\n📅 Última atualização: ${lastEvent?.timestamp?.toLocaleString('pt-BR') || 'Não disponível'}\n\n💡 Para mais detalhes, acesse a página do pedido na plataforma.`;

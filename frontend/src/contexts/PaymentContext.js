@@ -28,7 +28,7 @@ export const PaymentProvider = ({ children }) => {
         console.error('Erro ao inicializar Stripe:', error);
         setError('Erro ao inicializar sistema de pagamentos');
       } finally {
-setLoading(false);
+        setLoading(false);
       }
     };
 
@@ -42,7 +42,7 @@ setLoading(false);
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
           amount: Math.round(amount * 100), // Stripe usa centavos
@@ -52,7 +52,7 @@ setLoading(false);
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.message || 'Erro ao criar payment intent');
       }
@@ -65,15 +65,13 @@ setLoading(false);
   };
 
   // Processar pagamento com Stripe
-  const processStripePayment = async (paymentIntent) => {
+  const processStripePayment = async paymentIntent => {
     if (!stripe) {
       throw new Error('Stripe não inicializado');
     }
 
     try {
-      const { error, paymentIntent: confirmedPayment } = await stripe.confirmCardPayment(
-        paymentIntent.client_secret
-      );
+      const { error, paymentIntent: confirmedPayment } = await stripe.confirmCardPayment(paymentIntent.client_secret);
 
       if (error) {
         throw new Error(error.message);
@@ -100,12 +98,12 @@ setLoading(false);
         to: recipientAddress,
         from: account,
         value: '0x' + (amount * Math.pow(10, 18)).toString(16), // ETH em wei
-        gas: '0x5208', // 21000 gas
+        gas: '0x5208' // 21000 gas
       };
 
       const txHash = await window.ethereum.request({
         method: 'eth_sendTransaction',
-        params: [transactionParameters],
+        params: [transactionParameters]
       });
 
       return txHash;
@@ -120,7 +118,7 @@ setLoading(false);
     try {
       const response = await fetch('/api/payments/plans');
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.message || 'Erro ao obter planos');
       }
@@ -139,7 +137,7 @@ setLoading(false);
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
           planId,
@@ -148,7 +146,7 @@ setLoading(false);
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.message || 'Erro ao criar assinatura');
       }
@@ -162,17 +160,17 @@ setLoading(false);
   };
 
   // Cancelar assinatura
-  const cancelSubscription = async (subscriptionId) => {
+  const cancelSubscription = async subscriptionId => {
     try {
       const response = await fetch(`/api/payments/subscriptions/${subscriptionId}/cancel`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.message || 'Erro ao cancelar assinatura');
       }
@@ -190,12 +188,12 @@ setLoading(false);
     try {
       const response = await fetch('/api/payments/history', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.message || 'Erro ao obter histórico');
       }
@@ -209,7 +207,7 @@ setLoading(false);
 
   const value = {
     stripe,
-loading,
+    loading,
     error,
     paymentMethods,
     subscription,
@@ -222,9 +220,5 @@ loading,
     getPaymentHistory
   };
 
-  return (
-    <PaymentContext.Provider value={value}>
-      {children}
-    </PaymentContext.Provider>
-  );
+  return <PaymentContext.Provider value={value}>{children}</PaymentContext.Provider>;
 };

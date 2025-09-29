@@ -5,44 +5,44 @@
 
 // Idiomas suportados
 export const SUPPORTED_LANGUAGES = {
-  'pt': 'Português',
-  'en': 'English',
-  'es': 'Español',
-  'zh': '中文'
+  pt: 'Português',
+  en: 'English',
+  es: 'Español',
+  zh: '中文'
 };
 
 // Tipos de mensagem do chatbot
 export const CHATBOT_MESSAGE_TYPES = {
-  'text': 'Texto',
-  'voice': 'Voz',
-  'image': 'Imagem',
-  'system': 'Sistema',
-  'suggestion': 'Sugestão'
+  text: 'Texto',
+  voice: 'Voz',
+  image: 'Imagem',
+  system: 'Sistema',
+  suggestion: 'Sugestão'
 };
 
 // Categorias de ajuda
 export const HELP_CATEGORIES = {
-  'faq': {
+  faq: {
     name: 'Perguntas Frequentes',
     icon: '❓',
     color: 'bg-blue-100 text-blue-800'
   },
-  'registration': {
+  registration: {
     name: 'Ajuda com Cadastro',
     icon: '📝',
     color: 'bg-green-100 text-green-800'
   },
-  'intermediation': {
+  intermediation: {
     name: 'Como Funciona a Intermediação',
     icon: '🤝',
     color: 'bg-purple-100 text-purple-800'
   },
-  'transactions': {
+  transactions: {
     name: 'Status de Transações',
     icon: '📊',
     color: 'bg-yellow-100 text-yellow-800'
   },
-  'technical': {
+  technical: {
     name: 'Suporte Técnico',
     icon: '🔧',
     color: 'bg-gray-100 text-gray-800'
@@ -71,13 +71,13 @@ class ChatbotService {
         this.recognition.continuous = false;
         this.recognition.interimResults = false;
         this.recognition.lang = this.getLanguageCode();
-        
-        this.recognition.onresult = (event) => {
+
+        this.recognition.onresult = event => {
           const transcript = event.results[0][0].transcript;
           this.handleVoiceInput(transcript);
         };
-        
-        this.recognition.onerror = (event) => {
+
+        this.recognition.onerror = event => {
           console.error('Erro no reconhecimento de voz:', event.error);
         };
       }
@@ -92,13 +92,13 @@ class ChatbotService {
         try {
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
           this.mediaRecorder = new MediaRecorder(stream);
-          
-          this.mediaRecorder.ondataavailable = (event) => {
+
+          this.mediaRecorder.ondataavailable = event => {
             if (event.data.size > 0) {
               this.audioChunks.push(event.data);
             }
           };
-          
+
           this.mediaRecorder.onstop = () => {
             this.processAudioRecording();
           };
@@ -126,10 +126,10 @@ class ChatbotService {
   // Obter código do idioma para API de voz
   getLanguageCode() {
     const languageMap = {
-      'pt': 'pt-BR',
-      'en': 'en-US',
-      'es': 'es-ES',
-      'zh': 'zh-CN'
+      pt: 'pt-BR',
+      en: 'en-US',
+      es: 'es-ES',
+      zh: 'zh-CN'
     };
     return languageMap[this.currentLanguage] || 'pt-BR';
   }
@@ -157,7 +157,7 @@ class ChatbotService {
 
       // Simular resposta da IA para desenvolvimento
       const aiResponse = await this.generateMockAIResponse(message);
-      
+
       const aiMessage = {
         id: `AI_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         type: 'text',
@@ -213,15 +213,15 @@ class ChatbotService {
   async handleVoiceInput(transcript) {
     try {
       this.isListening = false;
-      
+
       // Processar como mensagem de texto
       const response = await this.processTextMessage(transcript);
-      
+
       // Falar a resposta
       if (this.synthesis) {
         this.speakText(response.content);
       }
-      
+
       return response;
     } catch (error) {
       console.error('Erro ao processar entrada de voz:', error);
@@ -246,7 +246,7 @@ class ChatbotService {
       utterance.volume = 0.8;
 
       this.synthesis.speak(utterance);
-      
+
       return { success: true };
     } catch (error) {
       console.error('Erro ao falar texto:', error);
@@ -263,7 +263,7 @@ class ChatbotService {
 
       this.audioChunks = [];
       this.mediaRecorder.start();
-      
+
       return { success: true, message: 'Gravando áudio...' };
     } catch (error) {
       console.error('Erro ao iniciar gravação:', error);
@@ -288,21 +288,21 @@ class ChatbotService {
   async processAudioRecording() {
     try {
       // const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
-      
+
       // Em produção, enviar para API de transcrição (Whisper, etc.)
       // const formData = new FormData();
       // formData.append('audio', audioBlob);
       // formData.append('language', this.currentLanguage);
-      
+
       // const response = await axios.post(`${API_BASE_URL}/chatbot/transcribe`, formData);
       // const transcript = response.data.transcript;
 
       // Simular transcrição para desenvolvimento
       const transcript = 'Transcrição simulada do áudio gravado';
-      
+
       // Processar como mensagem de texto
       const response = await this.processTextMessage(transcript);
-      
+
       return response;
     } catch (error) {
       console.error('Erro ao processar gravação de áudio:', error);
@@ -330,13 +330,13 @@ class ChatbotService {
       // const formData = new FormData();
       // formData.append('image', imageFile);
       // formData.append('language', this.currentLanguage);
-      
+
       // const response = await axios.post(`${API_BASE_URL}/chatbot/analyze-image`, formData);
       // const analysis = response.data.analysis;
 
       // Simular análise de imagem para desenvolvimento
       const analysis = await this.generateMockImageAnalysis(imageFile);
-      
+
       const aiMessage = {
         id: `AI_IMG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         type: 'text',
@@ -391,7 +391,7 @@ class ChatbotService {
   async getHelpByCategory(category) {
     try {
       const helpContent = this.getHelpContent(category);
-      
+
       const helpMessage = {
         id: `HELP_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         type: 'text',
@@ -415,7 +415,7 @@ class ChatbotService {
   async searchFAQ(query) {
     try {
       const faqResults = this.searchFAQContent(query);
-      
+
       const faqMessage = {
         id: `FAQ_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         type: 'text',
@@ -441,35 +441,52 @@ class ChatbotService {
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     const lowerMessage = message.toLowerCase();
-    
+
     // Respostas baseadas em palavras-chave
     if (lowerMessage.includes('cadastro') || lowerMessage.includes('registro')) {
       return {
-        content: 'Para fazer seu cadastro no AGROISYNC, clique em "Cadastrar" no menu superior. Você precisará fornecer: nome completo, e-mail, telefone e CPF/CNPJ. Após o cadastro, faremos a verificação dos dados com a Receita Federal.',
-        suggestions: ['Como verificar CPF/CNPJ?', 'Preciso de ajuda com o cadastro', 'Quais documentos são necessários?'],
+        content:
+          'Para fazer seu cadastro no AGROISYNC, clique em "Cadastrar" no menu superior. Você precisará fornecer: nome completo, e-mail, telefone e CPF/CNPJ. Após o cadastro, faremos a verificação dos dados com a Receita Federal.',
+        suggestions: [
+          'Como verificar CPF/CNPJ?',
+          'Preciso de ajuda com o cadastro',
+          'Quais documentos são necessários?'
+        ],
         category: 'registration'
       };
     } else if (lowerMessage.includes('intermediação') || lowerMessage.includes('como funciona')) {
       return {
-        content: 'O AGROISYNC funciona como uma plataforma de intermediação. Quando você tem interesse em um produto ou frete, registramos sua intenção e abrimos um canal de comunicação direto com o vendedor/anunciante. A plataforma não realiza vendas diretas, apenas conecta compradores e vendedores.',
-        suggestions: ['Como negociar preços?', 'Quanto tempo leva para fechar um negócio?', 'Posso cancelar uma intenção?'],
+        content:
+          'O AGROISYNC funciona como uma plataforma de intermediação. Quando você tem interesse em um produto ou frete, registramos sua intenção e abrimos um canal de comunicação direto com o vendedor/anunciante. A plataforma não realiza vendas diretas, apenas conecta compradores e vendedores.',
+        suggestions: [
+          'Como negociar preços?',
+          'Quanto tempo leva para fechar um negócio?',
+          'Posso cancelar uma intenção?'
+        ],
         category: 'intermediation'
       };
     } else if (lowerMessage.includes('transação') || lowerMessage.includes('status')) {
       return {
-        content: 'Para verificar o status de suas transações, acesse seu painel de controle em "Minhas Transações". Os status possíveis são: Aguardando Negociação, Em Negociação, Acordado, Concluído ou Cancelado.',
+        content:
+          'Para verificar o status de suas transações, acesse seu painel de controle em "Minhas Transações". Os status possíveis são: Aguardando Negociação, Em Negociação, Acordado, Concluído ou Cancelado.',
         suggestions: ['Como mudar o status?', 'Quanto tempo leva cada etapa?', 'Preciso de ajuda com uma transação'],
         category: 'transactions'
       };
     } else if (lowerMessage.includes('frete') || lowerMessage.includes('carga')) {
       return {
-        content: 'Para encontrar fretes, acesse a seção "AgroConecta". Você pode buscar por origem, destino, tipo de carga e valor. Ao encontrar um frete de interesse, clique em "Tenho Interesse" para iniciar a negociação.',
-        suggestions: ['Como calcular o valor do frete?', 'Quais documentos preciso para o frete?', 'Como acompanhar o frete?'],
+        content:
+          'Para encontrar fretes, acesse a seção "AgroConecta". Você pode buscar por origem, destino, tipo de carga e valor. Ao encontrar um frete de interesse, clique em "Tenho Interesse" para iniciar a negociação.',
+        suggestions: [
+          'Como calcular o valor do frete?',
+          'Quais documentos preciso para o frete?',
+          'Como acompanhar o frete?'
+        ],
         category: 'freight'
       };
     } else {
       return {
-        content: 'Olá! Sou o assistente virtual do AgroSync. Como posso ajudá-lo hoje? Posso auxiliar com cadastro, intermediação, transações, fretes e muito mais.',
+        content:
+          'Olá! Sou o assistente virtual do AgroSync. Como posso ajudá-lo hoje? Posso auxiliar com cadastro, intermediação, transações, fretes e muito mais.',
         suggestions: ['Ajuda com cadastro', 'Como funciona a intermediação?', 'Status de transações', 'Buscar fretes'],
         category: 'general'
       };
@@ -489,49 +506,60 @@ class ChatbotService {
 
   getHelpContent(category) {
     const helpData = {
-      'registration': {
-        content: '**Ajuda com Cadastro:**\n\n1. Clique em "Cadastrar" no menu\n2. Preencha todos os campos obrigatórios\n3. Verifique seu e-mail para confirmação\n4. Aguarde a verificação do CPF/CNPJ\n5. Acesse seu painel de controle',
+      registration: {
+        content:
+          '**Ajuda com Cadastro:**\n\n1. Clique em "Cadastrar" no menu\n2. Preencha todos os campos obrigatórios\n3. Verifique seu e-mail para confirmação\n4. Aguarde a verificação do CPF/CNPJ\n5. Acesse seu painel de controle',
         suggestions: ['Problemas com verificação', 'Esqueci minha senha', 'Como editar perfil']
       },
-      'intermediation': {
-        content: '**Como Funciona a Intermediação:**\n\n1. Você encontra um produto/frete de interesse\n2. Clica em "Tenho Interesse"\n3. Sistema cria uma transação\n4. Abre mensageria privada com o vendedor\n5. Negociam diretamente os termos\n6. Plataforma apenas conecta, não vende',
+      intermediation: {
+        content:
+          '**Como Funciona a Intermediação:**\n\n1. Você encontra um produto/frete de interesse\n2. Clica em "Tenho Interesse"\n3. Sistema cria uma transação\n4. Abre mensageria privada com o vendedor\n5. Negociam diretamente os termos\n6. Plataforma apenas conecta, não vende',
         suggestions: ['Como negociar preços?', 'Quanto tempo leva?', 'Posso cancelar?']
       },
-      'transactions': {
-        content: '**Status de Transações:**\n\n- **Aguardando:** Intenção registrada, aguardando início da negociação\n- **Em Negociação:** Partes estão conversando\n- **Acordado:** Termos foram definidos\n- **Concluído:** Negócio finalizado\n- **Cancelado:** Transação cancelada',
+      transactions: {
+        content:
+          '**Status de Transações:**\n\n- **Aguardando:** Intenção registrada, aguardando início da negociação\n- **Em Negociação:** Partes estão conversando\n- **Acordado:** Termos foram definidos\n- **Concluído:** Negócio finalizado\n- **Cancelado:** Transação cancelada',
         suggestions: ['Como mudar status?', 'Problemas com transação', 'Histórico completo']
       }
     };
 
-    return helpData[category] || {
-      content: 'Categoria de ajuda não encontrada. Tente: cadastro, intermediação, transações, fretes ou suporte técnico.',
-      suggestions: ['Ajuda com cadastro', 'Como funciona a intermediação?', 'Status de transações']
-    };
+    return (
+      helpData[category] || {
+        content:
+          'Categoria de ajuda não encontrada. Tente: cadastro, intermediação, transações, fretes ou suporte técnico.',
+        suggestions: ['Ajuda com cadastro', 'Como funciona a intermediação?', 'Status de transações']
+      }
+    );
   }
 
   searchFAQContent(query) {
     const faqData = [
       {
         question: 'Como funciona o cadastro?',
-        answer: 'O cadastro é simples: preencha seus dados, confirme o e-mail e aguarde a verificação do CPF/CNPJ pela Receita Federal.'
+        answer:
+          'O cadastro é simples: preencha seus dados, confirme o e-mail e aguarde a verificação do CPF/CNPJ pela Receita Federal.'
       },
       {
         question: 'A plataforma vende produtos?',
-        answer: 'Não, o AgroSync é uma plataforma de intermediação. Conectamos compradores e vendedores para que negociem diretamente.'
+        answer:
+          'Não, o AgroSync é uma plataforma de intermediação. Conectamos compradores e vendedores para que negociem diretamente.'
       },
       {
         question: 'Como negociar preços?',
-        answer: 'Após registrar interesse, você terá acesso à mensageria privada para negociar diretamente com o vendedor.'
+        answer:
+          'Após registrar interesse, você terá acesso à mensageria privada para negociar diretamente com o vendedor.'
       },
       {
         question: 'Quanto tempo leva para fechar um negócio?',
-        answer: 'O tempo varia conforme a negociação entre as partes. Alguns negócios fecham em horas, outros podem levar dias.'
+        answer:
+          'O tempo varia conforme a negociação entre as partes. Alguns negócios fecham em horas, outros podem levar dias.'
       }
     ];
 
-    const matchingFAQ = faqData.find(faq => 
-      faq.question.toLowerCase().includes(query.toLowerCase()) ||
-      faq.answer.toLowerCase().includes(query.toLowerCase())
+    const matchingFAQ = faqData.find(
+      faq =>
+        faq.question.toLowerCase().includes(query.toLowerCase()) ||
+        faq.answer.toLowerCase().includes(query.toLowerCase())
     );
 
     if (matchingFAQ) {
@@ -541,7 +569,8 @@ class ChatbotService {
       };
     } else {
       return {
-        content: 'Não encontrei uma resposta específica para sua pergunta. Tente reformular ou escolha uma das opções abaixo.',
+        content:
+          'Não encontrei uma resposta específica para sua pergunta. Tente reformular ou escolha uma das opções abaixo.',
         suggestions: ['Como funciona o cadastro?', 'A plataforma vende produtos?', 'Como negociar preços?']
       };
     }
@@ -559,7 +588,7 @@ class ChatbotService {
       if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
         this.mediaRecorder.stop();
       }
-      
+
       this.isListening = false;
       if (process.env.NODE_ENV !== 'production') {
         console.log('Serviços do chatbot desconectados');

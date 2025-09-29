@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
       sortOrder = 'desc'
     } = req.query;
 
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     // Build query
     const query = { status: 'active' };
@@ -66,7 +66,7 @@ router.get('/', async (req, res) => {
     const products = await Product.find(query)
       .sort(sort)
       .skip(skip)
-      .limit(parseInt(limit))
+      .limit(parseInt(limit, 10))
       .populate('sellerId', 'name company.name')
       .lean();
 
@@ -78,10 +78,10 @@ router.get('/', async (req, res) => {
       data: {
         products,
         pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
+          currentPage: parseInt(page, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit)
+          itemsPerPage: parseInt(limit, 10)
         }
       }
     });
@@ -104,7 +104,7 @@ router.get('/featured', async (req, res) => {
       isFeatured: true
     })
       .sort({ createdAt: -1 })
-      .limit(parseInt(limit))
+      .limit(parseInt(limit, 10))
       .populate('sellerId', 'name company.name')
       .lean();
 
@@ -395,7 +395,7 @@ router.get('/user/favorites', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.user;
     const { page = 1, limit = 20 } = req.query;
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     const products = await Product.find({
       'favorites.userId': userId,
@@ -403,7 +403,7 @@ router.get('/user/favorites', authenticateToken, async (req, res) => {
     })
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit))
+      .limit(parseInt(limit, 10))
       .populate('sellerId', 'name company.name')
       .lean();
 
@@ -417,10 +417,10 @@ router.get('/user/favorites', authenticateToken, async (req, res) => {
       data: {
         products,
         pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
+          currentPage: parseInt(page, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit)
+          itemsPerPage: parseInt(limit, 10)
         }
       }
     });
@@ -438,7 +438,7 @@ router.get('/seller/my-products', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.user;
     const { page = 1, limit = 20, status } = req.query;
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     const query = { sellerId: userId };
     if (status) {
@@ -448,7 +448,7 @@ router.get('/seller/my-products', authenticateToken, async (req, res) => {
     const products = await Product.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit))
+      .limit(parseInt(limit, 10))
       .lean();
 
     const total = await Product.countDocuments(query);
@@ -458,10 +458,10 @@ router.get('/seller/my-products', authenticateToken, async (req, res) => {
       data: {
         products,
         pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
+          currentPage: parseInt(page, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit)
+          itemsPerPage: parseInt(limit, 10)
         }
       }
     });

@@ -19,8 +19,8 @@ router.get('/', async (req, res) => {
     const { page = 1, limit = 20, read, archived = false, type, category } = req.query;
 
     const result = await notificationService.getUserNotifications(req.user.userId, {
-      page: parseInt(page),
-      limit: parseInt(limit),
+      page: parseInt(page, 10),
+      limit: parseInt(limit, 10),
       read: read === 'true' ? true : read === 'false' ? false : null,
       archived: archived === 'true',
       type,
@@ -320,7 +320,7 @@ router.get('/admin/all', adminAuth, async (req, res) => {
       }
     }
 
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     // Buscar notificações
     const notifications = await notificationService.getUserNotifications(null, {
@@ -338,10 +338,10 @@ router.get('/admin/all', adminAuth, async (req, res) => {
       data: {
         notifications,
         pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
+          page: parseInt(page, 10),
+          limit: parseInt(limit, 10),
           total,
-          pages: Math.ceil(total / parseInt(limit))
+          pages: Math.ceil(total / parseInt(limit, 10))
         }
       }
     });

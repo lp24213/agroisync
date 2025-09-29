@@ -1,7 +1,7 @@
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    
+
     // CORS headers
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
@@ -32,7 +32,7 @@ export default {
     if (url.pathname === '/api/sms/send-code' && request.method === 'POST') {
       try {
         const { phone } = await request.json();
-        
+
         if (!phone) {
           return new Response(
             JSON.stringify({
@@ -48,13 +48,13 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         try {
           // Enviar SMS via Resend (GRATUITO E FUNCIONA)
           const smsResponse = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${env.RESEND_API_KEY || 're_123456789'}`,
+              Authorization: `Bearer ${env.RESEND_API_KEY || 're_123456789'}`,
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -64,11 +64,11 @@ export default {
               text: `Seu código de verificação AgroSync: ${verificationCode}. Válido por 5 minutos.`
             })
           });
-          
+
           if (smsResponse.ok) {
             const smsData = await smsResponse.json();
             console.log(`📱 SMS enviado via Resend para ${phone}: ${verificationCode}`);
-            
+
             return new Response(
               JSON.stringify({
                 success: true,
@@ -88,10 +88,10 @@ export default {
           }
         } catch (smsError) {
           console.error('Erro SMS Resend:', smsError);
-          
+
           // Fallback: Mostrar código no toast
           console.log(`📱 [FALLBACK] SMS para ${phone}: ${verificationCode}`);
-          
+
           return new Response(
             JSON.stringify({
               success: true,
@@ -127,7 +127,7 @@ export default {
     if (url.pathname === '/api/email/send-verification' && request.method === 'POST') {
       try {
         const { email } = await request.json();
-        
+
         if (!email) {
           return new Response(
             JSON.stringify({
@@ -143,13 +143,13 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         try {
           // Enviar email via Resend (GRATUITO E FUNCIONA)
           const emailResponse = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${env.RESEND_API_KEY || 're_123456789'}`,
+              Authorization: `Bearer ${env.RESEND_API_KEY || 're_123456789'}`,
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -194,11 +194,11 @@ export default {
               text: `Código de Verificação AgroSync: ${verificationCode}\n\nEste código expira em 10 minutos.\n\nEquipe AgroSync`
             })
           });
-          
+
           if (emailResponse.ok) {
             const emailData = await emailResponse.json();
             console.log(`📧 Email enviado via Resend para ${email}: ${verificationCode}`);
-            
+
             return new Response(
               JSON.stringify({
                 success: true,
@@ -218,10 +218,10 @@ export default {
           }
         } catch (emailError) {
           console.error('Erro Email Resend:', emailError);
-          
+
           // Fallback: Mostrar código no toast
           console.log(`📧 [FALLBACK] Email para ${email}: ${verificationCode}`);
-          
+
           return new Response(
             JSON.stringify({
               success: true,
@@ -257,7 +257,7 @@ export default {
     if (url.pathname === '/api/sms/verify-code' && request.method === 'POST') {
       try {
         const { phone, code } = await request.json();
-        
+
         if (!phone || !code) {
           return new Response(
             JSON.stringify({
@@ -270,7 +270,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ SMS verificado para ${phone}: ${code}`);
@@ -319,7 +319,7 @@ export default {
     if (url.pathname === '/api/email/verify' && request.method === 'POST') {
       try {
         const { email, code } = await request.json();
-        
+
         if (!email || !code) {
           return new Response(
             JSON.stringify({
@@ -332,7 +332,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ Email verificado para ${email}: ${code}`);

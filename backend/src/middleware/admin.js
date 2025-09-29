@@ -8,7 +8,7 @@ export const requireAdmin = async (req, res, next) => {
 
     // Buscar o usuário no banco
     const user = await User.findById(userId);
-    
+
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -43,7 +43,7 @@ export const requireAdmin = async (req, res, next) => {
 };
 
 // Middleware para verificar permissões específicas de admin
-export const requireAdminPermission = (permission) => {
+export const requireAdminPermission = permission => {
   return (req, res, next) => {
     try {
       if (!req.admin) {
@@ -78,8 +78,8 @@ export const auditLog = (action, resource) => {
     try {
       // Interceptar a resposta para logar após sucesso
       const originalSend = res.send;
-      
-      res.send = function(data) {
+
+      res.send = function (data) {
         // Só logar se a resposta foi bem-sucedida
         if (res.statusCode >= 200 && res.statusCode < 300) {
           // Log assíncrono sem bloquear a resposta
@@ -101,7 +101,7 @@ export const auditLog = (action, resource) => {
             }
           });
         }
-        
+
         // Chamar o método original
         originalSend.call(this, data);
       };

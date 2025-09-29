@@ -24,7 +24,7 @@ export function clearBrowserCache() {
       });
     });
   }
-  
+
   // Limpar localStorage relacionado a assets
   Object.keys(localStorage).forEach(key => {
     if (key.includes('asset') || key.includes('image')) {

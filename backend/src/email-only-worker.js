@@ -174,7 +174,7 @@ export default {
           )
           .run();
 
-        console.log(`✅ ADMIN CRIADO: ${adminEmail} (ID: ${result.meta.last_row_id})`);
+        console.log(`ADMIN CRIADO: ${adminEmail} (ID: ${result.meta.last_row_id})`);
 
         return new Response(
           JSON.stringify({
@@ -394,7 +394,7 @@ export default {
         `
         ).run();
 
-        console.log('✅ Tabelas criadas/verificadas no banco D1');
+        console.log('Tabelas criadas/verificadas no banco D1');
 
         return new Response(
           JSON.stringify({
@@ -445,7 +445,6 @@ export default {
         }
       );
     }
-
 
     // Email Send Verification - RESEND
     if (url.pathname === '/api/email/send-verification' && request.method === 'POST') {
@@ -503,7 +502,7 @@ export default {
         }
 
         console.log(
-          `🚀 ENVIANDO EMAIL via RESEND para ${sanitizedEmail} com código ${verificationCode}`
+          `ENVIANDO EMAIL via RESEND para ${sanitizedEmail} com código ${verificationCode}`
         );
 
         // RESEND EMAIL - VERIFICAÇÃO DE CADASTRO
@@ -546,7 +545,7 @@ export default {
               <body>
                 <div class="container">
                   <div class="header">
-                    <h1 style="margin: 0;">🌾 Agroisync</h1>
+                    <h1 style="margin: 0;">Agroisync</h1>
                     <p style="margin: 10px 0 0 0;">Plataforma de Agronegócio</p>
                   </div>
                   
@@ -719,7 +718,7 @@ export default {
         }
 
         console.log(
-          `🚀 ENVIANDO EMAIL DE RECUPERAÇÃO via RESEND para ${sanitizedEmail} com código ${resetCode}`
+          `ENVIANDO EMAIL DE RECUPERAÇÃO via RESEND para ${sanitizedEmail} com código ${resetCode}`
         );
 
         // RESEND EMAIL - RECUPERAÇÃO DE SENHA
@@ -872,7 +871,7 @@ export default {
 
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
-          console.log(`✅ Email verificado para ${email}: ${code}`);
+          console.log(`Email verificado para ${email}: ${code}`);
           return new Response(
             JSON.stringify({
               success: true,
@@ -1040,7 +1039,7 @@ export default {
           )
           .run();
 
-        console.log(`✅ Usuário cadastrado no banco: ${email} (ID: ${userId})`);
+        console.log(`Usuário cadastrado no banco: ${email} (ID: ${userId})`);
 
         // Enviar email de boas-vindas via Resend
         try {
@@ -1508,7 +1507,7 @@ export default {
           )
           .run();
 
-        console.log(`✅ Produto cadastrado: ${name} (ID: ${result.meta.last_row_id})`);
+        console.log(`Produto cadastrado: ${name} (ID: ${result.meta.last_row_id})`);
 
         // Enviar email de confirmação via Resend
         if (userEmail) {
@@ -1542,7 +1541,7 @@ export default {
                   <body>
                     <div class="container">
                       <div class="header">
-                        <h1 style="margin: 0;">🌾 Agroisync</h1>
+                        <h1 style="margin: 0;">Agroisync</h1>
                         <p style="margin: 10px 0 0 0;">Produto Cadastrado</p>
                       </div>
                       
@@ -1703,7 +1702,7 @@ export default {
           )
           .run();
 
-        console.log(`✅ Frete cadastrado: ${driverName} (ID: ${result.meta.last_row_id})`);
+        console.log(`Frete cadastrado: ${driverName} (ID: ${result.meta.last_row_id})`);
 
         // Enviar email de confirmação via Resend
         if (email) {
@@ -1887,7 +1886,7 @@ export default {
           )
           .run();
 
-        console.log(`✅ Loja cadastrada: ${storeName} (ID: ${result.meta.last_row_id})`);
+        console.log(`Loja cadastrada: ${storeName} (ID: ${result.meta.last_row_id})`);
 
         // Enviar email de confirmação via Resend
         if (email) {
@@ -2906,7 +2905,7 @@ export default {
           .bind(senderId, receiverId, message, now, now)
           .run();
 
-        console.log(`✅ Mensagem enviada: ${senderId} → ${receiverId}`);
+        console.log(`Mensagem enviada: ${senderId} → ${receiverId}`);
 
         return new Response(
           JSON.stringify({
@@ -3032,7 +3031,7 @@ export default {
           .bind(userId, title, message, type, now)
           .run();
 
-        console.log(`✅ Notificação criada para usuário ${userId}`);
+        console.log(`Notificação criada para usuário ${userId}`);
 
         return new Response(
           JSON.stringify({

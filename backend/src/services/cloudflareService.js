@@ -19,15 +19,19 @@ class CloudflareService {
         return true; // Em desenvolvimento, sempre retorna true
       }
 
-      const response = await axios.post('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-        secret: this.turnstileSecret,
-        response: token,
-        remoteip: remoteip
-      }, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+      const response = await axios.post(
+        'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+        {
+          secret: this.turnstileSecret,
+          response: token,
+          remoteip
+        },
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
         }
-      });
+      );
 
       const { success, error_codes, challenge_ts } = response.data;
 
@@ -79,14 +83,14 @@ class CloudflareService {
       const response = await axios.post(
         `https://api.cloudflare.com/client/v4/accounts/${this.accountId}/access/apps`,
         {
-          name: `AgroSync Admin`,
+          name: 'AgroSync Admin',
           domain: `${process.env.DOMAIN || 'agroisync.com'}/admin`,
           type: 'self_hosted',
           policies: [policy]
         },
         {
           headers: {
-            'Authorization': `Bearer ${this.accessToken}`,
+            Authorization: `Bearer ${this.accessToken}`,
             'Content-Type': 'application/json'
           }
         }
@@ -113,7 +117,7 @@ class CloudflareService {
         `https://api.cloudflare.com/client/v4/accounts/${this.accountId}/access/apps`,
         {
           headers: {
-            'Authorization': `Bearer ${this.accessToken}`,
+            Authorization: `Bearer ${this.accessToken}`,
             'CF-Access-Token': accessToken
           }
         }
@@ -190,7 +194,7 @@ class CloudflareService {
         workerScript,
         {
           headers: {
-            'Authorization': `Bearer ${this.accessToken}`,
+            Authorization: `Bearer ${this.accessToken}`,
             'Content-Type': 'application/javascript'
           }
         }
@@ -223,7 +227,8 @@ class CloudflareService {
         },
         {
           name: 'Static Assets',
-          expression: 'http.host eq "agroisync.com" and http.request.uri.path matches "^/static/.*"',
+          expression:
+            'http.host eq "agroisync.com" and http.request.uri.path matches "^/static/.*"',
           action: 'cache',
           cache_ttl: 86400 // 24 horas
         }
@@ -248,7 +253,7 @@ class CloudflareService {
           },
           {
             headers: {
-              'Authorization': `Bearer ${this.accessToken}`,
+              Authorization: `Bearer ${this.accessToken}`,
               'Content-Type': 'application/json'
             }
           }
@@ -280,7 +285,7 @@ class CloudflareService {
         },
         {
           headers: {
-            'Authorization': `Bearer ${this.accessToken}`,
+            Authorization: `Bearer ${this.accessToken}`,
             'Content-Type': 'application/json'
           }
         }
@@ -311,7 +316,7 @@ class CloudflareService {
             until: endDate
           },
           headers: {
-            'Authorization': `Bearer ${this.accessToken}`
+            Authorization: `Bearer ${this.accessToken}`
           }
         }
       );

@@ -1,7 +1,7 @@
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    
+
     // CORS headers
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
@@ -32,7 +32,7 @@ export default {
     if (url.pathname === '/api/sms/send-code' && request.method === 'POST') {
       try {
         const { phone } = await request.json();
-        
+
         if (!phone) {
           return new Response(
             JSON.stringify({
@@ -48,15 +48,15 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         // FORMATAR TELEFONE PARA BRASIL
         let formattedPhone = phone.replace(/\D/g, ''); // Remove caracteres não numéricos
-        
+
         // Se não começar com 55 (Brasil), adicionar
         if (!formattedPhone.startsWith('55')) {
-          formattedPhone = '55' + formattedPhone;
+          formattedPhone = `55${formattedPhone}`;
         }
-        
+
         console.log(`🚀 ENVIANDO SMS REAL para ${formattedPhone} com código ${verificationCode}`);
 
         // MÉTODO 1: SMS BRASIL (API REAL QUE FUNCIONA)
@@ -64,7 +64,7 @@ export default {
           const smsBrasilResponse = await fetch('https://api.smsbrasil.com.br/v1/sms/send', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${env.SMS_BRASIL_TOKEN}`,
+              Authorization: `Bearer ${env.SMS_BRASIL_TOKEN}`,
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -73,11 +73,13 @@ export default {
               origem: 'AgroSync'
             })
           });
-          
+
           if (smsBrasilResponse.ok) {
             const smsBrasilData = await smsBrasilResponse.json();
-            console.log(`📱 SMS REAL ENTREGUE via SMS Brasil para ${formattedPhone}: ${verificationCode}`);
-            
+            console.log(
+              `📱 SMS REAL ENTREGUE via SMS Brasil para ${formattedPhone}: ${verificationCode}`
+            );
+
             return new Response(
               JSON.stringify({
                 success: true,
@@ -111,11 +113,13 @@ export default {
               resposta_usuario: false
             })
           });
-          
+
           if (totalVoiceResponse.ok) {
             const totalVoiceData = await totalVoiceResponse.json();
-            console.log(`📱 SMS REAL ENTREGUE via TotalVoice para ${formattedPhone}: ${verificationCode}`);
-            
+            console.log(
+              `📱 SMS REAL ENTREGUE via TotalVoice para ${formattedPhone}: ${verificationCode}`
+            );
+
             return new Response(
               JSON.stringify({
                 success: true,
@@ -140,23 +144,27 @@ export default {
           const zenviaResponse = await fetch('https://api.zenvia.com/v2/channels/sms/messages', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${env.ZENVIA_TOKEN}`,
+              Authorization: `Bearer ${env.ZENVIA_TOKEN}`,
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
               from: 'AgroSync',
               to: formattedPhone,
-              contents: [{
-                type: 'text',
-                text: `AgroSync - Seu código: ${verificationCode}. Válido por 5 min.`
-              }]
+              contents: [
+                {
+                  type: 'text',
+                  text: `AgroSync - Seu código: ${verificationCode}. Válido por 5 min.`
+                }
+              ]
             })
           });
-          
+
           if (zenviaResponse.ok) {
             const zenviaData = await zenviaResponse.json();
-            console.log(`📱 SMS REAL ENTREGUE via Zenvia para ${formattedPhone}: ${verificationCode}`);
-            
+            console.log(
+              `📱 SMS REAL ENTREGUE via Zenvia para ${formattedPhone}: ${verificationCode}`
+            );
+
             return new Response(
               JSON.stringify({
                 success: true,
@@ -191,10 +199,12 @@ export default {
               service: 'sms-brasil-webhook'
             })
           });
-          
+
           if (webhookResponse.ok) {
-            console.log(`📱 SMS REAL ENTREGUE via Webhook para ${formattedPhone}: ${verificationCode}`);
-            
+            console.log(
+              `📱 SMS REAL ENTREGUE via Webhook para ${formattedPhone}: ${verificationCode}`
+            );
+
             // SIMULAR ENTREGA REAL
             return new Response(
               JSON.stringify({
@@ -218,7 +228,7 @@ export default {
 
         // SE TODOS FALHAREM, RETORNAR ERRO
         console.error(`❌ TODOS OS SERVIÇOS SMS FALHARAM para ${formattedPhone}`);
-        
+
         return new Response(
           JSON.stringify({
             success: false,
@@ -233,7 +243,6 @@ export default {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
         );
-        
       } catch (error) {
         console.error('Erro ao enviar SMS:', error);
         return new Response(
@@ -253,7 +262,7 @@ export default {
     if (url.pathname === '/api/email/send-verification' && request.method === 'POST') {
       try {
         const { email } = await request.json();
-        
+
         if (!email) {
           return new Response(
             JSON.stringify({
@@ -269,7 +278,7 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         console.log(`🚀 ENVIANDO EMAIL REAL para ${email} com código ${verificationCode}`);
 
         // MÉTODO 1: RESEND (API REAL QUE FUNCIONA)
@@ -277,7 +286,7 @@ export default {
           const resendResponse = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+              Authorization: `Bearer ${env.RESEND_API_KEY}`,
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -317,11 +326,11 @@ export default {
               `
             })
           });
-          
+
           if (resendResponse.ok) {
             const resendData = await resendResponse.json();
             console.log(`📧 Email REAL ENTREGUE via Resend para ${email}: ${verificationCode}`);
-            
+
             return new Response(
               JSON.stringify({
                 success: true,
@@ -346,18 +355,21 @@ export default {
           const sendGridResponse = await fetch('https://api.sendgrid.com/v3/mail/send', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${env.SENDGRID_API_KEY}`,
+              Authorization: `Bearer ${env.SENDGRID_API_KEY}`,
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              personalizations: [{
-                to: [{ email: email }]
-              }],
+              personalizations: [
+                {
+                  to: [{ email }]
+                }
+              ],
               from: { email: 'noreply@agroisync.com', name: 'AgroSync' },
               subject: '🔐 Código de Verificação - AgroSync',
-              content: [{
-                type: 'text/html',
-                value: `
+              content: [
+                {
+                  type: 'text/html',
+                  value: `
                   <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
                     <div style="background: linear-gradient(135deg, #2d5016, #4a7c59); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
                       <h1 style="margin: 0; font-size: 28px;">🌾 AgroSync</h1>
@@ -388,13 +400,14 @@ export default {
                     </div>
                   </div>
                 `
-              }]
+                }
+              ]
             })
           });
-          
+
           if (sendGridResponse.ok) {
             console.log(`📧 Email REAL ENTREGUE via SendGrid para ${email}: ${verificationCode}`);
-            
+
             return new Response(
               JSON.stringify({
                 success: true,
@@ -416,7 +429,7 @@ export default {
 
         // SE TODOS FALHAREM, RETORNAR ERRO
         console.error(`❌ TODOS OS SERVIÇOS EMAIL FALHARAM para ${email}`);
-        
+
         return new Response(
           JSON.stringify({
             success: false,
@@ -431,7 +444,6 @@ export default {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
         );
-        
       } catch (error) {
         console.error('Erro ao enviar email:', error);
         return new Response(
@@ -451,7 +463,7 @@ export default {
     if (url.pathname === '/api/sms/verify-code' && request.method === 'POST') {
       try {
         const { phone, code } = await request.json();
-        
+
         if (!phone || !code) {
           return new Response(
             JSON.stringify({
@@ -464,7 +476,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ SMS verificado para ${phone}: ${code}`);
@@ -513,7 +525,7 @@ export default {
     if (url.pathname === '/api/email/verify' && request.method === 'POST') {
       try {
         const { email, code } = await request.json();
-        
+
         if (!email || !code) {
           return new Response(
             JSON.stringify({
@@ -526,7 +538,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ Email verificado para ${email}: ${code}`);

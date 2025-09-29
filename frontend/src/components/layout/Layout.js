@@ -16,15 +16,15 @@ const Layout = ({ children }) => {
   }, []);
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className='relative min-h-screen overflow-hidden'>
       {/* Conteúdo principal */}
-      <div className="relative z-10">
+      <div className='relative z-10'>
         {/* Conteúdo principal */}
         <motion.main
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative z-10"
+          className='relative z-10'
         >
           {children}
         </motion.main>

@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import productService from '../services/productService';
-import { 
-  ShoppingCart, 
-  Star, 
-  Heart, 
-  Filter, 
+import {
+  ShoppingCart,
+  Star,
+  Heart,
+  Filter,
   Search,
   Truck,
   Shield,
@@ -66,10 +66,11 @@ const AgroisyncLoja = () => {
 
   // Filtrar produtos
   const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'todos' || product.category === selectedCategory;
-    
+
     return matchesSearch && matchesCategory;
   });
 
@@ -115,10 +116,10 @@ const AgroisyncLoja = () => {
   }, []);
 
   return (
-    <div className="agro-loja-container" data-page="loja">
+    <div className='agro-loja-container' data-page='loja'>
       {/* Hero Section */}
-      <section 
-        className="min-h-screen flex items-center justify-center relative"
+      <section
+        className='relative flex min-h-screen items-center justify-center'
         style={{
           backgroundImage: `url('https://media.istockphoto.com/id/2235929731/pt/foto/e-commerce-business-with-digital-shopping-cart-icons-for-online-store-digital-marketing-and.jpg?s=612x612&w=0&k=20&c=PuPwyebMsSW7UFTurrlronetuOOwQBbcB_zT8Jki7VM=')`,
           backgroundSize: 'cover',
@@ -127,34 +128,40 @@ const AgroisyncLoja = () => {
           backgroundAttachment: 'scroll'
         }}
       >
-        <div className="absolute inset-0 bg-black/50"></div>
-        <div className="text-center max-w-4xl mx-auto px-4 relative z-10">
-          <motion.h1 
-            className="text-6xl font-bold text-white mb-6"
+        <div className='absolute inset-0 bg-black/50'></div>
+        <div className='relative z-10 mx-auto max-w-4xl px-4 text-center'>
+          <motion.h1
+            className='mb-6 text-6xl font-bold text-white'
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
             AGROISYNC LOJA
           </motion.h1>
-          <motion.p 
-            className="text-2xl text-white/90 mb-8"
+          <motion.p
+            className='mb-8 text-2xl text-white/90'
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             A maior loja online do agronegócio brasileiro
           </motion.p>
-          <motion.div 
-            className="flex gap-4 justify-center"
+          <motion.div
+            className='flex justify-center gap-4'
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            <Link to="/register" className="bg-green-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+            <Link
+              to='/register'
+              className='rounded-lg bg-green-600 px-8 py-4 font-semibold text-white transition-colors hover:bg-green-700'
+            >
               Começar a Vender
             </Link>
-            <Link to="/marketplace" className="bg-white text-green-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+            <Link
+              to='/marketplace'
+              className='rounded-lg bg-white px-8 py-4 font-semibold text-green-600 transition-colors hover:bg-gray-100'
+            >
               Explorar Produtos
             </Link>
           </motion.div>
@@ -162,37 +169,33 @@ const AgroisyncLoja = () => {
       </section>
 
       {/* Features Section */}
-      <section className="agro-features-section">
-        <div className="agro-container">
+      <section className='agro-features-section'>
+        <div className='agro-container'>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="agro-text-center"
+            className='agro-text-center'
             style={{ marginBottom: '3rem' }}
           >
-            <h2 className="agro-section-title">Por que Comprar na Agroisync?</h2>
-            <p className="agro-section-subtitle">
-              Garantia de qualidade, preços competitivos e tecnologia de ponta
-            </p>
+            <h2 className='agro-section-title'>Por que Comprar na Agroisync?</h2>
+            <p className='agro-section-subtitle'>Garantia de qualidade, preços competitivos e tecnologia de ponta</p>
           </motion.div>
 
-          <div className="agro-features-grid">
+          <div className='agro-features-grid'>
             {features.map((feature, index) => (
               <motion.div
                 key={feature.title}
-                className="agro-feature-card agro-card-animated"
+                className='agro-feature-card agro-card-animated'
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
               >
-                <div className="agro-feature-icon">
-                  {feature.icon}
-                </div>
-                <h3 className="agro-feature-title">{feature.title}</h3>
-                <p className="agro-feature-description">{feature.description}</p>
+                <div className='agro-feature-icon'>{feature.icon}</div>
+                <h3 className='agro-feature-title'>{feature.title}</h3>
+                <p className='agro-feature-description'>{feature.description}</p>
               </motion.div>
             ))}
           </div>
@@ -200,56 +203,54 @@ const AgroisyncLoja = () => {
       </section>
 
       {/* Products Section */}
-      <section className="agro-products-section" style={{ background: 'var(--bg-gradient)' }}>
-        <div className="agro-container">
+      <section className='agro-products-section' style={{ background: 'var(--bg-gradient)' }}>
+        <div className='agro-container'>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="agro-text-center"
+            className='agro-text-center'
             style={{ marginBottom: '2rem' }}
           >
-            <h2 className="agro-section-title">Produtos em Destaque</h2>
-            <p className="agro-section-subtitle">
-              Encontre os melhores produtos para seu agronegócio
-            </p>
+            <h2 className='agro-section-title'>Produtos em Destaque</h2>
+            <p className='agro-section-subtitle'>Encontre os melhores produtos para seu agronegócio</p>
           </motion.div>
 
           {/* Filtros */}
           <motion.div
-            className="agro-filters-container agro-card-animated"
+            className='agro-filters-container agro-card-animated'
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <div className="agro-filters-grid">
+            <div className='agro-filters-grid'>
               {/* Busca */}
-              <div className="agro-filter-group">
-                <label className="agro-filter-label">
+              <div className='agro-filter-group'>
+                <label className='agro-filter-label'>
                   <Search size={16} />
                   Buscar Produtos
                 </label>
                 <input
-                  type="text"
+                  type='text'
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Digite o produto..."
-                  className="agro-btn-animated"
+                  onChange={e => setSearchTerm(e.target.value)}
+                  placeholder='Digite o produto...'
+                  className='agro-btn-animated'
                 />
               </div>
 
               {/* Categoria */}
-              <div className="agro-filter-group">
-                <label className="agro-filter-label">
+              <div className='agro-filter-group'>
+                <label className='agro-filter-label'>
                   <Filter size={16} />
                   Categoria
                 </label>
                 <select
                   value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="agro-btn-animated"
+                  onChange={e => setSelectedCategory(e.target.value)}
+                  className='agro-btn-animated'
                 >
                   {categories.map(cat => (
                     <option key={cat.value} value={cat.value}>
@@ -260,16 +261,12 @@ const AgroisyncLoja = () => {
               </div>
 
               {/* Ordenação */}
-              <div className="agro-filter-group">
-                <label className="agro-filter-label">
+              <div className='agro-filter-group'>
+                <label className='agro-filter-label'>
                   <Package size={16} />
                   Ordenar por
                 </label>
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="agro-btn-animated"
-                >
+                <select value={sortBy} onChange={e => setSortBy(e.target.value)} className='agro-btn-animated'>
                   {sortOptions.map(option => (
                     <option key={option.value} value={option.value}>
                       {option.label}
@@ -295,7 +292,7 @@ const AgroisyncLoja = () => {
           >
             <button
               onClick={() => setShowRegistrationModal(true)}
-              className="agro-btn-animated"
+              className='agro-btn-animated'
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -317,7 +314,7 @@ const AgroisyncLoja = () => {
 
             <button
               onClick={() => setShowPlansModal(true)}
-              className="agro-btn-animated"
+              className='agro-btn-animated'
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -340,7 +337,7 @@ const AgroisyncLoja = () => {
 
           {/* Grid de Produtos */}
           <motion.div
-            className="agro-products-grid"
+            className='agro-products-grid'
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -349,7 +346,7 @@ const AgroisyncLoja = () => {
             {filteredProducts.map((product, index) => (
               <motion.div
                 key={product.id}
-                className="agro-product-card agro-card-animated"
+                className='agro-product-card agro-card-animated'
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -357,73 +354,69 @@ const AgroisyncLoja = () => {
               >
                 {/* Badge de Destaque */}
                 {product.featured && (
-                  <div className="agro-product-badge">
+                  <div className='agro-product-badge'>
                     <Star size={16} />
                     Destaque
                   </div>
                 )}
 
                 {/* Imagem do Produto */}
-                <div className="agro-product-image">
-                  <img src={product.image} alt={product.name} loading="lazy" />
-                  <div className="agro-product-overlay">
-                    <button className="agro-product-quick-view">
+                <div className='agro-product-image'>
+                  <img src={product.image} alt={product.name} loading='lazy' />
+                  <div className='agro-product-overlay'>
+                    <button className='agro-product-quick-view'>
                       <Eye size={20} />
                     </button>
-                    <button className="agro-product-favorite">
+                    <button className='agro-product-favorite'>
                       <Heart size={20} />
                     </button>
                   </div>
                 </div>
 
                 {/* Informações do Produto */}
-                <div className="agro-product-info">
-                  <div className="agro-product-category">{product.category}</div>
-                  <h3 className="agro-product-name">{product.name}</h3>
-                  <p className="agro-product-description">{product.description}</p>
-                  
+                <div className='agro-product-info'>
+                  <div className='agro-product-category'>{product.category}</div>
+                  <h3 className='agro-product-name'>{product.name}</h3>
+                  <p className='agro-product-description'>{product.description}</p>
+
                   {/* Avaliação */}
-                  <div className="agro-product-rating">
-                    <div className="agro-stars">
+                  <div className='agro-product-rating'>
+                    <div className='agro-stars'>
                       {[...Array(5)].map((_, i) => (
-                        <Star 
-                          key={i} 
-                          size={14} 
+                        <Star
+                          key={i}
+                          size={14}
                           fill={i < Math.floor(product.rating) ? '#FFD700' : 'none'}
                           color={i < Math.floor(product.rating) ? '#FFD700' : '#E5E5E5'}
                         />
                       ))}
                     </div>
-                    <span className="agro-rating-text">
+                    <span className='agro-rating-text'>
                       {product.rating} ({product.reviews} avaliações)
                     </span>
                   </div>
 
                   {/* Localização */}
-                  <div className="agro-product-location">
+                  <div className='agro-product-location'>
                     <MapPin size={14} />
                     <span>{product.location}</span>
                   </div>
 
                   {/* Preços */}
-                  <div className="agro-product-pricing">
-                    <div className="agro-price-current">{product.price}</div>
-                    {product.originalPrice && (
-                      <div className="agro-price-original">{product.originalPrice}</div>
-                    )}
-                    {product.discount && (
-                      <div className="agro-discount-badge">{product.discount}</div>
-                    )}
+                  <div className='agro-product-pricing'>
+                    <div className='agro-price-current'>{product.price}</div>
+                    {product.originalPrice && <div className='agro-price-original'>{product.originalPrice}</div>}
+                    {product.discount && <div className='agro-discount-badge'>{product.discount}</div>}
                   </div>
 
                   {/* Botões de Ação */}
-                  <div className="agro-product-actions">
-                    <button className="agro-btn-primary agro-btn-animated">
+                  <div className='agro-product-actions'>
+                    <button className='agro-btn-primary agro-btn-animated'>
                       <ShoppingCart size={16} />
                       Comprar Agora
                     </button>
-                    <button 
-                      className="agro-btn-secondary agro-btn-animated"
+                    <button
+                      className='agro-btn-secondary agro-btn-animated'
                       onClick={() => window.open(`/produto/${product.id}`, '_blank')}
                     >
                       <ArrowRight size={16} />
@@ -439,7 +432,7 @@ const AgroisyncLoja = () => {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="agro-text-center"
+              className='agro-text-center'
               style={{ padding: '3rem', color: 'var(--muted)' }}
             >
               <h3>Nenhum produto encontrado</h3>
@@ -450,23 +443,26 @@ const AgroisyncLoja = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="agro-cta-section">
-        <div className="agro-container">
+      <section className='agro-cta-section'>
+        <div className='agro-container'>
           <motion.div
-            className="agro-cta-content agro-card-animated"
+            className='agro-cta-content agro-card-animated'
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
             <h2>Precisa de Ajuda para Escolher?</h2>
-            <p>Nossa equipe de especialistas está pronta para ajudar você a encontrar os melhores produtos para seu agronegócio.</p>
-            <div className="agro-cta-buttons">
-              <Link to="/contact" className="agro-btn-primary agro-btn-animated">
+            <p>
+              Nossa equipe de especialistas está pronta para ajudar você a encontrar os melhores produtos para seu
+              agronegócio.
+            </p>
+            <div className='agro-cta-buttons'>
+              <Link to='/contact' className='agro-btn-primary agro-btn-animated'>
                 <Shield size={20} />
                 Falar com Especialista
               </Link>
-              <Link to="/marketplace" className="agro-btn-secondary agro-btn-animated">
+              <Link to='/marketplace' className='agro-btn-secondary agro-btn-animated'>
                 <Package size={20} />
                 Ver Produtos
               </Link>
@@ -477,7 +473,7 @@ const AgroisyncLoja = () => {
 
       <style jsx>{`
         .agro-loja-container {
-          background: #FFFFFF;
+          background: #ffffff;
           min-height: 100vh;
         }
 
@@ -494,7 +490,7 @@ const AgroisyncLoja = () => {
         }
 
         .agro-feature-card {
-          background: #FFFFFF;
+          background: #ffffff;
           padding: 2rem;
           border-radius: 16px;
           text-align: center;
@@ -507,25 +503,25 @@ const AgroisyncLoja = () => {
           width: 80px;
           height: 80px;
           margin: 0 auto 1.5rem auto;
-          background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+          background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
           border-radius: 20px;
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #FFFFFF;
+          color: #ffffff;
           box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
         }
 
         .agro-feature-title {
           font-size: 1.25rem;
           font-weight: 700;
-          color: #2C3E50;
+          color: #2c3e50;
           margin-bottom: 1rem;
           font-family: 'Inter', sans-serif;
         }
 
         .agro-feature-description {
-          color: #6C757D;
+          color: #6c757d;
           line-height: 1.6;
           font-size: 0.95rem;
         }
@@ -535,7 +531,7 @@ const AgroisyncLoja = () => {
         }
 
         .agro-filters-container {
-          background: #FFFFFF;
+          background: #ffffff;
           padding: 2rem;
           border-radius: 16px;
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -561,7 +557,7 @@ const AgroisyncLoja = () => {
           gap: 0.5rem;
           margin-bottom: 0.75rem;
           font-weight: 600;
-          color: #2C3E50;
+          color: #2c3e50;
           font-size: 0.9rem;
         }
 
@@ -580,7 +576,7 @@ const AgroisyncLoja = () => {
         .agro-filter-group input:focus,
         .agro-filter-group select:focus {
           outline: none;
-          border-color: #4CAF50;
+          border-color: #4caf50;
           background: rgba(76, 175, 80, 0.1);
           box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
         }
@@ -592,7 +588,7 @@ const AgroisyncLoja = () => {
         }
 
         .agro-product-card {
-          background: #FFFFFF;
+          background: #ffffff;
           border-radius: 20px;
           overflow: hidden;
           box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
@@ -610,8 +606,8 @@ const AgroisyncLoja = () => {
           position: absolute;
           top: 1rem;
           left: 1rem;
-          background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
-          color: #FFFFFF;
+          background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+          color: #ffffff;
           padding: 0.5rem 1rem;
           border-radius: 20px;
           font-size: 0.8rem;
@@ -666,7 +662,7 @@ const AgroisyncLoja = () => {
           border-radius: 50%;
           border: none;
           background: rgba(255, 255, 255, 0.9);
-          color: #2C3E50;
+          color: #2c3e50;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -676,8 +672,8 @@ const AgroisyncLoja = () => {
 
         .agro-product-quick-view:hover,
         .agro-product-favorite:hover {
-          background: #4CAF50;
-          color: #FFFFFF;
+          background: #4caf50;
+          color: #ffffff;
           transform: scale(1.1);
         }
 
@@ -686,7 +682,7 @@ const AgroisyncLoja = () => {
         }
 
         .agro-product-category {
-          color: #4CAF50;
+          color: #4caf50;
           font-size: 0.8rem;
           font-weight: 600;
           text-transform: uppercase;
@@ -697,14 +693,14 @@ const AgroisyncLoja = () => {
         .agro-product-name {
           font-size: 1.1rem;
           font-weight: 700;
-          color: #2C3E50;
+          color: #2c3e50;
           margin-bottom: 0.75rem;
           line-height: 1.3;
           font-family: 'Inter', sans-serif;
         }
 
         .agro-product-description {
-          color: #6C757D;
+          color: #6c757d;
           font-size: 0.9rem;
           line-height: 1.5;
           margin-bottom: 1rem;
@@ -723,7 +719,7 @@ const AgroisyncLoja = () => {
         }
 
         .agro-rating-text {
-          color: #6C757D;
+          color: #6c757d;
           font-size: 0.85rem;
         }
 
@@ -731,7 +727,7 @@ const AgroisyncLoja = () => {
           display: flex;
           align-items: center;
           gap: 0.25rem;
-          color: #6C757D;
+          color: #6c757d;
           font-size: 0.85rem;
           margin-bottom: 1rem;
         }
@@ -743,21 +739,21 @@ const AgroisyncLoja = () => {
         .agro-price-current {
           font-size: 1.4rem;
           font-weight: 700;
-          color: #4CAF50;
+          color: #4caf50;
           font-family: 'Inter', sans-serif;
         }
 
         .agro-price-original {
           font-size: 1rem;
-          color: #6C757D;
+          color: #6c757d;
           text-decoration: line-through;
           margin-top: 0.25rem;
         }
 
         .agro-discount-badge {
           display: inline-block;
-          background: #FF6B35;
-          color: #FFFFFF;
+          background: #ff6b35;
+          color: #ffffff;
           padding: 0.25rem 0.5rem;
           border-radius: 8px;
           font-size: 0.75rem;
@@ -789,8 +785,8 @@ const AgroisyncLoja = () => {
         }
 
         .agro-btn-primary {
-          background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-          color: #FFFFFF;
+          background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+          color: #ffffff;
         }
 
         .agro-btn-primary:hover {
@@ -801,20 +797,20 @@ const AgroisyncLoja = () => {
 
         .agro-btn-secondary {
           background: transparent;
-          color: #4CAF50;
-          border: 2px solid #4CAF50;
+          color: #4caf50;
+          border: 2px solid #4caf50;
         }
 
         .agro-btn-secondary:hover {
-          background: #4CAF50;
-          color: #FFFFFF;
+          background: #4caf50;
+          color: #ffffff;
           transform: translateY(-2px);
           box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
         }
 
         .agro-cta-section {
           padding: 4rem 0;
-          background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+          background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
         }
 
         .agro-cta-content {
@@ -828,14 +824,14 @@ const AgroisyncLoja = () => {
         .agro-cta-content h2 {
           font-size: 2.5rem;
           font-weight: 800;
-          color: #2C3E50;
+          color: #2c3e50;
           margin-bottom: 1rem;
           font-family: 'Inter', sans-serif;
         }
 
         .agro-cta-content p {
           font-size: 1.2rem;
-          color: #6C757D;
+          color: #6c757d;
           margin-bottom: 2rem;
           line-height: 1.6;
         }
@@ -888,13 +884,13 @@ const AgroisyncLoja = () => {
 
       {/* Modal de Cadastro */}
       {showRegistrationModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg max-w-md mx-4">
-            <h3 className="text-xl font-semibold text-gray-600">Sistema de Registro em Desenvolvimento</h3>
-            <p className="text-gray-500 mt-2">Em breve teremos sistema de registro disponível!</p>
-            <button 
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
+          <div className='mx-4 max-w-md rounded-lg bg-white p-8'>
+            <h3 className='text-xl font-semibold text-gray-600'>Sistema de Registro em Desenvolvimento</h3>
+            <p className='mt-2 text-gray-500'>Em breve teremos sistema de registro disponível!</p>
+            <button
               onClick={() => setShowRegistrationModal(false)}
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              className='mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600'
             >
               Fechar
             </button>
@@ -904,28 +900,25 @@ const AgroisyncLoja = () => {
 
       {/* Modal de Planos */}
       {showPlansModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Planos Premium - Loja</h2>
-                <button
-                  onClick={() => setShowPlansModal(false)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4'>
+          <div className='max-h-[90vh] w-full max-w-6xl overflow-y-auto rounded-lg bg-white'>
+            <div className='p-6'>
+              <div className='mb-6 flex items-center justify-between'>
+                <h2 className='text-2xl font-bold text-gray-800'>Planos Premium - Loja</h2>
+                <button onClick={() => setShowPlansModal(false)} className='text-gray-500 hover:text-gray-700'>
                   <X size={24} />
                 </button>
               </div>
-              <div className="text-center py-8">
-                <h3 className="text-xl font-semibold text-gray-600">Sistema de Planos em Desenvolvimento</h3>
-                <p className="text-gray-500 mt-2">Em breve teremos planos disponíveis para você!</p>
+              <div className='py-8 text-center'>
+                <h3 className='text-xl font-semibold text-gray-600'>Sistema de Planos em Desenvolvimento</h3>
+                <p className='mt-2 text-gray-500'>Em breve teremos planos disponíveis para você!</p>
               </div>
             </div>
           </div>
         </div>
       )}
-      <div className="mt-8 flex justify-center">
-        <CryptoHash pageName="loja" style={{ display: 'none' }} />
+      <div className='mt-8 flex justify-center'>
+        <CryptoHash pageName='loja' style={{ display: 'none' }} />
       </div>
     </div>
   );

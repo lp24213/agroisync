@@ -8,7 +8,7 @@ const ExportData = () => {
   useEffect(() => {
     // Simulated FAO export data
     const mockExportData = {
-      '2024': [
+      2024: [
         {
           grain: 'Soja',
           volume: 95.2,
@@ -58,7 +58,7 @@ const ExportData = () => {
           region: 'Centro-Oeste'
         }
       ],
-      '2023': [
+      2023: [
         {
           grain: 'Soja',
           volume: 87.9,
@@ -123,31 +123,26 @@ const ExportData = () => {
     { id: 'Norte', name: 'Norte' }
   ];
 
-  const filteredData = selectedRegion === 'all' 
-    ? exportData 
-    : exportData.filter(item => item.region === selectedRegion);
+  const filteredData =
+    selectedRegion === 'all' ? exportData : exportData.filter(item => item.region === selectedRegion);
 
   const totalVolume = filteredData.reduce((sum, item) => sum + item.volume, 0);
   const totalValue = filteredData.reduce((sum, item) => sum + item.value, 0);
 
   return (
-    <div className="bg-neutral-800 rounded-xl p-6 border border-neutral-700">
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
+    <div className='rounded-xl border border-neutral-700 bg-neutral-800 p-6'>
+      <div className='mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between'>
         <div>
-          <h3 className="text-2xl font-bold text-white mb-2">
-            Dados de Exportação - FAO
-          </h3>
-          <p className="text-neutral-400">
-            Estatísticas de exportação agrícola brasileira
-          </p>
+          <h3 className='mb-2 text-2xl font-bold text-white'>Dados de Exportação - FAO</h3>
+          <p className='text-neutral-400'>Estatísticas de exportação agrícola brasileira</p>
         </div>
-        
-        <div className="flex flex-wrap gap-3 mt-4 lg:mt-0">
-          {years.map((year) => (
+
+        <div className='mt-4 flex flex-wrap gap-3 lg:mt-0'>
+          {years.map(year => (
             <button
               key={year}
               onClick={() => setSelectedYear(year)}
-              className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+              className={`rounded-lg px-4 py-2 font-medium transition-all duration-200 ${
                 selectedYear === year
                   ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg'
                   : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
@@ -159,12 +154,12 @@ const ExportData = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 mb-6">
-        {regions.map((region) => (
+      <div className='mb-6 grid grid-cols-1 gap-4 lg:grid-cols-6'>
+        {regions.map(region => (
           <button
             key={region.id}
             onClick={() => setSelectedRegion(region.id)}
-            className={`px-3 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
+            className={`rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${
               selectedRegion === region.id
                 ? 'bg-green-600 text-white'
                 : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
@@ -175,107 +170,66 @@ const ExportData = () => {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div className="bg-neutral-700/50 rounded-lg p-4 border border-neutral-600">
-          <h4 className="text-lg font-semibold text-white mb-2">
-            Volume Total
-          </h4>
-          <p className="text-3xl font-bold text-blue-400">
-            {totalVolume.toFixed(1)}M t
-          </p>
-          <p className="text-neutral-400 text-sm">
-            Milhões de toneladas exportadas
-          </p>
+      <div className='mb-6 grid grid-cols-1 gap-6 md:grid-cols-2'>
+        <div className='rounded-lg border border-neutral-600 bg-neutral-700/50 p-4'>
+          <h4 className='mb-2 text-lg font-semibold text-white'>Volume Total</h4>
+          <p className='text-3xl font-bold text-blue-400'>{totalVolume.toFixed(1)}M t</p>
+          <p className='text-sm text-neutral-400'>Milhões de toneladas exportadas</p>
         </div>
-        
-        <div className="bg-neutral-700/50 rounded-lg p-4 border border-neutral-600">
-          <h4 className="text-lg font-semibold text-white mb-2">
-            Valor Total
-          </h4>
-          <p className="text-3xl font-bold text-green-400">
-            US$ {totalValue.toFixed(1)}B
-          </p>
-          <p className="text-neutral-400 text-sm">
-            Bilhões de dólares em exportações
-          </p>
+
+        <div className='rounded-lg border border-neutral-600 bg-neutral-700/50 p-4'>
+          <h4 className='mb-2 text-lg font-semibold text-white'>Valor Total</h4>
+          <p className='text-3xl font-bold text-green-400'>US$ {totalValue.toFixed(1)}B</p>
+          <p className='text-sm text-neutral-400'>Bilhões de dólares em exportações</p>
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full">
+      <div className='overflow-x-auto'>
+        <table className='w-full'>
           <thead>
-            <tr className="border-b border-neutral-700">
-              <th className="text-left py-3 px-4 text-neutral-300 font-medium">
-                Grão
-              </th>
-              <th className="text-right py-3 px-4 text-neutral-300 font-medium">
-                Volume (M t)
-              </th>
-              <th className="text-right py-3 px-4 text-neutral-300 font-medium">
-                Valor (US$ B)
-              </th>
-              <th className="text-right py-3 px-4 text-neutral-300 font-medium">
-                Crescimento (%)
-              </th>
-              <th className="text-left py-3 px-4 text-neutral-300 font-medium">
-                Região
-              </th>
-              <th className="text-left py-3 px-4 text-neutral-300 font-medium">
-                Principais Destinos
-              </th>
+            <tr className='border-b border-neutral-700'>
+              <th className='px-4 py-3 text-left font-medium text-neutral-300'>Grão</th>
+              <th className='px-4 py-3 text-right font-medium text-neutral-300'>Volume (M t)</th>
+              <th className='px-4 py-3 text-right font-medium text-neutral-300'>Valor (US$ B)</th>
+              <th className='px-4 py-3 text-right font-medium text-neutral-300'>Crescimento (%)</th>
+              <th className='px-4 py-3 text-left font-medium text-neutral-300'>Região</th>
+              <th className='px-4 py-3 text-left font-medium text-neutral-300'>Principais Destinos</th>
             </tr>
           </thead>
           <tbody>
             {filteredData.map((item, index) => (
               <tr
                 key={item.grain}
-                className={`border-b border-neutral-700/50 hover:bg-neutral-700/30 transition-colors duration-200 ${
+                className={`border-b border-neutral-700/50 transition-colors duration-200 hover:bg-neutral-700/30 ${
                   index % 2 === 0 ? 'bg-neutral-800/50' : ''
                 }`}
               >
-                <td className="py-3 px-4 text-white font-medium">
-                  {item.grain}
+                <td className='px-4 py-3 font-medium text-white'>{item.grain}</td>
+                <td className='px-4 py-3 text-right font-mono text-white'>{item.volume.toFixed(1)}</td>
+                <td className='px-4 py-3 text-right font-mono text-white'>{item.value.toFixed(1)}</td>
+                <td
+                  className={`px-4 py-3 text-right font-mono ${item.growth >= 0 ? 'text-green-400' : 'text-red-400'}`}
+                >
+                  {item.growth >= 0 ? '+' : ''}
+                  {item.growth}%
                 </td>
-                <td className="py-3 px-4 text-right text-white font-mono">
-                  {item.volume.toFixed(1)}
-                </td>
-                <td className="py-3 px-4 text-right text-white font-mono">
-                  {item.value.toFixed(1)}
-                </td>
-                <td className={`py-3 px-4 text-right font-mono ${
-                  item.growth >= 0 ? 'text-green-400' : 'text-red-400'
-                }`}>
-                  {item.growth >= 0 ? '+' : ''}{item.growth}%
-                </td>
-                <td className="py-3 px-4 text-neutral-300">
-                  {item.region}
-                </td>
-                <td className="py-3 px-4 text-neutral-300 text-sm">
-                  {item.topDestinations.join(', ')}
-                </td>
+                <td className='px-4 py-3 text-neutral-300'>{item.region}</td>
+                <td className='px-4 py-3 text-sm text-neutral-300'>{item.topDestinations.join(', ')}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      <div className="mt-6 p-4 bg-neutral-700/50 rounded-lg border border-neutral-600">
-        <div className="flex items-center justify-between">
+      <div className='mt-6 rounded-lg border border-neutral-600 bg-neutral-700/50 p-4'>
+        <div className='flex items-center justify-between'>
           <div>
-            <h4 className="text-lg font-semibold text-white mb-1">
-              Fonte dos Dados
-            </h4>
-            <p className="text-neutral-400 text-sm">
-              Dados simulados baseados em padrões reais da FAO e MDIC
-            </p>
+            <h4 className='mb-1 text-lg font-semibold text-white'>Fonte dos Dados</h4>
+            <p className='text-sm text-neutral-400'>Dados simulados baseados em padrões reais da FAO e MDIC</p>
           </div>
-          <div className="text-right">
-            <p className="text-neutral-300 text-sm">
-              Última atualização
-            </p>
-            <p className="text-white font-mono text-sm">
-              {new Date().toLocaleString('pt-BR')}
-            </p>
+          <div className='text-right'>
+            <p className='text-sm text-neutral-300'>Última atualização</p>
+            <p className='font-mono text-sm text-white'>{new Date().toLocaleString('pt-BR')}</p>
           </div>
         </div>
       </div>

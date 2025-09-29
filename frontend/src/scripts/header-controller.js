@@ -10,7 +10,7 @@ class AgroisyncHeaderController {
     this.hamburger = document.getElementById('hamburger');
     this.mobileMenu = null;
     this.isInitialized = false;
-    
+
     this.init();
   }
 
@@ -55,7 +55,7 @@ class AgroisyncHeaderController {
   createMobileMenu() {
     const mobileMenu = document.createElement('div');
     mobileMenu.className = 'mobile-menu';
-    
+
     // Copiar navegação para mobile
     const nav = document.getElementById('main-nav');
     if (nav) {
@@ -69,7 +69,7 @@ class AgroisyncHeaderController {
         </div>
       `;
     }
-    
+
     document.body.appendChild(mobileMenu);
   }
 
@@ -112,7 +112,7 @@ class AgroisyncHeaderController {
 
   toggleMobileMenu() {
     document.body.classList.toggle('mobile-menu-open');
-    
+
     // Atualizar aria-label do hamburger
     if (this.hamburger) {
       const isOpen = document.body.classList.contains('mobile-menu-open');
@@ -123,10 +123,10 @@ class AgroisyncHeaderController {
 
   handleOutsideClick(event) {
     if (!document.body.classList.contains('mobile-menu-open')) return;
-    
+
     const isClickInsideMenu = this.mobileMenu && this.mobileMenu.contains(event.target);
     const isClickOnHamburger = this.hamburger && this.hamburger.contains(event.target);
-    
+
     if (!isClickInsideMenu && !isClickOnHamburger) {
       this.closeMobileMenu();
     }
@@ -149,13 +149,13 @@ class AgroisyncHeaderController {
   // Utility function para throttling
   throttle(func, limit) {
     let inThrottle;
-    return function() {
+    return function () {
       const args = arguments;
       const context = this;
       if (!inThrottle) {
         func.apply(context, args);
         inThrottle = true;
-        setTimeout(() => inThrottle = false, limit);
+        setTimeout(() => (inThrottle = false), limit);
       }
     };
   }

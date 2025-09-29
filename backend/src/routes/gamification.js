@@ -54,7 +54,7 @@ router.get('/leaderboard', async (req, res) => {
       region = null
     } = req.query;
 
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     const query = {};
 
@@ -68,7 +68,7 @@ router.get('/leaderboard', async (req, res) => {
       .populate('userId', 'name email avatar region')
       .sort({ totalScore: -1, level: -1 })
       .skip(skip)
-      .limit(parseInt(limit));
+      .limit(parseInt(limit, 10));
 
     const total = await UserReputation.countDocuments(query);
 
@@ -77,10 +77,10 @@ router.get('/leaderboard', async (req, res) => {
       data: {
         leaderboard,
         pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
+          page: parseInt(page, 10),
+          limit: parseInt(limit, 10),
           total,
-          pages: Math.ceil(total / parseInt(limit))
+          pages: Math.ceil(total / parseInt(limit, 10))
         }
       }
     });

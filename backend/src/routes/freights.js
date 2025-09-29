@@ -28,7 +28,7 @@ router.get('/', async (req, res) => {
       sortOrder = 'desc'
     } = req.query;
 
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     // Build query
     const query = { status: 'active' };
@@ -69,7 +69,7 @@ router.get('/', async (req, res) => {
     const freights = await Freight.find(query)
       .sort(sort)
       .skip(skip)
-      .limit(parseInt(limit))
+      .limit(parseInt(limit, 10))
       .populate('providerId', 'name company.name phone')
       .lean();
 
@@ -81,10 +81,10 @@ router.get('/', async (req, res) => {
       data: {
         freights,
         pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
+          currentPage: parseInt(page, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit)
+          itemsPerPage: parseInt(limit, 10)
         }
       }
     });
@@ -108,7 +108,7 @@ router.get('/route/:originCity/:originState/:destCity/:destState', async (req, r
       originState,
       destCity,
       destState,
-      parseInt(limit)
+      parseInt(limit, 10)
     );
 
     res.json({
@@ -130,7 +130,7 @@ router.get('/cargo/:cargoType', async (req, res) => {
     const { cargoType } = req.params;
     const { limit = 20 } = req.query;
 
-    const freights = await Freight.findByCargoType(cargoType, parseInt(limit));
+    const freights = await Freight.findByCargoType(cargoType, parseInt(limit, 10));
 
     res.json({
       success: true,
@@ -191,9 +191,9 @@ router.get('/available', async (req, res) => {
       filters.vehicleType = vehicleType;
     }
 
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
-    const freights = await Freight.findAvailable(filters, parseInt(limit), skip);
+    const freights = await Freight.findAvailable(filters, parseInt(limit, 10), skip);
 
     // Get total count
     const totalQuery = { status: 'active' };
@@ -223,10 +223,10 @@ router.get('/available', async (req, res) => {
       data: {
         freights,
         pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
+          currentPage: parseInt(page, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit)
+          itemsPerPage: parseInt(limit, 10)
         }
       }
     });
@@ -526,7 +526,7 @@ router.get('/provider/my-freights', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.user;
     const { page = 1, limit = 20, status } = req.query;
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     const query = { providerId: userId };
     if (status) {
@@ -536,7 +536,7 @@ router.get('/provider/my-freights', authenticateToken, async (req, res) => {
     const freights = await Freight.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit))
+      .limit(parseInt(limit, 10))
       .lean();
 
     const total = await Freight.countDocuments(query);
@@ -546,10 +546,10 @@ router.get('/provider/my-freights', authenticateToken, async (req, res) => {
       data: {
         freights,
         pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
+          currentPage: parseInt(page, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit)
+          itemsPerPage: parseInt(limit, 10)
         }
       }
     });

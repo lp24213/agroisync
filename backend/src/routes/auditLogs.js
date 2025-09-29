@@ -20,14 +20,14 @@ router.get('/', auth, async (req, res) => {
     const { limit = 100, page = 1 } = req.query;
     const offset = (page - 1) * limit;
 
-    const logs = await auditService.getUserAuditLogs(req.user.id, parseInt(limit));
-    
+    const logs = await auditService.getUserAuditLogs(req.user.id, parseInt(limit, 10));
+
     res.json({
       success: true,
       data: logs,
       pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
         total: logs.length
       }
     });
@@ -48,12 +48,9 @@ router.get('/', auth, async (req, res) => {
 router.get('/pii-access', adminAuth, async (req, res) => {
   try {
     const { userId, limit = 100 } = req.query;
-    
-    const logs = await auditService.getPIIAccessLogs(
-      userId || null, 
-      parseInt(limit)
-    );
-    
+
+    const logs = await auditService.getPIIAccessLogs(userId || null, parseInt(limit, 10));
+
     res.json({
       success: true,
       data: logs
@@ -75,7 +72,7 @@ router.get('/pii-access', adminAuth, async (req, res) => {
 router.get('/stats', adminAuth, async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
-    
+
     if (!startDate || !endDate) {
       return res.status(400).json({
         success: false,
@@ -83,11 +80,8 @@ router.get('/stats', adminAuth, async (req, res) => {
       });
     }
 
-    const stats = await auditService.getAuditStats(
-      new Date(startDate),
-      new Date(endDate)
-    );
-    
+    const stats = await auditService.getAuditStats(new Date(startDate), new Date(endDate));
+
     res.json({
       success: true,
       data: stats
@@ -109,7 +103,7 @@ router.get('/stats', adminAuth, async (req, res) => {
 router.get('/expiring', adminAuth, async (req, res) => {
   try {
     const logs = await auditService.getExpiringLogs();
-    
+
     res.json({
       success: true,
       data: logs
@@ -130,14 +124,7 @@ router.get('/expiring', adminAuth, async (req, res) => {
  */
 router.post('/export', adminAuth, async (req, res) => {
   try {
-    const {
-      startDate,
-      endDate,
-      userId,
-      action,
-      resource,
-      containsPII
-    } = req.body;
+    const { startDate, endDate, userId, action, resource, containsPII } = req.body;
 
     if (!startDate || !endDate) {
       return res.status(400).json({
@@ -154,7 +141,7 @@ router.post('/export', adminAuth, async (req, res) => {
       resource,
       containsPII
     });
-    
+
     res.json({
       success: true,
       data: logs,
@@ -178,7 +165,7 @@ router.post('/export', adminAuth, async (req, res) => {
 router.delete('/cleanup', adminAuth, async (req, res) => {
   try {
     const deletedCount = await auditService.cleanExpiredLogs();
-    
+
     res.json({
       success: true,
       message: `${deletedCount} logs expirados foram removidos`,
@@ -202,7 +189,7 @@ router.get('/:id/verify', adminAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const isValid = await auditService.verifyLogIntegrity(id);
-    
+
     res.json({
       success: true,
       data: {
@@ -227,18 +214,18 @@ router.get('/:id/verify', adminAuth, async (req, res) => {
 router.get('/:id', adminAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     // Importar modelo AuditLog
     const AuditLog = (await import('../models/AuditLog.js')).default;
     const log = await AuditLog.findById(id);
-    
+
     if (!log) {
       return res.status(404).json({
         success: false,
         message: 'Log não encontrado'
       });
     }
-    
+
     res.json({
       success: true,
       data: log

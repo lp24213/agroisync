@@ -83,7 +83,7 @@ router.get('/users', async (req, res) => {
     const { page = 1, limit = 50, search, status } = req.query;
     const skip = (page - 1) * limit;
 
-    let query = {};
+    const query = {};
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
@@ -99,7 +99,7 @@ router.get('/users', async (req, res) => {
         .select('-password -piiData')
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(parseInt(limit)),
+        .limit(parseInt(limit, 10)),
       User.countDocuments(query)
     ]);
 
@@ -119,8 +119,8 @@ router.get('/users', async (req, res) => {
       data: {
         users,
         pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
+          page: parseInt(page, 10),
+          limit: parseInt(limit, 10),
           total,
           pages: Math.ceil(total / limit)
         }
@@ -141,7 +141,7 @@ router.get('/products', async (req, res) => {
     const { page = 1, limit = 50, search, status } = req.query;
     const skip = (page - 1) * limit;
 
-    let query = {};
+    const query = {};
     if (search) {
       query['publicData.title'] = { $regex: search, $options: 'i' };
     }
@@ -154,7 +154,7 @@ router.get('/products', async (req, res) => {
         .populate('sellerId', 'name email')
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(parseInt(limit)),
+        .limit(parseInt(limit, 10)),
       Product.countDocuments(query)
     ]);
 
@@ -174,8 +174,8 @@ router.get('/products', async (req, res) => {
       data: {
         products,
         pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
+          page: parseInt(page, 10),
+          limit: parseInt(limit, 10),
           total,
           pages: Math.ceil(total / limit)
         }
@@ -196,7 +196,7 @@ router.get('/payments', async (req, res) => {
     const { page = 1, limit = 50, status, provider } = req.query;
     const skip = (page - 1) * limit;
 
-    let query = {};
+    const query = {};
     if (status) {
       query.status = status;
     }
@@ -209,7 +209,7 @@ router.get('/payments', async (req, res) => {
         .populate('userId', 'name email')
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(parseInt(limit)),
+        .limit(parseInt(limit, 10)),
       Payment.countDocuments(query)
     ]);
 
@@ -229,8 +229,8 @@ router.get('/payments', async (req, res) => {
       data: {
         payments,
         pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
+          page: parseInt(page, 10),
+          limit: parseInt(limit, 10),
           total,
           pages: Math.ceil(total / limit)
         }
@@ -251,7 +251,7 @@ router.get('/registrations', async (req, res) => {
     const { page = 1, limit = 50, search, type } = req.query;
     const skip = (page - 1) * limit;
 
-    let query = {};
+    const query = {};
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
@@ -264,10 +264,7 @@ router.get('/registrations', async (req, res) => {
     }
 
     const [registrations, total] = await Promise.all([
-      Registration.find(query)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(parseInt(limit)),
+      Registration.find(query).sort({ createdAt: -1 }).skip(skip).limit(parseInt(limit, 10)),
       Registration.countDocuments(query)
     ]);
 
@@ -287,8 +284,8 @@ router.get('/registrations', async (req, res) => {
       data: {
         registrations,
         pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
+          page: parseInt(page, 10),
+          limit: parseInt(limit, 10),
           total,
           pages: Math.ceil(total / limit)
         }
@@ -310,7 +307,7 @@ router.get('/activity', async (req, res) => {
 
     const activities = await AuditLog.find()
       .sort({ createdAt: -1 })
-      .limit(parseInt(limit))
+      .limit(parseInt(limit, 10))
       .populate('userId', 'name email');
 
     // Log da ação
@@ -319,7 +316,7 @@ router.get('/activity', async (req, res) => {
       userEmail: req.user.email,
       action: 'ADMIN_ACTIVITY_ACCESS',
       resource: 'admin_activity',
-      details: `Admin accessed system activity`,
+      details: 'Admin accessed system activity',
       ip: req.ip,
       userAgent: req.get('User-Agent')
     });
@@ -343,11 +340,9 @@ router.put('/users/:id/status', async (req, res) => {
     const { id } = req.params;
     const { isActive } = req.body;
 
-    const user = await User.findByIdAndUpdate(
-      id,
-      { isActive },
-      { new: true }
-    ).select('-password -piiData');
+    const user = await User.findByIdAndUpdate(id, { isActive }, { new: true }).select(
+      '-password -piiData'
+    );
 
     if (!user) {
       return res.status(404).json({

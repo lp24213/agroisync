@@ -5,7 +5,7 @@ const localStorageMock = {
   getItem: jest.fn(),
   setItem: jest.fn(),
   removeItem: jest.fn(),
-  clear: jest.fn(),
+  clear: jest.fn()
 };
 global.localStorage = localStorageMock;
 
@@ -20,8 +20,8 @@ Object.defineProperty(window, 'matchMedia', {
     removeListener: jest.fn(), // deprecated
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
-  })),
+    dispatchEvent: jest.fn()
+  }))
 });
 
 // Mock IntersectionObserver
@@ -45,7 +45,7 @@ global.fetch = jest.fn();
 
 // Mock console methods to reduce noise in tests
 global.console = {
-  ...console,
+  ...console
   // Uncomment to ignore a specific log level
   // log: jest.fn(),
   // debug: jest.fn(),

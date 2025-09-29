@@ -15,8 +15,8 @@ router.get('/check-access/:adId', auth, async (req, res) => {
 
     // Verificar se existe pagamento aprovado para este anúncio
     const payment = await Payment.findOne({
-      userId: userId,
-      adId: adId,
+      userId,
+      adId,
       status: 'succeeded',
       type: 'individual'
     });
@@ -25,7 +25,7 @@ router.get('/check-access/:adId', auth, async (req, res) => {
 
     // Log de auditoria
     await AuditLog.create({
-      userId: userId,
+      userId,
       action: 'check_data_access',
       resource: `ad_${adId}`,
       details: { hasAccess, adId },
@@ -53,8 +53,8 @@ router.post('/unlock-data', auth, async (req, res) => {
 
     // Verificar se existe pagamento aprovado
     const payment = await Payment.findOne({
-      userId: userId,
-      adId: adId,
+      userId,
+      adId,
       status: 'succeeded',
       type: 'individual'
     });
@@ -76,7 +76,7 @@ router.post('/unlock-data', auth, async (req, res) => {
 
     // Log de auditoria
     await AuditLog.create({
-      userId: userId,
+      userId,
       action: 'unlock_data_access',
       resource: `ad_${adId}`,
       details: { adId, paymentId: payment._id },
@@ -86,7 +86,7 @@ router.post('/unlock-data', auth, async (req, res) => {
 
     // Log de segurança
     await SecurityLog.create({
-      userId: userId,
+      userId,
       action: 'data_unlock',
       resource: `ad_${adId}`,
       severity: 'medium',
@@ -95,8 +95,8 @@ router.post('/unlock-data', auth, async (req, res) => {
       userAgent: req.get('User-Agent')
     });
 
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       message: 'Dados liberados com sucesso',
       unlockedAt: payment.unlockedAt,
       adData: {
@@ -122,8 +122,8 @@ router.get('/unlocked-data/:adId', auth, async (req, res) => {
 
     // Verificar se usuário tem acesso
     const payment = await Payment.findOne({
-      userId: userId,
-      adId: adId,
+      userId,
+      adId,
       status: 'succeeded',
       type: 'individual',
       dataUnlocked: true
@@ -141,7 +141,7 @@ router.get('/unlocked-data/:adId', auth, async (req, res) => {
 
     // Log de auditoria
     await AuditLog.create({
-      userId: userId,
+      userId,
       action: 'access_unlocked_data',
       resource: `ad_${adId}`,
       details: { adId },
@@ -175,11 +175,11 @@ router.post('/configure-release/:adId', auth, async (req, res) => {
   try {
     const { adId } = req.params;
     const userId = req.user.id;
-    const { 
-      autoRelease = false, 
-      releaseDelay = 0, 
+    const {
+      autoRelease = false,
+      releaseDelay = 0,
       requireVerification = true,
-      customMessage = '' 
+      customMessage = ''
     } = req.body;
 
     // Verificar se o usuário é o dono do anúncio
@@ -205,21 +205,21 @@ router.post('/configure-release/:adId', auth, async (req, res) => {
 
     // Log de auditoria
     await AuditLog.create({
-      userId: userId,
+      userId,
       action: 'configure_data_release',
       resource: `ad_${adId}`,
-      details: { 
-        autoRelease, 
-        releaseDelay, 
-        requireVerification, 
-        customMessage 
+      details: {
+        autoRelease,
+        releaseDelay,
+        requireVerification,
+        customMessage
       },
       ip: req.ip,
       userAgent: req.get('User-Agent')
     });
 
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       message: 'Configurações de liberação atualizadas',
       releaseSettings: product.releaseSettings
     });
@@ -236,13 +236,13 @@ router.get('/release-stats', auth, async (req, res) => {
 
     // Estatísticas do usuário
     const totalPayments = await Payment.countDocuments({
-      userId: userId,
+      userId,
       status: 'succeeded',
       type: 'individual'
     });
 
     const unlockedData = await Payment.countDocuments({
-      userId: userId,
+      userId,
       status: 'succeeded',
       type: 'individual',
       dataUnlocked: true
@@ -251,7 +251,7 @@ router.get('/release-stats', auth, async (req, res) => {
     const totalSpent = await Payment.aggregate([
       {
         $match: {
-          userId: userId,
+          userId,
           status: 'succeeded',
           type: 'individual'
         }
@@ -265,7 +265,7 @@ router.get('/release-stats', auth, async (req, res) => {
     ]);
 
     // Estatísticas dos anúncios do usuário
-    const userProducts = await Product.find({ userId: userId });
+    const userProducts = await Product.find({ userId });
     const productIds = userProducts.map(p => p._id);
 
     const paymentsReceived = await Payment.countDocuments({

@@ -39,8 +39,8 @@ export const AnalyticsProvider = ({ children }) => {
         page_title: document.title,
         page_location: window.location.href,
         custom_map: {
-          'custom_parameter_1': 'language',
-          'custom_parameter_2': 'user_type'
+          custom_parameter_1: 'language',
+          custom_parameter_2: 'user_type'
         }
       });
 
@@ -123,7 +123,7 @@ export const AnalyticsProvider = ({ children }) => {
   const trackConversion = (conversionType, value, currency = 'BRL') => {
     try {
       const eventName = `conversion_${conversionType}`;
-      
+
       // Google Analytics
       if (window.gtag) {
         window.gtag('event', 'purchase', {
@@ -226,7 +226,7 @@ export const AnalyticsProvider = ({ children }) => {
   const trackUserInteraction = (interactionType, element, details = {}) => {
     try {
       const eventName = `user_interaction_${interactionType}`;
-      
+
       // Google Analytics
       if (window.gtag) {
         window.gtag('event', eventName, {
@@ -261,7 +261,7 @@ export const AnalyticsProvider = ({ children }) => {
   const trackFunnelStep = (funnelName, stepName, stepNumber, details = {}) => {
     try {
       const eventName = `funnel_${funnelName}_${stepName}`;
-      
+
       // Google Analytics
       if (window.gtag) {
         window.gtag('event', eventName, {
@@ -305,11 +305,7 @@ export const AnalyticsProvider = ({ children }) => {
     trackFunnelStep
   };
 
-  return (
-    <AnalyticsContext.Provider value={value}>
-      {children}
-    </AnalyticsContext.Provider>
-  );
+  return <AnalyticsContext.Provider value={value}>{children}</AnalyticsContext.Provider>;
 };
 
 export default AnalyticsProvider;

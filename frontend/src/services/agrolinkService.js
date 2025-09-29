@@ -16,7 +16,7 @@ class AgrolinkService {
         { state: 'RS', city: 'Passo Fundo', lat: -28.2628, lng: -52.4067 },
         { state: 'GO', city: 'Rio Verde', lat: -17.7977, lng: -50.9286 }
       ];
-      
+
       // Simular IP baseado em região agrícola
       const region = regions[Math.floor(Math.random() * regions.length)];
       return region;
@@ -30,37 +30,41 @@ class AgrolinkService {
   async getGrainQuotes() {
     try {
       const location = await this.getLocationByIP();
-      
+
       // Simular dados reais da Agrolink com variações por região
       const baseQuotes = {
-        'MT': { // Mato Grosso
-          soja: { price: 85.50, change: 1.2 },
-          milho: { price: 42.30, change: -0.8 },
-          algodao: { price: 125.80, change: 2.1 },
-          cafe: { price: 285.90, change: 0.5 }
+        MT: {
+          // Mato Grosso
+          soja: { price: 85.5, change: 1.2 },
+          milho: { price: 42.3, change: -0.8 },
+          algodao: { price: 125.8, change: 2.1 },
+          cafe: { price: 285.9, change: 0.5 }
         },
-        'PR': { // Paraná
-          soja: { price: 87.20, change: 1.5 },
-          milho: { price: 43.10, change: -0.3 },
-          trigo: { price: 78.40, change: 1.8 },
-          cafe: { price: 288.50, change: 0.7 }
+        PR: {
+          // Paraná
+          soja: { price: 87.2, change: 1.5 },
+          milho: { price: 43.1, change: -0.3 },
+          trigo: { price: 78.4, change: 1.8 },
+          cafe: { price: 288.5, change: 0.7 }
         },
-        'RS': { // Rio Grande do Sul
-          soja: { price: 86.80, change: 1.0 },
-          milho: { price: 42.80, change: -0.5 },
-          trigo: { price: 79.20, change: 2.2 },
-          arroz: { price: 45.60, change: 0.9 }
+        RS: {
+          // Rio Grande do Sul
+          soja: { price: 86.8, change: 1.0 },
+          milho: { price: 42.8, change: -0.5 },
+          trigo: { price: 79.2, change: 2.2 },
+          arroz: { price: 45.6, change: 0.9 }
         },
-        'GO': { // Goiás
-          soja: { price: 84.90, change: 0.8 },
-          milho: { price: 41.90, change: -1.2 },
-          algodao: { price: 124.50, change: 1.8 },
-          cafe: { price: 284.20, change: 0.3 }
+        GO: {
+          // Goiás
+          soja: { price: 84.9, change: 0.8 },
+          milho: { price: 41.9, change: -1.2 },
+          algodao: { price: 124.5, change: 1.8 },
+          cafe: { price: 284.2, change: 0.3 }
         }
       };
 
       const regionQuotes = baseQuotes[location.state] || baseQuotes['MT'];
-      
+
       // Adicionar variação realística
       const quotes = Object.entries(regionQuotes).map(([grain, data]) => ({
         grain,
@@ -90,37 +94,38 @@ class AgrolinkService {
   async getChartData(grain = 'soja', days = 7) {
     try {
       const location = await this.getLocationByIP();
-      
+
       // Simular dados históricos para gráfico
-      const basePrice = grain === 'soja' ? 85.50 : 
-                      grain === 'milho' ? 42.30 : 
-                      grain === 'algodao' ? 125.80 : 285.90;
-      
+      const basePrice = grain === 'soja' ? 85.5 : grain === 'milho' ? 42.3 : grain === 'algodao' ? 125.8 : 285.9;
+
       const chartData = [];
       let currentPrice = basePrice;
-      
+
       for (let i = days; i >= 0; i--) {
         const date = new Date();
         date.setDate(date.getDate() - i);
-        
+
         // Simular variação diária
         const dailyChange = (Math.random() - 0.5) * 3;
         currentPrice = Math.max(0.01, currentPrice + dailyChange);
-        
+
         chartData.push({
           date: date.toISOString().split('T')[0],
           price: parseFloat(currentPrice.toFixed(2)),
           volume: Math.floor(Math.random() * 1000000) + 500000
         });
       }
-      
+
       return {
         grain,
         location: `${location.city}/${location.state}`,
         data: chartData,
         currentPrice: chartData[chartData.length - 1].price,
         change: chartData[chartData.length - 1].price - chartData[chartData.length - 2].price,
-        changePercent: ((chartData[chartData.length - 1].price - chartData[chartData.length - 2].price) / chartData[chartData.length - 2].price) * 100
+        changePercent:
+          ((chartData[chartData.length - 1].price - chartData[chartData.length - 2].price) /
+            chartData[chartData.length - 2].price) *
+          100
       };
     } catch (error) {
       console.error('Erro ao buscar dados do gráfico:', error);
@@ -134,7 +139,7 @@ class AgrolinkService {
       const data = await this.getGrainQuotes();
       callback(data);
     }, intervalMs);
-    
+
     // Primeira atualização imediata
     this.getGrainQuotes().then(callback);
   }

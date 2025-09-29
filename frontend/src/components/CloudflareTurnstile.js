@@ -35,10 +35,10 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
         sitekey: siteKey || '0x4AAAAAAB3pdjs4jRKvAtaA',
         theme: theme,
         size: 'compact',
-        callback: (token) => {
+        callback: token => {
           if (onVerify) onVerify(token);
         },
-        'error-callback': (error) => {
+        'error-callback': error => {
           if (onError) onError(error);
         },
         'expired-callback': () => {
@@ -63,14 +63,14 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-16">
-        <div className="text-sm text-gray-500">Carregando verificação...</div>
+      <div className='flex h-16 items-center justify-center'>
+        <div className='text-sm text-gray-500'>Carregando verificação...</div>
       </div>
     );
   }
 
   return (
-    <div className="flex justify-center">
+    <div className='flex justify-center'>
       <div
         ref={turnstileRef}
         style={{

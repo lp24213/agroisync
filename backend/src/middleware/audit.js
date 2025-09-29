@@ -1,25 +1,23 @@
-import { Request, Response, NextFunction } from 'express';
-
 import { logger } from '../utils/logger';
 
-// Audit log interface
-export interface AuditLog {
-  timestamp: string;
-  userId?: string;
-  email?: string;
-  action: string;
-  resource: string;
-  ip: string;
-  userAgent: string;
-  method: string;
-  path: string;
-  statusCode: number;
-  requestBody?: any;
-  responseBody?: any;
-  duration: number;
-  success: boolean;
-  error?: string;
-}
+// Audit log structure (JavaScript - not TypeScript)
+// AuditLog = {
+//   timestamp: string,
+//   userId?: string,
+//   email?: string,
+//   action: string,
+//   resource: string,
+//   ip: string,
+//   userAgent: string,
+//   method: string,
+//   path: string,
+//   statusCode: number,
+//   requestBody?: any,
+//   responseBody?: any,
+//   duration: number,
+//   success: boolean,
+//   error?: string
+// }
 
 // Sensitive actions that require detailed logging
 const SENSITIVE_ACTIONS = [
@@ -57,13 +55,13 @@ const ADMIN_ACTIONS = [
 ];
 
 // Audit middleware
-export const auditLog = (action: string, resource: string) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+export const auditLog = (action, resource) => {
+  return (req, res, next) => {
     const startTime = Date.now();
     const originalSend = res.send;
 
     // Capture request details
-    const auditData: Partial<AuditLog> = {
+    const auditData = {
       timestamp: new Date().toISOString(),
       action,
       resource,

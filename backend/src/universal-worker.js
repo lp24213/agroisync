@@ -1,7 +1,7 @@
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    
+
     // CORS headers
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
@@ -32,7 +32,7 @@ export default {
     if (url.pathname === '/api/sms/send-code' && request.method === 'POST') {
       try {
         const { phone } = await request.json();
-        
+
         if (!phone) {
           return new Response(
             JSON.stringify({
@@ -48,27 +48,30 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         // MÉTODO 1: Twilio (FUNCIONA PARA QUALQUER PAÍS)
         if (env.TWILIO_ACCOUNT_SID && env.TWILIO_AUTH_TOKEN) {
           try {
-            const twilioResponse = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Messages.json`, {
-              method: 'POST',
-              headers: {
-                'Authorization': `Basic ${btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`)}`,
-                'Content-Type': 'application/x-www-form-urlencoded'
-              },
-              body: new URLSearchParams({
-                From: env.TWILIO_PHONE_NUMBER || '+15005550006',
-                To: phone,
-                Body: `Seu código de verificação AgroSync: ${verificationCode}. Válido por 5 minutos.`
-              })
-            });
-            
+            const twilioResponse = await fetch(
+              `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Messages.json`,
+              {
+                method: 'POST',
+                headers: {
+                  Authorization: `Basic ${btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`)}`,
+                  'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                  From: env.TWILIO_PHONE_NUMBER || '+15005550006',
+                  To: phone,
+                  Body: `Seu código de verificação AgroSync: ${verificationCode}. Válido por 5 minutos.`
+                })
+              }
+            );
+
             if (twilioResponse.ok) {
               const twilioData = await twilioResponse.json();
               console.log(`📱 SMS REAL enviado via Twilio para ${phone}: ${verificationCode}`);
-              
+
               return new Response(
                 JSON.stringify({
                   success: true,
@@ -105,11 +108,11 @@ export default {
                 text: `Seu código de verificação AgroSync: ${verificationCode}. Válido por 5 minutos.`
               })
             });
-            
+
             if (vonageResponse.ok) {
               const vonageData = await vonageResponse.json();
               console.log(`📱 SMS REAL enviado via Vonage para ${phone}: ${verificationCode}`);
-              
+
               return new Response(
                 JSON.stringify({
                   success: true,
@@ -136,7 +139,7 @@ export default {
             const messagebirdResponse = await fetch('https://rest.messagebird.com/messages', {
               method: 'POST',
               headers: {
-                'Authorization': `AccessKey ${env.MESSAGEBIRD_API_KEY}`,
+                Authorization: `AccessKey ${env.MESSAGEBIRD_API_KEY}`,
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({
@@ -145,11 +148,11 @@ export default {
                 body: `Seu código de verificação AgroSync: ${verificationCode}. Válido por 5 minutos.`
               })
             });
-            
+
             if (messagebirdResponse.ok) {
               const messagebirdData = await messagebirdResponse.json();
               console.log(`📱 SMS REAL enviado via MessageBird para ${phone}: ${verificationCode}`);
-              
+
               return new Response(
                 JSON.stringify({
                   success: true,
@@ -172,7 +175,7 @@ export default {
 
         // FALLBACK: Mostrar código no toast
         console.log(`📱 [FALLBACK] SMS para ${phone}: ${verificationCode}`);
-        
+
         return new Response(
           JSON.stringify({
             success: true,
@@ -188,7 +191,6 @@ export default {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
         );
-        
       } catch (error) {
         console.error('Erro ao enviar SMS:', error);
         return new Response(
@@ -208,7 +210,7 @@ export default {
     if (url.pathname === '/api/email/send-verification' && request.method === 'POST') {
       try {
         const { email } = await request.json();
-        
+
         if (!email) {
           return new Response(
             JSON.stringify({
@@ -224,14 +226,14 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         // MÉTODO 1: Resend (FUNCIONA PARA QUALQUER EMAIL)
         if (env.RESEND_API_KEY && env.RESEND_API_KEY !== 're_123456789') {
           try {
             const resendResponse = await fetch('https://api.resend.com/emails', {
               method: 'POST',
               headers: {
-                'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+                Authorization: `Bearer ${env.RESEND_API_KEY}`,
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({
@@ -276,11 +278,11 @@ export default {
                 text: `Código de Verificação AgroSync: ${verificationCode}\n\nEste código expira em 10 minutos.\n\nEquipe AgroSync`
               })
             });
-            
+
             if (resendResponse.ok) {
               const resendData = await resendResponse.json();
               console.log(`📧 Email REAL enviado via Resend para ${email}: ${verificationCode}`);
-              
+
               return new Response(
                 JSON.stringify({
                   success: true,
@@ -307,18 +309,21 @@ export default {
             const sendgridResponse = await fetch('https://api.sendgrid.com/v3/mail/send', {
               method: 'POST',
               headers: {
-                'Authorization': `Bearer ${env.SENDGRID_API_KEY}`,
+                Authorization: `Bearer ${env.SENDGRID_API_KEY}`,
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({
-                personalizations: [{
-                  to: [{ email: email }],
-                  subject: 'Código de Verificação - AgroSync'
-                }],
+                personalizations: [
+                  {
+                    to: [{ email }],
+                    subject: 'Código de Verificação - AgroSync'
+                  }
+                ],
                 from: { email: 'noreply@agroisync.com', name: 'AgroSync' },
-                content: [{
-                  type: 'text/html',
-                  value: `
+                content: [
+                  {
+                    type: 'text/html',
+                    value: `
                     <!DOCTYPE html>
                     <html>
                     <head>
@@ -353,13 +358,14 @@ export default {
                     </body>
                     </html>
                   `
-                }]
+                  }
+                ]
               })
             });
-            
+
             if (sendgridResponse.ok) {
               console.log(`📧 Email REAL enviado via SendGrid para ${email}: ${verificationCode}`);
-              
+
               return new Response(
                 JSON.stringify({
                   success: true,
@@ -383,17 +389,19 @@ export default {
         // MÉTODO 3: Mailgun (FUNCIONA PARA QUALQUER EMAIL)
         if (env.MAILGUN_API_KEY && env.MAILGUN_DOMAIN) {
           try {
-            const mailgunResponse = await fetch(`https://api.mailgun.net/v3/${env.MAILGUN_DOMAIN}/messages`, {
-              method: 'POST',
-              headers: {
-                'Authorization': `Basic ${btoa(`api:${env.MAILGUN_API_KEY}`)}`,
-                'Content-Type': 'application/x-www-form-urlencoded'
-              },
-              body: new URLSearchParams({
-                from: 'AgroSync <noreply@agroisync.com>',
-                to: email,
-                subject: 'Código de Verificação - AgroSync',
-                html: `
+            const mailgunResponse = await fetch(
+              `https://api.mailgun.net/v3/${env.MAILGUN_DOMAIN}/messages`,
+              {
+                method: 'POST',
+                headers: {
+                  Authorization: `Basic ${btoa(`api:${env.MAILGUN_API_KEY}`)}`,
+                  'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                  from: 'AgroSync <noreply@agroisync.com>',
+                  to: email,
+                  subject: 'Código de Verificação - AgroSync',
+                  html: `
                   <!DOCTYPE html>
                   <html>
                   <head>
@@ -428,14 +436,15 @@ export default {
                   </body>
                   </html>
                 `,
-                text: `Código de Verificação AgroSync: ${verificationCode}\n\nEste código expira em 10 minutos.\n\nEquipe AgroSync`
-              })
-            });
-            
+                  text: `Código de Verificação AgroSync: ${verificationCode}\n\nEste código expira em 10 minutos.\n\nEquipe AgroSync`
+                })
+              }
+            );
+
             if (mailgunResponse.ok) {
               const mailgunData = await mailgunResponse.json();
               console.log(`📧 Email REAL enviado via Mailgun para ${email}: ${verificationCode}`);
-              
+
               return new Response(
                 JSON.stringify({
                   success: true,
@@ -458,7 +467,7 @@ export default {
 
         // FALLBACK: Mostrar código no toast
         console.log(`📧 [FALLBACK] Email para ${email}: ${verificationCode}`);
-        
+
         return new Response(
           JSON.stringify({
             success: true,
@@ -474,7 +483,6 @@ export default {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
         );
-        
       } catch (error) {
         console.error('Erro ao enviar email:', error);
         return new Response(
@@ -494,7 +502,7 @@ export default {
     if (url.pathname === '/api/sms/verify-code' && request.method === 'POST') {
       try {
         const { phone, code } = await request.json();
-        
+
         if (!phone || !code) {
           return new Response(
             JSON.stringify({
@@ -507,7 +515,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ SMS verificado para ${phone}: ${code}`);
@@ -556,7 +564,7 @@ export default {
     if (url.pathname === '/api/email/verify' && request.method === 'POST') {
       try {
         const { email, code } = await request.json();
-        
+
         if (!email || !code) {
           return new Response(
             JSON.stringify({
@@ -569,7 +577,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ Email verificado para ${email}: ${code}`);

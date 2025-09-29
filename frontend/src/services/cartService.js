@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { API_CONFIG, getAuthToken } from '../config/constants.js';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
+const API_BASE_URL = API_CONFIG.baseURL;
 
 // Create axios instance
 const api = axios.create({
@@ -8,8 +9,8 @@ const api = axios.create({
   timeout: 10000,
   withCredentials: true,
   headers: {
-    'Content-Type': 'application/json',
-  },
+    'Content-Type': 'application/json'
+  }
 });
 
 // Cart service
@@ -90,7 +91,7 @@ const cartService = {
         if (quantity <= 0) {
           return this.removeFromCart(productId);
         }
-        
+
         item.quantity = quantity;
         item.totalPrice = item.quantity * item.price;
       }
@@ -131,7 +132,7 @@ const cartService = {
       const baseShipping = 50; // R$ 50 base
       const weightFactor = cart.length * 10; // R$ 10 per item
       const distanceFactor = this.getDistanceFactor(destination);
-      
+
       const shippingCost = baseShipping + weightFactor + distanceFactor;
 
       return {
@@ -152,32 +153,32 @@ const cartService = {
   // Get distance factor for shipping
   getDistanceFactor(destination) {
     const distanceMap = {
-      'same_state': 0,
-      'neighboring_state': 25,
-      'far_state': 50,
-      'north_region': 75,
-      'northeast_region': 100,
-      'south_region': 60,
-      'southeast_region': 40,
-      'center_west_region': 80
+      same_state: 0,
+      neighboring_state: 25,
+      far_state: 50,
+      north_region: 75,
+      northeast_region: 100,
+      south_region: 60,
+      southeast_region: 40,
+      center_west_region: 80
     };
-    
+
     return distanceMap[destination] || 50;
   },
 
   // Get estimated delivery days
   getEstimatedDelivery(destination) {
     const deliveryMap = {
-      'same_state': 2,
-      'neighboring_state': 3,
-      'far_state': 5,
-      'north_region': 7,
-      'northeast_region': 8,
-      'south_region': 4,
-      'southeast_region': 3,
-      'center_west_region': 6
+      same_state: 2,
+      neighboring_state: 3,
+      far_state: 5,
+      north_region: 7,
+      northeast_region: 8,
+      south_region: 4,
+      southeast_region: 3,
+      center_west_region: 6
     };
-    
+
     return deliveryMap[destination] || 5;
   },
 
@@ -198,7 +199,7 @@ const cartService = {
     try {
       const total = this.getCartTotal();
       const shipping = this.calculateShipping(cart, shippingInfo.destination);
-      
+
       const purchaseData = {
         items: cart,
         total: total,

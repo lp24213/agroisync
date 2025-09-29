@@ -13,23 +13,16 @@ class AgroNewsService {
   async getAgroNews() {
     const cacheKey = 'agro-news';
     const cached = this.cache.get(cacheKey);
-    
+
     if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
       return cached.data;
     }
 
     try {
       // Múltiplas fontes de notícias agro
-      const sources = [
-        'globo-rural',
-        'canal-rural', 
-        'agro-news',
-        'rural-news'
-      ];
+      const sources = ['globo-rural', 'canal-rural', 'agro-news', 'rural-news'];
 
-      const promises = sources.map(source => 
-        this.fetchFromSource(source)
-      );
+      const promises = sources.map(source => this.fetchFromSource(source));
 
       const results = await Promise.allSettled(promises);
       const allNews = results
@@ -85,7 +78,7 @@ class AgroNewsService {
   // Categorizar notícias
   categorizeNews(title) {
     const titleLower = title.toLowerCase();
-    
+
     if (titleLower.includes('soja') || titleLower.includes('milho') || titleLower.includes('café')) {
       return 'Commodities';
     }
@@ -101,7 +94,7 @@ class AgroNewsService {
     if (titleLower.includes('sustentabilidade') || titleLower.includes('carbono')) {
       return 'Sustentabilidade';
     }
-    
+
     return 'Geral';
   }
 
@@ -121,33 +114,33 @@ class AgroNewsService {
     return [
       {
         id: 1,
-        title: "Soja atinge nova máxima histórica com alta de 15%",
-        subtitle: "Preços sobem impulsionados pela demanda chinesa e condições climáticas adversas",
-        image: "https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=800&h=400&fit=crop",
-        link: "#",
-        category: "Commodities",
+        title: 'Soja atinge nova máxima histórica com alta de 15%',
+        subtitle: 'Preços sobem impulsionados pela demanda chinesa e condições climáticas adversas',
+        image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=800&h=400&fit=crop',
+        link: '#',
+        category: 'Commodities',
         publishedAt: new Date().toISOString(),
-        source: "AgroNews"
+        source: 'AgroNews'
       },
       {
         id: 2,
-        title: "Tecnologia 5G revoluciona agricultura de precisão",
-        subtitle: "Fazendas conectadas aumentam produtividade em até 30% com IoT",
-        image: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&h=400&fit=crop",
-        link: "#",
-        category: "Tecnologia",
+        title: 'Tecnologia 5G revoluciona agricultura de precisão',
+        subtitle: 'Fazendas conectadas aumentam produtividade em até 30% com IoT',
+        image: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&h=400&fit=crop',
+        link: '#',
+        category: 'Tecnologia',
         publishedAt: new Date().toISOString(),
-        source: "TechAgro"
+        source: 'TechAgro'
       },
       {
         id: 3,
-        title: "Milho: safra 2024 supera expectativas",
-        subtitle: "Produtores comemoram resultado acima da média nacional",
-        image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=400&fit=crop",
-        link: "#",
-        category: "Produção",
+        title: 'Milho: safra 2024 supera expectativas',
+        subtitle: 'Produtores comemoram resultado acima da média nacional',
+        image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=400&fit=crop',
+        link: '#',
+        category: 'Produção',
         publishedAt: new Date().toISOString(),
-        source: "RuralNews"
+        source: 'RuralNews'
       }
     ];
   }

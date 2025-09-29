@@ -15,7 +15,7 @@ class NewsService {
   async getAgroNews(limit = 10) {
     const cacheKey = `agro-news-${limit}`;
     const cached = this.cache.get(cacheKey);
-    
+
     if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
       return cached.data;
     }
@@ -25,7 +25,7 @@ class NewsService {
       this.error = null;
 
       let newsData;
-      
+
       if (this.apiKey) {
         try {
           newsData = await this.fetchNewsAPI(limit);
@@ -86,7 +86,7 @@ class NewsService {
   // Categorizar notícias
   categorizeNews(title, description) {
     const text = `${title} ${description}`.toLowerCase();
-    
+
     if (text.includes('soja') || text.includes('milho') || text.includes('grãos')) {
       return 'Grãos';
     } else if (text.includes('café') || text.includes('cafe')) {
@@ -109,7 +109,8 @@ class NewsService {
     const mockNews = [
       {
         title: 'Soja atinge novo recorde de preço na B3',
-        description: 'Commodity brasileira registra alta de 3,2% nesta semana, impulsionada pela demanda internacional.',
+        description:
+          'Commodity brasileira registra alta de 3,2% nesta semana, impulsionada pela demanda internacional.',
         url: '#',
         publishedAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
         source: 'AgroSync News',

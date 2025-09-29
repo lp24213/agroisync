@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { motion } from 'framer-motion';
 
-const AuthForm = ({ 
+const AuthForm = ({
   type = 'login', // 'login', 'register', 'forgot-password'
   module = 'general', // 'crypto', 'agroconecta', 'loja'
   onSubmit,
@@ -48,7 +48,18 @@ const AuthForm = ({
       case 'crypto':
         return ['email', 'password', 'confirmPassword', 'firstName', 'lastName', 'phone'];
       case 'agroconecta':
-        return ['email', 'password', 'confirmPassword', 'firstName', 'lastName', 'phone', 'cpf', 'company', 'role', 'address'];
+        return [
+          'email',
+          'password',
+          'confirmPassword',
+          'firstName',
+          'lastName',
+          'phone',
+          'cpf',
+          'company',
+          'role',
+          'address'
+        ];
       case 'loja':
         return ['email', 'password', 'confirmPassword', 'firstName', 'lastName', 'phone', 'cpf', 'address'];
       default:
@@ -62,17 +73,15 @@ const AuthForm = ({
       if (type === 'state') {
         const response = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados');
         const states = await response.json();
-        const filtered = states
-          .filter(state => state.nome.toLowerCase().includes(query.toLowerCase()))
-          .slice(0, 5);
+        const filtered = states.filter(state => state.nome.toLowerCase().includes(query.toLowerCase())).slice(0, 5);
         setAddressSuggestions(prev => ({ ...prev, states: filtered }));
       } else if (type === 'city' && formData.address.state) {
         const stateCode = formData.address.state;
-        const response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${stateCode}/municipios`);
+        const response = await fetch(
+          `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${stateCode}/municipios`
+        );
         const cities = await response.json();
-        const filtered = cities
-          .filter(city => city.nome.toLowerCase().includes(query.toLowerCase()))
-          .slice(0, 5);
+        const filtered = cities.filter(city => city.nome.toLowerCase().includes(query.toLowerCase())).slice(0, 5);
         setAddressSuggestions(prev => ({ ...prev, cities: filtered }));
       }
     } catch (error) {
@@ -102,7 +111,7 @@ const AuthForm = ({
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     if (type === 'register' && formData.password !== formData.confirmPassword) {
       return;
@@ -128,7 +137,7 @@ const AuthForm = ({
     return descriptions[module] || 'Plataforma completa para o agronegócio';
   };
 
-  const renderField = (fieldName) => {
+  const renderField = fieldName => {
     const fieldConfig = {
       email: {
         type: 'email',
@@ -197,23 +206,21 @@ const AuthForm = ({
 
     if (config.type === 'select') {
       return (
-        <div key={fieldName} className="space-y-2">
-          <label className={`block text-sm font-medium ${
-            isDark ? 'text-gray-300' : 'text-gray-700'
-          }`}>
-            {config.label} {config.required && <span className="text-red-500">*</span>}
+        <div key={fieldName} className='space-y-2'>
+          <label className={`block text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+            {config.label} {config.required && <span className='text-red-500'>*</span>}
           </label>
           <select
             value={formData[fieldName] || ''}
-            onChange={(e) => handleInputChange(fieldName, e.target.value)}
+            onChange={e => handleInputChange(fieldName, e.target.value)}
             required={config.required}
-            className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
-              isDark 
-                ? 'bg-gray-800 border-gray-600 text-white focus:border-cyan-400 focus:ring-cyan-400/20' 
-                : 'bg-white border-gray-300 text-gray-900 focus:border-green-500 focus:ring-green-500/20'
+            className={`w-full rounded-lg border px-4 py-3 transition-all duration-300 ${
+              isDark
+                ? 'border-gray-600 bg-gray-800 text-white focus:border-cyan-400 focus:ring-cyan-400/20'
+                : 'border-gray-300 bg-white text-gray-900 focus:border-green-500 focus:ring-green-500/20'
             } focus:outline-none focus:ring-2`}
           >
-            <option value="">Selecione...</option>
+            <option value=''>Selecione...</option>
             {config.options.map(option => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -225,28 +232,36 @@ const AuthForm = ({
     }
 
     return (
-      <div key={fieldName} className="space-y-2">
-        <label className={`block text-sm font-medium ${
-          isDark ? 'text-gray-300' : 'text-gray-700'
-        }`}>
-          {config.label} {config.required && <span className="text-red-500">*</span>}
+      <div key={fieldName} className='space-y-2'>
+        <label className={`block text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+          {config.label} {config.required && <span className='text-red-500'>*</span>}
         </label>
-        <div className="relative">
+        <div className='relative'>
           <input
-            type={config.showToggle ? (fieldName === 'password' ? (showPassword ? 'text' : 'password') : (showConfirmPassword ? 'text' : 'password')) : config.type}
+            type={
+              config.showToggle
+                ? fieldName === 'password'
+                  ? showPassword
+                    ? 'text'
+                    : 'password'
+                  : showConfirmPassword
+                    ? 'text'
+                    : 'password'
+                : config.type
+            }
             value={formData[fieldName] || ''}
-            onChange={(e) => handleInputChange(fieldName, e.target.value)}
+            onChange={e => handleInputChange(fieldName, e.target.value)}
             placeholder={config.placeholder}
             required={config.required}
-            className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
-              isDark 
-                ? 'bg-gray-800 border-gray-600 text-white focus:border-cyan-400 focus:ring-cyan-400/20' 
-                : 'bg-white border-gray-300 text-gray-900 focus:border-green-500 focus:ring-green-500/20'
+            className={`w-full rounded-lg border px-4 py-3 transition-all duration-300 ${
+              isDark
+                ? 'border-gray-600 bg-gray-800 text-white focus:border-cyan-400 focus:ring-cyan-400/20'
+                : 'border-gray-300 bg-white text-gray-900 focus:border-green-500 focus:ring-green-500/20'
             } focus:outline-none focus:ring-2`}
           />
           {config.showToggle && (
             <button
-              type="button"
+              type='button'
               onClick={() => {
                 if (fieldName === 'password') {
                   setShowPassword(!showPassword);
@@ -254,11 +269,11 @@ const AuthForm = ({
                   setShowConfirmPassword(!showConfirmPassword);
                 }
               }}
-              className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${
+              className={`absolute right-3 top-1/2 -translate-y-1/2 transform ${
                 isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              {fieldName === 'password' ? (showPassword ? '👁️' : '👁️‍🗨️') : (showConfirmPassword ? '👁️' : '👁️‍🗨️')}
+              {fieldName === 'password' ? (showPassword ? '👁️' : '👁️‍🗨️') : showConfirmPassword ? '👁️' : '👁️‍🗨️'}
             </button>
           )}
         </div>
@@ -270,56 +285,44 @@ const AuthForm = ({
     if (module !== 'agroconecta' && module !== 'loja') return null;
 
     return (
-      <div className="space-y-4">
-        <h3 className={`text-lg font-semibold ${
-          isDark ? 'text-gray-200' : 'text-gray-800'
-        }`}>
-          Endereço
-        </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className={`block text-sm font-medium ${
-              isDark ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-              CEP
-            </label>
+      <div className='space-y-4'>
+        <h3 className={`text-lg font-semibold ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>Endereço</h3>
+
+        <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+          <div className='space-y-2'>
+            <label className={`block text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>CEP</label>
             <input
-              type="text"
+              type='text'
               value={formData.address.zipCode || ''}
-              onChange={(e) => handleInputChange('address.zipCode', e.target.value)}
-              placeholder="00000-000"
-              className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
-                isDark 
-                  ? 'bg-gray-800 border-gray-600 text-white focus:border-cyan-400 focus:ring-cyan-400/20' 
-                  : 'bg-white border-gray-300 text-gray-900 focus:border-green-500 focus:ring-green-500/20'
+              onChange={e => handleInputChange('address.zipCode', e.target.value)}
+              placeholder='00000-000'
+              className={`w-full rounded-lg border px-4 py-3 transition-all duration-300 ${
+                isDark
+                  ? 'border-gray-600 bg-gray-800 text-white focus:border-cyan-400 focus:ring-cyan-400/20'
+                  : 'border-gray-300 bg-white text-gray-900 focus:border-green-500 focus:ring-green-500/20'
               } focus:outline-none focus:ring-2`}
             />
           </div>
-          
-          <div className="space-y-2">
-            <label className={`block text-sm font-medium ${
-              isDark ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-              Estado
-            </label>
+
+          <div className='space-y-2'>
+            <label className={`block text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Estado</label>
             <input
-              type="text"
+              type='text'
               value={formData.address.state || ''}
-              onChange={(e) => handleInputChange('address.state', e.target.value)}
-              placeholder="Digite o estado"
-              className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
-                isDark 
-                  ? 'bg-gray-800 border-gray-600 text-white focus:border-cyan-400 focus:ring-cyan-400/20' 
-                  : 'bg-white border-gray-300 text-gray-900 focus:border-green-500 focus:ring-green-500/20'
+              onChange={e => handleInputChange('address.state', e.target.value)}
+              placeholder='Digite o estado'
+              className={`w-full rounded-lg border px-4 py-3 transition-all duration-300 ${
+                isDark
+                  ? 'border-gray-600 bg-gray-800 text-white focus:border-cyan-400 focus:ring-cyan-400/20'
+                  : 'border-gray-300 bg-white text-gray-900 focus:border-green-500 focus:ring-green-500/20'
               } focus:outline-none focus:ring-2`}
             />
             {addressSuggestions.states.length > 0 && (
-              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
+              <div className='absolute z-10 mt-1 w-full rounded-lg border border-gray-300 bg-white shadow-lg'>
                 {addressSuggestions.states.map(state => (
                   <div
                     key={state.id}
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    className='cursor-pointer px-4 py-2 hover:bg-gray-100'
                     onClick={() => {
                       handleInputChange('address.state', state.sigla);
                       setAddressSuggestions(prev => ({ ...prev, states: [] }));
@@ -331,79 +334,63 @@ const AuthForm = ({
               </div>
             )}
           </div>
-          
-          <div className="space-y-2">
-            <label className={`block text-sm font-medium ${
-              isDark ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-              Cidade
-            </label>
+
+          <div className='space-y-2'>
+            <label className={`block text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Cidade</label>
             <input
-              type="text"
+              type='text'
               value={formData.address.city || ''}
-              onChange={(e) => handleInputChange('address.city', e.target.value)}
-              placeholder="Digite a cidade"
-                          className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
-              isDark 
-                ? 'bg-gray-800 border-gray-600 text-white focus:border-cyan-400 focus:ring-cyan-400/20' 
-                : 'bg-white border-gray-300 text-gray-900 focus:border-green-500 focus:ring-green-500/20'
-            } focus:outline-none focus:ring-2`}
+              onChange={e => handleInputChange('address.city', e.target.value)}
+              placeholder='Digite a cidade'
+              className={`w-full rounded-lg border px-4 py-3 transition-all duration-300 ${
+                isDark
+                  ? 'border-gray-600 bg-gray-800 text-white focus:border-cyan-400 focus:ring-cyan-400/20'
+                  : 'border-gray-300 bg-white text-gray-900 focus:border-green-500 focus:ring-green-500/20'
+              } focus:outline-none focus:ring-2`}
             />
           </div>
-          
-          <div className="space-y-2">
-            <label className={`block text-sm font-medium ${
-              isDark ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-              Bairro
-            </label>
+
+          <div className='space-y-2'>
+            <label className={`block text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Bairro</label>
             <input
-              type="text"
+              type='text'
               value={formData.address.neighborhood || ''}
-              onChange={(e) => handleInputChange('address.neighborhood', e.target.value)}
-              placeholder="Nome do bairro"
-              className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
-                isDark 
-                  ? 'bg-gray-800 border-gray-600 text-white focus:border-cyan-400 focus:ring-cyan-400/20' 
-                  : 'bg-white border-gray-300 text-gray-900 focus:border-green-500 focus:ring-green-500/20'
+              onChange={e => handleInputChange('address.neighborhood', e.target.value)}
+              placeholder='Nome do bairro'
+              className={`w-full rounded-lg border px-4 py-3 transition-all duration-300 ${
+                isDark
+                  ? 'border-gray-600 bg-gray-800 text-white focus:border-cyan-400 focus:ring-cyan-400/20'
+                  : 'border-gray-300 bg-white text-gray-900 focus:border-green-500 focus:ring-green-500/20'
               } focus:outline-none focus:ring-2`}
             />
           </div>
-          
-          <div className="space-y-2">
-            <label className={`block text-sm font-medium ${
-              isDark ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-              Rua
-            </label>
+
+          <div className='space-y-2'>
+            <label className={`block text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Rua</label>
             <input
-              type="text"
+              type='text'
               value={formData.address.street || ''}
-              onChange={(e) => handleInputChange('address.street', e.target.value)}
-              placeholder="Nome da rua"
-              className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
-                isDark 
-                  ? 'bg-gray-800 border-gray-600 text-white focus:border-cyan-400 focus:ring-cyan-400/20' 
-                  : 'bg-white border-gray-300 text-gray-900 focus:border-green-500 focus:ring-green-500/20'
+              onChange={e => handleInputChange('address.street', e.target.value)}
+              placeholder='Nome da rua'
+              className={`w-full rounded-lg border px-4 py-3 transition-all duration-300 ${
+                isDark
+                  ? 'border-gray-600 bg-gray-800 text-white focus:border-cyan-400 focus:ring-cyan-400/20'
+                  : 'border-gray-300 bg-white text-gray-900 focus:border-green-500 focus:ring-green-500/20'
               } focus:outline-none focus:ring-2`}
             />
           </div>
-          
-          <div className="space-y-2">
-            <label className={`block text-sm font-medium ${
-              isDark ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-              Número
-            </label>
+
+          <div className='space-y-2'>
+            <label className={`block text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Número</label>
             <input
-              type="text"
+              type='text'
               value={formData.address.number || ''}
-              onChange={(e) => handleInputChange('address.number', e.target.value)}
-              placeholder="Número"
-              className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
-                isDark 
-                  ? 'bg-gray-800 border-gray-600 text-white focus:border-cyan-400 focus:ring-cyan-400/20' 
-                  : 'bg-white border-gray-300 text-gray-900 focus:border-green-500 focus:ring-green-500/20'
+              onChange={e => handleInputChange('address.number', e.target.value)}
+              placeholder='Número'
+              className={`w-full rounded-lg border px-4 py-3 transition-all duration-300 ${
+                isDark
+                  ? 'border-gray-600 bg-gray-800 text-white focus:border-cyan-400 focus:ring-cyan-400/20'
+                  : 'border-gray-300 bg-white text-gray-900 focus:border-green-500 focus:ring-green-500/20'
               } focus:outline-none focus:ring-2`}
             />
           </div>
@@ -417,35 +404,27 @@ const AuthForm = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`w-full max-w-2xl mx-auto p-8 rounded-2xl ${
-        isDark 
-          ? 'bg-gray-900/80 backdrop-blur-xl border border-gray-700' 
-          : 'bg-white/90 backdrop-blur-xl border border-gray-200 shadow-2xl'
+      className={`mx-auto w-full max-w-2xl rounded-2xl p-8 ${
+        isDark
+          ? 'border border-gray-700 bg-gray-900/80 backdrop-blur-xl'
+          : 'border border-gray-200 bg-white/90 shadow-2xl backdrop-blur-xl'
       }`}
     >
-      <div className="text-center mb-8">
-        <h2 className={`text-3xl font-bold mb-2 ${
-          isDark ? 'text-white' : 'text-gray-900'
-        }`}>
+      <div className='mb-8 text-center'>
+        <h2 className={`mb-2 text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
           {type === 'login' ? 'Entrar' : type === 'register' ? 'Cadastrar' : 'Recuperar Senha'}
         </h2>
-        <h3 className={`text-xl font-semibold mb-1 ${
-          isDark ? 'text-cyan-400' : 'text-green-600'
-        }`}>
+        <h3 className={`mb-1 text-xl font-semibold ${isDark ? 'text-cyan-400' : 'text-green-600'}`}>
           {getModuleTitle()}
         </h3>
-        <p className={`text-sm ${
-          isDark ? 'text-gray-400' : 'text-gray-600'
-        }`}>
-          {getModuleDescription()}
-        </p>
+        <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{getModuleDescription()}</p>
       </div>
 
       {error && (
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-center"
+          className='mb-6 rounded-lg border border-red-500/20 bg-red-500/10 p-4 text-center text-red-500'
         >
           {error}
         </motion.div>
@@ -455,50 +434,56 @@ const AuthForm = ({
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-lg text-green-500 text-center"
+          className='mb-6 rounded-lg border border-green-500/20 bg-green-500/10 p-4 text-center text-green-500'
         >
           {success}
         </motion.div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <form onSubmit={handleSubmit} className='space-y-6'>
+        <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
           {getModuleFields().map(field => renderField(field))}
         </div>
 
         {renderAddressFields()}
 
         <button
-          type="submit"
+          type='submit'
           disabled={isLoading}
-          className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed ${
+          className={`w-full transform rounded-xl px-6 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50 ${
             isDark
               ? 'bg-gradient-to-r from-cyan-400 to-purple-500 text-white shadow-lg hover:shadow-xl hover:shadow-cyan-400/25'
               : 'bg-gradient-to-r from-green-600 to-blue-600 text-white shadow-lg hover:shadow-xl hover:shadow-green-600/25'
           }`}
         >
           {isLoading ? (
-            <div className="flex items-center justify-center">
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+            <div className='flex items-center justify-center'>
+              <div className='mr-2 h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent'></div>
               Processando...
             </div>
+          ) : type === 'login' ? (
+            'Entrar'
+          ) : type === 'register' ? (
+            'Cadastrar'
           ) : (
-            type === 'login' ? 'Entrar' : type === 'register' ? 'Cadastrar' : 'Enviar'
+            'Enviar'
           )}
         </button>
       </form>
 
-      <div className="mt-6 text-center">
+      <div className='mt-6 text-center'>
         <button
-          type="button"
+          type='button'
           onClick={onToggleType}
-          className={`text-sm hover:underline transition-colors duration-300 ${
+          className={`text-sm transition-colors duration-300 hover:underline ${
             isDark ? 'text-cyan-400 hover:text-cyan-300' : 'text-green-600 hover:text-green-700'
           }`}
         >
-          {type === 'login' ? 'Não tem conta? Cadastre-se' : 
-           type === 'register' ? 'Já tem conta? Entre aqui' : 
-           'Lembrou sua senha? Entre aqui'}
+          {type === 'login'
+            ? 'Não tem conta? Cadastre-se'
+            : type === 'register'
+              ? 'Já tem conta? Entre aqui'
+              : 'Lembrou sua senha? Entre aqui'}
         </button>
       </div>
     </motion.div>

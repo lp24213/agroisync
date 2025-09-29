@@ -1,19 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const TXCCard = ({
-  children,
-  variant = 'default',
-  hover = true,
-  className = '',
-  onClick,
-  ...props
-}) => {
+const TXCCard = ({ children, variant = 'default', hover = true, className = '', onClick, ...props }) => {
   const baseClasses = 'txc-card';
   const variantClasses = {
     default: 'txc-card',
     glass: 'txc-card-glass',
-    gradient: 'txc-card-gradient',
+    gradient: 'txc-card-gradient'
   };
 
   const cardClasses = `${baseClasses} ${variantClasses[variant]} ${className}`;

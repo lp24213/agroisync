@@ -27,7 +27,7 @@ const VisibilityManager = ({ item, itemType, onVisibilityChange }) => {
     setLoading(true);
     try {
       const paymentResult = await paymentService.processItemPayment(item.id, itemType);
-      
+
       if (paymentResult.success) {
         setPaymentStatus('paid');
         setIsPublic(true);
@@ -86,87 +86,117 @@ const VisibilityManager = ({ item, itemType, onVisibilityChange }) => {
   const renderVisibilityStatus = () => {
     if (paymentStatus === 'paid') {
       return (
-        <div className="flex items-center gap-2 text-green-600">
-          <CheckCircle className="w-5 h-5" />
-          <span className="text-sm font-medium">Dados Completos Liberados</span>
+        <div className='flex items-center gap-2 text-green-600'>
+          <CheckCircle className='h-5 w-5' />
+          <span className='text-sm font-medium'>Dados Completos Liberados</span>
         </div>
       );
     } else {
       return (
-        <div className="flex items-center gap-2 text-orange-600">
-          <AlertCircle className="w-5 h-5" />
-          <span className="text-sm font-medium">Apenas Dados Públicos</span>
+        <div className='flex items-center gap-2 text-orange-600'>
+          <AlertCircle className='h-5 w-5' />
+          <span className='text-sm font-medium'>Apenas Dados Públicos</span>
         </div>
       );
     }
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">
-          Controle de Visibilidade
-        </h3>
+    <div className='rounded-lg border border-gray-200 bg-white p-4'>
+      <div className='mb-4 flex items-center justify-between'>
+        <h3 className='text-lg font-semibold text-gray-900'>Controle de Visibilidade</h3>
         {renderVisibilityStatus()}
       </div>
 
-      <div className="space-y-4">
+      <div className='space-y-4'>
         {/* Dados Públicos */}
-        <div className="bg-gray-50 rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <Eye className="w-5 h-5 text-green-600" />
-            <h4 className="font-medium text-gray-900">Dados Públicos</h4>
+        <div className='rounded-lg bg-gray-50 p-4'>
+          <div className='mb-3 flex items-center gap-2'>
+            <Eye className='h-5 w-5 text-green-600' />
+            <h4 className='font-medium text-gray-900'>Dados Públicos</h4>
           </div>
-          <div className="text-sm text-gray-600">
+          <div className='text-sm text-gray-600'>
             {itemType === 'product' ? (
-              <div className="space-y-2">
-                <p><strong>Nome:</strong> {getPublicData().name}</p>
-                <p><strong>Localização:</strong> {getPublicData().location}</p>
-                <p><strong>Categoria:</strong> {getPublicData().category}</p>
+              <div className='space-y-2'>
+                <p>
+                  <strong>Nome:</strong> {getPublicData().name}
+                </p>
+                <p>
+                  <strong>Localização:</strong> {getPublicData().location}
+                </p>
+                <p>
+                  <strong>Categoria:</strong> {getPublicData().category}
+                </p>
               </div>
             ) : (
-              <div className="space-y-2">
-                <p><strong>Origem:</strong> {getPublicData().origin}</p>
-                <p><strong>Destino:</strong> {getPublicData().destination}</p>
-                <p><strong>Valor:</strong> R$ {getPublicData().value}</p>
-                <p><strong>Tipo de Veículo:</strong> {getPublicData().vehicleType}</p>
+              <div className='space-y-2'>
+                <p>
+                  <strong>Origem:</strong> {getPublicData().origin}
+                </p>
+                <p>
+                  <strong>Destino:</strong> {getPublicData().destination}
+                </p>
+                <p>
+                  <strong>Valor:</strong> R$ {getPublicData().value}
+                </p>
+                <p>
+                  <strong>Tipo de Veículo:</strong> {getPublicData().vehicleType}
+                </p>
               </div>
             )}
           </div>
         </div>
 
         {/* Dados Privados */}
-        <div className="bg-blue-50 rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-3">
+        <div className='rounded-lg bg-blue-50 p-4'>
+          <div className='mb-3 flex items-center gap-2'>
             {paymentStatus === 'paid' ? (
-              <Unlock className="w-5 h-5 text-blue-600" />
+              <Unlock className='h-5 w-5 text-blue-600' />
             ) : (
-              <Lock className="w-5 h-5 text-gray-400" />
+              <Lock className='h-5 w-5 text-gray-400' />
             )}
-            <h4 className="font-medium text-gray-900">Dados Completos</h4>
+            <h4 className='font-medium text-gray-900'>Dados Completos</h4>
           </div>
-          
+
           {paymentStatus === 'paid' ? (
-            <div className="text-sm text-gray-600">
+            <div className='text-sm text-gray-600'>
               {itemType === 'product' ? (
-                <div className="space-y-2">
-                  <p><strong>Descrição Completa:</strong> {getPrivateData().fullDescription}</p>
-                  <p><strong>Preço:</strong> R$ {getPrivateData().price}</p>
-                  <p><strong>Quantidade:</strong> {getPrivateData().quantity}</p>
-                  <p><strong>Contato:</strong> {getPrivateData().contact}</p>
-                  <p><strong>Especificações:</strong> {getPrivateData().specifications}</p>
+                <div className='space-y-2'>
+                  <p>
+                    <strong>Descrição Completa:</strong> {getPrivateData().fullDescription}
+                  </p>
+                  <p>
+                    <strong>Preço:</strong> R$ {getPrivateData().price}
+                  </p>
+                  <p>
+                    <strong>Quantidade:</strong> {getPrivateData().quantity}
+                  </p>
+                  <p>
+                    <strong>Contato:</strong> {getPrivateData().contact}
+                  </p>
+                  <p>
+                    <strong>Especificações:</strong> {getPrivateData().specifications}
+                  </p>
                 </div>
               ) : (
-                <div className="space-y-2">
-                  <p><strong>Descrição Completa:</strong> {getPrivateData().fullDescription}</p>
-                  <p><strong>Contato:</strong> {getPrivateData().contact}</p>
-                  <p><strong>Requisitos:</strong> {getPrivateData().requirements}</p>
-                  <p><strong>Cronograma:</strong> {getPrivateData().schedule}</p>
+                <div className='space-y-2'>
+                  <p>
+                    <strong>Descrição Completa:</strong> {getPrivateData().fullDescription}
+                  </p>
+                  <p>
+                    <strong>Contato:</strong> {getPrivateData().contact}
+                  </p>
+                  <p>
+                    <strong>Requisitos:</strong> {getPrivateData().requirements}
+                  </p>
+                  <p>
+                    <strong>Cronograma:</strong> {getPrivateData().schedule}
+                  </p>
                 </div>
               )}
             </div>
           ) : (
-            <div className="text-sm text-gray-500">
+            <div className='text-sm text-gray-500'>
               <p>Dados completos serão liberados após o pagamento.</p>
               <p>Inclui: descrição completa, preços, contatos e especificações.</p>
             </div>
@@ -178,14 +208,14 @@ const VisibilityManager = ({ item, itemType, onVisibilityChange }) => {
           <motion.button
             onClick={handlePayment}
             disabled={loading}
-            className="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+            className='flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-3 font-medium text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50'
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
             {loading ? (
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <div className='h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent'></div>
             ) : (
-              <CreditCard className="w-5 h-5" />
+              <CreditCard className='h-5 w-5' />
             )}
             {loading ? 'Processando...' : 'Liberar Dados Completos'}
           </motion.button>

@@ -15,9 +15,11 @@ database_id = "a3eb1069-9c36-4689-9ee9-971245cb2d12"
 [vars]
 NODE_ENV = "production"
 API_VERSION = "v1"
-RESEND_API_KEY = "re_f9XgEUAJ_2FwkAe87mmUZJhTTAy8xuWg8"
+# Configure via Wrangler secrets: wrangler secret put RESEND_API_KEY
+# RESEND_API_KEY is intentionally not set here
 RESEND_FROM = "Agroisync <contato@agroisync.com>"
-CLOUDFLARE_TURNSTILE_SECRET = "0x4AAAAAAB3pdkPMyeyfUQQaEpNBMb0NYhk"
+# Configure via Wrangler secrets: wrangler secret put CLOUDFLARE_TURNSTILE_SECRET
+# CLOUDFLARE_TURNSTILE_SECRET is intentionally not set here
 
 # Rota do Worker servindo sob o domínio principal
 routes = ["agroisync.com/api/*"]

@@ -24,8 +24,8 @@ const AgroisyncForgotPassword = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { duration: 0.8, ease: 'easeOut' },
-    },
+      transition: { duration: 0.8, ease: 'easeOut' }
+    }
   };
 
   const itemVariants = {
@@ -33,17 +33,17 @@ const AgroisyncForgotPassword = () => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.8, ease: 'easeOut' },
-    },
+      transition: { duration: 0.8, ease: 'easeOut' }
+    }
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-    
+
     // Limpar erro quando usuário começar a digitar
     if (errors[name]) {
       setErrors(prev => ({
@@ -53,9 +53,9 @@ const AgroisyncForgotPassword = () => {
     }
   };
 
-  const handleSendCode = async (e) => {
+  const handleSendCode = async e => {
     e.preventDefault();
-    
+
     if (!formData.email) {
       setErrors({ email: 'Email é obrigatório' });
       return;
@@ -77,9 +77,9 @@ const AgroisyncForgotPassword = () => {
     }
   };
 
-  const handleVerifyCode = async (e) => {
+  const handleVerifyCode = async e => {
     e.preventDefault();
-    
+
     if (!formData.code) {
       setErrors({ code: 'Código é obrigatório' });
       return;
@@ -93,9 +93,9 @@ const AgroisyncForgotPassword = () => {
     setStep(3);
   };
 
-  const handleResetPassword = async (e) => {
+  const handleResetPassword = async e => {
     e.preventDefault();
-    
+
     if (!formData.newPassword) {
       setErrors({ newPassword: 'Nova senha é obrigatória' });
       return;
@@ -113,12 +113,8 @@ const AgroisyncForgotPassword = () => {
 
     setIsLoading(true);
     try {
-      const result = await authService.resetPassword(
-        formData.email,
-        formData.code,
-        formData.newPassword
-      );
-      
+      const result = await authService.resetPassword(formData.email, formData.code, formData.newPassword);
+
       if (result.success) {
         toast.success('Senha redefinida com sucesso!');
         navigate('/login');
@@ -135,33 +131,31 @@ const AgroisyncForgotPassword = () => {
   const renderStep1 = () => (
     <motion.div
       variants={itemVariants}
-      className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 w-full max-w-md mx-auto"
+      className='mx-auto w-full max-w-md rounded-2xl bg-white/80 p-8 shadow-xl backdrop-blur-sm'
     >
-      <div className="text-center mb-8">
-        <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Mail className="w-8 h-8 text-emerald-600" />
+      <div className='mb-8 text-center'>
+        <div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100'>
+          <Mail className='h-8 w-8 text-emerald-600' />
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Recuperar Senha</h1>
-        <p className="text-gray-600">Digite seu email para receber um código de recuperação</p>
+        <h1 className='mb-2 text-2xl font-bold text-gray-900'>Recuperar Senha</h1>
+        <p className='text-gray-600'>Digite seu email para receber um código de recuperação</p>
       </div>
 
-      <form onSubmit={handleSendCode} className="space-y-6">
+      <form onSubmit={handleSendCode} className='space-y-6'>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Email
-          </label>
+          <label className='mb-2 block text-sm font-medium text-gray-700'>Email</label>
           <input
-            type="email"
-            name="email"
+            type='email'
+            name='email'
             value={formData.email}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
-            placeholder="seu@email.com"
+            className='w-full rounded-lg border border-gray-300 px-4 py-3 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-emerald-500'
+            placeholder='seu@email.com'
             required
           />
           {errors.email && (
-            <p className="mt-1 text-sm text-red-600 flex items-center">
-              <AlertCircle className="w-4 h-4 mr-1" />
+            <p className='mt-1 flex items-center text-sm text-red-600'>
+              <AlertCircle className='mr-1 h-4 w-4' />
               {errors.email}
             </p>
           )}
@@ -169,11 +163,11 @@ const AgroisyncForgotPassword = () => {
 
         {/* Cloudflare Turnstile */}
         <CloudflareTurnstile
-          onVerify={(token) => {
+          onVerify={token => {
             setTurnstileToken(token);
             setErrors(prev => ({ ...prev, general: '' }));
           }}
-          onError={(error) => {
+          onError={error => {
             setErrors({ general: 'Erro na verificação. Tente novamente.' });
             setTurnstileToken('');
           }}
@@ -184,20 +178,20 @@ const AgroisyncForgotPassword = () => {
         />
 
         <button
-          type="submit"
+          type='submit'
           disabled={isLoading || !turnstileToken}
-          className="w-full bg-emerald-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className='w-full rounded-lg bg-emerald-600 px-4 py-3 font-medium text-white transition-all duration-200 hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
         >
           {isLoading ? 'Enviando...' : 'Enviar Código'}
         </button>
       </form>
 
-      <div className="mt-6 text-center">
+      <div className='mt-6 text-center'>
         <Link
-          to="/login"
-          className="text-emerald-600 hover:text-emerald-700 font-medium flex items-center justify-center"
+          to='/login'
+          className='flex items-center justify-center font-medium text-emerald-600 hover:text-emerald-700'
         >
-          <ArrowLeft className="w-4 h-4 mr-2" />
+          <ArrowLeft className='mr-2 h-4 w-4' />
           Voltar ao Login
         </Link>
       </div>
@@ -207,57 +201,55 @@ const AgroisyncForgotPassword = () => {
   const renderStep2 = () => (
     <motion.div
       variants={itemVariants}
-      className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 w-full max-w-md mx-auto"
+      className='mx-auto w-full max-w-md rounded-2xl bg-white/80 p-8 shadow-xl backdrop-blur-sm'
     >
-      <div className="text-center mb-8">
-        <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <CheckCircle className="w-8 h-8 text-emerald-600" />
+      <div className='mb-8 text-center'>
+        <div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100'>
+          <CheckCircle className='h-8 w-8 text-emerald-600' />
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Verificar Código</h1>
-        <p className="text-gray-600">
+        <h1 className='mb-2 text-2xl font-bold text-gray-900'>Verificar Código</h1>
+        <p className='text-gray-600'>
           Digite o código de 6 dígitos enviado para <br />
-          <span className="font-medium">{formData.email}</span>
+          <span className='font-medium'>{formData.email}</span>
         </p>
       </div>
 
-      <form onSubmit={handleVerifyCode} className="space-y-6">
+      <form onSubmit={handleVerifyCode} className='space-y-6'>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Código de Verificação
-          </label>
+          <label className='mb-2 block text-sm font-medium text-gray-700'>Código de Verificação</label>
           <input
-            type="text"
-            name="code"
+            type='text'
+            name='code'
             value={formData.code}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 text-center text-2xl tracking-widest"
-            placeholder="000000"
-            maxLength="6"
+            className='w-full rounded-lg border border-gray-300 px-4 py-3 text-center text-2xl tracking-widest transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-emerald-500'
+            placeholder='000000'
+            maxLength='6'
             required
           />
           {errors.code && (
-            <p className="mt-1 text-sm text-red-600 flex items-center">
-              <AlertCircle className="w-4 h-4 mr-1" />
+            <p className='mt-1 flex items-center text-sm text-red-600'>
+              <AlertCircle className='mr-1 h-4 w-4' />
               {errors.code}
             </p>
           )}
         </div>
 
         <button
-          type="submit"
+          type='submit'
           disabled={isLoading}
-          className="w-full bg-emerald-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className='w-full rounded-lg bg-emerald-600 px-4 py-3 font-medium text-white transition-all duration-200 hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
         >
           Verificar Código
         </button>
       </form>
 
-      <div className="mt-6 text-center">
+      <div className='mt-6 text-center'>
         <button
           onClick={() => setStep(1)}
-          className="text-emerald-600 hover:text-emerald-700 font-medium flex items-center justify-center mx-auto"
+          className='mx-auto flex items-center justify-center font-medium text-emerald-600 hover:text-emerald-700'
         >
-          <ArrowLeft className="w-4 h-4 mr-2" />
+          <ArrowLeft className='mr-2 h-4 w-4' />
           Voltar
         </button>
       </div>
@@ -267,74 +259,70 @@ const AgroisyncForgotPassword = () => {
   const renderStep3 = () => (
     <motion.div
       variants={itemVariants}
-      className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 w-full max-w-md mx-auto"
+      className='mx-auto w-full max-w-md rounded-2xl bg-white/80 p-8 shadow-xl backdrop-blur-sm'
     >
-      <div className="text-center mb-8">
-        <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <CheckCircle className="w-8 h-8 text-emerald-600" />
+      <div className='mb-8 text-center'>
+        <div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100'>
+          <CheckCircle className='h-8 w-8 text-emerald-600' />
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Nova Senha</h1>
-        <p className="text-gray-600">Digite sua nova senha</p>
+        <h1 className='mb-2 text-2xl font-bold text-gray-900'>Nova Senha</h1>
+        <p className='text-gray-600'>Digite sua nova senha</p>
       </div>
 
-      <form onSubmit={handleResetPassword} className="space-y-6">
+      <form onSubmit={handleResetPassword} className='space-y-6'>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Nova Senha
-          </label>
+          <label className='mb-2 block text-sm font-medium text-gray-700'>Nova Senha</label>
           <input
-            type="password"
-            name="newPassword"
+            type='password'
+            name='newPassword'
             value={formData.newPassword}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
-            placeholder="Mínimo 6 caracteres"
+            className='w-full rounded-lg border border-gray-300 px-4 py-3 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-emerald-500'
+            placeholder='Mínimo 6 caracteres'
             required
           />
           {errors.newPassword && (
-            <p className="mt-1 text-sm text-red-600 flex items-center">
-              <AlertCircle className="w-4 h-4 mr-1" />
+            <p className='mt-1 flex items-center text-sm text-red-600'>
+              <AlertCircle className='mr-1 h-4 w-4' />
               {errors.newPassword}
             </p>
           )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Confirmar Nova Senha
-          </label>
+          <label className='mb-2 block text-sm font-medium text-gray-700'>Confirmar Nova Senha</label>
           <input
-            type="password"
-            name="confirmPassword"
+            type='password'
+            name='confirmPassword'
             value={formData.confirmPassword}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
-            placeholder="Digite novamente"
+            className='w-full rounded-lg border border-gray-300 px-4 py-3 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-emerald-500'
+            placeholder='Digite novamente'
             required
           />
           {errors.confirmPassword && (
-            <p className="mt-1 text-sm text-red-600 flex items-center">
-              <AlertCircle className="w-4 h-4 mr-1" />
+            <p className='mt-1 flex items-center text-sm text-red-600'>
+              <AlertCircle className='mr-1 h-4 w-4' />
               {errors.confirmPassword}
             </p>
           )}
         </div>
 
         <button
-          type="submit"
+          type='submit'
           disabled={isLoading}
-          className="w-full bg-emerald-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className='w-full rounded-lg bg-emerald-600 px-4 py-3 font-medium text-white transition-all duration-200 hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
         >
           {isLoading ? 'Redefinindo...' : 'Redefinir Senha'}
         </button>
       </form>
 
-      <div className="mt-6 text-center">
+      <div className='mt-6 text-center'>
         <button
           onClick={() => setStep(2)}
-          className="text-emerald-600 hover:text-emerald-700 font-medium flex items-center justify-center mx-auto"
+          className='mx-auto flex items-center justify-center font-medium text-emerald-600 hover:text-emerald-700'
         >
-          <ArrowLeft className="w-4 h-4 mr-2" />
+          <ArrowLeft className='mr-2 h-4 w-4' />
           Voltar
         </button>
       </div>
@@ -342,24 +330,24 @@ const AgroisyncForgotPassword = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative overflow-hidden">
+    <div className='relative min-h-screen overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50'>
       {/* Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-teal-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+      <div className='absolute inset-0 overflow-hidden'>
+        <div className='absolute -right-40 -top-40 h-80 w-80 animate-pulse rounded-full bg-emerald-200 opacity-20 mix-blend-multiply blur-xl filter'></div>
+        <div className='absolute -bottom-40 -left-40 h-80 w-80 animate-pulse rounded-full bg-teal-200 opacity-20 mix-blend-multiply blur-xl filter'></div>
       </div>
 
       <motion.div
         variants={heroVariants}
-        initial="hidden"
-        animate="visible"
-        className="relative z-10 flex items-center justify-center min-h-screen p-4"
+        initial='hidden'
+        animate='visible'
+        className='relative z-10 flex min-h-screen items-center justify-center p-4'
       >
         {step === 1 && renderStep1()}
         {step === 2 && renderStep2()}
         {step === 3 && renderStep3()}
-        <div className="mt-8 flex justify-center">
-          <CryptoHash pageName="forgot-password" style={{ display: 'none' }} />
+        <div className='mt-8 flex justify-center'>
+          <CryptoHash pageName='forgot-password' style={{ display: 'none' }} />
         </div>
       </motion.div>
     </div>

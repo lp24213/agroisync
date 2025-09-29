@@ -5,19 +5,19 @@
 
 // Tipos de documento
 export const DOCUMENT_TYPES = {
-  'CPF': {
+  CPF: {
     name: 'CPF',
     mask: '000.000.000-00',
     length: 11,
     description: 'Cadastro de Pessoa Física'
   },
-  'CNPJ': {
+  CNPJ: {
     name: 'CNPJ',
     mask: '00.000.000/0000-00',
     length: 14,
     description: 'Cadastro Nacional da Pessoa Jurídica'
   },
-  'IE': {
+  IE: {
     name: 'IE',
     mask: '000.000.000.000',
     length: 12,
@@ -27,22 +27,22 @@ export const DOCUMENT_TYPES = {
 
 // Status de validação
 export const VALIDATION_STATUS = {
-  'VALID': {
+  VALID: {
     name: 'Válido',
     color: 'bg-green-100 text-green-800',
     description: 'Documento validado com sucesso'
   },
-  'INVALID': {
+  INVALID: {
     name: 'Inválido',
     color: 'bg-red-100 text-red-800',
     description: 'Documento não foi validado'
   },
-  'PENDING': {
+  PENDING: {
     name: 'Pendente',
     color: 'bg-yellow-100 text-yellow-800',
     description: 'Validação em andamento'
   },
-  'ERROR': {
+  ERROR: {
     name: 'Erro',
     color: 'bg-red-100 text-red-800',
     description: 'Erro na validação'
@@ -51,33 +51,33 @@ export const VALIDATION_STATUS = {
 
 // Estados brasileiros para validação de IE
 export const BRAZILIAN_STATES = {
-  'AC': { name: 'Acre', ieFormat: '01.000.000-1' },
-  'AL': { name: 'Alagoas', ieFormat: '24.000.000-0' },
-  'AP': { name: 'Amapá', ieFormat: '03.000.000-0' },
-  'AM': { name: 'Amazonas', ieFormat: '07.000.000-0' },
-  'BA': { name: 'Bahia', ieFormat: '06.000.000-0' },
-  'CE': { name: 'Ceará', ieFormat: '07.000.000-0' },
-  'DF': { name: 'Distrito Federal', ieFormat: '07.000.000-0' },
-  'ES': { name: 'Espírito Santo', ieFormat: '08.000.000-0' },
-  'GO': { name: 'Goiás', ieFormat: '10.000.000-0' },
-  'MA': { name: 'Maranhão', ieFormat: '12.000.000-0' },
-  'MT': { name: 'Mato Grosso', ieFormat: '13.000.000-0' },
-  'MS': { name: 'Mato Grosso do Sul', ieFormat: '28.000.000-0' },
-  'MG': { name: 'Minas Gerais', ieFormat: '06.000.000-0' },
-  'PA': { name: 'Pará', ieFormat: '15.000.000-0' },
-  'PB': { name: 'Paraíba', ieFormat: '16.000.000-0' },
-  'PR': { name: 'Paraná', ieFormat: '20.000.000-0' },
-  'PE': { name: 'Pernambuco', ieFormat: '18.000.000-0' },
-  'PI': { name: 'Piauí', ieFormat: '19.000.000-0' },
-  'RJ': { name: 'Rio de Janeiro', ieFormat: '20.000.000-0' },
-  'RN': { name: 'Rio Grande do Norte', ieFormat: '20.000.000-0' },
-  'RS': { name: 'Rio Grande do Sul', ieFormat: '22.000.000-0' },
-  'RO': { name: 'Rondônia', ieFormat: '21.000.000-0' },
-  'RR': { name: 'Roraima', ieFormat: '24.000.000-0' },
-  'SC': { name: 'Santa Catarina', ieFormat: '25.000.000-0' },
-  'SP': { name: 'São Paulo', ieFormat: '11.000.000-0' },
-  'SE': { name: 'Sergipe', ieFormat: '27.000.000-0' },
-  'TO': { name: 'Tocantins', ieFormat: '29.000.000-0' }
+  AC: { name: 'Acre', ieFormat: '01.000.000-1' },
+  AL: { name: 'Alagoas', ieFormat: '24.000.000-0' },
+  AP: { name: 'Amapá', ieFormat: '03.000.000-0' },
+  AM: { name: 'Amazonas', ieFormat: '07.000.000-0' },
+  BA: { name: 'Bahia', ieFormat: '06.000.000-0' },
+  CE: { name: 'Ceará', ieFormat: '07.000.000-0' },
+  DF: { name: 'Distrito Federal', ieFormat: '07.000.000-0' },
+  ES: { name: 'Espírito Santo', ieFormat: '08.000.000-0' },
+  GO: { name: 'Goiás', ieFormat: '10.000.000-0' },
+  MA: { name: 'Maranhão', ieFormat: '12.000.000-0' },
+  MT: { name: 'Mato Grosso', ieFormat: '13.000.000-0' },
+  MS: { name: 'Mato Grosso do Sul', ieFormat: '28.000.000-0' },
+  MG: { name: 'Minas Gerais', ieFormat: '06.000.000-0' },
+  PA: { name: 'Pará', ieFormat: '15.000.000-0' },
+  PB: { name: 'Paraíba', ieFormat: '16.000.000-0' },
+  PR: { name: 'Paraná', ieFormat: '20.000.000-0' },
+  PE: { name: 'Pernambuco', ieFormat: '18.000.000-0' },
+  PI: { name: 'Piauí', ieFormat: '19.000.000-0' },
+  RJ: { name: 'Rio de Janeiro', ieFormat: '20.000.000-0' },
+  RN: { name: 'Rio Grande do Norte', ieFormat: '20.000.000-0' },
+  RS: { name: 'Rio Grande do Sul', ieFormat: '22.000.000-0' },
+  RO: { name: 'Rondônia', ieFormat: '21.000.000-0' },
+  RR: { name: 'Roraima', ieFormat: '24.000.000-0' },
+  SC: { name: 'Santa Catarina', ieFormat: '25.000.000-0' },
+  SP: { name: 'São Paulo', ieFormat: '11.000.000-0' },
+  SE: { name: 'Sergipe', ieFormat: '27.000.000-0' },
+  TO: { name: 'Tocantins', ieFormat: '29.000.000-0' }
 };
 
 class ReceitaService {
@@ -108,7 +108,7 @@ class ReceitaService {
 
       // Limpar CPF (remover pontos e traços)
       const cleanCPF = cpf.replace(/\D/g, '');
-      
+
       // Verificar formato básico
       if (cleanCPF.length !== 11) {
         return {
@@ -145,10 +145,10 @@ class ReceitaService {
 
       // Simular validação para desenvolvimento
       const mockValidation = await this.mockCPFValidation(cleanCPF);
-      
+
       // Salvar no cache
       this.saveToCache(cacheKey, mockValidation);
-      
+
       return mockValidation;
     } catch (error) {
       console.error('Erro na validação de CPF:', error);
@@ -172,7 +172,7 @@ class ReceitaService {
 
       // Limpar CNPJ (remover pontos, traços e barras)
       const cleanCNPJ = cnpj.replace(/\D/g, '');
-      
+
       // Verificar formato básico
       if (cleanCNPJ.length !== 14) {
         return {
@@ -209,10 +209,10 @@ class ReceitaService {
 
       // Simular validação para desenvolvimento
       const mockValidation = await this.mockCNPJValidation(cleanCNPJ);
-      
+
       // Salvar no cache
       this.saveToCache(cacheKey, mockValidation);
-      
+
       return mockValidation;
     } catch (error) {
       console.error('Erro na validação de CNPJ:', error);
@@ -236,7 +236,7 @@ class ReceitaService {
 
       // Limpar IE (remover pontos e traços)
       const cleanIE = ie.replace(/\D/g, '');
-      
+
       // Verificar se o estado foi informado
       if (!state || !BRAZILIAN_STATES[state.toUpperCase()]) {
         return {
@@ -277,10 +277,10 @@ class ReceitaService {
 
       // Simular validação para desenvolvimento
       const mockValidation = await this.mockIEValidation(cleanIE, state.toUpperCase());
-      
+
       // Salvar no cache
       this.saveToCache(cacheKey, mockValidation);
-      
+
       return mockValidation;
     } catch (error) {
       console.error('Erro na validação de IE:', error);
@@ -389,10 +389,10 @@ class ReceitaService {
 
       // Simular informações da empresa para desenvolvimento
       const mockCompanyInfo = await this.mockCompanyInfo(cnpj);
-      
+
       // Salvar no cache
       this.saveToCache(cacheKey, mockCompanyInfo);
-      
+
       return mockCompanyInfo;
     } catch (error) {
       console.error('Erro ao obter informações da empresa:', error);
@@ -429,10 +429,10 @@ class ReceitaService {
 
       // Simular informações da pessoa para desenvolvimento
       const mockPersonInfo = await this.mockPersonInfo(cpf);
-      
+
       // Salvar no cache
       this.saveToCache(cacheKey, mockPersonInfo);
-      
+
       return mockPersonInfo;
     } catch (error) {
       console.error('Erro ao obter informações da pessoa:', error);
@@ -469,7 +469,7 @@ class ReceitaService {
 
       // Simular verificação de situação cadastral para desenvolvimento
       const mockCadastralStatus = await this.mockCadastralStatus(document, type);
-      
+
       return mockCadastralStatus;
     } catch (error) {
       console.error('Erro ao verificar situação cadastral:', error);
@@ -504,16 +504,10 @@ class ReceitaService {
     await new Promise(resolve => setTimeout(resolve, 800));
 
     // Simular CPFs válidos (apenas para demonstração)
-    const validCPFs = [
-      '12345678909',
-      '98765432100',
-      '11144477735',
-      '12345678901',
-      '98765432109'
-    ];
+    const validCPFs = ['12345678909', '98765432100', '11144477735', '12345678901', '98765432109'];
 
     const isValid = validCPFs.includes(cpf);
-    
+
     if (isValid) {
       return {
         valid: true,
@@ -545,16 +539,10 @@ class ReceitaService {
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Simular CNPJs válidos (apenas para demonstração)
-    const validCNPJs = [
-      '12345678000195',
-      '98765432000100',
-      '11111111000101',
-      '22222222000102',
-      '33333333000103'
-    ];
+    const validCNPJs = ['12345678000195', '98765432000100', '11111111000101', '22222222000102', '33333333000103'];
 
     const isValid = validCNPJs.includes(cnpj);
-    
+
     if (isValid) {
       return {
         valid: true,
@@ -587,16 +575,10 @@ class ReceitaService {
     await new Promise(resolve => setTimeout(resolve, 600));
 
     // Simular IEs válidas (apenas para demonstração)
-    const validIEs = [
-      '123456789',
-      '987654321',
-      '111222333',
-      '444555666',
-      '777888999'
-    ];
+    const validIEs = ['123456789', '987654321', '111222333', '444555666', '777888999'];
 
     const isValid = validIEs.includes(ie);
-    
+
     if (isValid) {
       return {
         valid: true,
@@ -725,9 +707,10 @@ class ReceitaService {
       cadastralStatus: {
         situation: randomSituation,
         lastUpdate: new Date().toISOString(),
-        observations: randomSituation === 'REGULAR' || randomSituation === 'ATIVA' 
-          ? 'Situação cadastral regular' 
-          : 'Verificar pendências na Receita Federal',
+        observations:
+          randomSituation === 'REGULAR' || randomSituation === 'ATIVA'
+            ? 'Situação cadastral regular'
+            : 'Verificar pendências na Receita Federal',
         nextValidation: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 dias
       },
       source: 'Receita Federal (Mock)'

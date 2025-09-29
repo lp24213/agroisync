@@ -26,7 +26,7 @@ class CognitoAuthService {
               sub: 'admin-user-id',
               'cognito:groups': ['admin'],
               email_verified: true,
-              exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 horas
+              exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60 // 24 horas
             });
 
             // Configurar usuário admin
@@ -62,7 +62,7 @@ class CognitoAuthService {
                 sub: 'user-' + Date.now(),
                 'cognito:groups': ['user'],
                 email_verified: true,
-                exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 horas
+                exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60 // 24 horas
               });
 
               // Configurar usuário comum
@@ -110,10 +110,10 @@ class CognitoAuthService {
 
   // Verificar se o usuário está autenticado
   async checkAuthStatus() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       try {
         const accessToken = Cookies.get(this.config.auth.cookieName);
-        
+
         if (!accessToken) {
           resolve({ isAuthenticated: false, user: null, isAdmin: false });
           return;
@@ -135,8 +135,8 @@ class CognitoAuthService {
             email_verified: decodedToken.email_verified
           };
 
-          resolve({ 
-            isAuthenticated: true, 
+          resolve({
+            isAuthenticated: true,
             user: this.currentUser,
             isAdmin: isAdmin
           });
@@ -155,7 +155,7 @@ class CognitoAuthService {
 
   // Logout
   async logout() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       this.clearAuthCookies();
       this.currentUser = null;
       resolve({ success: true });
@@ -167,7 +167,7 @@ class CognitoAuthService {
     return new Promise((resolve, reject) => {
       try {
         const refreshToken = Cookies.get('agrosync_refresh_token');
-        
+
         if (!refreshToken) {
           reject(new Error('Refresh token não encontrado'));
           return;
@@ -179,7 +179,7 @@ class CognitoAuthService {
           sub: this.currentUser?.sub || 'unknown-user',
           'cognito:groups': this.currentUser?.groups || ['user'],
           email_verified: true,
-          exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 horas
+          exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60 // 24 horas
         });
 
         // Atualizar cookies
@@ -195,11 +195,11 @@ class CognitoAuthService {
   // Verificar se o token é válido
   isTokenValid(token) {
     if (!token) return false;
-    
+
     try {
       const decoded = jwtDecode(token);
       const currentTime = Date.now() / 1000;
-      
+
       return decoded.exp > currentTime;
     } catch (error) {
       return false;
@@ -258,32 +258,32 @@ class CognitoAuthService {
 
     const encodedHeader = btoa(JSON.stringify(header));
     const encodedPayload = btoa(JSON.stringify(payload));
-    
+
     // Simular assinatura (em produção seria uma assinatura real)
     const signature = btoa('mock-signature-' + Date.now());
-    
+
     return `${encodedHeader}.${encodedPayload}.${signature}`;
   }
 
   // Mensagens de erro personalizadas
   getErrorMessage(code) {
     const errorMessages = {
-      'UserNotFoundException': 'Usuário não encontrado',
-      'NotAuthorizedException': 'Email ou senha incorretos',
-      'UserNotConfirmedException': 'Usuário não confirmado',
-      'PasswordResetRequiredException': 'Redefinição de senha necessária',
-      'TooManyRequestsException': 'Muitas tentativas. Tente novamente em alguns minutos',
-      'UserLambdaValidationException': 'Erro de validação',
-      'InvalidPasswordException': 'Senha inválida',
-      'UsernameExistsException': 'Usuário já existe',
-      'CodeMismatchException': 'Código de verificação incorreto',
-      'ExpiredCodeException': 'Código de verificação expirado',
-      'LimitExceededException': 'Limite excedido',
-      'InvalidParameterException': 'Parâmetro inválido',
-      'ResourceNotFoundException': 'Recurso não encontrado',
-      'NetworkError': 'Erro de conexão. Verifique sua internet',
-      'InternalError': 'Erro interno do sistema',
-      'default': 'Erro inesperado. Tente novamente'
+      UserNotFoundException: 'Usuário não encontrado',
+      NotAuthorizedException: 'Email ou senha incorretos',
+      UserNotConfirmedException: 'Usuário não confirmado',
+      PasswordResetRequiredException: 'Redefinição de senha necessária',
+      TooManyRequestsException: 'Muitas tentativas. Tente novamente em alguns minutos',
+      UserLambdaValidationException: 'Erro de validação',
+      InvalidPasswordException: 'Senha inválida',
+      UsernameExistsException: 'Usuário já existe',
+      CodeMismatchException: 'Código de verificação incorreto',
+      ExpiredCodeException: 'Código de verificação expirado',
+      LimitExceededException: 'Limite excedido',
+      InvalidParameterException: 'Parâmetro inválido',
+      ResourceNotFoundException: 'Recurso não encontrado',
+      NetworkError: 'Erro de conexão. Verifique sua internet',
+      InternalError: 'Erro interno do sistema',
+      default: 'Erro inesperado. Tente novamente'
     };
 
     return errorMessages[code] || errorMessages.default;

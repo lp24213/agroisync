@@ -66,10 +66,10 @@ export class LoggingService {
       ...meta,
       error: error
         ? {
-          message: error.message,
-          stack: error.stack,
-          name: error.name
-        }
+            message: error.message,
+            stack: error.stack,
+            name: error.name
+          }
         : null
     };
     logger.error(message, errorMeta);

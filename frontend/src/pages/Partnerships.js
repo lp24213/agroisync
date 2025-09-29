@@ -1,17 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Users, 
-  TrendingUp, 
-  Globe, 
-  Mail, 
-  Phone, 
-  MapPin,
-  Send,
-  CheckCircle,
-  Star,
-  Award
-} from 'lucide-react';
+import { Users, TrendingUp, Globe, Mail, Phone, MapPin, Send, CheckCircle, Star, Award } from 'lucide-react';
 // import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt'; // Componente removido
 import CloudflareTurnstile from '../components/CloudflareTurnstile';
 import CryptoHash from '../components/CryptoHash';
@@ -85,7 +74,7 @@ const Partnerships = () => {
     }
   ];
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -93,17 +82,17 @@ const Partnerships = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
       // Simular envio para email
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       // Aqui seria a integração real com serviço de email
       console.log('Dados enviados para suporte@agroisync.com:', formData);
-      
+
       setIsSubmitted(true);
     } catch (error) {
       console.error('Erro ao enviar formulário:', error);
@@ -115,23 +104,23 @@ const Partnerships = () => {
 
   if (isSubmitted) {
     return (
-      <div className="partnerships-success">
-        <div className="success-container">
+      <div className='partnerships-success'>
+        <div className='success-container'>
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="success-content"
+            className='success-content'
           >
-            <div className="success-icon">
+            <div className='success-icon'>
               <CheckCircle size={64} />
             </div>
             <h1>Solicitação Enviada!</h1>
             <p>
-              Sua solicitação de parceria foi enviada com sucesso para nossa equipe.
-              Entraremos em contato em até 48 horas.
+              Sua solicitação de parceria foi enviada com sucesso para nossa equipe. Entraremos em contato em até 48
+              horas.
             </p>
-            <div className="success-details">
+            <div className='success-details'>
               <h3>Próximos Passos:</h3>
               <ul>
                 <li>Análise da sua proposta</li>
@@ -140,8 +129,8 @@ const Partnerships = () => {
                 <li>Apresentação da proposta de parceria</li>
               </ul>
             </div>
-            <button 
-              className="back-button agro-btn-animated"
+            <button
+              className='back-button agro-btn-animated'
               onClick={() => {
                 setIsSubmitted(false);
                 setFormData({
@@ -259,11 +248,11 @@ const Partnerships = () => {
   }
 
   return (
-    <div className="partnerships-page" data-page="partnerships">
-      <div className="partnerships-container">
+    <div className='partnerships-page' data-page='partnerships'>
+      <div className='partnerships-container'>
         {/* HERO COM IMAGEM DE PARCERIAS */}
-        <section 
-          className="min-h-screen flex items-center justify-center relative"
+        <section
+          className='relative flex min-h-screen items-center justify-center'
           style={{
             backgroundImage: `url('https://media.istockphoto.com/id/1303594191/pt/foto/man-and-woman-are-working-in-office.jpg?s=612x612&w=0&k=20&c=9QxXyI4_XpVj3RnYVxQusSs0PaCfyx6X3txIkXqMrAw=')`,
             backgroundSize: 'cover',
@@ -272,42 +261,42 @@ const Partnerships = () => {
             backgroundAttachment: 'scroll'
           }}
         >
-          <div className="absolute inset-0 bg-black/50"></div>
-          <div className="text-center max-w-4xl mx-auto px-4 relative z-10">
-            <motion.h1 
-              className="text-6xl font-bold text-white mb-6"
+          <div className='absolute inset-0 bg-black/50'></div>
+          <div className='relative z-10 mx-auto max-w-4xl px-4 text-center'>
+            <motion.h1
+              className='mb-6 text-6xl font-bold text-white'
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
               PARCERIAS
             </motion.h1>
-            <motion.p 
-              className="text-2xl text-white/90 mb-8"
+            <motion.p
+              className='mb-8 text-2xl text-white/90'
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
               Conectando empresas do agronegócio brasileiro
             </motion.p>
-            <motion.div 
-              className="flex gap-4 justify-center"
+            <motion.div
+              className='flex justify-center gap-4'
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              <button 
+              <button
                 onClick={() => {
                   const formElement = document.getElementById('partnership-form');
                   if (formElement) {
                     formElement.scrollIntoView({ behavior: 'smooth' });
                   }
                 }}
-                className="bg-green-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                className='rounded-lg bg-green-600 px-8 py-4 font-semibold text-white transition-colors hover:bg-green-700'
               >
                 Seja Nosso Parceiro
               </button>
-              <button className="bg-white text-green-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+              <button className='rounded-lg bg-white px-8 py-4 font-semibold text-green-600 transition-colors hover:bg-gray-100'>
                 Ver Parceiros
               </button>
             </motion.div>
@@ -315,22 +304,20 @@ const Partnerships = () => {
         </section>
 
         {/* Benefits Section */}
-        <section className="benefits-section">
-          <div className="benefits-container">
+        <section className='benefits-section'>
+          <div className='benefits-container'>
             <h2>Por que Parceria com AGROISYNC?</h2>
-            <div className="benefits-grid">
+            <div className='benefits-grid'>
               {benefits.map((benefit, index) => (
                 <motion.div
                   key={benefit.title}
-                  className="benefit-card agro-card-animated"
+                  className='benefit-card agro-card-animated'
                   initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                 >
-                  <div className="benefit-icon">
-                    {benefit.icon}
-                  </div>
+                  <div className='benefit-icon'>{benefit.icon}</div>
                   <h3>{benefit.title}</h3>
                   <p>{benefit.description}</p>
                 </motion.div>
@@ -340,28 +327,28 @@ const Partnerships = () => {
         </section>
 
         {/* Success Stories */}
-        <section className="success-stories">
-          <div className="stories-container">
+        <section className='success-stories'>
+          <div className='stories-container'>
             <h2>Histórias de Sucesso</h2>
-            <div className="stories-grid">
+            <div className='stories-grid'>
               {successStories.map((story, index) => (
                 <motion.div
                   key={story.company}
-                  className="story-card agro-card-animated"
+                  className='story-card agro-card-animated'
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                 >
-                  <div className="story-header">
+                  <div className='story-header'>
                     <Star size={20} />
-                    <span className="story-rating">5.0</span>
+                    <span className='story-rating'>5.0</span>
                   </div>
                   <blockquote>"{story.testimonial}"</blockquote>
-                  <div className="story-footer">
-                    <div className="story-company">{story.company}</div>
-                    <div className="story-partnership">{story.partnership}</div>
-                    <div className="story-result">{story.result}</div>
+                  <div className='story-footer'>
+                    <div className='story-company'>{story.company}</div>
+                    <div className='story-partnership'>{story.partnership}</div>
+                    <div className='story-result'>{story.result}</div>
                   </div>
                 </motion.div>
               ))}
@@ -370,93 +357,93 @@ const Partnerships = () => {
         </section>
 
         {/* Partnership Form */}
-        <section className="partnership-form-section">
-          <div className="form-container">
-            <div className="form-header">
+        <section className='partnership-form-section'>
+          <div className='form-container'>
+            <div className='form-header'>
               <h2>Solicite uma Parceria</h2>
               <p>Preencha o formulário abaixo e nossa equipe entrará em contato</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="partnership-form">
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="name">Nome Completo *</label>
+            <form onSubmit={handleSubmit} className='partnership-form'>
+              <div className='form-row'>
+                <div className='form-group'>
+                  <label htmlFor='name'>Nome Completo *</label>
                   <input
-                    type="text"
-                    id="name"
-                    name="name"
+                    type='text'
+                    id='name'
+                    name='name'
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    className="agro-btn-animated"
-                    placeholder="Seu nome completo"
+                    className='agro-btn-animated'
+                    placeholder='Seu nome completo'
                   />
                 </div>
-                <div className="form-group">
-                  <label htmlFor="email">Email *</label>
+                <div className='form-group'>
+                  <label htmlFor='email'>Email *</label>
                   <input
-                    type="email"
-                    id="email"
-                    name="email"
+                    type='email'
+                    id='email'
+                    name='email'
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="agro-btn-animated"
-                    placeholder="seu@email.com"
+                    className='agro-btn-animated'
+                    placeholder='seu@email.com'
                   />
                 </div>
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="company">Empresa *</label>
+              <div className='form-row'>
+                <div className='form-group'>
+                  <label htmlFor='company'>Empresa *</label>
                   <input
-                    type="text"
-                    id="company"
-                    name="company"
+                    type='text'
+                    id='company'
+                    name='company'
                     value={formData.company}
                     onChange={handleInputChange}
                     required
-                    className="agro-btn-animated"
-                    placeholder="Nome da sua empresa"
+                    className='agro-btn-animated'
+                    placeholder='Nome da sua empresa'
                   />
                 </div>
-                <div className="form-group">
-                  <label htmlFor="phone">Telefone</label>
+                <div className='form-group'>
+                  <label htmlFor='phone'>Telefone</label>
                   <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
+                    type='tel'
+                    id='phone'
+                    name='phone'
                     value={formData.phone}
                     onChange={handleInputChange}
-                    placeholder="(11) 99999-9999"
+                    placeholder='(11) 99999-9999'
                   />
                 </div>
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="website">Website</label>
+              <div className='form-row'>
+                <div className='form-group'>
+                  <label htmlFor='website'>Website</label>
                   <input
-                    type="url"
-                    id="website"
-                    name="website"
+                    type='url'
+                    id='website'
+                    name='website'
                     value={formData.website}
                     onChange={handleInputChange}
-                    placeholder="https://www.suaempresa.com"
+                    placeholder='https://www.suaempresa.com'
                   />
                 </div>
-                <div className="form-group">
-                  <label htmlFor="partnershipType">Tipo de Parceria *</label>
+                <div className='form-group'>
+                  <label htmlFor='partnershipType'>Tipo de Parceria *</label>
                   <select
-                    id="partnershipType"
-                    name="partnershipType"
+                    id='partnershipType'
+                    name='partnershipType'
                     value={formData.partnershipType}
                     onChange={handleInputChange}
                     required
-                    className="agro-btn-animated"
+                    className='agro-btn-animated'
                   >
-                    <option value="">Selecione uma opção</option>
+                    <option value=''>Selecione uma opção</option>
                     {partnershipTypes.map(type => (
                       <option key={type.value} value={type.value}>
                         {type.label}
@@ -466,61 +453,51 @@ const Partnerships = () => {
                 </div>
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="budget">Orçamento Estimado</label>
-                  <select
-                    id="budget"
-                    name="budget"
-                    value={formData.budget}
-                    onChange={handleInputChange}
-                  >
-                    <option value="">Selecione uma faixa</option>
-                    <option value="under-10k">Até R$ 10.000</option>
-                    <option value="10k-50k">R$ 10.000 - R$ 50.000</option>
-                    <option value="50k-100k">R$ 50.000 - R$ 100.000</option>
-                    <option value="100k-500k">R$ 100.000 - R$ 500.000</option>
-                    <option value="over-500k">Acima de R$ 500.000</option>
+              <div className='form-row'>
+                <div className='form-group'>
+                  <label htmlFor='budget'>Orçamento Estimado</label>
+                  <select id='budget' name='budget' value={formData.budget} onChange={handleInputChange}>
+                    <option value=''>Selecione uma faixa</option>
+                    <option value='under-10k'>Até R$ 10.000</option>
+                    <option value='10k-50k'>R$ 10.000 - R$ 50.000</option>
+                    <option value='50k-100k'>R$ 50.000 - R$ 100.000</option>
+                    <option value='100k-500k'>R$ 100.000 - R$ 500.000</option>
+                    <option value='over-500k'>Acima de R$ 500.000</option>
                   </select>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="timeline">Prazo para Implementação</label>
-                  <select
-                    id="timeline"
-                    name="timeline"
-                    value={formData.timeline}
-                    onChange={handleInputChange}
-                  >
-                    <option value="">Selecione um prazo</option>
-                    <option value="immediate">Imediato</option>
-                    <option value="1-3months">1-3 meses</option>
-                    <option value="3-6months">3-6 meses</option>
-                    <option value="6-12months">6-12 meses</option>
-                    <option value="over-12months">Acima de 12 meses</option>
+                <div className='form-group'>
+                  <label htmlFor='timeline'>Prazo para Implementação</label>
+                  <select id='timeline' name='timeline' value={formData.timeline} onChange={handleInputChange}>
+                    <option value=''>Selecione um prazo</option>
+                    <option value='immediate'>Imediato</option>
+                    <option value='1-3months'>1-3 meses</option>
+                    <option value='3-6months'>3-6 meses</option>
+                    <option value='6-12months'>6-12 meses</option>
+                    <option value='over-12months'>Acima de 12 meses</option>
                   </select>
                 </div>
               </div>
 
-              <div className="form-group">
-                <label htmlFor="message">Mensagem *</label>
+              <div className='form-group'>
+                <label htmlFor='message'>Mensagem *</label>
                 <textarea
-                  id="message"
-                  name="message"
+                  id='message'
+                  name='message'
                   value={formData.message}
                   onChange={handleInputChange}
                   required
                   rows={6}
-                  className="agro-btn-animated"
-                  placeholder="Conte-nos sobre sua empresa, objetivos da parceria e como podemos trabalhar juntos..."
+                  className='agro-btn-animated'
+                  placeholder='Conte-nos sobre sua empresa, objetivos da parceria e como podemos trabalhar juntos...'
                 />
               </div>
 
               {/* Cloudflare Turnstile */}
               <CloudflareTurnstile
-                onVerify={(token) => {
+                onVerify={token => {
                   setTurnstileToken(token);
                 }}
-                onError={(error) => {
+                onError={error => {
                   setTurnstileToken('');
                 }}
                 onExpire={() => {
@@ -528,15 +505,15 @@ const Partnerships = () => {
                 }}
               />
 
-              <div className="form-submit">
-                <button 
-                  type="submit" 
-                  className="submit-button agro-btn-animated"
+              <div className='form-submit'>
+                <button
+                  type='submit'
+                  className='submit-button agro-btn-animated'
                   disabled={isSubmitting || !turnstileToken}
                 >
                   {isSubmitting ? (
                     <>
-                      <div className="spinner"></div>
+                      <div className='spinner'></div>
                       Enviando...
                     </>
                   ) : (
@@ -546,7 +523,7 @@ const Partnerships = () => {
                     </>
                   )}
                 </button>
-                <p className="form-note">
+                <p className='form-note'>
                   * Campos obrigatórios. Sua solicitação será enviada diretamente para suporte@agroisync.com
                 </p>
               </div>
@@ -555,25 +532,25 @@ const Partnerships = () => {
         </section>
 
         {/* Contact Info */}
-        <section className="contact-info">
-          <div className="contact-container">
+        <section className='contact-info'>
+          <div className='contact-container'>
             <h2>Outras Formas de Contato</h2>
-            <div className="contact-grid">
-              <div className="contact-item">
+            <div className='contact-grid'>
+              <div className='contact-item'>
                 <Mail size={24} />
                 <div>
                   <h3>Email</h3>
                   <p>suporte@agroisync.com</p>
                 </div>
               </div>
-              <div className="contact-item">
+              <div className='contact-item'>
                 <Phone size={24} />
                 <div>
                   <h3>Telefone</h3>
                   <p>(66) 99236-2830</p>
                 </div>
               </div>
-              <div className="contact-item">
+              <div className='contact-item'>
                 <MapPin size={24} />
                 <div>
                   <h3>Localização</h3>
@@ -864,8 +841,12 @@ const Partnerships = () => {
         }
 
         @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
         }
 
         .form-note {
@@ -955,8 +936,8 @@ const Partnerships = () => {
           }
         }
       `}</style>
-      <div className="mt-8 flex justify-center">
-        <CryptoHash pageName="partnerships" style={{ display: 'none' }} />
+      <div className='mt-8 flex justify-center'>
+        <CryptoHash pageName='partnerships' style={{ display: 'none' }} />
       </div>
     </div>
   );

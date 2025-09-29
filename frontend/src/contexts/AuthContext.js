@@ -1,8 +1,10 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import useStore from '../store/useStore';
 import axios from 'axios';
+import { API_CONFIG, AUTH_CONFIG, getAuthToken, setAuthToken, removeAuthToken } from '../config/constants.js';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
+// Usar configuração centralizada com fallback
+const API_BASE_URL = API_CONFIG?.baseURL || process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
 
 const AuthContext = createContext();
 
@@ -23,9 +25,10 @@ export const AuthProvider = ({ children }) => {
   const checkAuthState = useCallback(async () => {
     try {
       setIsLoading(true);
-      const token = localStorage.getItem('authToken');
-      const userData = localStorage.getItem('user');
-      
+      // Usar helper centralizado que verifica ambos os nomes de token
+      const token = getAuthToken();
+      const userData = localStorage.getItem(AUTH_CONFIG.userKey);
+
       if (token && userData) {
         // Usar dados do localStorage diretamente após login
         const parsedUser = JSON.parse(userData);
@@ -42,8 +45,8 @@ export const AuthProvider = ({ children }) => {
       if (process.env.NODE_ENV !== 'production') {
         console.log('Error loading user from localStorage:', error);
       }
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('user');
+      // Usar helper para limpar tokens de forma segura
+      removeAuthToken();
       setUser(null);
       setStoreUser(null);
     } finally {
@@ -56,29 +59,35 @@ export const AuthProvider = ({ children }) => {
     checkAuthState();
   }, [checkAuthState]);
 
-  const updateUserState = useCallback((userData, token) => {
-    setUser(userData);
-    setStoreUser(userData);
-    localStorage.setItem('authToken', token);
-    localStorage.setItem('user', JSON.stringify(userData));
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('User state updated:', userData);
-    }
-  }, [setStoreUser]);
+  const updateUserState = useCallback(
+    (userData, token) => {
+      setUser(userData);
+      setStoreUser(userData);
+      // Usar helper que define o token nos dois lugares para compatibilidade
+      setAuthToken(token);
+      localStorage.setItem(AUTH_CONFIG.userKey, JSON.stringify(userData));
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('User state updated:', userData);
+      }
+    },
+    [setStoreUser]
+  );
 
   const login = async (email, password) => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const response = await axios.post(`${API_BASE_URL}/auth/login`, {
         email,
         password
       });
-      
+
       if (response.data.success) {
         const { token, user } = response.data;
-        localStorage.setItem('authToken', token);
+        // Usar helper para definir token de forma segura
+        setAuthToken(token);
+        localStorage.setItem(AUTH_CONFIG.userKey, JSON.stringify(user));
         setUser(user);
         setStoreUser(user);
         return { success: true };
@@ -98,16 +107,16 @@ export const AuthProvider = ({ children }) => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const response = await axios.post(`${API_BASE_URL}/auth/register`, {
         email,
         password,
         ...userAttributes
       });
-      
+
       if (response.data.success) {
-        return { 
-          success: true, 
+        return {
+          success: true,
           requiresConfirmation: response.data.requiresConfirmation || false,
           userId: response.data.userId
         };
@@ -127,12 +136,12 @@ export const AuthProvider = ({ children }) => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const response = await axios.post(`${API_BASE_URL}/auth/confirm`, {
         email,
         confirmationCode
       });
-      
+
       if (response.data.success) {
         return { success: true };
       } else {
@@ -147,12 +156,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const resendConfirmationCode = async (email) => {
+  const resendConfirmationCode = async email => {
     try {
       const response = await axios.post(`${API_BASE_URL}/auth/resend-confirmation`, {
         email
       });
-      
+
       if (response.data.success) {
         return { success: true };
       } else {
@@ -168,23 +177,28 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       setIsLoading(true);
-      
+
       // Chamar endpoint de logout no backend (opcional)
-      const token = localStorage.getItem('authToken');
+      const token = getAuthToken();
       if (token) {
         try {
-          await axios.post(`${API_BASE_URL}/auth/logout`, {}, {
-            headers: {
-              Authorization: `Bearer ${token}`
+          await axios.post(
+            `${API_BASE_URL}/auth/logout`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
             }
-          });
+          );
         } catch (error) {
           // Ignorar erros de logout no backend
           console.log('Logout error:', error);
         }
       }
-      
-      localStorage.removeItem('authToken');
+
+      // Usar helper para limpar tokens de forma segura
+      removeAuthToken();
       setUser(null);
       setStoreUser(null);
       return { success: true };
@@ -196,15 +210,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const resetPassword = async (email) => {
+  const resetPassword = async email => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const response = await axios.post(`${API_BASE_URL}/auth/reset-password`, {
         email
       });
-      
+
       if (response.data.success) {
         return { success: true };
       } else {
@@ -223,14 +237,18 @@ export const AuthProvider = ({ children }) => {
     try {
       setIsLoading(true);
       setError(null);
-      
-      const token = localStorage.getItem('authToken');
-      const response = await axios.post(`${API_BASE_URL}/auth/enable-2fa`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`
+
+      const token = getAuthToken();
+      const response = await axios.post(
+        `${API_BASE_URL}/auth/enable-2fa`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         }
-      });
-      
+      );
+
       if (response.data.success) {
         return { success: true, qrCode: response.data.qrCode };
       } else {
@@ -261,9 +279,5 @@ export const AuthProvider = ({ children }) => {
     updateUserState
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

@@ -4,7 +4,7 @@ import nodemailer from 'nodemailer';
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    
+
     // CORS headers
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
@@ -35,7 +35,7 @@ export default {
     if (url.pathname === '/api/sms/send-code' && request.method === 'POST') {
       try {
         const { phone } = await request.json();
-        
+
         if (!phone) {
           return new Response(
             JSON.stringify({
@@ -51,13 +51,13 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         // Configurar Twilio
         const client = twilio(
           env.TWILIO_ACCOUNT_SID || 'ACdummy',
           env.TWILIO_AUTH_TOKEN || 'dummy_token'
         );
-        
+
         try {
           // Enviar SMS REAL via Twilio
           const message = await client.messages.create({
@@ -65,9 +65,11 @@ export default {
             from: env.TWILIO_PHONE_NUMBER || '+15005550006', // Número de teste do Twilio
             to: phone
           });
-          
-          console.log(`📱 SMS REAL enviado para ${phone}: ${verificationCode} - SID: ${message.sid}`);
-          
+
+          console.log(
+            `📱 SMS REAL enviado para ${phone}: ${verificationCode} - SID: ${message.sid}`
+          );
+
           return new Response(
             JSON.stringify({
               success: true,
@@ -86,7 +88,7 @@ export default {
           console.error('Erro Twilio:', twilioError);
           // Fallback para modo de desenvolvimento
           console.log(`📱 [DEV] SMS simulado para ${phone}: ${verificationCode}`);
-          
+
           return new Response(
             JSON.stringify({
               success: true,
@@ -122,7 +124,7 @@ export default {
     if (url.pathname === '/api/email/send-verification' && request.method === 'POST') {
       try {
         const { email } = await request.json();
-        
+
         if (!email) {
           return new Response(
             JSON.stringify({
@@ -138,7 +140,7 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         // Configurar Nodemailer
         const transporter = nodemailer.createTransporter({
           host: env.SMTP_HOST || 'smtp.gmail.com',
@@ -149,7 +151,7 @@ export default {
             pass: env.SMTP_PASS || 'test_password'
           }
         });
-        
+
         const mailOptions = {
           from: env.FROM_EMAIL || 'noreply@agroisync.com',
           to: email,
@@ -191,13 +193,15 @@ export default {
           `,
           text: `Código de Verificação AgroSync: ${verificationCode}\n\nEste código expira em 10 minutos.\n\nEquipe AgroSync`
         };
-        
+
         try {
           // Enviar email REAL via Nodemailer
           const info = await transporter.sendMail(mailOptions);
-          
-          console.log(`📧 Email REAL enviado para ${email}: ${verificationCode} - MessageId: ${info.messageId}`);
-          
+
+          console.log(
+            `📧 Email REAL enviado para ${email}: ${verificationCode} - MessageId: ${info.messageId}`
+          );
+
           return new Response(
             JSON.stringify({
               success: true,
@@ -216,7 +220,7 @@ export default {
           console.error('Erro Nodemailer:', emailError);
           // Fallback para modo de desenvolvimento
           console.log(`📧 [DEV] Email simulado para ${email}: ${verificationCode}`);
-          
+
           return new Response(
             JSON.stringify({
               success: true,
@@ -252,7 +256,7 @@ export default {
     if (url.pathname === '/api/sms/verify-code' && request.method === 'POST') {
       try {
         const { phone, code } = await request.json();
-        
+
         if (!phone || !code) {
           return new Response(
             JSON.stringify({
@@ -265,7 +269,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ SMS verificado para ${phone}: ${code}`);
@@ -314,7 +318,7 @@ export default {
     if (url.pathname === '/api/email/verify' && request.method === 'POST') {
       try {
         const { email, code } = await request.json();
-        
+
         if (!email || !code) {
           return new Response(
             JSON.stringify({
@@ -327,7 +331,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ Email verificado para ${email}: ${code}`);

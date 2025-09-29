@@ -69,7 +69,7 @@ const StorePlans = () => {
     }
   ];
 
-  const handlePlanSelect = (planId) => {
+  const handlePlanSelect = planId => {
     setSelectedPlan(planId);
   };
 
@@ -81,14 +81,16 @@ const StorePlans = () => {
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      padding: '2rem 1rem',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center'
-    }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        padding: '2rem 1rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
       <div style={{ maxWidth: '1200px', width: '100%' }}>
         {/* Header */}
         <motion.div
@@ -97,50 +99,57 @@ const StorePlans = () => {
           transition={{ duration: 0.6 }}
           style={{ textAlign: 'center', marginBottom: '3rem' }}
         >
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            background: 'rgba(255, 255, 255, 0.1)',
-            padding: '0.75rem 1.5rem',
-            borderRadius: '50px',
-            marginBottom: '1rem',
-            backdropFilter: 'blur(10px)'
-          }}>
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              background: 'rgba(255, 255, 255, 0.1)',
+              padding: '0.75rem 1.5rem',
+              borderRadius: '50px',
+              marginBottom: '1rem',
+              backdropFilter: 'blur(10px)'
+            }}
+          >
             <Store size={24} style={{ color: 'white' }} />
-            <span style={{ color: 'white', fontWeight: '600', fontSize: '1.1rem' }}>
-              PLANOS PARA LOJAS
-            </span>
+            <span style={{ color: 'white', fontWeight: '600', fontSize: '1.1rem' }}>PLANOS PARA LOJAS</span>
           </div>
-          
-          <h1 style={{
-            color: 'white',
-            fontSize: '2.5rem',
-            fontWeight: '700',
-            marginBottom: '1rem',
-            textShadow: '0 2px 4px rgba(0,0,0,0.3)'
-          }}>
+
+          <h1
+            style={{
+              color: 'white',
+              fontSize: '2.5rem',
+              fontWeight: '700',
+              marginBottom: '1rem',
+              textShadow: '0 2px 4px rgba(0,0,0,0.3)'
+            }}
+          >
             Escolha o Plano Ideal para sua Loja
           </h1>
-          
-          <p style={{
-            color: 'rgba(255, 255, 255, 0.8)',
-            fontSize: '1.2rem',
-            maxWidth: '600px',
-            margin: '0 auto',
-            lineHeight: '1.6'
-          }}>
-            Como a <strong>Agrobiológica</strong>, cadastre sua loja e gerencie seus produtos com nossos planos especializados
+
+          <p
+            style={{
+              color: 'rgba(255, 255, 255, 0.8)',
+              fontSize: '1.2rem',
+              maxWidth: '600px',
+              margin: '0 auto',
+              lineHeight: '1.6'
+            }}
+          >
+            Como a <strong>Agrobiológica</strong>, cadastre sua loja e gerencie seus produtos com nossos planos
+            especializados
           </p>
         </motion.div>
 
         {/* Plans Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-          gap: '2rem',
-          marginBottom: '3rem'
-        }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+            gap: '2rem',
+            marginBottom: '3rem'
+          }}
+        >
           {plans.map((plan, index) => (
             <motion.div
               key={plan.id}
@@ -155,28 +164,29 @@ const StorePlans = () => {
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
                 border: selectedPlan === plan.id ? '3px solid #10b981' : '3px solid transparent',
-                boxShadow: selectedPlan === plan.id 
-                  ? '0 20px 40px rgba(16, 185, 129, 0.3)' 
-                  : '0 10px 30px rgba(0, 0, 0, 0.1)',
+                boxShadow:
+                  selectedPlan === plan.id ? '0 20px 40px rgba(16, 185, 129, 0.3)' : '0 10px 30px rgba(0, 0, 0, 0.1)',
                 transform: selectedPlan === plan.id ? 'translateY(-5px)' : 'translateY(0)'
               }}
               onClick={() => handlePlanSelect(plan.id)}
             >
               {/* Popular Badge */}
               {plan.popular && (
-                <div style={{
-                  position: 'absolute',
-                  top: '-10px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                  color: 'white',
-                  padding: '0.5rem 1.5rem',
-                  borderRadius: '20px',
-                  fontSize: '0.9rem',
-                  fontWeight: '600',
-                  boxShadow: '0 4px 12px rgba(245, 158, 11, 0.4)'
-                }}>
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '-10px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                    color: 'white',
+                    padding: '0.5rem 1.5rem',
+                    borderRadius: '20px',
+                    fontSize: '0.9rem',
+                    fontWeight: '600',
+                    boxShadow: '0 4px 12px rgba(245, 158, 11, 0.4)'
+                  }}
+                >
                   <Zap size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
                   MAIS POPULAR
                 </div>
@@ -184,51 +194,61 @@ const StorePlans = () => {
 
               {/* Plan Header */}
               <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                <div style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '80px',
-                  height: '80px',
-                  background: `linear-gradient(135deg, ${plan.color})`,
-                  borderRadius: '20px',
-                  marginBottom: '1rem',
-                  color: 'white'
-                }}>
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '80px',
+                    height: '80px',
+                    background: `linear-gradient(135deg, ${plan.color})`,
+                    borderRadius: '20px',
+                    marginBottom: '1rem',
+                    color: 'white'
+                  }}
+                >
                   {plan.icon}
                 </div>
-                
-                <h3 style={{
-                  fontSize: '1.5rem',
-                  fontWeight: '700',
-                  color: '#1f2937',
-                  marginBottom: '0.5rem'
-                }}>
+
+                <h3
+                  style={{
+                    fontSize: '1.5rem',
+                    fontWeight: '700',
+                    color: '#1f2937',
+                    marginBottom: '0.5rem'
+                  }}
+                >
                   {plan.name}
                 </h3>
-                
-                <p style={{
-                  color: '#6b7280',
-                  fontSize: '1rem',
-                  marginBottom: '1rem'
-                }}>
+
+                <p
+                  style={{
+                    color: '#6b7280',
+                    fontSize: '1rem',
+                    marginBottom: '1rem'
+                  }}
+                >
                   {plan.description}
                 </p>
 
                 <div style={{ marginBottom: '1rem' }}>
-                  <span style={{
-                    fontSize: '3rem',
-                    fontWeight: '800',
-                    color: '#1f2937',
-                    lineHeight: '1'
-                  }}>
+                  <span
+                    style={{
+                      fontSize: '3rem',
+                      fontWeight: '800',
+                      color: '#1f2937',
+                      lineHeight: '1'
+                    }}
+                  >
                     R$ {plan.price}
                   </span>
-                  <span style={{
-                    color: '#6b7280',
-                    fontSize: '1rem',
-                    marginLeft: '0.5rem'
-                  }}>
+                  <span
+                    style={{
+                      color: '#6b7280',
+                      fontSize: '1rem',
+                      marginLeft: '0.5rem'
+                    }}
+                  >
                     /{plan.period}
                   </span>
                 </div>
@@ -237,19 +257,24 @@ const StorePlans = () => {
               {/* Features */}
               <div style={{ marginBottom: '2rem' }}>
                 {plan.features.map((feature, featureIndex) => (
-                  <div key={featureIndex} style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.75rem',
-                    marginBottom: '0.75rem',
-                    padding: '0.5rem 0'
-                  }}>
+                  <div
+                    key={featureIndex}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.75rem',
+                      marginBottom: '0.75rem',
+                      padding: '0.5rem 0'
+                    }}
+                  >
                     <Check size={20} style={{ color: '#10b981', flexShrink: 0 }} />
-                    <span style={{
-                      color: '#374151',
-                      fontSize: '1rem',
-                      lineHeight: '1.5'
-                    }}>
+                    <span
+                      style={{
+                        color: '#374151',
+                        fontSize: '1rem',
+                        lineHeight: '1.5'
+                      }}
+                    >
                       {feature}
                     </span>
                   </div>
@@ -261,9 +286,10 @@ const StorePlans = () => {
                 style={{
                   width: '100%',
                   padding: '1rem',
-                  background: selectedPlan === plan.id 
-                    ? 'linear-gradient(135deg, #10b981, #059669)' 
-                    : 'linear-gradient(135deg, #6b7280, #4b5563)',
+                  background:
+                    selectedPlan === plan.id
+                      ? 'linear-gradient(135deg, #10b981, #059669)'
+                      : 'linear-gradient(135deg, #6b7280, #4b5563)',
                   color: 'white',
                   border: 'none',
                   borderRadius: '12px',
@@ -271,9 +297,8 @@ const StorePlans = () => {
                   fontWeight: '600',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
-                  boxShadow: selectedPlan === plan.id 
-                    ? '0 8px 20px rgba(16, 185, 129, 0.4)' 
-                    : '0 4px 12px rgba(0, 0, 0, 0.1)'
+                  boxShadow:
+                    selectedPlan === plan.id ? '0 8px 20px rgba(16, 185, 129, 0.4)' : '0 4px 12px rgba(0, 0, 0, 0.1)'
                 }}
                 onClick={() => handlePlanSelect(plan.id)}
               >
@@ -294,8 +319,8 @@ const StorePlans = () => {
             onClick={handleContinue}
             disabled={!selectedPlan}
             style={{
-              background: selectedPlan 
-                ? 'linear-gradient(135deg, #10b981, #059669)' 
+              background: selectedPlan
+                ? 'linear-gradient(135deg, #10b981, #059669)'
                 : 'linear-gradient(135deg, #9ca3af, #6b7280)',
               color: 'white',
               border: 'none',
@@ -305,21 +330,21 @@ const StorePlans = () => {
               fontWeight: '700',
               cursor: selectedPlan ? 'pointer' : 'not-allowed',
               transition: 'all 0.3s ease',
-              boxShadow: selectedPlan 
-                ? '0 10px 25px rgba(16, 185, 129, 0.4)' 
-                : '0 4px 12px rgba(0, 0, 0, 0.1)',
+              boxShadow: selectedPlan ? '0 10px 25px rgba(16, 185, 129, 0.4)' : '0 4px 12px rgba(0, 0, 0, 0.1)',
               opacity: selectedPlan ? 1 : 0.6
             }}
           >
             CONTINUAR CADASTRO DA LOJA
           </button>
-          
+
           {!selectedPlan && (
-            <p style={{
-              color: 'rgba(255, 255, 255, 0.7)',
-              fontSize: '1rem',
-              marginTop: '1rem'
-            }}>
+            <p
+              style={{
+                color: 'rgba(255, 255, 255, 0.7)',
+                fontSize: '1rem',
+                marginTop: '1rem'
+              }}
+            >
               Selecione um plano para continuar
             </p>
           )}

@@ -15,25 +15,15 @@ export const environment = {
     refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d'
   },
 
-  // MongoDB
-  mongodb: {
-    uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/agroisync',
-    options: {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      maxPoolSize: 10,
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000
-    }
+  // Cloudflare D1 Database
+  database: {
+    d1DatabaseId: process.env.CLOUDFLARE_D1_DATABASE_ID || ''
   },
 
-  // Redis
-  redis: {
-    url: process.env.REDIS_URL || 'redis://localhost:6379',
-    host: process.env.REDIS_HOST || 'localhost',
-    port: process.env.REDIS_PORT || 6379,
-    password: process.env.REDIS_PASSWORD || '',
-    db: process.env.REDIS_DB || 0
+  // Cloudflare Turnstile
+  turnstile: {
+    secretKey: process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY || '',
+    siteKey: process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY || ''
   },
 
   // Stripe
@@ -43,13 +33,6 @@ export const environment = {
     webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || 'whsec_DEFAULT_WEBHOOK_SECRET_NOT_SET'
   },
 
-  // AWS Cognito
-  cognito: {
-    userPoolId: process.env.AWS_COGNITO_USER_POOL_ID || '',
-    clientId: process.env.AWS_COGNITO_CLIENT_ID || '',
-    region: process.env.AWS_COGNITO_REGION || 'us-east-1'
-  },
-
   // Metamask
   metamask: {
     networkId: process.env.METAMASK_NETWORK_ID || '1',
@@ -57,12 +40,10 @@ export const environment = {
     walletAddress: process.env.METAMASK_WALLET_ADDRESS || ''
   },
 
-  // Email
+  // Email (Resend)
   email: {
-    service: process.env.EMAIL_SERVICE || 'gmail',
-    user: process.env.EMAIL_USER || '',
-    password: process.env.EMAIL_PASSWORD || '',
-    from: process.env.EMAIL_FROM || 'noreply@agrotm.com'
+    resendApiKey: process.env.RESEND_API_KEY || '',
+    from: process.env.RESEND_FROM || 'AgroSync <noreply@agroisync.com>'
   },
 
   // Cloudflare

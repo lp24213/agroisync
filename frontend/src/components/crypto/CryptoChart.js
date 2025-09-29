@@ -40,7 +40,7 @@ const CryptoChart = () => {
         let time = 0;
         const animateFrame = () => {
           time += 0.02;
-          
+
           // Limpar canvas
           ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
           ctx.fillRect(0, 0, width, height);
@@ -55,7 +55,7 @@ const CryptoChart = () => {
           // Desenhar grid
           ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
           ctx.lineWidth = 1;
-          
+
           // Linhas verticais
           for (let i = 0; i < width; i += 50) {
             ctx.beginPath();
@@ -63,7 +63,7 @@ const CryptoChart = () => {
             ctx.lineTo(i, height);
             ctx.stroke();
           }
-          
+
           // Linhas horizontais
           for (let i = 0; i < height; i += 50) {
             ctx.beginPath();
@@ -78,31 +78,31 @@ const CryptoChart = () => {
             const maxPrice = Math.max(...priceData);
             const minPrice = Math.min(...priceData);
             const priceRange = maxPrice - minPrice;
-            
+
             if (priceRange > 0) {
               ctx.strokeStyle = '#8b5cf6';
               ctx.lineWidth = 2;
               ctx.beginPath();
-              
+
               priceData.forEach((price, index) => {
                 const x = (index / (priceData.length - 1)) * width;
                 const y = height - ((price - minPrice) / priceRange) * height;
-                
+
                 if (index === 0) {
                   ctx.moveTo(x, y);
                 } else {
                   ctx.lineTo(x, y);
                 }
               });
-              
+
               ctx.stroke();
-              
+
               // Adicionar pontos nos dados
               ctx.fillStyle = '#8b5cf6';
               priceData.forEach((price, index) => {
                 const x = (index / (priceData.length - 1)) * width;
                 const y = height - ((price - minPrice) / priceRange) * height;
-                
+
                 ctx.beginPath();
                 ctx.arc(x, y, 3, 0, 2 * Math.PI);
                 ctx.fill();
@@ -115,7 +115,7 @@ const CryptoChart = () => {
           for (let i = 0; i < 20; i++) {
             const x = (Math.sin(time + i) * 0.5 + 0.5) * width;
             const y = (Math.cos(time * 0.5 + i) * 0.5 + 0.5) * height;
-            
+
             ctx.beginPath();
             ctx.arc(x, y, 2, 0, 2 * Math.PI);
             ctx.fill();
@@ -136,15 +136,14 @@ const CryptoChart = () => {
     };
   }, [cryptoData, selectedCrypto]);
 
-
-  const formatPrice = (price) => {
+  const formatPrice = price => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
     }).format(price);
   };
 
-  const formatChange = (change) => {
+  const formatChange = change => {
     const isPositive = change >= 0;
     return (
       <span className={`flex items-center gap-1 ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
@@ -156,91 +155,80 @@ const CryptoChart = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-700"></div>
+      <div className='flex h-64 items-center justify-center'>
+        <div className='h-8 w-8 animate-spin rounded-full border-b-2 border-gray-700'></div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6">
-        <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Gráfico de Criptomoedas</h2>
-        <div className="flex gap-2">
-          {cryptoData.map((crypto) => (
-              <button
-                key={crypto.id}
-                onClick={() => setSelectedCrypto(crypto)}
-              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
-                  selectedCrypto?.id === crypto.id
+    <div className='rounded-2xl bg-white p-6 shadow-lg'>
+      <div className='mb-6 flex items-center justify-between'>
+        <h2 className='text-2xl font-bold text-gray-900'>Gráfico de Criptomoedas</h2>
+        <div className='flex gap-2'>
+          {cryptoData.map(crypto => (
+            <button
+              key={crypto.id}
+              onClick={() => setSelectedCrypto(crypto)}
+              className={`rounded-lg px-3 py-1 text-sm font-medium transition-colors ${
+                selectedCrypto?.id === crypto.id
                   ? 'bg-gray-900 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {crypto.symbol}
-              </button>
-            ))}
-          </div>
+              }`}
+            >
+              {crypto.symbol}
+            </button>
+          ))}
         </div>
+      </div>
 
       {selectedCrypto && (
-        <div className="mb-6">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-              <span className="text-2xl">{selectedCrypto.icon}</span>
+        <div className='mb-6'>
+          <div className='flex items-center gap-4'>
+            <div className='flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100'>
+              <span className='text-2xl'>{selectedCrypto.icon}</span>
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-gray-900">
-                {selectedCrypto.name}
-              </h3>
-              <p className="text-gray-600">{selectedCrypto.symbol}</p>
+              <h3 className='text-xl font-semibold text-gray-900'>{selectedCrypto.name}</h3>
+              <p className='text-gray-600'>{selectedCrypto.symbol}</p>
             </div>
-            <div className="ml-auto text-right">
-              <p className="text-2xl font-bold text-gray-900">
-                {formatPrice(selectedCrypto.price)}
-              </p>
+            <div className='ml-auto text-right'>
+              <p className='text-2xl font-bold text-gray-900'>{formatPrice(selectedCrypto.price)}</p>
               {formatChange(selectedCrypto.change24h)}
             </div>
           </div>
         </div>
       )}
-        
-        <div className="relative">
-          <canvas
-            ref={canvasRef}
-            width={800}
-            height={400}
-          className="w-full h-64 bg-gray-50 rounded-lg"
-        />
-        
-        <div className="absolute top-4 left-4 bg-white bg-opacity-90 rounded-lg p-3">
-          <div className="text-sm text-gray-600">
+
+      <div className='relative'>
+        <canvas ref={canvasRef} width={800} height={400} className='h-64 w-full rounded-lg bg-gray-50' />
+
+        <div className='absolute left-4 top-4 rounded-lg bg-white bg-opacity-90 p-3'>
+          <div className='text-sm text-gray-600'>
             <p>Preço: {selectedCrypto && formatPrice(selectedCrypto.price)}</p>
             <p>Volume: {selectedCrypto && formatPrice(selectedCrypto.volume24h)}</p>
             <p>Market Cap: {selectedCrypto && formatPrice(selectedCrypto.marketCap)}</p>
-            </div>
+          </div>
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {cryptoData.slice(0, 4).map((crypto) => (
+      <div className='mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
+        {cryptoData.slice(0, 4).map(crypto => (
           <div
             key={crypto.id}
-            className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+            className='cursor-pointer rounded-lg bg-gray-50 p-4 transition-colors hover:bg-gray-100'
             onClick={() => setSelectedCrypto(crypto)}
           >
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center">
-                <span className="text-lg">{crypto.icon}</span>
-                </div>
-              <div className="flex-1">
-                <p className="font-medium text-gray-900">{crypto.symbol}</p>
-                <p className="text-sm text-gray-600">{crypto.name}</p>
+            <div className='flex items-center gap-3'>
+              <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-gray-200'>
+                <span className='text-lg'>{crypto.icon}</span>
               </div>
-              <div className="text-right">
-                <p className="font-semibold text-gray-900">
-                {formatPrice(crypto.price)}
-              </p>
+              <div className='flex-1'>
+                <p className='font-medium text-gray-900'>{crypto.symbol}</p>
+                <p className='text-sm text-gray-600'>{crypto.name}</p>
+              </div>
+              <div className='text-right'>
+                <p className='font-semibold text-gray-900'>{formatPrice(crypto.price)}</p>
                 {formatChange(crypto.change24h)}
               </div>
             </div>

@@ -20,12 +20,9 @@ const logConfig = {
   transports: [
     // Console transport
     new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple()
-      )
+      format: winston.format.combine(winston.format.colorize(), winston.format.simple())
     }),
-    
+
     // File transports
     new winston.transports.File({
       filename: 'logs/error.log',
@@ -33,13 +30,13 @@ const logConfig = {
       maxsize: 5242880, // 5MB
       maxFiles: 5
     }),
-    
+
     new winston.transports.File({
       filename: 'logs/combined.log',
       maxsize: 5242880, // 5MB
       maxFiles: 10
     }),
-    
+
     new winston.transports.File({
       filename: 'logs/security.log',
       level: 'warn',
@@ -158,7 +155,8 @@ class AuditSystem {
       this.logger.info('Performance', perfEntry);
 
       // Alertar se performance estiver ruim
-      if (duration > 5000) { // 5 segundos
+      if (duration > 5000) {
+        // 5 segundos
         this.logger.warn('Slow Operation', perfEntry);
       }
 
@@ -328,31 +326,31 @@ class AuditSystem {
   async getAuditLogs(filters = {}) {
     try {
       const query = {};
-      
+
       if (filters.userId) {
         query.userId = filters.userId;
       }
-      
+
       if (filters.action) {
         query.action = filters.action;
       }
-      
+
       if (filters.resource) {
         query.resource = filters.resource;
       }
-      
+
       if (filters.startDate && filters.endDate) {
         query.timestamp = {
           $gte: new Date(filters.startDate),
           $lte: new Date(filters.endDate)
         };
       }
-      
+
       const logs = await AuditLog.find(query)
         .sort({ timestamp: -1 })
         .limit(filters.limit || 100)
         .skip(filters.skip || 0);
-      
+
       return logs;
     } catch (error) {
       this.logger.error('Error getting audit logs:', error);
@@ -364,31 +362,31 @@ class AuditSystem {
   async getSecurityLogs(filters = {}) {
     try {
       const query = {};
-      
+
       if (filters.eventType) {
         query.eventType = filters.eventType;
       }
-      
+
       if (filters.severity) {
         query.severity = filters.severity;
       }
-      
+
       if (filters.userId) {
         query.userId = filters.userId;
       }
-      
+
       if (filters.startDate && filters.endDate) {
         query.timestamp = {
           $gte: new Date(filters.startDate),
           $lte: new Date(filters.endDate)
         };
       }
-      
+
       const logs = await SecurityLog.find(query)
         .sort({ timestamp: -1 })
         .limit(filters.limit || 100)
         .skip(filters.skip || 0);
-      
+
       return logs;
     } catch (error) {
       this.logger.error('Error getting security logs:', error);
@@ -405,15 +403,15 @@ class AuditSystem {
           $lte: new Date(endDate)
         }
       };
-      
+
       if (filters.userId) {
         query.userId = filters.userId;
       }
-      
+
       if (filters.action) {
         query.action = filters.action;
       }
-      
+
       // Agregação para estatísticas
       const stats = await AuditLog.aggregate([
         { $match: query },
@@ -432,16 +430,14 @@ class AuditSystem {
           }
         }
       ]);
-      
+
       // Logs detalhados
-      const logs = await AuditLog.find(query)
-        .sort({ timestamp: -1 })
-        .limit(1000);
-      
+      const logs = await AuditLog.find(query).sort({ timestamp: -1 }).limit(1000);
+
       return {
         period: { startDate, endDate },
         statistics: stats,
-        logs: logs,
+        logs,
         totalLogs: logs.length,
         generatedAt: new Date()
       };
@@ -456,23 +452,23 @@ class AuditSystem {
     try {
       const cutoffDate = new Date();
       cutoffDate.setDate(cutoffDate.getDate() - retentionDays);
-      
+
       // Limpar logs de auditoria antigos
       const auditResult = await AuditLog.deleteMany({
         timestamp: { $lt: cutoffDate }
       });
-      
+
       // Limpar logs de segurança antigos
       const securityResult = await SecurityLog.deleteMany({
         timestamp: { $lt: cutoffDate }
       });
-      
+
       this.logger.info('Log cleanup completed', {
         auditLogsDeleted: auditResult.deletedCount,
         securityLogsDeleted: securityResult.deletedCount,
         cutoffDate
       });
-      
+
       return {
         auditLogsDeleted: auditResult.deletedCount,
         securityLogsDeleted: securityResult.deletedCount
@@ -492,22 +488,22 @@ class AuditSystem {
           $lte: new Date(endDate)
         }
       };
-      
+
       const auditLogs = await AuditLog.find(query).sort({ timestamp: -1 });
       const securityLogs = await SecurityLog.find(query).sort({ timestamp: -1 });
-      
+
       const exportData = {
         auditLogs,
         securityLogs,
         exportedAt: new Date(),
         period: { startDate, endDate }
       };
-      
+
       if (format === 'csv') {
         // Implementar exportação CSV
         return this.exportToCSV(exportData);
       }
-      
+
       return exportData;
     } catch (error) {
       this.logger.error('Error exporting logs:', error);
@@ -534,10 +530,10 @@ class AuditSystem {
 export const loggingMiddleware = (req, res, next) => {
   const startTime = Date.now();
   const requestId = Math.random().toString(36).substr(2, 9);
-  
+
   // Adicionar request ID ao request
   req.requestId = requestId;
-  
+
   // Log da requisição
   logger.info('Request started', {
     requestId,
@@ -548,12 +544,12 @@ export const loggingMiddleware = (req, res, next) => {
     userId: req.user?.id,
     timestamp: new Date()
   });
-  
+
   // Interceptar resposta
   const originalSend = res.send;
-  res.send = function(data) {
+  res.send = function (data) {
     const duration = Date.now() - startTime;
-    
+
     // Log da resposta
     logger.info('Request completed', {
       requestId,
@@ -564,10 +560,10 @@ export const loggingMiddleware = (req, res, next) => {
       responseSize: data ? data.length : 0,
       userId: req.user?.id
     });
-    
+
     return originalSend.call(this, data);
   };
-  
+
   next();
 };
 
@@ -577,25 +573,20 @@ export const auditMiddleware = (action, resource) => {
   return async (req, res, next) => {
     try {
       const auditSystem = new AuditSystem();
-      
+
       // Log da ação
-      await auditSystem.logUserActivity(
-        req.user?.id,
-        action,
-        resource,
-        {
-          userEmail: req.user?.email,
-          ip: req.ip,
-          userAgent: req.get('User-Agent'),
-          method: req.method,
-          url: req.originalUrl,
-          requestId: req.requestId,
-          body: req.body,
-          params: req.params,
-          query: req.query
-        }
-      );
-      
+      await auditSystem.logUserActivity(req.user?.id, action, resource, {
+        userEmail: req.user?.email,
+        ip: req.ip,
+        userAgent: req.get('User-Agent'),
+        method: req.method,
+        url: req.originalUrl,
+        requestId: req.requestId,
+        body: req.body,
+        params: req.params,
+        query: req.query
+      });
+
       next();
     } catch (error) {
       logger.error('Error in audit middleware:', error);
@@ -608,7 +599,7 @@ export const auditMiddleware = (action, resource) => {
 
 export const securityLoggingMiddleware = (req, res, next) => {
   const auditSystem = new AuditSystem();
-  
+
   // Detectar atividade suspeita
   const suspiciousPatterns = [
     /union\s+select/i,
@@ -617,16 +608,16 @@ export const securityLoggingMiddleware = (req, res, next) => {
     /\.\.\//i,
     /eval\s*\(/i
   ];
-  
+
   const requestData = JSON.stringify({
     url: req.originalUrl,
     body: req.body,
     query: req.query,
     headers: req.headers
   });
-  
+
   const isSuspicious = suspiciousPatterns.some(pattern => pattern.test(requestData));
-  
+
   if (isSuspicious) {
     auditSystem.logSecurityEvent(
       'suspicious_activity',
@@ -644,7 +635,7 @@ export const securityLoggingMiddleware = (req, res, next) => {
       }
     );
   }
-  
+
   next();
 };
 

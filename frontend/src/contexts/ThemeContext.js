@@ -30,7 +30,7 @@ export const ThemeProvider = ({ children }) => {
     });
   }, []);
 
-  const setTheme = useCallback((theme) => {
+  const setTheme = useCallback(theme => {
     const isDark = theme === 'dark';
     setIsDarkMode(isDark);
     localStorage.setItem('agroisync-theme', theme);
@@ -42,16 +42,15 @@ export const ThemeProvider = ({ children }) => {
     document.documentElement.classList.toggle('dark', isDarkMode);
   }, [isDarkMode]);
 
-  const theme = useMemo(() => ({
-    isDarkMode,
-    toggleTheme,
-    setTheme,
-    isLoading
-  }), [isDarkMode, toggleTheme, setTheme, isLoading]);
-
-  return (
-    <ThemeContext.Provider value={theme}>
-      {children}
-    </ThemeContext.Provider>
+  const theme = useMemo(
+    () => ({
+      isDarkMode,
+      toggleTheme,
+      setTheme,
+      isLoading
+    }),
+    [isDarkMode, toggleTheme, setTheme, isLoading]
   );
+
+  return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>;
 };

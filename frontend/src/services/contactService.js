@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { API_CONFIG, getAuthToken } from '../config/constants.js';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
+const API_BASE_URL = API_CONFIG.baseURL;
 
 class ContactService {
   constructor() {
@@ -9,8 +10,10 @@ class ContactService {
 
   // Configurar token de autenticação
   setAuthToken(token) {
-    this.authToken = token;
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    this.authToken = token || getAuthToken();
+    if (this.authToken) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${this.authToken}`;
+    }
   }
 
   // ===== CONTACT FORM =====
@@ -237,9 +240,9 @@ class ContactService {
 
     if (data.phone && !this.isValidPhone(data.phone)) {
       errors.phone = 'Telefone inválido';
-      }
-      
-      return {
+    }
+
+    return {
       isValid: Object.keys(errors).length === 0,
       errors
     };

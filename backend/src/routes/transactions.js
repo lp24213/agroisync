@@ -195,7 +195,7 @@ router.get('/', async (req, res) => {
       .populate('sellerId', 'name email phone')
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit));
+      .limit(parseInt(limit, 10));
 
     // Contar total
     const total = await Transaction.countDocuments(filters);
@@ -211,8 +211,8 @@ router.get('/', async (req, res) => {
         purchases,
         sales,
         pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
+          page: parseInt(page, 10),
+          limit: parseInt(limit, 10),
           total,
           pages: Math.ceil(total / limit)
         }
@@ -738,7 +738,10 @@ router.get('/conversations', async (req, res) => {
     const { limit = 20 } = req.query;
 
     // Buscar conversas ativas
-    const conversations = await TransactionMessage.findActiveConversations(userId, parseInt(limit));
+    const conversations = await TransactionMessage.findActiveConversations(
+      userId,
+      parseInt(limit, 10)
+    );
 
     res.json({
       success: true,
@@ -843,7 +846,7 @@ router.get('/admin/all', requireRole('admin'), async (req, res) => {
       .populate('sellerId', 'name email phone')
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit));
+      .limit(parseInt(limit, 10));
 
     const total = await Transaction.countDocuments(filters);
 
@@ -852,8 +855,8 @@ router.get('/admin/all', requireRole('admin'), async (req, res) => {
       data: {
         transactions,
         pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
+          page: parseInt(page, 10),
+          limit: parseInt(limit, 10),
           total,
           pages: Math.ceil(total / limit)
         }

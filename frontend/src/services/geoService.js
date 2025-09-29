@@ -22,21 +22,21 @@ export const useGeolocation = () => {
           country: data.country_name,
           countryCode: data.country_code
         };
-        
+
         setLocation({
           coords: {
             latitude: data.latitude,
             longitude: data.longitude
           }
         });
-        
+
         setRegionInfo(ipLocation);
         return ipLocation;
       }
     } catch (error) {
       console.warn('Proxy de geolocalização falhou, usando padrão');
     }
-    
+
     // Fallback para localização padrão
     const defaultLocation = {
       latitude: -23.5505,
@@ -46,14 +46,14 @@ export const useGeolocation = () => {
       country: 'Brasil',
       countryCode: 'BR'
     };
-    
+
     setLocation({
       coords: {
         latitude: defaultLocation.latitude,
         longitude: defaultLocation.longitude
       }
     });
-    
+
     setRegionInfo(defaultLocation);
     return defaultLocation;
   }, []);
@@ -84,20 +84,17 @@ export const useGeolocation = () => {
       }
 
       navigator.geolocation.getCurrentPosition(
-        async (position) => {
+        async position => {
           try {
             setLocation(position);
-            const regionData = await reverseGeocode(
-              position.coords.latitude,
-              position.coords.longitude
-            );
+            const regionData = await reverseGeocode(position.coords.latitude, position.coords.longitude);
             setRegionInfo(regionData);
             resolve(regionData);
           } catch (error) {
             reject(error);
           }
         },
-        (error) => {
+        error => {
           let errorMessage = 'Erro ao obter localização GPS';
           switch (error.code) {
             case error.PERMISSION_DENIED:

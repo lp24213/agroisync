@@ -24,13 +24,13 @@ const ResetPassword = () => {
     // Verificar se há token de recuperação na URL
     const token = searchParams.get('token');
     const id = searchParams.get('id');
-    
+
     if (!token) {
       setError('Link de recuperação inválido ou expirado');
     }
   }, [searchParams]);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -43,36 +43,36 @@ const ResetPassword = () => {
       setError('Senha é obrigatória');
       return false;
     }
-    
+
     if (formData.password.length < 6) {
       setError('Senha deve ter pelo menos 6 caracteres');
       return false;
     }
-    
+
     if (!formData.confirmPassword) {
       setError('Confirmação de senha é obrigatória');
       return false;
     }
-    
+
     if (formData.password !== formData.confirmPassword) {
       setError('Senhas não coincidem');
       return false;
     }
-    
+
     return true;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsLoading(true);
     setError('');
-    
+
     const token = searchParams.get('token');
     const result = await authService.resetPassword(token, formData.password, formData.confirmPassword);
-    
+
     if (result.success) {
       setSuccess('Senha redefinida com sucesso! Redirecionando...');
       setTimeout(() => {
@@ -81,19 +81,21 @@ const ResetPassword = () => {
     } else {
       setError(result.error || 'Erro ao redefinir senha');
     }
-    
+
     setIsLoading(false);
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'var(--bg-gradient)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '2rem 1rem'
-    }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'var(--bg-gradient)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '2rem 1rem'
+      }}
+    >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -108,34 +110,40 @@ const ResetPassword = () => {
       >
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '80px',
-            height: '80px',
-            background: 'linear-gradient(135deg, #10b981, #059669)',
-            borderRadius: '20px',
-            marginBottom: '1rem',
-            color: 'white'
-          }}>
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '80px',
+              height: '80px',
+              background: 'linear-gradient(135deg, #10b981, #059669)',
+              borderRadius: '20px',
+              marginBottom: '1rem',
+              color: 'white'
+            }}
+          >
             <Lock size={40} />
           </div>
-          
-          <h1 style={{
-            fontSize: '2rem',
-            fontWeight: '700',
-            color: '#1f2937',
-            marginBottom: '0.5rem'
-          }}>
+
+          <h1
+            style={{
+              fontSize: '2rem',
+              fontWeight: '700',
+              color: '#1f2937',
+              marginBottom: '0.5rem'
+            }}
+          >
             Nova Senha
           </h1>
-          
-          <p style={{
-            color: '#6b7280',
-            fontSize: '1rem',
-            lineHeight: '1.6'
-          }}>
+
+          <p
+            style={{
+              color: '#6b7280',
+              fontSize: '1rem',
+              lineHeight: '1.6'
+            }}
+          >
             Digite sua nova senha abaixo
           </p>
         </div>
@@ -144,22 +152,24 @@ const ResetPassword = () => {
         <form onSubmit={handleSubmit}>
           {/* Password */}
           <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{
-              display: 'block',
-              marginBottom: '0.5rem',
-              fontWeight: '600',
-              color: '#1f2937'
-            }}>
+            <label
+              style={{
+                display: 'block',
+                marginBottom: '0.5rem',
+                fontWeight: '600',
+                color: '#1f2937'
+              }}
+            >
               Nova Senha
             </label>
-            
+
             <div style={{ position: 'relative' }}>
               <input
                 type={showPassword ? 'text' : 'password'}
-                name="password"
+                name='password'
                 value={formData.password}
                 onChange={handleInputChange}
-                placeholder="Digite sua nova senha"
+                placeholder='Digite sua nova senha'
                 style={{
                   width: '100%',
                   padding: '1rem',
@@ -172,9 +182,9 @@ const ResetPassword = () => {
                   outline: 'none'
                 }}
               />
-              
+
               <button
-                type="button"
+                type='button'
                 onClick={() => setShowPassword(!showPassword)}
                 style={{
                   position: 'absolute',
@@ -195,22 +205,24 @@ const ResetPassword = () => {
 
           {/* Confirm Password */}
           <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{
-              display: 'block',
-              marginBottom: '0.5rem',
-              fontWeight: '600',
-              color: '#1f2937'
-            }}>
+            <label
+              style={{
+                display: 'block',
+                marginBottom: '0.5rem',
+                fontWeight: '600',
+                color: '#1f2937'
+              }}
+            >
               Confirmar Nova Senha
             </label>
-            
+
             <div style={{ position: 'relative' }}>
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
-                name="confirmPassword"
+                name='confirmPassword'
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
-                placeholder="Confirme sua nova senha"
+                placeholder='Confirme sua nova senha'
                 style={{
                   width: '100%',
                   padding: '1rem',
@@ -223,9 +235,9 @@ const ResetPassword = () => {
                   outline: 'none'
                 }}
               />
-              
+
               <button
-                type="button"
+                type='button'
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 style={{
                   position: 'absolute',
@@ -289,11 +301,11 @@ const ResetPassword = () => {
 
           {/* Cloudflare Turnstile */}
           <CloudflareTurnstile
-            onVerify={(token) => {
+            onVerify={token => {
               setTurnstileToken(token);
               setError('');
             }}
-            onError={(error) => {
+            onError={error => {
               setError('Erro na verificação. Tente novamente.');
               setTurnstileToken('');
             }}
@@ -305,14 +317,12 @@ const ResetPassword = () => {
 
           {/* Submit Button */}
           <button
-            type="submit"
+            type='submit'
             disabled={isLoading || !turnstileToken}
             style={{
               width: '100%',
               padding: '1rem',
-              background: isLoading
-                ? '#d1d5db'
-                : 'linear-gradient(135deg, #10b981, #059669)',
+              background: isLoading ? '#d1d5db' : 'linear-gradient(135deg, #10b981, #059669)',
               color: 'white',
               border: 'none',
               borderRadius: '12px',
@@ -331,7 +341,7 @@ const ResetPassword = () => {
         {/* Back to Login */}
         <div style={{ textAlign: 'center' }}>
           <Link
-            to="/login"
+            to='/login'
             style={{
               color: '#6b7280',
               textDecoration: 'none',
@@ -343,8 +353,8 @@ const ResetPassword = () => {
             Voltar para o Login
           </Link>
         </div>
-        <div className="mt-8 flex justify-center">
-          <CryptoHash pageName="reset-password" style={{ display: 'none' }} />
+        <div className='mt-8 flex justify-center'>
+          <CryptoHash pageName='reset-password' style={{ display: 'none' }} />
         </div>
       </motion.div>
     </div>

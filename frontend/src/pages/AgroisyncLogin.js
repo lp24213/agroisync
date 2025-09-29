@@ -23,8 +23,8 @@ const AgroisyncLogin = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { duration: 0.8, ease: 'easeOut' },
-    },
+      transition: { duration: 0.8, ease: 'easeOut' }
+    }
   };
 
   const itemVariants = {
@@ -32,17 +32,17 @@ const AgroisyncLogin = () => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.8, ease: 'easeOut' },
-    },
+      transition: { duration: 0.8, ease: 'easeOut' }
+    }
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
@@ -54,26 +54,26 @@ const AgroisyncLogin = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.email) {
       newErrors.email = 'Email é obrigatório';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email inválido';
     }
-    
+
     if (!formData.password) {
       newErrors.password = 'Senha é obrigatória';
     } else if (formData.password.length < 6) {
       newErrors.password = 'Senha deve ter pelo menos 6 caracteres';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -82,9 +82,9 @@ const AgroisyncLogin = () => {
       setErrors({ general: 'Por favor, complete a verificação "Não sou um robô"' });
       return;
     }
-    
+
     setIsLoading(true);
-    
+
     try {
       const api = process.env.REACT_APP_API_URL || '/api';
       const payloadToSend = {
@@ -97,22 +97,22 @@ const AgroisyncLogin = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payloadToSend)
       });
-      
+
       if (process.env.NODE_ENV !== 'production') {
         console.log('Response status:', res.status);
         console.log('Response ok:', res.ok);
       }
-      
+
       if (res.ok) {
         const payload = await res.json();
         if (process.env.NODE_ENV !== 'production') {
           console.log('Full response payload:', payload);
         }
-        
+
         const envelope = payload && payload.data ? payload.data : {};
         const token = envelope.token;
         const user = envelope.user;
-        
+
         if (process.env.NODE_ENV !== 'production') {
           console.log('Token:', token);
           console.log('User:', user);
@@ -148,106 +148,121 @@ const AgroisyncLogin = () => {
   return (
     <>
       {/* Header já incluído no App.js */}
-      
-      <div style={{ 
-        minHeight: '100vh', 
-        background: 'var(--bg-gradient)',
-        display: 'flex',
-        alignItems: 'center',
-        padding: '2rem 0'
-      }}>
-        <div className="container">
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', 
-            gap: '3rem',
-            alignItems: 'center',
-            maxWidth: '1000px',
-            margin: '0 auto'
-          }}>
+
+      <div
+        style={{
+          minHeight: '100vh',
+          background: 'var(--bg-gradient)',
+          display: 'flex',
+          alignItems: 'center',
+          padding: '2rem 0'
+        }}
+      >
+        <div className='container'>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+              gap: '3rem',
+              alignItems: 'center',
+              maxWidth: '1000px',
+              margin: '0 auto'
+            }}
+          >
             {/* Left Side - Info */}
             <motion.div
               variants={heroVariants}
-              initial="hidden"
-              animate="visible"
-              className="agro-text-center"
+              initial='hidden'
+              animate='visible'
+              className='agro-text-center'
               style={{ color: 'var(--text-primary)' }}
             >
-              <motion.div
-                variants={itemVariants}
-                style={{ marginBottom: '2rem' }}
-              >
-                <div style={{
-                  width: '100px',
-                  height: '100px',
-                  margin: '0 auto',
-                  background: 'var(--accent)',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  boxShadow: '0 6px 20px rgba(42, 127, 79, 0.3)'
-                }}>
+              <motion.div variants={itemVariants} style={{ marginBottom: '2rem' }}>
+                <div
+                  style={{
+                    width: '100px',
+                    height: '100px',
+                    margin: '0 auto',
+                    background: 'var(--accent)',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    boxShadow: '0 6px 20px rgba(42, 127, 79, 0.3)'
+                  }}
+                >
                   <User size={40} />
                 </div>
               </motion.div>
 
-              <motion.h1 style={{ 
-                fontSize: '2.5rem', 
-                fontWeight: '800', 
-                marginBottom: '1rem',
-                color: 'var(--text-primary)'
-              }} variants={itemVariants}>
+              <motion.h1
+                style={{
+                  fontSize: '2.5rem',
+                  fontWeight: '800',
+                  marginBottom: '1rem',
+                  color: 'var(--text-primary)'
+                }}
+                variants={itemVariants}
+              >
                 Bem-vindo de volta!
               </motion.h1>
 
-              <motion.p style={{ 
-                fontSize: '1.1rem', 
-                color: 'var(--muted)',
-                marginBottom: '2rem',
-                lineHeight: '1.6'
-              }} variants={itemVariants}>
+              <motion.p
+                style={{
+                  fontSize: '1.1rem',
+                  color: 'var(--muted)',
+                  marginBottom: '2rem',
+                  lineHeight: '1.6'
+                }}
+                variants={itemVariants}
+              >
                 Acesse sua conta e continue sua jornada no agronegócio digital.
               </motion.p>
 
-              <motion.div 
+              <motion.div
                 variants={itemVariants}
-                style={{ 
-                  display: 'flex', 
-                  gap: '1rem', 
+                style={{
+                  display: 'flex',
+                  gap: '1rem',
                   justifyContent: 'center',
                   flexWrap: 'wrap'
                 }}
               >
-                <div style={{
-                  padding: '0.5rem 1rem',
-                  background: 'rgba(42, 127, 79, 0.1)',
-                  borderRadius: '20px',
-                  fontSize: '0.9rem',
-                  color: 'var(--accent)',
-                  fontWeight: '600'
-                }}>
+                <div
+                  style={{
+                    padding: '0.5rem 1rem',
+                    background: 'rgba(42, 127, 79, 0.1)',
+                    borderRadius: '20px',
+                    fontSize: '0.9rem',
+                    color: 'var(--accent)',
+                    fontWeight: '600'
+                  }}
+                >
                   ✓ Seguro
                 </div>
-                <div style={{
-                  padding: '0.5rem 1rem',
-                  background: 'rgba(42, 127, 79, 0.1)',
-                  borderRadius: '20px',
-                  fontSize: '0.9rem',
-                  color: 'var(--accent)',
-                  fontWeight: '600'
-                }}>
+                <div
+                  style={{
+                    padding: '0.5rem 1rem',
+                    background: 'rgba(42, 127, 79, 0.1)',
+                    borderRadius: '20px',
+                    fontSize: '0.9rem',
+                    color: 'var(--accent)',
+                    fontWeight: '600'
+                  }}
+                >
                   ✓ Rápido
                 </div>
-                <div style={{
-                  padding: '0.5rem 1rem',
-                  background: 'rgba(42, 127, 79, 0.1)',
-                  borderRadius: '20px',
-                  fontSize: '0.9rem',
-                  color: 'var(--accent)',
-                  fontWeight: '600'
-                }}>
+                <div
+                  style={{
+                    padding: '0.5rem 1rem',
+                    background: 'rgba(42, 127, 79, 0.1)',
+                    borderRadius: '20px',
+                    fontSize: '0.9rem',
+                    color: 'var(--accent)',
+                    fontWeight: '600'
+                  }}
+                >
                   ✓ Confiável
                 </div>
               </motion.div>
@@ -256,8 +271,8 @@ const AgroisyncLogin = () => {
             {/* Right Side - Form */}
             <motion.div
               variants={heroVariants}
-              initial="hidden"
-              animate="visible"
+              initial='hidden'
+              animate='visible'
               style={{
                 background: 'var(--card-bg)',
                 padding: '2.5rem',
@@ -266,16 +281,15 @@ const AgroisyncLogin = () => {
                 border: '1px solid rgba(15, 15, 15, 0.05)'
               }}
             >
-              <motion.div
-                variants={itemVariants}
-                style={{ textAlign: 'center', marginBottom: '2rem' }}
-              >
-                <h2 style={{ 
-                  fontSize: '1.8rem', 
-                  fontWeight: '700', 
-                  marginBottom: '0.5rem',
-                  color: 'var(--text-primary)'
-                }}>
+              <motion.div variants={itemVariants} style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                <h2
+                  style={{
+                    fontSize: '1.8rem',
+                    fontWeight: '700',
+                    marginBottom: '0.5rem',
+                    color: 'var(--text-primary)'
+                  }}
+                >
                   Fazer Login
                 </h2>
                 <p style={{ color: 'var(--muted)', fontSize: '0.95rem' }}>
@@ -302,35 +316,34 @@ const AgroisyncLogin = () => {
               )}
 
               <form onSubmit={handleSubmit}>
-                <motion.div 
-                  variants={itemVariants}
-                  style={{ marginBottom: '1.5rem' }}
-                >
-                  <label style={{ 
-                    display: 'block', 
-                    marginBottom: '0.5rem', 
-                    fontWeight: '600',
-                    color: 'var(--text-primary)'
-                  }}>
+                <motion.div variants={itemVariants} style={{ marginBottom: '1.5rem' }}>
+                  <label
+                    style={{
+                      display: 'block',
+                      marginBottom: '0.5rem',
+                      fontWeight: '600',
+                      color: 'var(--text-primary)'
+                    }}
+                  >
                     Email
                   </label>
                   <div style={{ position: 'relative' }}>
-                    <Mail 
-                      size={20} 
-                      style={{ 
-                        position: 'absolute', 
-                        left: '12px', 
-                        top: '50%', 
+                    <Mail
+                      size={20}
+                      style={{
+                        position: 'absolute',
+                        left: '12px',
+                        top: '50%',
                         transform: 'translateY(-50%)',
                         color: 'var(--muted)'
-                      }} 
+                      }}
                     />
                     <input
-                      type="email"
-                      name="email"
+                      type='email'
+                      name='email'
                       value={formData.email}
                       onChange={handleInputChange}
-                      placeholder="seu@email.com"
+                      placeholder='seu@email.com'
                       style={{
                         width: '100%',
                         padding: '12px 12px 12px 44px',
@@ -341,50 +354,47 @@ const AgroisyncLogin = () => {
                         transition: 'all 0.2s ease',
                         outline: 'none'
                       }}
-                      onFocus={(e) => {
+                      onFocus={e => {
                         e.target.style.borderColor = 'var(--accent)';
                       }}
-                      onBlur={(e) => {
+                      onBlur={e => {
                         e.target.style.borderColor = errors.email ? '#dc2626' : 'rgba(15, 15, 15, 0.1)';
                       }}
                     />
                   </div>
                   {errors.email && (
-                    <p style={{ color: '#dc2626', fontSize: '0.85rem', marginTop: '0.25rem' }}>
-                      {errors.email}
-                    </p>
+                    <p style={{ color: '#dc2626', fontSize: '0.85rem', marginTop: '0.25rem' }}>{errors.email}</p>
                   )}
                 </motion.div>
 
-                <motion.div 
-                  variants={itemVariants}
-                  style={{ marginBottom: '1.5rem' }}
-                >
-                  <label style={{ 
-                    display: 'block', 
-                    marginBottom: '0.5rem', 
-                    fontWeight: '600',
-                    color: 'var(--text-primary)'
-                  }}>
+                <motion.div variants={itemVariants} style={{ marginBottom: '1.5rem' }}>
+                  <label
+                    style={{
+                      display: 'block',
+                      marginBottom: '0.5rem',
+                      fontWeight: '600',
+                      color: 'var(--text-primary)'
+                    }}
+                  >
                     Senha
                   </label>
                   <div style={{ position: 'relative' }}>
-                    <Lock 
-                      size={20} 
-                      style={{ 
-                        position: 'absolute', 
-                        left: '12px', 
-                        top: '50%', 
+                    <Lock
+                      size={20}
+                      style={{
+                        position: 'absolute',
+                        left: '12px',
+                        top: '50%',
                         transform: 'translateY(-50%)',
                         color: 'var(--muted)'
-                      }} 
+                      }}
                     />
                     <input
                       type={showPassword ? 'text' : 'password'}
-                      name="password"
+                      name='password'
                       value={formData.password}
                       onChange={handleInputChange}
-                      placeholder="Sua senha"
+                      placeholder='Sua senha'
                       style={{
                         width: '100%',
                         padding: '12px 44px 12px 44px',
@@ -395,15 +405,15 @@ const AgroisyncLogin = () => {
                         transition: 'all 0.2s ease',
                         outline: 'none'
                       }}
-                      onFocus={(e) => {
+                      onFocus={e => {
                         e.target.style.borderColor = 'var(--accent)';
                       }}
-                      onBlur={(e) => {
+                      onBlur={e => {
                         e.target.style.borderColor = errors.password ? '#dc2626' : 'rgba(15, 15, 15, 0.1)';
                       }}
                     />
                     <button
-                      type="button"
+                      type='button'
                       onClick={() => setShowPassword(!showPassword)}
                       style={{
                         position: 'absolute',
@@ -421,39 +431,36 @@ const AgroisyncLogin = () => {
                     </button>
                   </div>
                   {errors.password && (
-                    <p style={{ color: '#dc2626', fontSize: '0.85rem', marginTop: '0.25rem' }}>
-                      {errors.password}
-                    </p>
+                    <p style={{ color: '#dc2626', fontSize: '0.85rem', marginTop: '0.25rem' }}>{errors.password}</p>
                   )}
                 </motion.div>
 
-                <motion.div 
+                <motion.div
                   variants={itemVariants}
-                  style={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between', 
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
                     alignItems: 'center',
                     marginBottom: '2rem'
                   }}
                 >
-                  <label style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '0.5rem',
-                    cursor: 'pointer',
-                    fontSize: '0.9rem',
-                    color: 'var(--text-primary)'
-                  }}>
-                    <input 
-                      type="checkbox" 
-                      style={{ margin: 0 }}
-                    />
+                  <label
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      cursor: 'pointer',
+                      fontSize: '0.9rem',
+                      color: 'var(--text-primary)'
+                    }}
+                  >
+                    <input type='checkbox' style={{ margin: 0 }} />
                     Lembrar de mim
                   </label>
-                  <Link 
-                    to="/forgot-password" 
-                    style={{ 
-                      color: 'var(--accent)', 
+                  <Link
+                    to='/forgot-password'
+                    style={{
+                      color: 'var(--accent)',
                       textDecoration: 'none',
                       fontSize: '0.9rem',
                       fontWeight: '600'
@@ -464,16 +471,13 @@ const AgroisyncLogin = () => {
                 </motion.div>
 
                 {/* Cloudflare Turnstile */}
-                <motion.div 
-                  variants={itemVariants}
-                  style={{ marginBottom: '1.5rem' }}
-                >
+                <motion.div variants={itemVariants} style={{ marginBottom: '1.5rem' }}>
                   <CloudflareTurnstile
-                    onVerify={(token) => {
+                    onVerify={token => {
                       setTurnstileToken(token);
                       setErrors(prev => ({ ...prev, general: '' }));
                     }}
-                    onError={(error) => {
+                    onError={error => {
                       setErrors({ general: 'Erro na verificação. Tente novamente.' });
                       setTurnstileToken('');
                     }}
@@ -486,30 +490,39 @@ const AgroisyncLogin = () => {
 
                 <motion.button
                   variants={itemVariants}
-                  type="submit"
+                  type='submit'
                   disabled={isLoading || !turnstileToken}
                   style={{
                     width: '100%',
                     padding: '14px',
-                    background: (isLoading || !turnstileToken) ? 'var(--muted)' : 'var(--accent)',
+                    background: isLoading || !turnstileToken ? 'var(--muted)' : 'var(--accent)',
                     color: 'white',
                     border: 'none',
                     borderRadius: '8px',
                     fontSize: '1rem',
                     fontWeight: '600',
-                    cursor: (isLoading || !turnstileToken) ? 'not-allowed' : 'pointer',
+                    cursor: isLoading || !turnstileToken ? 'not-allowed' : 'pointer',
                     transition: 'all 0.2s ease',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '0.5rem'
                   }}
-                  whileHover={(!isLoading && turnstileToken) ? { scale: 1.02 } : {}}
-                  whileTap={(!isLoading && turnstileToken) ? { scale: 0.98 } : {}}
+                  whileHover={!isLoading && turnstileToken ? { scale: 1.02 } : {}}
+                  whileTap={!isLoading && turnstileToken ? { scale: 0.98 } : {}}
                 >
                   {isLoading ? (
                     <>
-                      <div className="spin-animation" style={{ width: '20px', height: '20px', border: '2px solid transparent', borderTop: '2px solid white', borderRadius: '50%' }} />
+                      <div
+                        className='spin-animation'
+                        style={{
+                          width: '20px',
+                          height: '20px',
+                          border: '2px solid transparent',
+                          borderTop: '2px solid white',
+                          borderRadius: '50%'
+                        }}
+                      />
                       Entrando...
                     </>
                   ) : (
@@ -522,14 +535,11 @@ const AgroisyncLogin = () => {
               </form>
 
               {/* Esqueci minha senha */}
-              <motion.div 
-                variants={itemVariants}
-                style={{ textAlign: 'center', marginTop: '1rem' }}
-              >
-                <Link 
-                  to="/forgot-password" 
-                  style={{ 
-                    color: 'var(--accent)', 
+              <motion.div variants={itemVariants} style={{ textAlign: 'center', marginTop: '1rem' }}>
+                <Link
+                  to='/forgot-password'
+                  style={{
+                    color: 'var(--accent)',
                     textDecoration: 'none',
                     fontWeight: '600',
                     fontSize: '0.9rem'
@@ -539,16 +549,13 @@ const AgroisyncLogin = () => {
                 </Link>
               </motion.div>
 
-              <motion.div 
-                variants={itemVariants}
-                style={{ textAlign: 'center', marginTop: '2rem' }}
-              >
+              <motion.div variants={itemVariants} style={{ textAlign: 'center', marginTop: '2rem' }}>
                 <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>
                   Não tem uma conta?{' '}
-                  <Link 
-                    to="/register" 
-                    style={{ 
-                      color: 'var(--accent)', 
+                  <Link
+                    to='/register'
+                    style={{
+                      color: 'var(--accent)',
                       textDecoration: 'none',
                       fontWeight: '600'
                     }}
@@ -557,7 +564,6 @@ const AgroisyncLogin = () => {
                   </Link>
                 </p>
               </motion.div>
-
             </motion.div>
           </div>
         </div>

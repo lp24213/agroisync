@@ -96,8 +96,8 @@ exports.handler = async event => {
     // GET /products/public - Lista pública de produtos
     if (event.httpMethod === 'GET' && event.path.includes('/public')) {
       const { queryStringParameters } = event;
-      const page = parseInt(queryStringParameters?.page) || 1;
-      const limit = parseInt(queryStringParameters?.limit) || 20;
+      const page = parseInt(queryStringParameters?.page, 10) || 1;
+      const limit = parseInt(queryStringParameters?.limit, 10) || 20;
       const search = queryStringParameters?.search || '';
       const category = queryStringParameters?.category;
 

@@ -1,10 +1,15 @@
 // Payment Service - Integração Stripe e MetaMask
+import { API_CONFIG, STRIPE_CONFIG, WEB3_CONFIG, getAuthToken } from '../config/constants.js';
+
 class PaymentService {
   constructor() {
-    this.stripePublishableKey = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_51234567890abcdef';
-    this.metaMaskAddress = '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'; // Endereço MetaMask do usuário
-    this.stripeAccountId = 'acct_1ABC123DEF456GHI'; // Account ID Stripe do usuário
-    this.apiBaseUrl = process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
+    // Usar configurações centralizadas
+    this.stripePublishableKey = STRIPE_CONFIG.publishableKey;
+    this.metaMaskAddress = null; // Será definido após conexão com MetaMask
+    this.stripeAccountId = null; // Será definido pelo backend após autenticação
+    this.apiBaseUrl = API_CONFIG.baseURL;
+    this.web3Provider = WEB3_CONFIG.providerUrl;
+    this.chainId = WEB3_CONFIG.chainId;
   }
 
   // Stripe Payment Methods
@@ -12,32 +17,40 @@ class PaymentService {
     if (window.Stripe) {
       return window.Stripe(this.stripePublishableKey);
     }
-    
+
     const { loadStripe } = await import('@stripe/stripe-js');
     return await loadStripe(this.stripePublishableKey);
   }
 
   async createPaymentIntent(amount, currency = 'brl', metadata = {}) {
     try {
+      // Usar helper para obter token de forma segura
+      const token = getAuthToken();
+
+      if (!token) {
+        throw new Error('Usuário não autenticado');
+      }
+
       const response = await fetch(`${this.apiBaseUrl}/payments/create-intent`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
           amount: Math.round(amount * 100), // Stripe usa centavos
           currency,
           metadata: {
             ...metadata,
-            account_id: this.stripeAccountId,
-            platform: 'agroisync'
+            platform: 'agroisync',
+            timestamp: Date.now()
           }
-        }),
+        })
       });
 
       if (!response.ok) {
-        throw new Error('Erro ao criar Payment Intent');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Erro ao criar Payment Intent');
       }
 
       return await response.json();
@@ -50,13 +63,13 @@ class PaymentService {
   async processStripePayment(paymentIntentId, paymentMethodId) {
     try {
       const stripe = await this.initializeStripe();
-      
+
       const { error } = await stripe.confirmPayment({
         clientSecret: paymentIntentId,
         confirmParams: {
           payment_method: paymentMethodId,
-          return_url: `${window.location.origin}/payment/success`,
-        },
+          return_url: `${window.location.origin}/payment/success`
+        }
       });
 
       if (error) {
@@ -77,15 +90,42 @@ class PaymentService {
         const accounts = await window.ethereum.request({
           method: 'eth_requestAccounts'
         });
-        
+
+        if (!accounts || accounts.length === 0) {
+          throw new Error('Nenhuma conta MetaMask encontrada');
+        }
+
+        // Armazenar endereço dinamicamente
         this.metaMaskAddress = accounts[0];
+
+        // Verificar se está na rede correta
+        const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+        const expectedChainId = '0x' + this.chainId.toString(16);
+
+        if (chainId !== expectedChainId) {
+          console.warn(`MetaMask está na rede ${chainId}, esperado ${expectedChainId}`);
+          // Solicitar mudança de rede
+          try {
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: expectedChainId }]
+            });
+          } catch (switchError) {
+            // Se a rede não existe, adicionar
+            if (switchError.code === 4902) {
+              throw new Error('Por favor, adicione a rede correta ao MetaMask');
+            }
+            throw switchError;
+          }
+        }
+
         return accounts[0];
       } catch (error) {
         console.error('Erro ao conectar MetaMask:', error);
         throw error;
       }
     } else {
-      throw new Error('MetaMask não está instalado');
+      throw new Error('MetaMask não está instalado. Instale em https://metamask.io');
     }
   }
 
@@ -101,7 +141,7 @@ class PaymentService {
 
       const txHash = await window.ethereum.request({
         method: 'eth_sendTransaction',
-        params: [transactionParameters],
+        params: [transactionParameters]
       });
 
       return { success: true, txHash };
@@ -118,7 +158,7 @@ class PaymentService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${getAuthToken()}`
         },
         body: JSON.stringify({
           priceId,
@@ -127,7 +167,7 @@ class PaymentService {
             platform: 'agroisync',
             account_id: this.stripeAccountId
           }
-        }),
+        })
       });
 
       if (!response.ok) {
@@ -147,7 +187,7 @@ class PaymentService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       });
 
@@ -182,10 +222,10 @@ class PaymentService {
   // Price calculation for different user types
   calculatePrice(basePrice, userType = 'standard') {
     const multipliers = {
-      'standard': 1.0,
-      'premium': 0.9,    // 10% desconto
-      'enterprise': 0.8, // 20% desconto
-      'vip': 0.7         // 30% desconto
+      standard: 1.0,
+      premium: 0.9, // 10% desconto
+      enterprise: 0.8, // 20% desconto
+      vip: 0.7 // 30% desconto
     };
 
     const multiplier = multipliers[userType] || 1.0;
@@ -220,7 +260,7 @@ class PaymentService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${getAuthToken()}`
         },
         body: JSON.stringify({
           buyerAddress,
@@ -228,7 +268,7 @@ class PaymentService {
           amount,
           conditions,
           platform: 'agroisync'
-        }),
+        })
       });
 
       if (!response.ok) {
@@ -248,7 +288,7 @@ class PaymentService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       });
 
@@ -268,7 +308,7 @@ class PaymentService {
     try {
       const response = await fetch(`${this.apiBaseUrl}/payments/history?limit=${limit}&offset=${offset}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       });
 
@@ -287,7 +327,7 @@ class PaymentService {
     try {
       const response = await fetch(`${this.apiBaseUrl}/payments/analytics?period=${period}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       });
 
@@ -309,13 +349,13 @@ class PaymentService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${getAuthToken()}`
         },
         body: JSON.stringify({
           amount,
           reason,
           platform: 'agroisync'
-        }),
+        })
       });
 
       if (!response.ok) {
@@ -341,7 +381,7 @@ class PaymentService {
           amount,
           from: fromCurrency,
           to: toCurrency
-        }),
+        })
       });
 
       if (!response.ok) {
@@ -364,10 +404,10 @@ class PaymentService {
   calculateFinalPrice(basePrice, userType = 'standard', marketConditions = {}) {
     let price = this.calculatePrice(basePrice, userType);
     price = this.calculateDynamicPrice(price, marketConditions);
-    
+
     const fee = this.calculateFee(price);
     const tax = this.calculateTax(price);
-    
+
     return price + fee + tax;
   }
 
@@ -384,9 +424,9 @@ class PaymentService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${getAuthToken()}`
         },
-        body: JSON.stringify(transactionData),
+        body: JSON.stringify(transactionData)
       });
 
       if (!response.ok) {

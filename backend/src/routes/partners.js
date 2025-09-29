@@ -75,7 +75,7 @@ const validatePartnerData = (req, res, next) => {
 router.get('/', async (req, res) => {
   try {
     const { page = 1, limit = 20, category, status, featured, search } = req.query;
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     const query = {};
 
@@ -106,7 +106,7 @@ router.get('/', async (req, res) => {
     const partners = await Partner.find(query)
       .sort({ isFeatured: -1, createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit))
+      .limit(parseInt(limit, 10))
       .lean();
 
     const total = await Partner.countDocuments(query);
@@ -116,10 +116,10 @@ router.get('/', async (req, res) => {
       data: {
         partners,
         pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
+          currentPage: parseInt(page, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit)
+          itemsPerPage: parseInt(limit, 10)
         }
       }
     });
@@ -142,7 +142,7 @@ router.get('/featured', async (req, res) => {
       status: 'active'
     })
       .sort({ partnershipLevel: -1, createdAt: -1 })
-      .limit(parseInt(limit))
+      .limit(parseInt(limit, 10))
       .lean();
 
     res.json({
@@ -240,7 +240,7 @@ router.post('/', authenticateToken, requireAdmin, validatePartnerData, async (re
       logo: logo ? sanitizeInput(logo) : undefined,
       category: sanitizeInput(category),
       industry: industry ? sanitizeInput(industry) : undefined,
-      founded: founded ? parseInt(founded) : undefined,
+      founded: founded ? parseInt(founded, 10) : undefined,
       employees: employees || undefined,
       location: location
         ? {
@@ -334,7 +334,7 @@ router.put('/:id', authenticateToken, requireAdmin, validatePartnerData, async (
     if (updateData.industry !== undefined) {
     {partner.industry = updateData.industry ? sanitizeInput(updateData.industry) : undefined;}
     if (updateData.founded !== undefined) {
-    {partner.founded = updateData.founded ? parseInt(updateData.founded) : undefined;}
+    {partner.founded = updateData.founded ? parseInt(updateData.founded, 10) : undefined;}
     if (updateData.employees !== undefined) {
       partner.employees = updateData.employees;
     }

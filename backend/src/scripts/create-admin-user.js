@@ -49,7 +49,6 @@ const createAdminUser = async () => {
     console.log('Email: admin@agroisync.com');
     console.log('Senha: admin123456');
     console.log('IMPORTANTE: Altere a senha após o primeiro login!');
-
   } catch (error) {
     console.error('Erro ao criar usuário admin:', error);
   } finally {

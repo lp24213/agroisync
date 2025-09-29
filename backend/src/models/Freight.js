@@ -323,24 +323,29 @@ freightSchema.methods.getEstimatedDistance = function () {
     ['SP', 'RJ', 'MG', 'ES'].includes(originState) &&
     ['SP', 'RJ', 'MG', 'ES'].includes(destState)
   ) {
-  {return 'Região Sudeste';}
+    return 'Região Sudeste';
+  }
   if (['RS', 'SC', 'PR'].includes(originState) && ['RS', 'SC', 'PR'].includes(destState)) {
-  {return 'Região Sul';}
+    return 'Região Sul';
+  }
   if (
     ['GO', 'MT', 'MS', 'DF'].includes(originState) &&
     ['GO', 'MT', 'MS', 'DF'].includes(destState)
   ) {
-  {return 'Região Centro-Oeste';}
+    return 'Região Centro-Oeste';
+  }
   if (
     ['BA', 'SE', 'AL', 'PE', 'PB', 'RN', 'CE', 'PI', 'MA'].includes(originState) &&
     ['BA', 'SE', 'AL', 'PE', 'PB', 'RN', 'CE', 'PI', 'MA'].includes(destState)
   ) {
-  {return 'Região Nordeste';}
+    return 'Região Nordeste';
+  }
   if (
     ['AM', 'PA', 'AP', 'TO', 'RO', 'AC', 'RR'].includes(originState) &&
     ['AM', 'PA', 'AP', 'TO', 'RO', 'AC', 'RR'].includes(destState)
   ) {
-  {return 'Região Norte';}
+    return 'Região Norte';
+  }
 
   return 'Interestadual';
 };

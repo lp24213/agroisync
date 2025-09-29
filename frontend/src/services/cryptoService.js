@@ -13,7 +13,7 @@ class CryptoService {
   async getCryptoPrices() {
     const cacheKey = 'crypto-prices';
     const cached = this.cache.get(cacheKey);
-    
+
     if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
       return cached.data;
     }
@@ -46,7 +46,7 @@ class CryptoService {
         });
 
         let cryptoData;
-        
+
         if (api.name === 'CoinGecko') {
           cryptoData = Object.entries(response.data).map(([id, data]) => ({
             id,
@@ -135,7 +135,7 @@ class CryptoService {
   async getHistoricalData(coinId = 'bitcoin', days = 7) {
     const cacheKey = `historical-${coinId}-${days}`;
     const cached = this.cache.get(cacheKey);
-    
+
     if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
       return cached.data;
     }
@@ -172,7 +172,7 @@ class CryptoService {
   async getMarketTrends() {
     const cacheKey = 'market-trends';
     const cached = this.cache.get(cacheKey);
-    
+
     if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
       return cached.data;
     }
@@ -205,16 +205,16 @@ class CryptoService {
   // Obter símbolo da moeda
   getSymbol(id) {
     const symbols = {
-      'bitcoin': 'BTC',
-      'ethereum': 'ETH',
-      'binancecoin': 'BNB',
-      'cardano': 'ADA',
-      'solana': 'SOL',
-      'polkadot': 'DOT',
-      'chainlink': 'LINK',
+      bitcoin: 'BTC',
+      ethereum: 'ETH',
+      binancecoin: 'BNB',
+      cardano: 'ADA',
+      solana: 'SOL',
+      polkadot: 'DOT',
+      chainlink: 'LINK',
       'avalanche-2': 'AVAX',
-      'polygon': 'MATIC',
-      'cosmos': 'ATOM'
+      polygon: 'MATIC',
+      cosmos: 'ATOM'
     };
     return symbols[id] || id.toUpperCase();
   }
@@ -222,16 +222,16 @@ class CryptoService {
   // Obter nome da moeda
   getName(id) {
     const names = {
-      'bitcoin': 'Bitcoin',
-      'ethereum': 'Ethereum',
-      'binancecoin': 'Binance Coin',
-      'cardano': 'Cardano',
-      'solana': 'Solana',
-      'polkadot': 'Polkadot',
-      'chainlink': 'Chainlink',
+      bitcoin: 'Bitcoin',
+      ethereum: 'Ethereum',
+      binancecoin: 'Binance Coin',
+      cardano: 'Cardano',
+      solana: 'Solana',
+      polkadot: 'Polkadot',
+      chainlink: 'Chainlink',
       'avalanche-2': 'Avalanche',
-      'polygon': 'Polygon',
-      'cosmos': 'Cosmos'
+      polygon: 'Polygon',
+      cosmos: 'Cosmos'
     };
     return names[id] || id;
   }
@@ -243,9 +243,9 @@ class CryptoService {
     const now = Date.now();
     for (let i = 7; i >= 0; i--) {
       data.push({
-        timestamp: now - (i * 24 * 60 * 60 * 1000),
+        timestamp: now - i * 24 * 60 * 60 * 1000,
         price: 45000 + (Math.random() - 0.5) * 5000,
-        date: new Date(now - (i * 24 * 60 * 60 * 1000))
+        date: new Date(now - i * 24 * 60 * 60 * 1000)
       });
     }
     return data;

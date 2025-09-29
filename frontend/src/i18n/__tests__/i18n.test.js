@@ -28,7 +28,7 @@ describe('i18n Configuration', () => {
   it('should handle interpolation', () => {
     const template = 'Mostrando {{count}} de {{total}} fretes disponíveis';
     const interpolated = template.replace('{{count}}', '10').replace('{{total}}', '50');
-    
+
     expect(interpolated).toBe('Mostrando 10 de 50 fretes disponíveis');
   });
 });

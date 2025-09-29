@@ -17,13 +17,13 @@ const MessagingCenter = () => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 1024);
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-useEffect(() => {
+  useEffect(() => {
     if (isMobile && selectedChat) {
       setShowChatList(false);
     } else {
@@ -31,7 +31,7 @@ useEffect(() => {
     }
   }, [selectedChat, isMobile]);
 
-  const handleSelectChat = (chat) => {
+  const handleSelectChat = chat => {
     setSelectedChat(chat);
   };
 
@@ -48,26 +48,21 @@ useEffect(() => {
   };
 
   return (
-    <div className="h-full bg-white dark:bg-slate-800">
-      <div className="flex h-full">
+    <div className='h-full bg-white dark:bg-slate-800'>
+      <div className='flex h-full'>
         {/* Chat List - Desktop: Always visible, Mobile: Conditional */}
         <AnimatePresence>
           {showChatList && (
             <motion.div
               className={`${
-                isMobile 
-                  ? 'absolute inset-0 z-10' 
-                  : 'w-1/3 border-r border-slate-200 dark:border-slate-700'
+                isMobile ? 'absolute inset-0 z-10' : 'w-1/3 border-r border-slate-200 dark:border-slate-700'
               }`}
               initial={{ x: isMobile ? -320 : 0 }}
               animate={{ x: 0 }}
               exit={{ x: isMobile ? -320 : 0 }}
               transition={{ duration: 0.3 }}
             >
-              <ChatList 
-                onSelectChat={handleSelectChat}
-                selectedChatId={selectedChat?.id}
-              />
+              <ChatList onSelectChat={handleSelectChat} selectedChatId={selectedChat?.id} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -82,17 +77,20 @@ useEffect(() => {
               context={selectedChat.context}
             />
           ) : (
-            <div className="flex-1 flex items-center justify-center p-8">
-              <div className="text-center">
-                <MessageSquare className="w-24 h-24 text-slate-400 mx-auto mb-6" />
-                <h2 className="text-2xl font-bold text-slate-600 dark:text-slate-400 mb-4">
+            <div className='flex flex-1 items-center justify-center p-8'>
+              <div className='text-center'>
+                <MessageSquare className='mx-auto mb-6 h-24 w-24 text-slate-400' />
+                <h2 className='mb-4 text-2xl font-bold text-slate-600 dark:text-slate-400'>
                   {t('messaging.welcome', 'Bem-vindo ao Centro de Mensagens')}
                 </h2>
-                <p className="text-slate-500 dark:text-slate-500 mb-6 max-w-md">
-                  {t('messaging.description', 'Selecione uma conversa para começar a conversar ou inicie uma nova conversa.')}
+                <p className='mb-6 max-w-md text-slate-500 dark:text-slate-500'>
+                  {t(
+                    'messaging.description',
+                    'Selecione uma conversa para começar a conversar ou inicie uma nova conversa.'
+                  )}
                 </p>
-                <button className="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2 mx-auto">
-                  <Plus className="w-5 h-5" />
+                <button className='mx-auto flex items-center gap-2 rounded-lg bg-emerald-600 px-6 py-3 text-white transition-colors hover:bg-emerald-700'>
+                  <Plus className='h-5 w-5' />
                   {t('messaging.newConversation', 'Nova Conversa')}
                 </button>
               </div>

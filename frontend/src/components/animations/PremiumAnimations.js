@@ -2,13 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, useAnimation, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
 // Premium Scroll Reveal with Parallax
-export const PremiumScrollReveal = ({ 
-  children, 
-  delay = 0, 
-  duration = 1, 
+export const PremiumScrollReveal = ({
+  children,
+  delay = 0,
+  duration = 1,
   direction = 'up',
   distance = 50,
-  parallax = false 
+  parallax = false
 }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
@@ -30,7 +30,7 @@ export const PremiumScrollReveal = ({
         const elementTop = rect.top + scrollY;
         const elementHeight = rect.height;
         const windowHeight = window.innerHeight;
-        
+
         const scrolled = scrollY + windowHeight;
         const rate = (scrolled - elementTop) / (windowHeight + elementHeight);
         y.set(rate * distance);
@@ -46,7 +46,7 @@ export const PremiumScrollReveal = ({
       opacity: 0,
       y: direction === 'up' ? distance : direction === 'down' ? -distance : 0,
       x: direction === 'left' ? distance : direction === 'right' ? -distance : 0,
-      scale: 0.95,
+      scale: 0.95
     },
     visible: {
       opacity: 1,
@@ -56,15 +56,15 @@ export const PremiumScrollReveal = ({
       transition: {
         duration,
         delay,
-        ease: [0.4, 0, 0.2, 1],
-      },
-    },
+        ease: [0.4, 0, 0.2, 1]
+      }
+    }
   };
 
   return (
     <motion.div
       ref={ref}
-      initial="hidden"
+      initial='hidden'
       animate={controls}
       variants={variants}
       style={parallax ? { y: smoothY } : {}}
@@ -77,24 +77,24 @@ export const PremiumScrollReveal = ({
 // Premium Mouse Tracking Component
 export const MouseTracker = ({ children, intensity = 0.1 }) => {
   const ref = useRef(null);
-    // const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 }); // Removido para evitar warning
-  
+  // const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 }); // Removido para evitar warning
+
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  
+
   const rotateX = useTransform(y, [-300, 300], [intensity * 10, -intensity * 10]);
   const rotateY = useTransform(x, [-300, 300], [-intensity * 10, intensity * 10]);
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    const handleMouseMove = e => {
       if (ref.current) {
         const rect = ref.current.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
-        
+
         const mouseX = e.clientX - centerX;
         const mouseY = e.clientY - centerY;
-        
+
         // setMousePosition({ x: mouseX, y: mouseY }); // Removido para evitar warning
         x.set(mouseX);
         y.set(mouseY);
@@ -114,7 +114,7 @@ export const MouseTracker = ({ children, intensity = 0.1 }) => {
       style={{
         rotateX,
         rotateY,
-        transformStyle: 'preserve-3d',
+        transformStyle: 'preserve-3d'
       }}
       whileHover={{ scale: 1.02 }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
@@ -125,24 +125,18 @@ export const MouseTracker = ({ children, intensity = 0.1 }) => {
 };
 
 // Premium 3D Hover Button
-export const Premium3DButton = ({ 
-  children, 
-  onClick, 
-  className = '', 
-  variant = 'primary',
-  size = 'md' 
-}) => {
+export const Premium3DButton = ({ children, onClick, className = '', variant = 'primary', size = 'md' }) => {
   const buttonVariants = {
-    rest: { 
+    rest: {
       scale: 1,
-      boxShadow: '0 10px 20px rgba(0, 0, 0, 0.6)',
+      boxShadow: '0 10px 20px rgba(0, 0, 0, 0.6)'
     },
-    hover: { 
+    hover: {
       scale: 1.05,
       boxShadow: '0 20px 40px rgba(0, 0, 0, 0.8)',
       transition: { duration: 0.3 }
     },
-    tap: { 
+    tap: {
       scale: 0.98,
       transition: { duration: 0.1 }
     }
@@ -167,9 +161,9 @@ export const Premium3DButton = ({
     <motion.button
       className={getButtonClasses()}
       variants={buttonVariants}
-      initial="rest"
-      whileHover="hover"
-      whileTap="tap"
+      initial='rest'
+      whileHover='hover'
+      whileTap='tap'
       onClick={onClick}
     >
       {children}
@@ -178,18 +172,13 @@ export const Premium3DButton = ({
 };
 
 // Premium Floating Card
-export const PremiumFloatingCard = ({ 
-  children, 
-  className = '', 
-  delay = 0,
-  intensity = 1 
-}) => {
+export const PremiumFloatingCard = ({ children, className = '', delay = 0, intensity = 1 }) => {
   const cardVariants = {
     hidden: {
       opacity: 0,
       y: 30,
       scale: 0.95,
-      rotateX: -10,
+      rotateX: -10
     },
     visible: {
       opacity: 1,
@@ -199,8 +188,8 @@ export const PremiumFloatingCard = ({
       transition: {
         duration: 0.8,
         delay,
-        ease: [0.4, 0, 0.2, 1],
-      },
+        ease: [0.4, 0, 0.2, 1]
+      }
     },
     hover: {
       y: -12,
@@ -208,28 +197,28 @@ export const PremiumFloatingCard = ({
       rotateX: 5,
       transition: {
         duration: 0.4,
-        ease: [0.4, 0, 0.2, 1],
-      },
-    },
+        ease: [0.4, 0, 0.2, 1]
+      }
+    }
   };
 
   return (
     <motion.div
       className={`card-premium ${className}`}
       variants={cardVariants}
-      initial="hidden"
-      whileInView="visible"
-      whileHover="hover"
+      initial='hidden'
+      whileInView='visible'
+      whileHover='hover'
       viewport={{ once: true, margin: '-50px' }}
       animate={{
-        y: [0, -5 * intensity, 0],
+        y: [0, -5 * intensity, 0]
       }}
       transition={{
         y: {
           duration: 4,
           repeat: Infinity,
-          ease: 'easeInOut',
-        },
+          ease: 'easeInOut'
+        }
       }}
     >
       {children}
@@ -238,27 +227,23 @@ export const PremiumFloatingCard = ({
 };
 
 // Premium Staggered Container
-export const PremiumStaggeredContainer = ({ 
-  children, 
-  staggerDelay = 0.15,
-  className = '' 
-}) => {
+export const PremiumStaggeredContainer = ({ children, staggerDelay = 0.15, className = '' }) => {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
         staggerChildren: staggerDelay,
-        delayChildren: 0.1,
-      },
-    },
+        delayChildren: 0.1
+      }
+    }
   };
 
   const itemVariants = {
-    hidden: { 
-      opacity: 0, 
+    hidden: {
+      opacity: 0,
       y: 30,
-      scale: 0.95,
+      scale: 0.95
     },
     visible: {
       opacity: 1,
@@ -266,17 +251,17 @@ export const PremiumStaggeredContainer = ({
       scale: 1,
       transition: {
         duration: 0.8,
-        ease: [0.4, 0, 0.2, 1],
-      },
-    },
+        ease: [0.4, 0, 0.2, 1]
+      }
+    }
   };
 
   return (
     <motion.div
       className={className}
       variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
+      initial='hidden'
+      whileInView='visible'
       viewport={{ once: true, margin: '-100px' }}
     >
       {React.Children.map(children, (child, index) => (
@@ -289,12 +274,7 @@ export const PremiumStaggeredContainer = ({
 };
 
 // Premium Typewriter Effect
-export const PremiumTypewriter = ({ 
-  text, 
-  speed = 50, 
-  delay = 0,
-  className = '' 
-}) => {
+export const PremiumTypewriter = ({ text, speed = 50, delay = 0, className = '' }) => {
   const [displayText, setDisplayText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
@@ -313,18 +293,13 @@ export const PremiumTypewriter = ({
   }, [currentIndex, text, speed, delay]);
 
   return (
-    <motion.span
-      className={className}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
+    <motion.span className={className} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
       {displayText}
       {!isComplete && (
         <motion.span
           animate={{ opacity: [0, 1, 0] }}
           transition={{ duration: 1, repeat: Infinity }}
-          className="text-white"
+          className='text-white'
         >
           |
         </motion.span>
@@ -338,7 +313,7 @@ export const PremiumSpinner = ({ size = 'md', className = '' }) => {
   const sizeClasses = {
     sm: 'w-4 h-4',
     md: 'w-6 h-6',
-    lg: 'w-8 h-8',
+    lg: 'w-8 h-8'
   };
 
   return (
@@ -347,21 +322,17 @@ export const PremiumSpinner = ({ size = 'md', className = '' }) => {
       animate={{ rotate: 360 }}
       transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
     >
-      <div className="w-full h-full border-2 border-gray-600 border-t-white rounded-full" />
+      <div className='h-full w-full rounded-full border-2 border-gray-600 border-t-white' />
     </motion.div>
   );
 };
 
 // Premium Gradient Text
-export const PremiumGradientText = ({ 
-  children, 
-  className = '',
-  gradient = 'metallic' 
-}) => {
+export const PremiumGradientText = ({ children, className = '', gradient = 'metallic' }) => {
   const gradientClasses = {
     metallic: 'bg-gradient-to-r from-gray-400 via-white to-gray-400 bg-clip-text text-transparent',
     cosmic: 'bg-gradient-to-r from-white via-gray-300 to-white bg-clip-text text-transparent',
-    space: 'bg-gradient-to-r from-gray-500 via-white to-gray-500 bg-clip-text text-transparent',
+    space: 'bg-gradient-to-r from-gray-500 via-white to-gray-500 bg-clip-text text-transparent'
   };
 
   return (
@@ -377,21 +348,17 @@ export const PremiumGradientText = ({
 };
 
 // Premium Pulse Animation
-export const PremiumPulse = ({ 
-  children, 
-  intensity = 1,
-  duration = 2 
-}) => {
+export const PremiumPulse = ({ children, intensity = 1, duration = 2 }) => {
   return (
     <motion.div
       animate={{
         scale: [1, 1 + 0.05 * intensity, 1],
-        opacity: [0.8, 1, 0.8],
+        opacity: [0.8, 1, 0.8]
       }}
       transition={{
         duration,
         repeat: Infinity,
-        ease: 'easeInOut',
+        ease: 'easeInOut'
       }}
     >
       {children}
@@ -405,15 +372,15 @@ export const MagneticEffect = ({ children, intensity = 0.3 }) => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = e => {
     if (ref.current) {
       const rect = ref.current.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
-      
+
       const distanceX = e.clientX - centerX;
       const distanceY = e.clientY - centerY;
-      
+
       x.set(distanceX * intensity);
       y.set(distanceY * intensity);
     }
@@ -438,32 +405,23 @@ export const MagneticEffect = ({ children, intensity = 0.3 }) => {
 };
 
 // Premium Reveal Text
-export const PremiumRevealText = ({ 
-  text, 
-  className = '',
-  delay = 0 
-}) => {
+export const PremiumRevealText = ({ text, className = '', delay = 0 }) => {
   const words = text.split(' ');
-  
+
   return (
-    <motion.div
-      className={className}
-      initial="hidden"
-      animate="visible"
-      transition={{ delay }}
-    >
+    <motion.div className={className} initial='hidden' animate='visible' transition={{ delay }}>
       {words.map((word, index) => (
         <motion.span
           key={index}
           variants={{
             hidden: { opacity: 0, y: 20 },
-            visible: { 
-              opacity: 1, 
+            visible: {
+              opacity: 1,
               y: 0,
               transition: { delay: index * 0.1 }
             }
           }}
-          className="inline-block mr-2"
+          className='mr-2 inline-block'
         >
           {word}
         </motion.span>

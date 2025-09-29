@@ -8,9 +8,9 @@ const router = express.Router();
 const requireAuth = (req, res, next) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
   if (!token) {
-    return res.status(401).json({ 
-      success: false, 
-      message: 'Token de autenticação necessário' 
+    return res.status(401).json({
+      success: false,
+      message: 'Token de autenticação necessário'
     });
   }
   // Aqui você validaria o JWT token
@@ -21,10 +21,10 @@ const requireAuth = (req, res, next) => {
 router.post('/generate-keys', requireAuth, async (req, res) => {
   try {
     const { algorithm = 'aes-256-gcm' } = req.body;
-    
+
     // Gerar chave simétrica
     const symmetricKey = crypto.randomBytes(32);
-    
+
     // Gerar par de chaves assimétricas
     const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
       modulusLength: 2048,
@@ -66,7 +66,7 @@ router.post('/generate-keys', requireAuth, async (req, res) => {
 router.post('/encrypt', requireAuth, async (req, res) => {
   try {
     const { data, key, algorithm = 'aes-256-gcm' } = req.body;
-    
+
     if (!data || !key) {
       return res.status(400).json({
         success: false,
@@ -77,10 +77,10 @@ router.post('/encrypt', requireAuth, async (req, res) => {
     const keyBuffer = Buffer.from(key, 'base64');
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipher(algorithm, keyBuffer);
-    
+
     let encrypted = cipher.update(JSON.stringify(data), 'utf8', 'base64');
     encrypted += cipher.final('base64');
-    
+
     const authTag = cipher.getAuthTag ? cipher.getAuthTag() : null;
 
     const encryptedData = {
@@ -111,7 +111,7 @@ router.post('/encrypt', requireAuth, async (req, res) => {
 router.post('/decrypt', requireAuth, async (req, res) => {
   try {
     const { encryptedData, key } = req.body;
-    
+
     if (!encryptedData || !key) {
       return res.status(400).json({
         success: false,
@@ -122,14 +122,14 @@ router.post('/decrypt', requireAuth, async (req, res) => {
     const keyBuffer = Buffer.from(key, 'base64');
     const iv = Buffer.from(encryptedData.iv, 'base64');
     const decipher = crypto.createDecipher(encryptedData.algorithm, keyBuffer);
-    
+
     if (encryptedData.authTag) {
       decipher.setAuthTag(Buffer.from(encryptedData.authTag, 'base64'));
     }
-    
+
     let decrypted = decipher.update(encryptedData.encrypted, 'base64', 'utf8');
     decrypted += decipher.final('utf8');
-    
+
     const data = JSON.parse(decrypted);
 
     logger.info('Dados descriptografados com sucesso');
@@ -152,7 +152,7 @@ router.post('/decrypt', requireAuth, async (req, res) => {
 router.post('/hash', requireAuth, async (req, res) => {
   try {
     const { data, algorithm = 'sha256' } = req.body;
-    
+
     if (!data) {
       return res.status(400).json({
         success: false,
@@ -188,7 +188,7 @@ router.post('/hash', requireAuth, async (req, res) => {
 router.post('/verify-integrity', requireAuth, async (req, res) => {
   try {
     const { data, hash, algorithm = 'sha256' } = req.body;
-    
+
     if (!data || !hash) {
       return res.status(400).json({
         success: false,
@@ -228,7 +228,7 @@ router.post('/verify-integrity', requireAuth, async (req, res) => {
 router.post('/sign', requireAuth, async (req, res) => {
   try {
     const { data, privateKey } = req.body;
-    
+
     if (!data || !privateKey) {
       return res.status(400).json({
         success: false,
@@ -239,7 +239,7 @@ router.post('/sign', requireAuth, async (req, res) => {
     const sign = crypto.createSign('SHA256');
     sign.update(JSON.stringify(data));
     sign.end();
-    
+
     const signature = sign.sign(privateKey, 'base64');
 
     logger.info('Dados assinados digitalmente com sucesso');
@@ -266,7 +266,7 @@ router.post('/sign', requireAuth, async (req, res) => {
 router.post('/verify-signature', requireAuth, async (req, res) => {
   try {
     const { data, signature, publicKey } = req.body;
-    
+
     if (!data || !signature || !publicKey) {
       return res.status(400).json({
         success: false,
@@ -277,7 +277,7 @@ router.post('/verify-signature', requireAuth, async (req, res) => {
     const verify = crypto.createVerify('SHA256');
     verify.update(JSON.stringify(data));
     verify.end();
-    
+
     const isValid = verify.verify(publicKey, signature, 'base64');
 
     logger.info(`Verificação de assinatura: ${isValid ? 'válida' : 'inválida'}`);
@@ -304,7 +304,7 @@ router.post('/verify-signature', requireAuth, async (req, res) => {
 router.post('/generate-nonce', requireAuth, async (req, res) => {
   try {
     const { length = 32 } = req.body;
-    
+
     const nonce = crypto.randomBytes(length).toString('hex');
 
     logger.info('Nonce gerado com sucesso');

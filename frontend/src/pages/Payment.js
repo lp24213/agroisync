@@ -63,15 +63,15 @@ const Payment = () => {
 
   const handlePayment = async () => {
     setLoading(true);
-    
+
     try {
       // Simular processamento de pagamento
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       // Atualizar usuário como pago
       const updatedUser = { ...user, isPaid: true, plan: selectedPlan };
       localStorage.setItem('user', JSON.stringify(updatedUser));
-      
+
       alert('✅ Pagamento processado com sucesso!');
       navigate('/user-dashboard', { replace: true });
     } catch (error) {
@@ -87,43 +87,51 @@ const Payment = () => {
   };
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      background: 'var(--bg-gradient)',
-      padding: '2rem 0'
-    }}>
-      <div className="container" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'var(--bg-gradient)',
+        padding: '2rem 0'
+      }}
+    >
+      <div className='container' style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           style={{ textAlign: 'center', marginBottom: '3rem' }}
         >
-          <h1 style={{ 
-            fontSize: '2.5rem', 
-            fontWeight: '800', 
-            marginBottom: '1rem',
-            color: 'var(--text-primary)'
-          }}>
+          <h1
+            style={{
+              fontSize: '2.5rem',
+              fontWeight: '800',
+              marginBottom: '1rem',
+              color: 'var(--text-primary)'
+            }}
+          >
             Escolha seu Plano
           </h1>
-          <p style={{ 
-            fontSize: '1.2rem', 
-            color: 'var(--muted)',
-            maxWidth: '600px',
-            margin: '0 auto'
-          }}>
+          <p
+            style={{
+              fontSize: '1.2rem',
+              color: 'var(--muted)',
+              maxWidth: '600px',
+              margin: '0 auto'
+            }}
+          >
             Desbloqueie todo o potencial do AgroSync com nossos planos premium
           </p>
         </motion.div>
 
         {/* Planos */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-          gap: '2rem',
-          marginBottom: '3rem'
-        }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '2rem',
+            marginBottom: '3rem'
+          }}
+        >
           {Object.entries(plans).map(([key, plan]) => (
             <motion.div
               key={key}
@@ -143,64 +151,77 @@ const Payment = () => {
               whileHover={{ scale: 1.02 }}
             >
               {key === 'pro' && (
-                <div style={{
-                  position: 'absolute',
-                  top: '-10px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  background: 'var(--accent)',
-                  color: 'white',
-                  padding: '0.5rem 1rem',
-                  borderRadius: '20px',
-                  fontSize: '0.9rem',
-                  fontWeight: '600'
-                }}>
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '-10px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: 'var(--accent)',
+                    color: 'white',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '20px',
+                    fontSize: '0.9rem',
+                    fontWeight: '600'
+                  }}
+                >
                   <Star size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
                   Mais Popular
                 </div>
               )}
 
               <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-                <h3 style={{ 
-                  fontSize: '1.5rem', 
-                  fontWeight: '700', 
-                  marginBottom: '0.5rem',
-                  color: 'var(--text-primary)'
-                }}>
+                <h3
+                  style={{
+                    fontSize: '1.5rem',
+                    fontWeight: '700',
+                    marginBottom: '0.5rem',
+                    color: 'var(--text-primary)'
+                  }}
+                >
                   {plan.name}
                 </h3>
                 <div style={{ marginBottom: '0.5rem' }}>
-                  <span style={{ 
-                    fontSize: '2.5rem', 
-                    fontWeight: '800', 
-                    color: 'var(--accent)'
-                  }}>
+                  <span
+                    style={{
+                      fontSize: '2.5rem',
+                      fontWeight: '800',
+                      color: 'var(--accent)'
+                    }}
+                  >
                     {plan.price}
                   </span>
-                  <span style={{ 
-                    fontSize: '1rem', 
-                    color: 'var(--muted)',
-                    marginLeft: '0.5rem'
-                  }}>
+                  <span
+                    style={{
+                      fontSize: '1rem',
+                      color: 'var(--muted)',
+                      marginLeft: '0.5rem'
+                    }}
+                  >
                     {plan.period}
                   </span>
                 </div>
-                <p style={{ 
-                  fontSize: '0.9rem', 
-                  color: 'var(--muted)',
-                  fontStyle: 'italic'
-                }}>
+                <p
+                  style={{
+                    fontSize: '0.9rem',
+                    color: 'var(--muted)',
+                    fontStyle: 'italic'
+                  }}
+                >
                   {plan.limitations}
                 </p>
               </div>
 
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 {plan.features.map((feature, index) => (
-                  <li key={index} style={{ 
-                    padding: '0.5rem 0',
-                    fontSize: '0.95rem',
-                    color: 'var(--text-primary)'
-                  }}>
+                  <li
+                    key={index}
+                    style={{
+                      padding: '0.5rem 0',
+                      fontSize: '0.95rem',
+                      color: 'var(--text-primary)'
+                    }}
+                  >
                     {feature}
                   </li>
                 ))}
@@ -214,9 +235,9 @@ const Payment = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
-          style={{ 
-            display: 'flex', 
-            gap: '1rem', 
+          style={{
+            display: 'flex',
+            gap: '1rem',
             justifyContent: 'center',
             flexWrap: 'wrap'
           }}
@@ -241,14 +262,16 @@ const Payment = () => {
           >
             {loading ? (
               <>
-                <div style={{ 
-                  width: '20px', 
-                  height: '20px', 
-                  border: '2px solid transparent', 
-                  borderTop: '2px solid white', 
-                  borderRadius: '50%',
-                  animation: 'spin 1s linear infinite'
-                }} />
+                <div
+                  style={{
+                    width: '20px',
+                    height: '20px',
+                    border: '2px solid transparent',
+                    borderTop: '2px solid white',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }}
+                />
                 Processando...
               </>
             ) : (
@@ -286,8 +309,8 @@ const Payment = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.8 }}
-          style={{ 
-            textAlign: 'center', 
+          style={{
+            textAlign: 'center',
             marginTop: '3rem',
             padding: '1.5rem',
             background: 'rgba(42, 127, 79, 0.1)',
@@ -295,11 +318,17 @@ const Payment = () => {
             border: '1px solid rgba(42, 127, 79, 0.2)'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              marginBottom: '1rem'
+            }}
+          >
             <Shield size={20} style={{ color: 'var(--accent)' }} />
-            <span style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
-              Pagamento 100% Seguro
-            </span>
+            <span style={{ fontWeight: '600', color: 'var(--text-primary)' }}>Pagamento 100% Seguro</span>
           </div>
           <p style={{ fontSize: '0.9rem', color: 'var(--muted)', margin: 0 }}>
             Processado pelo Stripe • Criptografia SSL • Cancelamento a qualquer momento

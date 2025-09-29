@@ -252,7 +252,7 @@ exports.handler = async event => {
         public: {
           routeFrom: publicData.routeFrom.trim(),
           routeTo: publicData.routeTo.trim(),
-          estimatedDays: parseInt(publicData.estimatedDays)
+          estimatedDays: parseInt(publicData.estimatedDays, 10)
         },
         private: {
           freightPrice: parseFloat(privateData.freightPrice),
@@ -350,7 +350,7 @@ exports.handler = async event => {
         if (requestBody.public.routeTo) {
         {updateData['public.routeTo'] = requestBody.public.routeTo.trim();}
         if (requestBody.public.estimatedDays) {
-        {updateData['public.estimatedDays'] = parseInt(requestBody.public.estimatedDays);}
+        {updateData['public.estimatedDays'] = parseInt(requestBody.public.estimatedDays, 10);}
       }
 
       if (requestBody.private) {

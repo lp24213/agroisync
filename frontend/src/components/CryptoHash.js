@@ -11,7 +11,7 @@ const CryptoHash = ({ pageName = 'default', visible = false, style = {}, classNa
     const generatePageHash = async () => {
       try {
         setLoading(true);
-        
+
         // Gerar hash único para a página
         const pageData = {
           page: pageName,
@@ -21,7 +21,7 @@ const CryptoHash = ({ pageName = 'default', visible = false, style = {}, classNa
         };
 
         const result = await cryptoService.generateHash(pageData, 'sha256');
-        
+
         if (result.success) {
           // Pegar apenas os primeiros 16 caracteres do hash
           const shortHash = result.data.hash.substring(0, 16).toUpperCase();
@@ -52,7 +52,7 @@ const CryptoHash = ({ pageName = 'default', visible = false, style = {}, classNa
 
   return (
     <div className={`crypto-hash-display ${className}`} style={style} aria-hidden={!visible}>
-      <span className="text-xs text-gray-500 font-mono">{hash}</span>
+      <span className='font-mono text-xs text-gray-500'>{hash}</span>
     </div>
   );
 };

@@ -1,102 +1,105 @@
 import mongoose from 'mongoose';
 
-const auditLogSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+const auditLogSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    userEmail: {
+      type: String,
+      required: true
+    },
+    action: {
+      type: String,
+      required: true,
+      enum: [
+        'ADMIN_DASHBOARD_ACCESS',
+        'ADMIN_USERS_LIST',
+        'ADMIN_USERS_VIEW',
+        'ADMIN_USER_STATUS_CHANGE',
+        'ADMIN_USER_DELETE',
+        'ADMIN_PRODUCTS_LIST',
+        'ADMIN_PRODUCTS_VIEW',
+        'ADMIN_PRODUCT_DELETE',
+        'ADMIN_PRODUCT_STATUS_CHANGE',
+        'ADMIN_PAYMENTS_LIST',
+        'ADMIN_PAYMENTS_VIEW',
+        'ADMIN_REGISTRATIONS_LIST',
+        'ADMIN_REGISTRATIONS_VIEW',
+        'ADMIN_ACTIVITY_ACCESS',
+        'ADMIN_SYSTEM_SETTINGS_CHANGE',
+        'ADMIN_BACKUP_CREATE',
+        'ADMIN_BACKUP_RESTORE',
+        'ADMIN_LOG_EXPORT',
+        'ADMIN_DATA_EXPORT',
+        'ADMIN_USER_CREATE',
+        'ADMIN_USER_UPDATE',
+        'ADMIN_PRODUCT_CREATE',
+        'ADMIN_PRODUCT_UPDATE',
+        'ADMIN_PAYMENT_PROCESS',
+        'ADMIN_PAYMENT_REFUND',
+        'ADMIN_REGISTRATION_APPROVE',
+        'ADMIN_REGISTRATION_REJECT',
+        'ADMIN_SYSTEM_MAINTENANCE',
+        'ADMIN_SECURITY_ALERT',
+        'ADMIN_PERMISSION_CHANGE',
+        'ADMIN_ROLE_CHANGE'
+      ]
+    },
+    resource: {
+      type: String,
+      required: true,
+      enum: [
+        'admin_dashboard',
+        'admin_users',
+        'admin_products',
+        'admin_payments',
+        'admin_registrations',
+        'admin_activity',
+        'admin_settings',
+        'admin_backup',
+        'admin_logs',
+        'admin_security',
+        'admin_permissions',
+        'admin_roles',
+        'system_maintenance'
+      ]
+    },
+    resourceId: {
+      type: String,
+      default: null
+    },
+    details: {
+      type: String,
+      required: true
+    },
+    metadata: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {}
+    },
+    ip: {
+      type: String,
+      required: true
+    },
+    userAgent: {
+      type: String,
+      required: true
+    },
+    timestamp: {
+      type: Date,
+      default: Date.now
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
   },
-  userEmail: {
-    type: String,
-    required: true
-  },
-  action: {
-    type: String,
-    required: true,
-    enum: [
-      'ADMIN_DASHBOARD_ACCESS',
-      'ADMIN_USERS_LIST',
-      'ADMIN_USERS_VIEW',
-      'ADMIN_USER_STATUS_CHANGE',
-      'ADMIN_USER_DELETE',
-      'ADMIN_PRODUCTS_LIST',
-      'ADMIN_PRODUCTS_VIEW',
-      'ADMIN_PRODUCT_DELETE',
-      'ADMIN_PRODUCT_STATUS_CHANGE',
-      'ADMIN_PAYMENTS_LIST',
-      'ADMIN_PAYMENTS_VIEW',
-      'ADMIN_REGISTRATIONS_LIST',
-      'ADMIN_REGISTRATIONS_VIEW',
-      'ADMIN_ACTIVITY_ACCESS',
-      'ADMIN_SYSTEM_SETTINGS_CHANGE',
-      'ADMIN_BACKUP_CREATE',
-      'ADMIN_BACKUP_RESTORE',
-      'ADMIN_LOG_EXPORT',
-      'ADMIN_DATA_EXPORT',
-      'ADMIN_USER_CREATE',
-      'ADMIN_USER_UPDATE',
-      'ADMIN_PRODUCT_CREATE',
-      'ADMIN_PRODUCT_UPDATE',
-      'ADMIN_PAYMENT_PROCESS',
-      'ADMIN_PAYMENT_REFUND',
-      'ADMIN_REGISTRATION_APPROVE',
-      'ADMIN_REGISTRATION_REJECT',
-      'ADMIN_SYSTEM_MAINTENANCE',
-      'ADMIN_SECURITY_ALERT',
-      'ADMIN_PERMISSION_CHANGE',
-      'ADMIN_ROLE_CHANGE'
-    ]
-  },
-  resource: {
-    type: String,
-    required: true,
-    enum: [
-      'admin_dashboard',
-      'admin_users',
-      'admin_products',
-      'admin_payments',
-      'admin_registrations',
-      'admin_activity',
-      'admin_settings',
-      'admin_backup',
-      'admin_logs',
-      'admin_security',
-      'admin_permissions',
-      'admin_roles',
-      'system_maintenance'
-    ]
-  },
-  resourceId: {
-    type: String,
-    default: null
-  },
-  details: {
-    type: String,
-    required: true
-  },
-  metadata: {
-    type: mongoose.Schema.Types.Mixed,
-    default: {}
-  },
-  ip: {
-    type: String,
-    required: true
-  },
-  userAgent: {
-    type: String,
-    required: true
-  },
-  timestamp: {
-    type: Date,
-    default: Date.now
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
+  {
+    timestamps: true
   }
-}, {
-  timestamps: true
-});
+);
 
 // Índices para performance
 auditLogSchema.index({ userId: 1, createdAt: -1 });
@@ -106,7 +109,7 @@ auditLogSchema.index({ createdAt: -1 });
 auditLogSchema.index({ ip: 1, createdAt: -1 });
 
 // Método estático para registrar ações
-auditLogSchema.statics.logAction = async function(actionData) {
+auditLogSchema.statics.logAction = async function (actionData) {
   try {
     const log = new this({
       userId: actionData.userId,
@@ -130,7 +133,7 @@ auditLogSchema.statics.logAction = async function(actionData) {
 };
 
 // Método para buscar logs com filtros
-auditLogSchema.statics.getLogs = async function(filters = {}) {
+auditLogSchema.statics.getLogs = async function (filters = {}) {
   try {
     const {
       userId,
@@ -145,14 +148,24 @@ auditLogSchema.statics.getLogs = async function(filters = {}) {
     } = filters;
 
     const query = {};
-    
-    if (userId) query.userId = userId;
-    if (action) query.action = action;
-    if (resource) query.resource = resource;
+
+    if (userId) {
+      query.userId = userId;
+    }
+    if (action) {
+      query.action = action;
+    }
+    if (resource) {
+      query.resource = resource;
+    }
     if (startDate || endDate) {
       query.createdAt = {};
-      if (startDate) query.createdAt.$gte = new Date(startDate);
-      if (endDate) query.createdAt.$lte = new Date(endDate);
+      if (startDate) {
+        query.createdAt.$gte = new Date(startDate);
+      }
+      if (endDate) {
+        query.createdAt.$lte = new Date(endDate);
+      }
     }
 
     const skip = (page - 1) * limit;
@@ -163,15 +176,15 @@ auditLogSchema.statics.getLogs = async function(filters = {}) {
         .populate('userId', 'name email')
         .sort(sort)
         .skip(skip)
-        .limit(parseInt(limit)),
+        .limit(parseInt(limit, 10)),
       this.countDocuments(query)
     ]);
 
     return {
       logs,
       pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
         total,
         pages: Math.ceil(total / limit)
       }
@@ -183,7 +196,7 @@ auditLogSchema.statics.getLogs = async function(filters = {}) {
 };
 
 // Método para estatísticas de auditoria
-auditLogSchema.statics.getAuditStats = async function(period = '7d') {
+auditLogSchema.statics.getAuditStats = async function (period = '7d') {
   try {
     const now = new Date();
     let startDate;
@@ -205,35 +218,30 @@ auditLogSchema.statics.getAuditStats = async function(period = '7d') {
         startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     }
 
-    const [
-      totalActions,
-      actionsByType,
-      actionsByUser,
-      actionsByResource,
-      recentActions
-    ] = await Promise.all([
-      this.countDocuments({ createdAt: { $gte: startDate } }),
-      this.aggregate([
-        { $match: { createdAt: { $gte: startDate } } },
-        { $group: { _id: '$action', count: { $sum: 1 } } },
-        { $sort: { count: -1 } }
-      ]),
-      this.aggregate([
-        { $match: { createdAt: { $gte: startDate } } },
-        { $group: { _id: '$userId', count: { $sum: 1 } } },
-        { $sort: { count: -1 } },
-        { $limit: 10 }
-      ]),
-      this.aggregate([
-        { $match: { createdAt: { $gte: startDate } } },
-        { $group: { _id: '$resource', count: { $sum: 1 } } },
-        { $sort: { count: -1 } }
-      ]),
-      this.find({ createdAt: { $gte: startDate } })
-        .populate('userId', 'name email')
-        .sort({ createdAt: -1 })
-        .limit(10)
-    ]);
+    const [totalActions, actionsByType, actionsByUser, actionsByResource, recentActions] =
+      await Promise.all([
+        this.countDocuments({ createdAt: { $gte: startDate } }),
+        this.aggregate([
+          { $match: { createdAt: { $gte: startDate } } },
+          { $group: { _id: '$action', count: { $sum: 1 } } },
+          { $sort: { count: -1 } }
+        ]),
+        this.aggregate([
+          { $match: { createdAt: { $gte: startDate } } },
+          { $group: { _id: '$userId', count: { $sum: 1 } } },
+          { $sort: { count: -1 } },
+          { $limit: 10 }
+        ]),
+        this.aggregate([
+          { $match: { createdAt: { $gte: startDate } } },
+          { $group: { _id: '$resource', count: { $sum: 1 } } },
+          { $sort: { count: -1 } }
+        ]),
+        this.find({ createdAt: { $gte: startDate } })
+          .populate('userId', 'name email')
+          .sort({ createdAt: -1 })
+          .limit(10)
+      ]);
 
     return {
       period,
@@ -250,7 +258,7 @@ auditLogSchema.statics.getAuditStats = async function(period = '7d') {
 };
 
 // Método para limpeza de logs antigos
-auditLogSchema.statics.cleanupOldLogs = async function(retentionDays = 365) {
+auditLogSchema.statics.cleanupOldLogs = async function (retentionDays = 365) {
   try {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - retentionDays);

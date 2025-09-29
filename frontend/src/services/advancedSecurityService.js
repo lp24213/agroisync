@@ -8,7 +8,7 @@ class AdvancedSecurityService {
     this.suspiciousActivities = [];
     this.securityEvents = [];
     this.lastSecurityCheck = Date.now();
-    
+
     this.initAdvancedSecurity();
   }
 
@@ -24,19 +24,19 @@ class AdvancedSecurityService {
   setupAdvancedProtection() {
     // Proteção contra ataques de injeção
     this.preventInjectionAttacks();
-    
+
     // Proteção contra ataques de força bruta
     this.preventBruteForceAttacks();
-    
+
     // Proteção contra ataques de timing
     this.preventTimingAttacks();
-    
+
     // Proteção contra ataques de clickjacking avançado
     this.preventAdvancedClickjacking();
-    
+
     // Proteção contra ataques de CSRF
     this.preventCSRFAttacks();
-    
+
     // Proteção contra ataques de XSS avançado
     this.preventAdvancedXSS();
   }
@@ -44,7 +44,7 @@ class AdvancedSecurityService {
   // Prevenir ataques de injeção
   preventInjectionAttacks() {
     // Monitorar inputs suspeitos
-    document.addEventListener('input', (e) => {
+    document.addEventListener('input', e => {
       const value = e.target.value;
       if (this.detectInjectionPattern(value)) {
         e.preventDefault();
@@ -58,7 +58,7 @@ class AdvancedSecurityService {
     });
 
     // Monitorar formulários
-    document.addEventListener('submit', (e) => {
+    document.addEventListener('submit', e => {
       const formData = new FormData(e.target);
       for (const [key, value] of formData.entries()) {
         if (this.detectInjectionPattern(value)) {
@@ -77,7 +77,7 @@ class AdvancedSecurityService {
   // Detectar padrões de injeção
   detectInjectionPattern(value) {
     if (typeof value !== 'string') return false;
-    
+
     const dangerousPatterns = [
       /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
       /javascript:/gi,
@@ -106,7 +106,7 @@ class AdvancedSecurityService {
     input.style.border = '2px solid red';
     input.style.backgroundColor = '#ffebee';
     input.disabled = true;
-    
+
     // Mostrar aviso
     const warning = document.createElement('div');
     warning.style.color = 'red';
@@ -114,7 +114,7 @@ class AdvancedSecurityService {
     warning.style.marginTop = '5px';
     warning.textContent = 'Entrada bloqueada por segurança';
     input.parentNode.appendChild(warning);
-    
+
     // Remover aviso após 5 segundos
     setTimeout(() => {
       if (warning.parentNode) {
@@ -132,13 +132,13 @@ class AdvancedSecurityService {
 
     // Monitorar tentativas de login
     const originalFetch = window.fetch;
-    window.fetch = function(...args) {
+    window.fetch = function (...args) {
       const url = args[0];
       if (typeof url === 'string' && url.includes('/api/auth')) {
         if (Date.now() < lockoutUntil) {
           throw new Error('Conta temporariamente bloqueada por segurança');
         }
-        
+
         loginAttempts++;
         if (loginAttempts >= maxAttempts) {
           lockoutUntil = Date.now() + lockoutTime;
@@ -157,14 +157,14 @@ class AdvancedSecurityService {
   preventTimingAttacks() {
     let lastActionTime = Date.now();
     const minInterval = 50; // 50ms mínimo entre ações
-    
+
     // Monitorar todas as ações do usuário
     const events = ['click', 'keypress', 'mousemove', 'scroll', 'focus'];
     events.forEach(eventType => {
-      document.addEventListener(eventType, (e) => {
+      document.addEventListener(eventType, e => {
         const now = Date.now();
         const timeDiff = now - lastActionTime;
-        
+
         if (timeDiff < minInterval) {
           // Possível ataque de timing
           this.logSecurityThreat('TIMING_ATTACK_SUSPECTED', {
@@ -172,11 +172,11 @@ class AdvancedSecurityService {
             timeDiff,
             timestamp: new Date().toISOString()
           });
-          
+
           // Aumentar nível de ameaça
           this.increaseThreatLevel();
         }
-        
+
         lastActionTime = now;
       });
     });
@@ -191,7 +191,8 @@ class AdvancedSecurityService {
         window.top.location = window.self.location;
       } catch (e) {
         // Se não conseguir, bloquear completamente
-        document.body.innerHTML = '<div style="text-align:center;padding:50px;color:red;"><h1>⚠️ ACESSO BLOQUEADO</h1><p>Esta página não pode ser exibida em iframe por motivos de segurança.</p></div>';
+        document.body.innerHTML =
+          '<div style="text-align:center;padding:50px;color:red;"><h1>⚠️ ACESSO BLOQUEADO</h1><p>Esta página não pode ser exibida em iframe por motivos de segurança.</p></div>';
         this.logSecurityThreat('CLICKJACKING_BLOCKED', {
           timestamp: new Date().toISOString()
         });
@@ -199,7 +200,7 @@ class AdvancedSecurityService {
     }
 
     // Proteção adicional contra técnicas avançadas
-    window.addEventListener('beforeunload', (e) => {
+    window.addEventListener('beforeunload', e => {
       if (this.threatLevel === 'HIGH') {
         e.preventDefault();
         e.returnValue = 'Acesso bloqueado por segurança';
@@ -211,7 +212,7 @@ class AdvancedSecurityService {
   preventCSRFAttacks() {
     // Gerar token CSRF único
     const csrfToken = this.generateCSRFToken();
-    
+
     // Adicionar token a todos os formulários
     document.addEventListener('DOMContentLoaded', () => {
       const forms = document.querySelectorAll('form');
@@ -226,7 +227,7 @@ class AdvancedSecurityService {
 
     // Validar token em todas as requisições
     const originalFetch = window.fetch;
-    window.fetch = function(...args) {
+    window.fetch = function (...args) {
       if (args[1] && args[1].method && args[1].method !== 'GET') {
         if (!args[1].headers || !args[1].headers['X-CSRF-Token']) {
           args[1].headers = {
@@ -242,10 +243,10 @@ class AdvancedSecurityService {
   // Prevenir XSS avançado
   preventAdvancedXSS() {
     // Sanitizar todo conteúdo dinâmico
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
+    const observer = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
         if (mutation.type === 'childList') {
-          mutation.addedNodes.forEach((node) => {
+          mutation.addedNodes.forEach(node => {
             if (node.nodeType === Node.TEXT_NODE) {
               // Sanitizar texto
               node.textContent = this.sanitizeText(node.textContent);
@@ -302,9 +303,7 @@ class AdvancedSecurityService {
   // Verificar se URL é perigosa
   isDangerousURL(url) {
     const dangerousProtocols = ['javascript:', 'vbscript:', 'data:', 'file:'];
-    return dangerousProtocols.some(protocol => 
-      url.toLowerCase().startsWith(protocol)
-    );
+    return dangerousProtocols.some(protocol => url.toLowerCase().startsWith(protocol));
   }
 
   // Gerar token CSRF
@@ -318,10 +317,10 @@ class AdvancedSecurityService {
   setupThreatIntelligence() {
     // Monitorar padrões de comportamento suspeito
     this.monitorBehaviorPatterns();
-    
+
     // Configurar alertas automáticos
     this.setupAutomaticAlerts();
-    
+
     // Configurar resposta a incidentes
     this.setupIncidentResponse();
   }
@@ -330,36 +329,36 @@ class AdvancedSecurityService {
   monitorBehaviorPatterns() {
     const mouseMovements = [];
     const keyStrokes = [];
-    
+
     // Monitorar movimentos do mouse
-    document.addEventListener('mousemove', (e) => {
+    document.addEventListener('mousemove', e => {
       mouseMovements.push({
         x: e.clientX,
         y: e.clientY,
         timestamp: Date.now()
       });
-      
+
       // Manter apenas os últimos 100 movimentos
       if (mouseMovements.length > 100) {
         mouseMovements.shift();
       }
-      
+
       // Detectar padrões suspeitos
       this.analyzeMousePatterns(mouseMovements);
     });
 
     // Monitorar teclas
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', e => {
       keyStrokes.push({
         key: e.key,
         timestamp: Date.now()
       });
-      
+
       // Manter apenas os últimos 50 toques
       if (keyStrokes.length > 50) {
         keyStrokes.shift();
       }
-      
+
       // Detectar padrões suspeitos
       this.analyzeKeyPatterns(keyStrokes);
     });
@@ -368,17 +367,18 @@ class AdvancedSecurityService {
   // Analisar padrões do mouse
   analyzeMousePatterns(movements) {
     if (movements.length < 10) return;
-    
+
     // Detectar movimentos muito regulares (possível bot)
     const timeDiffs = [];
     for (let i = 1; i < movements.length; i++) {
-      timeDiffs.push(movements[i].timestamp - movements[i-1].timestamp);
+      timeDiffs.push(movements[i].timestamp - movements[i - 1].timestamp);
     }
-    
+
     const avgTimeDiff = timeDiffs.reduce((a, b) => a + b, 0) / timeDiffs.length;
     const variance = timeDiffs.reduce((a, b) => a + Math.pow(b - avgTimeDiff, 2), 0) / timeDiffs.length;
-    
-    if (variance < 100) { // Muito regular
+
+    if (variance < 100) {
+      // Muito regular
       this.logSecurityThreat('SUSPICIOUS_MOUSE_PATTERN', {
         variance,
         avgTimeDiff,
@@ -390,16 +390,17 @@ class AdvancedSecurityService {
   // Analisar padrões de teclas
   analyzeKeyPatterns(keys) {
     if (keys.length < 10) return;
-    
+
     // Detectar digitação muito rápida (possível bot)
     const timeDiffs = [];
     for (let i = 1; i < keys.length; i++) {
-      timeDiffs.push(keys[i].timestamp - keys[i-1].timestamp);
+      timeDiffs.push(keys[i].timestamp - keys[i - 1].timestamp);
     }
-    
+
     const avgTimeDiff = timeDiffs.reduce((a, b) => a + b, 0) / timeDiffs.length;
-    
-    if (avgTimeDiff < 50) { // Muito rápido
+
+    if (avgTimeDiff < 50) {
+      // Muito rápido
       this.logSecurityThreat('SUSPICIOUS_KEY_PATTERN', {
         avgTimeDiff,
         timestamp: new Date().toISOString()
@@ -433,7 +434,7 @@ class AdvancedSecurityService {
   activateEmergencyResponse() {
     // Bloquear todas as ações do usuário
     document.body.style.pointerEvents = 'none';
-    
+
     // Mostrar tela de emergência
     const emergencyScreen = document.createElement('div');
     emergencyScreen.style.cssText = `
@@ -450,7 +451,7 @@ class AdvancedSecurityService {
       z-index: 999999;
       font-family: Arial, sans-serif;
     `;
-    
+
     emergencyScreen.innerHTML = `
       <div style="text-align: center;">
         <h1>🚨 ALERTA DE SEGURANÇA 🚨</h1>
@@ -460,9 +461,9 @@ class AdvancedSecurityService {
         <p>Suporte: contato@agroisync.com</p>
       </div>
     `;
-    
+
     document.body.appendChild(emergencyScreen);
-    
+
     // Log da ação
     this.logSecurityThreat('EMERGENCY_RESPONSE_ACTIVATED', {
       timestamp: new Date().toISOString()
@@ -473,7 +474,7 @@ class AdvancedSecurityService {
   increaseThreatLevel() {
     const levels = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
     const currentIndex = levels.indexOf(this.threatLevel);
-    
+
     if (currentIndex < levels.length - 1) {
       this.threatLevel = levels[currentIndex + 1];
       this.logSecurityThreat('THREAT_LEVEL_INCREASED', {
@@ -493,17 +494,17 @@ class AdvancedSecurityService {
       userAgent: navigator.userAgent,
       url: window.location.href
     };
-    
+
     this.securityEvents.push(threat);
-    
+
     // Manter apenas os últimos 1000 eventos
     if (this.securityEvents.length > 1000) {
       this.securityEvents.shift();
     }
-    
+
     // Enviar para sistema de monitoramento
     this.sendThreatToMonitoring(threat);
-    
+
     // Log local
     console.warn('Security Threat:', threat);
   }
@@ -514,7 +515,7 @@ class AdvancedSecurityService {
     if (window.securityMonitoring) {
       window.securityMonitoring.reportThreat(threat);
     }
-    
+
     // Backup local
     this.storeThreatLocally(threat);
   }
@@ -524,12 +525,12 @@ class AdvancedSecurityService {
     try {
       const threats = JSON.parse(localStorage.getItem('security_threats') || '[]');
       threats.push(threat);
-      
+
       // Manter apenas os últimos 500
       if (threats.length > 500) {
         threats.splice(0, threats.length - 500);
       }
-      
+
       localStorage.setItem('security_threats', JSON.stringify(threats));
     } catch (error) {
       console.error('Error storing threat locally:', error);
@@ -542,7 +543,7 @@ class AdvancedSecurityService {
     if (window.notificationService) {
       window.notificationService.sendSecurityAlert(message, data);
     }
-    
+
     // Log do alerta
     console.warn('Security Alert:', message, data);
   }
@@ -560,10 +561,10 @@ class AdvancedSecurityService {
   performSecurityCheck() {
     // Verificar integridade do DOM
     this.checkDOMIntegrity();
-    
+
     // Verificar scripts suspeitos
     this.checkSuspiciousScripts();
-    
+
     // Verificar conexões suspeitas
     this.checkSuspiciousConnections();
   }
@@ -584,14 +585,8 @@ class AdvancedSecurityService {
 
   // Verificar se script é permitido
   isAllowedScript(src) {
-    const allowedDomains = [
-      'agroisync.com',
-      'stripe.com',
-      'cloudflare.com',
-      'googleapis.com',
-      'gstatic.com'
-    ];
-    
+    const allowedDomains = ['agroisync.com', 'stripe.com', 'cloudflare.com', 'googleapis.com', 'gstatic.com'];
+
     try {
       const domain = new URL(src).hostname;
       return allowedDomains.some(allowed => domain.includes(allowed));
@@ -618,7 +613,7 @@ class AdvancedSecurityService {
   checkSuspiciousConnections() {
     // Monitorar requisições de rede
     const originalFetch = window.fetch;
-    window.fetch = function(...args) {
+    window.fetch = function (...args) {
       const url = args[0];
       if (typeof url === 'string' && this.isSuspiciousURL(url)) {
         this.logSecurityThreat('SUSPICIOUS_CONNECTION_ATTEMPTED', {
@@ -640,7 +635,7 @@ class AdvancedSecurityService {
       /^http:\/\//i, // HTTP não criptografado
       /[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/ // IP direto
     ];
-    
+
     return suspiciousPatterns.some(pattern => pattern.test(url));
   }
 
@@ -648,10 +643,8 @@ class AdvancedSecurityService {
   cleanupOldData() {
     const now = Date.now();
     const maxAge = 24 * 60 * 60 * 1000; // 24 horas
-    
-    this.securityEvents = this.securityEvents.filter(event => 
-      now - new Date(event.timestamp).getTime() < maxAge
-    );
+
+    this.securityEvents = this.securityEvents.filter(event => now - new Date(event.timestamp).getTime() < maxAge);
   }
 
   // Atualizar métricas de segurança
@@ -662,7 +655,7 @@ class AdvancedSecurityService {
       criticalEvents: this.securityEvents.filter(e => e.type.includes('CRITICAL')).length,
       timestamp: new Date().toISOString()
     };
-    
+
     // Enviar métricas
     this.sendSecurityMetrics(metrics);
   }
@@ -673,7 +666,7 @@ class AdvancedSecurityService {
     if (window.securityMonitoring) {
       window.securityMonitoring.updateMetrics(metrics);
     }
-    
+
     // Log local
     console.log('Security Metrics Updated:', metrics);
   }
@@ -688,7 +681,7 @@ class AdvancedSecurityService {
         timestamp: new Date().toISOString()
       });
     }
-    
+
     // Verificar se console está aberto
     this.detectDevTools();
   }
@@ -696,11 +689,10 @@ class AdvancedSecurityService {
   // Detectar ferramentas de desenvolvedor
   detectDevTools() {
     const devtools = { open: false, orientation: null };
-    
+
     setInterval(() => {
       const threshold = 160;
-      if (window.outerHeight - window.innerHeight > threshold || 
-          window.outerWidth - window.innerWidth > threshold) {
+      if (window.outerHeight - window.innerHeight > threshold || window.outerWidth - window.innerWidth > threshold) {
         if (!devtools.open) {
           devtools.open = true;
           this.logSecurityThreat('DEVTOOLS_OPENED', {
@@ -728,17 +720,17 @@ class AdvancedSecurityService {
   // Obter recomendações de segurança
   getSecurityRecommendations() {
     const recommendations = [];
-    
+
     if (this.threatLevel === 'HIGH' || this.threatLevel === 'CRITICAL') {
       recommendations.push('Ativar modo de emergência');
       recommendations.push('Revisar logs de segurança');
       recommendations.push('Notificar equipe de segurança');
     }
-    
+
     if (this.securityEvents.length > 100) {
       recommendations.push('Investigar aumento de eventos');
     }
-    
+
     return recommendations;
   }
 }
@@ -754,14 +746,14 @@ export const advancedSecurityUtils = {
   // Validar entrada avançada
   validateAdvancedInput(input, type = 'text') {
     if (typeof input !== 'string') return false;
-    
+
     const validators = {
       text: /^[a-zA-Z0-9\s\-_.,!?()]+$/,
       email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
       phone: /^[+]?[0-9\s\-()]+$/,
       url: /^https?:\/\/[^\s/$.?#].[^\s]*$/i
     };
-    
+
     const validator = validators[type] || validators.text;
     return validator.test(input);
   },
@@ -786,13 +778,13 @@ export const advancedSecurityUtils = {
     // Implementação básica de hash
     let hash = 0;
     const str = JSON.stringify(data);
-    
+
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32bit integer
     }
-    
+
     return hash.toString(16);
   }
 };

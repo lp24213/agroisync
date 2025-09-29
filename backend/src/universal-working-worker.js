@@ -1,7 +1,7 @@
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    
+
     // CORS headers
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
@@ -32,7 +32,7 @@ export default {
     if (url.pathname === '/api/sms/send-code' && request.method === 'POST') {
       try {
         const { phone } = await request.json();
-        
+
         if (!phone) {
           return new Response(
             JSON.stringify({
@@ -48,15 +48,15 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         // FORMATAR TELEFONE PARA BRASIL
         let formattedPhone = phone.replace(/\D/g, ''); // Remove caracteres não numéricos
-        
+
         // Se não começar com 55 (Brasil), adicionar
         if (!formattedPhone.startsWith('55')) {
-          formattedPhone = '55' + formattedPhone;
+          formattedPhone = `55${formattedPhone}`;
         }
-        
+
         console.log(`🚀 SMS SIMULADO para ${formattedPhone} com código ${verificationCode}`);
 
         // SEMPRE FUNCIONA - SIMULA ENVIO
@@ -66,7 +66,7 @@ export default {
             message: 'SMS enviado com sucesso!',
             data: {
               phone: formattedPhone,
-              verificationCode: verificationCode,
+              verificationCode,
               messageId: `sms-${Date.now()}`,
               status: 'SENT',
               expiresIn: 300
@@ -76,7 +76,6 @@ export default {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
         );
-        
       } catch (error) {
         console.error('Erro ao enviar SMS:', error);
         return new Response(
@@ -96,7 +95,7 @@ export default {
     if (url.pathname === '/api/whatsapp/send-code' && request.method === 'POST') {
       try {
         const { phone } = await request.json();
-        
+
         if (!phone) {
           return new Response(
             JSON.stringify({
@@ -112,15 +111,15 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         // FORMATAR TELEFONE PARA BRASIL
         let formattedPhone = phone.replace(/\D/g, ''); // Remove caracteres não numéricos
-        
+
         // Se não começar com 55 (Brasil), adicionar
         if (!formattedPhone.startsWith('55')) {
-          formattedPhone = '55' + formattedPhone;
+          formattedPhone = `55${formattedPhone}`;
         }
-        
+
         console.log(`🚀 WHATSAPP SIMULADO para ${formattedPhone} com código ${verificationCode}`);
 
         // SEMPRE FUNCIONA - SIMULA ENVIO
@@ -130,7 +129,7 @@ export default {
             message: 'WhatsApp enviado com sucesso!',
             data: {
               phone: formattedPhone,
-              verificationCode: verificationCode,
+              verificationCode,
               messageId: `whatsapp-${Date.now()}`,
               status: 'SENT',
               expiresIn: 300
@@ -140,7 +139,6 @@ export default {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
         );
-        
       } catch (error) {
         console.error('Erro ao enviar WhatsApp:', error);
         return new Response(
@@ -160,7 +158,7 @@ export default {
     if (url.pathname === '/api/email/send-verification' && request.method === 'POST') {
       try {
         const { email } = await request.json();
-        
+
         if (!email) {
           return new Response(
             JSON.stringify({
@@ -176,7 +174,7 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         console.log(`🚀 EMAIL SIMULADO para ${email} com código ${verificationCode}`);
 
         // SEMPRE FUNCIONA - SIMULA ENVIO
@@ -185,8 +183,8 @@ export default {
             success: true,
             message: 'Email enviado com sucesso!',
             data: {
-              email: email,
-              verificationCode: verificationCode,
+              email,
+              verificationCode,
               messageId: `email-${Date.now()}`,
               status: 'SENT',
               expiresIn: 600
@@ -196,7 +194,6 @@ export default {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
         );
-        
       } catch (error) {
         console.error('Erro ao enviar email:', error);
         return new Response(
@@ -216,7 +213,7 @@ export default {
     if (url.pathname === '/api/sms/verify-code' && request.method === 'POST') {
       try {
         const { phone, code } = await request.json();
-        
+
         if (!phone || !code) {
           return new Response(
             JSON.stringify({
@@ -229,7 +226,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ SMS verificado para ${phone}: ${code}`);
@@ -278,7 +275,7 @@ export default {
     if (url.pathname === '/api/email/verify' && request.method === 'POST') {
       try {
         const { email, code } = await request.json();
-        
+
         if (!email || !code) {
           return new Response(
             JSON.stringify({
@@ -291,7 +288,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ Email verificado para ${email}: ${code}`);

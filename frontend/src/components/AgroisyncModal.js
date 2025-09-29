@@ -10,7 +10,7 @@ const TXCModal = ({
   size = 'md',
   closeOnOverlayClick = true,
   showCloseButton = true,
-  className = '',
+  className = ''
 }) => {
   useEffect(() => {
     if (isOpen) {
@@ -25,7 +25,7 @@ const TXCModal = ({
   }, [isOpen]);
 
   useEffect(() => {
-    const handleEscape = (e) => {
+    const handleEscape = e => {
       if (e.key === 'Escape' && isOpen) {
         onClose();
       }
@@ -39,7 +39,7 @@ const TXCModal = ({
     sm: 'txc-modal-sm',
     md: 'txc-modal-md',
     lg: 'txc-modal-lg',
-    xl: 'txc-modal-xl',
+    xl: 'txc-modal-xl'
   };
 
   const modalClasses = `txc-modal ${sizeClasses[size]} ${className}`;
@@ -48,7 +48,7 @@ const TXCModal = ({
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="txc-modal-overlay"
+          className='txc-modal-overlay'
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -61,17 +61,15 @@ const TXCModal = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 50 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
           >
             {/* Modal Header */}
             {(title || showCloseButton) && (
-              <div className="txc-modal-header">
-                {title && (
-                  <h2 className="txc-modal-title">{title}</h2>
-                )}
+              <div className='txc-modal-header'>
+                {title && <h2 className='txc-modal-title'>{title}</h2>}
                 {showCloseButton && (
                   <motion.button
-                    className="txc-modal-close"
+                    className='txc-modal-close'
                     onClick={onClose}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
@@ -83,9 +81,7 @@ const TXCModal = ({
             )}
 
             {/* Modal Content */}
-            <div className="txc-modal-content">
-              {children}
-            </div>
+            <div className='txc-modal-content'>{children}</div>
           </motion.div>
         </motion.div>
       )}

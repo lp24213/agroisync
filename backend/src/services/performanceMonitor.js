@@ -13,7 +13,7 @@ class PerformanceMonitor {
       errors: new Map(),
       resources: new Map()
     };
-    
+
     this.thresholds = {
       responseTime: 2000, // 2 segundos
       memoryUsage: 0.8, // 80%
@@ -21,34 +21,36 @@ class PerformanceMonitor {
       errorRate: 0.05, // 5%
       throughput: 1000 // requests per minute
     };
-    
+
     this.alerts = [];
     this.isMonitoring = false;
-    
+
     this.startMonitoring();
   }
 
   // Iniciar monitoramento
   startMonitoring() {
-    if (this.isMonitoring) return;
-    
+    if (this.isMonitoring) {
+      return;
+    }
+
     this.isMonitoring = true;
-    
+
     // Monitorar recursos do sistema
     setInterval(() => {
       this.monitorSystemResources();
     }, 30000); // A cada 30 segundos
-    
+
     // Monitorar performance da aplicação
     setInterval(() => {
       this.monitorApplicationPerformance();
     }, 60000); // A cada minuto
-    
+
     // Limpar métricas antigas
     setInterval(() => {
       this.cleanupOldMetrics();
     }, 300000); // A cada 5 minutos
-    
+
     console.log('📊 Sistema de monitoramento de performance iniciado');
   }
 
@@ -56,7 +58,7 @@ class PerformanceMonitor {
   monitorSystemResources() {
     const memUsage = process.memoryUsage();
     const cpuUsage = process.cpuUsage();
-    
+
     const metrics = {
       memory: {
         rss: memUsage.rss,
@@ -72,7 +74,7 @@ class PerformanceMonitor {
       uptime: process.uptime(),
       timestamp: new Date()
     };
-    
+
     // Verificar limites
     if (metrics.memory.usage > this.thresholds.memoryUsage) {
       this.createAlert('HIGH_MEMORY_USAGE', 'warning', {
@@ -81,10 +83,10 @@ class PerformanceMonitor {
         details: metrics
       });
     }
-    
+
     // Armazenar métricas
     this.metrics.resources.set(Date.now(), metrics);
-    
+
     // Log de performance
     this.logPerformanceMetric('SYSTEM_RESOURCES', metrics);
   }
@@ -93,17 +95,20 @@ class PerformanceMonitor {
   monitorApplicationPerformance() {
     const now = Date.now();
     const oneMinuteAgo = now - 60000;
-    
+
     // Calcular métricas de requisições
-    const recentRequests = Array.from(this.metrics.requests.values())
-      .filter(req => req.timestamp > oneMinuteAgo);
-    
-    const recentResponses = Array.from(this.metrics.responses.values())
-      .filter(res => res.timestamp > oneMinuteAgo);
-    
-    const recentErrors = Array.from(this.metrics.errors.values())
-      .filter(err => err.timestamp > oneMinuteAgo);
-    
+    const recentRequests = Array.from(this.metrics.requests.values()).filter(
+      req => req.timestamp > oneMinuteAgo
+    );
+
+    const recentResponses = Array.from(this.metrics.responses.values()).filter(
+      res => res.timestamp > oneMinuteAgo
+    );
+
+    const recentErrors = Array.from(this.metrics.errors.values()).filter(
+      err => err.timestamp > oneMinuteAgo
+    );
+
     const metrics = {
       requestsPerMinute: recentRequests.length,
       averageResponseTime: this.calculateAverageResponseTime(recentResponses),
@@ -111,7 +116,7 @@ class PerformanceMonitor {
       throughput: recentRequests.length,
       timestamp: new Date()
     };
-    
+
     // Verificar limites
     if (metrics.averageResponseTime > this.thresholds.responseTime) {
       this.createAlert('SLOW_RESPONSE_TIME', 'warning', {
@@ -120,7 +125,7 @@ class PerformanceMonitor {
         details: metrics
       });
     }
-    
+
     if (metrics.errorRate > this.thresholds.errorRate) {
       this.createAlert('HIGH_ERROR_RATE', 'critical', {
         errorRate: metrics.errorRate,
@@ -128,7 +133,7 @@ class PerformanceMonitor {
         details: metrics
       });
     }
-    
+
     if (metrics.throughput > this.thresholds.throughput) {
       this.createAlert('HIGH_THROUGHPUT', 'info', {
         throughput: metrics.throughput,
@@ -136,10 +141,10 @@ class PerformanceMonitor {
         details: metrics
       });
     }
-    
+
     // Armazenar métricas
     this.metrics.responses.set(now, metrics);
-    
+
     // Log de performance
     this.logPerformanceMetric('APPLICATION_PERFORMANCE', metrics);
   }
@@ -148,11 +153,11 @@ class PerformanceMonitor {
   recordRequest(req, res, next) {
     const startTime = performance.now();
     const requestId = Math.random().toString(36).substr(2, 9);
-    
+
     // Adicionar request ID ao request
     req.requestId = requestId;
     req.startTime = startTime;
-    
+
     // Registrar requisição
     this.metrics.requests.set(requestId, {
       id: requestId,
@@ -163,13 +168,13 @@ class PerformanceMonitor {
       timestamp: Date.now(),
       userId: req.user?.id
     });
-    
+
     // Interceptar resposta
     const originalSend = res.send;
-    res.send = function(data) {
+    res.send = function (data) {
       const endTime = performance.now();
       const duration = endTime - startTime;
-      
+
       // Registrar resposta
       this.metrics.responses.set(requestId, {
         id: requestId,
@@ -178,7 +183,7 @@ class PerformanceMonitor {
         responseSize: data ? data.length : 0,
         timestamp: Date.now()
       });
-      
+
       // Verificar se é erro
       if (res.statusCode >= 400) {
         this.metrics.errors.set(requestId, {
@@ -189,17 +194,19 @@ class PerformanceMonitor {
           timestamp: Date.now()
         });
       }
-      
+
       return originalSend.call(this, data);
     }.bind(this);
-    
+
     next();
   }
 
   // Calcular tempo médio de resposta
   calculateAverageResponseTime(responses) {
-    if (responses.length === 0) return 0;
-    
+    if (responses.length === 0) {
+      return 0;
+    }
+
     const totalTime = responses.reduce((sum, res) => sum + res.duration, 0);
     return totalTime / responses.length;
   }
@@ -215,32 +222,32 @@ class PerformanceMonitor {
       timestamp: new Date(),
       acknowledged: false
     };
-    
+
     this.alerts.push(alert);
-    
+
     // Log de segurança
     this.logSecurityEvent('PERFORMANCE_ALERT', severity, {
       alertType: type,
       details
     });
-    
+
     // Log no console
     console.warn(`🚨 ALERTA DE PERFORMANCE [${severity.toUpperCase()}]: ${alert.message}`);
-    
+
     return alert;
   }
 
   // Obter mensagem do alerta
   getAlertMessage(type, details) {
     const messages = {
-      'HIGH_MEMORY_USAGE': `Uso de memória alto: ${(details.usage * 100).toFixed(1)}%`,
-      'SLOW_RESPONSE_TIME': `Tempo de resposta lento: ${details.responseTime.toFixed(2)}ms`,
-      'HIGH_ERROR_RATE': `Taxa de erro alta: ${(details.errorRate * 100).toFixed(2)}%`,
-      'HIGH_THROUGHPUT': `Throughput alto: ${details.throughput} req/min`,
-      'LOW_THROUGHPUT': `Throughput baixo: ${details.throughput} req/min`,
-      'HIGH_CPU_USAGE': `Uso de CPU alto: ${(details.cpuUsage * 100).toFixed(1)}%`
+      HIGH_MEMORY_USAGE: `Uso de memória alto: ${(details.usage * 100).toFixed(1)}%`,
+      SLOW_RESPONSE_TIME: `Tempo de resposta lento: ${details.responseTime.toFixed(2)}ms`,
+      HIGH_ERROR_RATE: `Taxa de erro alta: ${(details.errorRate * 100).toFixed(2)}%`,
+      HIGH_THROUGHPUT: `Throughput alto: ${details.throughput} req/min`,
+      LOW_THROUGHPUT: `Throughput baixo: ${details.throughput} req/min`,
+      HIGH_CPU_USAGE: `Uso de CPU alto: ${(details.cpuUsage * 100).toFixed(1)}%`
     };
-    
+
     return messages[type] || 'Alerta de performance desconhecido';
   }
 
@@ -284,39 +291,37 @@ class PerformanceMonitor {
   cleanupOldMetrics() {
     const now = Date.now();
     const oneHourAgo = now - 3600000;
-    
+
     // Limpar requisições antigas
     for (const [key, data] of this.metrics.requests.entries()) {
       if (data.timestamp < oneHourAgo) {
         this.metrics.requests.delete(key);
       }
     }
-    
+
     // Limpar respostas antigas
     for (const [key, data] of this.metrics.responses.entries()) {
       if (data.timestamp < oneHourAgo) {
         this.metrics.responses.delete(key);
       }
     }
-    
+
     // Limpar erros antigos
     for (const [key, data] of this.metrics.errors.entries()) {
       if (data.timestamp < oneHourAgo) {
         this.metrics.errors.delete(key);
       }
     }
-    
+
     // Limpar recursos antigos
     for (const [key, data] of this.metrics.resources.entries()) {
       if (data.timestamp < oneHourAgo) {
         this.metrics.resources.delete(key);
       }
     }
-    
+
     // Limpar alertas antigos
-    this.alerts = this.alerts.filter(alert => 
-      alert.timestamp.getTime() > oneHourAgo
-    );
+    this.alerts = this.alerts.filter(alert => alert.timestamp.getTime() > oneHourAgo);
   }
 
   // Obter estatísticas
@@ -324,19 +329,23 @@ class PerformanceMonitor {
     const now = Date.now();
     const oneMinuteAgo = now - 60000;
     const oneHourAgo = now - 3600000;
-    
-    const recentRequests = Array.from(this.metrics.requests.values())
-      .filter(req => req.timestamp > oneMinuteAgo);
-    
-    const recentResponses = Array.from(this.metrics.responses.values())
-      .filter(res => res.timestamp > oneMinuteAgo);
-    
-    const recentErrors = Array.from(this.metrics.errors.values())
-      .filter(err => err.timestamp > oneMinuteAgo);
-    
-    const recentResources = Array.from(this.metrics.resources.values())
-      .filter(res => res.timestamp > oneMinuteAgo);
-    
+
+    const recentRequests = Array.from(this.metrics.requests.values()).filter(
+      req => req.timestamp > oneMinuteAgo
+    );
+
+    const recentResponses = Array.from(this.metrics.responses.values()).filter(
+      res => res.timestamp > oneMinuteAgo
+    );
+
+    const recentErrors = Array.from(this.metrics.errors.values()).filter(
+      err => err.timestamp > oneMinuteAgo
+    );
+
+    const recentResources = Array.from(this.metrics.resources.values()).filter(
+      res => res.timestamp > oneMinuteAgo
+    );
+
     return {
       requests: {
         total: this.metrics.requests.size,
@@ -356,8 +365,11 @@ class PerformanceMonitor {
       resources: {
         total: this.metrics.resources.size,
         recent: recentResources.length,
-        averageMemoryUsage: recentResources.length > 0 ? 
-          recentResources.reduce((sum, res) => sum + res.memory.usage, 0) / recentResources.length : 0
+        averageMemoryUsage:
+          recentResources.length > 0
+            ? recentResources.reduce((sum, res) => sum + res.memory.usage, 0) /
+              recentResources.length
+            : 0
       },
       alerts: {
         total: this.alerts.length,

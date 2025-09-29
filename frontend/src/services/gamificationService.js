@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { API_CONFIG, getAuthToken } from '../config/constants.js';
 
 // Configuração da API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
+const API_BASE_URL = API_CONFIG.baseURL;
 
 // Configuração do axios com interceptors
 const api = axios.create({
@@ -14,25 +15,25 @@ const api = axios.create({
 
 // Interceptor para adicionar token de autenticação
 api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
+  config => {
+    const token = getAuthToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => {
+  error => {
     return Promise.reject(error);
   }
 );
 
 // Interceptor para tratamento de erros
 api.interceptors.response.use(
-  (response) => response,
-  (error) => {
+  response => response,
+  async error => {
     if (error.response?.status === 401) {
       // Token expirado ou inválido
-      localStorage.removeItem('token');
+      removeAuthToken();
       window.location.href = '/login';
     }
     return Promise.reject(error);
@@ -138,7 +139,7 @@ class GamificationService {
   isCacheValid(key) {
     const cached = this.cache.get(key);
     if (!cached) return false;
-    
+
     return Date.now() - cached.timestamp < this.cacheTimeout;
   }
 
@@ -328,16 +329,9 @@ class GamificationService {
   }
 
   async addReviewPoints(reviewId, isPositive) {
-    const action = isPositive ? 
-      POINT_ACTIONS.POSITIVE_REVIEW : 
-      POINT_ACTIONS.NEGATIVE_REVIEW;
-    
-    return this.addPoints(
-      action.action,
-      action.points,
-      action.description,
-      { reviewId, isPositive }
-    );
+    const action = isPositive ? POINT_ACTIONS.POSITIVE_REVIEW : POINT_ACTIONS.NEGATIVE_REVIEW;
+
+    return this.addPoints(action.action, action.points, action.description, { reviewId, isPositive });
   }
 
   // Calcular progresso para o próximo nível

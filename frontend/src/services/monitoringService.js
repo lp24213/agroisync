@@ -9,7 +9,7 @@ class MonitoringSystem {
       performance: new Map(),
       security: new Map()
     };
-    
+
     this.alerts = [];
     this.thresholds = {
       errorRate: 0.05, // 5%
@@ -18,7 +18,7 @@ class MonitoringSystem {
       cpuUsage: 0.8, // 80%
       securityEvents: 10 // 10 eventos por minuto
     };
-    
+
     this.startMonitoring();
   }
 
@@ -26,16 +26,16 @@ class MonitoringSystem {
   startMonitoring() {
     // Monitorar requisições
     this.monitorRequests();
-    
+
     // Monitorar performance
     this.monitorPerformance();
-    
+
     // Monitorar segurança
     this.monitorSecurity();
-    
+
     // Monitorar recursos do sistema
     this.monitorSystemResources();
-    
+
     // Verificar alertas
     setInterval(() => this.checkAlerts(), 60000); // A cada minuto
   }
@@ -44,16 +44,16 @@ class MonitoringSystem {
   monitorRequests() {
     const originalFetch = window.fetch;
     const self = this;
-    
-    window.fetch = async function(...args) {
+
+    window.fetch = async function (...args) {
       const startTime = performance.now();
       const url = args[0];
-      
+
       try {
         const response = await originalFetch.apply(this, args);
         const endTime = performance.now();
         const duration = endTime - startTime;
-        
+
         // Registrar métrica
         self.recordRequest({
           url,
@@ -62,12 +62,12 @@ class MonitoringSystem {
           duration,
           timestamp: new Date().toISOString()
         });
-        
+
         return response;
       } catch (error) {
         const endTime = performance.now();
         const duration = endTime - startTime;
-        
+
         // Registrar erro
         self.recordError({
           url,
@@ -76,7 +76,7 @@ class MonitoringSystem {
           duration,
           timestamp: new Date().toISOString()
         });
-        
+
         throw error;
       }
     };
@@ -87,14 +87,14 @@ class MonitoringSystem {
     // Monitorar Core Web Vitals
     if ('PerformanceObserver' in window) {
       // Largest Contentful Paint (LCP)
-      new PerformanceObserver((list) => {
+      new PerformanceObserver(list => {
         const entries = list.getEntries();
         const lastEntry = entries[entries.length - 1];
         this.recordMetric('lcp', lastEntry.startTime);
       }).observe({ entryTypes: ['largest-contentful-paint'] });
 
       // First Input Delay (FID)
-      new PerformanceObserver((list) => {
+      new PerformanceObserver(list => {
         const entries = list.getEntries();
         entries.forEach(entry => {
           this.recordMetric('fid', entry.processingStart - entry.startTime);
@@ -102,7 +102,7 @@ class MonitoringSystem {
       }).observe({ entryTypes: ['first-input'] });
 
       // Cumulative Layout Shift (CLS)
-      new PerformanceObserver((list) => {
+      new PerformanceObserver(list => {
         let clsValue = 0;
         const entries = list.getEntries();
         entries.forEach(entry => {
@@ -137,7 +137,7 @@ class MonitoringSystem {
     });
 
     // Monitorar mudanças no DOM
-    const observer = new MutationObserver((mutations) => {
+    const observer = new MutationObserver(mutations => {
       mutations.forEach(mutation => {
         if (mutation.type === 'childList') {
           mutation.addedNodes.forEach(node => {
@@ -161,12 +161,14 @@ class MonitoringSystem {
     });
 
     // Monitorar eventos de teclado suspeitos
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', e => {
       // Detectar tentativas de abrir DevTools
-      if (e.key === 'F12' || 
-          (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-          (e.ctrlKey && e.shiftKey && e.key === 'C') ||
-          (e.ctrlKey && e.key === 'U')) {
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+        (e.ctrlKey && e.shiftKey && e.key === 'C') ||
+        (e.ctrlKey && e.key === 'U')
+      ) {
         this.recordSecurityEvent('devtools_attempt', {
           key: e.key,
           timestamp: new Date().toISOString()
@@ -176,7 +178,7 @@ class MonitoringSystem {
 
     // Monitorar tentativas de acesso ao console
     const originalConsole = console.log;
-    console.log = function(...args) {
+    console.log = function (...args) {
       self.recordSecurityEvent('console_access', {
         args: args.join(' '),
         timestamp: new Date().toISOString()
@@ -214,12 +216,12 @@ class MonitoringSystem {
     const key = `${data.method}:${data.url}`;
     const requests = this.metrics.requests.get(key) || [];
     requests.push(data);
-    
+
     // Manter apenas últimas 100 requisições
     if (requests.length > 100) {
       requests.splice(0, requests.length - 100);
     }
-    
+
     this.metrics.requests.set(key, requests);
   }
 
@@ -228,12 +230,12 @@ class MonitoringSystem {
     const key = `${data.method}:${data.url}`;
     const errors = this.metrics.errors.get(key) || [];
     errors.push(data);
-    
+
     // Manter apenas últimos 50 erros
     if (errors.length > 50) {
       errors.splice(0, errors.length - 50);
     }
-    
+
     this.metrics.errors.set(key, errors);
   }
 
@@ -244,12 +246,12 @@ class MonitoringSystem {
       value,
       timestamp: new Date().toISOString()
     });
-    
+
     // Manter apenas últimas 100 métricas
     if (metrics.length > 100) {
       metrics.splice(0, metrics.length - 100);
     }
-    
+
     this.metrics.performance.set(type, metrics);
   }
 
@@ -257,14 +259,14 @@ class MonitoringSystem {
   recordSecurityEvent(type, data) {
     const events = this.metrics.security.get(type) || [];
     events.push(data);
-    
+
     // Manter apenas últimos 50 eventos
     if (events.length > 50) {
       events.splice(0, events.length - 50);
     }
-    
+
     this.metrics.security.set(type, events);
-    
+
     // Verificar se precisa de alerta
     this.checkSecurityThresholds(type);
   }
@@ -281,15 +283,15 @@ class MonitoringSystem {
   checkErrorRate() {
     let totalRequests = 0;
     let totalErrors = 0;
-    
+
     this.metrics.requests.forEach(requests => {
       totalRequests += requests.length;
     });
-    
+
     this.metrics.errors.forEach(errors => {
       totalErrors += errors.length;
     });
-    
+
     if (totalRequests > 0) {
       const errorRate = totalErrors / totalRequests;
       if (errorRate > this.thresholds.errorRate) {
@@ -307,7 +309,7 @@ class MonitoringSystem {
   checkResponseTime() {
     this.metrics.requests.forEach((requests, key) => {
       const avgResponseTime = requests.reduce((sum, req) => sum + req.duration, 0) / requests.length;
-      
+
       if (avgResponseTime > this.thresholds.responseTime) {
         this.createAlert('slow_response', {
           endpoint: key,
@@ -324,7 +326,7 @@ class MonitoringSystem {
     if (memoryMetrics && memoryMetrics.length > 0) {
       const latest = memoryMetrics[memoryMetrics.length - 1];
       const memoryUsage = latest.value.used / latest.value.limit;
-      
+
       if (memoryUsage > this.thresholds.memoryUsage) {
         this.createAlert('high_memory_usage', {
           memoryUsage: memoryUsage.toFixed(2),
@@ -340,14 +342,12 @@ class MonitoringSystem {
   checkSecurityEvents() {
     const now = new Date().getTime();
     const oneMinuteAgo = now - 60000;
-    
+
     let securityEventCount = 0;
     this.metrics.security.forEach(events => {
-      securityEventCount += events.filter(event => 
-        new Date(event.timestamp).getTime() > oneMinuteAgo
-      ).length;
+      securityEventCount += events.filter(event => new Date(event.timestamp).getTime() > oneMinuteAgo).length;
     });
-    
+
     if (securityEventCount > this.thresholds.securityEvents) {
       this.createAlert('high_security_events', {
         eventCount: securityEventCount,
@@ -362,11 +362,9 @@ class MonitoringSystem {
     const events = this.metrics.security.get(type) || [];
     const now = new Date().getTime();
     const oneMinuteAgo = now - 60000;
-    
-    const recentEvents = events.filter(event => 
-      new Date(event.timestamp).getTime() > oneMinuteAgo
-    );
-    
+
+    const recentEvents = events.filter(event => new Date(event.timestamp).getTime() > oneMinuteAgo);
+
     if (recentEvents.length > 5) {
       this.createAlert('security_threshold_exceeded', {
         eventType: type,
@@ -388,49 +386,49 @@ class MonitoringSystem {
       timestamp: new Date().toISOString(),
       acknowledged: false
     };
-    
+
     this.alerts.push(alert);
-    
+
     // Enviar alerta para backend
     this.sendAlertToBackend(alert);
-    
+
     // Mostrar notificação
     this.showNotification(alert);
-    
+
     console.warn('🚨 ALERTA:', alert);
   }
 
   // Obter severidade do alerta
   getAlertSeverity(type) {
     const severityMap = {
-      'high_error_rate': 'high',
-      'slow_response': 'medium',
-      'high_memory_usage': 'high',
-      'high_security_events': 'critical',
-      'security_threshold_exceeded': 'high',
-      'suspicious_script': 'high',
-      'dom_injection': 'critical',
-      'devtools_attempt': 'low',
-      'console_access': 'low'
+      high_error_rate: 'high',
+      slow_response: 'medium',
+      high_memory_usage: 'high',
+      high_security_events: 'critical',
+      security_threshold_exceeded: 'high',
+      suspicious_script: 'high',
+      dom_injection: 'critical',
+      devtools_attempt: 'low',
+      console_access: 'low'
     };
-    
+
     return severityMap[type] || 'medium';
   }
 
   // Obter mensagem do alerta
   getAlertMessage(type, data) {
     const messages = {
-      'high_error_rate': `Taxa de erro alta: ${data.errorRate}% (limite: ${data.threshold})`,
-      'slow_response': `Resposta lenta: ${data.avgResponseTime}ms (limite: ${data.threshold}ms)`,
-      'high_memory_usage': `Uso de memória alto: ${data.memoryUsage}% (limite: ${data.threshold})`,
-      'high_security_events': `Muitos eventos de segurança: ${data.eventCount} (limite: ${data.threshold})`,
-      'security_threshold_exceeded': `Limite de segurança excedido: ${data.eventType}`,
-      'suspicious_script': 'Script suspeito detectado',
-      'dom_injection': 'Tentativa de injeção DOM detectada',
-      'devtools_attempt': 'Tentativa de abrir DevTools',
-      'console_access': 'Acesso ao console detectado'
+      high_error_rate: `Taxa de erro alta: ${data.errorRate}% (limite: ${data.threshold})`,
+      slow_response: `Resposta lenta: ${data.avgResponseTime}ms (limite: ${data.threshold}ms)`,
+      high_memory_usage: `Uso de memória alto: ${data.memoryUsage}% (limite: ${data.threshold})`,
+      high_security_events: `Muitos eventos de segurança: ${data.eventCount} (limite: ${data.threshold})`,
+      security_threshold_exceeded: `Limite de segurança excedido: ${data.eventType}`,
+      suspicious_script: 'Script suspeito detectado',
+      dom_injection: 'Tentativa de injeção DOM detectada',
+      devtools_attempt: 'Tentativa de abrir DevTools',
+      console_access: 'Acesso ao console detectado'
     };
-    
+
     return messages[type] || 'Alerta desconhecido';
   }
 
@@ -463,13 +461,8 @@ class MonitoringSystem {
 
   // Verificar se script é permitido
   isAllowedScript(src) {
-    const allowedDomains = [
-      'cdn.jsdelivr.net',
-      'fonts.googleapis.com',
-      'fonts.gstatic.com',
-      window.location.hostname
-    ];
-    
+    const allowedDomains = ['cdn.jsdelivr.net', 'fonts.googleapis.com', 'fonts.gstatic.com', window.location.hostname];
+
     try {
       const url = new URL(src);
       return allowedDomains.includes(url.hostname);
@@ -494,19 +487,19 @@ class MonitoringSystem {
     let totalRequests = 0;
     let totalErrors = 0;
     let totalSecurityEvents = 0;
-    
+
     this.metrics.requests.forEach(requests => {
       totalRequests += requests.length;
     });
-    
+
     this.metrics.errors.forEach(errors => {
       totalErrors += errors.length;
     });
-    
+
     this.metrics.security.forEach(events => {
       totalSecurityEvents += events.length;
     });
-    
+
     return {
       totalRequests,
       totalErrors,
@@ -521,36 +514,28 @@ class MonitoringSystem {
   cleanup() {
     const now = Date.now();
     const oneHourAgo = now - 3600000;
-    
+
     // Limpar requisições antigas
     this.metrics.requests.forEach((requests, key) => {
-      const recentRequests = requests.filter(req => 
-        new Date(req.timestamp).getTime() > oneHourAgo
-      );
+      const recentRequests = requests.filter(req => new Date(req.timestamp).getTime() > oneHourAgo);
       this.metrics.requests.set(key, recentRequests);
     });
-    
+
     // Limpar erros antigos
     this.metrics.errors.forEach((errors, key) => {
-      const recentErrors = errors.filter(err => 
-        new Date(err.timestamp).getTime() > oneHourAgo
-      );
+      const recentErrors = errors.filter(err => new Date(err.timestamp).getTime() > oneHourAgo);
       this.metrics.errors.set(key, recentErrors);
     });
-    
+
     // Limpar métricas antigas
     this.metrics.performance.forEach((metrics, key) => {
-      const recentMetrics = metrics.filter(metric => 
-        new Date(metric.timestamp).getTime() > oneHourAgo
-      );
+      const recentMetrics = metrics.filter(metric => new Date(metric.timestamp).getTime() > oneHourAgo);
       this.metrics.performance.set(key, recentMetrics);
     });
-    
+
     // Limpar eventos de segurança antigos
     this.metrics.security.forEach((events, key) => {
-      const recentEvents = events.filter(event => 
-        new Date(event.timestamp).getTime() > oneHourAgo
-      );
+      const recentEvents = events.filter(event => new Date(event.timestamp).getTime() > oneHourAgo);
       this.metrics.security.set(key, recentEvents);
     });
   }

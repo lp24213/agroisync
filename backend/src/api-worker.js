@@ -110,237 +110,282 @@ export default {
     if (url.pathname.startsWith('/api/freight-orders')) {
       if (request.method === 'GET' && url.pathname === '/api/freight-orders') {
         // Listar pedidos de frete
-        return new Response(JSON.stringify({
-          success: true,
-          data: {
-            freightOrders: []
+        return new Response(
+          JSON.stringify({
+            success: true,
+            data: {
+              freightOrders: []
+            }
+          }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        });
+        );
       }
 
       if (request.method === 'POST' && url.pathname === '/api/freight-orders') {
         // Criar pedido de frete
-        return new Response(JSON.stringify({
-          success: true,
-          message: 'Pedido de frete criado com sucesso',
-          data: {
-            freightOrder: {
-              id: 'mock-id',
-              orderNumber: 'FR-001',
-              status: 'pending'
+        return new Response(
+          JSON.stringify({
+            success: true,
+            message: 'Pedido de frete criado com sucesso',
+            data: {
+              freightOrder: {
+                id: 'mock-id',
+                orderNumber: 'FR-001',
+                status: 'pending'
+              }
             }
+          }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        });
+        );
       }
 
       if (request.method === 'POST' && url.pathname.includes('/ai-closure')) {
         // Fechamento assistido por IA
-        return new Response(JSON.stringify({
-          success: true,
-          message: 'Fechamento assistido por IA iniciado',
-          data: {
-            freightOrder: {
-              id: 'mock-id',
-              orderNumber: 'FR-001',
-              aiClosure: {
-                summary: 'Análise de IA gerada com sucesso!',
-                recommendations: ['Recomendação 1', 'Recomendação 2'],
-                score: 95
+        return new Response(
+          JSON.stringify({
+            success: true,
+            message: 'Fechamento assistido por IA iniciado',
+            data: {
+              freightOrder: {
+                id: 'mock-id',
+                orderNumber: 'FR-001',
+                aiClosure: {
+                  summary: 'Análise de IA gerada com sucesso!',
+                  recommendations: ['Recomendação 1', 'Recomendação 2'],
+                  score: 95
+                }
               }
             }
+          }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        });
+        );
       }
 
       if (request.method === 'POST' && url.pathname.includes('/complete-closure')) {
         // Completar fechamento
-        return new Response(JSON.stringify({
-          success: true,
-          message: 'Fechamento completado com sucesso',
-          data: {
-            freightOrder: {
-              id: 'mock-id',
-              orderNumber: 'FR-001',
-              status: 'closed'
+        return new Response(
+          JSON.stringify({
+            success: true,
+            message: 'Fechamento completado com sucesso',
+            data: {
+              freightOrder: {
+                id: 'mock-id',
+                orderNumber: 'FR-001',
+                status: 'closed'
+              }
             }
+          }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        });
+        );
       }
 
       // Rota não encontrada
-      return new Response(JSON.stringify({
-        success: false,
-        message: 'Rota não encontrada'
-      }), {
-        status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: 'Rota não encontrada'
+        }),
+        {
+          status: 404,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
 
     // Plans API
     if (url.pathname.startsWith('/api/plans')) {
       if (request.method === 'GET' && url.pathname === '/api/plans') {
         // Listar planos
-        return new Response(JSON.stringify({
-          success: true,
-          data: {
-            plans: [
-              {
-                id: 'basic',
-                name: 'Básico',
-                price: 0,
-                features: ['Recursos básicos', 'Suporte por email']
-              },
-              {
-                id: 'premium',
-                name: 'Premium',
-                price: 99,
-                features: ['Recursos avançados', 'Suporte prioritário', 'Analytics']
-              }
-            ]
+        return new Response(
+          JSON.stringify({
+            success: true,
+            data: {
+              plans: [
+                {
+                  id: 'basic',
+                  name: 'Básico',
+                  price: 0,
+                  features: ['Recursos básicos', 'Suporte por email']
+                },
+                {
+                  id: 'premium',
+                  name: 'Premium',
+                  price: 99,
+                  features: ['Recursos avançados', 'Suporte prioritário', 'Analytics']
+                }
+              ]
+            }
+          }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        });
+        );
       }
 
       // Rota não encontrada
-      return new Response(JSON.stringify({
-        success: false,
-        message: 'Rota não encontrada'
-      }), {
-        status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: 'Rota não encontrada'
+        }),
+        {
+          status: 404,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
 
     // Marketplace API
     if (url.pathname.startsWith('/api/marketplace')) {
       if (request.method === 'GET' && url.pathname === '/api/marketplace/products') {
         // Listar produtos
-        return new Response(JSON.stringify({
-          success: true,
-          data: {
-            products: []
+        return new Response(
+          JSON.stringify({
+            success: true,
+            data: {
+              products: []
+            }
+          }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        });
+        );
       }
 
       // Rota não encontrada
-      return new Response(JSON.stringify({
-        success: false,
-        message: 'Rota não encontrada'
-      }), {
-        status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: 'Rota não encontrada'
+        }),
+        {
+          status: 404,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
 
     // Crypto API
     if (url.pathname.startsWith('/api/crypto')) {
       if (request.method === 'GET' && url.pathname === '/api/crypto/prices') {
         // Preços de crypto
-        return new Response(JSON.stringify({
-          success: true,
-          data: {
-            prices: [
-              { symbol: 'BTC', price: 45000, change: 2.5 },
-              { symbol: 'ETH', price: 3000, change: -1.2 }
-            ]
+        return new Response(
+          JSON.stringify({
+            success: true,
+            data: {
+              prices: [
+                { symbol: 'BTC', price: 45000, change: 2.5 },
+                { symbol: 'ETH', price: 3000, change: -1.2 }
+              ]
+            }
+          }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        });
+        );
       }
 
       // Rota não encontrada
-      return new Response(JSON.stringify({
-        success: false,
-        message: 'Rota não encontrada'
-      }), {
-        status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: 'Rota não encontrada'
+        }),
+        {
+          status: 404,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
 
     // Weather API
     if (url.pathname.startsWith('/api/weather')) {
       if (request.method === 'GET' && url.pathname === '/api/weather/current') {
         // Dados do clima
-        return new Response(JSON.stringify({
-          success: true,
-          data: {
-            temperature: 32,
-            condition: 'Ensolarado',
-            humidity: 45,
-            windSpeed: 8
+        return new Response(
+          JSON.stringify({
+            success: true,
+            data: {
+              temperature: 32,
+              condition: 'Ensolarado',
+              humidity: 45,
+              windSpeed: 8
+            }
+          }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        });
+        );
       }
 
       // Rota não encontrada
-      return new Response(JSON.stringify({
-        success: false,
-        message: 'Rota não encontrada'
-      }), {
-        status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: 'Rota não encontrada'
+        }),
+        {
+          status: 404,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
 
     // News API
     if (url.pathname.startsWith('/api/news')) {
       if (request.method === 'GET' && url.pathname === '/api/news/agribusiness') {
         // Notícias do agronegócio
-        return new Response(JSON.stringify({
-          success: true,
-          data: {
-            news: [
-              {
-                id: 1,
-                category: 'COMMODITIES',
-                title: 'Soja atinge maior preço em 3 meses com alta da demanda chinesa',
-                time: '3h atrás'
-              },
-              {
-                id: 2,
-                category: 'TECNOLOGIA',
-                title: 'Tecnologia SG revoluciona monitoramento de safras no Brasil',
-                time: '3h atrás'
-              },
-              {
-                id: 3,
-                category: 'CLIMA',
-                title: 'Chuva em excesso preocupa produtores de milho no Centro-Oeste',
-                time: '3h atrás'
-              }
-            ]
+        return new Response(
+          JSON.stringify({
+            success: true,
+            data: {
+              news: [
+                {
+                  id: 1,
+                  category: 'COMMODITIES',
+                  title: 'Soja atinge maior preço em 3 meses com alta da demanda chinesa',
+                  time: '3h atrás'
+                },
+                {
+                  id: 2,
+                  category: 'TECNOLOGIA',
+                  title: 'Tecnologia SG revoluciona monitoramento de safras no Brasil',
+                  time: '3h atrás'
+                },
+                {
+                  id: 3,
+                  category: 'CLIMA',
+                  title: 'Chuva em excesso preocupa produtores de milho no Centro-Oeste',
+                  time: '3h atrás'
+                }
+              ]
+            }
+          }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        });
+        );
       }
 
       // Rota não encontrada
-      return new Response(JSON.stringify({
-        success: false,
-        message: 'Rota não encontrada'
-      }), {
-        status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: 'Rota não encontrada'
+        }),
+        {
+          status: 404,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
 
     // 404 - Rota não encontrada

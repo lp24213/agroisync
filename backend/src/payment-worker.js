@@ -101,17 +101,17 @@ export default {
         const { planId, paymentMethod, amount, userEmail } = body;
 
         const validPlans = {
-          'basico': 14.99,
-          'profissional': 29.99,
-          'empresarial': 149.99,
-          'premium': 459.99
+          basico: 14.99,
+          profissional: 29.99,
+          empresarial: 149.99,
+          premium: 459.99
         };
 
         if (!validPlans[planId]) {
-          return new Response(
-            JSON.stringify({ success: false, message: 'Plano inválido' }),
-            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
+          return new Response(JSON.stringify({ success: false, message: 'Plano inválido' }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
         }
 
         if (amount !== validPlans[planId]) {
@@ -123,7 +123,7 @@ export default {
 
         // Simular processamento de pagamento
         const paymentId = `payment_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        
+
         return new Response(
           JSON.stringify({
             success: true,
@@ -148,9 +148,9 @@ export default {
     }
 
     // Rota não encontrada
-    return new Response(
-      JSON.stringify({ success: false, message: 'Rota não encontrada' }),
-      { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ success: false, message: 'Rota não encontrada' }), {
+      status: 404,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
   }
 };

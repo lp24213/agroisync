@@ -298,7 +298,8 @@ router.post(
   '/:id/tracking',
   auth,
   [
-    body('status').isIn(['accepted', 'picked_up', 'in_transit', 'delayed', 'delivered', 'exception'])
+    body('status')
+      .isIn(['accepted', 'picked_up', 'in_transit', 'delayed', 'delivered', 'exception'])
       .withMessage('Status inválido'),
     body('location').isObject().withMessage('Localização é obrigatória')
   ],
@@ -326,9 +327,11 @@ router.post(
       }
 
       // Verificar se o usuário tem permissão para atualizar
-      if (freightOrder.carrierId?.toString() !== userId && 
-          freightOrder.buyerId?.toString() !== userId && 
-          freightOrder.sellerId?.toString() !== userId) {
+      if (
+        freightOrder.carrierId?.toString() !== userId &&
+        freightOrder.buyerId?.toString() !== userId &&
+        freightOrder.sellerId?.toString() !== userId
+      ) {
         return res.status(403).json({
           success: false,
           message: 'Sem permissão para atualizar este pedido'
@@ -418,8 +421,10 @@ router.post('/:id/ai-closure', auth, async (req, res) => {
     }
 
     // Verificar se o usuário tem permissão
-    if (freightOrder.buyerId?.toString() !== userId && 
-        freightOrder.sellerId?.toString() !== userId) {
+    if (
+      freightOrder.buyerId?.toString() !== userId &&
+      freightOrder.sellerId?.toString() !== userId
+    ) {
       return res.status(403).json({
         success: false,
         message: 'Sem permissão para fechar este pedido'
@@ -508,7 +513,10 @@ router.post(
   auth,
   [
     body('confirmClosure').isBoolean().withMessage('Confirmação de fechamento é obrigatória'),
-    body('rating').optional().isInt({ min: 1, max: 5 }).withMessage('Avaliação deve ser entre 1 e 5')
+    body('rating')
+      .optional()
+      .isInt({ min: 1, max: 5 })
+      .withMessage('Avaliação deve ser entre 1 e 5')
   ],
   async (req, res) => {
     try {
@@ -534,8 +542,10 @@ router.post(
       }
 
       // Verificar se o usuário tem permissão
-      if (freightOrder.buyerId?.toString() !== userId && 
-          freightOrder.sellerId?.toString() !== userId) {
+      if (
+        freightOrder.buyerId?.toString() !== userId &&
+        freightOrder.sellerId?.toString() !== userId
+      ) {
         return res.status(403).json({
           success: false,
           message: 'Sem permissão para fechar este pedido'
@@ -618,7 +628,7 @@ router.get('/', auth, async (req, res) => {
     const { status, role } = req.query;
 
     let query = {};
-    
+
     if (role === 'buyer') {
       query.buyerId = userId;
     } else if (role === 'seller') {
@@ -628,11 +638,7 @@ router.get('/', auth, async (req, res) => {
     } else {
       // Buscar todos os pedidos onde o usuário está envolvido
       query = {
-        $or: [
-          { buyerId: userId },
-          { sellerId: userId },
-          { carrierId: userId }
-        ]
+        $or: [{ buyerId: userId }, { sellerId: userId }, { carrierId: userId }]
       };
     }
 
@@ -718,9 +724,11 @@ router.get('/:id', auth, async (req, res) => {
     }
 
     // Verificar se o usuário tem permissão para ver
-    if (freightOrder.buyerId?._id.toString() !== userId && 
-        freightOrder.sellerId?._id.toString() !== userId && 
-        freightOrder.carrierId?._id.toString() !== userId) {
+    if (
+      freightOrder.buyerId?._id.toString() !== userId &&
+      freightOrder.sellerId?._id.toString() !== userId &&
+      freightOrder.carrierId?._id.toString() !== userId
+    ) {
       return res.status(403).json({
         success: false,
         message: 'Sem permissão para visualizar este pedido'

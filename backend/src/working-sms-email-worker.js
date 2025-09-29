@@ -1,7 +1,7 @@
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    
+
     // CORS headers
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
@@ -32,7 +32,7 @@ export default {
     if (url.pathname === '/api/sms/send-code' && request.method === 'POST') {
       try {
         const { phone } = await request.json();
-        
+
         if (!phone) {
           return new Response(
             JSON.stringify({
@@ -48,15 +48,15 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         // FORMATAR TELEFONE PARA BRASIL
         let formattedPhone = phone.replace(/\D/g, ''); // Remove caracteres não numéricos
-        
+
         // Se não começar com 55 (Brasil), adicionar
         if (!formattedPhone.startsWith('55')) {
-          formattedPhone = '55' + formattedPhone;
+          formattedPhone = `55${formattedPhone}`;
         }
-        
+
         console.log(`🚀 ENVIANDO SMS para ${formattedPhone} com código ${verificationCode}`);
 
         // MÉTODO 1: TEXTBELT (SERVIÇO GRATUITO QUE FUNCIONA)
@@ -72,19 +72,19 @@ export default {
               key: 'textbelt'
             })
           });
-          
+
           const textBeltData = await textBeltResponse.json();
-          
+
           if (textBeltData.success) {
             console.log(`📱 SMS ENTREGUE via TextBelt para ${formattedPhone}: ${verificationCode}`);
-            
+
             return new Response(
               JSON.stringify({
                 success: true,
                 message: 'SMS entregue com sucesso!',
                 data: {
                   phone: formattedPhone,
-                  verificationCode: verificationCode,
+                  verificationCode,
                   messageId: textBeltData.textId,
                   expiresIn: 300
                 }
@@ -105,31 +105,34 @@ export default {
         // MÉTODO 2: TWILIO (SUA CONTA)
         try {
           if (env.TWILIO_ACCOUNT_SID && env.TWILIO_AUTH_TOKEN && env.TWILIO_PHONE_NUMBER) {
-            const twilioResponse = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Messages.json`, {
-              method: 'POST',
-              headers: {
-                'Authorization': `Basic ${btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`)}`,
-                'Content-Type': 'application/x-www-form-urlencoded'
-              },
-              body: new URLSearchParams({
-                From: env.TWILIO_PHONE_NUMBER,
-                To: `+${formattedPhone}`,
-                Body: `AgroSync - Seu código: ${verificationCode}. Válido por 5 min.`
-              })
-            });
-            
+            const twilioResponse = await fetch(
+              `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Messages.json`,
+              {
+                method: 'POST',
+                headers: {
+                  Authorization: `Basic ${btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`)}`,
+                  'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                  From: env.TWILIO_PHONE_NUMBER,
+                  To: `+${formattedPhone}`,
+                  Body: `AgroSync - Seu código: ${verificationCode}. Válido por 5 min.`
+                })
+              }
+            );
+
             const twilioData = await twilioResponse.json();
-            
+
             if (twilioResponse.ok) {
               console.log(`📱 SMS ENTREGUE via Twilio para ${formattedPhone}: ${verificationCode}`);
-              
+
               return new Response(
                 JSON.stringify({
                   success: true,
                   message: 'SMS entregue com sucesso!',
                   data: {
                     phone: formattedPhone,
-                    verificationCode: verificationCode,
+                    verificationCode,
                     messageId: twilioData.sid,
                     expiresIn: 300
                   }
@@ -167,16 +170,16 @@ export default {
               }
             })
           });
-          
+
           console.log(`📱 SMS ENVIADO via Email para ${formattedPhone}: ${verificationCode}`);
-          
+
           return new Response(
             JSON.stringify({
               success: true,
               message: 'SMS entregue com sucesso!',
               data: {
                 phone: formattedPhone,
-                verificationCode: verificationCode,
+                verificationCode,
                 messageId: `email-sms-${Date.now()}`,
                 expiresIn: 300
               }
@@ -185,10 +188,9 @@ export default {
               headers: { ...corsHeaders, 'Content-Type': 'application/json' }
             }
           );
-          
         } catch (emailSmsError) {
           console.log(`❌ Email SMS erro: ${emailSmsError.message}`);
-          
+
           // ÚLTIMO RECURSO: RETORNAR SUCESSO COM CÓDIGO
           return new Response(
             JSON.stringify({
@@ -196,7 +198,7 @@ export default {
               message: 'SMS enviado! Verifique seu telefone.',
               data: {
                 phone: formattedPhone,
-                verificationCode: verificationCode,
+                verificationCode,
                 messageId: `fallback-${Date.now()}`,
                 expiresIn: 300
               }
@@ -206,7 +208,6 @@ export default {
             }
           );
         }
-        
       } catch (error) {
         console.error('Erro ao enviar SMS:', error);
         return new Response(
@@ -226,7 +227,7 @@ export default {
     if (url.pathname === '/api/email/send-verification' && request.method === 'POST') {
       try {
         const { email } = await request.json();
-        
+
         if (!email) {
           return new Response(
             JSON.stringify({
@@ -242,7 +243,7 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         console.log(`🚀 ENVIANDO EMAIL para ${email} com código ${verificationCode}`);
 
         // MÉTODO 1: EMAILJS (SERVIÇO GRATUITO QUE FUNCIONA)
@@ -263,17 +264,17 @@ export default {
               }
             })
           });
-          
+
           if (emailJsResponse.ok) {
             console.log(`📧 EMAIL ENTREGUE via EmailJS para ${email}: ${verificationCode}`);
-            
+
             return new Response(
               JSON.stringify({
                 success: true,
                 message: 'Email entregue com sucesso!',
                 data: {
-                  email: email,
-                  verificationCode: verificationCode,
+                  email,
+                  verificationCode,
                   messageId: `emailjs-${Date.now()}`,
                   expiresIn: 600
                 }
@@ -283,7 +284,7 @@ export default {
               }
             );
           } else {
-            console.log(`❌ EmailJS falhou`);
+            console.log('❌ EmailJS falhou');
             // CONTINUAR PARA PRÓXIMO MÉTODO
           }
         } catch (emailJsError) {
@@ -297,33 +298,33 @@ export default {
             const supabaseResponse = await fetch(`${env.SUPABASE_URL}/auth/v1/otp`, {
               method: 'POST',
               headers: {
-                'apikey': env.SUPABASE_ANON_KEY,
+                apikey: env.SUPABASE_ANON_KEY,
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({
-                email: email,
+                email,
                 options: {
                   emailRedirectTo: 'https://agroisync.com/verify',
                   data: {
-                    verificationCode: verificationCode,
+                    verificationCode,
                     subject: 'Código de Verificação - AgroSync'
                   }
                 }
               })
             });
-            
+
             const supabaseData = await supabaseResponse.json();
-            
+
             if (supabaseResponse.ok) {
               console.log(`📧 EMAIL ENTREGUE via Supabase para ${email}: ${verificationCode}`);
-              
+
               return new Response(
                 JSON.stringify({
                   success: true,
                   message: 'Email entregue com sucesso!',
                   data: {
-                    email: email,
-                    verificationCode: verificationCode,
+                    email,
+                    verificationCode,
                     messageId: supabaseData.id || `supabase-${Date.now()}`,
                     expiresIn: 600
                   }
@@ -333,7 +334,9 @@ export default {
                 }
               );
             } else {
-              console.log(`❌ Supabase falhou: ${supabaseData.error?.message || supabaseData.message}`);
+              console.log(
+                `❌ Supabase falhou: ${supabaseData.error?.message || supabaseData.message}`
+              );
               // CONTINUAR PARA PRÓXIMO MÉTODO
             }
           }
@@ -350,23 +353,23 @@ export default {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              email: email,
+              email,
               verification_code: verificationCode,
               subject: 'Código de Verificação - AgroSync',
               message: `Seu código de verificação é: ${verificationCode}. Válido por 10 minutos.`
             })
           });
-          
+
           if (formspreeResponse.ok) {
             console.log(`📧 EMAIL ENTREGUE via Formspree para ${email}: ${verificationCode}`);
-            
+
             return new Response(
               JSON.stringify({
                 success: true,
                 message: 'Email entregue com sucesso!',
                 data: {
-                  email: email,
-                  verificationCode: verificationCode,
+                  email,
+                  verificationCode,
                   messageId: `formspree-${Date.now()}`,
                   expiresIn: 600
                 }
@@ -376,20 +379,20 @@ export default {
               }
             );
           } else {
-            console.log(`❌ Formspree falhou`);
+            console.log('❌ Formspree falhou');
             // CONTINUAR PARA PRÓXIMO MÉTODO
           }
         } catch (formspreeError) {
           console.log(`❌ Formspree erro: ${formspreeError.message}`);
-          
+
           // ÚLTIMO RECURSO: RETORNAR SUCESSO COM CÓDIGO
           return new Response(
             JSON.stringify({
               success: true,
               message: 'Email enviado! Verifique sua caixa de entrada.',
               data: {
-                email: email,
-                verificationCode: verificationCode,
+                email,
+                verificationCode,
                 messageId: `fallback-${Date.now()}`,
                 expiresIn: 600
               }
@@ -399,7 +402,6 @@ export default {
             }
           );
         }
-        
       } catch (error) {
         console.error('Erro ao enviar email:', error);
         return new Response(
@@ -419,7 +421,7 @@ export default {
     if (url.pathname === '/api/sms/verify-code' && request.method === 'POST') {
       try {
         const { phone, code } = await request.json();
-        
+
         if (!phone || !code) {
           return new Response(
             JSON.stringify({
@@ -432,7 +434,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ SMS verificado para ${phone}: ${code}`);
@@ -481,7 +483,7 @@ export default {
     if (url.pathname === '/api/email/verify' && request.method === 'POST') {
       try {
         const { email, code } = await request.json();
-        
+
         if (!email || !code) {
           return new Response(
             JSON.stringify({
@@ -494,7 +496,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ Email verificado para ${email}: ${code}`);

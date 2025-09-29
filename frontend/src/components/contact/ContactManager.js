@@ -2,7 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
-import { Mail, MessageSquare, AlertCircle, CheckCircle, Reply, Archive, Clock, Star, User, Search, FileText, Eye, Trash } from 'lucide-react';
+import {
+  Mail,
+  MessageSquare,
+  AlertCircle,
+  CheckCircle,
+  Reply,
+  Archive,
+  Clock,
+  Star,
+  User,
+  Search,
+  FileText,
+  Eye,
+  Trash
+} from 'lucide-react';
 import contactService from '../../services/contactService';
 
 const ContactManager = () => {
@@ -24,7 +38,7 @@ const ContactManager = () => {
     try {
       // Simular carregamento de dados
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // Dados mockados
       const mockMessages = [
         {
@@ -96,41 +110,31 @@ const ContactManager = () => {
     } catch (error) {
       console.error('Erro ao carregar dados de contato:', error);
     } finally {
-setLoading(false);
+      setLoading(false);
     }
   };
 
-  const handleMarkAsRead = async (messageId) => {
+  const handleMarkAsRead = async messageId => {
     try {
       await contactService.markAsRead(messageId);
-      setMessages(prev => 
-        prev.map(msg => 
-          msg.id === messageId 
-            ? { ...msg, status: 'read' }
-            : msg
-        )
-      );
+      setMessages(prev => prev.map(msg => (msg.id === messageId ? { ...msg, status: 'read' } : msg)));
     } catch (error) {
       console.error('Erro ao marcar como lida:', error);
     }
   };
 
-  const handleArchive = async (messageId) => {
+  const handleArchive = async messageId => {
     try {
       await contactService.archiveMessage(messageId);
-      setMessages(prev => 
-        prev.map(msg => 
-          msg.id === messageId 
-            ? { ...msg, status: 'archived', archivedAt: new Date() }
-            : msg
-        )
+      setMessages(prev =>
+        prev.map(msg => (msg.id === messageId ? { ...msg, status: 'archived', archivedAt: new Date() } : msg))
       );
     } catch (error) {
       console.error('Erro ao arquivar mensagem:', error);
     }
   };
 
-  const handleDelete = async (messageId) => {
+  const handleDelete = async messageId => {
     try {
       await contactService.deleteMessage(messageId);
       setMessages(prev => prev.filter(msg => msg.id !== messageId));
@@ -140,22 +144,22 @@ setLoading(false);
   };
 
   const filteredMessages = messages.filter(message => {
-    const matchesFilter = 
+    const matchesFilter =
       filter === 'all' ||
       (filter === 'unread' && message.status === 'unread') ||
       (filter === 'replied' && message.status === 'replied') ||
       (filter === 'archived' && message.status === 'archived');
-    
-    const matchesSearch = 
+
+    const matchesSearch =
       message.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       message.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
       message.message.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     return matchesFilter && matchesSearch;
   });
 
-  const getPriorityColor = (priority) => {
+  const getPriorityColor = priority => {
     switch (priority) {
       case 'urgent':
         return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
@@ -170,128 +174,116 @@ setLoading(false);
     }
   };
 
-  const getStatusIcon = (status) => {
+  const getStatusIcon = status => {
     switch (status) {
       case 'unread':
-        return <AlertCircle className="w-4 h-4 text-red-500" />;
+        return <AlertCircle className='h-4 w-4 text-red-500' />;
       case 'read':
-        return <CheckCircle className="w-4 h-4 text-green-500" />;
+        return <CheckCircle className='h-4 w-4 text-green-500' />;
       case 'replied':
-        return <Reply className="w-4 h-4 text-blue-500" />;
+        return <Reply className='h-4 w-4 text-blue-500' />;
       case 'archived':
-        return <Archive className="w-4 h-4 text-slate-500" />;
+        return <Archive className='h-4 w-4 text-slate-500' />;
       default:
-        return <Clock className="w-4 h-4 text-slate-400" />;
+        return <Clock className='h-4 w-4 text-slate-400' />;
     }
   };
 
-  const getTypeIcon = (type) => {
+  const getTypeIcon = type => {
     switch (type) {
       case 'support':
-        return <AlertCircle className="w-4 h-4" />;
+        return <AlertCircle className='h-4 w-4' />;
       case 'sales':
-        return <Star className="w-4 h-4" />;
+        return <Star className='h-4 w-4' />;
       case 'partnership':
-        return <User className="w-4 h-4" />;
+        return <User className='h-4 w-4' />;
       default:
-        return <MessageSquare className="w-4 h-4" />;
+        return <MessageSquare className='h-4 w-4' />;
     }
   };
 
   const renderStats = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-        <div className="flex items-center justify-between">
+    <div className='mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
+      <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+        <div className='flex items-center justify-between'>
           <div>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
+            <p className='text-sm text-slate-600 dark:text-slate-400'>
               {t('contact.totalMessages', 'Total de Mensagens')}
             </p>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white">
-              {stats.total}
-            </p>
+            <p className='text-2xl font-bold text-slate-900 dark:text-white'>{stats.total}</p>
           </div>
-          <Mail className="w-8 h-8 text-emerald-600" />
+          <Mail className='h-8 w-8 text-emerald-600' />
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-        <div className="flex items-center justify-between">
+      <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+        <div className='flex items-center justify-between'>
           <div>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
-              {t('contact.unreadMessages', 'Não Lidas')}
-            </p>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white">
-              {stats.unread}
-            </p>
+            <p className='text-sm text-slate-600 dark:text-slate-400'>{t('contact.unreadMessages', 'Não Lidas')}</p>
+            <p className='text-2xl font-bold text-slate-900 dark:text-white'>{stats.unread}</p>
           </div>
-          <AlertCircle className="w-8 h-8 text-red-600" />
+          <AlertCircle className='h-8 w-8 text-red-600' />
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-        <div className="flex items-center justify-between">
+      <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+        <div className='flex items-center justify-between'>
           <div>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
-              {t('contact.repliedMessages', 'Respondidas')}
-            </p>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white">
-              {stats.replied}
-            </p>
+            <p className='text-sm text-slate-600 dark:text-slate-400'>{t('contact.repliedMessages', 'Respondidas')}</p>
+            <p className='text-2xl font-bold text-slate-900 dark:text-white'>{stats.replied}</p>
           </div>
-          <Reply className="w-8 h-8 text-green-600" />
+          <Reply className='h-8 w-8 text-green-600' />
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-        <div className="flex items-center justify-between">
+      <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+        <div className='flex items-center justify-between'>
           <div>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
+            <p className='text-sm text-slate-600 dark:text-slate-400'>
               {t('contact.avgResponseTime', 'Tempo Médio de Resposta')}
             </p>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white">
-              {stats.avgResponseTime}h
-            </p>
+            <p className='text-2xl font-bold text-slate-900 dark:text-white'>{stats.avgResponseTime}h</p>
           </div>
-          <Clock className="w-8 h-8 text-blue-600" />
+          <Clock className='h-8 w-8 text-blue-600' />
         </div>
       </div>
     </div>
   );
 
   const renderMessageList = () => (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+    <div className='space-y-4'>
+      <div className='flex items-center justify-between'>
+        <h3 className='text-xl font-semibold text-slate-800 dark:text-slate-200'>
           {t('contact.messages', 'Mensagens de Contato')}
         </h3>
-        
-        <div className="flex gap-2">
+
+        <div className='flex gap-2'>
           <button
             onClick={() => setFilter('all')}
-            className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+            className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
               filter === 'all'
                 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'
-                : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600'
             }`}
           >
             {t('contact.all', 'Todas')}
           </button>
           <button
             onClick={() => setFilter('unread')}
-            className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+            className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
               filter === 'unread'
                 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'
-                : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600'
             }`}
           >
             {t('contact.unread', 'Não Lidas')}
           </button>
           <button
             onClick={() => setFilter('replied')}
-            className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+            className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
               filter === 'replied'
                 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'
-                : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600'
             }`}
           >
             {t('contact.replied', 'Respondidas')}
@@ -300,111 +292,103 @@ setLoading(false);
       </div>
 
       {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+      <div className='relative'>
+        <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-slate-400' />
         <input
-          type="text"
+          type='text'
           placeholder={t('contact.search', 'Buscar mensagens...')}
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
+          onChange={e => setSearchTerm(e.target.value)}
+          className='w-full rounded-lg border border-slate-300 py-2 pl-10 pr-4 focus:border-transparent focus:ring-2 focus:ring-emerald-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white'
         />
       </div>
 
-      <div className="space-y-4">
-        {filteredMessages.map((message) => (
+      <div className='space-y-4'>
+        {filteredMessages.map(message => (
           <motion.div
             key={message.id}
-            className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700"
+            className='rounded-lg border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-3">
-                  <h4 className="font-semibold text-slate-800 dark:text-slate-200">
-                    {message.subject}
-                  </h4>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(message.priority)}`}>
+            <div className='flex items-start justify-between'>
+              <div className='flex-1'>
+                <div className='mb-3 flex items-center gap-3'>
+                  <h4 className='font-semibold text-slate-800 dark:text-slate-200'>{message.subject}</h4>
+                  <span className={`rounded-full px-2 py-1 text-xs font-medium ${getPriorityColor(message.priority)}`}>
                     {t(`contactPriority.${message.priority}`, message.priority)}
                   </span>
                   {getStatusIcon(message.status)}
                 </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+
+                <div className='mb-4 grid grid-cols-1 gap-4 md:grid-cols-2'>
                   <div>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">
-                      {t('contact.from', 'De')}:
-                    </p>
-                    <p className="font-medium text-slate-800 dark:text-slate-200">
+                    <p className='mb-1 text-sm text-slate-600 dark:text-slate-400'>{t('contact.from', 'De')}:</p>
+                    <p className='font-medium text-slate-800 dark:text-slate-200'>
                       {message.name} ({message.email})
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">
-                      {t('contact.type', 'Tipo')}:
-                    </p>
-                    <div className="flex items-center gap-2">
+                    <p className='mb-1 text-sm text-slate-600 dark:text-slate-400'>{t('contact.type', 'Tipo')}:</p>
+                    <div className='flex items-center gap-2'>
                       {getTypeIcon(message.type)}
-                      <span className="text-slate-800 dark:text-slate-200">
+                      <span className='text-slate-800 dark:text-slate-200'>
                         {t(`contactType.${message.type}`, message.type)}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <p className="text-slate-700 dark:text-slate-300 mb-4 line-clamp-2">
-                  {message.message}
-                </p>
+                <p className='mb-4 line-clamp-2 text-slate-700 dark:text-slate-300'>{message.message}</p>
 
-                <div className="flex items-center gap-6 text-sm text-slate-500 dark:text-slate-400">
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
+                <div className='flex items-center gap-6 text-sm text-slate-500 dark:text-slate-400'>
+                  <div className='flex items-center gap-1'>
+                    <Clock className='h-4 w-4' />
                     {new Date(message.createdAt).toLocaleString('pt-BR')}
                   </div>
                   {message.attachments.length > 0 && (
-                    <div className="flex items-center gap-1">
-                      <FileText className="w-4 h-4" />
+                    <div className='flex items-center gap-1'>
+                      <FileText className='h-4 w-4' />
                       {message.attachments.length} {t('contact.attachments', 'anexos')}
                     </div>
                   )}
                 </div>
               </div>
-              
-              <div className="flex gap-2">
+
+              <div className='flex gap-2'>
                 <button
                   onClick={() => setSelectedMessage(message)}
-                  className="p-2 text-slate-500 hover:text-emerald-600 transition-colors"
+                  className='p-2 text-slate-500 transition-colors hover:text-emerald-600'
                   title={t('contact.viewDetails', 'Ver Detalhes')}
                 >
-                  <Eye className="w-5 h-5" />
+                  <Eye className='h-5 w-5' />
                 </button>
-                
+
                 {message.status === 'unread' && (
                   <button
                     onClick={() => handleMarkAsRead(message.id)}
-                    className="p-2 text-slate-500 hover:text-green-600 transition-colors"
+                    className='p-2 text-slate-500 transition-colors hover:text-green-600'
                     title={t('contact.markAsRead', 'Marcar como Lida')}
                   >
-                    <CheckCircle className="w-5 h-5" />
+                    <CheckCircle className='h-5 w-5' />
                   </button>
                 )}
-                
+
                 <button
                   onClick={() => handleArchive(message.id)}
-                  className="p-2 text-slate-500 hover:text-blue-600 transition-colors"
+                  className='p-2 text-slate-500 transition-colors hover:text-blue-600'
                   title={t('contact.archive', 'Arquivar')}
                 >
-                  <Archive className="w-5 h-5" />
+                  <Archive className='h-5 w-5' />
                 </button>
-                
+
                 <button
                   onClick={() => handleDelete(message.id)}
-                  className="p-2 text-slate-500 hover:text-red-600 transition-colors"
+                  className='p-2 text-slate-500 transition-colors hover:text-red-600'
                   title={t('contact.delete', 'Deletar')}
                 >
-                  <Trash className="w-5 h-5" />
+                  <Trash className='h-5 w-5' />
                 </button>
               </div>
             </div>
@@ -416,24 +400,22 @@ setLoading(false);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-          <p className="text-slate-600 dark:text-slate-400">
-            {t('contact.loading', 'Carregando mensagens...')}
-          </p>
+      <div className='flex items-center justify-center py-12'>
+        <div className='text-center'>
+          <div className='mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-emerald-600'></div>
+          <p className='text-slate-600 dark:text-slate-400'>{t('contact.loading', 'Carregando mensagens...')}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-2">
+    <div className='mx-auto max-w-7xl p-6'>
+      <div className='mb-8'>
+        <h1 className='mb-2 text-3xl font-bold text-slate-800 dark:text-slate-200'>
           {t('contact.manager', 'Gerenciador de Contatos')}
         </h1>
-        <p className="text-slate-600 dark:text-slate-400">
+        <p className='text-slate-600 dark:text-slate-400'>
           {t('contact.managerSubtitle', 'Gerencie mensagens de contato e respostas')}
         </p>
       </div>

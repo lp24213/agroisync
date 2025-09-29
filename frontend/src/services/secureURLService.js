@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { API_CONFIG, getAuthToken } from '../config/constants.js';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
+const API_BASE_URL = API_CONFIG.baseURL;
 
 class SecureURLService {
   /**
@@ -11,7 +12,7 @@ class SecureURLService {
    */
   async generateSecureSignupURL(data, expiresIn = '7d') {
     try {
-      const token = localStorage.getItem('authToken');
+      const token = getAuthToken();
       if (!token) {
         throw new Error('Token de autenticação não encontrado');
       }
@@ -26,7 +27,7 @@ class SecureURLService {
         },
         {
           headers: {
-            'Authorization': `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         }
@@ -51,7 +52,7 @@ class SecureURLService {
   async validateSecureURL(url) {
     try {
       const token = url.split('/').pop(); // Pega o token da URL
-      
+
       const response = await axios.post(
         `${API_BASE_URL}/secure-urls/validate`,
         { token },
@@ -88,7 +89,7 @@ class SecureURLService {
       if (parts.length !== 3) return null;
 
       const payload = JSON.parse(atob(parts[1]));
-      
+
       // Verifica se não expirou
       if (payload.exp && payload.exp < Date.now() / 1000) {
         console.warn('Token expirado');

@@ -5,31 +5,31 @@
 
 // Tipos de notificação
 export const NOTIFICATION_TYPES = {
-  'NEW_TRANSACTION': {
+  NEW_TRANSACTION: {
     name: 'Nova Transação',
     icon: '🔄',
     color: 'bg-blue-100 text-blue-800',
     description: 'Uma nova transação foi criada'
   },
-  'NEW_MESSAGE': {
+  NEW_MESSAGE: {
     name: 'Nova Mensagem',
     icon: '💬',
     color: 'bg-green-100 text-green-800',
     description: 'Você recebeu uma nova mensagem'
   },
-  'STATUS_CHANGED': {
+  STATUS_CHANGED: {
     name: 'Status Alterado',
     icon: '📊',
     color: 'bg-yellow-100 text-yellow-800',
     description: 'O status de uma transação foi alterado'
   },
-  'PAYMENT_RECEIVED': {
+  PAYMENT_RECEIVED: {
     name: 'Pagamento Recebido',
     icon: '💰',
     color: 'bg-emerald-100 text-emerald-800',
     description: 'Um pagamento foi processado'
   },
-  'SYSTEM_ALERT': {
+  SYSTEM_ALERT: {
     name: 'Alerta do Sistema',
     icon: '⚠️',
     color: 'bg-red-100 text-red-800',
@@ -39,18 +39,18 @@ export const NOTIFICATION_TYPES = {
 
 // Canais de notificação
 export const NOTIFICATION_CHANNELS = {
-  'EMAIL': 'E-mail',
-  'PUSH': 'Push',
-  'IN_APP': 'No App'
+  EMAIL: 'E-mail',
+  PUSH: 'Push',
+  IN_APP: 'No App'
 };
 
 // Status da notificação
 export const NOTIFICATION_STATUS = {
-  'PENDING': 'Pendente',
-  'SENT': 'Enviada',
-  'DELIVERED': 'Entregue',
-  'FAILED': 'Falhou',
-  'READ': 'Lida'
+  PENDING: 'Pendente',
+  SENT: 'Enviada',
+  DELIVERED: 'Entregue',
+  FAILED: 'Falhou',
+  READ: 'Lida'
 };
 
 class NotificationService {
@@ -65,13 +65,13 @@ class NotificationService {
   async initialize(userId) {
     try {
       this.userId = userId;
-      
+
       // Conectar ao serviço de notificações em tempo real
       await this.connectToNotificationService();
-      
+
       // Carregar preferências do usuário
       await this.loadUserPreferences();
-      
+
       console.log('Serviço de notificações inicializado');
       return { success: true };
     } catch (error) {
@@ -97,7 +97,7 @@ class NotificationService {
       if (process.env.NODE_ENV !== 'production') {
         console.log('Conectado ao serviço de notificações');
       }
-      
+
       return { success: true };
     } catch (error) {
       console.error('Erro ao conectar ao serviço de notificações:', error);
@@ -134,10 +134,7 @@ class NotificationService {
   // Salvar preferências do usuário
   saveUserPreferences() {
     try {
-      localStorage.setItem(
-        `agroisync_notifications_${this.userId}`, 
-        JSON.stringify(this.userPreferences)
-      );
+      localStorage.setItem(`agroisync_notifications_${this.userId}`, JSON.stringify(this.userPreferences));
     } catch (error) {
       console.error('Erro ao salvar preferências:', error);
     }
@@ -170,9 +167,7 @@ class NotificationService {
 
       // Enviar via canais configurados
       const results = await Promise.allSettled(
-        notification.channels.map(channel => 
-          this.sendViaChannel(notification, channel)
-        )
+        notification.channels.map(channel => this.sendViaChannel(notification, channel))
       );
 
       // Atualizar status baseado nos resultados
@@ -234,14 +229,13 @@ class NotificationService {
     }
   }
 
-
   // Enviar push via Firebase Cloud Messaging
   async sendPush(notification) {
     try {
       // Em produção, usar Firebase Cloud Messaging
       // const messaging = getMessaging();
       // const token = await getToken(messaging);
-      
+
       // const response = await axios.post(`${API_BASE_URL}/notifications/push`, {
       //   token: token,
       //   title: notification.title,
@@ -290,9 +284,7 @@ class NotificationService {
       // });
 
       // Simular busca para desenvolvimento
-      const allNotifications = JSON.parse(
-        localStorage.getItem(`agroisync_notifications_${this.userId}`) || '[]'
-      );
+      const allNotifications = JSON.parse(localStorage.getItem(`agroisync_notifications_${this.userId}`) || '[]');
 
       return allNotifications
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -306,19 +298,14 @@ class NotificationService {
   // Marcar notificação como lida
   async markAsRead(notificationId) {
     try {
-      const allNotifications = JSON.parse(
-        localStorage.getItem(`agroisync_notifications_${this.userId}`) || '[]'
-      );
-      
+      const allNotifications = JSON.parse(localStorage.getItem(`agroisync_notifications_${this.userId}`) || '[]');
+
       const notificationIndex = allNotifications.findIndex(n => n.id === notificationId);
       if (notificationIndex !== -1) {
         allNotifications[notificationIndex].readAt = new Date().toISOString();
         allNotifications[notificationIndex].status = 'READ';
-        
-        localStorage.setItem(
-          `agroisync_notifications_${this.userId}`, 
-          JSON.stringify(allNotifications)
-        );
+
+        localStorage.setItem(`agroisync_notifications_${this.userId}`, JSON.stringify(allNotifications));
       }
 
       return { success: true };
@@ -331,20 +318,15 @@ class NotificationService {
   // Marcar todas como lidas
   async markAllAsRead() {
     try {
-      const allNotifications = JSON.parse(
-        localStorage.getItem(`agroisync_notifications_${this.userId}`) || '[]'
-      );
-      
+      const allNotifications = JSON.parse(localStorage.getItem(`agroisync_notifications_${this.userId}`) || '[]');
+
       const now = new Date().toISOString();
       allNotifications.forEach(n => {
         n.readAt = now;
         n.status = 'READ';
       });
-      
-      localStorage.setItem(
-        `agroisync_notifications_${this.userId}`, 
-        JSON.stringify(allNotifications)
-      );
+
+      localStorage.setItem(`agroisync_notifications_${this.userId}`, JSON.stringify(allNotifications));
 
       return { success: true, updated: allNotifications.length };
     } catch (error) {
@@ -356,16 +338,11 @@ class NotificationService {
   // Deletar notificação
   async deleteNotification(notificationId) {
     try {
-      const allNotifications = JSON.parse(
-        localStorage.getItem(`agroisync_notifications_${this.userId}`) || '[]'
-      );
-      
+      const allNotifications = JSON.parse(localStorage.getItem(`agroisync_notifications_${this.userId}`) || '[]');
+
       const filteredNotifications = allNotifications.filter(n => n.id !== notificationId);
-      
-      localStorage.setItem(
-        `agroisync_notifications_${this.userId}`, 
-        JSON.stringify(filteredNotifications)
-      );
+
+      localStorage.setItem(`agroisync_notifications_${this.userId}`, JSON.stringify(filteredNotifications));
 
       return { success: true };
     } catch (error) {
@@ -377,21 +354,14 @@ class NotificationService {
   // Limpar notificações antigas
   async clearOldNotifications(daysOld = 30) {
     try {
-      const allNotifications = JSON.parse(
-        localStorage.getItem(`agroisync_notifications_${this.userId}`) || '[]'
-      );
-      
+      const allNotifications = JSON.parse(localStorage.getItem(`agroisync_notifications_${this.userId}`) || '[]');
+
       const cutoffDate = new Date();
       cutoffDate.setDate(cutoffDate.getDate() - daysOld);
-      
-      const recentNotifications = allNotifications.filter(n => 
-        new Date(n.createdAt) > cutoffDate
-      );
-      
-      localStorage.setItem(
-        `agroisync_notifications_${this.userId}`, 
-        JSON.stringify(recentNotifications)
-      );
+
+      const recentNotifications = allNotifications.filter(n => new Date(n.createdAt) > cutoffDate);
+
+      localStorage.setItem(`agroisync_notifications_${this.userId}`, JSON.stringify(recentNotifications));
 
       return { success: true, deleted: allNotifications.length - recentNotifications.length };
     } catch (error) {
@@ -403,10 +373,8 @@ class NotificationService {
   // Contar notificações não lidas
   async getUnreadCount() {
     try {
-      const allNotifications = JSON.parse(
-        localStorage.getItem(`agroisync_notifications_${this.userId}`) || '[]'
-      );
-      
+      const allNotifications = JSON.parse(localStorage.getItem(`agroisync_notifications_${this.userId}`) || '[]');
+
       return allNotifications.filter(n => !n.readAt).length;
     } catch (error) {
       console.error('Erro ao contar notificações não lidas:', error);
@@ -436,7 +404,7 @@ class NotificationService {
     try {
       this.userPreferences = { ...this.userPreferences, ...newPreferences };
       this.saveUserPreferences();
-      
+
       return { success: true };
     } catch (error) {
       console.error('Erro ao atualizar preferências:', error);
@@ -452,13 +420,13 @@ class NotificationService {
 
     const now = new Date();
     const currentTime = now.getHours() * 60 + now.getMinutes();
-    
+
     const [startHour, startMin] = this.userPreferences.quietHours.start.split(':').map(Number);
     const [endHour, endMin] = this.userPreferences.quietHours.end.split(':').map(Number);
-    
+
     const startTime = startHour * 60 + startMin;
     const endTime = endHour * 60 + endMin;
-    
+
     if (startTime <= endTime) {
       return currentTime >= startTime && currentTime <= endTime;
     } else {
@@ -470,14 +438,9 @@ class NotificationService {
   // Métodos auxiliares para desenvolvimento
   saveNotification(notification) {
     try {
-      const allNotifications = JSON.parse(
-        localStorage.getItem(`agroisync_notifications_${this.userId}`) || '[]'
-      );
+      const allNotifications = JSON.parse(localStorage.getItem(`agroisync_notifications_${this.userId}`) || '[]');
       allNotifications.unshift(notification);
-      localStorage.setItem(
-        `agroisync_notifications_${this.userId}`, 
-        JSON.stringify(allNotifications)
-      );
+      localStorage.setItem(`agroisync_notifications_${this.userId}`, JSON.stringify(allNotifications));
     } catch (error) {
       console.error('Erro ao salvar notificação:', error);
     }
@@ -485,17 +448,12 @@ class NotificationService {
 
   updateNotification(notification) {
     try {
-      const allNotifications = JSON.parse(
-        localStorage.getItem(`agroisync_notifications_${this.userId}`) || '[]'
-      );
-      
+      const allNotifications = JSON.parse(localStorage.getItem(`agroisync_notifications_${this.userId}`) || '[]');
+
       const index = allNotifications.findIndex(n => n.id === notification.id);
       if (index !== -1) {
         allNotifications[index] = notification;
-        localStorage.setItem(
-          `agroisync_notifications_${this.userId}`, 
-          JSON.stringify(allNotifications)
-        );
+        localStorage.setItem(`agroisync_notifications_${this.userId}`, JSON.stringify(allNotifications));
       }
     } catch (error) {
       console.error('Erro ao atualizar notificação:', error);
@@ -549,11 +507,8 @@ class NotificationService {
       }
     ];
 
-    localStorage.setItem(
-      `agroisync_notifications_${this.userId}`, 
-      JSON.stringify(mockNotifications)
-    );
-    
+    localStorage.setItem(`agroisync_notifications_${this.userId}`, JSON.stringify(mockNotifications));
+
     return mockNotifications;
   }
 
@@ -563,7 +518,7 @@ class NotificationService {
       this.isConnected = false;
       this.userId = null;
       this.notificationHandlers.clear();
-      
+
       if (process.env.NODE_ENV !== 'production') {
         console.log('Desconectado do serviço de notificações');
       }

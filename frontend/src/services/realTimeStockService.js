@@ -26,24 +26,24 @@ class RealTimeStockService {
     try {
       // Simular delay de API real
       await new Promise(resolve => setTimeout(resolve, 100));
-      
+
       return this.stocks.map(stock => {
         const basePrices = {
-          'PETR4': 32.18,
-          'VALE3': 65.42,
-          'ITUB4': 28.90,
-          'BBDC4': 15.67,
-          'ABEV3': 12.45,
-          'WEGE3': 45.20,
-          'MGLU3': 8.90,
-          'RENT3': 22.15
+          PETR4: 32.18,
+          VALE3: 65.42,
+          ITUB4: 28.9,
+          BBDC4: 15.67,
+          ABEV3: 12.45,
+          WEGE3: 45.2,
+          MGLU3: 8.9,
+          RENT3: 22.15
         };
-        
+
         const currentPrice = this.generateRealisticPrice(basePrices[stock.symbol]);
         const previousPrice = basePrices[stock.symbol];
         const change = currentPrice - previousPrice;
         const changePercent = (change / previousPrice) * 100;
-        
+
         return {
           symbol: stock.symbol,
           name: stock.name,
@@ -65,7 +65,7 @@ class RealTimeStockService {
       const data = await this.getStockData();
       callback(data);
     }, intervalMs);
-    
+
     // Primeira atualização imediata
     this.getStockData().then(callback);
   }

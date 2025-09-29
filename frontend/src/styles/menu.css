@@ -210,17 +210,17 @@
   .premium-header-menu {
     display: none !important;
   }
-  
+
   .premium-mobile-toggle {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
   }
-  
+
   .premium-header-container {
     padding: 0 16px;
   }
-  
+
   .premium-language-selector-desktop {
     display: none !important;
   }
@@ -233,13 +233,13 @@
     opacity: 1 !important;
     position: relative !important;
   }
-  
+
   .premium-language-selector-desktop > div {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
   }
-  
+
   .premium-language-selector-desktop button {
     display: flex !important;
     visibility: visible !important;
@@ -319,7 +319,7 @@
   right: 0;
   width: 100%;
   background: #ffffff !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
   border-bottom: none !important;
   z-index: 9999;
   padding: 15px 40px;

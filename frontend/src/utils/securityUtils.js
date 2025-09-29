@@ -17,34 +17,34 @@ class SecurityUtils {
       /<embed[^>]*>/gi,
       /<link[^>]*>/gi,
       /<meta[^>]*>/gi,
-      
+
       // SQL Injection Patterns
       /(\b(union|select|insert|update|delete|drop|create|alter|exec|execute)\b)/gi,
       /(\b(or|and)\s+\d+\s*=\s*\d+)/gi,
       /(\b(or|and)\s+['"]\s*=\s*['"])/gi,
       /(\b(or|and)\s+\w+\s*=\s*\w+)/gi,
-      
+
       // Command Injection Patterns
       /(\b(cmd|command|exec|system|eval|setTimeout|setInterval)\b)/gi,
       /(\||&|;|\$\(|\`)/gi,
-      
+
       // Path Traversal Patterns
       /\.\.\/|\.\.\\|\.\.%2f|\.\.%5c/gi,
       /\.\.%252f|\.\.%255c/gi,
-      
+
       // LDAP Injection Patterns
       /(\b(\(|\)|\*|\||&)\b)/gi,
-      
+
       // NoSQL Injection Patterns
       /(\$where|\$ne|\$gt|\$lt|\$regex)/gi,
-      
+
       // Template Injection Patterns
       /(\{\{.*\}\}|\{%.*%\})/gi,
-      
+
       // Code Injection Patterns
       /(\beval\s*\(|\bFunction\s*\(|\bnew\s+Function)/gi
     ];
-    
+
     this.allowedTags = ['b', 'i', 'em', 'strong', 'p', 'br', 'span'];
     this.allowedAttributes = ['class', 'id'];
   }
@@ -55,12 +55,7 @@ class SecurityUtils {
       return input;
     }
 
-    const {
-      allowHtml = false,
-      maxLength = 1000,
-      stripTags = true,
-      escapeHtml = true
-    } = options;
+    const { allowHtml = false, maxLength = 1000, stripTags = true, escapeHtml = true } = options;
 
     // Limitar tamanho
     let sanitized = input.substring(0, maxLength);
@@ -124,22 +119,14 @@ class SecurityUtils {
   validateUrl(url) {
     try {
       const urlObj = new URL(url);
-      
+
       // Verificar protocolo permitido
       if (!['http:', 'https:'].includes(urlObj.protocol)) {
         return false;
       }
 
       // Verificar domínio suspeito
-      const suspiciousDomains = [
-        'localhost',
-        '127.0.0.1',
-        '0.0.0.0',
-        'file:',
-        'javascript:',
-        'data:',
-        'vbscript:'
-      ];
+      const suspiciousDomains = ['localhost', '127.0.0.1', '0.0.0.0', 'file:', 'javascript:', 'data:', 'vbscript:'];
 
       if (suspiciousDomains.some(domain => urlObj.hostname.includes(domain))) {
         return false;
@@ -159,20 +146,16 @@ class SecurityUtils {
     if (email.length > 254) return false;
 
     // Verificar padrão básico
-    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-    
+    const emailRegex =
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
     if (!emailRegex.test(email)) return false;
 
     // Verificar se não contém padrões suspeitos
     if (this.detectSuspiciousPattern(email)) return false;
 
     // Verificar domínios suspeitos
-    const suspiciousDomains = [
-      'localhost',
-      '127.0.0.1',
-      'test.com',
-      'example.com'
-    ];
+    const suspiciousDomains = ['localhost', '127.0.0.1', 'test.com', 'example.com'];
 
     const domain = email.split('@')[1];
     if (suspiciousDomains.includes(domain)) return false;
@@ -217,14 +200,7 @@ class SecurityUtils {
     }
 
     // Verificar padrões comuns
-    const commonPatterns = [
-      /123456/,
-      /password/i,
-      /qwerty/i,
-      /abc123/i,
-      /admin/i,
-      /user/i
-    ];
+    const commonPatterns = [/123456/, /password/i, /qwerty/i, /abc123/i, /admin/i, /user/i];
 
     if (commonPatterns.some(pattern => pattern.test(password))) {
       errors.push('Senha muito comum, escolha uma mais segura');
@@ -257,23 +233,21 @@ class SecurityUtils {
   // Sanitizar dados de formulário
   sanitizeFormData(formData) {
     const sanitized = {};
-    
+
     for (const [key, value] of Object.entries(formData)) {
       // Sanitizar chave
       const cleanKey = this.sanitizeInput(key, { maxLength: 50 });
-      
+
       // Sanitizar valor baseado no tipo
       if (typeof value === 'string') {
         sanitized[cleanKey] = this.sanitizeInput(value);
       } else if (Array.isArray(value)) {
-        sanitized[cleanKey] = value.map(item => 
-          typeof item === 'string' ? this.sanitizeInput(item) : item
-        );
+        sanitized[cleanKey] = value.map(item => (typeof item === 'string' ? this.sanitizeInput(item) : item));
       } else {
         sanitized[cleanKey] = value;
       }
     }
-    
+
     return sanitized;
   }
 
@@ -318,7 +292,7 @@ class SecurityUtils {
   createRateLimiter(maxRequests = 10, windowMs = 60000) {
     const requests = new Map();
 
-    return (identifier) => {
+    return identifier => {
       const now = Date.now();
       const windowStart = now - windowMs;
 
@@ -330,8 +304,7 @@ class SecurityUtils {
       }
 
       // Verificar limite
-      const userRequests = Array.from(requests.values())
-        .filter(timestamp => timestamp > windowStart);
+      const userRequests = Array.from(requests.values()).filter(timestamp => timestamp > windowStart);
 
       if (userRequests.length >= maxRequests) {
         return false;
@@ -375,7 +348,7 @@ class SecurityUtils {
     let hash = 0;
     for (let i = 0; i < input.length; i++) {
       const char = input.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32bit integer
     }
     return hash.toString(16);

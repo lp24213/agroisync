@@ -1,8 +1,10 @@
 import axios from 'axios';
 import apiConfig from '../config/api.config.js';
+import { API_CONFIG, AUTH_CONFIG, getAuthToken, setAuthToken, removeAuthToken } from '../config/constants.js';
 
-const API_BASE_URL = apiConfig.baseURL;
-const PAYMENT_API_URL = apiConfig.baseURL;
+// Usar nova config centralizada, mas manter fallback para compatibilidade
+const API_BASE_URL = API_CONFIG?.baseURL || apiConfig.baseURL;
+const PAYMENT_API_URL = API_CONFIG?.baseURL || apiConfig.baseURL;
 
 class AuthService {
   constructor() {
@@ -16,48 +18,48 @@ class AuthService {
       timeout: apiConfig.timeout,
       headers: apiConfig.defaultHeaders
     });
-    
+
     // Interceptor para retry automático
     this.setupInterceptors();
   }
-  
+
   setupInterceptors() {
     // Request interceptor
     this.api.interceptors.request.use(
-      (config) => {
+      config => {
         // Adicionar token se disponível
-        const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+        // Usar helper centralizado que mantém compatibilidade
+        const token = getAuthToken();
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
       },
-      (error) => Promise.reject(error)
+      error => Promise.reject(error)
     );
-    
+
     // Response interceptor com retry
     this.api.interceptors.response.use(
-      (response) => response,
-      async (error) => {
+      response => response,
+      async error => {
         const originalRequest = error.config;
-        
+
         if (!originalRequest._retry && apiConfig.retryConfig.retryCondition(error)) {
           originalRequest._retry = true;
-          
+
           // Aguardar antes de tentar novamente
-          await new Promise(resolve => 
+          await new Promise(resolve =>
             setTimeout(resolve, apiConfig.retryConfig.retryDelay(originalRequest._retryCount || 1))
           );
-          
+
           originalRequest._retryCount = (originalRequest._retryCount || 1) + 1;
           return this.api(originalRequest);
         }
-        
+
         return Promise.reject(error);
       }
     );
   }
-
 
   // Cadastrar usuário com email
   async signUpWithEmail(email, password, userData, turnstileToken) {
@@ -71,7 +73,7 @@ class AuthService {
         turnstileToken,
         ...userData
       });
-      
+
       return {
         success: true,
         requiresEmailVerification: response.data.requiresEmailVerification,
@@ -95,7 +97,7 @@ class AuthService {
         email,
         code
       });
-      
+
       return {
         success: true,
         user: response.data.data.user
@@ -115,7 +117,7 @@ class AuthService {
       const response = await this.api.post('/email/send-verification', {
         email
       });
-      
+
       return {
         success: true,
         emailCode: response.data.data.verificationCode || response.data.data.emailCode, // Para desenvolvimento
@@ -137,7 +139,7 @@ class AuthService {
         email,
         code
       });
-      
+
       return {
         success: true,
         message: response.data.message
@@ -158,7 +160,7 @@ class AuthService {
         email,
         turnstileToken
       });
-      
+
       return {
         success: true,
         resetCode: response.data.data.resetCode, // Para desenvolvimento
@@ -181,7 +183,7 @@ class AuthService {
         code,
         newPassword
       });
-      
+
       return {
         success: true,
         user: response.data.data.user
@@ -203,7 +205,7 @@ class AuthService {
         password: password,
         turnstileToken
       });
-      
+
       return {
         success: true,
         user: response.data.data.user,
@@ -218,18 +220,11 @@ class AuthService {
     }
   }
 
-
-
-
-
-
   // Logout
   async logout() {
     try {
-      // Limpar token do localStorage
-      localStorage.removeItem('token');
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('user');
+      // Usar helper centralizado para limpar tokens
+      removeAuthToken();
       return { success: true };
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
@@ -239,13 +234,13 @@ class AuthService {
 
   // Verificar se usuário está autenticado
   isAuthenticated() {
-    const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+    const token = getAuthToken();
     return !!token;
   }
 
   // Obter token
   getToken() {
-    return localStorage.getItem('token') || localStorage.getItem('authToken');
+    return getAuthToken();
   }
 
   // Obter usuário atual
@@ -255,12 +250,12 @@ class AuthService {
   }
 
   // ===== FUNÇÕES DE PAGAMENTO =====
-  
+
   async getPaymentPlans() {
     try {
       console.log('💳 Buscando planos de pagamento...');
       const response = await this.paymentApi.get('/payment/plans');
-      
+
       return {
         success: true,
         data: response.data.data
@@ -283,7 +278,7 @@ class AuthService {
         amount,
         userEmail
       });
-      
+
       return {
         success: true,
         data: response.data.data

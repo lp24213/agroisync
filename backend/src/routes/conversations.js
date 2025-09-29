@@ -90,7 +90,7 @@ router.get('/', authenticateToken, async (req, res) => {
     const { userId } = req.user;
     const { serviceType, page = 1, limit = 20, status } = req.query;
 
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     // Construir query
     const query = {
@@ -110,7 +110,7 @@ router.get('/', authenticateToken, async (req, res) => {
     const conversations = await Conversation.find(query)
       .sort({ lastMessageAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit))
+      .limit(parseInt(limit, 10))
       .populate('participants', 'name email company.name')
       .populate('lastMessage.senderId', 'name email')
       .populate('serviceId', 'name title origin destination price images');
@@ -136,10 +136,10 @@ router.get('/', authenticateToken, async (req, res) => {
       data: {
         conversations,
         pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
+          currentPage: parseInt(page, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit)
+          itemsPerPage: parseInt(limit, 10)
         }
       }
     });
@@ -432,7 +432,7 @@ router.get('/:id/messages', authenticateToken, async (req, res) => {
     const conversationId = req.params.id;
     const { page = 1, limit = 50 } = req.query;
 
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     if (!mongoose.Types.ObjectId.isValid(conversationId)) {
       return res.status(400).json({
@@ -476,7 +476,7 @@ router.get('/:id/messages', authenticateToken, async (req, res) => {
     })
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit))
+      .limit(parseInt(limit, 10))
       .populate('senderId', 'name email company.name')
       .populate('receiverId', 'name email company.name');
 
@@ -517,10 +517,10 @@ router.get('/:id/messages', authenticateToken, async (req, res) => {
       data: {
         messages: messages.reverse(), // Ordem cronológica
         pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
+          currentPage: parseInt(page, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit)
+          itemsPerPage: parseInt(limit, 10)
         }
       }
     });

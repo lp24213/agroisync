@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { API_CONFIG, getAuthToken } from '../config/constants.js';
 
 // Configuração da API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
+const API_BASE_URL = API_CONFIG.baseURL;
 
 class AdminService {
   constructor() {
@@ -18,10 +19,10 @@ class AdminService {
       if (email === process.env.REACT_APP_ADMIN_EMAIL && password === process.env.REACT_APP_ADMIN_PASSWORD) {
         // Gerar token admin simulado (em produção seria via backend)
         const adminToken = btoa(`admin:${email}:${Date.now()}`);
-        
+
         this.isAuthenticated = true;
         this.adminToken = adminToken;
-        
+
         return {
           success: true,
           token: adminToken,
@@ -49,7 +50,7 @@ class AdminService {
         userId,
         email: userEmail
       });
-      
+
       if (response.data.success) {
         this.isAuthenticated = true;
         this.adminToken = response.data.token;
@@ -72,7 +73,7 @@ class AdminService {
 
       const response = await axios.get(`${API_BASE_URL}/admin/dashboard`, {
         headers: {
-          'Authorization': `Bearer ${this.adminToken}`
+          Authorization: `Bearer ${this.adminToken}`
         }
       });
 
@@ -83,7 +84,7 @@ class AdminService {
       }
     } catch (error) {
       console.error('Erro ao carregar dados do dashboard:', error);
-      
+
       // Retornar dados vazios em caso de erro (conforme solicitado no prompt)
       return {
         metrics: {
@@ -112,7 +113,7 @@ class AdminService {
 
       const response = await axios.get(`${API_BASE_URL}/admin/transactions`, {
         headers: {
-          'Authorization': `Bearer ${this.adminToken}`
+          Authorization: `Bearer ${this.adminToken}`
         },
         params: filters
       });
@@ -137,7 +138,7 @@ class AdminService {
 
       const response = await axios.get(`${API_BASE_URL}/admin/users`, {
         headers: {
-          'Authorization': `Bearer ${this.adminToken}`
+          Authorization: `Bearer ${this.adminToken}`
         },
         params: filters
       });
@@ -162,7 +163,7 @@ class AdminService {
 
       const response = await axios.get(`${API_BASE_URL}/admin/system/stats`, {
         headers: {
-          'Authorization': `Bearer ${this.adminToken}`
+          Authorization: `Bearer ${this.adminToken}`
         }
       });
 
@@ -192,13 +193,17 @@ class AdminService {
         throw new Error('Admin não autenticado');
       }
 
-      const response = await axios.put(`${API_BASE_URL}/admin/system/status`, {
-        status
-      }, {
-        headers: {
-          'Authorization': `Bearer ${this.adminToken}`
+      const response = await axios.put(
+        `${API_BASE_URL}/admin/system/status`,
+        {
+          status
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.adminToken}`
+          }
         }
-      });
+      );
 
       if (response.data.success) {
         return response.data.data;
@@ -218,11 +223,15 @@ class AdminService {
         throw new Error('Admin não autenticado');
       }
 
-      const response = await axios.post(`${API_BASE_URL}/admin/payments/${paymentId}/process`, {}, {
-        headers: {
-          'Authorization': `Bearer ${this.adminToken}`
+      const response = await axios.post(
+        `${API_BASE_URL}/admin/payments/${paymentId}/process`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${this.adminToken}`
+          }
         }
-      });
+      );
 
       if (response.data.success) {
         return response.data.data;
@@ -242,11 +251,15 @@ class AdminService {
         throw new Error('Admin não autenticado');
       }
 
-      const response = await axios.put(`${API_BASE_URL}/admin/users/${userId}/approve`, {}, {
-        headers: {
-          'Authorization': `Bearer ${this.adminToken}`
+      const response = await axios.put(
+        `${API_BASE_URL}/admin/users/${userId}/approve`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${this.adminToken}`
+          }
         }
-      });
+      );
 
       if (response.data.success) {
         return response.data.data;
@@ -266,13 +279,17 @@ class AdminService {
         throw new Error('Admin não autenticado');
       }
 
-      const response = await axios.put(`${API_BASE_URL}/admin/users/${userId}/ban`, {
-        reason
-      }, {
-        headers: {
-          'Authorization': `Bearer ${this.adminToken}`
+      const response = await axios.put(
+        `${API_BASE_URL}/admin/users/${userId}/ban`,
+        {
+          reason
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.adminToken}`
+          }
         }
-      });
+      );
 
       if (response.data.success) {
         return response.data.data;
@@ -294,7 +311,7 @@ class AdminService {
 
       const response = await axios.get(`${API_BASE_URL}/admin/system/logs`, {
         headers: {
-          'Authorization': `Bearer ${this.adminToken}`
+          Authorization: `Bearer ${this.adminToken}`
         },
         params: filters
       });

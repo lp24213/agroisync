@@ -35,31 +35,31 @@ const securityEnhancements = {
   attackPatterns: [
     // SQL Injection avançado
     /(\b(union|select|insert|update|delete|drop|create|alter|exec|execute|script|javascript|vbscript|onload|onerror|onclick)\b.*\b(union|select|insert|update|delete|drop|create|alter|exec|execute)\b)/i,
-    
+
     // XSS avançado
     /<script[^>]*>.*?<\/script>|<iframe[^>]*>.*?<\/iframe>|<object[^>]*>.*?<\/object>/gi,
-    
+
     // Command injection
     /(\b(cmd|command|exec|system|eval|setTimeout|setInterval|Function|new\s+Function)\b)/i,
-    
+
     // Path traversal avançado
     /\.\.\/|\.\.\\|\.\.%2f|\.\.%5c|\.\.%252f|\.\.%255c/i,
-    
+
     // LDAP injection
     /(\b(\(|\)|\*|\||&|!|~)\b)/i,
-    
+
     // NoSQL injection avançado
     /(\$where|\$ne|\$gt|\$lt|\$regex|\$exists|\$in|\$nin|\$all|\$elemMatch)/i,
-    
+
     // Template injection
     /(\{\{.*\}\}|\{%.*%\}|<%.*%>)/i,
-    
+
     // Code injection
     /(\beval\s*\(|\bFunction\s*\(|\bnew\s+Function|\bsetTimeout\s*\(|\bsetInterval\s*\()/i,
-    
+
     // SSRF
     /(file:\/\/|ftp:\/\/|gopher:\/\/|ldap:\/\/|dict:\/\/)/i,
-    
+
     // XXE
     /<!DOCTYPE\s+[^>]*SYSTEM\s+[^>]*>/i
   ],
@@ -104,7 +104,7 @@ export const advancedAttackDetection = async (req, res, next) => {
         eventType: 'suspicious_ip_blocked',
         severity: 'high',
         ipAddress: clientIP,
-        userAgent: userAgent,
+        userAgent,
         requestMethod: req.method,
         requestUrl: req.originalUrl,
         description: 'IP suspeito bloqueado'
@@ -117,7 +117,7 @@ export const advancedAttackDetection = async (req, res, next) => {
     }
 
     // Verificar User Agent suspeito
-    const isSuspiciousUA = securityEnhancements.suspiciousUserAgents.some(pattern => 
+    const isSuspiciousUA = securityEnhancements.suspiciousUserAgents.some(pattern =>
       pattern.test(userAgent)
     );
 
@@ -126,7 +126,7 @@ export const advancedAttackDetection = async (req, res, next) => {
         eventType: 'suspicious_user_agent',
         severity: 'medium',
         ipAddress: clientIP,
-        userAgent: userAgent,
+        userAgent,
         requestMethod: req.method,
         requestUrl: req.originalUrl,
         description: 'User Agent suspeito detectado'
@@ -161,7 +161,7 @@ export const advancedAttackDetection = async (req, res, next) => {
         eventType: 'advanced_attack_detected',
         severity: 'critical',
         ipAddress: clientIP,
-        userAgent: userAgent,
+        userAgent,
         requestMethod: req.method,
         requestUrl: req.originalUrl,
         requestHeaders: req.headers,
@@ -200,7 +200,7 @@ export const sensitiveEndpointRateLimit = rateLimit({
   legacyHeaders: false,
   handler: async (req, res) => {
     const clientIP = getClientIP(req);
-    
+
     await createSecurityLog({
       eventType: 'rate_limit_exceeded_sensitive',
       severity: 'high',
@@ -239,7 +239,7 @@ export const securityHeadersMiddleware = (req, res, next) => {
 export const originValidationMiddleware = (req, res, next) => {
   const origin = req.get('Origin');
   const referer = req.get('Referer');
-  
+
   // Lista de origens permitidas
   const allowedOrigins = [
     'https://agroisync.com',
@@ -277,12 +277,12 @@ export const originValidationMiddleware = (req, res, next) => {
 export const securityMonitoringMiddleware = async (req, res, next) => {
   const startTime = Date.now();
   const clientIP = getClientIP(req);
-  
+
   // Interceptar resposta
   const originalSend = res.send;
-  res.send = function(data) {
+  res.send = function (data) {
     const duration = Date.now() - startTime;
-    
+
     // Log de requisições suspeitas
     if (res.statusCode >= 400 || duration > 5000) {
       createSecurityLog({
@@ -297,7 +297,7 @@ export const securityMonitoringMiddleware = async (req, res, next) => {
         description: `Requisição suspeita: ${res.statusCode} em ${duration}ms`
       });
     }
-    
+
     return originalSend.call(this, data);
   };
 
@@ -315,11 +315,11 @@ export const securityEnhancementsMiddleware = [
 
 // ===== FUNÇÕES DE UTILIDADE =====
 
-export const addSuspiciousIP = (ip) => {
+export const addSuspiciousIP = ip => {
   securityEnhancements.suspiciousIPs.add(ip);
 };
 
-export const removeSuspiciousIP = (ip) => {
+export const removeSuspiciousIP = ip => {
   securityEnhancements.suspiciousIPs.delete(ip);
 };
 

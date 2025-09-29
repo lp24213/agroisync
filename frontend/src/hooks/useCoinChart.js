@@ -12,13 +12,13 @@ export default function useCoinChart(coinId = 'bitcoin', days = 1) {
           `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=${days}`
         );
         if (!res.ok) throw new Error('Erro ao buscar dados do CoinGecko');
-        
+
         const json = await res.json();
         const points = json.prices.map(([timestamp, price]) => ({
           x: new Date(timestamp),
           y: price
         }));
-        
+
         if (mounted) {
           setData({ points, loading: false, error: null });
         }
@@ -30,10 +30,10 @@ export default function useCoinChart(coinId = 'bitcoin', days = 1) {
     }
 
     fetchData();
-    
+
     // Atualiza a cada 5 minutos
     const interval = setInterval(fetchData, 1000 * 60 * 5);
-    
+
     return () => {
       mounted = false;
       clearInterval(interval);

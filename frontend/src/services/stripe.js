@@ -1,21 +1,22 @@
 import { loadStripe } from '@stripe/stripe-js';
 
 // Stripe publishable key - substitua pela sua chave real
-const STRIPE_PUBLISHABLE_KEY = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_51234567890abcdefghijklmnopqrstuvwxyz';
+const STRIPE_PUBLISHABLE_KEY =
+  process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_51234567890abcdefghijklmnopqrstuvwxyz';
 
 // Inicializar Stripe
 export const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
 
 // Função para criar Payment Intent
-export const createPaymentIntent = async (paymentData) => {
+export const createPaymentIntent = async paymentData => {
   try {
     const response = await fetch('/api/payment-intent', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`
       },
-      body: JSON.stringify(paymentData),
+      body: JSON.stringify(paymentData)
     });
 
     if (!response.ok) {
@@ -78,7 +79,7 @@ export const processPlanPayment = async (planType, userId, amount) => {
 export const PAYMENT_PLANS = {
   individual: {
     name: 'Individual',
-    price: 49.90,
+    price: 49.9,
     description: '1 anúncio/produto/frete',
     features: ['Acesso a 1 anúncio', 'Contato direto', 'Chat 1:1', 'Detalhes de frete']
   },
@@ -90,9 +91,16 @@ export const PAYMENT_PLANS = {
   },
   premium: {
     name: 'Premium',
-    price: 449.90,
+    price: 449.9,
     description: '20 anúncios/produtos/fretes',
-    features: ['Acesso a 20 anúncios', 'Contato direto', 'Chat 1:1', 'Detalhes de frete', 'Suporte prioritário', 'Analytics avançados']
+    features: [
+      'Acesso a 20 anúncios',
+      'Contato direto',
+      'Chat 1:1',
+      'Detalhes de frete',
+      'Suporte prioritário',
+      'Analytics avançados'
+    ]
   }
 };
 
@@ -101,8 +109,8 @@ export const checkUserAccess = async (userId, adId) => {
   try {
     const response = await fetch(`/api/user-access/${userId}/${adId}`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
     });
 
     if (!response.ok) {
@@ -117,7 +125,6 @@ export const checkUserAccess = async (userId, adId) => {
   }
 };
 
-
 // Função para liberar dados sensíveis após pagamento
 export const unlockSensitiveData = async (userId, adId) => {
   try {
@@ -125,9 +132,9 @@ export const unlockSensitiveData = async (userId, adId) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`
       },
-      body: JSON.stringify({ userId, adId }),
+      body: JSON.stringify({ userId, adId })
     });
 
     if (!response.ok) {
@@ -143,14 +150,14 @@ export const unlockSensitiveData = async (userId, adId) => {
 };
 
 // Função para obter dados liberados
-export const getUnlockedData = async (adId) => {
+export const getUnlockedData = async adId => {
   try {
     const response = await fetch(`/api/v1/data-access/unlocked-data/${adId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
     });
 
     if (!response.ok) {

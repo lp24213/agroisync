@@ -53,7 +53,7 @@ class SecureURLService {
   generateSecureURL(type, metadata = {}) {
     const token = this.generateSecureToken(type, metadata);
     const baseUrl = process.env.FRONTEND_URL || 'https://agroisync.com';
-    
+
     return `${baseUrl}/${type}/${token}`;
   }
 
@@ -107,7 +107,7 @@ class SecureURLService {
   generateInviteURL(referrerId, type) {
     const inviteCode = this.generateInviteCode(referrerId, type);
     const baseUrl = process.env.FRONTEND_URL || 'https://agroisync.com';
-    
+
     return `${baseUrl}/signup/${inviteCode}`;
   }
 
@@ -120,19 +120,19 @@ class SecureURLService {
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipher(this.algorithm, this.secretKey);
     cipher.setAAD(Buffer.from('agroisync-data', 'utf8'));
-    
+
     let encrypted = cipher.update(JSON.stringify(data), 'utf8', 'hex');
     encrypted += cipher.final('hex');
-    
+
     const authTag = cipher.getAuthTag();
-    
+
     const result = {
       encrypted,
       iv: iv.toString('hex'),
       authTag: authTag.toString('hex'),
       algorithm: this.algorithm
     };
-    
+
     return Buffer.from(JSON.stringify(result)).toString('base64url');
   }
 
@@ -144,14 +144,14 @@ class SecureURLService {
   decryptData(encryptedData) {
     try {
       const data = JSON.parse(Buffer.from(encryptedData, 'base64url').toString('utf8'));
-      
+
       const decipher = crypto.createDecipher(data.algorithm, this.secretKey);
       decipher.setAAD(Buffer.from('agroisync-data', 'utf8'));
       decipher.setAuthTag(Buffer.from(data.authTag, 'hex'));
-      
+
       let decrypted = decipher.update(data.encrypted, 'hex', 'utf8');
       decrypted += decipher.final('utf8');
-      
+
       return JSON.parse(decrypted);
     } catch (error) {
       throw new Error('Erro ao descriptografar dados');

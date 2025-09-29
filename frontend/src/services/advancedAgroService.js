@@ -50,18 +50,18 @@ class AdvancedAgroService {
 
     try {
       const location = await this.getLocationByIP();
-      
+
       // Simular dados reais baseados na localização
       const basePrices = {
-        'SP': { soja: 180, milho: 95, trigo: 120, algodao: 420 },
-        'MT': { soja: 175, milho: 92, trigo: 118, algodao: 415 },
-        'RS': { soja: 182, milho: 97, trigo: 125, algodao: 425 },
-        'PR': { soja: 178, milho: 94, trigo: 122, algodao: 418 },
-        'GO': { soja: 177, milho: 93, trigo: 121, algodao: 417 }
+        SP: { soja: 180, milho: 95, trigo: 120, algodao: 420 },
+        MT: { soja: 175, milho: 92, trigo: 118, algodao: 415 },
+        RS: { soja: 182, milho: 97, trigo: 125, algodao: 425 },
+        PR: { soja: 178, milho: 94, trigo: 122, algodao: 418 },
+        GO: { soja: 177, milho: 93, trigo: 121, algodao: 417 }
       };
 
       const regionPrices = basePrices[location.region] || basePrices['SP'];
-      
+
       const grains = [
         {
           id: 'soja',
@@ -140,7 +140,7 @@ class AdvancedAgroService {
 
     try {
       const location = await this.getLocationByIP();
-      
+
       const livestock = [
         {
           id: 'boi',
@@ -220,14 +220,14 @@ class AdvancedAgroService {
     try {
       const data = [];
       const basePrice = this.getBasePrice(commodity);
-      
+
       for (let i = days; i >= 0; i--) {
         const date = new Date();
         date.setDate(date.getDate() - i);
-        
+
         const price = basePrice + (Math.random() - 0.5) * basePrice * 0.1;
         const volume = Math.floor(Math.random() * 10000) + 5000;
-        
+
         data.push({
           date: date.toISOString().split('T')[0],
           price: Number(price.toFixed(2)),

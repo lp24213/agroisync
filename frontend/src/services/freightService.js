@@ -1,57 +1,58 @@
 import axios from 'axios';
+import { API_CONFIG } from '../config/constants.js';
 
 // Configuração da API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
+const API_BASE_URL = API_CONFIG.baseURL;
 
 // Tipos de caminhão
 export const TRUCK_TYPES = {
-  'truck_3_4': { label: 'Truck 3/4', icon: '🚛', capacity: '3-4 ton' },
-  'truck_toco': { label: 'Truck Toco', icon: '🚛', capacity: '6-8 ton' },
-  'truck_truck': { label: 'Truck Truck', icon: '🚛', capacity: '8-10 ton' },
-  'truck_carreta': { label: 'Carreta', icon: '🚛', capacity: '25-30 ton' },
-  'truck_pickup': { label: 'Pickup', icon: '🚛', capacity: '1-2 ton' },
-  'truck_van': { label: 'Van', icon: '🚛', capacity: '1-3 ton' }
+  truck_3_4: { label: 'Truck 3/4', icon: '🚛', capacity: '3-4 ton' },
+  truck_toco: { label: 'Truck Toco', icon: '🚛', capacity: '6-8 ton' },
+  truck_truck: { label: 'Truck Truck', icon: '🚛', capacity: '8-10 ton' },
+  truck_carreta: { label: 'Carreta', icon: '🚛', capacity: '25-30 ton' },
+  truck_pickup: { label: 'Pickup', icon: '🚛', capacity: '1-2 ton' },
+  truck_van: { label: 'Van', icon: '🚛', capacity: '1-3 ton' }
 };
 
 // Tipos de carga
 export const CARGO_TYPES = {
-  'grains': { label: 'Grãos', icon: '🌾', category: 'Agricultura' },
-  'vegetables': { label: 'Hortifruti', icon: '🥬', category: 'Agricultura' },
-  'livestock': { label: 'Animais Vivos', icon: '🐄', category: 'Pecuária' },
-  'machinery': { label: 'Maquinários', icon: '🚜', category: 'Equipamentos' },
-  'fertilizers': { label: 'Fertilizantes', icon: '🌱', category: 'Agricultura' },
-  'general': { label: 'Carga Geral', icon: '📦', category: 'Diversos' }
+  grains: { label: 'Grãos', icon: '🌾', category: 'Agricultura' },
+  vegetables: { label: 'Hortifruti', icon: '🥬', category: 'Agricultura' },
+  livestock: { label: 'Animais Vivos', icon: '🐄', category: 'Pecuária' },
+  machinery: { label: 'Maquinários', icon: '🚜', category: 'Equipamentos' },
+  fertilizers: { label: 'Fertilizantes', icon: '🌱', category: 'Agricultura' },
+  general: { label: 'Carga Geral', icon: '📦', category: 'Diversos' }
 };
 
 // Estados do frete
 export const FREIGHT_STATUS = {
-  'available': { 
-    name: 'Disponível', 
+  available: {
+    name: 'Disponível',
     color: 'bg-green-100 text-green-800',
     description: 'Frete disponível para contratação'
   },
-  'negotiating': { 
-    name: 'Em Negociação', 
+  negotiating: {
+    name: 'Em Negociação',
     color: 'bg-blue-100 text-blue-800',
     description: 'Freteiro e anunciante negociando'
   },
-  'agreed': { 
-    name: 'Acordado', 
+  agreed: {
+    name: 'Acordado',
     color: 'bg-emerald-100 text-emerald-800',
     description: 'Termos acordados entre as partes'
   },
-  'in_transit': { 
-    name: 'Em Trânsito', 
+  in_transit: {
+    name: 'Em Trânsito',
     color: 'bg-purple-100 text-purple-800',
     description: 'Carga em transporte'
   },
-  'completed': { 
-    name: 'Concluído', 
+  completed: {
+    name: 'Concluído',
     color: 'bg-gray-100 text-gray-800',
     description: 'Frete finalizado com sucesso'
   },
-  'cancelled': { 
-    name: 'Cancelado', 
+  cancelled: {
+    name: 'Cancelado',
     color: 'bg-red-100 text-red-800',
     description: 'Frete foi cancelado'
   }
@@ -191,45 +192,36 @@ class FreightService {
   getMockPublicFreights(filters = {}) {
     try {
       let allFreights = JSON.parse(localStorage.getItem('agroisync_freights') || '[]');
-      
+
       // Aplicar filtros
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
-        allFreights = allFreights.filter(freight => 
-          freight.origin.toLowerCase().includes(searchTerm) ||
-          freight.destination.toLowerCase().includes(searchTerm) ||
-          freight.description.toLowerCase().includes(searchTerm)
+        allFreights = allFreights.filter(
+          freight =>
+            freight.origin.toLowerCase().includes(searchTerm) ||
+            freight.destination.toLowerCase().includes(searchTerm) ||
+            freight.description.toLowerCase().includes(searchTerm)
         );
       }
 
       if (filters.truckTypes && filters.truckTypes.length > 0) {
-        allFreights = allFreights.filter(freight => 
-          filters.truckTypes.includes(freight.truckType)
-        );
+        allFreights = allFreights.filter(freight => filters.truckTypes.includes(freight.truckType));
       }
 
       if (filters.minPrice) {
-        allFreights = allFreights.filter(freight => 
-          freight.price >= parseFloat(filters.minPrice)
-        );
+        allFreights = allFreights.filter(freight => freight.price >= parseFloat(filters.minPrice));
       }
 
       if (filters.maxPrice) {
-        allFreights = allFreights.filter(freight => 
-          freight.price <= parseFloat(filters.maxPrice)
-        );
+        allFreights = allFreights.filter(freight => freight.price <= parseFloat(filters.maxPrice));
       }
 
       if (filters.minWeight) {
-        allFreights = allFreights.filter(freight => 
-          freight.weight >= parseFloat(filters.minWeight)
-        );
+        allFreights = allFreights.filter(freight => freight.weight >= parseFloat(filters.minWeight));
       }
 
       if (filters.maxWeight) {
-        allFreights = allFreights.filter(freight => 
-          freight.weight <= parseFloat(filters.maxWeight)
-        );
+        allFreights = allFreights.filter(freight => freight.weight <= parseFloat(filters.maxWeight));
       }
 
       // Ordenar
@@ -261,9 +253,7 @@ class FreightService {
       } else if (type === 'applied') {
         // Buscar fretes onde o usuário aplicou
         const applications = JSON.parse(localStorage.getItem('agroisync_freight_applications') || '[]');
-        const appliedFreightIds = applications
-          .filter(app => app.userId === userId)
-          .map(app => app.freightId);
+        const appliedFreightIds = applications.filter(app => app.userId === userId).map(app => app.freightId);
         userFreights = allFreights.filter(freight => appliedFreightIds.includes(freight.id));
       }
 
@@ -290,7 +280,7 @@ class FreightService {
     try {
       const allFreights = JSON.parse(localStorage.getItem('agroisync_freights') || '[]');
       const freightIndex = allFreights.findIndex(freight => freight.id === freightId);
-      
+
       if (freightIndex !== -1) {
         allFreights[freightIndex] = {
           ...allFreights[freightIndex],
@@ -300,7 +290,7 @@ class FreightService {
         localStorage.setItem('agroisync_freights', JSON.stringify(allFreights));
         return allFreights[freightIndex];
       }
-      
+
       return null;
     } catch (error) {
       console.error('Erro ao atualizar frete mock:', error);
@@ -364,11 +354,12 @@ class FreightService {
   searchMockFreightsByLocation(origin, destination, radius = 50) {
     try {
       const allFreights = JSON.parse(localStorage.getItem('agroisync_freights') || '[]');
-      
+
       // Simular busca por localização (em produção seria integrado com Baidu Maps)
-      return allFreights.filter(freight => 
-        freight.origin.toLowerCase().includes(origin.toLowerCase()) ||
-        freight.destination.toLowerCase().includes(destination.toLowerCase())
+      return allFreights.filter(
+        freight =>
+          freight.origin.toLowerCase().includes(origin.toLowerCase()) ||
+          freight.destination.toLowerCase().includes(destination.toLowerCase())
       );
     } catch (error) {
       console.error('Erro ao buscar por localização mock:', error);
@@ -385,7 +376,7 @@ class FreightService {
         origin: 'São Paulo, SP',
         destination: 'Rio de Janeiro, RJ',
         weight: 5000,
-        price: 850.00,
+        price: 850.0,
         date: '2024-01-20',
         description: 'Transporte de grãos de soja para porto',
         truckType: 'truck_toco',
@@ -408,7 +399,7 @@ class FreightService {
         origin: 'Goiânia, GO',
         destination: 'Brasília, DF',
         weight: 2000,
-        price: 450.00,
+        price: 450.0,
         date: '2024-01-18',
         description: 'Transporte de hortifruti para CEASA',
         truckType: 'truck_3_4',
@@ -431,7 +422,7 @@ class FreightService {
         origin: 'Curitiba, PR',
         destination: 'Porto Alegre, RS',
         weight: 15000,
-        price: 1200.00,
+        price: 1200.0,
         date: '2024-01-25',
         description: 'Transporte de maquinários agrícolas',
         truckType: 'truck_carreta',

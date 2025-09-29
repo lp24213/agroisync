@@ -3,7 +3,7 @@
    Scripts para correção de comportamentos e i18n
    ======================================== */
 
-(function() {
+(function () {
   'use strict';
 
   // === NAVBAR SCROLL BEHAVIOR ===
@@ -15,13 +15,13 @@
     if (!navbar) return;
 
     const currentScrollY = window.scrollY;
-    
+
     if (currentScrollY > 100) {
       navbar.classList.add('navbar-scrolled');
     } else {
       navbar.classList.remove('navbar-scrolled');
     }
-    
+
     lastScrollY = currentScrollY;
     ticking = false;
   }
@@ -39,7 +39,7 @@
   function initLanguageSelector() {
     const languageBtn = document.querySelector('.agro-language-btn');
     const languageDropdown = document.querySelector('.agro-language-dropdown');
-    
+
     if (!languageBtn || !languageDropdown) return;
 
     let isOpen = false;
@@ -47,7 +47,7 @@
     function toggleDropdown() {
       isOpen = !isOpen;
       languageDropdown.style.display = isOpen ? 'block' : 'none';
-      
+
       // Update aria attributes
       languageBtn.setAttribute('aria-expanded', isOpen);
     }
@@ -59,20 +59,20 @@
     }
 
     // Toggle on button click
-    languageBtn.addEventListener('click', (e) => {
+    languageBtn.addEventListener('click', e => {
       e.stopPropagation();
       toggleDropdown();
     });
 
     // Close on outside click
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', e => {
       if (!languageBtn.contains(e.target) && !languageDropdown.contains(e.target)) {
         closeDropdown();
       }
     });
 
     // Close on escape key
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
         closeDropdown();
       }
@@ -81,14 +81,14 @@
     // Handle language option clicks
     const languageOptions = languageDropdown.querySelectorAll('.agro-lang-option');
     languageOptions.forEach(option => {
-      option.addEventListener('click', (e) => {
+      option.addEventListener('click', e => {
         e.preventDefault();
         const langCode = option.dataset.lang || option.textContent.trim().toLowerCase();
-        
+
         // Update active state
         languageOptions.forEach(opt => opt.classList.remove('active'));
         option.classList.add('active');
-        
+
         // Update button text
         const flag = option.querySelector('.agro-lang-flag')?.textContent || '🌐';
         const name = option.querySelector('.agro-lang-name')?.textContent || langCode.toUpperCase();
@@ -102,13 +102,15 @@
             <polyline points="6,9 12,15 18,9"/>
           </svg>
         `;
-        
+
         closeDropdown();
-        
+
         // Trigger language change event
-        window.dispatchEvent(new CustomEvent('languageChange', {
-          detail: { langCode, flag, name }
-        }));
+        window.dispatchEvent(
+          new CustomEvent('languageChange', {
+            detail: { langCode, flag, name }
+          })
+        );
       });
     });
   }
@@ -117,7 +119,7 @@
   function initMobileMenu() {
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     const mobileMenu = document.querySelector('.mobile-menu');
-    
+
     if (!mobileMenuBtn || !mobileMenu) return;
 
     let isOpen = false;
@@ -126,23 +128,21 @@
       isOpen = !isOpen;
       mobileMenu.style.display = isOpen ? 'block' : 'none';
       mobileMenuBtn.setAttribute('aria-expanded', isOpen);
-      
+
       // Update button icon
       const icon = mobileMenuBtn.querySelector('svg');
       if (icon) {
-        icon.innerHTML = isOpen ? 
-          '<path d="M18 6L6 18M6 6l12 12"/>' : 
-          '<path d="M3 12h18M3 6h18M3 18h18"/>';
+        icon.innerHTML = isOpen ? '<path d="M18 6L6 18M6 6l12 12"/>' : '<path d="M3 12h18M3 6h18M3 18h18"/>';
       }
     }
 
-    mobileMenuBtn.addEventListener('click', (e) => {
+    mobileMenuBtn.addEventListener('click', e => {
       e.stopPropagation();
       toggleMobileMenu();
     });
 
     // Close on outside click
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', e => {
       if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
         isOpen = false;
         mobileMenu.style.display = 'none';
@@ -151,7 +151,7 @@
     });
 
     // Close on escape key
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && isOpen) {
         toggleMobileMenu();
       }
@@ -161,18 +161,13 @@
   // === I18N EXPOSED KEYS DETECTION ===
   function detectExposedI18nKeys() {
     const exposedKeys = [];
-    const walker = document.createTreeWalker(
-      document.body,
-      NodeFilter.SHOW_TEXT,
-      null,
-      false
-    );
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
 
     let node;
-    while (node = walker.nextNode()) {
+    while ((node = walker.nextNode())) {
       const text = node.textContent.trim();
       const i18nPattern = /\b[a-z0-9_]+\.[a-z0-9_.]+\b/i;
-      
+
       if (i18nPattern.test(text)) {
         const matches = text.match(i18nPattern);
         matches.forEach(match => {
@@ -191,27 +186,27 @@
 
   function getElementSelector(element) {
     if (element.id) return `#${element.id}`;
-    
+
     let selector = element.tagName.toLowerCase();
     if (element.className) {
       selector += '.' + element.className.split(' ').join('.');
     }
-    
+
     return selector;
   }
 
   // === FIX EXPOSED I18N KEYS ===
   function fixExposedI18nKeys() {
     const exposedKeys = detectExposedI18nKeys();
-    
+
     exposedKeys.forEach(item => {
       const element = item.element;
-      
+
       // Add visual indicator for debugging
       element.style.border = '2px solid red';
       element.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
       element.title = `I18N Key Exposed: ${item.key}`;
-      
+
       // Try to replace with fallback text
       const fallbackText = getFallbackText(item.key);
       if (fallbackText && element.textContent.trim() === item.text) {
@@ -235,7 +230,7 @@
 
     // Store report in global variable for access
     window.i18nAuditReport = report;
-    
+
     // Log to console
     console.group('🔍 I18N Audit Report');
     console.log(`Found ${exposedKeys.length} exposed i18n keys`);
@@ -260,7 +255,8 @@
       'home.exploreMarketplace': 'Explorar Marketplace',
       'home.learnMore': 'Saiba Mais',
       'features.marketplace.title': 'Marketplace Digital',
-      'features.marketplace.description': 'Conecte-se com compradores e vendedores em uma plataforma segura e eficiente.',
+      'features.marketplace.description':
+        'Conecte-se com compradores e vendedores em uma plataforma segura e eficiente.',
       'features.agroconecta.title': 'AgroConecta',
       'features.agroconecta.description': 'Logística inteligente para otimizar toda a cadeia de suprimentos agrícolas.',
       'features.crypto.title': 'Tecnologia Blockchain',
@@ -275,12 +271,12 @@
   // === SMOOTH SCROLLING ===
   function initSmoothScrolling() {
     const links = document.querySelectorAll('a[href^="#"]');
-    
+
     links.forEach(link => {
-      link.addEventListener('click', (e) => {
+      link.addEventListener('click', e => {
         const href = link.getAttribute('href');
         if (href === '#') return;
-        
+
         const target = document.querySelector(href);
         if (target) {
           e.preventDefault();
@@ -296,12 +292,12 @@
   // === FORM VALIDATION ===
   function initFormValidation() {
     const forms = document.querySelectorAll('form');
-    
+
     forms.forEach(form => {
-      form.addEventListener('submit', (e) => {
+      form.addEventListener('submit', e => {
         const requiredFields = form.querySelectorAll('[required]');
         let isValid = true;
-        
+
         requiredFields.forEach(field => {
           if (!field.value.trim()) {
             isValid = false;
@@ -312,7 +308,7 @@
             field.style.backgroundColor = 'transparent';
           }
         });
-        
+
         if (!isValid) {
           e.preventDefault();
           alert('Por favor, preencha todos os campos obrigatórios.');
@@ -336,11 +332,11 @@
     initMobileMenu();
     initSmoothScrolling();
     initFormValidation();
-    
+
     // Run i18n audit
     setTimeout(() => {
       const report = fixExposedI18nKeys();
-      
+
       // Save report to localStorage for debugging
       localStorage.setItem('i18nAuditReport', JSON.stringify(report));
     }, 1000);
@@ -359,5 +355,4 @@
     initLanguageSelector,
     initMobileMenu
   };
-
 })();

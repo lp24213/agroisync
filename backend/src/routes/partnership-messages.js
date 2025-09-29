@@ -98,7 +98,7 @@ const validatePartnershipMessage = (req, res, next) => {
 router.get('/', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { page = 1, limit = 20, status, priority, category, partnerId, assignedTo } = req.query;
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     const query = {};
 
@@ -122,7 +122,7 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
     const messages = await PartnershipMessage.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit))
+      .limit(parseInt(limit, 10))
       .populate('partnerId', 'name company category')
       .populate('assignedTo', 'name email')
       .populate('readBy', 'name email')
@@ -144,10 +144,10 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
       data: {
         messages,
         pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
+          currentPage: parseInt(page, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit)
+          itemsPerPage: parseInt(limit, 10)
         }
       }
     });
@@ -629,7 +629,7 @@ router.get('/search/:term', authenticateToken, requireAdmin, async (req, res) =>
   try {
     const searchTerm = req.params.term;
     const { page = 1, limit = 20 } = req.query;
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     if (!searchTerm || searchTerm.trim().length < 2) {
       return res.status(400).json({
@@ -638,7 +638,10 @@ router.get('/search/:term', authenticateToken, requireAdmin, async (req, res) =>
       });
     }
 
-    const messages = await PartnershipMessage.searchMessages(searchTerm.trim(), parseInt(limit));
+    const messages = await PartnershipMessage.searchMessages(
+      searchTerm.trim(),
+      parseInt(limit, 10)
+    );
     const total = messages.length;
 
     // Log de busca
@@ -656,12 +659,12 @@ router.get('/search/:term', authenticateToken, requireAdmin, async (req, res) =>
     res.json({
       success: true,
       data: {
-        messages: messages.slice(skip, skip + parseInt(limit)),
+        messages: messages.slice(skip, skip + parseInt(limit, 10)),
         pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
+          currentPage: parseInt(page, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit)
+          itemsPerPage: parseInt(limit, 10)
         }
       }
     });

@@ -27,7 +27,7 @@ const TXCInput = ({
     setIsFocused(false);
   };
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setHasValue(!!e.target.value);
     if (onChange) onChange(e);
   };
@@ -35,7 +35,7 @@ const TXCInput = ({
   const inputClasses = `txc-input ${error ? 'txc-input-error' : ''} ${success ? 'txc-input-success' : ''} ${className}`;
 
   return (
-    <div className="txc-input-group">
+    <div className='txc-input-group'>
       {label && (
         <motion.label
           className={`txc-input-label ${isFocused || hasValue ? 'txc-input-label-focused' : ''}`}
@@ -44,15 +44,13 @@ const TXCInput = ({
           transition={{ duration: 0.2 }}
         >
           {label}
-          {required && <span className="txc-input-required">*</span>}
+          {required && <span className='txc-input-required'>*</span>}
         </motion.label>
       )}
-      
-      <div className="txc-input-container">
-        {icon && iconPosition === 'left' && (
-          <span className="txc-input-icon txc-input-icon-left">{icon}</span>
-        )}
-        
+
+      <div className='txc-input-container'>
+        {icon && iconPosition === 'left' && <span className='txc-input-icon txc-input-icon-left'>{icon}</span>}
+
         <motion.input
           type={type}
           value={value}
@@ -66,12 +64,10 @@ const TXCInput = ({
           transition={{ duration: 0.2 }}
           {...props}
         />
-        
-        {icon && iconPosition === 'right' && (
-          <span className="txc-input-icon txc-input-icon-right">{icon}</span>
-        )}
+
+        {icon && iconPosition === 'right' && <span className='txc-input-icon txc-input-icon-right'>{icon}</span>}
       </div>
-      
+
       {(error || success) && (
         <motion.div
           className={`txc-input-message ${error ? 'txc-input-error-message' : 'txc-input-success-message'}`}

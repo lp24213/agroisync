@@ -18,7 +18,7 @@ export const validateCPF = cpf => {
   // Validação do primeiro dígito verificador
   let sum = 0;
   for (let i = 0; i < 9; i++) {
-    sum += parseInt(cpf.charAt(i)) * (10 - i);
+    sum += parseInt(cpf.charAt(i, 10)) * (10 - i);
   }
   let remainder = 11 - (sum % 11);
   const digit1 = remainder < 2 ? 0 : remainder;
@@ -26,13 +26,13 @@ export const validateCPF = cpf => {
   // Validação do segundo dígito verificador
   sum = 0;
   for (let i = 0; i < 10; i++) {
-    sum += parseInt(cpf.charAt(i)) * (11 - i);
+    sum += parseInt(cpf.charAt(i, 10)) * (11 - i);
   }
   remainder = 11 - (sum % 11);
   const digit2 = remainder < 2 ? 0 : remainder;
 
   // Verifica se os dígitos verificadores estão corretos
-  return parseInt(cpf.charAt(9)) === digit1 && parseInt(cpf.charAt(10)) === digit2;
+  return parseInt(cpf.charAt(9, 10)) === digit1 && parseInt(cpf.charAt(10, 10)) === digit2;
 };
 
 // Função para validar CNPJ
@@ -58,14 +58,14 @@ export const validateCNPJ = cnpj => {
   let pos = size - 7;
 
   for (let i = size; i >= 1; i--) {
-    sum += parseInt(numbers.charAt(size - i)) * pos--;
+    sum += parseInt(numbers.charAt(size - i, 10)) * pos--;
     if (pos < 2) {
       pos = 9;
     }
   }
 
   let result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
-  if (result !== parseInt(digits.charAt(0))) {
+  if (result !== parseInt(digits.charAt(0, 10))) {
     return false;
   }
 
@@ -76,14 +76,14 @@ export const validateCNPJ = cnpj => {
   pos = size - 7;
 
   for (let i = size; i >= 1; i--) {
-    sum += parseInt(numbers.charAt(size - i)) * pos--;
+    sum += parseInt(numbers.charAt(size - i, 10)) * pos--;
     if (pos < 2) {
       pos = 9;
     }
   }
 
   result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
-  if (result !== parseInt(digits.charAt(1))) {
+  if (result !== parseInt(digits.charAt(1, 10))) {
     return false;
   }
 

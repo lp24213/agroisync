@@ -346,7 +346,7 @@ router.get('/admin/contact', authenticateToken, async (req, res) => {
     }
 
     const { page = 1, limit = 20, status } = req.query;
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     const query = {};
     if (status) {
@@ -356,7 +356,7 @@ router.get('/admin/contact', authenticateToken, async (req, res) => {
     const messages = await ContactMessage.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit))
+      .limit(parseInt(limit, 10))
       .lean();
 
     const total = await ContactMessage.countDocuments(query);
@@ -366,10 +366,10 @@ router.get('/admin/contact', authenticateToken, async (req, res) => {
       data: {
         messages,
         pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
+          currentPage: parseInt(page, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit)
+          itemsPerPage: parseInt(limit, 10)
         }
       }
     });
@@ -394,7 +394,7 @@ router.get('/admin/partnership', authenticateToken, async (req, res) => {
     }
 
     const { page = 1, limit = 20, status } = req.query;
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     const query = {};
     if (status) {
@@ -404,7 +404,7 @@ router.get('/admin/partnership', authenticateToken, async (req, res) => {
     const messages = await PartnershipMessage.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit))
+      .limit(parseInt(limit, 10))
       .lean();
 
     const total = await PartnershipMessage.countDocuments(query);
@@ -414,10 +414,10 @@ router.get('/admin/partnership', authenticateToken, async (req, res) => {
       data: {
         messages,
         pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
+          currentPage: parseInt(page, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit)
+          itemsPerPage: parseInt(limit, 10)
         }
       }
     });
@@ -442,7 +442,7 @@ router.get('/admin/private', authenticateToken, async (req, res) => {
     }
 
     const { page = 1, limit = 20, status } = req.query;
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     const query = {};
     if (status) {
@@ -452,7 +452,7 @@ router.get('/admin/private', authenticateToken, async (req, res) => {
     const messages = await PrivateMessage.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit))
+      .limit(parseInt(limit, 10))
       .populate('senderId', 'name email company.name')
       .populate('receiverId', 'name email company.name')
       .lean();
@@ -464,10 +464,10 @@ router.get('/admin/private', authenticateToken, async (req, res) => {
       data: {
         messages,
         pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
+          currentPage: parseInt(page, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit)
+          itemsPerPage: parseInt(limit, 10)
         }
       }
     });

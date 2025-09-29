@@ -2,14 +2,20 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
-import { Send, Paperclip, CheckCheck, Clock, Check, AlertCircle, Phone, Video, MoreVertical, Smile } from 'lucide-react';
+import {
+  Send,
+  Paperclip,
+  CheckCheck,
+  Clock,
+  Check,
+  AlertCircle,
+  Phone,
+  Video,
+  MoreVertical,
+  Smile
+} from 'lucide-react';
 
-const PrivateChat = ({ 
-  chatId, 
-  otherUser, 
-  onClose, 
-  context = 'general'
-}) => {
+const PrivateChat = ({ chatId, otherUser, onClose, context = 'general' }) => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const [messages, setMessages] = useState([]);
@@ -24,7 +30,7 @@ const PrivateChat = ({
     setLoading(true);
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       const mockMessages = [
         {
           id: 'msg-1',
@@ -111,60 +117,48 @@ const PrivateChat = ({
 
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setMessages(prev => 
-        prev.map(msg => 
-          msg.id === message.id 
-            ? { ...msg, status: 'delivered' }
-            : msg
-        )
-      );
+
+      setMessages(prev => prev.map(msg => (msg.id === message.id ? { ...msg, status: 'delivered' } : msg)));
     } catch (error) {
       console.error('Erro ao enviar mensagem:', error);
-      setMessages(prev => 
-        prev.map(msg => 
-          msg.id === message.id 
-            ? { ...msg, status: 'error' }
-            : msg
-        )
-      );
+      setMessages(prev => prev.map(msg => (msg.id === message.id ? { ...msg, status: 'error' } : msg)));
     } finally {
       setSending(false);
     }
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = e => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
   };
 
-  const formatTime = (timestamp) => {
+  const formatTime = timestamp => {
     return new Date(timestamp).toLocaleTimeString('pt-BR', {
       hour: '2-digit',
       minute: '2-digit'
     });
   };
 
-  const getMessageStatusIcon = (status) => {
+  const getMessageStatusIcon = status => {
     switch (status) {
       case 'sending':
-        return <Clock className="w-3 h-3 text-slate-400" />;
+        return <Clock className='h-3 w-3 text-slate-400' />;
       case 'delivered':
-        return <Check className="w-3 h-3 text-slate-400" />;
+        return <Check className='h-3 w-3 text-slate-400' />;
       case 'read':
-        return <CheckCheck className="w-3 h-3 text-blue-500" />;
+        return <CheckCheck className='h-3 w-3 text-blue-500' />;
       case 'error':
-        return <AlertCircle className="w-3 h-3 text-red-500" />;
+        return <AlertCircle className='h-3 w-3 text-red-500' />;
       default:
         return null;
     }
   };
 
-  const renderMessage = (message) => {
+  const renderMessage = message => {
     const isOwn = message.senderId === user.id;
-    
+
     return (
       <motion.div
         key={message.id}
@@ -174,24 +168,18 @@ const PrivateChat = ({
         transition={{ duration: 0.3 }}
       >
         <div className={`max-w-xs lg:max-w-md ${isOwn ? 'order-2' : 'order-1'}`}>
-          {!isOwn && (
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-1 ml-2">
-              {message.senderName}
-            </p>
-          )}
+          {!isOwn && <p className='mb-1 ml-2 text-xs text-slate-500 dark:text-slate-400'>{message.senderName}</p>}
           <div
-            className={`px-4 py-2 rounded-2xl ${
+            className={`rounded-2xl px-4 py-2 ${
               isOwn
-                ? 'bg-emerald-500 text-white rounded-br-md'
-                : 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-bl-md border border-slate-200 dark:border-slate-600'
+                ? 'rounded-br-md bg-emerald-500 text-white'
+                : 'rounded-bl-md border border-slate-200 bg-white text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200'
             }`}
           >
-            <p className="text-sm">{message.content}</p>
+            <p className='text-sm'>{message.content}</p>
           </div>
-          <div className={`flex items-center gap-1 mt-1 ${isOwn ? 'justify-end' : 'justify-start'}`}>
-            <span className="text-xs text-slate-500 dark:text-slate-400">
-              {formatTime(message.timestamp)}
-            </span>
+          <div className={`mt-1 flex items-center gap-1 ${isOwn ? 'justify-end' : 'justify-start'}`}>
+            <span className='text-xs text-slate-500 dark:text-slate-400'>{formatTime(message.timestamp)}</span>
             {isOwn && getMessageStatusIcon(message.status)}
           </div>
         </div>
@@ -201,98 +189,90 @@ const PrivateChat = ({
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-          <p className="text-slate-600 dark:text-slate-400">
-            {t('chat.loading', 'Carregando conversa...')}
-          </p>
+      <div className='flex flex-1 items-center justify-center'>
+        <div className='text-center'>
+          <div className='mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-emerald-600'></div>
+          <p className='text-slate-600 dark:text-slate-400'>{t('chat.loading', 'Carregando conversa...')}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-slate-800">
-      <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
-        <div className="flex items-center gap-3">
+    <div className='flex h-full flex-col bg-white dark:bg-slate-800'>
+      <div className='flex items-center justify-between border-b border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800'>
+        <div className='flex items-center gap-3'>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors lg:hidden"
+            className='rounded-lg p-2 transition-colors hover:bg-slate-100 dark:hover:bg-slate-700 lg:hidden'
           >
             ←
           </button>
-          <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center">
-            <span className="text-white font-semibold">
-              {otherUser.name?.charAt(0) || 'U'}
-            </span>
+          <div className='flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500'>
+            <span className='font-semibold text-white'>{otherUser.name?.charAt(0) || 'U'}</span>
           </div>
           <div>
-            <h3 className="font-semibold text-slate-800 dark:text-slate-200">
-              {otherUser.name}
-            </h3>
-            <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-slate-400'}`}></div>
-              <span className="text-xs text-slate-500 dark:text-slate-400">
+            <h3 className='font-semibold text-slate-800 dark:text-slate-200'>{otherUser.name}</h3>
+            <div className='flex items-center gap-2'>
+              <div className={`h-2 w-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-slate-400'}`}></div>
+              <span className='text-xs text-slate-500 dark:text-slate-400'>
                 {isOnline ? t('chat.online', 'Online') : t('chat.offline', 'Offline')}
               </span>
             </div>
           </div>
         </div>
-        
-        <div className="flex items-center gap-2">
-          <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
-            <Phone className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+
+        <div className='flex items-center gap-2'>
+          <button className='rounded-lg p-2 transition-colors hover:bg-slate-100 dark:hover:bg-slate-700'>
+            <Phone className='h-5 w-5 text-slate-600 dark:text-slate-400' />
           </button>
-          <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
-            <Video className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+          <button className='rounded-lg p-2 transition-colors hover:bg-slate-100 dark:hover:bg-slate-700'>
+            <Video className='h-5 w-5 text-slate-600 dark:text-slate-400' />
           </button>
-          <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
-            <MoreVertical className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+          <button className='rounded-lg p-2 transition-colors hover:bg-slate-100 dark:hover:bg-slate-700'>
+            <MoreVertical className='h-5 w-5 text-slate-600 dark:text-slate-400' />
           </button>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        <AnimatePresence>
-          {messages.map(renderMessage)}
-        </AnimatePresence>
-        
+      <div className='flex-1 space-y-4 overflow-y-auto p-4'>
+        <AnimatePresence>{messages.map(renderMessage)}</AnimatePresence>
+
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
-        <div className="flex items-end gap-2">
-          <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
-            <Paperclip className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+      <div className='border-t border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800'>
+        <div className='flex items-end gap-2'>
+          <button className='rounded-lg p-2 transition-colors hover:bg-slate-100 dark:hover:bg-slate-700'>
+            <Paperclip className='h-5 w-5 text-slate-600 dark:text-slate-400' />
           </button>
-          
-          <div className="flex-1 relative">
+
+          <div className='relative flex-1'>
             <textarea
               ref={inputRef}
               value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
+              onChange={e => setNewMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder={t('chat.typeMessage', 'Digite uma mensagem...')}
-              className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white resize-none"
-              rows="1"
+              className='w-full resize-none rounded-2xl border border-slate-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-emerald-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white'
+              rows='1'
               style={{ minHeight: '40px', maxHeight: '120px' }}
             />
           </div>
-          
-          <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
-            <Smile className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+
+          <button className='rounded-lg p-2 transition-colors hover:bg-slate-100 dark:hover:bg-slate-700'>
+            <Smile className='h-5 w-5 text-slate-600 dark:text-slate-400' />
           </button>
-          
+
           <button
             onClick={handleSendMessage}
             disabled={!newMessage.trim() || sending}
-            className="p-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className='rounded-lg bg-emerald-600 p-2 text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50'
           >
             {sending ? (
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+              <div className='h-5 w-5 animate-spin rounded-full border-b-2 border-white'></div>
             ) : (
-              <Send className="w-5 h-5" />
+              <Send className='h-5 w-5' />
             )}
           </button>
         </div>

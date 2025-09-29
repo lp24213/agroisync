@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { getAuthToken } from '../config/constants';
 // import RegistrationSystem from '../components/RegistrationSystem'; // Componente removido
 // import PlansSystem from '../components/PlansSystem'; // Componente removido
-import { 
-  Truck, 
-  MapPin, 
-  Clock, 
-  Users, 
+import {
+  Truck,
+  MapPin,
+  Clock,
+  Users,
   Zap,
-  UserPlus, 
+  UserPlus,
   Shield,
   ArrowRight,
   CheckCircle,
@@ -125,7 +126,7 @@ const AgroisyncAgroConecta = () => {
     }
   ];
 
-  const handleFreteSubmit = async (e) => {
+  const handleFreteSubmit = async e => {
     e.preventDefault();
     try {
       // Criar pedido de frete via API
@@ -155,14 +156,16 @@ const AgroisyncAgroConecta = () => {
         },
         pickupDate: freteForm.data,
         deliveryDateEstimate: new Date(new Date(freteForm.data).getTime() + 3 * 24 * 60 * 60 * 1000).toISOString(),
-        items: [{
-          name: freteForm.tipoCarga || 'Carga',
-          description: 'Carga transportada',
-          quantity: parseFloat(freteForm.volume) || 1,
-          unit: 'toneladas',
-          weight: parseFloat(freteForm.volume) || 1,
-          category: 'other'
-        }],
+        items: [
+          {
+            name: freteForm.tipoCarga || 'Carga',
+            description: 'Carga transportada',
+            quantity: parseFloat(freteForm.volume) || 1,
+            unit: 'toneladas',
+            weight: parseFloat(freteForm.volume) || 1,
+            category: 'other'
+          }
+        ],
         pricing: {
           basePrice: 2000, // Preço base estimado
           currency: 'BRL'
@@ -171,7 +174,7 @@ const AgroisyncAgroConecta = () => {
 
       const response = await axios.post('/api/freight-orders', freightOrderData, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken') || localStorage.getItem('token')}`
+          Authorization: `Bearer ${getAuthToken()}`
         }
       });
 
@@ -187,7 +190,7 @@ const AgroisyncAgroConecta = () => {
     }
   };
 
-  const handleStartTracking = (orderId) => {
+  const handleStartTracking = orderId => {
     const order = mockOrders.find(o => o.id === orderId);
     setSelectedOrder(order);
     setTrackingUpdates(order.trackingEvents);
@@ -198,7 +201,7 @@ const AgroisyncAgroConecta = () => {
     try {
       const response = await axios.get('/api/freight-orders', {
         headers: {
-          'Authorization': `Bearer ${user?.token || localStorage.getItem('authToken') || localStorage.getItem('token')}`
+          Authorization: `Bearer ${user?.token || getAuthToken()}`
         }
       });
 
@@ -211,17 +214,21 @@ const AgroisyncAgroConecta = () => {
     }
   };
 
-  const handleAIClosure = async (orderId) => {
+  const handleAIClosure = async orderId => {
     try {
       const order = myOrders.find(o => o.id === orderId);
       setSelectedOrder(order);
-      
+
       // Chamar API para gerar análise de IA
-      const response = await axios.post(`/api/freight-orders/${orderId}/ai-closure`, {}, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken') || localStorage.getItem('token')}`
+      const response = await axios.post(
+        `/api/freight-orders/${orderId}/ai-closure`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${getAuthToken()}`
+          }
         }
-      });
+      );
 
       if (response.data.success) {
         setAiClosureData(response.data.data.freightOrder.aiClosure);
@@ -241,7 +248,7 @@ const AgroisyncAgroConecta = () => {
         suggestedMessage: 'Obrigado pela confiança! Pedido entregue com sucesso.',
         invoiceDraft: 'Fatura FR-002 - R$ 1.800,00 - Entregue em 13/01/2024'
       };
-      
+
       setAiClosureData(mockAIClosure);
       setShowAIClosureModal(true);
     }
@@ -249,15 +256,19 @@ const AgroisyncAgroConecta = () => {
 
   const handleCloseOrder = async () => {
     try {
-      const response = await axios.post(`/api/freight-orders/${selectedOrder.id}/complete-closure`, {
-        confirmClosure: true,
-        rating: 5,
-        comment: 'Excelente serviço!'
-      }, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+      const response = await axios.post(
+        `/api/freight-orders/${selectedOrder.id}/complete-closure`,
+        {
+          confirmClosure: true,
+          rating: 5,
+          comment: 'Excelente serviço!'
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${getAuthToken()}`
+          }
         }
-      });
+      );
 
       if (response.data.success) {
         toast.success('Pedido fechado com sucesso!');
@@ -291,10 +302,10 @@ const AgroisyncAgroConecta = () => {
       try {
         const response = await axios.get('/api/freight-orders', {
           headers: {
-            'Authorization': `Bearer ${user?.token}`
+            Authorization: `Bearer ${user?.token}`
           }
         });
-        
+
         if (response.data.success) {
           setMyOrders(response.data.data);
         }
@@ -303,10 +314,10 @@ const AgroisyncAgroConecta = () => {
         toast.error('Erro ao carregar pedidos');
       }
     };
-    
+
     // Buscar cadastros públicos
     // fetchPublicRegistrations();
-    
+
     loadMyOrders();
   }, [user?.token]);
 
@@ -315,38 +326,38 @@ const AgroisyncAgroConecta = () => {
       icon: <Truck size={32} />,
       title: 'Frete Inteligente',
       description: 'Conecte-se com transportadores confiáveis e otimize seus custos de frete',
-      color: 'var(--agro-green)',
+      color: 'var(--agro-green)'
     },
     {
       icon: <MapPin size={32} />,
       title: 'Rastreamento em Tempo Real',
       description: 'Acompanhe sua carga em tempo real com tecnologia GPS avançada',
-      color: 'var(--agro-green)',
+      color: 'var(--agro-green)'
     },
     {
       icon: <Users size={32} />,
       title: 'Rede de Parceiros',
       description: 'Conecte-se com uma rede confiável de transportadores e produtores',
-      color: 'var(--agro-green)',
+      color: 'var(--agro-green)'
     },
     {
       icon: <Zap size={32} />,
       title: 'IA para Logística',
       description: 'Algoritmos inteligentes para otimizar rotas e reduzir custos',
-      color: 'var(--agro-green)',
+      color: 'var(--agro-green)'
     },
     {
       icon: <Shield size={32} />,
       title: 'Segurança Total',
       description: 'Proteção completa para sua carga com seguro e monitoramento',
-      color: 'var(--agro-green)',
+      color: 'var(--agro-green)'
     },
     {
       icon: <Clock size={32} />,
       title: 'Entrega Rápida',
       description: 'Entregas mais rápidas com otimização de rotas e gestão eficiente',
-      color: 'var(--agro-green)',
-    },
+      color: 'var(--agro-green)'
+    }
   ];
 
   const steps = [
@@ -354,20 +365,20 @@ const AgroisyncAgroConecta = () => {
       number: '01',
       title: 'Cadastre sua Carga',
       description: 'Informe os detalhes da sua carga e destino',
-      icon: <Truck size={24} />,
+      icon: <Truck size={24} />
     },
     {
       number: '02',
       title: 'Encontre Transportadores',
       description: 'Receba propostas de transportadores qualificados',
-      icon: <MapPin size={24} />,
+      icon: <MapPin size={24} />
     },
     {
       number: '03',
       title: 'Acompanhe a Entrega',
       description: 'Monitore sua carga em tempo real até o destino',
-      icon: <CheckCircle size={24} />,
-    },
+      icon: <CheckCircle size={24} />
+    }
   ];
 
   const sectionVariants = {
@@ -378,9 +389,9 @@ const AgroisyncAgroConecta = () => {
       transition: {
         duration: 1,
         ease: 'easeOut',
-        staggerChildren: 0.2,
-      },
-    },
+        staggerChildren: 0.2
+      }
+    }
   };
 
   const itemVariants = {
@@ -388,15 +399,15 @@ const AgroisyncAgroConecta = () => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.8, ease: 'easeOut' },
-    },
+      transition: { duration: 0.8, ease: 'easeOut' }
+    }
   };
 
   return (
-    <div data-page="agroconecta">
+    <div data-page='agroconecta'>
       {/* HERO COM IMAGEM DE FRETE */}
-      <section 
-        className="min-h-screen flex items-center justify-center relative"
+      <section
+        className='relative flex min-h-screen items-center justify-center'
         style={{
           backgroundImage: `url('https://media.istockphoto.com/id/1282700817/pt/foto/grain-auger-of-combine-pouring-soy-bean-into-tractor-trailer.jpg?s=612x612&w=0&k=20&c=VaxEcgSsi9jYW-gzMPXQDOrRgbr7FAIKV1VwcMB6qf4=')`,
           backgroundSize: 'cover',
@@ -405,37 +416,37 @@ const AgroisyncAgroConecta = () => {
           backgroundAttachment: 'scroll'
         }}
       >
-        <div className="absolute inset-0 bg-black/50"></div>
-        <div className="text-center max-w-4xl mx-auto px-4 relative z-10">
-          <motion.h1 
-            className="text-6xl font-bold text-white mb-6"
+        <div className='absolute inset-0 bg-black/50'></div>
+        <div className='relative z-10 mx-auto max-w-4xl px-4 text-center'>
+          <motion.h1
+            className='mb-6 text-6xl font-bold text-white'
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
             FRETE
           </motion.h1>
-          <motion.p 
-            className="text-2xl text-white/90 mb-8"
+          <motion.p
+            className='mb-8 text-2xl text-white/90'
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             Conectando produtores e transportadores do agronegócio
           </motion.p>
-          <motion.div 
-            className="flex gap-4 justify-center"
+          <motion.div
+            className='flex justify-center gap-4'
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            <button 
+            <button
               onClick={() => setShowRegistrationModal(true)}
-              className="bg-green-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+              className='rounded-lg bg-green-600 px-8 py-4 font-semibold text-white transition-colors hover:bg-green-700'
             >
               Oferecer Frete
             </button>
-            <button className="bg-white text-green-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+            <button className='rounded-lg bg-white px-8 py-4 font-semibold text-green-600 transition-colors hover:bg-gray-100'>
               Buscar Frete
             </button>
           </motion.div>
@@ -443,28 +454,28 @@ const AgroisyncAgroConecta = () => {
       </section>
 
       {/* Features Section */}
-      <section className="agro-section">
-        <div className="agro-container">
+      <section className='agro-section'>
+        <div className='agro-container'>
           <motion.div
             variants={sectionVariants}
-            initial="hidden"
-            whileInView="visible"
+            initial='hidden'
+            whileInView='visible'
             viewport={{ once: true }}
-            className="agro-text-center"
+            className='agro-text-center'
           >
-            <motion.h2 className="agro-section-title" variants={itemVariants}>
+            <motion.h2 className='agro-section-title' variants={itemVariants}>
               Recursos Principais
             </motion.h2>
-            <motion.p className="agro-section-subtitle" variants={itemVariants}>
+            <motion.p className='agro-section-subtitle' variants={itemVariants}>
               Tecnologia avançada para revolucionar a logística agro
             </motion.p>
           </motion.div>
 
-          <div className="agro-cards-grid">
+          <div className='agro-cards-grid'>
             {features.map((feature, index) => (
               <motion.div
                 key={feature.title}
-                className="agro-card agro-fade-in agro-card-animated"
+                className='agro-card agro-fade-in agro-card-animated'
                 initial={{ opacity: 0, y: 60 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -472,25 +483,23 @@ const AgroisyncAgroConecta = () => {
                 whileHover={{ y: -12, scale: 1.02 }}
                 style={{ position: 'relative' }}
               >
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: '4px',
-                  background: 'var(--agro-green-accent)',
-                  borderRadius: 'var(--agro-radius-xl) var(--agro-radius-xl) 0 0'
-                }} />
-                
-                <div className="agro-card-icon" style={{ color: feature.color }}>
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: '4px',
+                    background: 'var(--agro-green-accent)',
+                    borderRadius: 'var(--agro-radius-xl) var(--agro-radius-xl) 0 0'
+                  }}
+                />
+
+                <div className='agro-card-icon' style={{ color: feature.color }}>
                   {feature.icon}
                 </div>
-                <h3 className="agro-card-title">
-                  {feature.title}
-                </h3>
-                <p className="agro-card-description">
-                  {feature.description}
-                </p>
+                <h3 className='agro-card-title'>{feature.title}</h3>
+                <p className='agro-card-description'>{feature.description}</p>
               </motion.div>
             ))}
           </div>
@@ -498,20 +507,18 @@ const AgroisyncAgroConecta = () => {
       </section>
 
       {/* Formulários Funcionais */}
-      <section className="agro-section" style={{ background: 'var(--bg-gradient)' }}>
-        <div className="agro-container">
+      <section className='agro-section' style={{ background: 'var(--bg-gradient)' }}>
+        <div className='agro-container'>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="agro-text-center"
+            className='agro-text-center'
             style={{ marginBottom: '2rem' }}
           >
-            <h2 className="agro-section-title">Fretes em Ação</h2>
-            <p className="agro-section-subtitle">
-              Busque fretes ou ofereça seus serviços de transporte
-            </p>
+            <h2 className='agro-section-title'>Fretes em Ação</h2>
+            <p className='agro-section-subtitle'>Busque fretes ou ofereça seus serviços de transporte</p>
           </motion.div>
 
           {/* Tabs */}
@@ -534,7 +541,7 @@ const AgroisyncAgroConecta = () => {
           >
             <button
               onClick={() => setActiveTab('buscar')}
-              className="agro-btn-animated"
+              className='agro-btn-animated'
               style={{
                 flex: 1,
                 padding: '1rem',
@@ -552,7 +559,7 @@ const AgroisyncAgroConecta = () => {
             </button>
             <button
               onClick={() => setActiveTab('ofertas')}
-              className="agro-btn-animated"
+              className='agro-btn-animated'
               style={{
                 flex: 1,
                 padding: '1rem',
@@ -570,7 +577,7 @@ const AgroisyncAgroConecta = () => {
             </button>
             <button
               onClick={() => setActiveTab('meus-pedidos')}
-              className="agro-btn-animated"
+              className='agro-btn-animated'
               style={{
                 flex: 1,
                 padding: '1rem',
@@ -589,62 +596,62 @@ const AgroisyncAgroConecta = () => {
           </motion.div>
 
           {/* Botão de Cadastro */}
-           <motion.div
-             initial={{ opacity: 0, y: 20 }}
-             animate={{ opacity: 1, y: 0 }}
-             transition={{ duration: 0.5, delay: 0.2 }}
-             style={{
-               display: 'flex',
-               justifyContent: 'center',
-               gap: '1rem',
-               marginBottom: '2rem',
-               flexWrap: 'wrap'
-             }}
-           >
-             <button
-               onClick={() => setShowRegistrationModal(true)}
-               className="agro-btn-animated"
-               style={{
-                 display: 'flex',
-                 alignItems: 'center',
-                 gap: '0.5rem',
-                 padding: '1rem 2rem',
-                 background: 'linear-gradient(135deg, var(--accent) 0%, #2e7d32 100%)',
-                 color: 'white',
-                 border: 'none',
-                 borderRadius: '12px',
-                 fontWeight: '600',
-                 cursor: 'pointer',
-                 transition: 'all 0.3s ease',
-                 boxShadow: '0 4px 15px rgba(42, 127, 79, 0.3)'
-               }}
-             >
-               <UserPlus size={20} />
-               Cadastrar como Transportador
-             </button>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '1rem',
+              marginBottom: '2rem',
+              flexWrap: 'wrap'
+            }}
+          >
+            <button
+              onClick={() => setShowRegistrationModal(true)}
+              className='agro-btn-animated'
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '1rem 2rem',
+                background: 'linear-gradient(135deg, var(--accent) 0%, #2e7d32 100%)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 15px rgba(42, 127, 79, 0.3)'
+              }}
+            >
+              <UserPlus size={20} />
+              Cadastrar como Transportador
+            </button>
 
-             <button
-               onClick={() => setShowPlansModal(true)}
-               className="agro-btn-animated"
-               style={{
-                 display: 'flex',
-                 alignItems: 'center',
-                 gap: '0.5rem',
-                 padding: '1rem 2rem',
-                 background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                 color: 'white',
-                 border: 'none',
-                 borderRadius: '12px',
-                 fontWeight: '600',
-                 cursor: 'pointer',
-                 transition: 'all 0.3s ease',
-                 boxShadow: '0 4px 15px rgba(245, 158, 11, 0.3)'
-               }}
-             >
-               <Star size={20} />
-               Ver Planos Premium
-             </button>
-           </motion.div>
+            <button
+              onClick={() => setShowPlansModal(true)}
+              className='agro-btn-animated'
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '1rem 2rem',
+                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 15px rgba(245, 158, 11, 0.3)'
+              }}
+            >
+              <Star size={20} />
+              Ver Planos Premium
+            </button>
+          </motion.div>
 
           {/* Conteúdo das Tabs */}
           {activeTab === 'buscar' && (
@@ -661,27 +668,27 @@ const AgroisyncAgroConecta = () => {
                 margin: '0 auto'
               }}
             >
-              <h3 style={{ marginBottom: '1.5rem', textAlign: 'center', color: 'var(--accent)' }}>
-                Buscar Frete
-              </h3>
+              <h3 style={{ marginBottom: '1.5rem', textAlign: 'center', color: 'var(--accent)' }}>Buscar Frete</h3>
               <form onSubmit={handleFreteSubmit}>
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                  gap: '1rem',
-                  marginBottom: '1.5rem'
-                }}>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                    gap: '1rem',
+                    marginBottom: '1.5rem'
+                  }}
+                >
                   <div>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
                       <MapPin size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
                       Origem
                     </label>
                     <input
-                      type="text"
+                      type='text'
                       value={freteForm.origem}
-                      onChange={(e) => setFreteForm({...freteForm, origem: e.target.value})}
-                      placeholder="Cidade, Estado"
-                      className="agro-btn-animated"
+                      onChange={e => setFreteForm({ ...freteForm, origem: e.target.value })}
+                      placeholder='Cidade, Estado'
+                      className='agro-btn-animated'
                       style={{
                         width: '100%',
                         padding: '0.75rem',
@@ -700,11 +707,11 @@ const AgroisyncAgroConecta = () => {
                       Destino
                     </label>
                     <input
-                      type="text"
+                      type='text'
                       value={freteForm.destino}
-                      onChange={(e) => setFreteForm({...freteForm, destino: e.target.value})}
-                      placeholder="Cidade, Estado"
-                      className="agro-btn-animated"
+                      onChange={e => setFreteForm({ ...freteForm, destino: e.target.value })}
+                      placeholder='Cidade, Estado'
+                      className='agro-btn-animated'
                       style={{
                         width: '100%',
                         padding: '0.75rem',
@@ -723,11 +730,11 @@ const AgroisyncAgroConecta = () => {
                       Volume
                     </label>
                     <input
-                      type="text"
+                      type='text'
                       value={freteForm.volume}
-                      onChange={(e) => setFreteForm({...freteForm, volume: e.target.value})}
-                      placeholder="Ex: 50 toneladas"
-                      className="agro-btn-animated"
+                      onChange={e => setFreteForm({ ...freteForm, volume: e.target.value })}
+                      placeholder='Ex: 50 toneladas'
+                      className='agro-btn-animated'
                       style={{
                         width: '100%',
                         padding: '0.75rem',
@@ -746,10 +753,10 @@ const AgroisyncAgroConecta = () => {
                       Data de Coleta
                     </label>
                     <input
-                      type="date"
+                      type='date'
                       value={freteForm.data}
-                      onChange={(e) => setFreteForm({...freteForm, data: e.target.value})}
-                      className="agro-btn-animated"
+                      onChange={e => setFreteForm({ ...freteForm, data: e.target.value })}
+                      className='agro-btn-animated'
                       style={{
                         width: '100%',
                         padding: '0.75rem',
@@ -765,8 +772,8 @@ const AgroisyncAgroConecta = () => {
                 </div>
                 <div style={{ textAlign: 'center' }}>
                   <button
-                    type="submit"
-                    className="btn agro-btn-animated"
+                    type='submit'
+                    className='btn agro-btn-animated'
                     style={{
                       padding: '1rem 2rem',
                       fontSize: '1.1rem',
@@ -794,18 +801,20 @@ const AgroisyncAgroConecta = () => {
               <h3 style={{ marginBottom: '1.5rem', textAlign: 'center', color: 'var(--accent)' }}>
                 Ofertas de Frete Disponíveis
               </h3>
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                gap: '1.5rem'
-              }}>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                  gap: '1.5rem'
+                }}
+              >
                 {ofertasFrete.map((oferta, index) => (
                   <motion.div
                     key={oferta.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="card agro-card-animated"
+                    className='card agro-card-animated'
                     style={{
                       padding: '1.5rem',
                       background: 'var(--card-bg)',
@@ -815,17 +824,13 @@ const AgroisyncAgroConecta = () => {
                     }}
                   >
                     <div style={{ marginBottom: '1rem' }}>
-                      <h4 style={{ color: 'var(--accent)', marginBottom: '0.5rem' }}>
-                        {oferta.transportador}
-                      </h4>
+                      <h4 style={{ color: 'var(--accent)', marginBottom: '0.5rem' }}>{oferta.transportador}</h4>
                       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
                         <Star size={16} style={{ color: '#FFD700', marginRight: '0.25rem' }} />
-                        <span style={{ fontSize: '0.9rem', color: 'var(--muted)' }}>
-                          {oferta.avaliacao}/5.0
-                        </span>
+                        <span style={{ fontSize: '0.9rem', color: 'var(--muted)' }}>{oferta.avaliacao}/5.0</span>
                       </div>
                     </div>
-                    
+
                     <div style={{ marginBottom: '1rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
                         <MapPin size={16} style={{ color: 'var(--accent)', marginRight: '0.5rem' }} />
@@ -846,22 +851,25 @@ const AgroisyncAgroConecta = () => {
                         <span style={{ fontSize: '0.9rem' }}>{oferta.veiculo}</span>
                       </div>
                     </div>
-                    
-                    <div style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      paddingTop: '1rem',
-                      borderTop: '1px solid rgba(42, 127, 79, 0.1)'
-                    }}>
+
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        paddingTop: '1rem',
+                        borderTop: '1px solid rgba(42, 127, 79, 0.1)'
+                      }}
+                    >
                       <div>
-                        <DollarSign size={20} style={{ color: 'var(--accent)', display: 'inline', marginRight: '0.25rem' }} />
-                        <strong style={{ color: 'var(--accent)', fontSize: '1.2rem' }}>
-                          {oferta.preco}
-                        </strong>
+                        <DollarSign
+                          size={20}
+                          style={{ color: 'var(--accent)', display: 'inline', marginRight: '0.25rem' }}
+                        />
+                        <strong style={{ color: 'var(--accent)', fontSize: '1.2rem' }}>{oferta.preco}</strong>
                       </div>
                       <button
-                        className="btn small"
+                        className='btn small'
                         style={{
                           padding: '0.5rem 1rem',
                           fontSize: '0.9rem'
@@ -891,12 +899,14 @@ const AgroisyncAgroConecta = () => {
               }}
             >
               <div style={{ marginBottom: '2rem' }}>
-                <h3 style={{ 
-                  fontSize: '1.5rem', 
-                  fontWeight: '600', 
-                  color: 'var(--text-primary)', 
-                  marginBottom: '1rem' 
-                }}>
+                <h3
+                  style={{
+                    fontSize: '1.5rem',
+                    fontWeight: '600',
+                    color: 'var(--text-primary)',
+                    marginBottom: '1rem'
+                  }}
+                >
                   Meus Pedidos de Frete
                 </h3>
                 <p style={{ color: 'var(--text-secondary)' }}>
@@ -905,7 +915,7 @@ const AgroisyncAgroConecta = () => {
               </div>
 
               <div style={{ display: 'grid', gap: '1rem' }}>
-                {myOrders.map((order) => (
+                {myOrders.map(order => (
                   <div
                     key={order.id}
                     style={{
@@ -916,47 +926,67 @@ const AgroisyncAgroConecta = () => {
                       transition: 'all 0.3s ease'
                     }}
                   >
-                    <div style={{ 
-                      display: 'flex', 
-                      justifyContent: 'space-between', 
-                      alignItems: 'flex-start',
-                      marginBottom: '1rem'
-                    }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'flex-start',
+                        marginBottom: '1rem'
+                      }}
+                    >
                       <div>
-                        <h4 style={{ 
-                          fontSize: '1.1rem', 
-                          fontWeight: '600', 
-                          color: 'var(--text-primary)',
-                          marginBottom: '0.5rem'
-                        }}>
+                        <h4
+                          style={{
+                            fontSize: '1.1rem',
+                            fontWeight: '600',
+                            color: 'var(--text-primary)',
+                            marginBottom: '0.5rem'
+                          }}
+                        >
                           Pedido {order.orderNumber}
                         </h4>
-                        <div style={{ display: 'flex', gap: '2rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                          <span>📦 {order.origin.city}, {order.origin.state} → {order.destination.city}, {order.destination.state}</span>
+                        <div
+                          style={{ display: 'flex', gap: '2rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}
+                        >
+                          <span>
+                            📦 {order.origin.city}, {order.origin.state} → {order.destination.city},{' '}
+                            {order.destination.state}
+                          </span>
                           <span>💰 R$ {order.pricing.totalPrice.toLocaleString()}</span>
                           <span>📅 {new Date(order.pickupDate).toLocaleDateString('pt-BR')}</span>
                         </div>
                       </div>
-                      <div style={{ 
-                        padding: '0.5rem 1rem', 
-                        borderRadius: '20px', 
-                        fontSize: '0.8rem',
-                        fontWeight: '600',
-                        background: order.status === 'delivered' ? '#10b981' : 
-                                   order.status === 'in_transit' ? '#3b82f6' : '#f59e0b',
-                        color: 'white'
-                      }}>
-                        {order.status === 'delivered' ? 'Entregue' : 
-                         order.status === 'in_transit' ? 'Em Trânsito' : 'Pendente'}
+                      <div
+                        style={{
+                          padding: '0.5rem 1rem',
+                          borderRadius: '20px',
+                          fontSize: '0.8rem',
+                          fontWeight: '600',
+                          background:
+                            order.status === 'delivered'
+                              ? '#10b981'
+                              : order.status === 'in_transit'
+                                ? '#3b82f6'
+                                : '#f59e0b',
+                          color: 'white'
+                        }}
+                      >
+                        {order.status === 'delivered'
+                          ? 'Entregue'
+                          : order.status === 'in_transit'
+                            ? 'Em Trânsito'
+                            : 'Pendente'}
                       </div>
                     </div>
 
-                    <div style={{ 
-                      display: 'flex', 
-                      gap: '0.5rem', 
-                      flexWrap: 'wrap',
-                      marginTop: '1rem'
-                    }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        gap: '0.5rem',
+                        flexWrap: 'wrap',
+                        marginTop: '1rem'
+                      }}
+                    >
                       <button
                         onClick={() => handleStartTracking(order.id)}
                         style={{
@@ -976,7 +1006,7 @@ const AgroisyncAgroConecta = () => {
                         <Eye size={16} />
                         Rastrear
                       </button>
-                      
+
                       <button
                         style={{
                           display: 'flex',
@@ -1046,44 +1076,46 @@ const AgroisyncAgroConecta = () => {
       </section>
 
       {/* How It Works Section */}
-      <section className="agro-section" style={{ background: 'var(--agro-light-beige)' }}>
-        <div className="agro-container">
+      <section className='agro-section' style={{ background: 'var(--agro-light-beige)' }}>
+        <div className='agro-container'>
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="agro-text-center"
+            className='agro-text-center'
           >
-            <div style={{
-              width: '80px',
-              height: '80px',
-              margin: '0 auto var(--agro-space-lg) auto',
-              background: 'var(--agro-gradient-accent)',
-              borderRadius: 'var(--agro-radius-2xl)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--agro-dark-green)',
-              boxShadow: 'var(--agro-shadow-lg)'
-            }}>
+            <div
+              style={{
+                width: '80px',
+                height: '80px',
+                margin: '0 auto var(--agro-space-lg) auto',
+                background: 'var(--agro-gradient-accent)',
+                borderRadius: 'var(--agro-radius-2xl)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--agro-dark-green)',
+                boxShadow: 'var(--agro-shadow-lg)'
+              }}
+            >
               <Star size={32} />
             </div>
-            <h2 className="agro-section-title">Como Funciona</h2>
-            <p className="agro-section-subtitle">
-              Processo simples e eficiente em apenas 3 passos
-            </p>
+            <h2 className='agro-section-title'>Como Funciona</h2>
+            <p className='agro-section-subtitle'>Processo simples e eficiente em apenas 3 passos</p>
           </motion.div>
 
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-            gap: 'var(--agro-space-xl)' 
-          }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gap: 'var(--agro-space-xl)'
+            }}
+          >
             {steps.map((step, index) => (
               <motion.div
                 key={step.number}
-                className="agro-card"
+                className='agro-card'
                 initial={{ opacity: 0, y: 60 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -1091,18 +1123,20 @@ const AgroisyncAgroConecta = () => {
                 whileHover={{ y: -8, scale: 1.02 }}
                 style={{ textAlign: 'center', position: 'relative' }}
               >
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: '4px',
-                  background: 'var(--agro-green-accent)',
-                  borderRadius: 'var(--agro-radius-xl) var(--agro-radius-xl) 0 0'
-                }} />
-                
-                <div 
-                  style={{ 
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: '4px',
+                    background: 'var(--agro-green-accent)',
+                    borderRadius: 'var(--agro-radius-xl) var(--agro-radius-xl) 0 0'
+                  }}
+                />
+
+                <div
+                  style={{
                     fontSize: '3rem',
                     marginBottom: 'var(--agro-space-lg)',
                     fontWeight: '900',
@@ -1115,28 +1149,28 @@ const AgroisyncAgroConecta = () => {
                 >
                   {step.number}
                 </div>
-                
-                <div style={{
-                  width: '64px',
-                  height: '64px',
-                  margin: '0 auto var(--agro-space-lg) auto',
-                  background: 'var(--agro-gradient-accent)',
-                  borderRadius: 'var(--agro-radius-2xl)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'var(--agro-dark-green)',
-                  boxShadow: 'var(--agro-shadow-md)'
-                }}>
+
+                <div
+                  style={{
+                    width: '64px',
+                    height: '64px',
+                    margin: '0 auto var(--agro-space-lg) auto',
+                    background: 'var(--agro-gradient-accent)',
+                    borderRadius: 'var(--agro-radius-2xl)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--agro-dark-green)',
+                    boxShadow: 'var(--agro-shadow-md)'
+                  }}
+                >
                   {step.icon}
                 </div>
-                
-                <h3 className="agro-card-title" style={{ marginBottom: 'var(--agro-space-md)' }}>
+
+                <h3 className='agro-card-title' style={{ marginBottom: 'var(--agro-space-md)' }}>
                   {step.title}
                 </h3>
-                <p className="agro-card-description">
-                  {step.description}
-                </p>
+                <p className='agro-card-description'>{step.description}</p>
               </motion.div>
             ))}
           </div>
@@ -1144,51 +1178,55 @@ const AgroisyncAgroConecta = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="agro-section">
-        <div className="agro-container">
+      <section className='agro-section'>
+        <div className='agro-container'>
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="agro-text-center"
+            className='agro-text-center'
             style={{ maxWidth: '800px', margin: '0 auto' }}
           >
-            <div style={{
-              width: '80px',
-              height: '80px',
-              margin: '0 auto var(--agro-space-lg) auto',
-              background: 'var(--agro-gradient-accent)',
-              borderRadius: 'var(--agro-radius-2xl)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--agro-dark-green)',
-              boxShadow: 'var(--agro-shadow-lg)'
-            }}>
+            <div
+              style={{
+                width: '80px',
+                height: '80px',
+                margin: '0 auto var(--agro-space-lg) auto',
+                background: 'var(--agro-gradient-accent)',
+                borderRadius: 'var(--agro-radius-2xl)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--agro-dark-green)',
+                boxShadow: 'var(--agro-shadow-lg)'
+              }}
+            >
               <Globe size={32} />
             </div>
-            <h2 className="agro-section-title" style={{ marginBottom: 'var(--agro-space-lg)' }}>
+            <h2 className='agro-section-title' style={{ marginBottom: 'var(--agro-space-lg)' }}>
               Pronto para Conectar?
             </h2>
-            <p className="agro-section-subtitle" style={{ marginBottom: 'var(--agro-space-xl)' }}>
+            <p className='agro-section-subtitle' style={{ marginBottom: 'var(--agro-space-xl)' }}>
               Junte-se à maior rede de logística do agronegócio brasileiro
             </p>
-            <div style={{ 
-              display: 'flex', 
-              gap: 'var(--agro-space-lg)', 
-              justifyContent: 'center', 
-              flexWrap: 'wrap',
-              alignItems: 'center'
-            }}>
-              <Link to="/register" className="agro-btn agro-btn-primary" style={{ textAlign: 'center' }}>
+            <div
+              style={{
+                display: 'flex',
+                gap: 'var(--agro-space-lg)',
+                justifyContent: 'center',
+                flexWrap: 'wrap',
+                alignItems: 'center'
+              }}
+            >
+              <Link to='/register' className='agro-btn agro-btn-primary' style={{ textAlign: 'center' }}>
                 Tenho Carga
                 <ArrowRight size={20} />
               </Link>
-              <Link to="/register" className="agro-btn agro-btn-secondary" style={{ textAlign: 'center' }}>
+              <Link to='/register' className='agro-btn agro-btn-secondary' style={{ textAlign: 'center' }}>
                 Sou Transportador
               </Link>
-              <Link to="/weather" className="agro-btn agro-btn-outline" style={{ textAlign: 'center' }}>
+              <Link to='/weather' className='agro-btn agro-btn-outline' style={{ textAlign: 'center' }}>
                 Informações Climáticas
               </Link>
             </div>
@@ -1198,34 +1236,40 @@ const AgroisyncAgroConecta = () => {
 
       {/* Modal de Rastreamento */}
       {showTrackingModal && selectedOrder && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0, 0, 0, 0.8)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000,
-          padding: '1rem'
-        }}>
-          <div style={{
-            background: 'var(--card-bg)',
-            borderRadius: '12px',
-            padding: '2rem',
-            maxWidth: '600px',
-            width: '100%',
-            maxHeight: '80vh',
-            overflow: 'auto'
-          }}>
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'center',
-              marginBottom: '1.5rem'
-            }}>
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.8)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            padding: '1rem'
+          }}
+        >
+          <div
+            style={{
+              background: 'var(--card-bg)',
+              borderRadius: '12px',
+              padding: '2rem',
+              maxWidth: '600px',
+              width: '100%',
+              maxHeight: '80vh',
+              overflow: 'auto'
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '1.5rem'
+              }}
+            >
               <h3 style={{ fontSize: '1.5rem', fontWeight: '600', color: 'var(--text-primary)' }}>
                 Rastreamento - {selectedOrder.orderNumber}
               </h3>
@@ -1245,33 +1289,44 @@ const AgroisyncAgroConecta = () => {
 
             <div style={{ marginBottom: '1.5rem' }}>
               <div style={{ display: 'flex', gap: '2rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                <span>📦 {selectedOrder.origin.city}, {selectedOrder.origin.state} → {selectedOrder.destination.city}, {selectedOrder.destination.state}</span>
+                <span>
+                  📦 {selectedOrder.origin.city}, {selectedOrder.origin.state} → {selectedOrder.destination.city},{' '}
+                  {selectedOrder.destination.state}
+                </span>
                 <span>📅 {new Date(selectedOrder.pickupDate).toLocaleDateString('pt-BR')}</span>
               </div>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {trackingUpdates.map((event, index) => (
-                <div key={index} style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '1rem',
-                  padding: '1rem',
-                  background: 'var(--bg-secondary)',
-                  borderRadius: '8px',
-                  border: '1px solid var(--border-color)'
-                }}>
-                  <div style={{
-                    width: '12px',
-                    height: '12px',
-                    borderRadius: '50%',
-                    background: event.status === 'delivered' ? '#10b981' : 
-                               event.status === 'in_transit' ? '#3b82f6' : '#f59e0b'
-                  }} />
+                <div
+                  key={index}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '1rem',
+                    padding: '1rem',
+                    background: 'var(--bg-secondary)',
+                    borderRadius: '8px',
+                    border: '1px solid var(--border-color)'
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '12px',
+                      height: '12px',
+                      borderRadius: '50%',
+                      background:
+                        event.status === 'delivered' ? '#10b981' : event.status === 'in_transit' ? '#3b82f6' : '#f59e0b'
+                    }}
+                  />
                   <div style={{ flex: 1 }}>
                     <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
-                      {event.status === 'picked_up' ? 'Carga Coletada' :
-                       event.status === 'in_transit' ? 'Em Trânsito' : 'Entregue'}
+                      {event.status === 'picked_up'
+                        ? 'Carga Coletada'
+                        : event.status === 'in_transit'
+                          ? 'Em Trânsito'
+                          : 'Entregue'}
                     </div>
                     <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
                       {event.location.city}, {event.location.state}
@@ -1284,14 +1339,16 @@ const AgroisyncAgroConecta = () => {
               ))}
             </div>
 
-            <div style={{ 
-              marginTop: '1.5rem', 
-              padding: '1rem', 
-              background: 'var(--accent)', 
-              borderRadius: '8px',
-              color: 'white',
-              textAlign: 'center'
-            }}>
+            <div
+              style={{
+                marginTop: '1.5rem',
+                padding: '1rem',
+                background: 'var(--accent)',
+                borderRadius: '8px',
+                color: 'white',
+                textAlign: 'center'
+              }}
+            >
               <MessageSquare size={20} style={{ marginRight: '0.5rem', display: 'inline' }} />
               Use o chat para comunicação em tempo real com o transportador
             </div>
@@ -1301,34 +1358,40 @@ const AgroisyncAgroConecta = () => {
 
       {/* Modal de AI Closure */}
       {showAIClosureModal && selectedOrder && aiClosureData && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0, 0, 0, 0.8)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000,
-          padding: '1rem'
-        }}>
-          <div style={{
-            background: 'var(--card-bg)',
-            borderRadius: '12px',
-            padding: '2rem',
-            maxWidth: '700px',
-            width: '100%',
-            maxHeight: '80vh',
-            overflow: 'auto'
-          }}>
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'center',
-              marginBottom: '1.5rem'
-            }}>
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.8)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            padding: '1rem'
+          }}
+        >
+          <div
+            style={{
+              background: 'var(--card-bg)',
+              borderRadius: '12px',
+              padding: '2rem',
+              maxWidth: '700px',
+              width: '100%',
+              maxHeight: '80vh',
+              overflow: 'auto'
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '1.5rem'
+              }}
+            >
               <h3 style={{ fontSize: '1.5rem', fontWeight: '600', color: 'var(--text-primary)' }}>
                 <Bot size={24} style={{ marginRight: '0.5rem', display: 'inline' }} />
                 AI Closure - {selectedOrder.orderNumber}
@@ -1351,19 +1414,25 @@ const AgroisyncAgroConecta = () => {
               <h4 style={{ fontSize: '1.2rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '1rem' }}>
                 Resumo da Performance
               </h4>
-              <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-                {aiClosureData.summary}
-              </p>
-              
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-                gap: '1rem',
-                marginBottom: '1.5rem'
-              }}>
+              <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>{aiClosureData.summary}</p>
+
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                  gap: '1rem',
+                  marginBottom: '1.5rem'
+                }}
+              >
                 <div style={{ padding: '1rem', background: 'var(--bg-secondary)', borderRadius: '8px' }}>
                   <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Entrega no Prazo</div>
-                  <div style={{ fontSize: '1.2rem', fontWeight: '600', color: aiClosureData.performanceMetrics.onTimeDelivery ? '#10b981' : '#ef4444' }}>
+                  <div
+                    style={{
+                      fontSize: '1.2rem',
+                      fontWeight: '600',
+                      color: aiClosureData.performanceMetrics.onTimeDelivery ? '#10b981' : '#ef4444'
+                    }}
+                  >
                     {aiClosureData.performanceMetrics.onTimeDelivery ? 'Sim' : 'Não'}
                   </div>
                 </div>
@@ -1380,15 +1449,15 @@ const AgroisyncAgroConecta = () => {
               <h4 style={{ fontSize: '1.2rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '1rem' }}>
                 Mensagem Sugerida
               </h4>
-              <div style={{ 
-                padding: '1rem', 
-                background: 'var(--bg-secondary)', 
-                borderRadius: '8px',
-                border: '1px solid var(--border-color)'
-              }}>
-                <p style={{ color: 'var(--text-secondary)', margin: 0 }}>
-                  {aiClosureData.suggestedMessage}
-                </p>
+              <div
+                style={{
+                  padding: '1rem',
+                  background: 'var(--bg-secondary)',
+                  borderRadius: '8px',
+                  border: '1px solid var(--border-color)'
+                }}
+              >
+                <p style={{ color: 'var(--text-secondary)', margin: 0 }}>{aiClosureData.suggestedMessage}</p>
               </div>
             </div>
 
@@ -1396,38 +1465,42 @@ const AgroisyncAgroConecta = () => {
               <h4 style={{ fontSize: '1.2rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '1rem' }}>
                 Rascunho da Fatura
               </h4>
-              <div style={{ 
-                padding: '1rem', 
-                background: 'var(--bg-secondary)', 
-                borderRadius: '8px',
-                border: '1px solid var(--border-color)',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}>
-                <span style={{ color: 'var(--text-secondary)' }}>
-                  {aiClosureData.invoiceDraft}
-                </span>
-                <button style={{
-                  padding: '0.5rem 1rem',
-                  background: 'var(--accent)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontSize: '0.9rem'
-                }}>
+              <div
+                style={{
+                  padding: '1rem',
+                  background: 'var(--bg-secondary)',
+                  borderRadius: '8px',
+                  border: '1px solid var(--border-color)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}
+              >
+                <span style={{ color: 'var(--text-secondary)' }}>{aiClosureData.invoiceDraft}</span>
+                <button
+                  style={{
+                    padding: '0.5rem 1rem',
+                    background: 'var(--accent)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '0.9rem'
+                  }}
+                >
                   <Download size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
                   Baixar
                 </button>
               </div>
             </div>
 
-            <div style={{ 
-              display: 'flex', 
-              gap: '1rem', 
-              justifyContent: 'flex-end'
-            }}>
+            <div
+              style={{
+                display: 'flex',
+                gap: '1rem',
+                justifyContent: 'flex-end'
+              }}
+            >
               <button
                 onClick={() => setShowAIClosureModal(false)}
                 style={{
@@ -1464,13 +1537,13 @@ const AgroisyncAgroConecta = () => {
 
       {/* Modal de Cadastro */}
       {showRegistrationModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg max-w-md mx-4">
-            <h3 className="text-xl font-semibold text-gray-600">Sistema de Registro em Desenvolvimento</h3>
-            <p className="text-gray-500 mt-2">Em breve teremos sistema de registro disponível!</p>
-            <button 
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
+          <div className='mx-4 max-w-md rounded-lg bg-white p-8'>
+            <h3 className='text-xl font-semibold text-gray-600'>Sistema de Registro em Desenvolvimento</h3>
+            <p className='mt-2 text-gray-500'>Em breve teremos sistema de registro disponível!</p>
+            <button
               onClick={() => setShowRegistrationModal(false)}
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              className='mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600'
             >
               Fechar
             </button>
@@ -1480,28 +1553,25 @@ const AgroisyncAgroConecta = () => {
 
       {/* Modal de Planos */}
       {showPlansModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Planos Premium - Fretes</h2>
-                <button
-                  onClick={() => setShowPlansModal(false)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4'>
+          <div className='max-h-[90vh] w-full max-w-6xl overflow-y-auto rounded-lg bg-white'>
+            <div className='p-6'>
+              <div className='mb-6 flex items-center justify-between'>
+                <h2 className='text-2xl font-bold text-gray-800'>Planos Premium - Fretes</h2>
+                <button onClick={() => setShowPlansModal(false)} className='text-gray-500 hover:text-gray-700'>
                   <X size={24} />
                 </button>
               </div>
-              <div className="text-center py-8">
-                <h3 className="text-xl font-semibold text-gray-600">Sistema de Planos em Desenvolvimento</h3>
-                <p className="text-gray-500 mt-2">Em breve teremos planos disponíveis para você!</p>
+              <div className='py-8 text-center'>
+                <h3 className='text-xl font-semibold text-gray-600'>Sistema de Planos em Desenvolvimento</h3>
+                <p className='mt-2 text-gray-500'>Em breve teremos planos disponíveis para você!</p>
               </div>
             </div>
           </div>
         </div>
       )}
-      <div className="mt-8 flex justify-center">
-        <CryptoHash pageName="agro-conecta" style={{ display: 'none' }} />
+      <div className='mt-8 flex justify-center'>
+        <CryptoHash pageName='agro-conecta' style={{ display: 'none' }} />
       </div>
     </div>
   );

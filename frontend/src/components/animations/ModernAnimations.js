@@ -17,7 +17,7 @@ export const ScrollReveal = ({ children, delay = 0, duration = 0.8, direction = 
     hidden: {
       opacity: 0,
       y: direction === 'up' ? 50 : direction === 'down' ? -50 : 0,
-      x: direction === 'left' ? 50 : direction === 'right' ? -50 : 0,
+      x: direction === 'left' ? 50 : direction === 'right' ? -50 : 0
     },
     visible: {
       opacity: 1,
@@ -26,18 +26,13 @@ export const ScrollReveal = ({ children, delay = 0, duration = 0.8, direction = 
       transition: {
         duration,
         delay,
-        ease: 'easeOut',
-      },
-    },
+        ease: 'easeOut'
+      }
+    }
   };
 
   return (
-    <motion.div
-      ref={ref}
-      initial="hidden"
-      animate={controls}
-      variants={variants}
-    >
+    <motion.div ref={ref} initial='hidden' animate={controls} variants={variants}>
       {children}
     </motion.div>
   );
@@ -49,15 +44,15 @@ export const Parallax = ({ children, speed = 0.5, className = '' }) => {
     <motion.div
       className={`parallax ${className}`}
       style={{
-        y: 0,
+        y: 0
       }}
       animate={{
-        y: [0, -20 * speed, 0],
+        y: [0, -20 * speed, 0]
       }}
       transition={{
         duration: 6,
         repeat: Infinity,
-        ease: 'easeInOut',
+        ease: 'easeInOut'
       }}
     >
       {children}
@@ -69,11 +64,11 @@ export const Parallax = ({ children, speed = 0.5, className = '' }) => {
 export const MicroButton = ({ children, onClick, className = '', variant = 'primary' }) => {
   const buttonVariants = {
     rest: { scale: 1 },
-    hover: { 
+    hover: {
       scale: 1.05,
       transition: { duration: 0.2 }
     },
-    tap: { 
+    tap: {
       scale: 0.95,
       transition: { duration: 0.1 }
     }
@@ -93,9 +88,9 @@ export const MicroButton = ({ children, onClick, className = '', variant = 'prim
     <motion.button
       className={getButtonClasses()}
       variants={buttonVariants}
-      initial="rest"
-      whileHover="hover"
-      whileTap="tap"
+      initial='rest'
+      whileHover='hover'
+      whileTap='tap'
       onClick={onClick}
     >
       {children}
@@ -109,7 +104,7 @@ export const AnimatedCard = ({ children, className = '', delay = 0 }) => {
     hidden: {
       opacity: 0,
       y: 30,
-      scale: 0.95,
+      scale: 0.95
     },
     visible: {
       opacity: 1,
@@ -118,26 +113,26 @@ export const AnimatedCard = ({ children, className = '', delay = 0 }) => {
       transition: {
         duration: 0.6,
         delay,
-        ease: 'easeOut',
-      },
+        ease: 'easeOut'
+      }
     },
     hover: {
       y: -8,
       scale: 1.02,
       transition: {
         duration: 0.3,
-        ease: 'easeOut',
-      },
-    },
+        ease: 'easeOut'
+      }
+    }
   };
 
   return (
     <motion.div
       className={`card ${className}`}
       variants={cardVariants}
-      initial="hidden"
-      whileInView="visible"
-      whileHover="hover"
+      initial='hidden'
+      whileInView='visible'
+      whileHover='hover'
       viewport={{ once: true, margin: '-50px' }}
     >
       {children}
@@ -162,16 +157,9 @@ export const TypewriterText = ({ text, speed = 50, delay = 0 }) => {
   }, [currentIndex, text, speed, delay]);
 
   return (
-    <motion.span
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
+    <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
       {displayText}
-      <motion.span
-        animate={{ opacity: [0, 1, 0] }}
-        transition={{ duration: 1, repeat: Infinity }}
-      >
+      <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ duration: 1, repeat: Infinity }}>
         |
       </motion.span>
     </motion.span>
@@ -183,12 +171,12 @@ export const FloatingElement = ({ children, intensity = 1, duration = 3 }) => {
   return (
     <motion.div
       animate={{
-        y: [-10 * intensity, 10 * intensity, -10 * intensity],
+        y: [-10 * intensity, 10 * intensity, -10 * intensity]
       }}
       transition={{
         duration,
         repeat: Infinity,
-        ease: 'easeInOut',
+        ease: 'easeInOut'
       }}
     >
       {children}
@@ -203,9 +191,9 @@ export const StaggeredContainer = ({ children, staggerDelay = 0.1 }) => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: staggerDelay,
-      },
-    },
+        staggerChildren: staggerDelay
+      }
+    }
   };
 
   const itemVariants = {
@@ -215,16 +203,16 @@ export const StaggeredContainer = ({ children, staggerDelay = 0.1 }) => {
       y: 0,
       transition: {
         duration: 0.6,
-        ease: 'easeOut',
-      },
-    },
+        ease: 'easeOut'
+      }
+    }
   };
 
   return (
     <motion.div
       variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
+      initial='hidden'
+      whileInView='visible'
       viewport={{ once: true, margin: '-100px' }}
     >
       {React.Children.map(children, (child, index) => (
@@ -241,12 +229,12 @@ export const LoadingSpinner = ({ size = 'md' }) => {
   const sizeClasses = {
     sm: 'w-4 h-4',
     md: 'w-6 h-6',
-    lg: 'w-8 h-8',
+    lg: 'w-8 h-8'
   };
 
   return (
     <motion.div
-      className={`${sizeClasses[size]} border-2 border-gray-300 border-t-gray-600 rounded-full`}
+      className={`${sizeClasses[size]} rounded-full border-2 border-gray-300 border-t-gray-600`}
       animate={{ rotate: 360 }}
       transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
     />
@@ -272,12 +260,12 @@ export const PulseElement = ({ children, intensity = 1 }) => {
   return (
     <motion.div
       animate={{
-        scale: [1, 1 + 0.05 * intensity, 1],
+        scale: [1, 1 + 0.05 * intensity, 1]
       }}
       transition={{
         duration: 2,
         repeat: Infinity,
-        ease: 'easeInOut',
+        ease: 'easeInOut'
       }}
     >
       {children}

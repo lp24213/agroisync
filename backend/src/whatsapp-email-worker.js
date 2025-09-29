@@ -1,7 +1,7 @@
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    
+
     // CORS headers
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
@@ -32,7 +32,7 @@ export default {
     if (url.pathname === '/api/sms/send-code' && request.method === 'POST') {
       try {
         const { phone } = await request.json();
-        
+
         if (!phone) {
           return new Response(
             JSON.stringify({
@@ -48,13 +48,13 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         // FORMATAR TELEFONE PARA BRASIL
         let formattedPhone = phone.replace(/\D/g, '');
         if (!formattedPhone.startsWith('55')) {
-          formattedPhone = '55' + formattedPhone;
+          formattedPhone = `55${formattedPhone}`;
         }
-        
+
         console.log(`📱 SMS FALLBACK para ${formattedPhone} com código ${verificationCode}`);
 
         return new Response(
@@ -63,7 +63,7 @@ export default {
             message: `SMS não disponível. Use WhatsApp ou Email. Código: ${verificationCode}`,
             data: {
               phone: formattedPhone,
-              verificationCode: verificationCode,
+              verificationCode,
               messageId: `sms-fallback-${Date.now()}`,
               status: 'FALLBACK',
               expiresIn: 300,
@@ -74,7 +74,6 @@ export default {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
         );
-        
       } catch (error) {
         console.error('Erro ao enviar SMS:', error);
         return new Response(
@@ -94,7 +93,7 @@ export default {
     if (url.pathname === '/api/whatsapp/send-code' && request.method === 'POST') {
       try {
         const { phone } = await request.json();
-        
+
         if (!phone) {
           return new Response(
             JSON.stringify({
@@ -110,42 +109,49 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         // FORMATAR TELEFONE PARA BRASIL
         let formattedPhone = phone.replace(/\D/g, '');
         if (!formattedPhone.startsWith('55')) {
-          formattedPhone = '55' + formattedPhone;
+          formattedPhone = `55${formattedPhone}`;
         }
-        
-        console.log(`🚀 ENVIANDO WHATSAPP via TWILIO SANDBOX para ${formattedPhone} com código ${verificationCode}`);
+
+        console.log(
+          `🚀 ENVIANDO WHATSAPP via TWILIO SANDBOX para ${formattedPhone} com código ${verificationCode}`
+        );
 
         // TWILIO WHATSAPP SANDBOX - GRATUITO
         try {
-          const twilioResponse = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Messages.json`, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Basic ${btoa(env.TWILIO_ACCOUNT_SID + ':' + env.TWILIO_AUTH_TOKEN)}`,
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams({
-              From: 'whatsapp:+14155238886', // Twilio WhatsApp Sandbox
-              To: `whatsapp:+${formattedPhone}`,
-              Body: `AgroSync - Seu codigo: ${verificationCode}. Valido por 5 min.`
-            })
-          });
-          
+          const twilioResponse = await fetch(
+            `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Messages.json`,
+            {
+              method: 'POST',
+              headers: {
+                Authorization: `Basic ${btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`)}`,
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: new URLSearchParams({
+                From: 'whatsapp:+14155238886', // Twilio WhatsApp Sandbox
+                To: `whatsapp:+${formattedPhone}`,
+                Body: `AgroSync - Seu codigo: ${verificationCode}. Valido por 5 min.`
+              })
+            }
+          );
+
           const twilioData = await twilioResponse.json();
-          
+
           if (twilioResponse.ok && twilioData.sid) {
-            console.log(`📱 WHATSAPP ENTREGUE via Twilio Sandbox para ${formattedPhone}: ${verificationCode}`);
-            
+            console.log(
+              `📱 WHATSAPP ENTREGUE via Twilio Sandbox para ${formattedPhone}: ${verificationCode}`
+            );
+
             return new Response(
               JSON.stringify({
                 success: true,
                 message: 'WhatsApp ENTREGUE! Verifique seu WhatsApp.',
                 data: {
                   phone: formattedPhone,
-                  verificationCode: verificationCode,
+                  verificationCode,
                   messageId: twilioData.sid,
                   status: twilioData.status,
                   expiresIn: 300,
@@ -161,7 +167,7 @@ export default {
           }
         } catch (twilioError) {
           console.error(`❌ Twilio WhatsApp falhou: ${twilioError.message}`);
-          
+
           // FALLBACK - Mostrar código no toast
           return new Response(
             JSON.stringify({
@@ -169,7 +175,7 @@ export default {
               message: `WhatsApp não entregue. Código: ${verificationCode}`,
               data: {
                 phone: formattedPhone,
-                verificationCode: verificationCode,
+                verificationCode,
                 messageId: `whatsapp-fallback-${Date.now()}`,
                 status: 'FALLBACK',
                 expiresIn: 300,
@@ -182,7 +188,6 @@ export default {
             }
           );
         }
-        
       } catch (error) {
         console.error('Erro ao enviar WhatsApp:', error);
         return new Response(
@@ -202,7 +207,7 @@ export default {
     if (url.pathname === '/api/email/send-verification' && request.method === 'POST') {
       try {
         const { email } = await request.json();
-        
+
         if (!email) {
           return new Response(
             JSON.stringify({
@@ -218,7 +223,7 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         console.log(`🚀 ENVIANDO EMAIL via RESEND para ${email} com código ${verificationCode}`);
 
         // RESEND EMAIL - GRATUITO (3.000 emails/mês)
@@ -226,7 +231,7 @@ export default {
           const resendResponse = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+              Authorization: `Bearer ${env.RESEND_API_KEY}`,
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -258,19 +263,19 @@ export default {
               `
             })
           });
-          
+
           const resendData = await resendResponse.json();
-          
+
           if (resendResponse.ok && resendData.id) {
             console.log(`📧 EMAIL ENTREGUE via Resend para ${email}: ${verificationCode}`);
-            
+
             return new Response(
               JSON.stringify({
                 success: true,
                 message: 'Email ENTREGUE! Verifique sua caixa de entrada.',
                 data: {
-                  email: email,
-                  verificationCode: verificationCode,
+                  email,
+                  verificationCode,
                   messageId: resendData.id,
                   status: 'SENT',
                   expiresIn: 600,
@@ -286,15 +291,15 @@ export default {
           }
         } catch (resendError) {
           console.error(`❌ Resend falhou: ${resendError.message}`);
-          
+
           // FALLBACK - Mostrar código no toast
           return new Response(
             JSON.stringify({
               success: true,
               message: `Email não entregue. Código: ${verificationCode}`,
               data: {
-                email: email,
-                verificationCode: verificationCode,
+                email,
+                verificationCode,
                 messageId: `email-fallback-${Date.now()}`,
                 status: 'FALLBACK',
                 expiresIn: 600,
@@ -307,7 +312,6 @@ export default {
             }
           );
         }
-        
       } catch (error) {
         console.error('Erro ao enviar email:', error);
         return new Response(
@@ -327,7 +331,7 @@ export default {
     if (url.pathname === '/api/sms/verify-code' && request.method === 'POST') {
       try {
         const { phone, code } = await request.json();
-        
+
         if (!phone || !code) {
           return new Response(
             JSON.stringify({
@@ -340,7 +344,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ SMS verificado para ${phone}: ${code}`);
@@ -389,7 +393,7 @@ export default {
     if (url.pathname === '/api/forgot-password' && request.method === 'POST') {
       try {
         const { email } = await request.json();
-        
+
         if (!email) {
           return new Response(
             JSON.stringify({
@@ -405,15 +409,17 @@ export default {
 
         // Gerar código de recuperação
         const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
-        console.log(`🚀 ENVIANDO EMAIL DE RECUPERAÇÃO via RESEND para ${email} com código ${resetCode}`);
+
+        console.log(
+          `🚀 ENVIANDO EMAIL DE RECUPERAÇÃO via RESEND para ${email} com código ${resetCode}`
+        );
 
         // RESEND EMAIL - RECUPERAÇÃO DE SENHA
         try {
           const resendResponse = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+              Authorization: `Bearer ${env.RESEND_API_KEY}`,
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -445,19 +451,19 @@ export default {
               `
             })
           });
-          
+
           const resendData = await resendResponse.json();
-          
+
           if (resendResponse.ok && resendData.id) {
             console.log(`📧 EMAIL DE RECUPERAÇÃO ENTREGUE via Resend para ${email}: ${resetCode}`);
-            
+
             return new Response(
               JSON.stringify({
                 success: true,
                 message: 'Email de recuperação ENTREGUE! Verifique sua caixa de entrada.',
                 data: {
-                  email: email,
-                  resetCode: resetCode,
+                  email,
+                  resetCode,
                   messageId: resendData.id,
                   status: 'SENT',
                   expiresIn: 900,
@@ -473,15 +479,15 @@ export default {
           }
         } catch (resendError) {
           console.error(`❌ Resend falhou: ${resendError.message}`);
-          
+
           // FALLBACK - Mostrar código no toast
           return new Response(
             JSON.stringify({
               success: true,
               message: `Email de recuperação não entregue. Código: ${resetCode}`,
               data: {
-                email: email,
-                resetCode: resetCode,
+                email,
+                resetCode,
                 messageId: `reset-fallback-${Date.now()}`,
                 status: 'FALLBACK',
                 expiresIn: 900,
@@ -494,7 +500,6 @@ export default {
             }
           );
         }
-        
       } catch (error) {
         console.error('Erro ao enviar email de recuperação:', error);
         return new Response(
@@ -514,7 +519,7 @@ export default {
     if (url.pathname === '/api/email/verify' && request.method === 'POST') {
       try {
         const { email, code } = await request.json();
-        
+
         if (!email || !code) {
           return new Response(
             JSON.stringify({
@@ -527,7 +532,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ Email verificado para ${email}: ${code}`);

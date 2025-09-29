@@ -1,14 +1,19 @@
 import express from 'express';
 import { authenticateToken } from '../middleware/auth.js';
-import { requirePaidAccess } from '../middleware/requirePaidAccess.js';
-import { rateLimiter } from '../middleware/rateLimiter.js';
-import User from '../models/User.js';
+import { requirePaidAccess as _requirePaidAccess } from '../middleware/requirePaidAccess.js';
+import { rateLimiter as _rateLimiter } from '../middleware/rateLimiter.js';
+import _User from '../models/User.js';
 import Payment from '../models/Payment.js';
 import AuditLog from '../models/AuditLog.js';
+import Stripe from 'stripe';
+import { ethers } from 'ethers';
+
+const router = express.Router();
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Configurações
 const OWNER_WALLET = process.env.OWNER_WALLET || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6';
-const WEB3_PROVIDER = process.env.WEB3_PROVIDER || 'https://mainnet.infura.io/v3/your-project-id';
+const _WEB3_PROVIDER = process.env.WEB3_PROVIDER || 'https://mainnet.infura.io/v3/your-project-id';
 const COMMISSION_RATE = 0.05; // 5% de comissão para intermediação
 const MIN_COMMISSION = 0.01; // Comissão mínima
 
@@ -756,8 +761,8 @@ router.get('/metamask/transactions/:address', async (req, res) => {
       address,
       transactions,
       pagination: {
-        limit: parseInt(limit),
-        offset: parseInt(offset),
+        limit: parseInt(limit, 10),
+        offset: parseInt(offset, 10),
         total: 0
       }
     });

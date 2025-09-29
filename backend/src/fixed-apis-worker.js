@@ -1,7 +1,7 @@
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    
+
     // CORS headers
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
@@ -32,7 +32,7 @@ export default {
     if (url.pathname === '/api/sms/send-code' && request.method === 'POST') {
       try {
         const { phone } = await request.json();
-        
+
         if (!phone) {
           return new Response(
             JSON.stringify({
@@ -48,16 +48,18 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         // FORMATAR TELEFONE PARA BRASIL
         let formattedPhone = phone.replace(/\D/g, ''); // Remove caracteres não numéricos
-        
+
         // Se não começar com 55 (Brasil), adicionar
         if (!formattedPhone.startsWith('55')) {
-          formattedPhone = '55' + formattedPhone;
+          formattedPhone = `55${formattedPhone}`;
         }
-        
-        console.log(`🚀 ENVIANDO SMS VIA TWILIO para ${formattedPhone} com código ${verificationCode}`);
+
+        console.log(
+          `🚀 ENVIANDO SMS VIA TWILIO para ${formattedPhone} com código ${verificationCode}`
+        );
 
         // TWILIO FIXED - Usar credenciais REAIS
         try {
@@ -67,28 +69,35 @@ export default {
             authToken: env.TWILIO_AUTH_TOKEN ? 'SET' : 'NOT SET',
             phoneNumber: env.TWILIO_PHONE_NUMBER ? 'SET' : 'NOT SET'
           });
-          
+
           if (!env.TWILIO_ACCOUNT_SID || !env.TWILIO_AUTH_TOKEN || !env.TWILIO_PHONE_NUMBER) {
-            throw new Error(`Credenciais Twilio não configuradas: SID=${!!env.TWILIO_ACCOUNT_SID}, TOKEN=${!!env.TWILIO_AUTH_TOKEN}, PHONE=${!!env.TWILIO_PHONE_NUMBER}`);
+            throw new Error(
+              `Credenciais Twilio não configuradas: SID=${!!env.TWILIO_ACCOUNT_SID}, TOKEN=${!!env.TWILIO_AUTH_TOKEN}, PHONE=${!!env.TWILIO_PHONE_NUMBER}`
+            );
           }
 
-          const twilioResponse = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Messages.json`, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Basic ${btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`)}`,
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams({
-              From: env.TWILIO_PHONE_NUMBER,
-              To: `+${formattedPhone}`,
-              Body: `AgroSync - Seu código: ${verificationCode}. Válido por 5 min.`
-            })
-          });
-          
+          const twilioResponse = await fetch(
+            `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Messages.json`,
+            {
+              method: 'POST',
+              headers: {
+                Authorization: `Basic ${btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`)}`,
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: new URLSearchParams({
+                From: env.TWILIO_PHONE_NUMBER,
+                To: `+${formattedPhone}`,
+                Body: `AgroSync - Seu código: ${verificationCode}. Válido por 5 min.`
+              })
+            }
+          );
+
           if (twilioResponse.ok) {
             const twilioData = await twilioResponse.json();
-            console.log(`📱 SMS REAL ENTREGUE via Twilio para ${formattedPhone}: ${verificationCode}`);
-            
+            console.log(
+              `📱 SMS REAL ENTREGUE via Twilio para ${formattedPhone}: ${verificationCode}`
+            );
+
             return new Response(
               JSON.stringify({
                 success: true,
@@ -110,7 +119,7 @@ export default {
           }
         } catch (twilioError) {
           console.error('Erro ao enviar SMS via Twilio:', twilioError);
-          
+
           return new Response(
             JSON.stringify({
               success: false,
@@ -126,7 +135,6 @@ export default {
             }
           );
         }
-        
       } catch (error) {
         console.error('Erro ao enviar SMS:', error);
         return new Response(
@@ -146,7 +154,7 @@ export default {
     if (url.pathname === '/api/email/send-verification' && request.method === 'POST') {
       try {
         const { email } = await request.json();
-        
+
         if (!email) {
           return new Response(
             JSON.stringify({
@@ -162,7 +170,7 @@ export default {
 
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         console.log(`🚀 ENVIANDO EMAIL VIA SUPABASE para ${email} com código ${verificationCode}`);
 
         // SUPABASE FIXED - Usar credenciais REAIS
@@ -176,24 +184,24 @@ export default {
           const supabaseResponse = await fetch(`${env.SUPABASE_URL}/auth/v1/otp`, {
             method: 'POST',
             headers: {
-              'apikey': env.SUPABASE_ANON_KEY,
+              apikey: env.SUPABASE_ANON_KEY,
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              email: email,
+              email,
               options: {
                 emailRedirectTo: 'https://agroisync.com/verify',
                 data: {
-                  verificationCode: verificationCode,
+                  verificationCode,
                   subject: 'Código de Verificação - AgroSync'
                 }
               }
             })
           });
-          
+
           if (supabaseResponse.ok) {
             console.log(`📧 Email REAL ENTREGUE via Supabase para ${email}: ${verificationCode}`);
-            
+
             return new Response(
               JSON.stringify({
                 success: true,
@@ -213,10 +221,9 @@ export default {
             console.error('Erro Supabase:', errorData);
             throw new Error(`Supabase error: ${supabaseResponse.status} - ${errorData}`);
           }
-          
         } catch (supabaseError) {
           console.error('Erro ao enviar email via Supabase:', supabaseError);
-          
+
           return new Response(
             JSON.stringify({
               success: false,
@@ -232,7 +239,6 @@ export default {
             }
           );
         }
-        
       } catch (error) {
         console.error('Erro ao enviar email:', error);
         return new Response(
@@ -252,7 +258,7 @@ export default {
     if (url.pathname === '/api/sms/verify-code' && request.method === 'POST') {
       try {
         const { phone, code } = await request.json();
-        
+
         if (!phone || !code) {
           return new Response(
             JSON.stringify({
@@ -265,7 +271,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ SMS verificado para ${phone}: ${code}`);
@@ -314,7 +320,7 @@ export default {
     if (url.pathname === '/api/email/verify' && request.method === 'POST') {
       try {
         const { email, code } = await request.json();
-        
+
         if (!email || !code) {
           return new Response(
             JSON.stringify({
@@ -327,7 +333,7 @@ export default {
             }
           );
         }
-        
+
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
           console.log(`✅ Email verificado para ${email}: ${code}`);

@@ -1,71 +1,72 @@
 import axios from 'axios';
+import { API_CONFIG } from '../config/constants.js';
 
 // Configuração da API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
+const API_BASE_URL = API_CONFIG.baseURL;
 
 // Categorias principais do agronegócio
 export const PRODUCT_CATEGORIES = {
-  'graos': {
+  graos: {
     name: 'Grãos',
     icon: '🌾',
     subcategories: ['Soja', 'Milho', 'Trigo', 'Arroz', 'Feijão', 'Cevada', 'Aveia'],
     color: 'from-emerald-500 to-emerald-600'
   },
-  'sementes': {
+  sementes: {
     name: 'Sementes',
     icon: '🌱',
     subcategories: ['Soja', 'Milho', 'Trigo', 'Hortifruti', 'Forrageiras', 'Florestais'],
     color: 'from-green-500 to-green-600'
   },
-  'fertilizantes': {
+  fertilizantes: {
     name: 'Fertilizantes',
     icon: '🧪',
     subcategories: ['NPK', 'Orgânicos', 'Micronutrientes', 'Corretivos', 'Biofertilizantes'],
     color: 'from-blue-500 to-blue-600'
   },
-  'maquinarios': {
+  maquinarios: {
     name: 'Maquinários',
     icon: '🚜',
     subcategories: ['Tratores', 'Colheitadeiras', 'Plantadeiras', 'Pulverizadores', 'Implementos'],
     color: 'from-orange-500 to-orange-600'
   },
-  'insumos': {
+  insumos: {
     name: 'Insumos',
     icon: '🔧',
     subcategories: ['Defensivos', 'Vacinas', 'Rações', 'Suplementos', 'Equipamentos'],
     color: 'from-purple-500 to-purple-600'
   },
-  'cafe': {
+  cafe: {
     name: 'Café',
     icon: '☕',
     subcategories: ['Arábica', 'Robusta', 'Especial', 'Gourmet', 'Orgânico'],
     color: 'from-amber-500 to-amber-600'
   },
-  'frutas': {
+  frutas: {
     name: 'Frutas',
     icon: '🍎',
     subcategories: ['Cítricas', 'Tropicais', 'Temperadas', 'Exóticas', 'Orgânicas'],
     color: 'from-red-500 to-red-600'
   },
-  'hortalicas': {
+  hortalicas: {
     name: 'Hortaliças',
     icon: '🥬',
     subcategories: ['Folhosas', 'Raízes', 'Legumes', 'Temperos', 'Orgânicos'],
     color: 'from-lime-500 to-lime-600'
   },
-  'carnes': {
+  carnes: {
     name: 'Carnes',
     icon: '🥩',
     subcategories: ['Bovina', 'Suína', 'Aviária', 'Caprina', 'Ovina', 'Orgânicas'],
     color: 'from-rose-500 to-rose-600'
   },
-  'laticinios': {
+  laticinios: {
     name: 'Laticínios',
     icon: '🥛',
     subcategories: ['Leite', 'Queijos', 'Iogurtes', 'Manteigas', 'Orgânicos'],
     color: 'from-cyan-500 to-cyan-600'
   },
-  'servicos': {
+  servicos: {
     name: 'Serviços',
     icon: '🛠️',
     subcategories: ['Consultoria', 'Análises', 'Transporte', 'Armazenagem', 'Tecnologia'],
@@ -75,11 +76,11 @@ export const PRODUCT_CATEGORIES = {
 
 // Estados de produto
 export const PRODUCT_STATUS = {
-  'active': { name: 'Ativo', color: 'bg-green-100 text-green-800' },
-  'pending': { name: 'Pendente', color: 'bg-yellow-100 text-yellow-800' },
-  'sold': { name: 'Vendido', color: 'bg-blue-100 text-blue-800' },
-  'inactive': { name: 'Inativo', color: 'bg-gray-100 text-gray-800' },
-  'reserved': { name: 'Reservado', color: 'bg-purple-100 text-purple-800' }
+  active: { name: 'Ativo', color: 'bg-green-100 text-green-800' },
+  pending: { name: 'Pendente', color: 'bg-yellow-100 text-yellow-800' },
+  sold: { name: 'Vendido', color: 'bg-blue-100 text-blue-800' },
+  inactive: { name: 'Inativo', color: 'bg-gray-100 text-gray-800' },
+  reserved: { name: 'Reservado', color: 'bg-purple-100 text-purple-800' }
 };
 
 // Serviço de produtos
@@ -283,26 +284,23 @@ class ProductService {
     // Filtro por busca
     if (filters.search) {
       const searchTerm = filters.search.toLowerCase();
-      filtered = filtered.filter(product => 
-        product.name.toLowerCase().includes(searchTerm) ||
-        product.description.toLowerCase().includes(searchTerm) ||
-        product.category.toLowerCase().includes(searchTerm) ||
-        product.seller?.name?.toLowerCase().includes(searchTerm)
+      filtered = filtered.filter(
+        product =>
+          product.name.toLowerCase().includes(searchTerm) ||
+          product.description.toLowerCase().includes(searchTerm) ||
+          product.category.toLowerCase().includes(searchTerm) ||
+          product.seller?.name?.toLowerCase().includes(searchTerm)
       );
     }
 
     // Filtro por categoria
     if (filters.categories && filters.categories.length > 0) {
-      filtered = filtered.filter(product => 
-        filters.categories.includes(product.category)
-      );
+      filtered = filtered.filter(product => filters.categories.includes(product.category));
     }
 
     // Filtro por localização
     if (filters.locations && filters.locations.length > 0) {
-      filtered = filtered.filter(product => 
-        filters.locations.includes(product.location)
-      );
+      filtered = filtered.filter(product => filters.locations.includes(product.location));
     }
 
     // Filtro por preço

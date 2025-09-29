@@ -149,25 +149,25 @@ export const detectAttackPatterns = async (req, res, next) => {
     const attackPatterns = [
       // SQL Injection
       /(\b(union|select|insert|update|delete|drop|create|alter|exec|execute|script|javascript|vbscript|onload|onerror|onclick)\b)/i,
-      
+
       // XSS
       /<script|javascript:|vbscript:|onload|onerror|onclick|onmouseover/i,
-      
+
       // Command Injection
       /(\b(cmd|command|exec|system|eval|setTimeout|setInterval)\b)/i,
-      
+
       // Path Traversal
       /\.\.\/|\.\.\\|\.\.%2f|\.\.%5c/i,
-      
+
       // LDAP Injection
       /(\b(\(|\)|\*|\||&)\b)/i,
-      
+
       // NoSQL Injection
       /(\$where|\$ne|\$gt|\$lt|\$regex)/i,
-      
+
       // Template Injection
       /(\{\{.*\}\}|\{%.*%\})/i,
-      
+
       // Code Injection
       /(\beval\s*\(|\bFunction\s*\(|\bnew\s+Function)/i
     ];
@@ -240,7 +240,7 @@ export const detectAttackPatterns = async (req, res, next) => {
 export const validateInput = (req, res, next) => {
   try {
     // Validar tamanho do body
-    const contentLength = parseInt(req.get('content-length') || '0');
+    const contentLength = parseInt(req.get('content-length', 10) || '0');
     const maxSize = 10 * 1024 * 1024; // 10MB
 
     if (contentLength > maxSize) {
@@ -294,7 +294,7 @@ export const sanitizeData = (req, res, next) => {
   try {
     // Sanitizar headers suspeitos
     const suspiciousHeaders = ['x-forwarded-for', 'x-real-ip', 'x-cluster-client-ip'];
-    
+
     suspiciousHeaders.forEach(header => {
       if (req.headers[header]) {
         req.headers[header] = sanitizeString(req.headers[header]);
@@ -351,8 +351,10 @@ export const securityLogging = async (req, res, next) => {
 // ===== FUNÇÕES AUXILIARES =====
 
 function sanitizeString(str) {
-  if (typeof str !== 'string') return str;
-  
+  if (typeof str !== 'string') {
+    return str;
+  }
+
   return str
     .replace(/[<>]/g, '') // Remover < e >
     .replace(/javascript:/gi, '') // Remover javascript:
@@ -362,18 +364,20 @@ function sanitizeString(str) {
 }
 
 function sanitizeObject(obj) {
-  if (typeof obj !== 'object' || obj === null) return obj;
-  
+  if (typeof obj !== 'object' || obj === null) {
+    return obj;
+  }
+
   if (Array.isArray(obj)) {
     return obj.map(item => sanitizeObject(item));
   }
-  
+
   const sanitized = {};
   for (const [key, value] of Object.entries(obj)) {
     const cleanKey = sanitizeString(key);
     sanitized[cleanKey] = typeof value === 'string' ? sanitizeString(value) : sanitizeObject(value);
   }
-  
+
   return sanitized;
 }
 
@@ -383,7 +387,7 @@ export const validateStripeWebhook = (req, res, next) => {
   try {
     const signature = req.get('stripe-signature');
     const payload = JSON.stringify(req.body);
-    
+
     if (!signature) {
       return res.status(400).json({
         success: false,
@@ -394,7 +398,7 @@ export const validateStripeWebhook = (req, res, next) => {
 
     // Aqui você implementaria a verificação real da assinatura do Stripe
     // Por enquanto, apenas validar se existe
-    
+
     next();
   } catch (error) {
     console.error('Erro na validação do webhook Stripe:', error);
@@ -412,7 +416,7 @@ export const validateCSRF = (req, res, next) => {
   try {
     // Verificar se é uma requisição que precisa de CSRF
     const csrfRequiredMethods = ['POST', 'PUT', 'DELETE', 'PATCH'];
-    
+
     if (!csrfRequiredMethods.includes(req.method)) {
       return next();
     }
@@ -444,7 +448,7 @@ export const validateCSRF = (req, res, next) => {
 export const validateAPIKey = (req, res, next) => {
   try {
     const apiKey = req.get('X-API-Key');
-    
+
     if (!apiKey) {
       return res.status(401).json({
         success: false,
@@ -455,7 +459,7 @@ export const validateAPIKey = (req, res, next) => {
 
     // Aqui você implementaria a validação real da API Key
     // Por enquanto, apenas verificar se existe
-    
+
     next();
   } catch (error) {
     console.error('Erro na validação da API Key:', error);

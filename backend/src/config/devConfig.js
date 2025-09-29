@@ -4,22 +4,22 @@ export const devConfig = {
   email: {
     host: 'smtp.gmail.com',
     port: 587,
-    user: 'luispaulodeoliveira@agrotm.com.br',
-    pass: 'Th@ys15221008',
+    user: process.env.SMTP_USER || '',
+    pass: process.env.SMTP_PASS || '',
     fromEmail: 'noreply@agroisync.com',
     fromName: 'AgroSync'
   },
-  
+
   // SMS Twilio
   sms: {
-    accountSid: 'ACe505b5ec08f28194cc48089843d7ab9f',
-    authToken: 'your_twilio_auth_token_here',
-    phoneNumber: '+1234567890'
+    accountSid: process.env.TWILIO_ACCOUNT_SID || '',
+    authToken: process.env.TWILIO_AUTH_TOKEN || '',
+    phoneNumber: process.env.TWILIO_PHONE_NUMBER || ''
   },
-  
+
   // URLs
   frontendUrl: 'http://localhost:3000',
-  
+
   // Modo de desenvolvimento
   isDevelopment: true,
   enableRealNotifications: false // Desabilitar para desenvolvimento

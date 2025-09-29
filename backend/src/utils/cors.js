@@ -17,7 +17,7 @@ export const handleOptions = () => {
 };
 
 // Middleware de CORS
-export const corsMiddleware = (request) => {
+export const corsMiddleware = request => {
   if (request.method === 'OPTIONS') {
     return handleOptions();
   }
@@ -38,10 +38,13 @@ export const jsonResponse = (data, status = 200, headers = {}) => {
 
 // Utilitário para erro
 export const errorResponse = (message, status = 400) => {
-  return jsonResponse({
-    error: true,
-    message
-  }, status);
+  return jsonResponse(
+    {
+      error: true,
+      message
+    },
+    status
+  );
 };
 
 // Utilitário para sucesso
@@ -54,8 +57,8 @@ export const successResponse = (data, message = 'Success') => {
 };
 
 // Validação de método HTTP
-export const validateMethod = (allowedMethods) => {
-  return (request) => {
+export const validateMethod = allowedMethods => {
+  return request => {
     if (!allowedMethods.includes(request.method)) {
       return errorResponse(`Método ${request.method} não permitido`, 405);
     }
@@ -69,16 +72,16 @@ export const rateLimit = new Map();
 export const checkRateLimit = (ip, limit = 100, window = 60000) => {
   const now = Date.now();
   const key = `${ip}:${Math.floor(now / window)}`;
-  
+
   if (!rateLimit.has(key)) {
     rateLimit.set(key, 0);
   }
-  
+
   const count = rateLimit.get(key);
   if (count >= limit) {
     return false;
   }
-  
+
   rateLimit.set(key, count + 1);
   return true;
 };

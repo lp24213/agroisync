@@ -23,25 +23,19 @@ const UsuarioGeral = () => {
   const canAddProduct = productCount < planLimits.maxProducts;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 py-8">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-4xl mx-auto"
-        >
+    <div className='min-h-screen bg-gradient-to-br from-green-50 to-blue-50 py-8'>
+      <div className='container mx-auto px-4'>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='mx-auto max-w-4xl'>
           {/* Header */}
-          <div className="text-center mb-8">
+          <div className='mb-8 text-center'>
             <motion.h1
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
-              className="text-4xl font-bold text-green-800 mb-4"
+              className='mb-4 text-4xl font-bold text-green-800'
             >
               👤 Usuário Geral
             </motion.h1>
-            <p className="text-lg text-gray-600">
-              Plano Básico - R$ 15,00/mês
-            </p>
+            <p className='text-lg text-gray-600'>Plano Básico - R$ 15,00/mês</p>
           </div>
 
           {/* Status do Plano */}
@@ -49,34 +43,34 @@ const UsuarioGeral = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white rounded-xl shadow-lg p-6 mb-6"
+            className='mb-6 rounded-xl bg-white p-6 shadow-lg'
           >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-gray-800">Status do Plano</h2>
-              <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                Ativo
-              </div>
+            <div className='mb-4 flex items-center justify-between'>
+              <h2 className='text-2xl font-bold text-gray-800'>Status do Plano</h2>
+              <div className='rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800'>Ativo</div>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-center space-x-3">
-                <Package className="w-5 h-5 text-blue-600" />
-                <span className="text-gray-700">Produtos: {productCount}/{planLimits.maxProducts}</span>
+
+            <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+              <div className='flex items-center space-x-3'>
+                <Package className='h-5 w-5 text-blue-600' />
+                <span className='text-gray-700'>
+                  Produtos: {productCount}/{planLimits.maxProducts}
+                </span>
                 {canAddProduct ? (
-                  <CheckCircle className="w-4 h-4 text-green-500" />
+                  <CheckCircle className='h-4 w-4 text-green-500' />
                 ) : (
-                  <XCircle className="w-4 h-4 text-red-500" />
+                  <XCircle className='h-4 w-4 text-red-500' />
                 )}
               </div>
-              
-              <div className="flex items-center space-x-3">
-                <Star className="w-5 h-5 text-yellow-600" />
-                <span className="text-gray-700">Imagens por produto: {planLimits.maxImages}</span>
+
+              <div className='flex items-center space-x-3'>
+                <Star className='h-5 w-5 text-yellow-600' />
+                <span className='text-gray-700'>Imagens por produto: {planLimits.maxImages}</span>
               </div>
-              
-              <div className="flex items-center space-x-3">
-                <AlertCircle className="w-5 h-5 text-orange-600" />
-                <span className="text-gray-700">Descrição: {planLimits.maxDescription} caracteres</span>
+
+              <div className='flex items-center space-x-3'>
+                <AlertCircle className='h-5 w-5 text-orange-600' />
+                <span className='text-gray-700'>Descrição: {planLimits.maxDescription} caracteres</span>
               </div>
             </div>
           </motion.div>
@@ -86,34 +80,34 @@ const UsuarioGeral = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white rounded-xl shadow-lg p-6 mb-6"
+            className='mb-6 rounded-xl bg-white p-6 shadow-lg'
           >
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Limitações do Plano</h2>
-            
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <span className="text-gray-700">💳 Pagamentos em Criptomoedas</span>
-                <XCircle className="w-5 h-5 text-red-500" />
+            <h2 className='mb-4 text-2xl font-bold text-gray-800'>Limitações do Plano</h2>
+
+            <div className='space-y-4'>
+              <div className='flex items-center justify-between rounded-lg bg-gray-50 p-3'>
+                <span className='text-gray-700'>💳 Pagamentos em Criptomoedas</span>
+                <XCircle className='h-5 w-5 text-red-500' />
               </div>
-              
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <span className="text-gray-700">💬 Sistema de Mensagens</span>
-                <XCircle className="w-5 h-5 text-red-500" />
+
+              <div className='flex items-center justify-between rounded-lg bg-gray-50 p-3'>
+                <span className='text-gray-700'>💬 Sistema de Mensagens</span>
+                <XCircle className='h-5 w-5 text-red-500' />
               </div>
-              
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <span className="text-gray-700">📊 Analytics Avançados</span>
-                <XCircle className="w-5 h-5 text-red-500" />
+
+              <div className='flex items-center justify-between rounded-lg bg-gray-50 p-3'>
+                <span className='text-gray-700'>📊 Analytics Avançados</span>
+                <XCircle className='h-5 w-5 text-red-500' />
               </div>
-              
-              <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                <span className="text-gray-700">📦 1 Produto</span>
-                <CheckCircle className="w-5 h-5 text-green-500" />
+
+              <div className='flex items-center justify-between rounded-lg bg-green-50 p-3'>
+                <span className='text-gray-700'>📦 1 Produto</span>
+                <CheckCircle className='h-5 w-5 text-green-500' />
               </div>
-              
-              <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                <span className="text-gray-700">🖼️ 3 Imagens por produto</span>
-                <CheckCircle className="w-5 h-5 text-green-500" />
+
+              <div className='flex items-center justify-between rounded-lg bg-green-50 p-3'>
+                <span className='text-gray-700'>🖼️ 3 Imagens por produto</span>
+                <CheckCircle className='h-5 w-5 text-green-500' />
               </div>
             </div>
           </motion.div>
@@ -123,36 +117,34 @@ const UsuarioGeral = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-white rounded-xl shadow-lg p-6"
+            className='rounded-xl bg-white p-6 shadow-lg'
           >
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Ações Disponíveis</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <h2 className='mb-4 text-2xl font-bold text-gray-800'>Ações Disponíveis</h2>
+
+            <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 disabled={!canAddProduct}
-                className={`p-4 rounded-lg border-2 transition-all ${
+                className={`rounded-lg border-2 p-4 transition-all ${
                   canAddProduct
                     ? 'border-green-500 bg-green-50 text-green-700 hover:bg-green-100'
-                    : 'border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed'
+                    : 'cursor-not-allowed border-gray-300 bg-gray-100 text-gray-500'
                 }`}
               >
-                <Package className="w-6 h-6 mx-auto mb-2" />
-                <div className="font-medium">Adicionar Produto</div>
-                <div className="text-sm opacity-75">
-                  {canAddProduct ? 'Disponível' : 'Limite atingido'}
-                </div>
+                <Package className='mx-auto mb-2 h-6 w-6' />
+                <div className='font-medium'>Adicionar Produto</div>
+                <div className='text-sm opacity-75'>{canAddProduct ? 'Disponível' : 'Limite atingido'}</div>
               </motion.button>
-              
+
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="p-4 rounded-lg border-2 border-blue-500 bg-blue-50 text-blue-700 hover:bg-blue-100"
+                className='rounded-lg border-2 border-blue-500 bg-blue-50 p-4 text-blue-700 hover:bg-blue-100'
               >
-                <Star className="w-6 h-6 mx-auto mb-2" />
-                <div className="font-medium">Upgrade do Plano</div>
-                <div className="text-sm opacity-75">Desbloquear mais recursos</div>
+                <Star className='mx-auto mb-2 h-6 w-6' />
+                <div className='font-medium'>Upgrade do Plano</div>
+                <div className='text-sm opacity-75'>Desbloquear mais recursos</div>
               </motion.button>
             </div>
           </motion.div>

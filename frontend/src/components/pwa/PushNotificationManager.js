@@ -47,7 +47,7 @@ const PushNotificationManager = () => {
   const subscribeToPush = useCallback(async () => {
     try {
       const registration = await navigator.serviceWorker.ready;
-      
+
       // Configurações do VAPID
       const vapidPublicKey = process.env.REACT_APP_VAPID_PUBLIC_KEY;
       if (!vapidPublicKey) {
@@ -64,7 +64,7 @@ const PushNotificationManager = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
         },
         body: JSON.stringify({
           subscription: subscription,
@@ -88,7 +88,7 @@ const PushNotificationManager = () => {
 
   // Solicitar permissão para notificações
   const requestPermission = useCallback(async () => {
-setIsLoading(true);
+    setIsLoading(true);
     setError('');
 
     try {
@@ -115,7 +115,6 @@ setIsLoading(true);
     }
   }, [analytics, t, subscribeToPush]);
 
-
   // Cancelar inscrição
   const unsubscribeFromPush = useCallback(async () => {
     setIsLoading(true);
@@ -124,13 +123,13 @@ setIsLoading(true);
     try {
       if (subscription) {
         await subscription.unsubscribe();
-        
+
         // Notificar servidor sobre cancelamento
         await fetch('/api/notifications/unsubscribe', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
           },
           body: JSON.stringify({
             endpoint: subscription.endpoint
@@ -160,17 +159,15 @@ setIsLoading(true);
         tag: 'test-notification',
         requireInteraction: false
       });
-      
+
       analytics.trackEvent('notification_test_sent');
     }
   }, [permission, t, analytics]);
 
   // Converter chave VAPID
-  const urlBase64ToUint8Array = (base64String) => {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding)
-      .replace(/-/g, '+')
-      .replace(/_/g, '/');
+  const urlBase64ToUint8Array = base64String => {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
 
     const rawData = window.atob(base64);
     const outputArray = new Uint8Array(rawData.length);
@@ -183,10 +180,10 @@ setIsLoading(true);
 
   if (!isSupported) {
     return (
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-        <div className="flex items-center">
-          <BellOff className="w-5 h-5 text-yellow-600 mr-2" />
-          <span className="text-yellow-800 text-sm">
+      <div className='rounded-lg border border-yellow-200 bg-yellow-50 p-4'>
+        <div className='flex items-center'>
+          <BellOff className='mr-2 h-5 w-5 text-yellow-600' />
+          <span className='text-sm text-yellow-800'>
             {t('notifications.notSupported', 'Notificações push não são suportadas neste navegador')}
           </span>
         </div>
@@ -195,24 +192,24 @@ setIsLoading(true);
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center">
-          <Bell className="w-6 h-6 text-blue-600 mr-3" />
+    <div className='rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800'>
+      <div className='mb-4 flex items-center justify-between'>
+        <div className='flex items-center'>
+          <Bell className='mr-3 h-6 w-6 text-blue-600' />
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            <h3 className='text-lg font-semibold text-gray-900 dark:text-white'>
               {t('notifications.title', 'Notificações Push')}
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className='text-sm text-gray-600 dark:text-gray-400'>
               {t('notifications.description', 'Receba notificações sobre pedidos, fretes e atualizações')}
             </p>
           </div>
         </div>
         <button
           onClick={() => setShowSettings(!showSettings)}
-          className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+          className='p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
         >
-          <Settings className="w-5 h-5" />
+          <Settings className='h-5 w-5' />
         </button>
       </div>
 
@@ -222,62 +219,59 @@ setIsLoading(true);
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4"
+            className='mb-4 rounded-lg border border-red-200 bg-red-50 p-3'
           >
-            <div className="flex items-center justify-between">
-              <span className="text-red-800 text-sm">{error}</span>
-              <button
-                onClick={() => setError('')}
-                className="text-red-600 hover:text-red-800"
-              >
-                <X className="w-4 h-4" />
+            <div className='flex items-center justify-between'>
+              <span className='text-sm text-red-800'>{error}</span>
+              <button onClick={() => setError('')} className='text-red-600 hover:text-red-800'>
+                <X className='h-4 w-4' />
               </button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <div className="space-y-4">
+      <div className='space-y-4'>
         {/* Status da permissão */}
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-600 dark:text-gray-400">
+        <div className='flex items-center justify-between'>
+          <span className='text-sm text-gray-600 dark:text-gray-400'>
             {t('notifications.permission', 'Permissão')}:
           </span>
-          <span className={`text-sm font-medium ${
-            permission === 'granted' ? 'text-green-600' :
-            permission === 'denied' ? 'text-red-600' :
-            'text-yellow-600'
-          }`}>
-            {permission === 'granted' ? t('notifications.granted', 'Concedida') :
-             permission === 'denied' ? t('notifications.denied', 'Negada') :
-t('notifications.default', 'Não solicitada')}
+          <span
+            className={`text-sm font-medium ${
+              permission === 'granted' ? 'text-green-600' : permission === 'denied' ? 'text-red-600' : 'text-yellow-600'
+            }`}
+          >
+            {permission === 'granted'
+              ? t('notifications.granted', 'Concedida')
+              : permission === 'denied'
+                ? t('notifications.denied', 'Negada')
+                : t('notifications.default', 'Não solicitada')}
           </span>
         </div>
 
         {/* Status da inscrição */}
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-600 dark:text-gray-400">
+        <div className='flex items-center justify-between'>
+          <span className='text-sm text-gray-600 dark:text-gray-400'>
             {t('notifications.subscription', 'Inscrição')}:
           </span>
-          <span className={`text-sm font-medium ${
-            isSubscribed ? 'text-green-600' : 'text-gray-600'
-          }`}>
+          <span className={`text-sm font-medium ${isSubscribed ? 'text-green-600' : 'text-gray-600'}`}>
             {isSubscribed ? t('notifications.active', 'Ativa') : t('notifications.inactive', 'Inativa')}
           </span>
         </div>
 
         {/* Botões de ação */}
-        <div className="flex space-x-3">
+        <div className='flex space-x-3'>
           {permission !== 'granted' ? (
             <button
               onClick={requestPermission}
               disabled={isLoading}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center"
+              className='flex flex-1 items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:bg-blue-400'
             >
               {isLoading ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                <div className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent' />
               ) : (
-                <Bell className="w-4 h-4 mr-2" />
+                <Bell className='mr-2 h-4 w-4' />
               )}
               {t('notifications.enable', 'Ativar Notificações')}
             </button>
@@ -286,18 +280,18 @@ t('notifications.default', 'Não solicitada')}
               <button
                 onClick={unsubscribeFromPush}
                 disabled={isLoading}
-                className="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center"
+                className='flex flex-1 items-center justify-center rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:bg-red-400'
               >
                 {isLoading ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                  <div className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent' />
                 ) : (
-                  <BellOff className="w-4 h-4 mr-2" />
+                  <BellOff className='mr-2 h-4 w-4' />
                 )}
                 {t('notifications.disable', 'Desativar')}
               </button>
               <button
                 onClick={testNotification}
-                className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className='rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
               >
                 {t('notifications.test', 'Testar')}
               </button>
@@ -306,12 +300,12 @@ t('notifications.default', 'Não solicitada')}
             <button
               onClick={subscribeToPush}
               disabled={isLoading}
-              className="flex-1 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center"
+              className='flex flex-1 items-center justify-center rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:bg-green-400'
             >
               {isLoading ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                <div className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent' />
               ) : (
-                <Bell className="w-4 h-4 mr-2" />
+                <Bell className='mr-2 h-4 w-4' />
               )}
               {t('notifications.subscribe', 'Inscrever-se')}
             </button>
@@ -325,12 +319,12 @@ t('notifications.default', 'Não solicitada')}
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="border-t border-gray-200 dark:border-gray-700 pt-4"
+              className='border-t border-gray-200 pt-4 dark:border-gray-700'
             >
-              <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-3">
+              <h4 className='mb-3 text-sm font-medium text-gray-900 dark:text-white'>
                 {t('notifications.settings', 'Configurações')}
               </h4>
-              <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+              <div className='space-y-2 text-sm text-gray-600 dark:text-gray-400'>
                 <p>• {t('notifications.setting1', 'Receba notificações sobre novos pedidos')}</p>
                 <p>• {t('notifications.setting2', 'Atualizações de status de fretes')}</p>
                 <p>• {t('notifications.setting3', 'Mensagens importantes do sistema')}</p>

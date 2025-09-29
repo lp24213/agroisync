@@ -23,7 +23,7 @@ const EscrowManager = () => {
     try {
       // Simular carregamento de dados
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // Dados mockados
       const mockTransactions = [
         {
@@ -37,11 +37,7 @@ const EscrowManager = () => {
           createdAt: new Date(Date.now() - 86400000),
           description: 'Compra de Soja Premium - 12.5 toneladas',
           escrowFee: 150,
-          releaseConditions: [
-            'Confirmação de entrega',
-            'Inspeção de qualidade',
-            'Documentação completa'
-          ],
+          releaseConditions: ['Confirmação de entrega', 'Inspeção de qualidade', 'Documentação completa'],
           documents: ['invoice.pdf', 'quality_cert.pdf'],
           estimatedRelease: new Date(Date.now() + 172800000) // 2 dias
         },
@@ -75,45 +71,34 @@ const EscrowManager = () => {
     } catch (error) {
       console.error('Erro ao carregar dados Escrow:', error);
     } finally {
-setLoading(false);
+      setLoading(false);
     }
   };
 
-  const handleReleasePayment = async (transactionId) => {
+  const handleReleasePayment = async transactionId => {
     try {
       await paymentService.releaseEscrowPayment(
         transactionId,
         user.id,
         'Pagamento liberado após confirmação de entrega'
       );
-      
+
       // Atualizar status local
-      setTransactions(prev => 
-        prev.map(t => 
-          t.id === transactionId 
-            ? { ...t, status: 'completed', completedAt: new Date() }
-            : t
-        )
+      setTransactions(prev =>
+        prev.map(t => (t.id === transactionId ? { ...t, status: 'completed', completedAt: new Date() } : t))
       );
     } catch (error) {
       console.error('Erro ao liberar pagamento:', error);
     }
   };
 
-  const handleCancelTransaction = async (transactionId) => {
+  const handleCancelTransaction = async transactionId => {
     try {
-      await paymentService.cancelEscrowTransaction(
-        transactionId,
-        'Transação cancelada por solicitação do admin'
-      );
-      
+      await paymentService.cancelEscrowTransaction(transactionId, 'Transação cancelada por solicitação do admin');
+
       // Atualizar status local
-      setTransactions(prev => 
-        prev.map(t => 
-          t.id === transactionId 
-            ? { ...t, status: 'cancelled', cancelledAt: new Date() }
-            : t
-        )
+      setTransactions(prev =>
+        prev.map(t => (t.id === transactionId ? { ...t, status: 'cancelled', cancelledAt: new Date() } : t))
       );
     } catch (error) {
       console.error('Erro ao cancelar transação:', error);
@@ -125,8 +110,7 @@ setLoading(false);
     return transaction.status === filter;
   });
 
-
-  const getStatusColor = (status) => {
+  const getStatusColor = status => {
     switch (status) {
       case 'pending':
         return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
@@ -140,108 +124,102 @@ setLoading(false);
   };
 
   const renderStats = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-        <div className="flex items-center justify-between">
+    <div className='mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
+      <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+        <div className='flex items-center justify-between'>
           <div>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
+            <p className='text-sm text-slate-600 dark:text-slate-400'>
               {t('escrow.totalTransactions', 'Total de Transações')}
             </p>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white">
-              {stats.totalTransactions}
-            </p>
+            <p className='text-2xl font-bold text-slate-900 dark:text-white'>{stats.totalTransactions}</p>
           </div>
-          <Shield className="w-8 h-8 text-emerald-600" />
+          <Shield className='h-8 w-8 text-emerald-600' />
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-        <div className="flex items-center justify-between">
+      <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+        <div className='flex items-center justify-between'>
           <div>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
-              {t('escrow.pendingAmount', 'Valor Pendente')}
-            </p>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white">
-              {new Intl.NumberFormat('pt-BR', { 
-                style: 'currency', 
-                currency: 'BRL' 
+            <p className='text-sm text-slate-600 dark:text-slate-400'>{t('escrow.pendingAmount', 'Valor Pendente')}</p>
+            <p className='text-2xl font-bold text-slate-900 dark:text-white'>
+              {new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
               }).format(stats.pendingAmount)}
             </p>
           </div>
-          <Clock className="w-8 h-8 text-yellow-600" />
+          <Clock className='h-8 w-8 text-yellow-600' />
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-        <div className="flex items-center justify-between">
+      <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+        <div className='flex items-center justify-between'>
           <div>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
+            <p className='text-sm text-slate-600 dark:text-slate-400'>
               {t('escrow.completedAmount', 'Valor Processado')}
             </p>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white">
-              {new Intl.NumberFormat('pt-BR', { 
-                style: 'currency', 
-                currency: 'BRL' 
+            <p className='text-2xl font-bold text-slate-900 dark:text-white'>
+              {new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
               }).format(stats.completedAmount)}
             </p>
           </div>
-          <CheckCircle className="w-8 h-8 text-green-600" />
+          <CheckCircle className='h-8 w-8 text-green-600' />
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-        <div className="flex items-center justify-between">
+      <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+        <div className='flex items-center justify-between'>
           <div>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
-              {t('escrow.totalFees', 'Taxas Totais')}
-            </p>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white">
-              {new Intl.NumberFormat('pt-BR', { 
-                style: 'currency', 
-                currency: 'BRL' 
+            <p className='text-sm text-slate-600 dark:text-slate-400'>{t('escrow.totalFees', 'Taxas Totais')}</p>
+            <p className='text-2xl font-bold text-slate-900 dark:text-white'>
+              {new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
               }).format(stats.totalFees)}
             </p>
           </div>
-          <DollarSign className="w-8 h-8 text-blue-600" />
+          <DollarSign className='h-8 w-8 text-blue-600' />
         </div>
       </div>
     </div>
   );
 
   const renderTransactionList = () => (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+    <div className='space-y-4'>
+      <div className='flex items-center justify-between'>
+        <h3 className='text-xl font-semibold text-slate-800 dark:text-slate-200'>
           {t('escrow.transactions', 'Transações Escrow')}
         </h3>
-        
-        <div className="flex gap-2">
+
+        <div className='flex gap-2'>
           <button
             onClick={() => setFilter('all')}
-            className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+            className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
               filter === 'all'
                 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'
-                : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600'
             }`}
           >
             {t('escrow.all', 'Todas')}
           </button>
           <button
             onClick={() => setFilter('pending')}
-            className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+            className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
               filter === 'pending'
                 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'
-                : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600'
             }`}
           >
             {t('escrow.pending', 'Pendentes')}
           </button>
           <button
             onClick={() => setFilter('completed')}
-            className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+            className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
               filter === 'completed'
                 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'
-                : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600'
             }`}
           >
             {t('escrow.completed', 'Concluídas')}
@@ -249,84 +227,74 @@ setLoading(false);
         </div>
       </div>
 
-      <div className="space-y-4">
-        {filteredTransactions.map((transaction) => (
+      <div className='space-y-4'>
+        {filteredTransactions.map(transaction => (
           <motion.div
             key={transaction.id}
-            className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700"
+            className='rounded-lg border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-3">
-                  <h4 className="font-semibold text-slate-800 dark:text-slate-200">
-                    {transaction.description}
-                  </h4>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(transaction.status)}`}>
+            <div className='flex items-start justify-between'>
+              <div className='flex-1'>
+                <div className='mb-3 flex items-center gap-3'>
+                  <h4 className='font-semibold text-slate-800 dark:text-slate-200'>{transaction.description}</h4>
+                  <span className={`rounded-full px-2 py-1 text-xs font-medium ${getStatusColor(transaction.status)}`}>
                     {t(`escrowStatus.${transaction.status}`, transaction.status)}
                   </span>
                 </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+
+                <div className='mb-4 grid grid-cols-1 gap-4 md:grid-cols-2'>
                   <div>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">
-                      {t('escrow.buyer', 'Comprador')}:
-                    </p>
-                    <p className="font-medium text-slate-800 dark:text-slate-200">
-                      {transaction.buyer.name}
-                    </p>
+                    <p className='mb-1 text-sm text-slate-600 dark:text-slate-400'>{t('escrow.buyer', 'Comprador')}:</p>
+                    <p className='font-medium text-slate-800 dark:text-slate-200'>{transaction.buyer.name}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">
-                      {t('escrow.seller', 'Vendedor')}:
-                    </p>
-                    <p className="font-medium text-slate-800 dark:text-slate-200">
-                      {transaction.seller.name}
-                    </p>
+                    <p className='mb-1 text-sm text-slate-600 dark:text-slate-400'>{t('escrow.seller', 'Vendedor')}:</p>
+                    <p className='font-medium text-slate-800 dark:text-slate-200'>{transaction.seller.name}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-6 text-sm text-slate-500 dark:text-slate-400">
-                  <div className="flex items-center gap-1">
-                    <DollarSign className="w-4 h-4" />
-                    {new Intl.NumberFormat('pt-BR', { 
-                      style: 'currency', 
-                      currency: 'BRL' 
+                <div className='flex items-center gap-6 text-sm text-slate-500 dark:text-slate-400'>
+                  <div className='flex items-center gap-1'>
+                    <DollarSign className='h-4 w-4' />
+                    {new Intl.NumberFormat('pt-BR', {
+                      style: 'currency',
+                      currency: 'BRL'
                     }).format(transaction.amount)}
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4" />
+                  <div className='flex items-center gap-1'>
+                    <Calendar className='h-4 w-4' />
                     {new Date(transaction.createdAt).toLocaleDateString('pt-BR')}
                   </div>
-                  <div className="flex items-center gap-1">
-                    <FileText className="w-4 h-4" />
+                  <div className='flex items-center gap-1'>
+                    <FileText className='h-4 w-4' />
                     {transaction.documents.length} {t('escrow.documents', 'documentos')}
                   </div>
                 </div>
               </div>
-              
-              <div className="flex gap-2">
+
+              <div className='flex gap-2'>
                 <button
                   onClick={() => setSelectedTransaction(transaction)}
-                  className="p-2 text-slate-500 hover:text-emerald-600 transition-colors"
+                  className='p-2 text-slate-500 transition-colors hover:text-emerald-600'
                   title={t('escrow.viewDetails', 'Ver Detalhes')}
                 >
-                  <Eye className="w-5 h-5" />
+                  <Eye className='h-5 w-5' />
                 </button>
-                
+
                 {transaction.status === 'pending' && (
                   <>
                     <button
                       onClick={() => handleReleasePayment(transaction.id)}
-                      className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 transition-colors"
+                      className='rounded bg-green-600 px-3 py-1 text-sm text-white transition-colors hover:bg-green-700'
                     >
                       {t('escrow.release', 'Liberar')}
                     </button>
                     <button
                       onClick={() => handleCancelTransaction(transaction.id)}
-                      className="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors"
+                      className='rounded bg-red-600 px-3 py-1 text-sm text-white transition-colors hover:bg-red-700'
                     >
                       {t('escrow.cancel', 'Cancelar')}
                     </button>
@@ -342,24 +310,22 @@ setLoading(false);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-          <p className="text-slate-600 dark:text-slate-400">
-            {t('escrow.loading', 'Carregando transações Escrow...')}
-          </p>
+      <div className='flex items-center justify-center py-12'>
+        <div className='text-center'>
+          <div className='mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-emerald-600'></div>
+          <p className='text-slate-600 dark:text-slate-400'>{t('escrow.loading', 'Carregando transações Escrow...')}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-2">
+    <div className='mx-auto max-w-7xl p-6'>
+      <div className='mb-8'>
+        <h1 className='mb-2 text-3xl font-bold text-slate-800 dark:text-slate-200'>
           {t('escrow.title', 'Gerenciador Escrow')}
         </h1>
-        <p className="text-slate-600 dark:text-slate-400">
+        <p className='text-slate-600 dark:text-slate-400'>
           {t('escrow.subtitle', 'Gerencie transações em garantia e libere pagamentos')}
         </p>
       </div>

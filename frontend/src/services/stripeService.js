@@ -28,19 +28,15 @@ export const PLANS = {
   BASIC: {
     id: 'price_basic',
     name: 'Plano Básico',
-    price: 29.90,
+    price: 29.9,
     currency: 'BRL',
-    features: [
-      'Cotações básicas de grãos',
-      'Acesso ao marketplace',
-      'Suporte por email'
-    ],
+    features: ['Cotações básicas de grãos', 'Acesso ao marketplace', 'Suporte por email'],
     interval: 'month'
   },
   PROFESSIONAL: {
     id: 'price_professional',
     name: 'Plano Profissional',
-    price: 79.90,
+    price: 79.9,
     currency: 'BRL',
     features: [
       'Cotações avançadas em tempo real',
@@ -54,7 +50,7 @@ export const PLANS = {
   ENTERPRISE: {
     id: 'price_enterprise',
     name: 'Plano Empresarial',
-    price: 199.90,
+    price: 199.9,
     currency: 'BRL',
     features: [
       'Todas as funcionalidades do Profissional',
@@ -72,7 +68,7 @@ export const PLANS = {
 export const createCheckoutSession = async (planId, customerEmail, successUrl, cancelUrl) => {
   try {
     const stripe = await initializeStripe();
-    
+
     // Dados do plano selecionado
     const plan = Object.values(PLANS).find(p => p.id === planId);
     if (!plan) {
@@ -83,7 +79,7 @@ export const createCheckoutSession = async (planId, customerEmail, successUrl, c
     const response = await fetch('/api/create-checkout-session', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         planId,
@@ -94,7 +90,7 @@ export const createCheckoutSession = async (planId, customerEmail, successUrl, c
         successUrl,
         cancelUrl,
         interval: plan.interval
-      }),
+      })
     });
 
     if (!response.ok) {
@@ -102,10 +98,10 @@ export const createCheckoutSession = async (planId, customerEmail, successUrl, c
     }
 
     const session = await response.json();
-    
+
     // Redirecionar para checkout do Stripe
     const result = await stripe.redirectToCheckout({
-      sessionId: session.id,
+      sessionId: session.id
     });
 
     if (result.error) {
@@ -123,7 +119,7 @@ export const createCheckoutSession = async (planId, customerEmail, successUrl, c
 export const processPayment = async (paymentMethodId, amount, currency = 'BRL', description) => {
   try {
     const stripe = await initializeStripe();
-    
+
     // Confirmar pagamento
     const { paymentIntent, error } = await stripe.confirmCardPayment(paymentMethodId, {
       payment_method: paymentMethodId,
@@ -145,10 +141,10 @@ export const processPayment = async (paymentMethodId, amount, currency = 'BRL', 
 };
 
 // Verificar status do pagamento
-export const checkPaymentStatus = async (paymentIntentId) => {
+export const checkPaymentStatus = async paymentIntentId => {
   try {
     const response = await fetch(`/api/payment-status/${paymentIntentId}`);
-    
+
     if (!response.ok) {
       throw new Error('Erro ao verificar status do pagamento');
     }
@@ -167,13 +163,13 @@ export const createCustomer = async (email, name, phone) => {
     const response = await fetch('/api/create-customer', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         email,
         name,
         phone
-      }),
+      })
     });
 
     if (!response.ok) {
@@ -189,10 +185,10 @@ export const createCustomer = async (email, name, phone) => {
 };
 
 // Obter histórico de pagamentos
-export const getPaymentHistory = async (customerId) => {
+export const getPaymentHistory = async customerId => {
   try {
     const response = await fetch(`/api/payment-history/${customerId}`);
-    
+
     if (!response.ok) {
       throw new Error('Erro ao obter histórico de pagamentos');
     }
@@ -206,10 +202,10 @@ export const getPaymentHistory = async (customerId) => {
 };
 
 // Cancelar assinatura
-export const cancelSubscription = async (subscriptionId) => {
+export const cancelSubscription = async subscriptionId => {
   try {
     const response = await fetch(`/api/cancel-subscription/${subscriptionId}`, {
-      method: 'POST',
+      method: 'POST'
     });
 
     if (!response.ok) {
@@ -232,25 +228,25 @@ export const formatCurrency = (amount, currency = 'BRL') => {
   }).format(amount);
 };
 
-export const validateCard = (cardNumber) => {
+export const validateCard = cardNumber => {
   // Algoritmo de Luhn para validação de cartão
   let sum = 0;
   let isEven = false;
-  
+
   for (let i = cardNumber.length - 1; i >= 0; i--) {
     let digit = parseInt(cardNumber[i]);
-    
+
     if (isEven) {
       digit *= 2;
       if (digit > 9) {
         digit -= 9;
       }
     }
-    
+
     sum += digit;
     isEven = !isEven;
   }
-  
+
   return sum % 10 === 0;
 };
 

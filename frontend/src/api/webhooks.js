@@ -3,7 +3,7 @@ import axios from 'axios';
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://agroisync.com';
 
 // Webhook para confirmação de pagamento
-export const confirmPayment = async (paymentData) => {
+export const confirmPayment = async paymentData => {
   try {
     const response = await axios.post(`${API_BASE_URL}/api/webhooks/payment-confirmation`, {
       paymentId: paymentData.paymentId,
@@ -24,7 +24,7 @@ export const confirmPayment = async (paymentData) => {
 };
 
 // Webhook para atualização de status de pedido
-export const updateOrderStatus = async (orderData) => {
+export const updateOrderStatus = async orderData => {
   try {
     const response = await axios.post(`${API_BASE_URL}/api/webhooks/order-status-update`, {
       orderId: orderData.orderId,
@@ -42,7 +42,7 @@ export const updateOrderStatus = async (orderData) => {
 };
 
 // Webhook para notificação de frete
-export const notifyFreightUpdate = async (freightData) => {
+export const notifyFreightUpdate = async freightData => {
   try {
     const response = await axios.post(`${API_BASE_URL}/api/webhooks/freight-update`, {
       freightId: freightData.freightId,
@@ -60,7 +60,7 @@ export const notifyFreightUpdate = async (freightData) => {
 };
 
 // Webhook para notificação de mensagem
-export const notifyNewMessage = async (messageData) => {
+export const notifyNewMessage = async messageData => {
   try {
     const response = await axios.post(`${API_BASE_URL}/api/webhooks/new-message`, {
       messageId: messageData.messageId,
@@ -78,11 +78,11 @@ export const notifyNewMessage = async (messageData) => {
 };
 
 // Função para processar webhook de pagamento bem-sucedido
-export const processPaymentSuccess = async (paymentData) => {
+export const processPaymentSuccess = async paymentData => {
   try {
     // Confirmar pagamento
     await confirmPayment(paymentData);
-    
+
     // Atualizar status do pedido
     await updateOrderStatus({
       orderId: paymentData.orderId,
@@ -107,7 +107,7 @@ export const processPaymentSuccess = async (paymentData) => {
 };
 
 // Função para processar webhook de pagamento cancelado
-export const processPaymentCancel = async (paymentData) => {
+export const processPaymentCancel = async paymentData => {
   try {
     // Atualizar status do pedido
     await updateOrderStatus({

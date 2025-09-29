@@ -37,13 +37,13 @@ export const createSecurityLog = async (
     // Obter informações da requisição
     const requestInfo = req
       ? {
-        method: req.method,
-        url: req.originalUrl,
-        headers: sanitizeHeaders(req.headers),
-        userAgent: req.get('User-Agent'),
-        ipAddress: getClientIP(req),
-        timestamp: new Date()
-      }
+          method: req.method,
+          url: req.originalUrl,
+          headers: sanitizeHeaders(req.headers),
+          userAgent: req.get('User-Agent'),
+          ipAddress: getClientIP(req),
+          timestamp: new Date()
+        }
       : null;
 
     // Criar log de segurança
@@ -289,8 +289,8 @@ const getCloudflareInfo = req => {
   return {
     rayId: req.headers['cf-ray'] || null,
     country: req.headers['cf-ipcountry'] || null,
-    threatScore: parseInt(req.headers['cf-threat-score']) || 0,
-    botScore: parseInt(req.headers['cf-bot-score']) || 0,
+    threatScore: parseInt(req.headers['cf-threat-score'], 10) || 0,
+    botScore: parseInt(req.headers['cf-bot-score'], 10) || 0,
     visitor: req.headers['cf-visitor'] || null,
     cacheStatus: req.headers['cf-cache-status'] || null
   };

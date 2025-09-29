@@ -1,12 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  MapPin, 
-  Phone, 
-  Mail, 
-  Instagram,
-  MessageCircle
-} from 'lucide-react';
+import { MapPin, Phone, Mail, Instagram, MessageCircle } from 'lucide-react';
 
 const AgroisyncFooter = () => {
   const currentYear = new Date().getFullYear();
@@ -42,29 +36,30 @@ const AgroisyncFooter = () => {
   ];
 
   return (
-    <footer className="bg-gray-50 border-t border-gray-200 mt-16">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+    <footer className='mt-16 border-t border-gray-200 bg-gray-50'>
+      <div className='mx-auto max-w-7xl px-4 py-8'>
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div className='mb-8 grid grid-cols-1 gap-8 md:grid-cols-4'>
           {/* Company Info */}
-          <div className="md:col-span-1">
-            <div className="flex items-center gap-3 mb-4">
-              <img src="/agroisync-logo.svg" alt="Agroisync" className="h-8 w-auto" loading="eager" />
+          <div className='md:col-span-1'>
+            <div className='mb-4 flex items-center gap-3'>
+              <img src='/agroisync-logo.svg' alt='Agroisync' className='h-8 w-auto' loading='eager' />
             </div>
-            <p className="text-sm text-gray-600 mb-4">
-              A plataforma mais futurista e sofisticada do mundo para conectar produtores, compradores e transportadores.
+            <p className='mb-4 text-sm text-gray-600'>
+              A plataforma mais futurista e sofisticada do mundo para conectar produtores, compradores e
+              transportadores.
             </p>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <MapPin className="w-4 h-4 text-green-600" />
+            <div className='space-y-2'>
+              <div className='flex items-center gap-2 text-sm text-gray-600'>
+                <MapPin className='h-4 w-4 text-green-600' />
                 <span>Sinop - MT, Brasil</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <Phone className="w-4 h-4 text-green-600" />
+              <div className='flex items-center gap-2 text-sm text-gray-600'>
+                <Phone className='h-4 w-4 text-green-600' />
                 <span>(66) 99236-2830</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <Mail className="w-4 h-4 text-green-600" />
+              <div className='flex items-center gap-2 text-sm text-gray-600'>
+                <Mail className='h-4 w-4 text-green-600' />
                 <span>contato@agroisync.com</span>
               </div>
             </div>
@@ -73,14 +68,11 @@ const AgroisyncFooter = () => {
           {/* Navigation Links */}
           {footerSections.map((section, index) => (
             <div key={index}>
-              <h3 className="font-semibold text-gray-900 mb-4">{section.title}</h3>
-              <ul className="space-y-2">
+              <h3 className='mb-4 font-semibold text-gray-900'>{section.title}</h3>
+              <ul className='space-y-2'>
                 {section.links.map((link, linkIndex) => (
                   <li key={linkIndex}>
-                    <Link 
-                      to={link.path} 
-                      className="text-sm text-gray-600 hover:text-green-600 transition-colors"
-                    >
+                    <Link to={link.path} className='text-sm text-gray-600 transition-colors hover:text-green-600'>
                       {link.label}
                     </Link>
                   </li>
@@ -91,34 +83,34 @@ const AgroisyncFooter = () => {
         </div>
 
         {/* Bottom Footer */}
-        <div className="border-t border-gray-200 pt-6 flex flex-col md:flex-row justify-between items-center">
-          <div className="text-sm text-gray-600 mb-4 md:mb-0">
+        <div className='flex flex-col items-center justify-between border-t border-gray-200 pt-6 md:flex-row'>
+          <div className='mb-4 text-sm text-gray-600 md:mb-0'>
             © {currentYear} AGROISYNC. Todos os direitos reservados.
           </div>
-          <div className="flex gap-6 items-center">
-            <Link to="/terms" className="text-sm text-gray-600 hover:text-green-600 transition-colors">
+          <div className='flex items-center gap-6'>
+            <Link to='/terms' className='text-sm text-gray-600 transition-colors hover:text-green-600'>
               Termos de Uso
             </Link>
-            <Link to="/privacy" className="text-sm text-gray-600 hover:text-green-600 transition-colors">
+            <Link to='/privacy' className='text-sm text-gray-600 transition-colors hover:text-green-600'>
               Privacidade
             </Link>
-            <a 
-              href="https://instagram.com/agroisync" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-gray-600 hover:text-pink-600 transition-colors"
-              aria-label="Instagram"
+            <a
+              href='https://instagram.com/agroisync'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='text-gray-600 transition-colors hover:text-pink-600'
+              aria-label='Instagram'
             >
-              <Instagram className="w-5 h-5" />
+              <Instagram className='h-5 w-5' />
             </a>
-            <a 
-              href="https://wa.me/5566992362830" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-gray-600 hover:text-green-600 transition-colors"
-              aria-label="WhatsApp"
+            <a
+              href='https://wa.me/5566992362830'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='text-gray-600 transition-colors hover:text-green-600'
+              aria-label='WhatsApp'
             >
-              <MessageCircle className="w-5 h-5" />
+              <MessageCircle className='h-5 w-5' />
             </a>
           </div>
         </div>

@@ -1,32 +1,33 @@
 import axios from 'axios';
+import { API_CONFIG } from '../config/constants.js';
 
 // Configuração da API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
+const API_BASE_URL = API_CONFIG.baseURL;
 
 // Estados das transações (conforme especificação)
 export const TRANSACTION_STATUS = {
-  'PENDING': { 
-    name: 'Aguardando Negociação', 
+  PENDING: {
+    name: 'Aguardando Negociação',
     color: 'bg-yellow-100 text-yellow-800',
     description: 'Comprador e vendedor devem negociar diretamente'
   },
-  'NEGOTIATING': { 
-    name: 'Em Negociação', 
+  NEGOTIATING: {
+    name: 'Em Negociação',
     color: 'bg-blue-100 text-blue-800',
     description: 'Partes estão negociando termos'
   },
-  'AGREED': { 
-    name: 'Acordo Alcançado', 
+  AGREED: {
+    name: 'Acordo Alcançado',
     color: 'bg-green-100 text-green-800',
     description: 'Termos foram acordados entre as partes'
   },
-  'CANCELLED': { 
-    name: 'Cancelada', 
+  CANCELLED: {
+    name: 'Cancelada',
     color: 'bg-red-100 text-red-800',
     description: 'Transação foi cancelada'
   },
-  'COMPLETED': { 
-    name: 'Concluída', 
+  COMPLETED: {
+    name: 'Concluída',
     color: 'bg-emerald-100 text-emerald-800',
     description: 'Transação foi concluída com sucesso'
   }
@@ -34,9 +35,9 @@ export const TRANSACTION_STATUS = {
 
 // Tipos de transação (conforme especificação)
 export const TRANSACTION_TYPES = {
-  'PRODUCT': 'Intenção de Compra de Produto',
-  'FREIGHT': 'Intenção de Frete',
-  'SERVICE': 'Solicitação de Serviço'
+  PRODUCT: 'Intenção de Compra de Produto',
+  FREIGHT: 'Intenção de Frete',
+  SERVICE: 'Solicitação de Serviço'
 };
 
 class TransactionService {
@@ -173,9 +174,7 @@ class TransactionService {
   getMockUserTransactions(userId, type = null) {
     try {
       const allTransactions = JSON.parse(localStorage.getItem('agroisync_transactions') || '[]');
-      let userTransactions = allTransactions.filter(txn => 
-        txn.buyerId === userId || txn.sellerId === userId
-      );
+      let userTransactions = allTransactions.filter(txn => txn.buyerId === userId || txn.sellerId === userId);
 
       if (type) {
         userTransactions = userTransactions.filter(txn => txn.type === type);
@@ -192,7 +191,7 @@ class TransactionService {
   getMockAllTransactions(filters = {}) {
     try {
       let allTransactions = JSON.parse(localStorage.getItem('agroisync_transactions') || '[]');
-      
+
       // Aplicar filtros
       if (filters.status) {
         allTransactions = allTransactions.filter(txn => txn.status === filters.status);
@@ -218,7 +217,7 @@ class TransactionService {
   getMockTransactionStats() {
     try {
       const allTransactions = JSON.parse(localStorage.getItem('agroisync_transactions') || '[]');
-      
+
       const stats = {
         total: allTransactions.length,
         byStatus: {},
@@ -274,7 +273,7 @@ class TransactionService {
 
       // Simular envio de notificações
       console.log('Notificações enviadas:', notifications);
-      
+
       return { success: true, notifications };
     } catch (error) {
       console.error('Erro ao enviar notificações:', error);
@@ -287,15 +286,14 @@ class TransactionService {
     try {
       const allTransactions = JSON.parse(localStorage.getItem('agroisync_transactions') || '[]');
       const now = new Date();
-      
+
       // Transações PENDING por mais de 30 dias são consideradas expiradas
-      const expiredTransactions = allTransactions.filter(txn => 
-        txn.status === 'PENDING' && 
-        new Date(txn.createdAt) < new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+      const expiredTransactions = allTransactions.filter(
+        txn => txn.status === 'PENDING' && new Date(txn.createdAt) < new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
       );
 
       // Atualizar status das transações expiradas
-      expiredTransactions.forEach(async (txn) => {
+      expiredTransactions.forEach(async txn => {
         await this.updateTransactionStatus(txn.id, 'CANCELLED', 'Prazo de negociação expirou');
       });
 
@@ -316,15 +314,17 @@ class TransactionService {
         const headers = ['ID', 'Tipo', 'Status', 'Comprador', 'Vendedor', 'Valor', 'Data Criação'];
         const csvContent = [
           headers.join(','),
-                  ...transactions.map(txn => [
-          txn.id,
-          txn.type,
-          txn.status,
-          txn.buyerId || 'N/A',
-          txn.sellerId || 'N/A',
-          txn.total || 0,
-          new Date(txn.createdAt).toLocaleDateString('pt-BR')
-        ].join(','))
+          ...transactions.map(txn =>
+            [
+              txn.id,
+              txn.type,
+              txn.status,
+              txn.buyerId || 'N/A',
+              txn.sellerId || 'N/A',
+              txn.total || 0,
+              new Date(txn.createdAt).toLocaleDateString('pt-BR')
+            ].join(',')
+          )
         ].join('\n');
 
         data = csvContent;

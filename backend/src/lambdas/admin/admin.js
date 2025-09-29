@@ -207,8 +207,8 @@ exports.handler = async event => {
     // GET /admin/users - Listar usuários
     if (event.httpMethod === 'GET' && event.path.includes('/users')) {
       const { queryStringParameters } = event;
-      const page = parseInt(queryStringParameters?.page) || 1;
-      const limit = parseInt(queryStringParameters?.limit) || 20;
+      const page = parseInt(queryStringParameters?.page, 10) || 1;
+      const limit = parseInt(queryStringParameters?.limit, 10) || 20;
       const search = queryStringParameters?.search || '';
       const role = queryStringParameters?.role;
       const planStatus = queryStringParameters?.planStatus;
@@ -376,8 +376,8 @@ exports.handler = async event => {
     // GET /admin/payments - Listar pagamentos
     if (event.httpMethod === 'GET' && event.path.includes('/payments')) {
       const { queryStringParameters } = event;
-      const page = parseInt(queryStringParameters?.page) || 1;
-      const limit = parseInt(queryStringParameters?.limit) || 20;
+      const page = parseInt(queryStringParameters?.page, 10) || 1;
+      const limit = parseInt(queryStringParameters?.limit, 10) || 20;
       const status = queryStringParameters?.status;
       const method = queryStringParameters?.method;
 
@@ -421,8 +421,8 @@ exports.handler = async event => {
     // GET /admin/products - Listar produtos
     if (event.httpMethod === 'GET' && event.path.includes('/products')) {
       const { queryStringParameters } = event;
-      const page = parseInt(queryStringParameters?.page) || 1;
-      const limit = parseInt(queryStringParameters?.limit) || 20;
+      const page = parseInt(queryStringParameters?.page, 10) || 1;
+      const limit = parseInt(queryStringParameters?.limit, 10) || 20;
       const status = queryStringParameters?.status;
       const search = queryStringParameters?.search || '';
 
@@ -509,8 +509,8 @@ exports.handler = async event => {
     // GET /admin/shipments - Listar fretes
     if (event.httpMethod === 'GET' && event.path.includes('/shipments')) {
       const { queryStringParameters } = event;
-      const page = parseInt(queryStringParameters?.page) || 1;
-      const limit = parseInt(queryStringParameters?.limit) || 20;
+      const page = parseInt(queryStringParameters?.page, 10) || 1;
+      const limit = parseInt(queryStringParameters?.limit, 10) || 20;
       const search = queryStringParameters?.search || '';
 
       const filter = {};

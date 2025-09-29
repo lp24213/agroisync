@@ -218,8 +218,8 @@ exports.handler = async event => {
       }
 
       const { queryStringParameters } = event;
-      const page = parseInt(queryStringParameters?.page) || 1;
-      const limit = parseInt(queryStringParameters?.limit) || 20;
+      const page = parseInt(queryStringParameters?.page, 10) || 1;
+      const limit = parseInt(queryStringParameters?.limit, 10) || 20;
       const status = queryStringParameters?.status;
 
       const filter = {};
@@ -279,8 +279,8 @@ exports.handler = async event => {
       }
 
       const { queryStringParameters } = event;
-      const page = parseInt(queryStringParameters?.page) || 1;
-      const limit = parseInt(queryStringParameters?.limit) || 20;
+      const page = parseInt(queryStringParameters?.page, 10) || 1;
+      const limit = parseInt(queryStringParameters?.limit, 10) || 20;
       const status = queryStringParameters?.status;
 
       const filter = {};

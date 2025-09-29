@@ -18,12 +18,12 @@ const TXCButton = ({
     primary: 'txc-btn-primary',
     secondary: 'txc-btn-secondary',
     accent: 'txc-btn-accent',
-    ghost: 'txc-btn-ghost',
+    ghost: 'txc-btn-ghost'
   };
   const sizeClasses = {
     sm: 'txc-btn-sm',
     md: 'txc-btn-md',
-    lg: 'txc-btn-lg',
+    lg: 'txc-btn-lg'
   };
 
   const buttonClasses = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
@@ -40,23 +40,19 @@ const TXCButton = ({
     >
       {loading && (
         <motion.div
-          className="txc-btn-loading"
+          className='txc-btn-loading'
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
         >
           ⟳
         </motion.div>
       )}
-      
-      {icon && iconPosition === 'left' && !loading && (
-        <span className="txc-btn-icon">{icon}</span>
-      )}
-      
+
+      {icon && iconPosition === 'left' && !loading && <span className='txc-btn-icon'>{icon}</span>}
+
       {children}
-      
-      {icon && iconPosition === 'right' && !loading && (
-        <span className="txc-btn-icon">{icon}</span>
-      )}
+
+      {icon && iconPosition === 'right' && !loading && <span className='txc-btn-icon'>{icon}</span>}
     </motion.button>
   );
 };

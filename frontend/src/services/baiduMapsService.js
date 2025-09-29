@@ -21,18 +21,18 @@
 
 // Tipos de busca de localização
 export const LOCATION_TYPES = {
-  'ADDRESS': 'endereço',
-  'COORDINATES': 'coordenadas',
-  'PLACE': 'local',
-  'ROUTE': 'rota'
+  ADDRESS: 'endereço',
+  COORDINATES: 'coordenadas',
+  PLACE: 'local',
+  ROUTE: 'rota'
 };
 
 // Tipos de transporte para rotas
 export const TRANSPORT_MODES = {
-  'DRIVING': 'carro',
-  'WALKING': 'a pé',
-  'TRANSIT': 'transporte público',
-  'BICYCLING': 'bicicleta'
+  DRIVING: 'carro',
+  WALKING: 'a pé',
+  TRANSIT: 'transporte público',
+  BICYCLING: 'bicicleta'
 };
 
 class BaiduMapsService {
@@ -86,7 +86,7 @@ class BaiduMapsService {
 
       // Simular geocoding para desenvolvimento
       const mockGeocoding = await this.mockGeocoding(address, city, state);
-      
+
       return {
         success: true,
         location: mockGeocoding.location,
@@ -117,7 +117,7 @@ class BaiduMapsService {
 
       // Simular reverse geocoding para desenvolvimento
       const mockReverseGeocoding = await this.mockReverseGeocoding(lat, lng);
-      
+
       return {
         success: true,
         address: mockReverseGeocoding.address,
@@ -128,7 +128,7 @@ class BaiduMapsService {
       console.error('Erro no reverse geocoding:', error);
       throw error;
     }
-    }
+  }
 
   // Buscar lugares próximos
   async searchNearbyPlaces(query, lat, lng, radius = 5000, type = '') {
@@ -151,7 +151,7 @@ class BaiduMapsService {
 
       // Simular busca de lugares para desenvolvimento
       const mockPlaces = await this.mockPlaceSearch(query, lat, lng, radius);
-      
+
       return {
         success: true,
         places: mockPlaces,
@@ -183,7 +183,7 @@ class BaiduMapsService {
 
       // Simular cálculo de rota para desenvolvimento
       const mockRoute = await this.mockRouteCalculation(origin, destination, mode);
-      
+
       return {
         success: true,
         route: mockRoute,
@@ -222,7 +222,7 @@ class BaiduMapsService {
 
       // Geocoding para confirmar coordenadas
       const geocoding = await this.geocodeAddress(address, city, state);
-      
+
       return {
         valid: true,
         cep: cepValidation,
@@ -245,7 +245,7 @@ class BaiduMapsService {
     try {
       // Remover caracteres não numéricos
       const cleanCEP = cep.replace(/\D/g, '');
-      
+
       if (cleanCEP.length !== 8) {
         return {
           valid: false,
@@ -255,10 +255,10 @@ class BaiduMapsService {
 
       // Em produção, usar API real do IBGE
       // const response = await axios.get(`https://viacep.com.br/ws/${cleanCEP}/json/`);
-      
+
       // Simular validação de CEP para desenvolvimento
       const mockCEPValidation = await this.mockCEPValidation(cleanCEP);
-      
+
       return {
         valid: mockCEPValidation.valid,
         cep: cleanCEP,
@@ -302,9 +302,33 @@ class BaiduMapsService {
 
       // Validar UF brasileira
       const validStates = [
-        'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
-        'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
-        'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
+        'AC',
+        'AL',
+        'AP',
+        'AM',
+        'BA',
+        'CE',
+        'DF',
+        'ES',
+        'GO',
+        'MA',
+        'MT',
+        'MS',
+        'MG',
+        'PA',
+        'PB',
+        'PR',
+        'PE',
+        'PI',
+        'RJ',
+        'RN',
+        'RS',
+        'RO',
+        'RR',
+        'SC',
+        'SP',
+        'SE',
+        'TO'
       ];
 
       if (!validStates.includes(state.toUpperCase())) {
@@ -339,7 +363,7 @@ class BaiduMapsService {
 
       // Simular coordenadas de cidade para desenvolvimento
       const mockCityCoordinates = await this.mockCityCoordinates(city, state);
-      
+
       return {
         success: true,
         city,
@@ -398,11 +422,11 @@ class BaiduMapsService {
 
     const places = [];
     const placeTypes = ['restaurante', 'farmácia', 'posto de gasolina', 'supermercado', 'banco'];
-    
+
     for (let i = 0; i < Math.floor(Math.random() * 5) + 3; i++) {
       const randomLat = lat + (Math.random() - 0.5) * 0.01;
       const randomLng = lng + (Math.random() - 0.5) * 0.01;
-      
+
       places.push({
         id: `place_${i}`,
         name: `${query} ${i + 1}`,
@@ -449,12 +473,12 @@ class BaiduMapsService {
     // Gerar passos da rota
     const steps = [];
     const numSteps = Math.floor(Math.random() * 5) + 3;
-    
+
     for (let i = 0; i < numSteps; i++) {
       steps.push({
         instruction: `Passo ${i + 1}: ${mode === 'DRIVING' ? 'Continue reto' : 'Siga em frente'}`,
         distance: Math.floor(distance / numSteps),
-        duration: Math.floor(duration / numSteps * 60) // em segundos
+        duration: Math.floor((duration / numSteps) * 60) // em segundos
       });
     }
 
@@ -472,10 +496,10 @@ class BaiduMapsService {
     // Simular CEPs válidos
     const validCEPs = {
       '01310100': { city: 'São Paulo', state: 'SP', ibge: '3550308' },
-      '20040020': { city: 'Rio de Janeiro', state: 'RJ', ibge: '3304557' },
-      '30112000': { city: 'Belo Horizonte', state: 'MG', ibge: '3106200' },
-      '70040901': { city: 'Brasília', state: 'DF', ibge: '5300108' },
-      '40015000': { city: 'Salvador', state: 'BA', ibge: '2927408' }
+      20040020: { city: 'Rio de Janeiro', state: 'RJ', ibge: '3304557' },
+      30112000: { city: 'Belo Horizonte', state: 'MG', ibge: '3106200' },
+      70040901: { city: 'Brasília', state: 'DF', ibge: '5300108' },
+      40015000: { city: 'Salvador', state: 'BA', ibge: '2927408' }
     };
 
     const cepData = validCEPs[cep];
@@ -502,8 +526,8 @@ class BaiduMapsService {
       'São Paulo': { lat: -23.5505, lng: -46.6333, timezone: 'America/Sao_Paulo' },
       'Rio de Janeiro': { lat: -22.9068, lng: -43.1729, timezone: 'America/Sao_Paulo' },
       'Belo Horizonte': { lat: -19.9167, lng: -43.9345, timezone: 'America/Sao_Paulo' },
-      'Brasília': { lat: -15.7942, lng: -47.8822, timezone: 'America/Sao_Paulo' },
-      'Salvador': { lat: -12.9714, lng: -38.5011, timezone: 'America/Sao_Paulo' }
+      Brasília: { lat: -15.7942, lng: -47.8822, timezone: 'America/Sao_Paulo' },
+      Salvador: { lat: -12.9714, lng: -38.5011, timezone: 'America/Sao_Paulo' }
     };
 
     const coordinates = cityCoordinates[city] || {
@@ -526,7 +550,7 @@ class BaiduMapsService {
       this.geocoder = null;
       this.placeSearch = null;
       this.routeSearch = null;
-      
+
       if (process.env.NODE_ENV !== 'production') {
         console.log('Serviço de Baidu Maps desconectado');
       }

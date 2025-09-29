@@ -28,7 +28,7 @@ class GeolocationService {
     } catch (error) {
       this.error = error.message;
       console.error('Erro ao obter localização por IP:', error);
-      
+
       // Fallback para localização padrão (Brasil)
       this.userLocation = {
         country: 'Brasil',
@@ -60,7 +60,7 @@ class GeolocationService {
       this.error = null;
 
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        position => {
           this.userLocation = {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
@@ -80,7 +80,7 @@ class GeolocationService {
               resolve(this.userLocation);
             });
         },
-        (error) => {
+        error => {
           this.error = this.getGeolocationErrorMessage(error.code);
           this.isLoading = false;
           reject(new Error(this.error));
@@ -114,7 +114,7 @@ class GeolocationService {
       return gpsLocation;
     } catch (error) {
       console.log('GPS não disponível, tentando IP:', error.message);
-      
+
       // Fallback para IP
       const ipLocation = await this.getLocationByIP();
       return ipLocation;
@@ -166,21 +166,20 @@ class GeolocationService {
     const R = 6371; // Raio da Terra em km
     const dLat = this.deg2rad(lat2 - lat1);
     const dLon = this.deg2rad(lon2 - lon1);
-    
-    const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2);
-    
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c; // Distância em km
-    
+
     return distance;
   }
 
   // Converter graus para radianos
   deg2rad(deg) {
-    return deg * (Math.PI/180);
+    return deg * (Math.PI / 180);
   }
 
   // Obter região agrícola baseada na localização
@@ -194,31 +193,31 @@ class GeolocationService {
       const agriculturalRegions = {
         'Mato Grosso': 'Centro-Oeste',
         'Mato Grosso do Sul': 'Centro-Oeste',
-        'Goiás': 'Centro-Oeste',
+        Goiás: 'Centro-Oeste',
         'Distrito Federal': 'Centro-Oeste',
-        'Paraná': 'Sul',
+        Paraná: 'Sul',
         'Santa Catarina': 'Sul',
         'Rio Grande do Sul': 'Sul',
         'São Paulo': 'Sudeste',
         'Minas Gerais': 'Sudeste',
         'Rio de Janeiro': 'Sudeste',
         'Espírito Santo': 'Sudeste',
-        'Bahia': 'Nordeste',
-        'Pernambuco': 'Nordeste',
-        'Ceará': 'Nordeste',
-        'Maranhão': 'Nordeste',
-        'Piauí': 'Nordeste',
+        Bahia: 'Nordeste',
+        Pernambuco: 'Nordeste',
+        Ceará: 'Nordeste',
+        Maranhão: 'Nordeste',
+        Piauí: 'Nordeste',
         'Rio Grande do Norte': 'Nordeste',
-        'Paraíba': 'Nordeste',
-        'Alagoas': 'Nordeste',
-        'Sergipe': 'Nordeste',
-        'Pará': 'Norte',
-        'Amazonas': 'Norte',
-        'Acre': 'Norte',
-        'Rondônia': 'Norte',
-        'Roraima': 'Norte',
-        'Amapá': 'Norte',
-        'Tocantins': 'Norte'
+        Paraíba: 'Nordeste',
+        Alagoas: 'Nordeste',
+        Sergipe: 'Nordeste',
+        Pará: 'Norte',
+        Amazonas: 'Norte',
+        Acre: 'Norte',
+        Rondônia: 'Norte',
+        Roraima: 'Norte',
+        Amapá: 'Norte',
+        Tocantins: 'Norte'
       };
 
       return agriculturalRegions[region] || 'Região não mapeada';

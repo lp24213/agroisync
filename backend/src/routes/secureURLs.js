@@ -249,19 +249,21 @@ router.get('/verify-invite/:inviteCode', async (req, res) => {
  */
 router.post(
   '/validate',
-  [
-    body('token').isString().withMessage('Token é obrigatório')
-  ],
+  [body('token').isString().withMessage('Token é obrigatório')],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ success: false, message: 'Token inválido', errors: errors.array() });
+      return res
+        .status(400)
+        .json({ success: false, message: 'Token inválido', errors: errors.array() });
     }
 
     const { token } = req.body;
 
     try {
-      const data = secureURLService.validateSecureURL(`${process.env.FRONTEND_URL}/signup/${token}`);
+      const data = secureURLService.validateSecureURL(
+        `${process.env.FRONTEND_URL}/signup/${token}`
+      );
       logger.info(`URL segura validada: ${token.substring(0, 20)}...`);
       res.status(200).json({ success: true, message: 'URL segura validada com sucesso', data });
     } catch (error) {

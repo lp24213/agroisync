@@ -16,10 +16,9 @@ import cryptoRoutes from './crypto.js';
 import weatherRoutes from './weather.js';
 import externalApiRoutes from './external-apis.js';
 import mirrorApiRoutes from './mirror-apis.js';
-import healthRoutes from './health.js';
+import healthCheckRoutes from './health-check.js';
 import validationRoutes from './validation.js';
 import uploadRoutes from './upload.js';
-import smsRoutes from './sms.js';
 import contactRoutes from './contact.js';
 import newsRoutes from './news.js';
 import plansRoutes from './plans.js';
@@ -50,7 +49,7 @@ import aiRoutes from './ai.js';
 
 const router = express.Router();
 
-// Health check route
+// Health check routes
 router.get('/health', (req, res) => {
   res.json({
     status: 'ok',
@@ -59,6 +58,9 @@ router.get('/health', (req, res) => {
     version: '2.3.1'
   });
 });
+
+// Health check detalhado
+router.use('/health-check', healthCheckRoutes);
 
 // Mount all route modules
 router.use('/auth', authRoutes);
@@ -78,7 +80,6 @@ router.use('/external', externalApiRoutes);
 router.use('/mirror', mirrorApiRoutes);
 router.use('/validation', validationRoutes);
 router.use('/upload', uploadRoutes);
-router.use('/sms', smsRoutes);
 router.use('/contact', contactRoutes);
 router.use('/news', newsRoutes);
 router.use('/plans', plansRoutes);

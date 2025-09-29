@@ -19,7 +19,7 @@ class PhantomService {
 
       // Solicitar conexão
       const response = await window.solana.connect();
-      
+
       this.publicKey = response.publicKey.toString();
       this.connected = true;
       this.provider = window.solana;
@@ -30,7 +30,7 @@ class PhantomService {
       });
 
       // Escutar mudanças de conta
-      window.solana.on('accountChanged', (publicKey) => {
+      window.solana.on('accountChanged', publicKey => {
         if (publicKey) {
           this.publicKey = publicKey.toString();
         } else {
@@ -43,7 +43,6 @@ class PhantomService {
         connected: this.connected,
         provider: this.provider
       };
-
     } catch (error) {
       console.error('Erro ao conectar Phantom:', error);
       throw error;
@@ -88,7 +87,7 @@ class PhantomService {
       }
 
       const balance = await this.getBalance();
-      
+
       return {
         publicKey: this.publicKey,
         balance: balance,
@@ -124,7 +123,7 @@ class PhantomService {
 
       const encodedMessage = new TextEncoder().encode(message);
       const signedMessage = await this.provider.signMessage(encodedMessage, 'utf8');
-      
+
       return {
         signature: signedMessage.signature,
         publicKey: signedMessage.publicKey.toString()

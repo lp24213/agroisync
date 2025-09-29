@@ -29,7 +29,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   transition: var(--agro-transition-smooth);
 }
 
@@ -327,7 +327,7 @@
 
 /* Botões Premium */
 .btn-premium {
-  background: linear-gradient(135deg, #2a7f4f 0%, #4CAF50 100%);
+  background: linear-gradient(135deg, #2a7f4f 0%, #4caf50 100%);
   color: white;
   border: none;
   border-radius: 12px;
@@ -467,7 +467,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #2a7f4f, #4CAF50);
+  background: linear-gradient(90deg, #2a7f4f, #4caf50);
 }
 
 .card-premium:hover {
@@ -530,8 +530,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-spinner {
@@ -555,7 +559,7 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #2a7f4f, #4CAF50);
+  background: linear-gradient(90deg, #2a7f4f, #4caf50);
   border-radius: 4px;
   transition: width 0.3s ease;
 }
@@ -565,8 +569,13 @@
 }
 
 @keyframes progress-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 /* ===== TOOLTIPS ===== */
@@ -804,21 +813,21 @@
   .card {
     margin-bottom: 16px;
   }
-  
+
   .card-body {
     padding: 16px;
   }
-  
+
   .btn {
     padding: 10px 20px;
     font-size: 14px;
   }
-  
+
   .modal {
     padding: 24px;
     margin: 16px;
   }
-  
+
   .tab-button {
     padding: 10px 16px;
     font-size: 14px;

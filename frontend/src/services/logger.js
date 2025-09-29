@@ -133,7 +133,7 @@ class Logger {
         await fetch(process.env.REACT_APP_LOGGING_ENDPOINT, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify(logData)
         });
@@ -152,12 +152,12 @@ class Logger {
     try {
       const logs = JSON.parse(localStorage.getItem('agrosync_logs') || '[]');
       logs.push(logData);
-      
+
       // Manter apenas os últimos 100 logs
       if (logs.length > 100) {
         logs.splice(0, logs.length - 100);
       }
-      
+
       localStorage.setItem('agrosync_logs', JSON.stringify(logs));
     } catch (error) {
       // Se não conseguir salvar no localStorage, não fazer nada
@@ -190,7 +190,7 @@ class Logger {
     const logs = this.getLogs();
     const dataStr = JSON.stringify(logs, null, 2);
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    
+
     const link = document.createElement('a');
     link.href = URL.createObjectURL(dataBlob);
     link.download = `agrosync-logs-${new Date().toISOString().split('T')[0]}.json`;

@@ -5,32 +5,32 @@
 
 // Status das transações de escrow
 export const ESCROW_STATUS = {
-  'PENDING': {
+  PENDING: {
     name: 'Pendente',
     color: 'bg-yellow-100 text-yellow-800',
     description: 'Aguardando confirmação das partes'
   },
-  'FUNDED': {
+  FUNDED: {
     name: 'Fundado',
     color: 'bg-blue-100 text-blue-800',
     description: 'Valor depositado e em custódia'
   },
-  'DISPUTED': {
+  DISPUTED: {
     name: 'Em Disputa',
     color: 'bg-red-100 text-red-800',
     description: 'Conflito entre as partes'
   },
-  'RELEASED': {
+  RELEASED: {
     name: 'Liberado',
     color: 'bg-green-100 text-green-800',
     description: 'Valor liberado para o vendedor'
   },
-  'REFUNDED': {
+  REFUNDED: {
     name: 'Reembolsado',
     color: 'bg-gray-100 text-gray-800',
     description: 'Valor devolvido para o comprador'
   },
-  'CANCELLED': {
+  CANCELLED: {
     name: 'Cancelado',
     color: 'bg-red-100 text-red-800',
     description: 'Transação cancelada'
@@ -39,17 +39,17 @@ export const ESCROW_STATUS = {
 
 // Tipos de moeda suportados
 export const SUPPORTED_CURRENCIES = {
-  'BRL': {
+  BRL: {
     name: 'Real Brasileiro',
     symbol: 'R$',
     code: 'BRL'
   },
-  'USD': {
+  USD: {
     name: 'Dólar Americano',
     symbol: '$',
     code: 'USD'
   },
-  'EUR': {
+  EUR: {
     name: 'Euro',
     symbol: '€',
     code: 'EUR'
@@ -59,8 +59,8 @@ export const SUPPORTED_CURRENCIES = {
 // Configurações de escrow
 export const ESCROW_CONFIG = {
   feePercentage: 2.5, // Taxa de 2.5%
-  minAmount: 10.00, // Valor mínimo
-  maxAmount: 100000.00, // Valor máximo
+  minAmount: 10.0, // Valor mínimo
+  maxAmount: 100000.0, // Valor máximo
   autoReleaseDays: 7, // Liberação automática em 7 dias
   disputePeriod: 3 // Período de disputa em 3 dias
 };
@@ -112,10 +112,10 @@ class EscrowService {
 
       // Em produção, salvar no banco de dados
       // const response = await axios.post(`${API_BASE_URL}/escrow/transactions`, escrowTransaction);
-      
+
       // Simular salvamento local
       this.transactions.set(escrowTransaction.id, escrowTransaction);
-      
+
       if (process.env.NODE_ENV !== 'production') {
         console.log('Transação de escrow criada:', escrowTransaction.id);
       }
@@ -135,7 +135,7 @@ class EscrowService {
 
       // Em produção, buscar do banco de dados
       // const response = await axios.get(`${API_BASE_URL}/escrow/transactions/${escrowId}`);
-      
+
       // Simular busca local
       const escrowTransaction = this.transactions.get(escrowId);
       if (!escrowTransaction) {
@@ -185,7 +185,7 @@ class EscrowService {
       }
 
       const escrowTransaction = await this.getEscrowTransaction(escrowId);
-      
+
       if (escrowTransaction.status !== 'PENDING') {
         throw new Error('Transação não está pendente para depósito');
       }
@@ -198,7 +198,7 @@ class EscrowService {
 
       // Simular processamento de pagamento
       await new Promise(resolve => setTimeout(resolve, 2000)); // Delay simulado
-      
+
       // Atualizar status
       escrowTransaction.status = 'FUNDED';
       escrowTransaction.fundedAt = new Date().toISOString();
@@ -226,7 +226,7 @@ class EscrowService {
       }
 
       const escrowTransaction = await this.getEscrowTransaction(escrowId);
-      
+
       if (escrowTransaction.status !== 'FUNDED') {
         throw new Error('Escrow não está fundado para liberação');
       }
@@ -239,7 +239,7 @@ class EscrowService {
 
       // Simular processamento de transferência
       await new Promise(resolve => setTimeout(resolve, 1500)); // Delay simulado
-      
+
       // Atualizar status
       escrowTransaction.status = 'RELEASED';
       escrowTransaction.releasedAt = new Date().toISOString();
@@ -267,7 +267,7 @@ class EscrowService {
       }
 
       const escrowTransaction = await this.getEscrowTransaction(escrowId);
-      
+
       if (!['FUNDED', 'PENDING'].includes(escrowTransaction.status)) {
         throw new Error('Escrow não pode ser disputado neste status');
       }
@@ -285,10 +285,10 @@ class EscrowService {
 
       // Em produção, salvar disputa no banco
       // const disputeResponse = await axios.post(`${API_BASE_URL}/escrow/${escrowId}/disputes`, dispute);
-      
+
       // Simular salvamento local
       this.disputes.set(dispute.id, dispute);
-      
+
       // Atualizar status do escrow
       escrowTransaction.status = 'DISPUTED';
       escrowTransaction.disputeId = dispute.id;
@@ -317,7 +317,7 @@ class EscrowService {
       }
 
       const escrowTransaction = await this.getEscrowTransaction(dispute.escrowId);
-      
+
       // Em produção, verificar permissões de admin
       // const adminCheck = await axios.get(`${API_BASE_URL}/admin/verify/${adminId}`);
       // if (!adminCheck.data.isAdmin) {
@@ -356,7 +356,7 @@ class EscrowService {
       }
 
       const escrowTransaction = await this.getEscrowTransaction(escrowId);
-      
+
       if (escrowTransaction.status !== 'FUNDED') {
         throw new Error('Escrow não está fundado para reembolso');
       }
@@ -369,7 +369,7 @@ class EscrowService {
 
       // Simular processamento de reembolso
       await new Promise(resolve => setTimeout(resolve, 2000)); // Delay simulado
-      
+
       // Atualizar status
       escrowTransaction.status = 'REFUNDED';
       escrowTransaction.refundedAt = new Date().toISOString();
@@ -397,7 +397,7 @@ class EscrowService {
       }
 
       const escrowTransaction = await this.getEscrowTransaction(escrowId);
-      
+
       if (!['PENDING', 'FUNDED'].includes(escrowTransaction.status)) {
         throw new Error('Escrow não pode ser cancelado neste status');
       }
@@ -434,7 +434,7 @@ class EscrowService {
       }
 
       const allTransactions = Array.from(this.transactions.values());
-      
+
       const stats = {
         total: allTransactions.length,
         pending: allTransactions.filter(t => t.status === 'PENDING').length,
@@ -487,10 +487,10 @@ class EscrowService {
   // Verificar se escrow pode ser liberado automaticamente
   canAutoRelease(escrowTransaction) {
     if (escrowTransaction.status !== 'FUNDED') return false;
-    
+
     const now = new Date();
     const autoReleaseDate = new Date(escrowTransaction.autoReleaseAt);
-    
+
     return now >= autoReleaseDate;
   }
 
@@ -499,8 +499,7 @@ class EscrowService {
     try {
       if (!this.isEnabled) return;
 
-      const fundedTransactions = Array.from(this.transactions.values())
-        .filter(t => t.status === 'FUNDED');
+      const fundedTransactions = Array.from(this.transactions.values()).filter(t => t.status === 'FUNDED');
 
       for (const transaction of fundedTransactions) {
         if (this.canAutoRelease(transaction)) {

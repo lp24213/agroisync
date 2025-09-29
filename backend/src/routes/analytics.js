@@ -1,9 +1,9 @@
-import express, { Router, Request, Response } from 'express';
+import express from 'express';
 
-const router: Router = express.Router();
+const router = express.Router();
 
 // Analytics endpoint
-router.get('/', (_req: Request, res: Response) => {
+router.get('/', (_req, res) => {
   res.json({
     message: 'Analytics service',
     status: 'operational'

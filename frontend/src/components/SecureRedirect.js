@@ -10,15 +10,15 @@ const SecureRedirect = () => {
     const timestamp = Date.now();
     const randomId = Math.random().toString(36).substring(2, 15);
     const newPath = `${location.pathname}?zx=${timestamp}&no_sw_cr=${randomId}`;
-    
+
     // Redirect to the secure URL
     navigate(newPath, { replace: true });
-    
+
     // After redirect, navigate to the actual page
     setTimeout(() => {
       // Determine which page to show based on the path
       let targetPage = '/register'; // default
-      
+
       if (location.pathname.includes('/signup/product')) {
         targetPage = '/register';
       } else if (location.pathname.includes('/signup/freight')) {
@@ -30,7 +30,7 @@ const SecureRedirect = () => {
       } else if (location.pathname.includes('/two-factor-auth')) {
         targetPage = '/register';
       }
-      
+
       navigate(targetPage, { replace: true });
     }, 100); // Small delay to ensure secure URL is applied
   }, [navigate, location.pathname]);

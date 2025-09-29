@@ -7,7 +7,7 @@ import logger from '../utils/logger.js';
 const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.SMTP_HOST;
 
 // Configuração de email (usando SMTP genérico)
-const emailTransporter = nodemailer.createTransporter({
+const emailTransporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || devConfig.email.host,
   port: process.env.SMTP_PORT || devConfig.email.port,
   secure: false, // true para 465, false para outras portas
@@ -17,11 +17,11 @@ const emailTransporter = nodemailer.createTransporter({
   }
 });
 
-// Configuração SMS (usando Twilio)
-const twilioClient = twilio(
-  process.env.TWILIO_ACCOUNT_SID || devConfig.sms.accountSid,
-  process.env.TWILIO_AUTH_TOKEN || devConfig.sms.authToken
-);
+// Configuração SMS (usando Twilio) - desativado se não houver credenciais
+const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID || devConfig.sms.accountSid;
+const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN || devConfig.sms.authToken;
+const isSmsConfigured = Boolean(twilioAccountSid && twilioAuthToken);
+const twilioClient = isSmsConfigured ? twilio(twilioAccountSid, twilioAuthToken) : null;
 
 // Função para enviar email via Resend
 const sendEmailViaResend = async (to, subject, html) => {
@@ -59,6 +59,7 @@ class NotificationService {
     this.fromName = process.env.FROM_NAME || devConfig.email.fromName;
     this.twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER || devConfig.sms.phoneNumber;
     this.isDevelopment = isDevelopment;
+    this.isSmsConfigured = isSmsConfigured && Boolean(this.twilioPhoneNumber);
   }
 
   /**
@@ -152,6 +153,12 @@ class NotificationService {
         };
       }
 
+      // Se não há configuração válida de SMS, retornar como desabilitado
+      if (!this.isSmsConfigured || !twilioClient) {
+        logger.warn('SMS não configurado. Ignorando envio.');
+        return { success: false, error: 'SMS desabilitado', code: 'SMS_DISABLED' };
+      }
+
       // Formatar número de telefone para E.164 se necessário
       const formattedPhone = this.formatPhoneNumber(phoneNumber);
 
@@ -233,7 +240,7 @@ class NotificationService {
     const htmlBody = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #059669; margin: 0;">🌾 AgroSync</h1>
+          <h1 style="color: #059669; margin: 0;">AgroSync</h1>
           <p style="color: #666; margin: 10px 0 0 0;">Plataforma de Agronegócio</p>
         </div>
         
@@ -274,7 +281,7 @@ class NotificationService {
     const htmlBody = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #059669; margin: 0;">🌾 AgroSync</h1>
+          <h1 style="color: #059669; margin: 0;">AgroSync</h1>
           <p style="color: #666; margin: 10px 0 0 0;">Plataforma de Agronegócio</p>
         </div>
         
@@ -285,7 +292,7 @@ class NotificationService {
           
           <div style="text-align: center; margin: 30px 0;">
             <a href="${verificationUrl}" style="display: inline-block; background: #059669; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">
-              ✅ Verificar Conta
+              Verificar Conta
             </a>
           </div>
           
@@ -445,11 +452,7 @@ class NotificationService {
         resendConfigured: !!process.env.RESEND_API_KEY
       },
       sms: {
-        configured: !!(
-          process.env.TWILIO_ACCOUNT_SID &&
-          process.env.TWILIO_AUTH_TOKEN &&
-          process.env.TWILIO_PHONE_NUMBER
-        ),
+        configured: this.isSmsConfigured,
         phoneNumber: this.twilioPhoneNumber,
         accountSid: process.env.TWILIO_ACCOUNT_SID || devConfig.sms.accountSid
       }

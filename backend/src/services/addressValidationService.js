@@ -29,7 +29,7 @@ class AddressValidationService {
       }
 
       const address = response.data;
-      
+
       return {
         isValid: true,
         country: 'BR',
@@ -79,15 +79,15 @@ class AddressValidationService {
         throw new Error('Endereço não encontrado');
       }
 
-      const result = response.data.result;
-      
+      const { result } = response.data;
+
       return {
         isValid: true,
         country: 'CN',
         address: {
           street: address,
-          city: city,
-          province: province,
+          city,
+          province,
           country: 'China',
           coordinates: {
             lat: result.location.lat,
@@ -131,13 +131,13 @@ class AddressValidationService {
 
       const result = response.data.results[0];
       const components = result.address_components;
-      
+
       // Extrair componentes do endereço
       const addressComponents = this.extractGoogleAddressComponents(components);
-      
+
       return {
         isValid: true,
-        country: country,
+        country,
         address: {
           street: addressComponents.street,
           city: addressComponents.city,
@@ -156,7 +156,7 @@ class AddressValidationService {
       return {
         isValid: false,
         error: error.message,
-        country: country
+        country
       };
     }
   }
@@ -172,11 +172,11 @@ class AddressValidationService {
       case 'BRAZIL':
       case 'BRASIL':
         return await this.validateBrazilianAddress(zipCode);
-      
+
       case 'CN':
       case 'CHINA':
         return await this.validateChineseAddress(address, city, province);
-      
+
       default:
         return await this.validateInternationalAddress(address, country);
     }
@@ -195,8 +195,8 @@ class AddressValidationService {
     };
 
     components.forEach(component => {
-      const types = component.types;
-      
+      const { types } = component;
+
       if (types.includes('street_number') || types.includes('route')) {
         result.street = component.long_name;
       } else if (types.includes('locality')) {
@@ -222,8 +222,8 @@ class AddressValidationService {
       country: 'CN',
       address: {
         street: address,
-        city: city,
-        province: province,
+        city,
+        province,
         country: 'China',
         coordinates: null
       },
@@ -237,13 +237,13 @@ class AddressValidationService {
   mockInternationalValidation(address, country) {
     return {
       isValid: true,
-      country: country,
+      country,
       address: {
         street: address,
         city: 'Unknown',
         state: 'Unknown',
         zipCode: 'Unknown',
-        country: country,
+        country,
         coordinates: null
       },
       source: 'mock'
@@ -255,7 +255,7 @@ class AddressValidationService {
    */
   formatAddress(addressData) {
     const { street, city, state, zipCode, country } = addressData;
-    
+
     switch (country.toUpperCase()) {
       case 'BR':
         return `${street}, ${city}, ${state}, ${zipCode}, Brasil`;
@@ -294,7 +294,7 @@ class AddressValidationService {
    */
   getAddressFormat(country) {
     const formats = {
-      'BR': {
+      BR: {
         fields: ['zipCode', 'street', 'number', 'neighborhood', 'city', 'state'],
         labels: {
           zipCode: 'CEP',
@@ -306,7 +306,7 @@ class AddressValidationService {
         },
         required: ['zipCode', 'street', 'city', 'state']
       },
-      'CN': {
+      CN: {
         fields: ['province', 'city', 'district', 'street', 'number'],
         labels: {
           province: 'Província',
@@ -317,7 +317,7 @@ class AddressValidationService {
         },
         required: ['province', 'city', 'street']
       },
-      'US': {
+      US: {
         fields: ['street', 'number', 'city', 'state', 'zipCode'],
         labels: {
           street: 'Street',

@@ -69,8 +69,8 @@ export const getClientIPInfo = req => {
       country: req.headers['cf-ipcountry'] || null,
       region: req.headers['cf-ipregion'] || null,
       city: req.headers['cf-ipcity'] || null,
-      threatScore: parseInt(req.headers['cf-threat-score']) || 0,
-      botScore: parseInt(req.headers['cf-bot-score']) || 0,
+      threatScore: parseInt(req.headers['cf-threat-score'], 10) || 0,
+      botScore: parseInt(req.headers['cf-bot-score'], 10) || 0,
       verifiedBot: req.headers['cf-verified-bot'] === 'true',
       challengePassed: req.headers['cf-challenge-passed'] === 'true'
     },

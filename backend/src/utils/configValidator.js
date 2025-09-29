@@ -13,7 +13,7 @@ class ConfigurationValidator {
       'SMTP_USER',
       'SMTP_PASS'
     ];
-    
+
     this.warningConfigs = [
       'REDIS_URL',
       'TWILIO_ACCOUNT_SID',
@@ -27,7 +27,7 @@ class ConfigurationValidator {
   validateAll() {
     const errors = [];
     const warnings = [];
-    
+
     // Validar configurações críticas
     this.criticalConfigs.forEach(config => {
       const value = process.env[config];
@@ -37,7 +37,7 @@ class ConfigurationValidator {
         errors.push(`❌ ${config} tem formato inválido`);
       }
     });
-    
+
     // Validar configurações de aviso
     this.warningConfigs.forEach(config => {
       const value = process.env[config];
@@ -45,14 +45,14 @@ class ConfigurationValidator {
         warnings.push(`⚠️ ${config} não configurado - funcionalidade pode não funcionar`);
       }
     });
-    
+
     // Validar configurações específicas
     this.validateJWTSecret();
     this.validateMongoURI();
     this.validateStripeKeys();
     this.validateEmailConfig();
     this.validateSecurityConfig();
-    
+
     return { errors, warnings };
   }
 
@@ -68,7 +68,7 @@ class ConfigurationValidator {
       'your-email@gmail.com',
       'your-app-password'
     ];
-    
+
     return defaultValues.includes(value);
   }
 
@@ -77,19 +77,19 @@ class ConfigurationValidator {
     switch (config) {
       case 'JWT_SECRET':
         return value.length >= 32 && !this.isDefaultValue(value);
-      
+
       case 'MONGODB_URI':
         return value.startsWith('mongodb://') || value.startsWith('mongodb+srv://');
-      
+
       case 'STRIPE_SECRET_KEY':
         return value.startsWith('sk_') && !this.isDefaultValue(value);
-      
+
       case 'STRIPE_WEBHOOK_SECRET':
         return value.startsWith('whsec_') && !this.isDefaultValue(value);
-      
+
       case 'SMTP_USER':
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-      
+
       default:
         return true;
     }
@@ -99,19 +99,25 @@ class ConfigurationValidator {
   validateJWTSecret() {
     const secret = process.env.JWT_SECRET;
     if (!secret || this.isDefaultValue(secret)) {
-      throw new Error('❌ JWT_SECRET é obrigatório e deve ser uma string segura de pelo menos 32 caracteres');
+      throw new Error(
+        '❌ JWT_SECRET é obrigatório e deve ser uma string segura de pelo menos 32 caracteres'
+      );
     }
-    
+
     if (secret.length < 32) {
       throw new Error('❌ JWT_SECRET deve ter pelo menos 32 caracteres para segurança');
     }
-    
+
     // Verificar se não é uma string comum
     const commonSecrets = [
-      'secret', 'password', '123456', 'admin', 'test',
+      'secret',
+      'password',
+      '123456',
+      'admin',
+      'test',
       'your-super-secret-jwt-key-change-in-production'
     ];
-    
+
     if (commonSecrets.includes(secret.toLowerCase())) {
       throw new Error('❌ JWT_SECRET não pode ser uma string comum ou padrão');
     }
@@ -123,11 +129,11 @@ class ConfigurationValidator {
     if (!uri || this.isDefaultValue(uri)) {
       throw new Error('❌ MONGODB_URI é obrigatório');
     }
-    
+
     if (!uri.startsWith('mongodb://') && !uri.startsWith('mongodb+srv://')) {
       throw new Error('❌ MONGODB_URI deve começar com mongodb:// ou mongodb+srv://');
     }
-    
+
     // Verificar se não é localhost em produção
     if (process.env.NODE_ENV === 'production' && uri.includes('localhost')) {
       throw new Error('❌ MONGODB_URI não pode usar localhost em produção');
@@ -138,20 +144,20 @@ class ConfigurationValidator {
   validateStripeKeys() {
     const secretKey = process.env.STRIPE_SECRET_KEY;
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-    
+
     if (!secretKey || this.isDefaultValue(secretKey)) {
       throw new Error('❌ STRIPE_SECRET_KEY é obrigatório');
     }
-    
+
     if (!webhookSecret || this.isDefaultValue(webhookSecret)) {
       throw new Error('❌ STRIPE_WEBHOOK_SECRET é obrigatório');
     }
-    
+
     // Verificar se as chaves são válidas
     if (!secretKey.startsWith('sk_')) {
       throw new Error('❌ STRIPE_SECRET_KEY deve começar com sk_');
     }
-    
+
     if (!webhookSecret.startsWith('whsec_')) {
       throw new Error('❌ STRIPE_WEBHOOK_SECRET deve começar com whsec_');
     }
@@ -161,15 +167,15 @@ class ConfigurationValidator {
   validateEmailConfig() {
     const smtpUser = process.env.SMTP_USER;
     const smtpPass = process.env.SMTP_PASS;
-    
+
     if (!smtpUser || this.isDefaultValue(smtpUser)) {
       throw new Error('❌ SMTP_USER é obrigatório');
     }
-    
+
     if (!smtpPass || this.isDefaultValue(smtpPass)) {
       throw new Error('❌ SMTP_PASS é obrigatório');
     }
-    
+
     // Validar formato do email
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(smtpUser)) {
       throw new Error('❌ SMTP_USER deve ser um email válido');
@@ -184,12 +190,12 @@ class ConfigurationValidator {
       if (process.env.FRONTEND_URL && !process.env.FRONTEND_URL.startsWith('https://')) {
         console.warn('⚠️ FRONTEND_URL deve usar HTTPS em produção');
       }
-      
+
       // Verificar CORS
       if (process.env.CORS_ORIGIN && process.env.CORS_ORIGIN === '*') {
         throw new Error('❌ CORS_ORIGIN não pode ser * em produção');
       }
-      
+
       // Verificar se não está usando localhost
       if (process.env.FRONTEND_URL && process.env.FRONTEND_URL.includes('localhost')) {
         throw new Error('❌ FRONTEND_URL não pode usar localhost em produção');
@@ -211,45 +217,45 @@ class ConfigurationValidator {
   validateEnvFile() {
     const fs = require('fs');
     const path = require('path');
-    
+
     const envPath = path.join(process.cwd(), '.env');
-    
+
     if (!fs.existsSync(envPath)) {
       console.warn('⚠️ Arquivo .env não encontrado');
       return false;
     }
-    
+
     const envContent = fs.readFileSync(envPath, 'utf8');
     const lines = envContent.split('\n');
-    
+
     const issues = [];
-    
+
     lines.forEach((line, index) => {
       const lineNum = index + 1;
-      
+
       // Verificar se há comentários desnecessários
       if (line.includes('# TODO') || line.includes('# FIXME')) {
         issues.push(`Linha ${lineNum}: Comentário TODO/FIXME encontrado`);
       }
-      
+
       // Verificar se há valores vazios
       if (line.includes('=') && line.split('=')[1].trim() === '') {
         issues.push(`Linha ${lineNum}: Valor vazio encontrado`);
       }
-      
+
       // Verificar se há espaços em branco desnecessários
       if (line.trim() !== line && line.trim() !== '') {
         issues.push(`Linha ${lineNum}: Espaços em branco desnecessários`);
       }
     });
-    
+
     return issues;
   }
 
   // Criar arquivo .env seguro
   createSecureEnvFile() {
     const secureConfig = this.generateSecureConfig();
-    
+
     const envContent = `# Configurações Seguras - AgroSync
 # Gerado automaticamente em ${new Date().toISOString()}
 

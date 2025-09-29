@@ -9,7 +9,7 @@ const vehicleSchema = new mongoose.Schema(
       required: true,
       index: true
     },
-    
+
     // Informações básicas
     plate: {
       type: String,
@@ -19,13 +19,13 @@ const vehicleSchema = new mongoose.Schema(
       trim: true,
       index: true
     },
-    
+
     type: {
       type: String,
       enum: ['truck', 'trailer', 'van', 'pickup', 'other'],
       required: true
     },
-    
+
     // Especificações técnicas
     specifications: {
       brand: String,
@@ -40,7 +40,7 @@ const vehicleSchema = new mongoose.Schema(
         default: 'diesel'
       }
     },
-    
+
     // Capacidade
     capacity: {
       weight: {
@@ -57,18 +57,18 @@ const vehicleSchema = new mongoose.Schema(
         height: Number
       }
     },
-    
+
     // Documentos
     documents: [
       {
         type: {
           type: String,
           enum: [
-            'registration',      // CRLV
-            'insurance',         // Seguro
-            'inspection',       // Vistoria
-            'license',          // Licença de transporte
-            'permit',           // Permissão
+            'registration', // CRLV
+            'insurance', // Seguro
+            'inspection', // Vistoria
+            'license', // Licença de transporte
+            'permit', // Permissão
             'other'
           ],
           required: true
@@ -84,7 +84,7 @@ const vehicleSchema = new mongoose.Schema(
         }
       }
     ],
-    
+
     // Status do veículo
     status: {
       type: String,
@@ -92,7 +92,7 @@ const vehicleSchema = new mongoose.Schema(
       default: 'active',
       index: true
     },
-    
+
     // Localização atual
     currentLocation: {
       address: String,
@@ -107,7 +107,7 @@ const vehicleSchema = new mongoose.Schema(
         default: Date.now
       }
     },
-    
+
     // Motorista atual
     currentDriver: {
       name: String,
@@ -115,7 +115,7 @@ const vehicleSchema = new mongoose.Schema(
       license: String,
       assignedAt: Date
     },
-    
+
     // Histórico de viagens
     trips: [
       {
@@ -139,7 +139,7 @@ const vehicleSchema = new mongoose.Schema(
         }
       }
     ],
-    
+
     // Manutenção
     maintenance: [
       {
@@ -159,7 +159,7 @@ const vehicleSchema = new mongoose.Schema(
         documents: [String] // URLs dos documentos
       }
     ],
-    
+
     // Seguro
     insurance: {
       company: String,
@@ -174,7 +174,7 @@ const vehicleSchema = new mongoose.Schema(
       premium: Number,
       deductible: Number
     },
-    
+
     // Estatísticas
     stats: {
       totalTrips: {
@@ -193,7 +193,7 @@ const vehicleSchema = new mongoose.Schema(
       lastMaintenanceDate: Date,
       nextMaintenanceDate: Date
     },
-    
+
     // Configurações
     settings: {
       allowTracking: {
@@ -231,8 +231,8 @@ vehicleSchema.virtual('isAvailable').get(function () {
 vehicleSchema.virtual('hasValidDocuments').get(function () {
   const requiredDocs = ['registration', 'insurance'];
   const activeDocs = this.documents.filter(doc => doc.isActive);
-  
-  return requiredDocs.every(reqDoc => 
+
+  return requiredDocs.every(reqDoc =>
     activeDocs.some(doc => doc.type === reqDoc && doc.expiryDate > new Date())
   );
 });
@@ -249,17 +249,16 @@ vehicleSchema.virtual('insuranceExpired').get(function () {
 vehicleSchema.pre('save', function (next) {
   // Atualizar estatísticas
   this.stats.totalTrips = this.trips.length;
-  
+
   // Calcular próxima manutenção
   if (this.maintenance.length > 0) {
-    const lastMaintenance = this.maintenance
-      .sort((a, b) => b.date - a.date)[0];
-    
+    const lastMaintenance = this.maintenance.sort((a, b) => b.date - a.date)[0];
+
     if (lastMaintenance.nextMaintenanceDate) {
       this.stats.nextMaintenanceDate = lastMaintenance.nextMaintenanceDate;
     }
   }
-  
+
   next();
 });
 
@@ -272,7 +271,7 @@ vehicleSchema.methods.addTrip = function (freightOrderId, origin, destination) {
     destination,
     status: 'scheduled'
   });
-  
+
   return this.save();
 };
 
@@ -281,7 +280,7 @@ vehicleSchema.methods.updateLocation = function (location) {
     ...location,
     lastUpdated: new Date()
   };
-  
+
   return this.save();
 };
 
@@ -290,7 +289,7 @@ vehicleSchema.methods.assignDriver = function (driverInfo) {
     ...driverInfo,
     assignedAt: new Date()
   };
-  
+
   return this.save();
 };
 
@@ -299,7 +298,7 @@ vehicleSchema.methods.addMaintenance = function (maintenanceData) {
     ...maintenanceData,
     date: new Date()
   });
-  
+
   return this.save();
 };
 
@@ -313,7 +312,7 @@ vehicleSchema.methods.addDocument = function (type, number, issueDate, expiryDat
     filename,
     isActive: true
   });
-  
+
   return this.save();
 };
 
@@ -323,9 +322,9 @@ vehicleSchema.statics.findByCarrier = function (carrierId) {
 };
 
 vehicleSchema.statics.findAvailable = function () {
-  return this.find({ 
+  return this.find({
     status: 'active',
-    'currentDriver': { $exists: false }
+    currentDriver: { $exists: false }
   });
 };
 

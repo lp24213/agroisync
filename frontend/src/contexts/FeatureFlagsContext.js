@@ -19,50 +19,50 @@ export const FeatureFlagsProvider = ({ children }) => {
     // Feature flags padrão
     const defaultFlags = {
       // Funcionalidades principais
-      'FEATURE_MARKETPLACE': true,
-      'FEATURE_AGROCONECTA': true,
-      'FEATURE_CRYPTO': true,
-      'FEATURE_MESSAGING': true,
-      'FEATURE_ADMIN_PANEL': true,
-      
+      FEATURE_MARKETPLACE: true,
+      FEATURE_AGROCONECTA: true,
+      FEATURE_CRYPTO: true,
+      FEATURE_MESSAGING: true,
+      FEATURE_ADMIN_PANEL: true,
+
       // Funcionalidades avançadas
-      'FEATURE_AI_CHATBOT': true,
-      'FEATURE_VOICE_CHAT': true,
-      'FEATURE_IMAGE_ANALYSIS': true,
-      'FEATURE_REAL_TIME_QUOTES': true,
-      'FEATURE_WEATHER_WIDGET': true,
-      'FEATURE_NEWS_FEED': true,
-      
+      FEATURE_AI_CHATBOT: true,
+      FEATURE_VOICE_CHAT: true,
+      FEATURE_IMAGE_ANALYSIS: true,
+      FEATURE_REAL_TIME_QUOTES: true,
+      FEATURE_WEATHER_WIDGET: true,
+      FEATURE_NEWS_FEED: true,
+
       // Integrações
-      'FEATURE_STRIPE_PAYMENTS': true,
-      'FEATURE_METAMASK_INTEGRATION': true,
-      'FEATURE_NFT_MINTING': true,
-      'FEATURE_STAKING': true,
-      
+      FEATURE_STRIPE_PAYMENTS: true,
+      FEATURE_METAMASK_INTEGRATION: true,
+      FEATURE_NFT_MINTING: true,
+      FEATURE_STAKING: true,
+
       // UI/UX
-      'FEATURE_DARK_MODE': true,
-      'FEATURE_ANIMATIONS': true,
-      'FEATURE_GLASSMORPHISM': true,
-      'FEATURE_NEON_EFFECTS': true,
-      
+      FEATURE_DARK_MODE: true,
+      FEATURE_ANIMATIONS: true,
+      FEATURE_GLASSMORPHISM: true,
+      FEATURE_NEON_EFFECTS: true,
+
       // Analytics
-      'FEATURE_ANALYTICS': true,
-      'FEATURE_USER_TRACKING': true,
-      'FEATURE_PERFORMANCE_MONITORING': true,
-      
+      FEATURE_ANALYTICS: true,
+      FEATURE_USER_TRACKING: true,
+      FEATURE_PERFORMANCE_MONITORING: true,
+
       // Segurança
-      'FEATURE_2FA': true,
-      'FEATURE_RATE_LIMITING': true,
-      'FEATURE_SECURITY_LOGS': true,
-      
+      FEATURE_2FA: true,
+      FEATURE_RATE_LIMITING: true,
+      FEATURE_SECURITY_LOGS: true,
+
       // Experimentais
-      'FEATURE_BETA_FEATURES': false,
-      'FEATURE_EXPERIMENTAL_UI': false,
-      'FEATURE_ADVANCED_ANALYTICS': false,
-      
+      FEATURE_BETA_FEATURES: false,
+      FEATURE_EXPERIMENTAL_UI: false,
+      FEATURE_ADVANCED_ANALYTICS: false,
+
       // Por ambiente
-      'FEATURE_DEBUG_MODE': process.env.NODE_ENV === 'development',
-      'FEATURE_MAINTENANCE_MODE': false
+      FEATURE_DEBUG_MODE: process.env.NODE_ENV === 'development',
+      FEATURE_MAINTENANCE_MODE: false
     };
 
     const loadFeatureFlags = async () => {
@@ -92,17 +92,17 @@ export const FeatureFlagsProvider = ({ children }) => {
   }, []);
 
   // Verificar se uma feature está habilitada
-  const isEnabled = (flagName) => {
+  const isEnabled = flagName => {
     return flags[flagName] === true;
   };
 
   // Verificar se múltiplas features estão habilitadas
-  const areEnabled = (flagNames) => {
+  const areEnabled = flagNames => {
     return flagNames.every(flagName => flags[flagName] === true);
   };
 
   // Verificar se pelo menos uma feature está habilitada
-  const isAnyEnabled = (flagNames) => {
+  const isAnyEnabled = flagNames => {
     return flagNames.some(flagName => flags[flagName] === true);
   };
 
@@ -118,7 +118,7 @@ export const FeatureFlagsProvider = ({ children }) => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+          Authorization: `Bearer ${localStorage.getItem('adminToken')}`
         },
         body: JSON.stringify({
           flagName,
@@ -146,15 +146,15 @@ export const FeatureFlagsProvider = ({ children }) => {
   };
 
   // Obter flags por categoria
-  const getFlagsByCategory = (category) => {
+  const getFlagsByCategory = category => {
     const categories = {
-      'main': ['FEATURE_MARKETPLACE', 'FEATURE_AGROCONECTA', 'FEATURE_CRYPTO', 'FEATURE_MESSAGING'],
-      'advanced': ['FEATURE_AI_CHATBOT', 'FEATURE_VOICE_CHAT', 'FEATURE_IMAGE_ANALYSIS'],
-      'integrations': ['FEATURE_STRIPE_PAYMENTS', 'FEATURE_METAMASK_INTEGRATION', 'FEATURE_NFT_MINTING'],
-      'ui': ['FEATURE_DARK_MODE', 'FEATURE_ANIMATIONS', 'FEATURE_GLASSMORPHISM'],
-      'analytics': ['FEATURE_ANALYTICS', 'FEATURE_USER_TRACKING'],
-      'security': ['FEATURE_2FA', 'FEATURE_RATE_LIMITING'],
-      'experimental': ['FEATURE_BETA_FEATURES', 'FEATURE_EXPERIMENTAL_UI']
+      main: ['FEATURE_MARKETPLACE', 'FEATURE_AGROCONECTA', 'FEATURE_CRYPTO', 'FEATURE_MESSAGING'],
+      advanced: ['FEATURE_AI_CHATBOT', 'FEATURE_VOICE_CHAT', 'FEATURE_IMAGE_ANALYSIS'],
+      integrations: ['FEATURE_STRIPE_PAYMENTS', 'FEATURE_METAMASK_INTEGRATION', 'FEATURE_NFT_MINTING'],
+      ui: ['FEATURE_DARK_MODE', 'FEATURE_ANIMATIONS', 'FEATURE_GLASSMORPHISM'],
+      analytics: ['FEATURE_ANALYTICS', 'FEATURE_USER_TRACKING'],
+      security: ['FEATURE_2FA', 'FEATURE_RATE_LIMITING'],
+      experimental: ['FEATURE_BETA_FEATURES', 'FEATURE_EXPERIMENTAL_UI']
     };
 
     const categoryFlags = categories[category] || [];
@@ -166,7 +166,7 @@ export const FeatureFlagsProvider = ({ children }) => {
 
   const value = {
     flags,
-loading,
+    loading,
     isEnabled,
     areEnabled,
     isAnyEnabled,
@@ -176,9 +176,5 @@ loading,
     getFlagsByCategory
   };
 
-  return (
-    <FeatureFlagsContext.Provider value={value}>
-      {children}
-    </FeatureFlagsContext.Provider>
-  );
+  return <FeatureFlagsContext.Provider value={value}>{children}</FeatureFlagsContext.Provider>;
 };

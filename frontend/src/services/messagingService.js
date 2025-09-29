@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { API_CONFIG, getAuthToken } from '../config/constants.js';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
+const API_BASE_URL = API_CONFIG.baseURL;
 
 class MessagingService {
   constructor() {
@@ -11,8 +12,10 @@ class MessagingService {
 
   // Configurar token de autenticação
   setAuthToken(token) {
-    this.authToken = token;
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    this.authToken = token || getAuthToken();
+    if (this.authToken) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${this.authToken}`;
+    }
   }
 
   // Conectar WebSocket para mensagens em tempo real
@@ -30,7 +33,7 @@ class MessagingService {
       }
     };
 
-    this.websocket.onmessage = (event) => {
+    this.websocket.onmessage = event => {
       try {
         const data = JSON.parse(event.data);
         this.handleWebSocketMessage(data);
@@ -51,7 +54,7 @@ class MessagingService {
       }, 5000);
     };
 
-    this.websocket.onerror = (error) => {
+    this.websocket.onerror = error => {
       console.error('Erro no WebSocket:', error);
     };
   }
@@ -86,7 +89,7 @@ class MessagingService {
   // Processar mensagens WebSocket
   handleWebSocketMessage(data) {
     const { type, payload } = data;
-    
+
     if (this.messageHandlers.has(type)) {
       this.messageHandlers.get(type).forEach(handler => {
         try {
