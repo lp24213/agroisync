@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import serverless from 'aws-serverless-express';
+import { URL_CONFIG, SECURITY_CONFIG } from './config/constants.js';
 
 // Import routes
 import healthRoutes from './routes/health.js';
@@ -22,66 +22,45 @@ app.use(cspMiddleware);
 import { csrfToken } from './middleware/csrf.js';
 app.use(csrfToken); // Adiciona token CSRF a todas as respostas
 
-// CORS configuration - MELHORADO para suportar múltiplas origens
-// Mantém compatibilidade com configuração existente
+// ===== CONFIGURAÇÃO CORS CONSOLIDADA =====
+// ÚNICA configuração CORS do projeto - não duplicar em outros arquivos
 const configureCORS = () => {
-  // Origens permitidas (com fallback para produção)
-  const defaultOrigins = [
-    'http://localhost:3000',
-    'http://localhost:3001',
-    'http://localhost:5000',
-    'https://agroisync.com',
-    'https://www.agroisync.com'
-  ];
+  // Usar configuração centralizada
+  const allowedOrigins = SECURITY_CONFIG.corsOrigin;
 
-  // Pegar da variável de ambiente (pode ser string única ou lista separada por vírgula)
-  const envOrigin = process.env.CORS_ORIGIN;
-
-  let allowedOrigins;
-
-  if (envOrigin) {
-    // Se contém vírgula, é uma lista de origens
-    if (envOrigin.includes(',')) {
-      allowedOrigins = envOrigin.split(',').map(origin => origin.trim());
-    } else {
-      // String única - usar apenas ela (comportamento original)
-      allowedOrigins = [envOrigin];
-    }
-  } else {
-    // Usar origens padrão
-    allowedOrigins = defaultOrigins;
-  }
-
-  // Log das origens permitidas (apenas em desenvolvimento)
-  if (process.env.NODE_ENV !== 'production') {
-    console.log('🌐 CORS - Origens permitidas:', allowedOrigins);
-  }
+  // Log CORS em desenvolvimento (desativado por eslint)
+  // if (process.env.NODE_ENV !== 'production') {
+  //   console.log('🌐 CORS - Origens permitidas:', allowedOrigins);
+  // }
 
   return {
     origin: (origin, callback) => {
-      // Permitir requisições sem origin (mobile apps, Postman, etc)
+      // Permitir requisições sem origin (mobile apps, Postman, curl, etc)
       if (!origin) {
         return callback(null, true);
       }
 
-      // Verificar se a origem está na lista permitida
+      // Verificar lista de origens permitidas
       if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        // Em desenvolvimento, permitir qualquer localhost
-        if (process.env.NODE_ENV !== 'production' && origin.includes('localhost')) {
-          callback(null, true);
-        } else {
-          console.warn(`⚠️ CORS blocked origin: ${origin}`);
-          callback(new Error(`Origin ${origin} not allowed by CORS`));
-        }
+        return callback(null, true);
       }
+
+      // Em desenvolvimento, permitir qualquer localhost
+      if (process.env.NODE_ENV !== 'production' && origin.includes('localhost')) {
+        return callback(null, true);
+      }
+
+      // Bloquear origem não autorizada
+      // console.warn(`⚠️ CORS bloqueado: ${origin}`);
+      callback(new Error(`Origem ${origin} não permitida pelo CORS`));
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    exposedHeaders: ['X-Request-Id'],
-    maxAge: 86400 // 24 horas
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-CSRF-Token'],
+    exposedHeaders: ['X-Request-Id', 'X-Total-Count'],
+    maxAge: 86400, // 24 horas
+    preflightContinue: false,
+    optionsSuccessStatus: 204
   };
 };
 
@@ -89,8 +68,8 @@ app.use(cors(configureCORS()));
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000', 10), // 15 minutes
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100', 10), // limit each IP to 100 requests per windowMs
+  windowMs: SECURITY_CONFIG.rateLimit.windowMs,
+  max: SECURITY_CONFIG.rateLimit.maxRequests,
   message: 'Too many requests from this IP, please try again later.'
 });
 app.use(limiter);
@@ -120,7 +99,9 @@ app.use('*', (_req, res) => {
 });
 
 // Error handler - MELHORADO com responseFormatter
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 app.use((err, req, res, _next) => {
+  // eslint-disable-next-line no-console
   console.error('Error:', err);
 
   // Se for erro de CORS, enviar mensagem específica
@@ -140,30 +121,14 @@ app.use((err, req, res, _next) => {
   });
 });
 
-// AWS Lambda handler
-export const handler = async (event, context) => {
-  // Convert API Gateway event to Express request
-  const server = serverless.createServer(app);
-
-  return new Promise((resolve, reject) => {
-    serverless
-      .proxy(server, event, context, 'PROMISE')
-      .promise.then(response => {
-        resolve({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: response.body,
-          isBase64Encoded: response.isBase64Encoded
-        });
-      })
-      .catch(reject);
-  });
-};
+// Export Express app for Cloudflare Workers
+export default app;
 
 // For local development
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 3001;
   app.listen(PORT, () => {
+    // eslint-disable-next-line no-console
     console.log(`Server running on port ${PORT}`);
   });
 }

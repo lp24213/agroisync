@@ -1,4 +1,5 @@
 import geolocationService from './geolocationService';
+import { EXTERNAL_APIS } from '../config/constants.js';
 
 class AgriculturalQuotesService {
   constructor() {
@@ -7,8 +8,8 @@ class AgriculturalQuotesService {
     this.updateInterval = null;
     this.isLoading = false;
     this.error = null;
-    this.apiBaseUrl = process.env.REACT_APP_AGROLINK_API_URL || 'https://api.agrolink.com.br';
-    this.apiKey = process.env.REACT_APP_AGROLINK_API_KEY;
+    this.apiBaseUrl = EXTERNAL_APIS.agrolink.baseUrl;
+    this.apiKey = EXTERNAL_APIS.agrolink.apiKey;
 
     // Configuração de commodities
     this.commodities = {
@@ -60,7 +61,7 @@ class AgriculturalQuotesService {
     this.apis = [
       {
         name: 'Agrolink',
-        url: 'https://api.agrolink.com.br',
+        url: EXTERNAL_APIS.agrolink.baseUrl,
         priority: 1,
         active: false
       },

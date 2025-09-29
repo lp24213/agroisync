@@ -187,7 +187,7 @@ class PaymentService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${getAuthToken()}`
         }
       });
 
@@ -288,7 +288,7 @@ class PaymentService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${getAuthToken()}`
         }
       });
 
@@ -308,7 +308,7 @@ class PaymentService {
     try {
       const response = await fetch(`${this.apiBaseUrl}/payments/history?limit=${limit}&offset=${offset}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${getAuthToken()}`
         }
       });
 
@@ -327,7 +327,7 @@ class PaymentService {
     try {
       const response = await fetch(`${this.apiBaseUrl}/payments/analytics?period=${period}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${getAuthToken()}`
         }
       });
 

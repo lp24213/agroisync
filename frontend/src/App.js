@@ -13,6 +13,7 @@ import LGPDCompliance from './components/LGPDCompliance';
 import GlobalWeatherWidget from './components/GlobalWeatherWidget';
 import AccessibilityPanel from './components/AccessibilityPanel';
 import DynamicCryptoURL from './components/DynamicCryptoURL';
+import ErrorBoundary from './components/ErrorBoundary';
 import { Accessibility } from 'lucide-react';
 
 // CSS unificado (5 arquivos)
@@ -22,61 +23,67 @@ import './styles/menu.css';
 import './styles/components.css';
 import './styles/mobile.css';
 
-// Pages - APENAS AS QUE EXISTEM
-import AgroisyncHome from './pages/AgroisyncHome';
-import AgroisyncHomePrompt from './pages/AgroisyncHomePrompt';
-import AgroisyncMarketplace from './pages/AgroisyncMarketplace';
-import AgroisyncLoja from './pages/AgroisyncLoja';
-import AgroisyncAgroConecta from './pages/AgroisyncAgroConecta';
-import UsuarioGeral from './pages/UsuarioGeral';
-import AgroisyncCrypto from './pages/AgroisyncCrypto';
-import AgroisyncDashboard from './pages/AgroisyncDashboard';
-import AgroisyncPlans from './pages/AgroisyncPlans';
-import AgroisyncAbout from './pages/AgroisyncAbout';
-import AgroisyncContact from './pages/AgroisyncContact';
-import Partnerships from './pages/Partnerships';
-import AgroisyncLogin from './pages/AgroisyncLogin';
-import AgroisyncRegister from './pages/AgroisyncRegister';
-import AgroisyncForgotPassword from './pages/AgroisyncForgotPassword';
-import SignupType from './pages/SignupType';
-import SignupFreight from './pages/SignupFreight';
-import SignupStore from './pages/SignupStore';
-import SignupProduct from './pages/SignupProduct';
-import SignupGeneral from './pages/SignupGeneral';
-import ResetPassword from './pages/ResetPassword';
-import Payment from './pages/Payment';
+// Components que precisam carregar imediatamente
 import ProtectedRoute from './components/ProtectedRoute';
-import ProductDetail from './pages/ProductDetail';
-import CryptoDetail from './pages/CryptoDetail';
-import AdminPanel from './pages/AdminPanel';
-import UserAdmin from './pages/UserAdmin';
-import CryptoRoutesStatus from './components/CryptoRoutesStatus';
-import UserDashboard from './pages/UserDashboard';
-import Messaging from './pages/Messaging';
-import TwoFactorAuth from './pages/TwoFactorAuth';
-import VerifyEmail from './pages/VerifyEmail';
-import PaymentSuccess from './pages/PaymentSuccess';
-import PaymentCancel from './pages/PaymentCancel';
-import FAQ from './pages/FAQ';
-import Terms from './pages/Terms';
-import Privacy from './pages/Privacy';
-import Help from './pages/Help';
-import LoginRedirect from './pages/LoginRedirect';
-import Unauthorized from './pages/Unauthorized';
-import NotFound from './pages/NotFound';
-import Home from './pages/Home';
-import Insumos from './pages/Insumos';
-import Store from './pages/Store';
-import StorePlans from './pages/StorePlans';
-import AgroconectaTracking from './pages/AgroconectaTracking';
-import MarketplaceCategories from './pages/MarketplaceCategories';
-import MarketplaceSellers from './pages/MarketplaceSellers';
-import MarketplaceSell from './pages/MarketplaceSell';
-import AgroconectaOffer from './pages/AgroconectaOffer';
-import AgroconectaCarriers from './pages/AgroconectaCarriers';
-import PartnershipsCurrent from './pages/PartnershipsCurrent';
-import PartnershipsBenefits from './pages/PartnershipsBenefits';
-import PartnershipsContact from './pages/PartnershipsContact';
+import LoadingFallback from './components/LoadingFallback';
+
+// Pages - LAZY LOADING para melhor performance
+// Páginas principais (carregar logo)
+const AgroisyncHome = React.lazy(() => import('./pages/AgroisyncHome'));
+const AgroisyncLogin = React.lazy(() => import('./pages/AgroisyncLogin'));
+const AgroisyncRegister = React.lazy(() => import('./pages/AgroisyncRegister'));
+
+// Páginas secundárias (carregar sob demanda)
+const AgroisyncHomePrompt = React.lazy(() => import('./pages/AgroisyncHomePrompt'));
+const AgroisyncMarketplace = React.lazy(() => import('./pages/AgroisyncMarketplace'));
+const AgroisyncLoja = React.lazy(() => import('./pages/AgroisyncLoja'));
+const AgroisyncAgroConecta = React.lazy(() => import('./pages/AgroisyncAgroConecta'));
+const UsuarioGeral = React.lazy(() => import('./pages/UsuarioGeral'));
+const AgroisyncCrypto = React.lazy(() => import('./pages/AgroisyncCrypto'));
+const AgroisyncDashboard = React.lazy(() => import('./pages/AgroisyncDashboard'));
+const AgroisyncPlans = React.lazy(() => import('./pages/AgroisyncPlans'));
+const AgroisyncAbout = React.lazy(() => import('./pages/AgroisyncAbout'));
+const AgroisyncContact = React.lazy(() => import('./pages/AgroisyncContact'));
+const Partnerships = React.lazy(() => import('./pages/Partnerships'));
+const AgroisyncForgotPassword = React.lazy(() => import('./pages/AgroisyncForgotPassword'));
+const SignupType = React.lazy(() => import('./pages/SignupType'));
+const SignupFreight = React.lazy(() => import('./pages/SignupFreight'));
+const SignupStore = React.lazy(() => import('./pages/SignupStore'));
+const SignupProduct = React.lazy(() => import('./pages/SignupProduct'));
+const SignupGeneral = React.lazy(() => import('./pages/SignupGeneral'));
+const ResetPassword = React.lazy(() => import('./pages/ResetPassword'));
+const Payment = React.lazy(() => import('./pages/Payment'));
+const ProductDetail = React.lazy(() => import('./pages/ProductDetail'));
+const CryptoDetail = React.lazy(() => import('./pages/CryptoDetail'));
+const AdminPanel = React.lazy(() => import('./pages/AdminPanel'));
+const UserAdmin = React.lazy(() => import('./pages/UserAdmin'));
+const CryptoRoutesStatus = React.lazy(() => import('./components/CryptoRoutesStatus'));
+const UserDashboard = React.lazy(() => import('./pages/UserDashboard'));
+const Messaging = React.lazy(() => import('./pages/Messaging'));
+const TwoFactorAuth = React.lazy(() => import('./pages/TwoFactorAuth'));
+const VerifyEmail = React.lazy(() => import('./pages/VerifyEmail'));
+const PaymentSuccess = React.lazy(() => import('./pages/PaymentSuccess'));
+const PaymentCancel = React.lazy(() => import('./pages/PaymentCancel'));
+const FAQ = React.lazy(() => import('./pages/FAQ'));
+const Terms = React.lazy(() => import('./pages/Terms'));
+const Privacy = React.lazy(() => import('./pages/Privacy'));
+const Help = React.lazy(() => import('./pages/Help'));
+const LoginRedirect = React.lazy(() => import('./pages/LoginRedirect'));
+const Unauthorized = React.lazy(() => import('./pages/Unauthorized'));
+const NotFound = React.lazy(() => import('./pages/NotFound'));
+const Home = React.lazy(() => import('./pages/Home'));
+const Insumos = React.lazy(() => import('./pages/Insumos'));
+const Store = React.lazy(() => import('./pages/Store'));
+const StorePlans = React.lazy(() => import('./pages/StorePlans'));
+const AgroconectaTracking = React.lazy(() => import('./pages/AgroconectaTracking'));
+const MarketplaceCategories = React.lazy(() => import('./pages/MarketplaceCategories'));
+const MarketplaceSellers = React.lazy(() => import('./pages/MarketplaceSellers'));
+const MarketplaceSell = React.lazy(() => import('./pages/MarketplaceSell'));
+const AgroconectaOffer = React.lazy(() => import('./pages/AgroconectaOffer'));
+const AgroconectaCarriers = React.lazy(() => import('./pages/AgroconectaCarriers'));
+const PartnershipsCurrent = React.lazy(() => import('./pages/PartnershipsCurrent'));
+const PartnershipsBenefits = React.lazy(() => import('./pages/PartnershipsBenefits'));
+const PartnershipsContact = React.lazy(() => import('./pages/PartnershipsContact'));
 
 // Create a client
 const queryClient = new QueryClient({
@@ -111,12 +118,13 @@ function App() {
   };
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <AuthProvider>
-          <LanguageProvider>
-            <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-              <div className='App'>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <AuthProvider>
+            <LanguageProvider>
+              <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                <div className='App'>
                 {/* Skip Links para Acessibilidade */}
                 <a href='#main-content' className='skip-link'>
                   Pular para o conteúdo principal
@@ -134,7 +142,8 @@ function App() {
                 <Layout>
                   <main id='main-content' role='main'>
                     <DynamicCryptoURL>
-                      <Routes>
+                      <React.Suspense fallback={<LoadingFallback message="Carregando página..." />}>
+                        <Routes>
                         {/* Public Routes - TODAS CRIPTOGRAFADAS */}
                         <Route path='/' element={<AgroisyncHome />} />
                         <Route path='/:cryptoHash' element={<AgroisyncHome />} />
@@ -339,7 +348,8 @@ function App() {
                         <Route path='/unauthorized' element={<Unauthorized />} />
                         <Route path='/unauthorized/:cryptoHash' element={<Unauthorized />} />
                         <Route path='*' element={<NotFound />} />
-                      </Routes>
+                        </Routes>
+                      </React.Suspense>
                     </DynamicCryptoURL>
                   </main>
                 </Layout>
@@ -435,12 +445,13 @@ function App() {
                     }
                   }}
                 />
-              </div>
-            </Router>
-          </LanguageProvider>
-        </AuthProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+                </div>
+              </Router>
+            </LanguageProvider>
+          </AuthProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

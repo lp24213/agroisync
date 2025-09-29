@@ -78,7 +78,8 @@ const AgroisyncLogin = () => {
       return;
     }
 
-    if (!turnstileToken) {
+    // Permitir bypass do Turnstile em desenvolvimento
+    if (!turnstileToken && process.env.NODE_ENV === 'production') {
       setErrors({ general: 'Por favor, complete a verificação "Não sou um robô"' });
       return;
     }
@@ -90,7 +91,7 @@ const AgroisyncLogin = () => {
       const payloadToSend = {
         email: (formData.email || '').trim().toLowerCase(),
         password: (formData.password || '').trim(),
-        turnstileToken: turnstileToken
+        turnstileToken: turnstileToken || 'dev-bypass'
       };
       const res = await fetch(`${api}/auth/login`, {
         method: 'POST',
@@ -121,10 +122,17 @@ const AgroisyncLogin = () => {
         if (token && user) {
           updateUserState(user, token);
           if (process.env.NODE_ENV !== 'production') {
-            console.log('Login successful, navigating to dashboard');
+            console.log('Login successful, redirecting based on role');
           }
-          // Forçar reload da página para atualizar o AuthContext
-          window.location.href = '/user-dashboard';
+          
+          // Redirecionar baseado no papel do usuário
+          if (user.role === 'super-admin' || user.role === 'admin') {
+            window.location.href = '/admin';
+          } else if (user.isAdmin) {
+            window.location.href = '/admin';
+          } else {
+            window.location.href = '/user-dashboard';
+          }
         } else {
           if (process.env.NODE_ENV !== 'production') {
             console.log('Missing token or user in response');

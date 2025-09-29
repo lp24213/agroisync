@@ -78,24 +78,59 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(true);
       setError(null);
 
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, {
-        email,
-        password
-      });
+      // Validar inputs
+      if (!email || !password) {
+        throw new Error('Email e senha são obrigatórios');
+      }
+
+      const response = await axios.post(
+        `${API_BASE_URL}/auth/login`,
+        {
+          email: email.trim().toLowerCase(),
+          password: password.trim()
+        },
+        {
+          timeout: 30000, // 30 segundos
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
 
       if (response.data.success) {
         const { token, user } = response.data;
+        
+        // Validar dados recebidos
+        if (!token || !user) {
+          throw new Error('Resposta do servidor inválida');
+        }
+
         // Usar helper para definir token de forma segura
         setAuthToken(token);
         localStorage.setItem(AUTH_CONFIG.userKey, JSON.stringify(user));
         setUser(user);
         setStoreUser(user);
-        return { success: true };
+        
+        return { success: true, user, token };
       } else {
-        return { success: false, error: response.data.message };
+        const errorMsg = response.data.message || 'Erro ao fazer login';
+        setError(errorMsg);
+        return { success: false, error: errorMsg };
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message;
+      let errorMessage = 'Erro ao fazer login';
+      
+      if (error.response) {
+        // Erro da API
+        errorMessage = error.response.data?.message || `Erro ${error.response.status}`;
+      } else if (error.request) {
+        // Sem resposta do servidor
+        errorMessage = 'Servidor não respondeu. Verifique sua conexão.';
+      } else {
+        // Erro na configuração da requisição
+        errorMessage = error.message;
+      }
+      
       setError(errorMessage);
       return { success: false, error: errorMessage };
     } finally {
@@ -108,23 +143,53 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(true);
       setError(null);
 
-      const response = await axios.post(`${API_BASE_URL}/auth/register`, {
-        email,
-        password,
-        ...userAttributes
-      });
+      // Validar inputs
+      if (!email || !password) {
+        throw new Error('Email e senha são obrigatórios');
+      }
+
+      if (password.length < 6) {
+        throw new Error('Senha deve ter pelo menos 6 caracteres');
+      }
+
+      const response = await axios.post(
+        `${API_BASE_URL}/auth/register`,
+        {
+          email: email.trim().toLowerCase(),
+          password: password.trim(),
+          ...userAttributes
+        },
+        {
+          timeout: 30000,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
 
       if (response.data.success) {
         return {
           success: true,
           requiresConfirmation: response.data.requiresConfirmation || false,
-          userId: response.data.userId
+          userId: response.data.userId,
+          message: response.data.message || 'Registro realizado com sucesso'
         };
       } else {
-        return { success: false, error: response.data.message };
+        const errorMsg = response.data.message || 'Erro ao registrar';
+        setError(errorMsg);
+        return { success: false, error: errorMsg };
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message;
+      let errorMessage = 'Erro ao registrar';
+      
+      if (error.response) {
+        errorMessage = error.response.data?.message || `Erro ${error.response.status}`;
+      } else if (error.request) {
+        errorMessage = 'Servidor não respondeu. Verifique sua conexão.';
+      } else {
+        errorMessage = error.message;
+      }
+      
       setError(errorMessage);
       return { success: false, error: errorMessage };
     } finally {

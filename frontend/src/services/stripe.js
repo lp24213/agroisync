@@ -1,4 +1,5 @@
 import { loadStripe } from '@stripe/stripe-js';
+import { getAuthToken } from '../config/constants.js';
 
 // Stripe publishable key - substitua pela sua chave real
 const STRIPE_PUBLISHABLE_KEY =
@@ -14,7 +15,7 @@ export const createPaymentIntent = async paymentData => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`
+        Authorization: `Bearer ${getAuthToken()}`
       },
       body: JSON.stringify(paymentData)
     });
@@ -109,7 +110,7 @@ export const checkUserAccess = async (userId, adId) => {
   try {
     const response = await fetch(`/api/user-access/${userId}/${adId}`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
+        Authorization: `Bearer ${getAuthToken()}`
       }
     });
 
@@ -132,7 +133,7 @@ export const unlockSensitiveData = async (userId, adId) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`
+        Authorization: `Bearer ${getAuthToken()}`
       },
       body: JSON.stringify({ userId, adId })
     });
@@ -156,7 +157,7 @@ export const getUnlockedData = async adId => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`
+        Authorization: `Bearer ${getAuthToken()}`
       }
     });
 

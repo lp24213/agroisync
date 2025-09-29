@@ -1,37 +1,256 @@
-// Configuração da API para o frontend
-const apiConfig = {
-  // URL base da API
-  baseURL: process.env.REACT_APP_API_URL || 'https://agroisync.com/api',
+// ===== CONFIGURAÇÃO CENTRALIZADA DE APIs =====
+// TODAS as URLs e constantes de API em um único lugar
 
-  // Timeout para requisições
-  timeout: parseInt(process.env.REACT_APP_API_TIMEOUT) || 30000,
+// ===== TOKEN PADRONIZADO =====
+// SEMPRE usar 'authToken' em todo o projeto
+export const AUTH_TOKEN_KEY = 'authToken';
+export const USER_DATA_KEY = 'userData';
+export const REFRESH_TOKEN_KEY = 'refreshToken';
 
-  // Número de tentativas de retry
-  retryAttempts: parseInt(process.env.REACT_APP_API_RETRY_ATTEMPTS) || 3,
+// ===== URLs BASE =====
+export const API_URLS = {
+  // Backend Principal
+  base: process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? 'https://agroisync.com/api' : 'http://localhost:5000/api'),
+  
+  // WebSocket
+  ws: process.env.REACT_APP_WS_URL || (process.env.NODE_ENV === 'production' ? 'wss://agroisync.com' : 'ws://localhost:5000'),
+  
+  // Frontend
+  frontend: process.env.REACT_APP_FRONTEND_URL || (process.env.NODE_ENV === 'production' ? 'https://agroisync.com' : 'http://localhost:3000'),
+  
+  // CDN (se usar)
+  cdn: process.env.REACT_APP_CDN_URL || '',
+};
 
-  // Headers padrão
-  defaultHeaders: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json'
+// ===== ENDPOINTS PADRONIZADOS =====
+export const ENDPOINTS = {
+  // Auth
+  auth: {
+    login: '/auth/login',
+    register: '/auth/register',
+    logout: '/auth/logout',
+    refresh: '/auth/refresh',
+    forgotPassword: '/auth/forgot-password',
+    resetPassword: '/auth/reset-password',
+    verifyEmail: '/auth/verify-email',
+    resendCode: '/auth/resend-code',
+    enable2FA: '/auth/enable-2fa',
+    verify2FA: '/auth/verify-2fa',
   },
-
-  // Configurações de retry
-  retryConfig: {
-    retries: 3,
-    retryDelay: retryCount => {
-      return Math.pow(2, retryCount) * 1000; // Exponential backoff
-    },
-    retryCondition: error => {
-      // Retry em caso de erro de rede ou timeout
-      return !error.response || (error.response.status >= 500 && error.response.status < 600);
-    }
+  
+  // User
+  user: {
+    profile: '/users/profile',
+    update: '/users/profile',
+    dashboard: '/users/dashboard',
+    notifications: '/users/notifications',
   },
+  
+  // Products
+  products: {
+    list: '/products',
+    create: '/products',
+    detail: (id) => `/products/${id}`,
+    update: (id) => `/products/${id}`,
+    delete: (id) => `/products/${id}`,
+    search: '/products/search',
+  },
+  
+  // Freights
+  freights: {
+    list: '/freights',
+    create: '/freights',
+    detail: (id) => `/freights/${id}`,
+    update: (id) => `/freights/${id}`,
+    delete: (id) => `/freights/${id}`,
+    track: (code) => `/freights/track/${code}`,
+  },
+  
+  // Messages
+  messages: {
+    conversations: '/messages/conversations',
+    list: (id) => `/messages/${id}`,
+    send: '/messages',
+    read: (id) => `/messages/${id}/read`,
+  },
+  
+  // Payments
+  payments: {
+    createSession: '/payments/stripe/create-session',
+    webhook: '/payments/stripe/webhook',
+    status: '/payments/status',
+    verify: '/payments/verify',
+  },
+  
+  // Admin
+  admin: {
+    dashboard: '/auth/admin/dashboard',
+    users: '/auth/admin/users',
+    user: (id) => `/auth/admin/users/${id}`,
+    payments: '/auth/admin/payments',
+    stats: '/admin/stats',
+  },
+  
+  // Upload
+  upload: {
+    single: '/upload/single',
+    multiple: '/upload/multiple',
+    delete: (filename) => `/upload/${filename}`,
+  },
+  
+  // External APIs (com fallback)
+  external: {
+    weather: '/external/weather',
+    ibge: '/external/ibge',
+    viacep: '/external/viacep',
+    receitaFederal: '/external/receita-federal',
+  },
+  
+  // Health
+  health: '/health',
+};
 
-  // Configurações de cache
-  cacheConfig: {
-    duration: parseInt(process.env.REACT_APP_CACHE_DURATION) || 300000, // 5 minutos
-    enabled: true
+// ===== TIMEOUTS =====
+export const TIMEOUTS = {
+  default: parseInt(process.env.REACT_APP_API_TIMEOUT) || 30000,
+  upload: 60000, // 60s para uploads
+  short: 10000,  // 10s para operações rápidas
+  long: 120000,  // 2min para operações pesadas
+};
+
+// ===== RETRY CONFIGURATION =====
+export const RETRY_CONFIG = {
+  attempts: parseInt(process.env.REACT_APP_API_RETRY_ATTEMPTS) || 3,
+  delay: 1000, // 1s entre tentativas
+  backoff: 2,  // Multiplicador exponencial
+};
+
+// ===== CACHE =====
+export const CACHE_CONFIG = {
+  duration: parseInt(process.env.REACT_APP_CACHE_DURATION) || 300000, // 5 min
+  enabled: true,
+};
+
+// ===== HELPERS =====
+
+/**
+ * Obter URL completa de um endpoint
+ */
+export const getFullUrl = (endpoint) => {
+  if (endpoint.startsWith('http')) return endpoint;
+  return `${API_URLS.base}${endpoint}`;
+};
+
+/**
+ * Obter token de autenticação (PADRONIZADO)
+ */
+export const getAuthToken = () => {
+  // Verificar ambos os nomes para compatibilidade
+  return (
+    localStorage.getItem(AUTH_TOKEN_KEY) ||
+    localStorage.getItem('token') ||
+    localStorage.getItem('auth_token') ||
+    null
+  );
+};
+
+/**
+ * Definir token de autenticação (PADRONIZADO)
+ */
+export const setAuthToken = (token) => {
+  if (token) {
+    localStorage.setItem(AUTH_TOKEN_KEY, token);
+    // Remover nomes antigos se existirem
+    localStorage.removeItem('token');
+    localStorage.removeItem('auth_token');
   }
 };
 
-export default apiConfig;
+/**
+ * Remover token de autenticação
+ */
+export const removeAuthToken = () => {
+  localStorage.removeItem(AUTH_TOKEN_KEY);
+  localStorage.removeItem('token');
+  localStorage.removeItem('auth_token');
+  localStorage.removeItem(USER_DATA_KEY);
+  localStorage.removeItem(REFRESH_TOKEN_KEY);
+};
+
+/**
+ * Verificar se usuário está autenticado
+ */
+export const isAuthenticated = () => {
+  return !!getAuthToken();
+};
+
+/**
+ * Headers padrão para requisições
+ */
+export const getDefaultHeaders = (includeAuth = true) => {
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
+  if (includeAuth) {
+    const token = getAuthToken();
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+  }
+
+  return headers;
+};
+
+/**
+ * Fazer requisição com retry e timeout
+ */
+export const fetchWithRetry = async (url, options = {}, retries = RETRY_CONFIG.attempts) => {
+  const fullUrl = getFullUrl(url);
+  
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), options.timeout || TIMEOUTS.default);
+
+  try {
+    const response = await fetch(fullUrl, {
+      ...options,
+      signal: controller.signal,
+      headers: {
+        ...getDefaultHeaders(),
+        ...options.headers,
+      },
+    });
+
+    clearTimeout(timeout);
+    return response;
+  } catch (error) {
+    clearTimeout(timeout);
+    
+    if (retries > 0 && (!error.name || error.name !== 'AbortError')) {
+      // Aguardar antes de tentar novamente (backoff exponencial)
+      await new Promise(resolve =>
+        setTimeout(resolve, RETRY_CONFIG.delay * (RETRY_CONFIG.backoff ** (RETRY_CONFIG.attempts - retries)))
+      );
+      return fetchWithRetry(url, options, retries - 1);
+    }
+    
+    throw error;
+  }
+};
+
+export default {
+  API_URLS,
+  ENDPOINTS,
+  TIMEOUTS,
+  RETRY_CONFIG,
+  CACHE_CONFIG,
+  AUTH_TOKEN_KEY,
+  USER_DATA_KEY,
+  getFullUrl,
+  getAuthToken,
+  setAuthToken,
+  removeAuthToken,
+  isAuthenticated,
+  getDefaultHeaders,
+  fetchWithRetry,
+};

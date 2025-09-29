@@ -1,10 +1,14 @@
 // Utilitários para Cloudflare Worker
+// NOTA: Configuração CORS principal está em backend/src/handler.js
+// Esta é apenas para workers específicos do Cloudflare
 
-// Headers CORS
+// Headers CORS para Cloudflare Workers
+// IMPORTANTE: Não usar '*' em produção - configurar origem específica
 export const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': process.env.FRONTEND_URL || 'http://localhost:3000',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+  'Access-Control-Allow-Credentials': 'true',
   'Access-Control-Max-Age': '86400'
 };
 

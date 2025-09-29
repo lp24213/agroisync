@@ -1,0 +1,191 @@
+# ===== AGROISYNC BACKEND - CONFIGURAÇÕES DE AMBIENTE =====
+# Copie este conteúdo para backend/.env
+# NUNCA commite o arquivo .env no Git
+
+# ===== CONFIGURAÇÕES BÁSICAS =====
+NODE_ENV=development
+PORT=5000
+HOST=localhost
+FRONTEND_URL=http://localhost:3000
+API_URL=http://localhost:5000
+
+# ===== CLOUDFLARE D1 DATABASE (Banco de Dados Principal) =====
+CLOUDFLARE_D1_DATABASE_ID=your-d1-database-id
+
+# ===== AUTENTICAÇÃO JWT (Gerado localmente no backend) =====
+JWT_SECRET=your-super-secret-jwt-key-min-32-characters-long
+JWT_EXPIRES_IN=24h
+JWT_REFRESH_SECRET=your-super-secret-refresh-key-min-32-characters
+JWT_REFRESH_EXPIRES_IN=7d
+JWT_ISSUER=agroisync
+JWT_AUDIENCE=agroisync-users
+SESSION_SECRET=your-session-secret-min-32-characters-long
+SESSION_MAX_AGE=86400000
+
+# ===== PAGAMENTOS =====
+
+# Stripe (Configure com IDs reais de produção)
+STRIPE_SECRET_KEY=sk_live_your_stripe_secret_key
+STRIPE_PUBLISHABLE_KEY=pk_live_your_stripe_publishable_key
+STRIPE_WEBHOOK_SECRET=whsec_your_stripe_webhook_secret
+
+# ===== BLOCKCHAIN / WEB3 / CRYPTO =====
+WEB3_PROVIDER=https://mainnet.infura.io/v3/your_infura_project_id
+ETHEREUM_RPC_URL=https://mainnet.infura.io/v3/your_infura_project_id
+ETHEREUM_PRIVATE_KEY=your_ethereum_private_key
+CONTRACT_ADDRESS=0x_your_contract_address
+PRIVATE_KEY=your_blockchain_private_key
+
+# Metamask
+METAMASK_NETWORK_ID=1
+METAMASK_CHAIN_ID=0x1
+METAMASK_WALLET_ADDRESS=0x_your_wallet_address
+METAMASK_ADMIN_ADDRESS=0x_your_admin_wallet_address
+OWNER_WALLET=0x_your_owner_wallet_address
+
+# ===== E-MAIL =====
+
+# Resend (Recomendado)
+RESEND_API_KEY=re_your_resend_api_key
+RESEND_FROM=AgroSync <noreply@agroisync.com>
+
+# ===== UPLOAD DE ARQUIVOS =====
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+
+# Upload Local
+UPLOAD_MAX_SIZE=10485760
+UPLOAD_ALLOWED_TYPES=image/jpeg,image/png,image/gif,application/pdf
+UPLOAD_PATH=uploads/
+MAX_FILE_SIZE=10485760
+
+# ===== CLOUDFLARE =====
+
+# Turnstile (Captcha)
+CLOUDFLARE_TURNSTILE_SECRET_KEY=your_turnstile_secret_key
+NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY=your_turnstile_site_key
+
+# Cloudflare API (Para gerenciar Workers/Pages via API)
+CLOUDFLARE_API_TOKEN=your_cloudflare_api_token
+CLOUDFLARE_ZONE_ID=your_cloudflare_zone_id
+CLOUDFLARE_ACCOUNT_ID=your_cloudflare_account_id
+
+# ===== APIs EXTERNAS =====
+
+# OpenWeatherMap (Clima)
+OPENWEATHER_API_KEY=your_openweather_api_key
+
+# IBGE (Dados Geográficos Brasileiros - API Pública)
+IBGE_API_URL=https://servicodados.ibge.gov.br/api/v1
+
+# ViaCEP (Consulta de CEP - API Pública)
+VIACEP_API_URL=https://viacep.com.br/ws
+
+# Receita Federal (Validação de Documentos)
+RECEITA_FEDERAL_API_URL=https://api.receita.fazenda.gov.br
+RECEITA_FEDERAL_API_KEY=your_receita_federal_api_key
+RECEITA_WS_API_KEY=your_receita_ws_api_key
+
+# SEFAZ (Nota Fiscal Eletrônica)
+SEFAZ_API_KEY=your_sefaz_api_key
+
+# Baidu Maps (Para usuários chineses)
+BAIDU_MAPS_API_KEY=your_baidu_maps_api_key
+
+# IP Geolocation (APIs Públicas)
+IP_API_URL=http://ip-api.com/json
+IPINFO_URL=https://ipinfo.io
+
+# ===== CHATBOT / IA =====
+
+# OpenAI
+CHATBOT_API_URL=https://api.openai.com/v1
+CHATBOT_API_KEY=sk-your_openai_api_key
+OPENAI_API_KEY=sk-your_openai_api_key
+
+# ===== NOTIFICAÇÕES =====
+
+# Push Notifications
+PUSH_NOTIFICATIONS_PUBLIC_KEY=your_push_notifications_public_key
+PUSH_NOTIFICATIONS_PRIVATE_KEY=your_push_notifications_private_key
+
+# ===== MONITORAMENTO E ANALYTICS =====
+
+# Sentry (Error Tracking - Para implementar)
+SENTRY_DSN=https://your_sentry_dsn@sentry.io/project_id
+
+# Google Analytics
+GOOGLE_ANALYTICS_ID=GA_MEASUREMENT_ID
+
+# ===== SEGURANÇA =====
+
+# CORS (Em produção, use seus domínios reais separados por vírgula)
+CORS_ORIGIN=http://localhost:3000,https://agroisync.com,https://www.agroisync.com
+
+# Bcrypt
+BCRYPT_SALT_ROUNDS=12
+BCRYPT_ROUNDS=12
+
+# Rate Limiting
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=100
+
+# Password Validation
+PASSWORD_MIN_LENGTH=8
+USERNAME_MIN_LENGTH=3
+
+# ===== LOGS =====
+LOG_LEVEL=info
+LOG_FILE=logs/app.log
+LOG_FILE_PATH=./logs
+LOG_MAX_SIZE=10m
+LOG_MAX_FILES=5
+
+# ===== CACHE =====
+CACHE_TTL=3600
+CACHE_CHECK_PERIOD=600
+CACHE_DURATION=300000
+
+# ===== FEATURE FLAGS =====
+ENABLE_2FA=true
+ENABLE_CRYPTO=true
+ENABLE_BLOCKCHAIN=true
+ENABLE_STRIPE=true
+ENABLE_EMAIL_VERIFICATION=true
+ENABLE_CHAT=true
+ENABLE_NOTIFICATIONS=true
+ENABLE_ANALYTICS=true
+ENABLE_PWA=true
+FEATURE_FLAGS_ENABLED=true
+FEATURE_NEW_UI=false
+FEATURE_BETA_FEATURES=false
+
+# ===== TIMEOUT E RETRY =====
+API_TIMEOUT=30000
+API_RETRY_ATTEMPTS=3
+
+# ===== LIMPEZA AUTOMÁTICA =====
+CLEANUP_INTERVAL=3600000
+TOKEN_CLEANUP_AGE=86400000
+
+# ===== DESENVOLVIMENTO =====
+DEBUG=agrosync:*
+HOT_RELOAD=true
+
+# ===== CONFIGURAÇÃO ADMIN =====
+ADMIN_EMAIL=admin@agroisync.com
+ADMIN_PASSWORD=your_secure_admin_password
+
+# ===== NOTAS IMPORTANTES =====
+# 1. Substitua TODOS os valores "your_*" pelas suas credenciais reais
+# 2. Mantenha o arquivo .env PRIVADO e NUNCA o compartilhe
+# 3. Em produção, use NODE_ENV=production
+# 4. Gere secrets fortes com: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+# 5. Para JWT_SECRET e SESSION_SECRET, use strings com no mínimo 32 caracteres
+# 6. Configure CORS_ORIGIN com seus domínios reais em produção
+# 7. Use Stripe com chaves de produção (sk_live_, pk_live_) ao fazer deploy
+# 8. Use wrangler secret put para configurar secrets no Cloudflare Workers
+# 9. Stack: Cloudflare D1 + Cloudflare Workers + Cloudflare Pages (SEM AWS, SEM MongoDB)

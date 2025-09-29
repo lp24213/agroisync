@@ -1,7 +1,8 @@
 import { Resend } from 'resend';
 import logger from '../utils/logger.js';
+import { EMAIL_CONFIG } from '../config/constants.js';
 
-const resend = new Resend(process.env.RESEND_API_KEY || 're_f9XgEUAJ_2FwkAe87mmUZJhTTAy8xuWg8');
+const resend = new Resend(EMAIL_CONFIG.resendApiKey);
 
 class EmailService {
   constructor() {
@@ -35,7 +36,7 @@ class EmailService {
 
   async sendPasswordResetEmail({ to, name, resetToken }) {
     const subject = 'Redefinição de Senha - AgroSync';
-    const resetUrl = `${process.env.FRONTEND_URL || 'https://agroisync.com'}/reset-password?token=${resetToken}`;
+    const resetUrl = EMAIL_CONFIG.resetPasswordURL(resetToken);
 
     const html = `
       <!DOCTYPE html>

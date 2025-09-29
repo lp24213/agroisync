@@ -1,10 +1,11 @@
 // Serviço para dados de criptomoedas em tempo real + Rotas Criptografadas
 import axios from 'axios';
+import { API_CONFIG } from '../config/constants.js';
 
 class CryptoService {
   constructor() {
     this.baseURL = 'https://api.coingecko.com/api/v3';
-    this.cryptoAPI = 'https://agroisync.com/api/crypto';
+    this.cryptoAPI = `${API_CONFIG.baseURL}/crypto`;
     this.cache = new Map();
     this.cacheTimeout = 2 * 60 * 1000; // 2 minutos
   }

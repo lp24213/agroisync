@@ -1,17 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { CreditCard, Shield, CheckCircle, Star, Zap } from 'lucide-react';
+import { CreditCard, Shield, CheckCircle, Star, Zap, AlertCircle } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import { getAuthToken } from '../config/constants.js';
 
 const Payment = () => {
   const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState('pro');
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
+  const [stripeEnabled, setStripeEnabled] = useState(false);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user') || '{}');
     setUser(userData);
+    
+    // Verificar se Stripe está configurado
+    const stripeKey = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
+    setStripeEnabled(!!stripeKey && stripeKey.startsWith('pk_'));
+    
+    if (!stripeKey || !stripeKey.startsWith('pk_')) {
+      console.warn('Stripe não configurado - pagamentos desabilitados');
+    }
   }, []);
 
   const plans = {
@@ -63,19 +75,68 @@ const Payment = () => {
 
   const handlePayment = async () => {
     setLoading(true);
+    setError(null);
 
     try {
-      // Simular processamento de pagamento
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Verificar se Stripe está configurado
+      if (!stripeEnabled) {
+        toast.error('Sistema de pagamento ainda não configurado. Entre em contato com o suporte.');
+        setError('Sistema de pagamento indisponível no momento.');
+        setLoading(false);
+        return;
+      }
 
-      // Atualizar usuário como pago
-      const updatedUser = { ...user, isPaid: true, plan: selectedPlan };
-      localStorage.setItem('user', JSON.stringify(updatedUser));
+      // Verificar se usuário está autenticado
+      if (!user || !user.id) {
+        toast.error('Por favor, faça login para continuar');
+        navigate('/login');
+        return;
+      }
 
-      alert('✅ Pagamento processado com sucesso!');
-      navigate('/user-dashboard', { replace: true });
+      // Plano gratuito não precisa de pagamento
+      if (selectedPlan === 'free') {
+        const updatedUser = { ...user, isPaid: false, plan: 'free' };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        toast.success('Plano gratuito ativado!');
+        navigate('/user-dashboard', { replace: true });
+        return;
+      }
+
+      // Criar sessão de pagamento no Stripe
+      const api = process.env.REACT_APP_API_URL || '/api';
+      const token = getAuthToken();
+      
+      const response = await fetch(`${api}/payments/stripe/create-session`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          plan: selectedPlan,
+          userId: user.id,
+          email: user.email
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Erro ao criar sessão de pagamento');
+      }
+
+      // Redirecionar para Stripe Checkout
+      if (data.sessionId || data.url) {
+        window.location.href = data.url || `https://checkout.stripe.com/pay/${data.sessionId}`;
+      } else {
+        throw new Error('Sessão de pagamento inválida');
+      }
+
     } catch (error) {
-      alert('❌ Erro no processamento do pagamento');
+      console.error('Erro no pagamento:', error);
+      const errorMessage = error.message || 'Erro ao processar pagamento';
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

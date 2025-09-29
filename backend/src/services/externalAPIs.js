@@ -1,67 +1,282 @@
 import axios from 'axios';
+import { EXTERNAL_APIS, API_TIMEOUT_CONFIG } from '../config/constants.js';
 
-// Configurações das APIs
+// Configurações das APIs com fallbacks
 const API_CONFIG = {
   viacep: {
-    baseURL: 'https://viacep.com.br/ws',
-    timeout: 10000
+    primary: {
+      baseURL: EXTERNAL_APIS.viaCep.baseUrl,
+      timeout: EXTERNAL_APIS.viaCep.timeout
+    },
+    fallbacks: [
+      {
+        name: 'API CEP',
+        baseURL: 'https://cdn.apicep.com/file/apicep',
+        timeout: 5000
+      },
+      {
+        name: 'BrasilAPI',
+        baseURL: 'https://brasilapi.com.br/api/cep/v1',
+        timeout: 5000
+      }
+    ]
   },
   ibge: {
-    baseURL: 'https://servicodados.ibge.gov.br/api/v1',
-    timeout: 15000
+    primary: {
+      baseURL: EXTERNAL_APIS.ibge.baseUrl,
+      timeout: EXTERNAL_APIS.ibge.timeout
+    },
+    fallbacks: [] // IBGE é API pública estável
   },
   openweather: {
-    baseURL: 'https://api.openweathermap.org/data/2.5',
-    apiKey: process.env.OPENWEATHER_API_KEY,
-    timeout: 10000
+    primary: {
+      baseURL: EXTERNAL_APIS.weather.baseUrl,
+      apiKey: EXTERNAL_APIS.weather.apiKey,
+      timeout: EXTERNAL_APIS.weather.timeout
+    },
+    fallbacks: [
+      {
+        name: 'WeatherAPI',
+        baseURL: 'https://api.weatherapi.com/v1',
+        apiKey: process.env.WEATHERAPI_KEY,
+        timeout: 10000
+      }
+    ]
   },
   receitaFederal: {
-    baseURL: process.env.RECEITA_FEDERAL_API_URL || 'https://api.receita.fazenda.gov.br',
-    apiKey: process.env.RECEITA_FEDERAL_API_KEY,
-    timeout: 20000
+    primary: {
+      baseURL: EXTERNAL_APIS.receitaFederal.baseUrl,
+      apiKey: EXTERNAL_APIS.receitaFederal.apiKey,
+      timeout: EXTERNAL_APIS.receitaFederal.timeout
+    },
+    fallbacks: [
+      {
+        name: 'ReceitaWS',
+        baseURL: 'https://www.receitaws.com.br/v1',
+        timeout: 15000
+      }
+    ]
   },
   baiduMaps: {
-    baseURL: 'https://api.map.baidu.com',
-    apiKey: process.env.BAIDU_MAPS_API_KEY,
-    timeout: 15000
+    primary: {
+      baseURL: EXTERNAL_APIS.baiduMaps.baseUrl,
+      apiKey: EXTERNAL_APIS.baiduMaps.apiKey,
+      timeout: EXTERNAL_APIS.baiduMaps.timeout
+    },
+    fallbacks: [] // Específico para China
   }
+};
+
+// Configuração de retry
+const RETRY_CONFIG = {
+  maxRetries: API_TIMEOUT_CONFIG.retryAttempts,
+  retryDelay: 1000, // 1 segundo
+  retryableStatusCodes: [408, 429, 500, 502, 503, 504]
 };
 
 // Cache simples em memória (em produção, usar Redis)
 const CACHE = new Map();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
 
-// Classe para serviços de API externa
+// Classe para serviços de API externa com fallback
 class ExternalAPIService {
   constructor() {
     this.viacepClient = axios.create({
-      baseURL: API_CONFIG.viacep.baseURL,
-      timeout: API_CONFIG.viacep.timeout
+      baseURL: API_CONFIG.viacep.primary.baseURL,
+      timeout: API_CONFIG.viacep.primary.timeout
     });
 
     this.ibgeClient = axios.create({
-      baseURL: API_CONFIG.ibge.baseURL,
-      timeout: API_CONFIG.ibge.timeout
+      baseURL: API_CONFIG.ibge.primary.baseURL,
+      timeout: API_CONFIG.ibge.primary.timeout
     });
 
     this.weatherClient = axios.create({
-      baseURL: API_CONFIG.openweather.baseURL,
-      timeout: API_CONFIG.openweather.timeout
+      baseURL: API_CONFIG.openweather.primary.baseURL,
+      timeout: API_CONFIG.openweather.primary.timeout
     });
 
     this.receitaClient = axios.create({
-      baseURL: API_CONFIG.receitaFederal.baseURL,
-      timeout: API_CONFIG.receitaFederal.timeout,
+      baseURL: API_CONFIG.receitaFederal.primary.baseURL,
+      timeout: API_CONFIG.receitaFederal.primary.timeout,
       headers: {
-        Authorization: `Bearer ${API_CONFIG.receitaFederal.apiKey}`,
+        Authorization: API_CONFIG.receitaFederal.primary.apiKey
+          ? `Bearer ${API_CONFIG.receitaFederal.primary.apiKey}`
+          : undefined,
         'Content-Type': 'application/json'
       }
     });
 
     this.baiduClient = axios.create({
-      baseURL: API_CONFIG.baiduMaps.baseURL,
-      timeout: API_CONFIG.baiduMaps.timeout
+      baseURL: API_CONFIG.baiduMaps.primary.baseURL,
+      timeout: API_CONFIG.baiduMaps.primary.timeout
     });
+
+    // Track de falhas para circuit breaker
+    this.apiHealthStatus = new Map();
+  }
+
+  // ===== SISTEMA DE RETRY COM FALLBACK =====
+
+  /**
+   * Executa request com retry automático
+   * @param {Function} requestFn - Função que faz o request
+   * @param {Object} options - Opções de retry
+   */
+  async executeWithRetry(requestFn, options = {}) {
+    const maxRetries = options.maxRetries || RETRY_CONFIG.maxRetries;
+    const retryDelay = options.retryDelay || RETRY_CONFIG.retryDelay;
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        const result = await requestFn();
+        return { success: true, data: result };
+      } catch (error) {
+        const isLastAttempt = attempt === maxRetries;
+        const shouldRetry = this.shouldRetry(error, attempt, maxRetries);
+
+        if (isLastAttempt || !shouldRetry) {
+          console.error(`Request failed after ${attempt + 1} attempts:`, error.message);
+          return {
+            success: false,
+            error: error.message,
+            attempts: attempt + 1
+          };
+        }
+
+        // Aguardar antes de retry com backoff exponencial
+        const delay = retryDelay * Math.pow(2, attempt);
+        await this.sleep(delay);
+        console.log(`Retry attempt ${attempt + 1}/${maxRetries} after ${delay}ms`);
+      }
+    }
+  }
+
+  /**
+   * Executa request com fallback para APIs alternativas
+   * @param {Array} apiConfigs - Array de configurações de API [primary, ...fallbacks]
+   * @param {Function} requestBuilder - Função que constrói o request
+   */
+  async executeWithFallback(apiConfigs, requestBuilder) {
+    const errors = [];
+
+    for (let i = 0; i < apiConfigs.length; i++) {
+      const config = apiConfigs[i];
+      const apiName = config.name || (i === 0 ? 'Primary' : `Fallback ${i}`);
+
+      // Verificar circuit breaker
+      if (this.isCircuitOpen(apiName)) {
+        console.log(`Circuit breaker open for ${apiName}, skipping...`);
+        continue;
+      }
+
+      try {
+        console.log(`Trying ${apiName}...`);
+        const result = await requestBuilder(config);
+
+        // Marcar API como saudável
+        this.recordSuccess(apiName);
+
+        return {
+          success: true,
+          data: result,
+          source: apiName
+        };
+      } catch (error) {
+        console.error(`${apiName} failed:`, error.message);
+        errors.push({ api: apiName, error: error.message });
+
+        // Marcar falha para circuit breaker
+        this.recordFailure(apiName);
+
+        // Se não for a última opção, tentar próxima
+        if (i < apiConfigs.length - 1) {
+          console.log(`Falling back to next API...`);
+          continue;
+        }
+      }
+    }
+
+    // Todas as APIs falharam
+    return {
+      success: false,
+      error: 'All APIs failed',
+      errors
+    };
+  }
+
+  /**
+   * Verifica se deve fazer retry
+   */
+  shouldRetry(error, attempt, maxRetries) {
+    if (attempt >= maxRetries) {
+      return false;
+    }
+
+    // Retry em erros de rede
+    if (error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT') {
+      return true;
+    }
+
+    // Retry em status codes específicos
+    if (error.response) {
+      const status = error.response.status;
+      return RETRY_CONFIG.retryableStatusCodes.includes(status);
+    }
+
+    return false;
+  }
+
+  /**
+   * Aguarda um tempo (para retry)
+   */
+  sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Circuit Breaker: Registra sucesso de API
+   */
+  recordSuccess(apiName) {
+    const health = this.apiHealthStatus.get(apiName) || { failures: 0, lastFailure: null };
+    health.failures = 0;
+    health.lastFailure = null;
+    this.apiHealthStatus.set(apiName, health);
+  }
+
+  /**
+   * Circuit Breaker: Registra falha de API
+   */
+  recordFailure(apiName) {
+    const health = this.apiHealthStatus.get(apiName) || { failures: 0, lastFailure: null };
+    health.failures += 1;
+    health.lastFailure = Date.now();
+    this.apiHealthStatus.set(apiName, health);
+  }
+
+  /**
+   * Circuit Breaker: Verifica se API está indisponível
+   */
+  isCircuitOpen(apiName) {
+    const health = this.apiHealthStatus.get(apiName);
+    if (!health) return false;
+
+    // Se teve 3+ falhas nas últimas 5 minutos, considerar indisponível
+    const circuitOpenThreshold = 3;
+    const circuitOpenDuration = 5 * 60 * 1000; // 5 minutos
+
+    if (health.failures >= circuitOpenThreshold) {
+      const timeSinceLastFailure = Date.now() - health.lastFailure;
+      if (timeSinceLastFailure < circuitOpenDuration) {
+        return true;
+      }
+      // Reset após duração
+      health.failures = 0;
+      health.lastFailure = null;
+      this.apiHealthStatus.set(apiName, health);
+    }
+
+    return false;
   }
 
   // ===== SISTEMA DE CACHE =====
@@ -113,47 +328,85 @@ class ExternalAPIService {
   // ===== SERVIÇOS DE CEP E ENDEREÇO =====
 
   /**
-   * Consultar CEP via ViaCEP
+   * Consultar CEP com fallback automático
    * @param {string} cep - CEP a ser consultado
    * @returns {Object} Dados do endereço
    */
   async consultarCEP(cep) {
-    try {
-      const cleanCEP = cep.replace(/\D/g, '');
+    const cleanCEP = cep.replace(/\D/g, '');
 
-      if (cleanCEP.length !== 8) {
-        throw new Error('CEP deve ter 8 dígitos');
-      }
+    if (cleanCEP.length !== 8) {
+      return {
+        success: false,
+        message: 'CEP deve ter 8 dígitos'
+      };
+    }
 
-      const response = await this.viacepClient.get(`/${cleanCEP}/json/`);
+    // Verificar cache primeiro
+    const cacheKey = `cep_${cleanCEP}`;
+    const cached = this.getFromCache(cacheKey);
+    if (cached) {
+      return { success: true, data: cached, fromCache: true };
+    }
 
-      if (response.data.erro) {
+    // Configurar APIs com fallback
+    const apis = [
+      {
+        name: 'ViaCEP',
+        ...API_CONFIG.viacep.primary,
+        endpoint: `/${cleanCEP}/json/`
+      },
+      ...API_CONFIG.viacep.fallbacks.map(fb => ({
+        ...fb,
+        endpoint: `/${cleanCEP}.json`
+      }))
+    ];
+
+    // Executar com fallback
+    const result = await this.executeWithFallback(apis, async (config) => {
+      const client = axios.create({
+        baseURL: config.baseURL,
+        timeout: config.timeout
+      });
+
+      const response = await client.get(config.endpoint);
+
+      // Validar resposta
+      if (response.data.erro || response.data.error) {
         throw new Error('CEP não encontrado');
       }
 
+      // Normalizar formato de resposta
+      const normalized = {
+        cep: response.data.cep || response.data.code,
+        logradouro: response.data.logradouro || response.data.address || response.data.street,
+        complemento: response.data.complemento || '',
+        bairro: response.data.bairro || response.data.district || response.data.neighborhood,
+        localidade: response.data.localidade || response.data.city,
+        uf: response.data.uf || response.data.state,
+        ibge: response.data.ibge,
+        ddd: response.data.ddd,
+        siafi: response.data.siafi
+      };
+
+      return normalized;
+    });
+
+    if (result.success) {
+      // Salvar no cache
+      this.setCache(cacheKey, result.data);
       return {
         success: true,
-        data: {
-          cep: response.data.cep,
-          logradouro: response.data.logradouro,
-          complemento: response.data.complemento,
-          bairro: response.data.bairro,
-          localidade: response.data.localidade,
-          uf: response.data.uf,
-          ibge: response.data.ibge,
-          gia: response.data.gia,
-          ddd: response.data.ddd,
-          siafi: response.data.siafi
-        }
-      };
-    } catch (error) {
-      console.error('Erro ao consultar CEP:', error);
-      return {
-        success: false,
-        message: error.message || 'Erro ao consultar CEP',
-        error: error.response?.data || error.message
+        data: result.data,
+        source: result.source
       };
     }
+
+    return {
+      success: false,
+      message: 'Erro ao consultar CEP',
+      errors: result.errors
+    };
   }
 
   /**
