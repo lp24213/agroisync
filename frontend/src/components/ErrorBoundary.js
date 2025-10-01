@@ -33,21 +33,21 @@ class ErrorBoundary extends React.Component {
     // }
   }
 
-  handleReset = () => {
+  handleReset() {
     this.setState({
       hasError: false,
       error: null,
       errorInfo: null
     });
-  };
+  }
 
-  handleReload = () => {
+  handleReload() {
     window.location.reload();
-  };
+  }
 
-  handleGoHome = () => {
+  handleGoHome() {
     window.location.href = '/';
-  };
+  }
 
   render() {
     if (this.state.hasError) {

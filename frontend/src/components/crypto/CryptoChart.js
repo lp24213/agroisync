@@ -146,7 +146,7 @@ const CryptoChart = () => {
   const formatChange = change => {
     const isPositive = change >= 0;
     return (
-      <span className={`flex items-center gap-1 ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
+      <span className={`flex items-center gap-1 ${isPositive ? 'text-green-600' : 'text-gray-600'}`} style={{ backgroundColor: 'transparent', border: 'none', padding: '0', margin: '0' }}>
         {isPositive ? '↗' : '↘'}
         {Math.abs(change).toFixed(2)}%
       </span>

@@ -236,7 +236,7 @@ router.get('/forecast', async (req, res) => {
       }
 
       const geocodeResponse = await axios.get(
-        `http://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(city)},BR&limit=1&appid=${OPENWEATHER_API_KEY}`,
+        `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(city)},BR&limit=1&appid=${OPENWEATHER_API_KEY}`,
         { timeout: 10000 }
       );
 

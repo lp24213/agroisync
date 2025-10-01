@@ -56,12 +56,12 @@ export const JWT_CONFIG = {
 export const EMAIL_CONFIG = {
   // Resend API
   resendApiKey: process.env.RESEND_API_KEY || '',
-  from: process.env.RESEND_FROM || 'AgroSync <noreply@agroisync.com>',
+  from: process.env.RESEND_FROM || 'AgroSync <contato@agroisync.com>',
 
   // URLs para templates de email
-  resetPasswordURL: (token) => `${URL_CONFIG.frontendURL}/reset-password?token=${token}`,
-  verifyEmailURL: (token) => `${URL_CONFIG.frontendURL}/verify-email?token=${token}`,
-  inviteURL: (code) => `${URL_CONFIG.frontendURL}/signup/${code}`
+  resetPasswordURL: token => `${URL_CONFIG.frontendURL}/reset-password?token=${token}`,
+  verifyEmailURL: token => `${URL_CONFIG.frontendURL}/verify-email?token=${token}`,
+  inviteURL: code => `${URL_CONFIG.frontendURL}/signup/${code}`
 };
 
 // ===== STRIPE =====
@@ -161,7 +161,7 @@ export const EXTERNAL_APIS = {
 
   // IP Geolocation
   ipApi: {
-    baseUrl: process.env.IP_API_URL || 'http://ip-api.com/json',
+    baseUrl: process.env.IP_API_URL || 'https://ip-api.com/json',
     timeout: 5000
   },
 
@@ -175,7 +175,7 @@ export const EXTERNAL_APIS = {
 export const SECURITY_CONFIG = {
   // CORS
   corsOrigin:
-    process.env.CORS_ORIGIN?.split(',').map((origin) => origin.trim()) || URL_CONFIG.allowedOrigins,
+    process.env.CORS_ORIGIN?.split(',').map(origin => origin.trim()) || URL_CONFIG.allowedOrigins,
 
   // Bcrypt
   bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || process.env.BCRYPT_SALT_ROUNDS, 10) || 12,
@@ -267,7 +267,7 @@ export const isDevelopment = () => {
 /**
  * Valida se uma API externa está configurada
  */
-export const isApiConfigured = (apiName) => {
+export const isApiConfigured = apiName => {
   const api = EXTERNAL_APIS[apiName];
   return api && api.apiKey && api.apiKey !== '';
 };

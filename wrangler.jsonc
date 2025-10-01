@@ -1,6 +1,4 @@
 {
-  "name": "agroisync-backend",
-  "compatibility_date": "2025-09-27",
-  "main": "backend/src/api-worker.js",
-  "routes": ["agroisync.com/api/*"]
+  "name": "agroisync",
+  "pages_build_output_dir": "frontend/build"
 }

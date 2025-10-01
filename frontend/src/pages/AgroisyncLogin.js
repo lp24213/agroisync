@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -8,7 +8,6 @@ import CloudflareTurnstile from '../components/CloudflareTurnstile';
 // import AgroisyncFooter from '../components/AgroisyncFooter'; // Já incluído no App.js
 
 const AgroisyncLogin = () => {
-  const navigate = useNavigate();
   const { updateUserState } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
@@ -147,7 +146,22 @@ const AgroisyncLogin = () => {
         setErrors({ general: errorData.message || 'Credenciais inválidas' });
       }
     } catch (error) {
-      setErrors({ general: 'Erro ao fazer login. Tente novamente.' });
+      // Melhorar tratamento de erro com mais detalhes
+      let errorMessage = 'Erro ao fazer login. Tente novamente.';
+      
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        errorMessage = 'Erro de conexão. Verifique sua internet e tente novamente.';
+      } else if (error.name === 'AbortError') {
+        errorMessage = 'Tempo limite excedido. Tente novamente.';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      setErrors({ general: errorMessage });
+      
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Login error:', error);
+      }
     } finally {
       setIsLoading(false);
     }

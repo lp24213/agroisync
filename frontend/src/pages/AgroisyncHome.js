@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import StockTicker from '../components/StockTicker';
@@ -207,6 +207,10 @@ const AgroisyncHome = () => {
           max-width: 800px;
           padding: 0 2rem;
           width: 100%;
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: center !important;
+          justify-content: center !important;
         }
 
         .agro-hero-description {
@@ -218,9 +222,15 @@ const AgroisyncHome = () => {
 
         .agro-hero-title {
           text-align: center !important;
-          margin: 0 auto !important;
+          margin: 0 auto 1.5rem auto !important;
           display: block !important;
           width: 100% !important;
+          font-size: 4rem !important;
+          font-weight: 800 !important;
+          color: #ffffff !important;
+          line-height: 1.2 !important;
+          font-family: 'Roboto', sans-serif !important;
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
         }
 
         .agro-main-layout {

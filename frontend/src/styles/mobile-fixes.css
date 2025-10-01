@@ -43,39 +43,19 @@
   }
 }
 
-/* Fix for red lines/borders on mobile */
+/* Fix for error borders on mobile - only for form errors */
 @media (max-width: 768px) {
-  /* Remove all red borders and lines */
-  * {
-    border-color: transparent !important;
-    outline: none !important;
-  }
-
-  .border-red-500,
-  .border-red-600,
-  .border-red-700,
+  /* Only fix form error borders, keep price indicators normal */
   .border-red-300,
   .border-red-400,
-  .border-red-800,
-  .border-red-900 {
-    border-color: #e5e7eb !important;
+  .border-red-500 {
+    border-color: #fca5a5 !important;
   }
 
+  /* Keep price change indicators red for visibility */
   .text-red-500,
-  .text-red-600,
-  .text-red-700,
-  .text-red-300,
-  .text-red-400,
-  .text-red-800,
-  .text-red-900 {
-    color: #6b7280 !important;
-  }
-
-  .bg-red-50,
-  .bg-red-100,
-  .bg-red-200,
-  .bg-red-300 {
-    background-color: #f9fafb !important;
+  .text-red-600 {
+    color: #ef4444 !important;
   }
 
   /* Fix for footer specific red lines */
@@ -83,20 +63,31 @@
     border-color: #e5e7eb !important;
   }
 
-  /* Fix for any remaining red elements */
-  [class*='red'] {
-    border-color: #e5e7eb !important;
-    color: #6b7280 !important;
-    background-color: #f9fafb !important;
-  }
-
   /* Fix for error states that might show red */
   .error,
   .invalid,
   .danger {
+    border-color: #fca5a5 !important;
+    color: #dc2626 !important;
+    background-color: #fef2f2 !important;
+  }
+
+  /* Fix for red squares/boxes that might appear */
+  .bg-red-100,
+  .bg-red-200,
+  .bg-red-300,
+  .bg-red-400,
+  .bg-red-500 {
+    background-color: transparent !important;
+  }
+
+  /* Fix for red borders that might create squares */
+  .border-red-100,
+  .border-red-200,
+  .border-red-300,
+  .border-red-400,
+  .border-red-500 {
     border-color: #e5e7eb !important;
-    color: #6b7280 !important;
-    background-color: #f9fafb !important;
   }
 }
 

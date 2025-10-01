@@ -30,7 +30,7 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
   });
 
   const [activeTab, setActiveTab] = useState('visual');
-  const [announcements, setAnnouncements] = useState([]);
+  // const [announcements, setAnnouncements] = useState([]);
 
   // Carregar configurações salvas
   useEffect(() => {
@@ -120,7 +120,7 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
     announcement.textContent = message;
     document.body.appendChild(announcement);
     // Registrar anúncio para ferramentas assistivas (mantém estado usado)
-    setAnnouncements(prev => [...prev, { id: Date.now(), message }]);
+      // setAnnouncements(prev => [...prev, { id: Date.now(), message }]);
 
     setTimeout(() => {
       document.body.removeChild(announcement);

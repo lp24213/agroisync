@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const logger = require('../utils/logger');
+import jwt from 'jsonwebtoken';
+import User from '../models/UserD1.js';
+import logger from '../utils/logger.js';
 
 const auth = async (req, res, next) => {
   try {
@@ -20,7 +20,7 @@ const auth = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     // Buscar usuário
-    const user = await User.findById(decoded.id);
+    const user = await User.findById(req.db, decoded.id);
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -38,13 +38,13 @@ const auth = async (req, res, next) => {
 
     // Adicionar usuário ao request
     req.user = {
-      id: user._id,
+      id: user.id,
       email: user.email,
       role: user.role,
       isAdmin: user.isAdmin
     };
 
-    next();
+    return next();
   } catch (error) {
     if (error.name === 'JsonWebTokenError') {
       return res.status(401).json({
@@ -61,7 +61,7 @@ const auth = async (req, res, next) => {
     }
 
     logger.error('Erro na autenticação:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
     });
@@ -93,7 +93,7 @@ const adminAuth = async (req, res, next) => {
 const planAuth = async (req, res, next) => {
   try {
     await auth(req, res, async () => {
-      const user = await User.findById(req.user.id);
+      const user = await User.findById(req.db, req.user.id);
 
       if (!user.isPaid) {
         return res.status(403).json({
@@ -125,11 +125,11 @@ const optionalAuth = async (req, res, next) => {
 
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id);
+    const user = await User.findById(req.db, decoded.id);
 
     if (user && user.isActive && !user.isBlocked) {
       req.user = {
-        id: user._id,
+        id: user.id,
         email: user.email,
         role: user.role,
         isAdmin: user.isAdmin
@@ -138,16 +138,11 @@ const optionalAuth = async (req, res, next) => {
       req.user = null;
     }
 
-    next();
-  } catch (error) {
+    return next();
+  } catch {
     req.user = null;
-    next();
+    return next();
   }
 };
 
-module.exports = {
-  auth,
-  adminAuth,
-  planAuth,
-  optionalAuth
-};
+export { auth, adminAuth, planAuth, optionalAuth };

@@ -1,27 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Lock, Unlock, CreditCard, CheckCircle, AlertCircle } from 'lucide-react';
+import { Eye, Lock, Unlock, CreditCard, CheckCircle, AlertCircle } from 'lucide-react';
 import paymentService from '../services/paymentService';
 
 const VisibilityManager = ({ item, itemType, onVisibilityChange }) => {
-  const [isPublic, setIsPublic] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState('pending');
   const [loading, setLoading] = useState(false);
+
+  const checkPaymentStatus = useCallback(async () => {
+    try {
+      const status = await paymentService.checkItemPaymentStatus(item.id, itemType);
+      setPaymentStatus(status);
+    } catch (error) {
+      console.error('Erro ao verificar status de pagamento:', error);
+    }
+  }, [item.id, itemType]);
 
   useEffect(() => {
     // Verificar status de pagamento do item
     checkPaymentStatus();
-  }, [item]);
-
-  const checkPaymentStatus = async () => {
-    try {
-      const status = await paymentService.checkItemPaymentStatus(item.id, itemType);
-      setPaymentStatus(status);
-      setIsPublic(status === 'paid');
-    } catch (error) {
-      console.error('Erro ao verificar status de pagamento:', error);
-    }
-  };
+  }, [checkPaymentStatus]);
 
   const handlePayment = async () => {
     setLoading(true);
@@ -30,7 +28,6 @@ const VisibilityManager = ({ item, itemType, onVisibilityChange }) => {
 
       if (paymentResult.success) {
         setPaymentStatus('paid');
-        setIsPublic(true);
         onVisibilityChange?.(true);
       }
     } catch (error) {

@@ -940,6 +940,37 @@ body {
   background: rgba(0, 255, 136, 0.1) !important;
 }
 
+/* Fix for red squares/boxes globally */
+.bg-red-100,
+.bg-red-200,
+.bg-red-300,
+.bg-red-400,
+.bg-red-500,
+.bg-red-600,
+.bg-red-700,
+.bg-red-800,
+.bg-red-900 {
+  background-color: transparent !important;
+}
+
+.border-red-100,
+.border-red-200,
+.border-red-300,
+.border-red-400,
+.border-red-500,
+.border-red-600,
+.border-red-700,
+.border-red-800,
+.border-red-900 {
+  border-color: #e5e7eb !important;
+}
+
+/* Fix for any red elements that might appear as squares */
+[class*="red"] {
+  background-color: transparent !important;
+  border-color: #e5e7eb !important;
+}
+
 /* Skip Links */
 .skip-link {
   position: absolute;

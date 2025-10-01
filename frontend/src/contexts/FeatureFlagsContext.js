@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { getApiUrl } from '../config/constants';
 
 const FeatureFlagsContext = createContext();
 
@@ -69,7 +70,7 @@ export const FeatureFlagsProvider = ({ children }) => {
       try {
         // Em produção, carregar flags do servidor
         if (process.env.NODE_ENV === 'production') {
-          const response = await fetch('/api/feature-flags');
+          const response = await fetch(getApiUrl('/feature-flags'));
           if (response.ok) {
             const serverFlags = await response.json();
             setFlags({ ...defaultFlags, ...serverFlags });
@@ -114,7 +115,7 @@ export const FeatureFlagsProvider = ({ children }) => {
   // Atualizar feature flag (apenas para admin)
   const updateFlag = async (flagName, value) => {
     try {
-      const response = await fetch('/api/feature-flags', {
+      const response = await fetch(getApiUrl('/feature-flags'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

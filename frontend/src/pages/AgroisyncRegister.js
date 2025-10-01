@@ -13,11 +13,11 @@ import {
   CheckCircle,
   AlertCircle,
   Loader2,
-  Smartphone,
+  // Smartphone,
   Shield,
   Zap,
   Globe,
-  Star,
+  // Star,
   Heart
 } from 'lucide-react';
 import validationService from '../services/validationService';
@@ -41,7 +41,7 @@ const AgroisyncRegister = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const [validations, setValidations] = useState({});
+  // const [validations, setValidations] = useState({});
 
   // Estados para validação Email
   const [emailCode, setEmailCode] = useState('');
@@ -63,7 +63,7 @@ const AgroisyncRegister = () => {
     // Validação em tempo real
     if (name === 'phone') {
       const phoneValidation = validationService.validatePhone(value);
-      setValidations(prev => ({ ...prev, phone: phoneValidation }));
+      // setValidations(prev => ({ ...prev, phone: phoneValidation }));
     }
   };
 

@@ -11,7 +11,7 @@ export const useGeolocation = () => {
   const getLocationByIP = useCallback(async () => {
     try {
       // Tentar via nosso backend primeiro (proxy)
-      const response = await fetch('/api/geolocation');
+      const response = await fetch(getApiUrl('/geolocation'));
       if (response.ok) {
         const data = await response.json();
         const ipLocation = {

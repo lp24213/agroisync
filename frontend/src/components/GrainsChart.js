@@ -19,40 +19,43 @@ const GrainsChart = () => {
           userRegion = 'Mato Grosso';
           userCity = 'Sinop';
         } catch (ipError) {
-          console.log('Usando localização padrão:', ipError);
+          // Silenciar log de localização em produção
+          if (process.env.NODE_ENV !== 'production') {
+            console.log('Usando localização padrão:', ipError);
+          }
           userRegion = 'Mato Grosso';
           userCity = 'Sinop';
         }
 
         // Mapear regiões para estados brasileiros (mantido para referência futura)
-        const regionMap = {
-          'Mato Grosso': 'Mato Grosso',
-          Paraná: 'Paraná',
-          'Rio Grande do Sul': 'Rio Grande do Sul',
-          'São Paulo': 'São Paulo',
-          'Minas Gerais': 'Minas Gerais',
-          Goiás: 'Goiás',
-          Bahia: 'Bahia',
-          Maranhão: 'Maranhão',
-          Pernambuco: 'Pernambuco',
-          Ceará: 'Ceará',
-          Pará: 'Pará',
-          Amazonas: 'Amazonas',
-          Rondônia: 'Rondônia',
-          Acre: 'Acre',
-          Roraima: 'Roraima',
-          Amapá: 'Amapá',
-          Tocantins: 'Tocantins',
-          Piauí: 'Piauí',
-          Alagoas: 'Alagoas',
-          Sergipe: 'Sergipe',
-          Paraíba: 'Paraíba',
-          'Rio Grande do Norte': 'Rio Grande do Norte',
-          'Espírito Santo': 'Espírito Santo',
-          'Rio de Janeiro': 'Rio de Janeiro',
-          'Santa Catarina': 'Santa Catarina',
-          'Distrito Federal': 'Distrito Federal'
-        };
+        // const regionMap = {
+        //   'Mato Grosso': 'Mato Grosso',
+        //   Paraná: 'Paraná',
+        //   'Rio Grande do Sul': 'Rio Grande do Sul',
+        //   'São Paulo': 'São Paulo',
+        //   'Minas Gerais': 'Minas Gerais',
+        //   Goiás: 'Goiás',
+        //   Bahia: 'Bahia',
+        //   Maranhão: 'Maranhão',
+        //   Pernambuco: 'Pernambuco',
+        //   Ceará: 'Ceará',
+        //   Pará: 'Pará',
+        //   Amazonas: 'Amazonas',
+        //   Rondônia: 'Rondônia',
+        //   Acre: 'Acre',
+        //   Roraima: 'Roraima',
+        //   Amapá: 'Amapá',
+        //   Tocantins: 'Tocantins',
+        //   Piauí: 'Piauí',
+        //   Alagoas: 'Alagoas',
+        //   Sergipe: 'Sergipe',
+        //   Paraíba: 'Paraíba',
+        //   'Rio Grande do Norte': 'Rio Grande do Norte',
+        //   'Espírito Santo': 'Espírito Santo',
+        //   'Rio de Janeiro': 'Rio de Janeiro',
+        //   'Santa Catarina': 'Santa Catarina',
+        //   'Distrito Federal': 'Distrito Federal'
+        // };
 
         // Simulando dados da Agrolink por região REAL (baseado em IP)
         const getRegionalPrices = (grain, region) => {
@@ -121,7 +124,7 @@ const GrainsChart = () => {
 
         setLoading(false);
       } catch (error) {
-        // Silenciar erro em produção
+        // Silenciar erro de grãos em produção
         if (process.env.NODE_ENV !== 'production') {
           console.error('Erro ao buscar dados de grãos:', error);
         }
@@ -283,7 +286,7 @@ const GrainsChart = () => {
                 ) : (
                   <TrendingDown className='h-4 w-4 text-red-500' />
                 )}
-                <span className={`text-sm font-medium ${grain.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                <span className={`text-sm font-medium ${grain.change >= 0 ? 'text-green-600' : 'text-red-600'}`} style={{ backgroundColor: 'transparent', border: 'none', padding: '0', margin: '0' }}>
                   {grain.change >= 0 ? '+' : ''}
                   {grain.change.toFixed(2)}({grain.changePercent >= 0 ? '+' : ''}
                   {grain.changePercent.toFixed(2)}%)

@@ -43,8 +43,8 @@ const createSecurityLog = async (
       },
       details: additionalData
     });
-  } catch (error) {
-    console.error('Error creating security log:', error);
+  } catch {
+    // Error creating security log
   }
 };
 
@@ -85,7 +85,7 @@ router.get('/profile', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get profile error:', error);
+    // Get profile error
 
     await createSecurityLog(
       'system_error',
@@ -116,7 +116,7 @@ router.put('/profile', authenticateToken, async (req, res) => {
       });
     }
 
-    if (phone && !/^[\+]?[1-9][\d]{0,15}$/.test(phone)) {
+    if (phone && !/^[+]?[1-9][\d]{0,15}$/.test(phone)) {
       return res.status(400).json({
         success: false,
         message: 'Telefone inválido'
@@ -208,7 +208,7 @@ router.put('/profile', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Update profile error:', error);
+    // Update profile error
 
     await createSecurityLog(
       'system_error',
@@ -256,11 +256,11 @@ router.get('/subscriptions', authenticateToken, async (req, res) => {
               0,
               user.subscriptions.store.maxAds - user.subscriptions.store.currentAds
             ),
-            daysRemaining: user.subscriptions.store.endDate
-              ? Math.ceil(
-                  (new Date(user.subscriptions.store.endDate) - new Date()) / (1000 * 60 * 60 * 24)
-                )
-              : 0
+            /* eslint-disable prettier/prettier */
+            daysRemaining: user.subscriptions.store.endDate ? Math.ceil(
+              (new Date(user.subscriptions.store.endDate) - new Date()) / (1000 * 60 * 60 * 24)
+            ) : 0
+            /* eslint-enable prettier/prettier */
           },
           freight: {
             hasActivePlan: user.subscriptions.freight.status === 'active',
@@ -271,18 +271,17 @@ router.get('/subscriptions', authenticateToken, async (req, res) => {
               0,
               user.subscriptions.freight.maxFreights - user.subscriptions.freight.currentFreights
             ),
-            daysRemaining: user.subscriptions.freight.endDate
-              ? Math.ceil(
-                  (new Date(user.subscriptions.freight.endDate) - new Date()) /
-                    (1000 * 60 * 60 * 24)
-                )
-              : 0
+            /* eslint-disable prettier/prettier */
+            daysRemaining: user.subscriptions.freight.endDate ? Math.ceil(
+              (new Date(user.subscriptions.freight.endDate) - new Date()) / (1000 * 60 * 60 * 24)
+            ) : 0
+            /* eslint-enable prettier/prettier */
           }
         }
       }
     });
   } catch (error) {
-    console.error('Get subscriptions error:', error);
+    // Get subscriptions error
 
     await createSecurityLog(
       'system_error',
@@ -365,7 +364,7 @@ router.put('/subscriptions', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Update subscriptions error:', error);
+    // Update subscriptions error
 
     await createSecurityLog(
       'system_error',
@@ -441,7 +440,7 @@ router.delete('/account', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Delete account error:', error);
+    // Delete account error
 
     await createSecurityLog(
       'system_error',

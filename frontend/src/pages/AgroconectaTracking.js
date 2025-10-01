@@ -43,8 +43,7 @@ const AgroconectaTracking = () => {
 
   useEffect(() => {
     if (input) handleTrack();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [input, handleTrack]);
 
   return (
     <div className='mx-auto max-w-4xl p-4'>

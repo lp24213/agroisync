@@ -5,8 +5,8 @@ const GrainsPriceCard = ({ grain, location }) => {
   const { name, symbol, price, change, changePercent, volume, unit, lastUpdate, market } = grain;
 
   const isPositive = change >= 0;
-  const changeColor = isPositive ? 'text-green-400' : 'text-red-400';
-  const bgGradient = isPositive ? 'from-green-900/20 to-green-800/10' : 'from-red-900/20 to-red-800/10';
+  const changeColor = isPositive ? 'text-green-400' : 'text-white';
+  const bgGradient = isPositive ? 'from-green-900/20 to-green-800/10' : 'from-gray-900/20 to-gray-800/10';
 
   const formatPrice = price => {
     return new Intl.NumberFormat('pt-BR', {
@@ -138,7 +138,7 @@ const GrainsPriceCard = ({ grain, location }) => {
       {/* Price */}
       <div className='mb-4'>
         <div className='mb-1 text-3xl font-bold text-white'>{formatPrice(price)}</div>
-        <div className={`text-sm font-medium ${changeColor}`}>
+        <div className={`text-sm font-medium ${changeColor}`} style={{ backgroundColor: 'transparent', border: 'none', padding: '0', margin: '0' }}>
           {isPositive ? '+' : ''}
           {formatPrice(change)} hoje
         </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { CreditCard, Shield, CheckCircle, Star, Zap, AlertCircle } from 'lucide-react';
+import { CreditCard, Shield, Star, Zap } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { getAuthToken } from '../config/constants.js';
 
@@ -10,7 +10,7 @@ const Payment = () => {
   const [selectedPlan, setSelectedPlan] = useState('pro');
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
-  const [error, setError] = useState(null);
+  // const [error, setError] = useState(null);
   const [stripeEnabled, setStripeEnabled] = useState(false);
 
   useEffect(() => {
@@ -75,13 +75,13 @@ const Payment = () => {
 
   const handlePayment = async () => {
     setLoading(true);
-    setError(null);
+    // setError(null);
 
     try {
       // Verificar se Stripe está configurado
       if (!stripeEnabled) {
         toast.error('Sistema de pagamento ainda não configurado. Entre em contato com o suporte.');
-        setError('Sistema de pagamento indisponível no momento.');
+        // setError('Sistema de pagamento indisponível no momento.');
         setLoading(false);
         return;
       }
@@ -135,7 +135,7 @@ const Payment = () => {
     } catch (error) {
       console.error('Erro no pagamento:', error);
       const errorMessage = error.message || 'Erro ao processar pagamento';
-      setError(errorMessage);
+      // setError(errorMessage);
       toast.error(errorMessage);
     } finally {
       setLoading(false);

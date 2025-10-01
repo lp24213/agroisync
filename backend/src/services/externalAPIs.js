@@ -594,7 +594,7 @@ class ExternalAPIService {
   async obterCoordenadasPorIP(ip) {
     try {
       // Usar serviço gratuito de geolocalização por IP
-      const response = await axios.get(`http://ip-api.com/json/${ip}`, {
+      const response = await axios.get(`https://ip-api.com/json/${ip}`, {
         timeout: 10000
       });
 

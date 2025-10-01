@@ -26,7 +26,7 @@ class SecurityUtils {
 
       // Command Injection Patterns
       /(\b(cmd|command|exec|system|eval|setTimeout|setInterval)\b)/gi,
-      /(\||&|;|\$\(|\`)/gi,
+      /(\||&|;|\$\(|`)/gi,
 
       // Path Traversal Patterns
       /\.\.\/|\.\.\\|\.\.%2f|\.\.%5c/gi,
@@ -109,7 +109,7 @@ class SecurityUtils {
   // Limpar caracteres especiais perigosos
   cleanSpecialChars(input) {
     return input
-      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '') // Remover caracteres de controle
+      .replace(/[\\u0000-\\u0008\\u000B\\u000C\\u000E-\\u001F\\u007F]/g, '') // Remover caracteres de controle
       .replace(/[\u2000-\u200F\u2028-\u202F\u205F-\u206F]/g, '') // Remover caracteres Unicode perigosos
       .replace(/\s+/g, ' ') // Normalizar espaços
       .trim();
@@ -195,7 +195,7 @@ class SecurityUtils {
     }
 
     // Verificar caractere especial
-    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+    if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
       errors.push('Senha deve conter pelo menos um caractere especial');
     }
 

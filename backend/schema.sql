@@ -1,387 +1,176 @@
--- ===== AGROISYNC D1 DATABASE SCHEMA =====
--- Cloudflare D1 Database Schema
--- Database: agroisync-db
--- ID: a3eb1069-9c36-4689-9ee9-971245cb2d12
+-- =============================================================
+-- AGROISYNC • Cloudflare D1 Schema (backend/schema.sql)
+-- Este arquivo define a estrutura base do banco relacional
+-- compatível com Cloudflare D1. Não inclua dados sensíveis aqui.
+-- =============================================================
 
--- ===== USERS TABLE =====
+PRAGMA foreign_keys = ON;
+
+-- =============================================================
+-- Tabela: users
+-- =============================================================
 CREATE TABLE IF NOT EXISTS users (
-  id TEXT PRIMARY KEY,
-  email TEXT UNIQUE NOT NULL,
-  name TEXT NOT NULL,
+  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+  email TEXT NOT NULL UNIQUE,
   password TEXT NOT NULL,
+  name TEXT NOT NULL,
   phone TEXT,
   avatar TEXT,
-  
-  -- Role & Permissions
-  role TEXT DEFAULT 'user', -- user, admin, super-admin
-  isAdmin INTEGER DEFAULT 0,
-  isActive INTEGER DEFAULT 1,
-  isBlocked INTEGER DEFAULT 0,
-  isEmailVerified INTEGER DEFAULT 0,
-  isPhoneVerified INTEGER DEFAULT 0,
-  
-  -- Business Info
-  businessType TEXT, -- buyer, seller, freight, general
-  company TEXT,
-  cpf TEXT,
-  cnpj TEXT,
-  ie TEXT,
-  
-  -- Address
-  cep TEXT,
+  bio TEXT,
+
+  -- Dados de localização
   address TEXT,
   city TEXT,
   state TEXT,
-  country TEXT DEFAULT 'BR',
-  
-  -- Verification
-  verificationCode TEXT,
-  codeExpires INTEGER,
-  phoneVerificationCode TEXT,
-  phoneCodeExpires INTEGER,
-  
-  -- 2FA
-  twoFactorEnabled INTEGER DEFAULT 0,
-  twoFactorSecret TEXT,
-  
-  -- LGPD
-  lgpdConsent INTEGER DEFAULT 0,
-  lgpdConsentDate INTEGER,
-  dataProcessingConsent INTEGER DEFAULT 0,
-  marketingConsent INTEGER DEFAULT 0,
-  
-  -- Subscription
-  isPaid INTEGER DEFAULT 0,
-  plan TEXT DEFAULT 'free', -- free, pro, enterprise
-  planExpires INTEGER,
-  stripeCustomerId TEXT,
-  
-  -- Timestamps
-  createdAt INTEGER DEFAULT (strftime('%s', 'now')),
-  updatedAt INTEGER DEFAULT (strftime('%s', 'now')),
-  lastLogin INTEGER
+  country TEXT DEFAULT 'Brasil',
+  zip_code TEXT,
+  json_coordinates TEXT, -- {"lat": number, "lng": number}
+
+  -- Dados de negócio
+  business_type TEXT CHECK (business_type IN ('producer','buyer','transporter','all')) DEFAULT 'all',
+  business_name TEXT,
+  business_document TEXT,
+  business_license TEXT,
+
+  -- Dados sensíveis (já criptografados na aplicação)
+  cpf TEXT,
+  cnpj TEXT,
+  rg TEXT,
+  passport TEXT,
+  bank_account TEXT,
+  credit_card TEXT,
+  tax_id TEXT,
+  business_id TEXT,
+  json_encryption_metadata TEXT,
+
+  -- Status/verificação
+  is_email_verified INTEGER NOT NULL DEFAULT 0,
+  email_verification_token TEXT,
+  email_verification_expires INTEGER,
+  verification_code TEXT,
+  code_expires INTEGER,
+  is_phone_verified INTEGER NOT NULL DEFAULT 0,
+  phone_verification_code TEXT,
+  phone_verification_expires INTEGER,
+
+  -- Segurança / 2FA
+  two_factor_enabled INTEGER NOT NULL DEFAULT 0,
+  two_factor_secret TEXT,
+
+  -- Permissões / papéis
+  role TEXT CHECK (role IN ('user','admin','super_admin','moderator','support')) DEFAULT 'user',
+  is_admin INTEGER NOT NULL DEFAULT 0,
+  admin_role TEXT,
+  admin_notes TEXT,
+
+  -- Plano / pagamentos
+  plan TEXT CHECK (plan IN ('free','basic','pro','enterprise')) DEFAULT 'free',
+  plan_expires_at INTEGER,
+  subscription_id TEXT,
+  payment_method TEXT,
+  plan_active INTEGER NOT NULL DEFAULT 0,
+  stripe_customer_id TEXT,
+  stripe_subscription_id TEXT,
+
+  -- Privacidade / notificações (JSON)
+  json_privacy_settings TEXT,
+  json_notification_settings TEXT,
+
+  -- Status da conta
+  is_active INTEGER NOT NULL DEFAULT 1,
+  is_suspended INTEGER NOT NULL DEFAULT 0,
+  suspension_reason TEXT,
+  suspension_expires_at INTEGER,
+  is_blocked INTEGER NOT NULL DEFAULT 0,
+  blocked_reason TEXT,
+  blocked_at INTEGER,
+
+  -- LGPD / consentimentos
+  lgpd_consent INTEGER NOT NULL DEFAULT 0,
+  lgpd_consent_date INTEGER,
+  data_processing_consent INTEGER NOT NULL DEFAULT 0,
+  marketing_consent INTEGER NOT NULL DEFAULT 0,
+
+  -- Segurança adicional
+  last_login_at INTEGER,
+  last_login_ip TEXT,
+  login_attempts INTEGER NOT NULL DEFAULT 0,
+  lock_until INTEGER,
+  password_changed_at INTEGER,
+  password_reset_token TEXT,
+  password_reset_expires INTEGER,
+
+  -- Estatísticas / preferências
+  json_stats TEXT,
+  language TEXT DEFAULT 'pt-BR',
+  timezone TEXT DEFAULT 'America/Sao_Paulo',
+  json_metadata TEXT,
+
+  -- Timestamps padrão
+  created_at INTEGER NOT NULL DEFAULT (strftime('%s','now')),
+  updated_at INTEGER NOT NULL DEFAULT (strftime('%s','now'))
 );
 
--- Index para buscas comuns
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
-CREATE INDEX IF NOT EXISTS idx_users_businessType ON users(businessType);
-CREATE INDEX IF NOT EXISTS idx_users_isActive ON users(isActive);
+CREATE INDEX IF NOT EXISTS idx_users_active ON users(is_active);
+CREATE INDEX IF NOT EXISTS idx_users_plan ON users(plan);
+CREATE INDEX IF NOT EXISTS idx_users_created_at ON users(created_at);
+CREATE INDEX IF NOT EXISTS idx_users_last_login_at ON users(last_login_at);
 
--- ===== PRODUCTS TABLE =====
-CREATE TABLE IF NOT EXISTS products (
-  id TEXT PRIMARY KEY,
-  userId TEXT NOT NULL,
-  
-  -- Product Info
-  title TEXT NOT NULL,
-  description TEXT,
-  category TEXT,
-  subcategory TEXT,
-  
-  -- Pricing
-  price REAL NOT NULL,
-  currency TEXT DEFAULT 'BRL',
-  unit TEXT DEFAULT 'un',
-  
-  -- Stock
-  stock INTEGER DEFAULT 0,
-  minOrder INTEGER DEFAULT 1,
-  maxOrder INTEGER,
-  
-  -- Physical Info
-  weight REAL,
-  dimensions TEXT, -- JSON: {width, height, length}
-  
-  -- Images
-  images TEXT, -- JSON array of URLs
-  mainImage TEXT,
-  
-  -- Location
-  origin TEXT,
-  city TEXT,
-  state TEXT,
-  
-  -- Quality
-  quality TEXT,
-  certifications TEXT, -- JSON array
-  
-  -- Status
-  status TEXT DEFAULT 'active', -- active, inactive, sold
-  featured INTEGER DEFAULT 0,
-  verified INTEGER DEFAULT 0,
-  
-  -- SEO
-  slug TEXT UNIQUE,
-  tags TEXT, -- JSON array
-  
-  -- Stats
-  views INTEGER DEFAULT 0,
-  likes INTEGER DEFAULT 0,
-  
-  -- Timestamps
-  createdAt INTEGER DEFAULT (strftime('%s', 'now')),
-  updatedAt INTEGER DEFAULT (strftime('%s', 'now')),
-  
-  FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
+-- =============================================================
+-- Tabela: user_admin_permissions
+-- =============================================================
+CREATE TABLE IF NOT EXISTS user_admin_permissions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id TEXT NOT NULL,
+  permission TEXT NOT NULL,
+  created_at INTEGER NOT NULL DEFAULT (strftime('%s','now')),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  UNIQUE (user_id, permission)
 );
 
--- Indexes
-CREATE INDEX IF NOT EXISTS idx_products_userId ON products(userId);
-CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
-CREATE INDEX IF NOT EXISTS idx_products_status ON products(status);
-CREATE INDEX IF NOT EXISTS idx_products_featured ON products(featured);
-CREATE INDEX IF NOT EXISTS idx_products_city ON products(city);
-CREATE INDEX IF NOT EXISTS idx_products_state ON products(state);
+CREATE INDEX IF NOT EXISTS idx_user_admin_permissions_user ON user_admin_permissions(user_id);
 
--- ===== FREIGHTS TABLE =====
-CREATE TABLE IF NOT EXISTS freights (
-  id TEXT PRIMARY KEY,
-  userId TEXT NOT NULL,
-  
-  -- Route Info
-  originCity TEXT NOT NULL,
-  originState TEXT NOT NULL,
-  destinationCity TEXT NOT NULL,
-  destinationState TEXT NOT NULL,
-  distance REAL,
-  
-  -- Load Info
-  loadType TEXT,
-  weight REAL,
-  volume REAL,
-  description TEXT,
-  
-  -- Vehicle
-  vehicleType TEXT,
-  vehicleCapacity REAL,
-  
-  -- Pricing
-  price REAL NOT NULL,
-  currency TEXT DEFAULT 'BRL',
-  priceType TEXT DEFAULT 'fixed', -- fixed, per_km, negotiable
-  
-  -- Schedule
-  pickupDate INTEGER,
-  deliveryDate INTEGER,
-  flexible INTEGER DEFAULT 0,
-  
-  -- Status
-  status TEXT DEFAULT 'available', -- available, in_transit, completed, cancelled
-  
-  -- Driver Info
-  driverName TEXT,
-  driverPhone TEXT,
-  driverLicense TEXT,
-  vehiclePlate TEXT,
-  
-  -- Tracking
-  currentLocation TEXT, -- JSON: {lat, lng}
-  trackingCode TEXT UNIQUE,
-  
-  -- Stats
-  views INTEGER DEFAULT 0,
-  
-  -- Timestamps
-  createdAt INTEGER DEFAULT (strftime('%s', 'now')),
-  updatedAt INTEGER DEFAULT (strftime('%s', 'now')),
-  
-  FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
+-- =============================================================
+-- Tabela: user_twofactor_backup_codes
+-- =============================================================
+CREATE TABLE IF NOT EXISTS user_twofactor_backup_codes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id TEXT NOT NULL,
+  code_hash TEXT NOT NULL,
+  created_at INTEGER NOT NULL DEFAULT (strftime('%s','now')),
+  used_at INTEGER,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Indexes
-CREATE INDEX IF NOT EXISTS idx_freights_userId ON freights(userId);
-CREATE INDEX IF NOT EXISTS idx_freights_status ON freights(status);
-CREATE INDEX IF NOT EXISTS idx_freights_originState ON freights(originState);
-CREATE INDEX IF NOT EXISTS idx_freights_destinationState ON freights(destinationState);
-CREATE INDEX IF NOT EXISTS idx_freights_trackingCode ON freights(trackingCode);
+CREATE INDEX IF NOT EXISTS idx_user_twofactor_codes_user ON user_twofactor_backup_codes(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_twofactor_codes_used ON user_twofactor_backup_codes(used_at);
 
--- ===== MESSAGES TABLE =====
-CREATE TABLE IF NOT EXISTS messages (
-  id TEXT PRIMARY KEY,
-  conversationId TEXT NOT NULL,
-  senderId TEXT NOT NULL,
-  receiverId TEXT NOT NULL,
-  
-  -- Content
-  content TEXT NOT NULL,
-  type TEXT DEFAULT 'text', -- text, image, file, system
-  
-  -- Attachments
-  attachments TEXT, -- JSON array
-  
-  -- Status
-  isRead INTEGER DEFAULT 0,
-  readAt INTEGER,
-  isDeleted INTEGER DEFAULT 0,
-  deletedBy TEXT, -- JSON array of user IDs
-  
-  -- Timestamps
-  createdAt INTEGER DEFAULT (strftime('%s', 'now')),
-  updatedAt INTEGER DEFAULT (strftime('%s', 'now')),
-  
-  FOREIGN KEY (senderId) REFERENCES users(id) ON DELETE CASCADE,
-  FOREIGN KEY (receiverId) REFERENCES users(id) ON DELETE CASCADE
-);
-
--- Indexes
-CREATE INDEX IF NOT EXISTS idx_messages_conversationId ON messages(conversationId);
-CREATE INDEX IF NOT EXISTS idx_messages_senderId ON messages(senderId);
-CREATE INDEX IF NOT EXISTS idx_messages_receiverId ON messages(receiverId);
-CREATE INDEX IF NOT EXISTS idx_messages_isRead ON messages(isRead);
-
--- ===== TRANSACTIONS TABLE =====
-CREATE TABLE IF NOT EXISTS transactions (
-  id TEXT PRIMARY KEY,
-  userId TEXT NOT NULL,
-  
-  -- Transaction Info
-  type TEXT NOT NULL, -- subscription, purchase, refund
-  amount REAL NOT NULL,
-  currency TEXT DEFAULT 'BRL',
-  
-  -- Payment
-  paymentMethod TEXT, -- stripe, pix, boleto
-  paymentStatus TEXT DEFAULT 'pending', -- pending, completed, failed, refunded
-  
-  -- Stripe
-  stripeSessionId TEXT,
-  stripePaymentIntentId TEXT,
-  
-  -- Related
-  relatedType TEXT, -- product, freight, subscription
-  relatedId TEXT,
-  
-  -- Description
-  description TEXT,
-  
-  -- Timestamps
-  createdAt INTEGER DEFAULT (strftime('%s', 'now')),
-  completedAt INTEGER,
-  
-  FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
-);
-
--- Indexes
-CREATE INDEX IF NOT EXISTS idx_transactions_userId ON transactions(userId);
-CREATE INDEX IF NOT EXISTS idx_transactions_paymentStatus ON transactions(paymentStatus);
-CREATE INDEX IF NOT EXISTS idx_transactions_stripeSessionId ON transactions(stripeSessionId);
-
--- ===== NOTIFICATIONS TABLE =====
-CREATE TABLE IF NOT EXISTS notifications (
-  id TEXT PRIMARY KEY,
-  userId TEXT NOT NULL,
-  
-  -- Content
-  title TEXT NOT NULL,
-  message TEXT NOT NULL,
-  type TEXT DEFAULT 'info', -- info, success, warning, error
-  
-  -- Link
-  link TEXT,
-  
-  -- Status
-  isRead INTEGER DEFAULT 0,
-  readAt INTEGER,
-  
-  -- Timestamps
-  createdAt INTEGER DEFAULT (strftime('%s', 'now')),
-  
-  FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
-);
-
--- Indexes
-CREATE INDEX IF NOT EXISTS idx_notifications_userId ON notifications(userId);
-CREATE INDEX IF NOT EXISTS idx_notifications_isRead ON notifications(isRead);
-
--- ===== SESSIONS TABLE =====
-CREATE TABLE IF NOT EXISTS sessions (
-  id TEXT PRIMARY KEY,
-  userId TEXT NOT NULL,
-  
-  -- Session Info
+-- =============================================================
+-- Tabela: password_resets
+-- =============================================================
+CREATE TABLE IF NOT EXISTS password_resets (
+  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+  user_id TEXT NOT NULL,
   token TEXT UNIQUE NOT NULL,
-  ipAddress TEXT,
-  userAgent TEXT,
-  
-  -- Status
-  isActive INTEGER DEFAULT 1,
-  expiresAt INTEGER NOT NULL,
-  
-  -- Timestamps
-  createdAt INTEGER DEFAULT (strftime('%s', 'now')),
-  lastActivity INTEGER DEFAULT (strftime('%s', 'now')),
-  
-  FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
+  expires_at INTEGER NOT NULL,
+  attempts INTEGER DEFAULT 0,
+  max_attempts INTEGER DEFAULT 3,
+  ip_address TEXT,
+  user_agent TEXT,
+  status TEXT CHECK (status IN ('pending', 'used', 'expired', 'revoked')) DEFAULT 'pending',
+  used_at INTEGER,
+  created_at INTEGER NOT NULL DEFAULT (strftime('%s','now')),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Indexes
-CREATE INDEX IF NOT EXISTS idx_sessions_userId ON sessions(userId);
-CREATE INDEX IF NOT EXISTS idx_sessions_token ON sessions(token);
-CREATE INDEX IF NOT EXISTS idx_sessions_isActive ON sessions(isActive);
+CREATE INDEX IF NOT EXISTS idx_password_resets_token ON password_resets(token);
+CREATE INDEX IF NOT EXISTS idx_password_resets_user_id ON password_resets(user_id);
+CREATE INDEX IF NOT EXISTS idx_password_resets_status ON password_resets(status);
+CREATE INDEX IF NOT EXISTS idx_password_resets_expires_at ON password_resets(expires_at);
 
--- ===== AUDIT_LOGS TABLE =====
-CREATE TABLE IF NOT EXISTS audit_logs (
-  id TEXT PRIMARY KEY,
-  userId TEXT,
-  
-  -- Action Info
-  action TEXT NOT NULL,
-  entity TEXT NOT NULL, -- user, product, freight, etc
-  entityId TEXT,
-  
-  -- Request Info
-  ipAddress TEXT,
-  userAgent TEXT,
-  method TEXT,
-  endpoint TEXT,
-  
-  -- Details
-  oldValue TEXT, -- JSON
-  newValue TEXT, -- JSON
-  
-  -- Timestamp
-  createdAt INTEGER DEFAULT (strftime('%s', 'now'))
-);
+-- =============================================================
+-- (Demais tabelas – products, freights, messages, etc.)
+-- Permanecem para etapas posteriores da migração.
+-- =============================================================
 
--- Indexes
-CREATE INDEX IF NOT EXISTS idx_audit_logs_userId ON audit_logs(userId);
-CREATE INDEX IF NOT EXISTS idx_audit_logs_action ON audit_logs(action);
-CREATE INDEX IF NOT EXISTS idx_audit_logs_entity ON audit_logs(entity);
-
--- ===== ADMIN USER =====
--- Criar usuário admin padrão (senha: AgroSync2024!@#SecureAdmin)
-INSERT OR IGNORE INTO users (
-  id, 
-  email, 
-  name, 
-  password,
-  role,
-  isAdmin,
-  isActive,
-  isEmailVerified,
-  lgpdConsent,
-  lgpdConsentDate
-) VALUES (
-  'admin-' || hex(randomblob(16)),
-  'admin@agroisync.com',
-  'Administrador AgroSync',
-  '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYIjKrYxK6u', -- Hash de AgroSync2024!@#SecureAdmin
-  'super-admin',
-  1,
-  1,
-  1,
-  1,
-  strftime('%s', 'now')
-);
-
--- ===== SAMPLE DATA (OPCIONAL - COMENTADO) =====
--- Descomentar para criar dados de exemplo
-
--- INSERT INTO products (id, userId, title, description, category, price, stock, city, state, status) VALUES
--- ('prod-1', (SELECT id FROM users WHERE email = 'admin@agroisync.com'), 'Soja Grão', 'Soja de alta qualidade', 'graos', 150.00, 1000, 'Sorriso', 'MT', 'active'),
--- ('prod-2', (SELECT id FROM users WHERE email = 'admin@agroisync.com'), 'Milho', 'Milho seco para ração', 'graos', 80.00, 500, 'Lucas do Rio Verde', 'MT', 'active');
-
--- INSERT INTO freights (id, userId, originCity, originState, destinationCity, destinationState, loadType, price, status) VALUES
--- ('freight-1', (SELECT id FROM users WHERE email = 'admin@agroisync.com'), 'Cuiabá', 'MT', 'São Paulo', 'SP', 'Grãos', 5000.00, 'available'),
--- ('freight-2', (SELECT id FROM users WHERE email = 'admin@agroisync.com'), 'Sorriso', 'MT', 'Santos', 'SP', 'Soja', 7000.00, 'available');

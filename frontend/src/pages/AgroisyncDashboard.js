@@ -11,7 +11,7 @@ import {
   Shield,
   BarChart3,
   RefreshCw,
-  Key,
+  // Key,
   Lock
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -26,7 +26,7 @@ const AgroisyncDashboard = () => {
   const [paymentsData, setPaymentsData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
-  const [showCryptoRoutes, setShowCryptoRoutes] = useState(false);
+  // const [showCryptoRoutes, setShowCryptoRoutes] = useState(false);
 
   const fetchDashboardData = async () => {
     // Verificar se é super-admin

@@ -33,7 +33,7 @@ const sendEmailViaResend = async (to, subject, html) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: 'AgroSync <onboarding@resend.dev>',
+        from: 'AgroSync <contato@agroisync.com>',
         to,
         subject,
         html
@@ -72,36 +72,23 @@ class NotificationService {
    */
   async sendEmail(to, subject, htmlBody, textBody = null) {
     try {
-      // Modo de desenvolvimento - simular envio
-      if (this.isDevelopment) {
-        logger.info('🔧 [DEV MODE] Simulando envio de email:');
-        logger.info(`   Para: ${to}`);
-        logger.info(`   Assunto: ${subject}`);
-        logger.info(`   Corpo: ${textBody || htmlBody.substring(0, 100)}...`);
-        return {
-          success: true,
-          messageId: `dev-${Date.now()}`,
-          message: 'Email simulado (modo desenvolvimento)'
-        };
-      }
-
-      // Tentar enviar via Cloudflare Worker primeiro
-      const workerResult = await this.sendEmailViaWorker(to, subject, htmlBody);
-      if (workerResult.success) {
-        return workerResult;
-      }
-      logger.warn('Cloudflare Worker falhou, tentando Resend como fallback');
-
-      // Fallback para Resend
+      // 1) Priorizar Resend quando configurado (produção ou dev)
       if (process.env.RESEND_API_KEY) {
         const resendResult = await sendEmailViaResend(to, subject, htmlBody);
         if (resendResult.success) {
           return resendResult;
         }
-        logger.warn('Resend falhou, tentando SMTP como fallback');
+        logger.warn('Resend falhou, tentando Cloudflare Worker como fallback');
       }
 
-      // Fallback para SMTP
+      // 2) Fallback para Cloudflare Worker (quando disponível)
+      const workerResult = await this.sendEmailViaWorker(to, subject, htmlBody);
+      if (workerResult.success) {
+        return workerResult;
+      }
+      logger.warn('Cloudflare Worker falhou, tentando SMTP como fallback');
+
+      // 3) Fallback final: SMTP
       const mailOptions = {
         from: `"${this.fromName}" <${this.fromEmail}>`,
         to,
@@ -391,7 +378,7 @@ class NotificationService {
     const htmlBody = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #059669; margin: 0;">🌾 AgroSync</h1>
+          <h1 style="color: #059669; margin: 0;">AgroSync</h1>
           <p style="color: #666; margin: 10px 0 0 0;">Recuperação de Senha</p>
         </div>
         

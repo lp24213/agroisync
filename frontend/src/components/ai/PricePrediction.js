@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Share2, Filter, Download, AlertCircle, CheckCircle, BarChart3 } from 'lucide-react';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { getApiUrl } from '../../config/constants';
 
 const PricePrediction = () => {
   const { t } = useTranslation();
@@ -63,7 +64,7 @@ const PricePrediction = () => {
     setError('');
 
     try {
-      const response = await fetch('/api/ai/price-prediction', {
+      const response = await fetch(getApiUrl('/ai/price-prediction'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

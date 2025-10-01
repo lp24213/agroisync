@@ -4,6 +4,7 @@ import './index.css';
 import './styles/mobile-fixes.css'; // Importar correções para mobile
 import './styles/header-fixes.css'; // Importar correções para header
 import './i18n/index'; // Importar configuração do i18n
+import './utils/disableConsoleInProd'; // Silencia console em produção
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 

@@ -5,7 +5,7 @@ npm install
 npm run build
 echo.
 echo Deploying to Cloudflare Pages...
-npx wrangler pages deploy dist --project-name agroisync
+npx wrangler pages deploy build --project-name agroisync
 echo.
 echo Deploy completed!
 pause

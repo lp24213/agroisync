@@ -1,9 +1,9 @@
 import { loadStripe } from '@stripe/stripe-js';
-import { getAuthToken } from '../config/constants.js';
+import { getAuthToken, getApiUrl } from '../config/constants.js';
 
 // Stripe publishable key - substitua pela sua chave real
 const STRIPE_PUBLISHABLE_KEY =
-  process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_51234567890abcdefghijklmnopqrstuvwxyz';
+  process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_PLACEHOLDER_KEY_NOT_SET';
 
 // Inicializar Stripe
 export const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
@@ -11,7 +11,7 @@ export const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
 // Função para criar Payment Intent
 export const createPaymentIntent = async paymentData => {
   try {
-    const response = await fetch('/api/payment-intent', {
+    const response = await fetch(getApiUrl('/payment-intent'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ export const PAYMENT_PLANS = {
 // Função para verificar acesso do usuário
 export const checkUserAccess = async (userId, adId) => {
   try {
-    const response = await fetch(`/api/user-access/${userId}/${adId}`, {
+    const response = await fetch(getApiUrl(`/user-access/${userId}/${adId}`), {
       headers: {
         Authorization: `Bearer ${getAuthToken()}`
       }
@@ -129,7 +129,7 @@ export const checkUserAccess = async (userId, adId) => {
 // Função para liberar dados sensíveis após pagamento
 export const unlockSensitiveData = async (userId, adId) => {
   try {
-    const response = await fetch('/api/v1/data-access/unlock-data', {
+    const response = await fetch(getApiUrl('/v1/data-access/unlock-data'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -153,7 +153,7 @@ export const unlockSensitiveData = async (userId, adId) => {
 // Função para obter dados liberados
 export const getUnlockedData = async adId => {
   try {
-    const response = await fetch(`/api/v1/data-access/unlocked-data/${adId}`, {
+    const response = await fetch(getApiUrl(`/v1/data-access/unlocked-data/${adId}`), {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

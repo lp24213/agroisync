@@ -12,8 +12,8 @@ import {
   Edit,
   Trash2,
   CheckCircle,
-  Clock,
-  DollarSign
+  // Clock,
+  // DollarSign
 } from 'lucide-react';
 import VisibilityManager from '../components/VisibilityManager';
 import Messaging from './Messaging';

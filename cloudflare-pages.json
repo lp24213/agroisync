@@ -6,7 +6,7 @@
   "environmentVariables": {
     "NODE_VERSION": "18.20.4",
     "CI": "false",
-    "REACT_APP_API_URL": "https://api.agroisync.com"
+    "REACT_APP_API_URL": "https://agroisync.com/api"
   },
   "framework": "create-react-app"
 }

@@ -20,20 +20,24 @@ export default function ProtectedRoute({ children }) {
           return;
         }
 
-        // Verificar se o token é válido (decodificar base64 sem verificar assinatura)
-        try {
-          const payload = JSON.parse(atob(token.split('.')[1]));
-          if (!payload || payload.exp < Date.now() / 1000) {
-            // Token expirado, remover de forma segura
-            removeAuthToken();
-            setIsValidToken(false);
-          } else {
-            setIsValidToken(true);
-          }
-        } catch (decodeError) {
-          // Token inválido, remover de forma segura
+        // Decodificar apenas para checar expiração (sem assumir validade criptográfica)
+        const parts = token.split('.');
+        if (parts.length !== 3) {
           removeAuthToken();
           setIsValidToken(false);
+        } else {
+          try {
+            const payload = JSON.parse(atob(parts[1]));
+            if (!payload || typeof payload.exp !== 'number' || payload.exp < Date.now() / 1000) {
+              removeAuthToken();
+              setIsValidToken(false);
+            } else {
+              setIsValidToken(true);
+            }
+          } catch {
+            removeAuthToken();
+            setIsValidToken(false);
+          }
         }
       } catch (error) {
         // Erro ao validar, remover token

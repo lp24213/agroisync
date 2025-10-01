@@ -28,7 +28,7 @@ const AgroisyncLoja = () => {
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
   const [showPlansModal, setShowPlansModal] = useState(false);
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
 
   // Carregar produtos reais do backend
   useEffect(() => {
@@ -37,14 +37,14 @@ const AgroisyncLoja = () => {
 
   const loadProducts = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       const productsData = await productService.getProducts();
       setProducts(productsData.products || productsData || []);
     } catch (error) {
       console.error('Erro ao carregar produtos:', error);
       setProducts([]);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 

@@ -5,19 +5,15 @@ import {
   Send,
   Mic,
   MicOff,
-  Bot,
   Loader2,
   Brain,
   Lightbulb,
   Settings,
   X,
   Sparkles,
-  Zap,
-  MessageCircle,
   Minimize2,
   Maximize2,
-  Image as ImageIcon,
-  ShieldCheck
+  Image as ImageIcon
 } from 'lucide-react';
 
 const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
@@ -32,9 +28,9 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [uploadPreview, setUploadPreview] = useState(null);
   const [uploadFile, setUploadFile] = useState(null);
-  const [dailyCount, setDailyCount] = useState(0);
-  const [plan, setPlan] = useState('free'); // free | pro
-  const [limits, setLimits] = useState({ free: 20, pro: 200 });
+  const [, setDailyCount] = useState(0);
+  const [plan] = useState('free'); // free | pro
+  const [limits] = useState({ free: 20, pro: 200 });
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
   const inputRef = useRef(null);

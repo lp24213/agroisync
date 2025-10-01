@@ -643,4 +643,3 @@ export const securityLoggingMiddleware = (req, res, next) => {
 const auditSystem = new AuditSystem();
 
 export default auditSystem;
-export { AuditSystem, loggingMiddleware, auditMiddleware, securityLoggingMiddleware };

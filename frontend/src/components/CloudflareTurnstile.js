@@ -1,10 +1,23 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 
 const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'light' }) => {
   const turnstileRef = useRef(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [widgetId, setWidgetId] = useState(null);
+
+  // Memoizar callbacks para evitar re-renders desnecessários
+  const handleVerify = useCallback((token) => {
+    if (onVerify) onVerify(token);
+  }, [onVerify]);
+
+  const handleError = useCallback((error) => {
+    if (onError) onError(error);
+  }, [onError]);
+
+  const handleExpire = useCallback(() => {
+    if (onExpire) onExpire();
+  }, [onExpire]);
 
   useEffect(() => {
     // Carregar o script do Turnstile se não estiver carregado
@@ -26,7 +39,7 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
       setIsLoaded(true);
       setIsLoading(false);
     }
-  }, []); // Remove callback dependencies
+  }, []);
 
   useEffect(() => {
     if (isLoaded && window.turnstile && turnstileRef.current && !widgetId) {
@@ -35,15 +48,9 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
         sitekey: siteKey || '0x4AAAAAAB3pdjs4jRKvAtaA',
         theme: theme,
         size: 'compact',
-        callback: token => {
-          if (onVerify) onVerify(token);
-        },
-        'error-callback': error => {
-          if (onError) onError(error);
-        },
-        'expired-callback': () => {
-          if (onExpire) onExpire();
-        }
+        callback: handleVerify,
+        'error-callback': handleError,
+        'expired-callback': handleExpire
       });
       setWidgetId(id);
     }
@@ -59,7 +66,7 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
         setWidgetId(null);
       }
     };
-  }, [isLoaded, siteKey, theme]); // Remove callback dependencies
+  }, [isLoaded, siteKey, theme, handleVerify, handleError, handleExpire, widgetId]);
 
   if (isLoading) {
     return (

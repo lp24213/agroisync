@@ -37,7 +37,7 @@ const CryptoTicker = () => {
   const formatPercentage = percentage => {
     const isPositive = percentage >= 0;
     return (
-      <span className={`font-mono text-xs ${isPositive ? 'text-blue-400' : 'text-red-400'}`}>
+      <span className={`font-mono text-xs ${isPositive ? 'text-blue-400' : 'text-white'}`} style={{ backgroundColor: 'transparent', border: 'none', padding: '0', margin: '0' }}>
         {isPositive ? '+' : ''}
         {percentage.toFixed(2)}%
       </span>

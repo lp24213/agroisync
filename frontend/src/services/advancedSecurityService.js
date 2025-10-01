@@ -103,15 +103,19 @@ class AdvancedSecurityService {
 
   // Bloquear input suspeito
   blockInput(input) {
-    input.style.border = '2px solid red';
-    input.style.backgroundColor = '#ffebee';
+    input.style.border = '2px solid #ef4444';
+    input.style.backgroundColor = '#fef2f2';
     input.disabled = true;
 
-    // Mostrar aviso
+    // Mostrar aviso discreto
     const warning = document.createElement('div');
-    warning.style.color = 'red';
+    warning.style.color = '#dc2626';
     warning.style.fontSize = '12px';
     warning.style.marginTop = '5px';
+    warning.style.padding = '4px 8px';
+    warning.style.backgroundColor = '#fef2f2';
+    warning.style.borderRadius = '4px';
+    warning.style.border = '1px solid #fecaca';
     warning.textContent = 'Entrada bloqueada por segurança';
     input.parentNode.appendChild(warning);
 
@@ -190,9 +194,23 @@ class AdvancedSecurityService {
       try {
         window.top.location = window.self.location;
       } catch (e) {
-        // Se não conseguir, bloquear completamente
-        document.body.innerHTML =
-          '<div style="text-align:center;padding:50px;color:red;"><h1>⚠️ ACESSO BLOQUEADO</h1><p>Esta página não pode ser exibida em iframe por motivos de segurança.</p></div>';
+        // Se não conseguir, bloquear completamente - usando textContent para segurança
+        const warningDiv = document.createElement('div');
+        warningDiv.style.cssText = 'text-align:center;padding:50px;color:red;';
+        
+        const title = document.createElement('h1');
+        title.textContent = '⚠️ ACESSO BLOQUEADO';
+        
+        const message = document.createElement('p');
+        message.textContent = 'Esta página não pode ser exibida em iframe por motivos de segurança.';
+        
+        warningDiv.appendChild(title);
+        warningDiv.appendChild(message);
+        
+        // Limpar body e adicionar conteúdo seguro
+        document.body.innerHTML = '';
+        document.body.appendChild(warningDiv);
+        
         this.logSecurityThreat('CLICKJACKING_BLOCKED', {
           timestamp: new Date().toISOString()
         });
@@ -452,15 +470,32 @@ class AdvancedSecurityService {
       font-family: Arial, sans-serif;
     `;
 
-    emergencyScreen.innerHTML = `
-      <div style="text-align: center;">
-        <h1>🚨 ALERTA DE SEGURANÇA 🚨</h1>
-        <p>Ameaça crítica detectada. Acesso bloqueado por segurança.</p>
-        <p>Entre em contato com o suporte técnico.</p>
-                        <p>Email: contato@agrosync.com</p>
-        <p>Suporte: contato@agroisync.com</p>
-      </div>
-    `;
+    // Criar conteúdo seguro sem innerHTML
+    const contentDiv = document.createElement('div');
+    contentDiv.style.cssText = 'text-align: center;';
+    
+    const title = document.createElement('h1');
+    title.textContent = '🚨 ALERTA DE SEGURANÇA 🚨';
+    
+    const message1 = document.createElement('p');
+    message1.textContent = 'Ameaça crítica detectada. Acesso bloqueado por segurança.';
+    
+    const message2 = document.createElement('p');
+    message2.textContent = 'Entre em contato com o suporte técnico.';
+    
+    const email1 = document.createElement('p');
+    email1.textContent = 'Email: contato@agrosync.com';
+    
+    const email2 = document.createElement('p');
+    email2.textContent = 'Suporte: contato@agroisync.com';
+    
+    contentDiv.appendChild(title);
+    contentDiv.appendChild(message1);
+    contentDiv.appendChild(message2);
+    contentDiv.appendChild(email1);
+    contentDiv.appendChild(email2);
+    
+    emergencyScreen.appendChild(contentDiv);
 
     document.body.appendChild(emergencyScreen);
 

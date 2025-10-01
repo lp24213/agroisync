@@ -1,11 +1,11 @@
-name = "agroisync-backend"
-main = "src/universal-working-worker.js"
-compatibility_date = "2024-09-01"
+name = "backend"
+main = "src/cloudflare-worker.js"
+compatibility_date = "2024-09-23"
 
 # Configuração para Cloudflare Workers
 compatibility_flags = ["nodejs_compat"]
 
-# Cloudflare D1 Database
+# Banco de dados D1 da Cloudflare
 [[d1_databases]]
 binding = "DB"
 database_name = "agroisync-db"
@@ -15,18 +15,9 @@ database_id = "a3eb1069-9c36-4689-9ee9-971245cb2d12"
 [vars]
 NODE_ENV = "production"
 API_VERSION = "v1"
-# Email - Resend
-RESEND_API_KEY = "re_f9XgEUAJ_2FwkAe87mmUZJhTTAy8xuWg8"
-RESEND_FROM = "Agroisync <contato@agroisync.com>"
-# Cloudflare Turnstile
-CLOUDFLARE_TURNSTILE_SECRET = "0x4AAAAAAB3pdkPMyeyfUQQaEpNBMb0NYhk"
-NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY = "0x4AAAAAAB3pdjs4jRKvAtaA"
 FRONTEND_URL = "https://agroisync.com"
-# Admin Configuration (SECURITY: Use strong password)
-ADMIN_EMAIL = "admin@agroisync.com"
-ADMIN_PASSWORD = "AgroSync2024!@#SecureAdmin"
 
-# Rotas do Worker servindo sob o domínio principal
+# Rotas do worker
 [[routes]]
 pattern = "agroisync.com/api/*"
 zone_name = "agroisync.com"
@@ -50,8 +41,3 @@ zone_name = "agroisync.com"
 [[routes]]
 pattern = "www.agroisync.com/public/*"
 zone_name = "agroisync.com"
-
-# Secrets (configure via wrangler secret put)
-# STRIPE_SECRET_KEY
-# STRIPE_WEBHOOK_SECRET
-# JWT_SECRET

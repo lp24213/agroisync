@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Crown, Check, Star, Zap, Shield, Users, Truck, Package, CreditCard, Gift, TrendingUp } from 'lucide-react';
+import { Crown, Check, Star, Zap, Shield, Users, CreditCard, Gift, TrendingUp } from 'lucide-react';
 import CryptoHash from '../components/CryptoHash';
 
 const AgroisyncPlans = () => {

@@ -1,34 +1,67 @@
-import express from 'express';
+// Módulo de health check para Cloudflare Workers
 
-const router = express.Router();
+export const handleHealthCheck = async (request, env) => {
+  try {
+    // Testar conexão com banco D1
+    let dbStatus = 'disconnected';
+    let dbError = null;
 
-// Health check endpoint
-router.get('/', (_req, res) => {
-  res.json({
-    ok: true,
-    ts: new Date().toISOString(),
-    service: 'AGROISYNC Backend',
-    version: '2.3.1',
-    uptime: process.uptime(),
-    memory: process.memoryUsage(),
-    env: process.env.NODE_ENV
-  });
-});
+    try {
+      if (env.DB) {
+        // Teste simples de conexão com D1
+        await env.DB.prepare('SELECT 1').first();
+        dbStatus = 'connected';
+      }
+    } catch (error) {
+      dbError = error.message;
+      dbStatus = 'error';
+    }
 
-// Detailed health check
-router.get('/detailed', (_req, res) => {
-  res.json({
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    service: 'AGROISYNC Backend',
-    version: '2.3.1',
-    uptime: process.uptime(),
-    memory: process.memoryUsage(),
-    environment: process.env.NODE_ENV,
-    nodeVersion: process.version,
-    platform: process.platform,
-    arch: process.arch
-  });
-});
-
-export default router;
+    return new Response(
+      JSON.stringify({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        service: 'AgroSync API - Cloudflare Workers + D1',
+        version: '1.0.0',
+        environment: env.NODE_ENV || 'production',
+        database: {
+          status: dbStatus,
+          error: dbError
+        },
+        uptime: Date.now(),
+        memory: {
+          used: 'N/A',
+          total: 'N/A'
+        },
+        features: [
+          'D1 Database',
+          'Authentication',
+          'Users Management',
+          'Products API',
+          'Freight Management',
+          'Messaging System',
+          'Admin Panel'
+        ]
+      }),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
+        }
+      }
+    );
+  } catch (error) {
+    return new Response(
+      JSON.stringify({
+        status: 'error',
+        timestamp: new Date().toISOString(),
+        error: error.message,
+        service: 'AgroSync API'
+      }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+  }
+};

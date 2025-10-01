@@ -1,2 +1,3 @@
 # Redirects for SPA - All routes including crypto hashes
 /* /index.html 200
+https://www.agroisync.com/* https://agroisync.com/:splat 301

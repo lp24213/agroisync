@@ -76,7 +76,7 @@ export const createCheckoutSession = async (planId, customerEmail, successUrl, c
     }
 
     // Criar sessão de checkout
-    const response = await fetch('/api/create-checkout-session', {
+    const response = await fetch(getApiUrl('/create-checkout-session'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -126,7 +126,7 @@ export const processPayment = async (paymentMethodId, amount, currency = 'BRL', 
       amount: Math.round(amount * 100), // Stripe usa centavos
       currency: currency.toLowerCase(),
       description: description,
-      return_url: window.location.origin + '/payment-success'
+      return_url: window.location.origin + '/payment/success'
     });
 
     if (error) {
@@ -143,7 +143,7 @@ export const processPayment = async (paymentMethodId, amount, currency = 'BRL', 
 // Verificar status do pagamento
 export const checkPaymentStatus = async paymentIntentId => {
   try {
-    const response = await fetch(`/api/payment-status/${paymentIntentId}`);
+    const response = await fetch(getApiUrl(`/payment-status/${paymentIntentId}`));
 
     if (!response.ok) {
       throw new Error('Erro ao verificar status do pagamento');
@@ -160,7 +160,7 @@ export const checkPaymentStatus = async paymentIntentId => {
 // Criar cliente no Stripe
 export const createCustomer = async (email, name, phone) => {
   try {
-    const response = await fetch('/api/create-customer', {
+    const response = await fetch(getApiUrl('/create-customer'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -187,7 +187,7 @@ export const createCustomer = async (email, name, phone) => {
 // Obter histórico de pagamentos
 export const getPaymentHistory = async customerId => {
   try {
-    const response = await fetch(`/api/payment-history/${customerId}`);
+    const response = await fetch(getApiUrl(`/payment-history/${customerId}`));
 
     if (!response.ok) {
       throw new Error('Erro ao obter histórico de pagamentos');
@@ -204,7 +204,7 @@ export const getPaymentHistory = async customerId => {
 // Cancelar assinatura
 export const cancelSubscription = async subscriptionId => {
   try {
-    const response = await fetch(`/api/cancel-subscription/${subscriptionId}`, {
+    const response = await fetch(getApiUrl(`/cancel-subscription/${subscriptionId}`), {
       method: 'POST'
     });
 

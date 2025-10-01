@@ -138,9 +138,13 @@ const StockTicker = () => {
               style={{
                 fontSize: '12px',
                 fontWeight: 'bold',
-                color: stock.change >= 0 ? '#4ade80' : '#f87171',
+                color: stock.change >= 0 ? '#4ade80' : '#ef4444',
                 minWidth: '90px',
-                textAlign: 'right'
+                textAlign: 'right',
+                backgroundColor: 'transparent',
+                border: 'none',
+                padding: '0',
+                margin: '0'
               }}
             >
               {stock.change >= 0 ? '+' : ''}

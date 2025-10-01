@@ -16,7 +16,7 @@ import {
 // import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt'; // Componente removido
 import ProductCard from '../components/ProductCard';
 import CryptoHash from '../components/CryptoHash';
-import { API_CONFIG } from '../config/constants';
+// import { API_CONFIG } from '../config/constants';
 
 const AgroisyncMarketplace = () => {
   const [email, setEmail] = useState('');
@@ -26,16 +26,15 @@ const AgroisyncMarketplace = () => {
   // const [publicRegistrations, setPublicRegistrations] = useState([]);
   const [selectedState, setSelectedState] = useState('todos');
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState(null);
 
   // Buscar produtos da API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        setLoading(true);
-        const api = API_CONFIG?.baseURL || process.env.REACT_APP_API_URL || '/api';
-        const response = await fetch(`${api}/products`);
+        // setLoading(true);
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://agroisync.com/api'}/products`);
         
         if (response.ok) {
           const data = await response.json();
@@ -46,10 +45,10 @@ const AgroisyncMarketplace = () => {
         }
       } catch (err) {
         console.error('Erro ao buscar produtos:', err);
-        setError('Não foi possível carregar os produtos');
+        // setError('Não foi possível carregar os produtos');
         setProducts([]);
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     };
 

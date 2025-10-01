@@ -1,29 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { Lock } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import axios from 'axios';
 import AdminPanel from '../components/AdminPanel';
 
 const UserAdmin = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
-    // Verificar autorização (simulação)
-    const checkAuthorization = () => {
-      // Em produção, isso seria verificado via Cloudflare Access ou JWT
-      const secretHeader = new URLSearchParams(window.location.search).get('secret');
-      const isDev = process.env.NODE_ENV === 'development';
+    const verifyAdmin = async () => {
+      try {
+        const token = localStorage.getItem('agro_token');
+        if (!token) {
+          toast.error('Sessão inválida. Faça login novamente.');
+          window.location.href = '/admin';
+          return;
+        }
 
-      if (secretHeader === 'agroisync-admin-2024' || isDev) {
-        setIsAuthorized(true);
-      } else {
+        const resp = await axios.get('/api/admin/dashboard', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (resp?.data?.success) {
+          setIsAuthorized(true);
+          return;
+        }
+
+        throw new Error('Unauthorized');
+      } catch (err) {
         toast.error('Acesso não autorizado');
         setTimeout(() => {
           window.location.href = '/admin';
-        }, 2000);
+        }, 1500);
       }
     };
 
-    checkAuthorization();
+    verifyAdmin();
   }, []);
 
   if (!isAuthorized) {

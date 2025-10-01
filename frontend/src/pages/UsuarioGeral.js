@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 const UsuarioGeral = () => {
   const { user } = useAuth();
   const [productCount, setProductCount] = useState(0);
-  const [planLimits, setPlanLimits] = useState({
+  const [planLimits] = useState({
     maxProducts: 1,
     maxImages: 3,
     maxDescription: 200,

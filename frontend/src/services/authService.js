@@ -1,6 +1,6 @@
 import axios from 'axios';
 import apiConfig from '../config/api.config.js';
-import { API_CONFIG, AUTH_CONFIG, getAuthToken, setAuthToken, removeAuthToken } from '../config/constants.js';
+import { API_CONFIG, getAuthToken, removeAuthToken } from '../config/constants.js';
 
 // Usar nova config centralizada, mas manter fallback para compatibilidade
 const API_BASE_URL = API_CONFIG?.baseURL || apiConfig.baseURL;
@@ -44,12 +44,12 @@ class AuthService {
       async error => {
         const originalRequest = error.config;
 
-        if (!originalRequest._retry && apiConfig.retryConfig.retryCondition(error)) {
+        if (!originalRequest._retry && error.response?.status >= 500) {
           originalRequest._retry = true;
 
           // Aguardar antes de tentar novamente
           await new Promise(resolve =>
-            setTimeout(resolve, apiConfig.retryConfig.retryDelay(originalRequest._retryCount || 1))
+            setTimeout(resolve, 1000 * (originalRequest._retryCount || 1))
           );
 
           originalRequest._retryCount = (originalRequest._retryCount || 1) + 1;

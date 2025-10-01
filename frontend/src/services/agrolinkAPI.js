@@ -86,7 +86,7 @@ export const useAgrolinkGrains = () => {
   // Função para obter localização do usuário via API
   const getUserLocation = useCallback(async () => {
     try {
-      const response = await fetch('/api/location');
+      const response = await fetch(getApiUrl('/location'));
       if (!response.ok) {
         throw new Error(`Erro na API de localização: ${response.status}`);
       }
@@ -107,7 +107,7 @@ export const useAgrolinkGrains = () => {
   // Função para obter cotações baseadas na região
   const getCotacoesByRegion = useCallback(async region => {
     try {
-      const response = await fetch(`/api/cotacoes?regiao=${encodeURIComponent(region)}`);
+      const response = await fetch(getApiUrl(`/cotacoes?regiao=${encodeURIComponent(region)}`));
       if (!response.ok) {
         throw new Error(`Erro na API de cotações: ${response.status}`);
       }

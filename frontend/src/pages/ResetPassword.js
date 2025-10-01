@@ -23,7 +23,7 @@ const ResetPassword = () => {
   useEffect(() => {
     // Verificar se há token de recuperação na URL
     const token = searchParams.get('token');
-    const id = searchParams.get('id');
+    // const id = searchParams.get('id');
 
     if (!token) {
       setError('Link de recuperação inválido ou expirado');

@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { zxcvbn } from 'zxcvbn';
+// import { zxcvbn } from 'zxcvbn'; // Temporariamente desabilitado para deploy em Workers
 
 // Validação de senha forte
 export const validatePasswordStrength = password => {

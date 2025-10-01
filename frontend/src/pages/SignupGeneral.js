@@ -248,7 +248,6 @@ const SignupGeneral = () => {
       const data = await res.json();
       // Guardar token e redirecionar para dashboard
       if (data?.data?.token) {
-        localStorage.setItem('token', data.data.token);
         localStorage.setItem('authToken', data.data.token);
         localStorage.setItem('user', JSON.stringify(data.data.user));
       }

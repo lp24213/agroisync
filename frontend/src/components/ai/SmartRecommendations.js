@@ -19,6 +19,7 @@ import {
   Eye
 } from 'lucide-react';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { getApiUrl } from '../../config/constants';
 
 const SmartRecommendations = () => {
   const { t } = useTranslation();
@@ -45,7 +46,7 @@ const SmartRecommendations = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/ai/recommendations', {
+      const response = await fetch(getApiUrl('/ai/recommendations'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

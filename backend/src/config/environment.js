@@ -43,7 +43,7 @@ export const environment = {
   // Email (Resend)
   email: {
     resendApiKey: process.env.RESEND_API_KEY || '',
-    from: process.env.RESEND_FROM || 'AgroSync <noreply@agroisync.com>'
+    from: process.env.RESEND_FROM || 'AgroSync <contato@agroisync.com>'
   },
 
   // Cloudflare

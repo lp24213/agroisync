@@ -1,19 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { useTheme } from '../../contexts/ThemeContext';
 
 const Layout = ({ children }) => {
-  const { isDarkMode } = useTheme();
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // Simular tempo de carregamento
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <div className='relative min-h-screen overflow-hidden'>

@@ -435,7 +435,7 @@ class MonitoringSystem {
   // Enviar alerta para backend
   async sendAlertToBackend(alert) {
     try {
-      await fetch('/api/v1/monitoring/alerts', {
+      await fetch(getApiUrl('/v1/monitoring/alerts'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -544,7 +544,26 @@ class MonitoringSystem {
 // Instância única
 const monitoringSystem = new MonitoringSystem();
 
-// Limpeza automática a cada hora
-setInterval(() => monitoringSystem.cleanup(), 3600000);
+// Limpeza automática a cada hora - com cleanup adequado
+let cleanupInterval = null;
 
+// Inicializar limpeza automática
+const startCleanupInterval = () => {
+  if (cleanupInterval) clearInterval(cleanupInterval);
+  cleanupInterval = setInterval(() => monitoringSystem.cleanup(), 3600000);
+};
+
+// Parar limpeza automática
+const stopCleanupInterval = () => {
+  if (cleanupInterval) {
+    clearInterval(cleanupInterval);
+    cleanupInterval = null;
+  }
+};
+
+// Iniciar automaticamente
+startCleanupInterval();
+
+// Exportar funções de controle
+export { startCleanupInterval, stopCleanupInterval };
 export default monitoringSystem;

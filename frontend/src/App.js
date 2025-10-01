@@ -1,4 +1,5 @@
 import React from 'react';
+import DynamicCryptoURL from './components/DynamicCryptoURL';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
@@ -12,7 +13,6 @@ import AIChatbot from './components/ai/AIChatbot';
 import LGPDCompliance from './components/LGPDCompliance';
 import GlobalWeatherWidget from './components/GlobalWeatherWidget';
 import AccessibilityPanel from './components/AccessibilityPanel';
-import DynamicCryptoURL from './components/DynamicCryptoURL';
 import ErrorBoundary from './components/ErrorBoundary';
 import { Accessibility } from 'lucide-react';
 
@@ -26,6 +26,7 @@ import './styles/mobile.css';
 // Components que precisam carregar imediatamente
 import ProtectedRoute from './components/ProtectedRoute';
 import LoadingFallback from './components/LoadingFallback';
+import CryptoRouteHandler from './components/CryptoRouteHandler';
 
 // Pages - LAZY LOADING para melhor performance
 // Páginas principais (carregar logo)
@@ -141,117 +142,97 @@ function App() {
 
                 <Layout>
                   <main id='main-content' role='main'>
-                    <DynamicCryptoURL>
-                      <React.Suspense fallback={<LoadingFallback message="Carregando página..." />}>
-                        <Routes>
-                        {/* Public Routes - TODAS CRIPTOGRAFADAS */}
+                    <React.Suspense fallback={<LoadingFallback message="Carregando página..." />}>
+                      <DynamicCryptoURL>
+                      <Routes>
+                        {/* Public Routes - OTIMIZADAS */}
                         <Route path='/' element={<AgroisyncHome />} />
-                        <Route path='/:cryptoHash' element={<AgroisyncHome />} />
                         <Route path='/home' element={<Home />} />
-                        <Route path='/home/:cryptoHash' element={<Home />} />
                         <Route path='/home-prompt' element={<AgroisyncHomePrompt />} />
-                        <Route path='/home-prompt/:cryptoHash' element={<AgroisyncHomePrompt />} />
+                        
+                        {/* Marketplace Routes */}
                         <Route path='/marketplace' element={<AgroisyncMarketplace />} />
-                        <Route path='/marketplace/:cryptoHash' element={<AgroisyncMarketplace />} />
                         <Route path='/marketplace/categories' element={<MarketplaceCategories />} />
-                        <Route path='/marketplace/categories/:cryptoHash' element={<MarketplaceCategories />} />
                         <Route path='/marketplace/sellers' element={<MarketplaceSellers />} />
-                        <Route path='/marketplace/sellers/:cryptoHash' element={<MarketplaceSellers />} />
                         <Route path='/marketplace/sell' element={<MarketplaceSell />} />
-                        <Route path='/marketplace/sell/:cryptoHash' element={<MarketplaceSell />} />
+                        
+                        {/* Store Routes */}
                         <Route path='/loja' element={<AgroisyncLoja />} />
-                        <Route path='/loja/:cryptoHash' element={<AgroisyncLoja />} />
                         <Route path='/store' element={<Store />} />
-                        <Route path='/store/:cryptoHash' element={<Store />} />
+                        
+                        {/* Freight Routes */}
                         <Route path='/agroconecta' element={<AgroisyncAgroConecta />} />
-                        <Route path='/agroconecta/:cryptoHash' element={<AgroisyncAgroConecta />} />
                         <Route path='/agroconecta/offer' element={<AgroconectaOffer />} />
-                        <Route path='/agroconecta/offer/:cryptoHash' element={<AgroconectaOffer />} />
                         <Route path='/agroconecta/carriers' element={<AgroconectaCarriers />} />
-                        <Route path='/agroconecta/carriers/:cryptoHash' element={<AgroconectaCarriers />} />
                         <Route path='/agroconecta/tracking' element={<AgroconectaTracking />} />
-                        <Route path='/agroconecta/tracking/:cryptoHash' element={<AgroconectaTracking />} />
+                        
+                        {/* User Routes */}
                         <Route path='/usuario-geral' element={<UsuarioGeral />} />
-                        <Route path='/usuario-geral/:cryptoHash' element={<UsuarioGeral />} />
                         <Route path='/tecnologia' element={<AgroisyncCrypto />} />
-                        <Route path='/tecnologia/:cryptoHash' element={<AgroisyncCrypto />} />
                         <Route path='/insumos' element={<Insumos />} />
-                        <Route path='/insumos/:cryptoHash' element={<Insumos />} />
+                        
+                        {/* Plans Routes - Consolidadas */}
                         <Route path='/plans' element={<AgroisyncPlans />} />
-                        <Route path='/plans/:cryptoHash' element={<AgroisyncPlans />} />
                         <Route path='/planos' element={<AgroisyncPlans />} />
-                        <Route path='/planos/:cryptoHash' element={<AgroisyncPlans />} />
+                        
+                        {/* About Routes - Consolidadas */}
                         <Route path='/about' element={<AgroisyncAbout />} />
-                        <Route path='/about/:cryptoHash' element={<AgroisyncAbout />} />
                         <Route path='/sobre' element={<AgroisyncAbout />} />
-                        <Route path='/sobre/:cryptoHash' element={<AgroisyncAbout />} />
+                        
+                        {/* Contact Routes - Consolidadas */}
                         <Route path='/contact' element={<AgroisyncContact />} />
-                        <Route path='/contact/:cryptoHash' element={<AgroisyncContact />} />
+                        
+                        {/* Partnerships Routes */}
                         <Route path='/partnerships' element={<Partnerships />} />
-                        <Route path='/partnerships/:cryptoHash' element={<Partnerships />} />
                         <Route path='/partnerships/current' element={<PartnershipsCurrent />} />
-                        <Route path='/partnerships/current/:cryptoHash' element={<PartnershipsCurrent />} />
                         <Route path='/partnerships/benefits' element={<PartnershipsBenefits />} />
-                        <Route path='/partnerships/benefits/:cryptoHash' element={<PartnershipsBenefits />} />
                         <Route path='/partnerships/contact' element={<PartnershipsContact />} />
-                        <Route path='/partnerships/contact/:cryptoHash' element={<PartnershipsContact />} />
+                        
+                        {/* Legal Routes */}
                         <Route path='/faq' element={<FAQ />} />
-                        <Route path='/faq/:cryptoHash' element={<FAQ />} />
                         <Route path='/terms' element={<Terms />} />
-                        <Route path='/terms/:cryptoHash' element={<Terms />} />
                         <Route path='/privacy' element={<Privacy />} />
-                        <Route path='/privacy/:cryptoHash' element={<Privacy />} />
                         <Route path='/help' element={<Help />} />
-                        <Route path='/help/:cryptoHash' element={<Help />} />
 
-                        {/* Detail Pages - TODAS CRIPTOGRAFADAS */}
+                        {/* Detail Pages */}
                         <Route path='/produto/:id' element={<ProductDetail />} />
-                        <Route path='/produto/:id/:cryptoHash' element={<ProductDetail />} />
+                        <Route path='/produto/:id/:cryptoHash' element={<CryptoRouteHandler><ProductDetail /></CryptoRouteHandler>} />
                         <Route path='/crypto/:id' element={<CryptoDetail />} />
-                        <Route path='/crypto/:id/:cryptoHash' element={<CryptoDetail />} />
+                        <Route path='/crypto/:id/:cryptoHash' element={<CryptoRouteHandler><CryptoDetail /></CryptoRouteHandler>} />
 
-                        {/* Auth Routes - TODAS CRIPTOGRAFADAS */}
+                        {/* Auth Routes - Consolidadas */}
                         <Route path='/register' element={<AgroisyncRegister />} />
-                        <Route path='/register/:cryptoHash' element={<AgroisyncRegister />} />
                         <Route path='/login' element={<AgroisyncLogin />} />
-                        <Route path='/login/:cryptoHash' element={<AgroisyncLogin />} />
                         <Route path='/signup' element={<SignupType />} />
-                        <Route path='/signup/:cryptoHash' element={<SignupType />} />
                         <Route path='/signup/general' element={<SignupGeneral />} />
-                        <Route path='/signup/general/:cryptoHash' element={<SignupGeneral />} />
                         <Route path='/signup/freight' element={<SignupFreight />} />
-                        <Route path='/signup/freight/:cryptoHash' element={<SignupFreight />} />
                         <Route path='/frete' element={<SignupFreight />} />
-                        <Route path='/frete/:cryptoHash' element={<SignupFreight />} />
                         <Route path='/signup/store' element={<SignupStore />} />
-                        <Route path='/signup/store/:cryptoHash' element={<SignupStore />} />
                         <Route path='/signup/product' element={<SignupProduct />} />
-                        <Route path='/signup/product/:cryptoHash' element={<SignupProduct />} />
                         <Route path='/store-plans' element={<StorePlans />} />
-                        <Route path='/store-plans/:cryptoHash' element={<StorePlans />} />
                         <Route path='/payment' element={<Payment />} />
-                        <Route path='/payment/:cryptoHash' element={<Payment />} />
                         <Route path='/forgot-password' element={<AgroisyncForgotPassword />} />
-                        <Route path='/forgot-password/:cryptoHash' element={<AgroisyncForgotPassword />} />
                         <Route path='/reset-password' element={<ResetPassword />} />
-                        <Route path='/reset-password/:cryptoHash' element={<ResetPassword />} />
                         <Route path='/two-factor-auth' element={<TwoFactorAuth />} />
-                        <Route path='/two-factor-auth/:cryptoHash' element={<TwoFactorAuth />} />
                         <Route path='/verify-email' element={<VerifyEmail />} />
-                        <Route path='/verify-email/:cryptoHash' element={<VerifyEmail />} />
                         <Route path='/login-redirect' element={<LoginRedirect />} />
-                        <Route path='/login-redirect/:cryptoHash' element={<LoginRedirect />} />
 
                         {/* Payment Routes */}
+                        <Route path='/payment' element={<Payment />} />
+                        <Route path='/payment/:cryptoHash' element={<CryptoRouteHandler><Payment /></CryptoRouteHandler>} />
                         <Route path='/payment/success' element={<PaymentSuccess />} />
+                        <Route path='/payment/success/:cryptoHash' element={<CryptoRouteHandler><PaymentSuccess /></CryptoRouteHandler>} />
                         <Route path='/payment/cancel' element={<PaymentCancel />} />
+                        <Route path='/payment/cancel/:cryptoHash' element={<CryptoRouteHandler><PaymentCancel /></CryptoRouteHandler>} />
 
-                        {/* Protected Routes - TODAS CRIPTOGRAFADAS */}
+                        {/* Protected Routes - Otimizadas */}
                         <Route
                           path='/dashboard'
                           element={
                             <ProtectedRoute>
-                              <AgroisyncDashboard />
+                              <CryptoRouteHandler>
+                                <AgroisyncDashboard />
+                              </CryptoRouteHandler>
                             </ProtectedRoute>
                           }
                         />
@@ -259,7 +240,9 @@ function App() {
                           path='/dashboard/:cryptoHash'
                           element={
                             <ProtectedRoute>
-                              <AgroisyncDashboard />
+                              <CryptoRouteHandler>
+                                <AgroisyncDashboard />
+                              </CryptoRouteHandler>
                             </ProtectedRoute>
                           }
                         />
@@ -267,7 +250,9 @@ function App() {
                           path='/user-dashboard'
                           element={
                             <ProtectedRoute>
-                              <UserDashboard />
+                              <CryptoRouteHandler>
+                                <UserDashboard />
+                              </CryptoRouteHandler>
                             </ProtectedRoute>
                           }
                         />
@@ -275,7 +260,9 @@ function App() {
                           path='/user-dashboard/:cryptoHash'
                           element={
                             <ProtectedRoute>
-                              <UserDashboard />
+                              <CryptoRouteHandler>
+                                <UserDashboard />
+                              </CryptoRouteHandler>
                             </ProtectedRoute>
                           }
                         />
@@ -283,7 +270,9 @@ function App() {
                           path='/messaging'
                           element={
                             <ProtectedRoute>
-                              <Messaging />
+                              <CryptoRouteHandler>
+                                <Messaging />
+                              </CryptoRouteHandler>
                             </ProtectedRoute>
                           }
                         />
@@ -291,7 +280,9 @@ function App() {
                           path='/messaging/:cryptoHash'
                           element={
                             <ProtectedRoute>
-                              <Messaging />
+                              <CryptoRouteHandler>
+                                <Messaging />
+                              </CryptoRouteHandler>
                             </ProtectedRoute>
                           }
                         />
@@ -299,7 +290,9 @@ function App() {
                           path='/admin'
                           element={
                             <ProtectedRoute>
-                              <AdminPanel />
+                              <CryptoRouteHandler>
+                                <AdminPanel />
+                              </CryptoRouteHandler>
                             </ProtectedRoute>
                           }
                         />
@@ -307,7 +300,9 @@ function App() {
                           path='/admin/:cryptoHash'
                           element={
                             <ProtectedRoute>
-                              <AdminPanel />
+                              <CryptoRouteHandler>
+                                <AdminPanel />
+                              </CryptoRouteHandler>
                             </ProtectedRoute>
                           }
                         />
@@ -315,7 +310,9 @@ function App() {
                           path='/useradmin'
                           element={
                             <ProtectedRoute>
-                              <UserAdmin />
+                              <CryptoRouteHandler>
+                                <UserAdmin />
+                              </CryptoRouteHandler>
                             </ProtectedRoute>
                           }
                         />
@@ -323,7 +320,9 @@ function App() {
                           path='/useradmin/:cryptoHash'
                           element={
                             <ProtectedRoute>
-                              <UserAdmin />
+                              <CryptoRouteHandler>
+                                <UserAdmin />
+                              </CryptoRouteHandler>
                             </ProtectedRoute>
                           }
                         />
@@ -331,7 +330,9 @@ function App() {
                           path='/crypto-routes'
                           element={
                             <ProtectedRoute>
-                              <CryptoRoutesStatus />
+                              <CryptoRouteHandler>
+                                <CryptoRoutesStatus />
+                              </CryptoRouteHandler>
                             </ProtectedRoute>
                           }
                         />
@@ -339,18 +340,46 @@ function App() {
                           path='/crypto-routes/:cryptoHash'
                           element={
                             <ProtectedRoute>
-                              <CryptoRoutesStatus />
+                              <CryptoRouteHandler>
+                                <CryptoRoutesStatus />
+                              </CryptoRouteHandler>
                             </ProtectedRoute>
                           }
                         />
 
-                        {/* Error Routes - TODAS CRIPTOGRAFADAS */}
+                        {/* Error Routes */}
                         <Route path='/unauthorized' element={<Unauthorized />} />
-                        <Route path='/unauthorized/:cryptoHash' element={<Unauthorized />} />
+
+                        {/* Rotas Criptografadas - Catch All para evitar 404 */}
+                        <Route path='/:cryptoHash' element={<AgroisyncHome />} />
+                        <Route path='/:path/:cryptoHash' element={<AgroisyncHome />} />
+                        <Route path='/:path1/:path2/:cryptoHash' element={<AgroisyncHome />} />
+                        <Route path='/:path1/:path2/:path3/:cryptoHash' element={<AgroisyncHome />} />
+                        <Route path='/:path1/:path2/:path3/:path4/:cryptoHash' element={<AgroisyncHome />} />
+
+                        {/* Rotas específicas para páginas principais sem criptografia */}
+                        <Route path='/loja' element={<AgroisyncLoja />} />
+                        <Route path='/store' element={<Store />} />
+                        <Route path='/marketplace' element={<AgroisyncMarketplace />} />
+                        <Route path='/agroconecta' element={<AgroisyncAgroConecta />} />
+                        <Route path='/usuario-geral' element={<UsuarioGeral />} />
+                        <Route path='/tecnologia' element={<AgroisyncCrypto />} />
+                        <Route path='/insumos' element={<Insumos />} />
+                        <Route path='/plans' element={<AgroisyncPlans />} />
+                        <Route path='/planos' element={<AgroisyncPlans />} />
+                        <Route path='/about' element={<AgroisyncAbout />} />
+                        <Route path='/sobre' element={<AgroisyncAbout />} />
+                        <Route path='/contact' element={<AgroisyncContact />} />
+                        <Route path='/partnerships' element={<Partnerships />} />
+                        <Route path='/register' element={<AgroisyncRegister />} />
+                        <Route path='/login' element={<AgroisyncLogin />} />
+                        <Route path='/signup' element={<SignupType />} />
+
+                        {/* Catch all para 404 */}
                         <Route path='*' element={<NotFound />} />
                         </Routes>
+                      </DynamicCryptoURL>
                       </React.Suspense>
-                    </DynamicCryptoURL>
                   </main>
                 </Layout>
 

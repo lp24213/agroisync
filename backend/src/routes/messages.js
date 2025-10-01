@@ -1,7 +1,5 @@
 import express from 'express';
 import { authenticateToken } from '../middleware/auth.js';
-import { requirePaidAccess } from '../middleware/requirePaidAccess.js';
-import { rateLimiter } from '../middleware/rateLimiter.js';
 import AuditLog from '../models/AuditLog.js';
 import Message from '../models/Message.js';
 import User from '../models/User.js';
@@ -54,9 +52,9 @@ const checkMessagingAccess = async (req, res, next) => {
     }
 
     req.userHasAccess = true;
-    next();
-  } catch (error) {
-    console.error('Erro ao verificar acesso à mensageria:', error);
+    return next();
+  } catch {
+    // Erro ao verificar acesso à mensageria
     return res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -180,7 +178,7 @@ router.post('/', authenticateToken, checkMessagingAccess, async (req, res) => {
       data: message
     });
   } catch (error) {
-    console.error('Erro ao enviar mensagem:', error);
+    // Erro ao enviar mensagem
 
     await AuditLog.logAction({
       userId: req.user.id,
@@ -257,7 +255,7 @@ router.get('/', authenticateToken, checkMessagingAccess, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao listar mensagens:', error);
+    // Erro ao listar mensagens
 
     await AuditLog.logAction({
       userId: req.user.id,
@@ -282,7 +280,7 @@ router.get('/', authenticateToken, checkMessagingAccess, async (req, res) => {
 router.get('/conversations', authenticateToken, checkMessagingAccess, async (req, res) => {
   try {
     const userId = req.user.id;
-    const { tipo, page = 1, limit = 20 } = req.query;
+    const { page = 1, limit = 20 } = req.query;
     const skip = (page - 1) * limit;
 
     // Buscar conversas únicas
@@ -396,7 +394,7 @@ router.get('/conversations', authenticateToken, checkMessagingAccess, async (req
       }
     });
   } catch (error) {
-    console.error('Erro ao listar conversas:', error);
+    // Erro ao listar conversas
 
     await AuditLog.logAction({
       userId: req.user.id,
@@ -486,7 +484,7 @@ router.get(
         }
       });
     } catch (error) {
-      console.error('Erro ao buscar conversa:', error);
+      // Erro ao buscar conversa
 
       await AuditLog.logAction({
         userId: req.user.id,
@@ -536,8 +534,8 @@ router.put('/:messageId/read', authenticateToken, checkMessagingAccess, async (r
       success: true,
       message: 'Mensagem marcada como lida'
     });
-  } catch (error) {
-    console.error('Erro ao marcar mensagem como lida:', error);
+  } catch {
+    // Erro ao marcar mensagem como lida
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -585,8 +583,8 @@ router.delete('/:messageId', authenticateToken, checkMessagingAccess, async (req
       success: true,
       message: 'Mensagem deletada com sucesso'
     });
-  } catch (error) {
-    console.error('Erro ao deletar mensagem:', error);
+  } catch {
+    // Erro ao deletar mensagem
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -642,8 +640,8 @@ router.post('/:messageId/report', authenticateToken, checkMessagingAccess, async
       success: true,
       message: 'Mensagem reportada com sucesso'
     });
-  } catch (error) {
-    console.error('Erro ao reportar mensagem:', error);
+  } catch {
+    // Erro ao reportar mensagem
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -662,8 +660,8 @@ router.get('/stats', authenticateToken, checkMessagingAccess, async (req, res) =
       success: true,
       data: stats
     });
-  } catch (error) {
-    console.error('Erro ao buscar estatísticas:', error);
+  } catch {
+    // Erro ao buscar estatísticas
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

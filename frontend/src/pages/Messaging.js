@@ -9,12 +9,12 @@ import {
   Video,
   MoreVertical,
   Search,
-  Filter,
-  Archive,
-  Star,
-  Trash2,
+  // Filter,
+  // Archive,
+  // Star,
+  // Trash2,
   User,
-  Clock,
+  // Clock,
   Check,
   CheckCheck
 } from 'lucide-react';

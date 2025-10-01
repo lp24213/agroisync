@@ -265,7 +265,7 @@ export const usePWA = () => {
   // Verificar conectividade
   const checkConnectivity = useCallback(async () => {
     try {
-      const response = await fetch('/api/health', {
+      const response = await fetch(getApiUrl('/health'), {
         method: 'HEAD',
         cache: 'no-cache'
       });

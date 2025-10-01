@@ -14,7 +14,7 @@ router.use(apiLimiter);
 
 // Validação para criação/atualização de parceiros
 const validatePartnerData = (req, res, next) => {
-  const { name, description, category, industry, contact } = req.body;
+  const { name, description, category, contact } = req.body;
 
   if (!name || !description || !category) {
     return res.status(400).json({
@@ -123,8 +123,8 @@ router.get('/', async (req, res) => {
         }
       }
     });
-  } catch (error) {
-    console.error('Error fetching partners:', error);
+  } catch {
+    // Error fetching partners
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -149,8 +149,8 @@ router.get('/featured', async (req, res) => {
       success: true,
       data: { partners }
     });
-  } catch (error) {
-    console.error('Error fetching featured partners:', error);
+  } catch {
+    // Error fetching featured partners
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -167,8 +167,8 @@ router.get('/categories', async (req, res) => {
       success: true,
       data: { categories }
     });
-  } catch (error) {
-    console.error('Error fetching partner categories:', error);
+  } catch {
+    // Error fetching partner categories
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -201,8 +201,8 @@ router.get('/:id', async (req, res) => {
       success: true,
       data: { partner }
     });
-  } catch (error) {
-    console.error('Error fetching partner:', error);
+  } catch {
+    // Error fetching partner
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -242,20 +242,18 @@ router.post('/', authenticateToken, requireAdmin, validatePartnerData, async (re
       industry: industry ? sanitizeInput(industry) : undefined,
       founded: founded ? parseInt(founded, 10) : undefined,
       employees: employees || undefined,
-      location: location
-        ? {
-            country: sanitizeInput(location.country || 'Brasil'),
-            state: location.state ? sanitizeInput(location.state) : undefined,
-            city: location.city ? sanitizeInput(location.city) : undefined
-          }
-        : undefined,
-      contact: contact
-        ? {
-            email: contact.email ? sanitizeInput(contact.email).toLowerCase() : undefined,
-            phone: contact.phone ? sanitizeInput(contact.phone) : undefined,
-            contactPerson: contact.contactPerson ? sanitizeInput(contact.contactPerson) : undefined
-          }
-        : undefined,
+      /* eslint-disable prettier/prettier */
+      location: location ? {
+        country: sanitizeInput(location.country || 'Brasil'),
+        state: location.state ? sanitizeInput(location.state) : undefined,
+        city: location.city ? sanitizeInput(location.city) : undefined
+      } : undefined,
+      contact: contact ? {
+        email: contact.email ? sanitizeInput(contact.email).toLowerCase() : undefined,
+        phone: contact.phone ? sanitizeInput(contact.phone) : undefined,
+        contactPerson: contact.contactPerson ? sanitizeInput(contact.contactPerson) : undefined
+      } : undefined,
+      /* eslint-enable prettier/prettier */
       services: services ? services.map(service => sanitizeInput(service)) : [],
       certifications: certifications || [],
       partnershipLevel: partnershipLevel || 'bronze',
@@ -286,7 +284,7 @@ router.post('/', authenticateToken, requireAdmin, validatePartnerData, async (re
       data: { partner }
     });
   } catch (error) {
-    console.error('Error creating partner:', error);
+    // Error creating partner
 
     await createSecurityLog(
       'system_error',
@@ -325,16 +323,20 @@ router.put('/:id', authenticateToken, requireAdmin, validatePartnerData, async (
       partner.description = sanitizeInput(updateData.description);
     }
     if (updateData.website !== undefined) {
-    {partner.website = updateData.website ? sanitizeInput(updateData.website) : undefined;}
+      partner.website = updateData.website ? sanitizeInput(updateData.website) : undefined;
+    }
     if (updateData.logo !== undefined) {
-    {partner.logo = updateData.logo ? sanitizeInput(updateData.logo) : undefined;}
+      partner.logo = updateData.logo ? sanitizeInput(updateData.logo) : undefined;
+    }
     if (updateData.category) {
       partner.category = sanitizeInput(updateData.category);
     }
     if (updateData.industry !== undefined) {
-    {partner.industry = updateData.industry ? sanitizeInput(updateData.industry) : undefined;}
+      partner.industry = updateData.industry ? sanitizeInput(updateData.industry) : undefined;
+    }
     if (updateData.founded !== undefined) {
-    {partner.founded = updateData.founded ? parseInt(updateData.founded, 10) : undefined;}
+      partner.founded = updateData.founded ? parseInt(updateData.founded, 10) : undefined;
+    }
     if (updateData.employees !== undefined) {
       partner.employees = updateData.employees;
     }
@@ -357,7 +359,8 @@ router.put('/:id', authenticateToken, requireAdmin, validatePartnerData, async (
       };
     }
     if (updateData.services) {
-    {partner.services = updateData.services.map(service => sanitizeInput(service));}
+      partner.services = updateData.services.map(service => sanitizeInput(service));
+    }
     if (updateData.certifications) {
       partner.certifications = updateData.certifications;
     }
@@ -368,7 +371,8 @@ router.put('/:id', authenticateToken, requireAdmin, validatePartnerData, async (
       partner.status = updateData.status;
     }
     if (updateData.notes !== undefined) {
-    {partner.notes = updateData.notes ? sanitizeInput(updateData.notes) : undefined;}
+      partner.notes = updateData.notes ? sanitizeInput(updateData.notes) : undefined;
+    }
 
     await partner.save();
 
@@ -391,7 +395,7 @@ router.put('/:id', authenticateToken, requireAdmin, validatePartnerData, async (
       data: { partner }
     });
   } catch (error) {
-    console.error('Error updating partner:', error);
+    // Error updating partner
 
     await createSecurityLog(
       'system_error',
@@ -443,7 +447,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
       message: 'Parceiro desativado com sucesso'
     });
   } catch (error) {
-    console.error('Error deactivating partner:', error);
+    // Error deactivating partner
 
     await createSecurityLog(
       'system_error',
@@ -495,8 +499,8 @@ router.put('/:id/feature', authenticateToken, requireAdmin, async (req, res) => 
       message: `Parceiro ${partner.isFeatured ? 'destacado' : 'removido dos destaques'} com sucesso`,
       data: { isFeatured: partner.isFeatured }
     });
-  } catch (error) {
-    console.error('Error toggling partner featured status:', error);
+  } catch {
+    // Error toggling partner featured status
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -555,8 +559,8 @@ router.put('/:id/level', authenticateToken, requireAdmin, async (req, res) => {
       message: 'Nível de parceria atualizado com sucesso',
       data: { partnershipLevel: partner.partnershipLevel }
     });
-  } catch (error) {
-    console.error('Error updating partner level:', error);
+  } catch {
+    // Error updating partner level
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -620,8 +624,8 @@ router.get('/admin/stats', authenticateToken, requireAdmin, async (req, res) => 
         }, {})
       }
     });
-  } catch (error) {
-    console.error('Error fetching partner stats:', error);
+  } catch {
+    // Error fetching partner stats
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

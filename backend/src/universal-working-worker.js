@@ -1,5 +1,5 @@
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, env) {
     const url = new URL(request.url);
 
     // CORS headers
@@ -58,7 +58,7 @@ export default {
           formattedPhone = `55${formattedPhone}`;
         }
 
-        console.log(`🚀 SMS SIMULADO para ${formattedPhone} com código ${verificationCode}`);
+        // console.log(`🚀 SMS SIMULADO para ${formattedPhone} com código ${verificationCode}`);
 
         // SEMPRE FUNCIONA - SIMULA ENVIO
         return new Response(
@@ -77,8 +77,8 @@ export default {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
         );
-      } catch (error) {
-        console.error('Erro ao enviar SMS:', error);
+      } catch {
+        // // console.error('Erro ao enviar SMS:', error);
         return new Response(
           JSON.stringify({
             success: false,
@@ -121,7 +121,7 @@ export default {
           formattedPhone = `55${formattedPhone}`;
         }
 
-        console.log(`🚀 WHATSAPP SIMULADO para ${formattedPhone} com código ${verificationCode}`);
+        // console.log(`🚀 WHATSAPP SIMULADO para ${formattedPhone} com código ${verificationCode}`);
 
         // SEMPRE FUNCIONA - SIMULA ENVIO
         return new Response(
@@ -140,8 +140,8 @@ export default {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
         );
-      } catch (error) {
-        console.error('Erro ao enviar WhatsApp:', error);
+      } catch {
+        // console.error('Erro ao enviar WhatsApp:', error);
         return new Response(
           JSON.stringify({
             success: false,
@@ -176,7 +176,7 @@ export default {
         // Gerar código de verificação
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-        console.log(`🚀 EMAIL SIMULADO para ${email} com código ${verificationCode}`);
+        // console.log(`🚀 EMAIL SIMULADO para ${email} com código ${verificationCode}`);
 
         // SEMPRE FUNCIONA - SIMULA ENVIO
         return new Response(
@@ -195,8 +195,8 @@ export default {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
         );
-      } catch (error) {
-        console.error('Erro ao enviar email:', error);
+      } catch {
+        // console.error('Erro ao enviar email:', error);
         return new Response(
           JSON.stringify({
             success: false,
@@ -230,7 +230,7 @@ export default {
 
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
-          console.log(`✅ SMS verificado para ${phone}: ${code}`);
+          // console.log(`✅ SMS verificado para ${phone}: ${code}`);
           return new Response(
             JSON.stringify({
               success: true,
@@ -257,8 +257,8 @@ export default {
             }
           );
         }
-      } catch (error) {
-        console.error('Erro ao verificar SMS:', error);
+      } catch {
+        // console.error('Erro ao verificar SMS:', error);
         return new Response(
           JSON.stringify({
             success: false,
@@ -292,7 +292,7 @@ export default {
 
         // Simular verificação (em produção, verificar no banco)
         if (code.length === 6 && /^\d+$/.test(code)) {
-          console.log(`✅ Email verificado para ${email}: ${code}`);
+          // console.log(`✅ Email verificado para ${email}: ${code}`);
           return new Response(
             JSON.stringify({
               success: true,
@@ -319,8 +319,8 @@ export default {
             }
           );
         }
-      } catch (error) {
-        console.error('Erro ao verificar email:', error);
+      } catch {
+        // console.error('Erro ao verificar email:', error);
         return new Response(
           JSON.stringify({
             success: false,

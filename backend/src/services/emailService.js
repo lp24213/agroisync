@@ -2,7 +2,7 @@ import { Resend } from 'resend';
 import logger from '../utils/logger.js';
 import { EMAIL_CONFIG } from '../config/constants.js';
 
-const resend = new Resend(EMAIL_CONFIG.resendApiKey);
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 class EmailService {
   constructor() {
@@ -19,7 +19,7 @@ class EmailService {
       logger.info(`Enviando email para ${to} via Resend`);
 
       const result = await resend.emails.send({
-        from: from || process.env.RESEND_FROM || 'AgroSync <onboarding@resend.dev>',
+        from: from || process.env.RESEND_FROM || 'AgroSync <contato@agroisync.com>',
         to: [to],
         subject,
         html,
@@ -58,7 +58,7 @@ class EmailService {
       <body>
         <div class="container">
           <div class="header">
-            <h1>🔐 Redefinição de Senha</h1>
+            <h1>Redefinição de Senha</h1>
             <p>AgroSync - Plataforma Inteligente de Agronegócio</p>
           </div>
 
@@ -72,7 +72,7 @@ class EmailService {
             <a href="${resetUrl}" class="button">Redefinir Senha</a>
 
             <div class="warning">
-              <strong>⚠️ Importante:</strong>
+              <strong>Importante:</strong>
               <ul>
                 <li>Este link expira em <strong>1 hora</strong></li>
                 <li>Se você não solicitou esta redefinição, ignore este email</li>
@@ -127,7 +127,7 @@ class EmailService {
       <body>
         <div class="container">
           <div class="header">
-            <h1>🌱 Bem-vindo ao AgroSync!</h1>
+            <h1>Bem-vindo ao AgroSync!</h1>
             <p>Plataforma Inteligente de Agronegócio</p>
           </div>
 
@@ -138,19 +138,19 @@ class EmailService {
 
             <div class="features">
               <div class="feature">
-                <h3>🏪 Marketplace</h3>
+                <h3>Marketplace</h3>
                 <p>Compre e venda produtos agrícolas com segurança</p>
               </div>
               <div class="feature">
-                <h3>🚛 Frete</h3>
+                <h3>Frete</h3>
                 <p>Encontre transportadores confiáveis</p>
               </div>
               <div class="feature">
-                <h3>💎 Crypto</h3>
+                <h3>Crypto</h3>
                 <p>Pagamentos seguros com criptomoedas</p>
               </div>
               <div class="feature">
-                <h3>📊 Analytics</h3>
+                <h3>Analytics</h3>
                 <p>Dados em tempo real para suas decisões</p>
               </div>
             </div>
@@ -204,7 +204,7 @@ class EmailService {
       <body>
         <div class="container">
           <div class="header">
-            <h1>🔐 Código de Verificação</h1>
+            <h1>Código de Verificação</h1>
             <p>AgroSync - Plataforma Inteligente de Agronegócio</p>
           </div>
 
@@ -216,7 +216,7 @@ class EmailService {
             <div class="code">${code}</div>
 
             <div class="warning">
-              <strong>⚠️ Importante:</strong>
+              <strong>Importante:</strong>
               <ul>
                 <li>Este código expira em <strong>10 minutos</strong></li>
                 <li>Não compartilhe este código com outras pessoas</li>

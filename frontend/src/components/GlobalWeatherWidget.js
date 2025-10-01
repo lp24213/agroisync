@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Thermometer, Droplets, Wind, Sunrise, RefreshCw, Search, X } from 'lucide-react';
 import weatherService from '../services/weatherService';
@@ -13,22 +13,20 @@ const GlobalWeatherWidget = () => {
   const [lastUpdate, setLastUpdate] = useState(null);
   const [userLocation, setUserLocation] = useState('');
 
-  useEffect(() => {
-    loadWeatherData();
-    detectUserLocation();
-  }, []);
-
-  const detectUserLocation = async () => {
+  const detectUserLocation = useCallback(async () => {
     try {
       // Simular detecção de localização por IP
       const mockLocation = 'São Paulo, SP';
       setUserLocation(mockLocation);
     } catch (error) {
-      console.error('Erro ao detectar localização:', error);
+      // Silenciar erro de localização em produção
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao detectar localização:', error);
+      }
     }
-  };
+  }, []);
 
-  const loadWeatherData = async () => {
+  const loadWeatherData = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
@@ -103,12 +101,20 @@ const GlobalWeatherWidget = () => {
       setWeatherData(mockWeatherData);
       setLastUpdate(new Date());
     } catch (error) {
-      console.error('Erro ao carregar dados do clima:', error);
+      // Silenciar erro de clima em produção
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao carregar dados do clima:', error);
+      }
       setError('Erro ao carregar dados do clima');
     } finally {
       setLoading(false);
     }
-  };
+  }, [userLocation]);
+
+  useEffect(() => {
+    loadWeatherData();
+    detectUserLocation();
+  }, [loadWeatherData, detectUserLocation]);
 
   const handleSearch = async query => {
     if (query.trim().length < 2) {
@@ -120,7 +126,10 @@ const GlobalWeatherWidget = () => {
       const results = await weatherService.searchCity(query);
       setSearchResults(results);
     } catch (error) {
-      console.error('Erro na busca:', error);
+      // Silenciar erro de busca em produção
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro na busca:', error);
+      }
       setSearchResults([]);
     }
   };
@@ -150,7 +159,10 @@ const GlobalWeatherWidget = () => {
       setShowSearch(false);
       setLastUpdate(new Date());
     } catch (error) {
-      console.error('Erro ao carregar clima da cidade:', error);
+      // Silenciar erro de cidade em produção
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao carregar clima da cidade:', error);
+      }
       setError('Erro ao carregar clima da cidade');
     } finally {
       setLoading(false);

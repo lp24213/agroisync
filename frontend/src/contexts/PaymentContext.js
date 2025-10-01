@@ -38,11 +38,11 @@ export const PaymentProvider = ({ children }) => {
   // Criar payment intent
   const createPaymentIntent = async (amount, currency = 'brl', metadata = {}) => {
     try {
-      const response = await fetch('/api/payments/stripe/create-payment-intent', {
+      const response = await fetch(getApiUrl('/payments/stripe/create-payment-intent'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`
         },
         body: JSON.stringify({
           amount: Math.round(amount * 100), // Stripe usa centavos
@@ -116,7 +116,7 @@ export const PaymentProvider = ({ children }) => {
   // Obter planos de assinatura
   const getSubscriptionPlans = async () => {
     try {
-      const response = await fetch('/api/payments/plans');
+      const response = await fetch(getApiUrl('/payments/plans'));
       const data = await response.json();
 
       if (!response.ok) {
@@ -133,11 +133,11 @@ export const PaymentProvider = ({ children }) => {
   // Criar assinatura
   const createSubscription = async (planId, paymentMethodId) => {
     try {
-      const response = await fetch('/api/payments/subscriptions', {
+      const response = await fetch(getApiUrl('/payments/subscriptions'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`
         },
         body: JSON.stringify({
           planId,
@@ -162,10 +162,10 @@ export const PaymentProvider = ({ children }) => {
   // Cancelar assinatura
   const cancelSubscription = async subscriptionId => {
     try {
-      const response = await fetch(`/api/payments/subscriptions/${subscriptionId}/cancel`, {
+      const response = await fetch(getApiUrl(`/payments/subscriptions/${subscriptionId}/cancel`), {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`
         }
       });
 
@@ -186,9 +186,9 @@ export const PaymentProvider = ({ children }) => {
   // Obter histórico de pagamentos
   const getPaymentHistory = async () => {
     try {
-      const response = await fetch('/api/payments/history', {
+      const response = await fetch(getApiUrl('/payments/history'), {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`
         }
       });
 

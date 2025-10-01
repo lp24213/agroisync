@@ -25,7 +25,8 @@ const resources = {
 };
 
 i18n
-  .use(Backend)
+  // Somente usa backend externo em desenvolvimento; em produção usa bundle embutido
+  .use(process.env.NODE_ENV === 'development' ? Backend : { type: 'backend', init: () => {}, read: (lng, ns, cb) => cb(null, {}) })
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
@@ -60,9 +61,7 @@ i18n
       }
     },
 
-    backend: {
-      loadPath: '/locales/{{lng}}.json'
-    },
+    backend: process.env.NODE_ENV === 'development' ? { loadPath: '/locales/{{lng}}.json' } : undefined,
 
     react: {
       useSuspense: false

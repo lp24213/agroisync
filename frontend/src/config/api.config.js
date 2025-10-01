@@ -10,13 +10,13 @@ export const REFRESH_TOKEN_KEY = 'refreshToken';
 // ===== URLs BASE =====
 export const API_URLS = {
   // Backend Principal
-  base: process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? 'https://agroisync.com/api' : 'http://localhost:5000/api'),
+  base: 'https://agroisync.com/api',
   
   // WebSocket
-  ws: process.env.REACT_APP_WS_URL || (process.env.NODE_ENV === 'production' ? 'wss://agroisync.com' : 'ws://localhost:5000'),
+  ws: 'wss://agroisync.com',
   
   // Frontend
-  frontend: process.env.REACT_APP_FRONTEND_URL || (process.env.NODE_ENV === 'production' ? 'https://agroisync.com' : 'http://localhost:3000'),
+  frontend: 'https://agroisync.com',
   
   // CDN (se usar)
   cdn: process.env.REACT_APP_CDN_URL || '',

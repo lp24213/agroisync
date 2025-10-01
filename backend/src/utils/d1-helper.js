@@ -23,7 +23,10 @@ export const now = () => Math.floor(Date.now() / 1000);
  */
 export const executeD1Query = async (db, query, params = []) => {
   try {
-    const result = await db.prepare(query).bind(...params).all();
+    const result = await db
+      .prepare(query)
+      .bind(...params)
+      .all();
     return {
       success: true,
       results: result.results || [],
@@ -44,7 +47,10 @@ export const executeD1Query = async (db, query, params = []) => {
  */
 export const executeD1QueryFirst = async (db, query, params = []) => {
   try {
-    const result = await db.prepare(query).bind(...params).first();
+    const result = await db
+      .prepare(query)
+      .bind(...params)
+      .first();
     return {
       success: true,
       result: result || null
@@ -64,7 +70,10 @@ export const executeD1QueryFirst = async (db, query, params = []) => {
  */
 export const executeD1Write = async (db, query, params = []) => {
   try {
-    const result = await db.prepare(query).bind(...params).run();
+    const result = await db
+      .prepare(query)
+      .bind(...params)
+      .run();
     return {
       success: true,
       meta: result.meta || {},
@@ -84,14 +93,7 @@ export const executeD1Write = async (db, query, params = []) => {
  * Criar usuário no D1
  */
 export const createUser = async (db, userData) => {
-  const {
-    email,
-    name,
-    password,
-    phone = null,
-    businessType = 'user',
-    role = 'user'
-  } = userData;
+  const { email, name, password, phone = null, businessType = 'user', role = 'user' } = userData;
 
   const id = generateId('user');
   const hashedPassword = await bcrypt.hash(password, 12);
@@ -134,7 +136,7 @@ export const createUser = async (db, userData) => {
  * Buscar usuário por email
  */
 export const findUserByEmail = async (db, email) => {
-  const query = `SELECT * FROM users WHERE email = ? LIMIT 1`;
+  const query = 'SELECT * FROM users WHERE email = ? LIMIT 1';
   return executeD1QueryFirst(db, query, [email.toLowerCase()]);
 };
 
@@ -142,7 +144,7 @@ export const findUserByEmail = async (db, email) => {
  * Buscar usuário por ID
  */
 export const findUserById = async (db, userId) => {
-  const query = `SELECT * FROM users WHERE id = ? LIMIT 1`;
+  const query = 'SELECT * FROM users WHERE id = ? LIMIT 1';
   return executeD1QueryFirst(db, query, [userId]);
 };
 
@@ -237,29 +239,29 @@ export const createProduct = async (db, userId, productData) => {
  * Buscar produtos com filtros
  */
 export const findProducts = async (db, filters = {}) => {
-  let query = `SELECT * FROM products WHERE status = 'active'`;
+  let query = "SELECT * FROM products WHERE status = 'active'";
   const params = [];
 
   if (filters.category) {
-    query += ` AND category = ?`;
+    query += ' AND category = ?';
     params.push(filters.category);
   }
 
   if (filters.state) {
-    query += ` AND state = ?`;
+    query += ' AND state = ?';
     params.push(filters.state);
   }
 
   if (filters.search) {
-    query += ` AND (title LIKE ? OR description LIKE ?)`;
+    query += ' AND (title LIKE ? OR description LIKE ?)';
     const searchTerm = `%${filters.search}%`;
     params.push(searchTerm, searchTerm);
   }
 
-  query += ` ORDER BY createdAt DESC`;
+  query += ' ORDER BY createdAt DESC';
 
   if (filters.limit) {
-    query += ` LIMIT ?`;
+    query += ' LIMIT ?';
     params.push(parseInt(filters.limit));
   }
 
@@ -270,14 +272,8 @@ export const findProducts = async (db, filters = {}) => {
  * Criar frete
  */
 export const createFreight = async (db, userId, freightData) => {
-  const {
-    originCity,
-    originState,
-    destinationCity,
-    destinationState,
-    loadType,
-    price
-  } = freightData;
+  const { originCity, originState, destinationCity, destinationState, loadType, price } =
+    freightData;
 
   const id = generateId('freight');
   const trackingCode = `AGR${Date.now().toString(36).toUpperCase()}`;
@@ -319,23 +315,23 @@ export const createFreight = async (db, userId, freightData) => {
  * Buscar fretes
  */
 export const findFreights = async (db, filters = {}) => {
-  let query = `SELECT * FROM freights WHERE status = 'available'`;
+  let query = "SELECT * FROM freights WHERE status = 'available'";
   const params = [];
 
   if (filters.originState) {
-    query += ` AND originState = ?`;
+    query += ' AND originState = ?';
     params.push(filters.originState);
   }
 
   if (filters.destinationState) {
-    query += ` AND destinationState = ?`;
+    query += ' AND destinationState = ?';
     params.push(filters.destinationState);
   }
 
-  query += ` ORDER BY createdAt DESC`;
+  query += ' ORDER BY createdAt DESC';
 
   if (filters.limit) {
-    query += ` LIMIT ?`;
+    query += ' LIMIT ?';
     params.push(parseInt(filters.limit));
   }
 
@@ -356,7 +352,15 @@ export const createMessage = async (db, messageData) => {
     ) VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
 
-  return executeD1Write(db, query, [id, conversationId, senderId, receiverId, content, type, now()]);
+  return executeD1Write(db, query, [
+    id,
+    conversationId,
+    senderId,
+    receiverId,
+    content,
+    type,
+    now()
+  ]);
 };
 
 /**
@@ -387,7 +391,16 @@ export const createTransaction = async (db, transactionData) => {
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  return executeD1Write(db, query, [id, userId, type, amount, paymentMethod, 'pending', description, now()]);
+  return executeD1Write(db, query, [
+    id,
+    userId,
+    type,
+    amount,
+    paymentMethod,
+    'pending',
+    description,
+    now()
+  ]);
 };
 
 /**
@@ -404,23 +417,36 @@ export const createAuditLog = async (db, logData) => {
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  return executeD1Write(db, query, [id, userId, action, entity, entityId, ipAddress, userAgent, now()]);
+  return executeD1Write(db, query, [
+    id,
+    userId,
+    action,
+    entity,
+    entityId,
+    ipAddress,
+    userAgent,
+    now()
+  ]);
 };
 
 /**
  * Sanitizar dados para JSON
  */
 export const sanitizeForJSON = data => {
-  if (!data) return null;
+  if (!data) {
+    return null;
+  }
 
   const sanitized = { ...data };
 
   // Converter integers para boolean
-  ['isAdmin', 'isActive', 'isBlocked', 'isEmailVerified', 'isPaid', 'twoFactorEnabled'].forEach(field => {
-    if (field in sanitized) {
-      sanitized[field] = Boolean(sanitized[field]);
+  ['isAdmin', 'isActive', 'isBlocked', 'isEmailVerified', 'isPaid', 'twoFactorEnabled'].forEach(
+    field => {
+      if (field in sanitized) {
+        sanitized[field] = Boolean(sanitized[field]);
+      }
     }
-  });
+  );
 
   // Parsear JSON strings
   ['images', 'tags', 'certifications', 'dimensions'].forEach(field => {

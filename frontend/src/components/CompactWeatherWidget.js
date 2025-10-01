@@ -5,7 +5,7 @@ import { MapPin, Droplets, Wind, RefreshCw } from 'lucide-react';
 const CompactWeatherWidget = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [userLocation, setUserLocation] = useState('');
+  const [, setUserLocation] = useState('');
 
   useEffect(() => {
     loadWeatherData();
@@ -157,7 +157,10 @@ const CompactWeatherWidget = () => {
 
       setWeatherData(mockWeatherData);
     } catch (error) {
-      console.error('Erro ao carregar dados do clima:', error);
+      // Silenciar erro de clima em produção
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao carregar dados do clima:', error);
+      }
       // Fallback com dados do MT
       const fallbackWeatherData = {
         location: 'Sinop, MT',

@@ -31,7 +31,10 @@ const AgroSyncLogo = ({ className = '', variant = 'default', size = 'medium' }) 
           alt='AGROISYNC'
           className={`${getLogoSize()} object-contain`}
           onError={e => {
-            console.log('Erro ao carregar logo:', e.target.src);
+            // Silenciar erro de logo em produção
+            if (process.env.NODE_ENV !== 'production') {
+              console.log('Erro ao carregar logo:', e.target.src);
+            }
             e.target.style.display = 'none';
           }}
         />

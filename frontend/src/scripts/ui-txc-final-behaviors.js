@@ -202,18 +202,22 @@
     exposedKeys.forEach(item => {
       const element = item.element;
 
-      // Add visual indicator for debugging
-      element.style.border = '2px solid red';
-      element.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
-      element.title = `I18N Key Exposed: ${item.key}`;
+      // Add visual indicator for debugging (only in development)
+      if (process.env.NODE_ENV === 'development') {
+        element.style.border = '2px solid #ef4444';
+        element.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+        element.title = `I18N Key Exposed: ${item.key}`;
+      }
 
       // Try to replace with fallback text
       const fallbackText = getFallbackText(item.key);
       if (fallbackText && element.textContent.trim() === item.text) {
         element.textContent = fallbackText;
-        element.style.border = '2px solid orange';
-        element.style.backgroundColor = 'rgba(255, 165, 0, 0.1)';
-        element.title = `Fixed I18N Key: ${item.key} -> ${fallbackText}`;
+        if (process.env.NODE_ENV === 'development') {
+          element.style.border = '2px solid #f59e0b';
+          element.style.backgroundColor = 'rgba(245, 158, 11, 0.1)';
+          element.title = `Fixed I18N Key: ${item.key} -> ${fallbackText}`;
+        }
       }
     });
 

@@ -140,7 +140,7 @@ const Onboarding = () => {
       const endpoint = type === 'carrier' ? '/registration/agroconecta' : '/registration/loja';
       const res = await fetch(`${api}${endpoint}`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${localStorage.getItem('token') || ''}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem('authToken') || ''}` },
         body: formData
       });
 

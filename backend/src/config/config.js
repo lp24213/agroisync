@@ -18,7 +18,7 @@ const config = {
 
   // Configurações de email (Resend)
   RESEND_API_KEY: process.env.RESEND_API_KEY || '',
-  RESEND_FROM: process.env.RESEND_FROM || 'AgroSync <noreply@agroisync.com>',
+  RESEND_FROM: process.env.RESEND_FROM || 'AgroSync <contato@agroisync.com>',
 
   // Configurações de pagamento (Stripe)
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
