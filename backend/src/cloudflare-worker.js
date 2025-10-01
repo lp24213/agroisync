@@ -267,6 +267,435 @@ async function handleUserUpdate(request, env, user) {
   return jsonResponse({ success: true, message: 'Perfil atualizado' });
 }
 
+// ===== AUTH EXTRAS =====
+
+async function handlePasswordReset(request, env) {
+  try {
+    const { email } = await request.json();
+    if (!email) {
+      return jsonResponse({ success: false, error: 'Email é obrigatório' }, 400);
+    }
+
+    const user = await env.DB.prepare('SELECT id, name FROM users WHERE email = ?')
+      .bind(email.toLowerCase())
+      .first();
+
+    if (!user) {
+      return jsonResponse({
+        success: true,
+        message: 'Se o email existir, você receberá instruções'
+      });
+    }
+
+    const resetToken = crypto.randomUUID();
+    const expiresAt = Date.now() + 60 * 60 * 1000; // 1 hora
+
+    await env.DB.prepare(
+      "INSERT OR REPLACE INTO password_resets (user_id, token, expires_at, status, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
+    )
+      .bind(user.id, resetToken, expiresAt, 'pending')
+      .run();
+
+    await sendEmail(env, {
+      to: email,
+      subject: 'Recuperação de Senha - AgroSync',
+      html: `
+        <h1>Recuperação de Senha</h1>
+        <p>Olá ${user.name},</p>
+        <p>Clique no link para redefinir sua senha:</p>
+        <a href="https://agroisync.com/reset-password?token=${resetToken}">Redefinir Senha</a>
+        <p>Este link expira em 1 hora.</p>
+      `
+    });
+
+    return jsonResponse({ success: true, message: 'Se o email existir, você receberá instruções' });
+  } catch (error) {
+    return jsonResponse({ success: false, error: 'Erro interno', message: error.message }, 500);
+  }
+}
+
+async function handlePasswordResetConfirm(request, env) {
+  try {
+    const { token, newPassword } = await request.json();
+    if (!token || !newPassword) {
+      return jsonResponse({ success: false, error: 'Token e nova senha são obrigatórios' }, 400);
+    }
+
+    const reset = await env.DB.prepare(
+      'SELECT * FROM password_resets WHERE token = ? AND status = ? AND expires_at > ?'
+    )
+      .bind(token, 'pending', Date.now())
+      .first();
+
+    if (!reset) {
+      return jsonResponse({ success: false, error: 'Token inválido ou expirado' }, 400);
+    }
+
+    await env.DB.prepare('UPDATE users SET password = ? WHERE id = ?')
+      .bind(newPassword, reset.user_id)
+      .run();
+
+    await env.DB.prepare('UPDATE password_resets SET status = ? WHERE token = ?')
+      .bind('used', token)
+      .run();
+
+    return jsonResponse({ success: true, message: 'Senha redefinida com sucesso' });
+  } catch (error) {
+    return jsonResponse({ success: false, error: 'Erro interno', message: error.message }, 500);
+  }
+}
+
+async function handleEmailVerify(request, env) {
+  try {
+    const url = new URL(request.url);
+    const token = url.searchParams.get('token');
+
+    if (!token) {
+      return jsonResponse({ success: false, error: 'Token é obrigatório' }, 400);
+    }
+
+    const user = await env.DB.prepare(
+      'SELECT id FROM users WHERE email_verification_token = ? AND email_verification_expires > ?'
+    )
+      .bind(token, Date.now())
+      .first();
+
+    if (!user) {
+      return jsonResponse({ success: false, error: 'Token inválido ou expirado' }, 400);
+    }
+
+    await env.DB.prepare(
+      'UPDATE users SET is_email_verified = 1, email_verification_token = NULL, email_verification_expires = NULL WHERE id = ?'
+    )
+      .bind(user.id)
+      .run();
+
+    return jsonResponse({ success: true, message: 'Email verificado com sucesso' });
+  } catch (error) {
+    return jsonResponse({ success: false, error: 'Erro interno', message: error.message }, 500);
+  }
+}
+
+// ===== STORE/LOJA ROUTES =====
+
+async function handleStoreList(request, env) {
+  try {
+    const url = new URL(request.url);
+    const page = parseInt(url.searchParams.get('page') || '1', 10);
+    const limit = parseInt(url.searchParams.get('limit') || '20', 10);
+    const category = url.searchParams.get('category');
+    const search = url.searchParams.get('search');
+
+    const offset = (page - 1) * limit;
+
+    let query = 'SELECT * FROM products WHERE status = ?';
+    const params = ['active'];
+
+    if (category) {
+      query += ' AND category = ?';
+      params.push(category);
+    }
+
+    if (search) {
+      query += ' AND (name LIKE ? OR description LIKE ?)';
+      params.push(`%${search}%`, `%${search}%`);
+    }
+
+    query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
+    params.push(limit, offset);
+
+    const { results } = await env.DB.prepare(query)
+      .bind(...params)
+      .all();
+
+    return jsonResponse({
+      success: true,
+      data: {
+        products: results || [],
+        pagination: {
+          currentPage: page,
+          totalPages: Math.ceil((results?.length || 0) / limit),
+          totalItems: results?.length || 0
+        }
+      }
+    });
+  } catch (error) {
+    return jsonResponse(
+      { success: false, error: 'Erro ao buscar loja', message: error.message },
+      500
+    );
+  }
+}
+
+async function handleStoreProductDetail(request, env) {
+  try {
+    const url = new URL(request.url);
+    const productId = url.pathname.split('/').pop();
+
+    const product = await env.DB.prepare('SELECT * FROM products WHERE id = ? AND status = ?')
+      .bind(productId, 'active')
+      .first();
+
+    if (!product) {
+      return jsonResponse({ success: false, error: 'Produto não encontrado' }, 404);
+    }
+
+    return jsonResponse({ success: true, data: { product } });
+  } catch (error) {
+    return jsonResponse(
+      { success: false, error: 'Erro ao buscar produto', message: error.message },
+      500
+    );
+  }
+}
+
+// ===== MESSAGES ROUTES =====
+
+async function handleMessagesList(request, env, user) {
+  try {
+    const url = new URL(request.url);
+    const page = parseInt(url.searchParams.get('page') || '1', 10);
+    const limit = parseInt(url.searchParams.get('limit') || '20', 10);
+    const offset = (page - 1) * limit;
+
+    const { results } = await env.DB.prepare(
+      `
+      SELECT m.*, 
+             sender.name as sender_name,
+             receiver.name as receiver_name
+      FROM messages m
+      JOIN users sender ON m.sender_id = sender.id
+      JOIN users receiver ON m.receiver_id = receiver.id
+      WHERE m.sender_id = ? OR m.receiver_id = ?
+      ORDER BY m.created_at DESC
+      LIMIT ? OFFSET ?
+    `
+    )
+      .bind(user.userId, user.userId, limit, offset)
+      .all();
+
+    return jsonResponse({
+      success: true,
+      data: { messages: results || [] }
+    });
+  } catch (error) {
+    return jsonResponse(
+      { success: false, error: 'Erro ao buscar mensagens', message: error.message },
+      500
+    );
+  }
+}
+
+async function handleMessageSend(request, env, user) {
+  try {
+    const { receiverId, subject, content, type } = await request.json();
+
+    if (!receiverId || !content) {
+      return jsonResponse(
+        { success: false, error: 'Destinatário e conteúdo são obrigatórios' },
+        400
+      );
+    }
+
+    const messageId = crypto.randomUUID();
+    await env.DB.prepare(
+      "INSERT INTO messages (id, sender_id, receiver_id, subject, content, type, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))"
+    )
+      .bind(
+        messageId,
+        user.userId,
+        receiverId,
+        subject || 'Nova mensagem',
+        content,
+        type || 'general',
+        'sent'
+      )
+      .run();
+
+    return jsonResponse(
+      { success: true, message: 'Mensagem enviada', data: { id: messageId } },
+      201
+    );
+  } catch (error) {
+    return jsonResponse(
+      { success: false, error: 'Erro ao enviar mensagem', message: error.message },
+      500
+    );
+  }
+}
+
+// ===== PAYMENTS ROUTES =====
+
+async function handlePaymentCreate(request, env, user) {
+  try {
+    const { amount, type, description } = await request.json();
+
+    if (!amount || !type) {
+      return jsonResponse({ success: false, error: 'Valor e tipo são obrigatórios' }, 400);
+    }
+
+    const paymentId = crypto.randomUUID();
+    await env.DB.prepare(
+      "INSERT INTO payments (id, user_id, amount, type, description, status, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
+    )
+      .bind(paymentId, user.userId, amount, type, description || '', 'pending')
+      .run();
+
+    // Simular integração Stripe
+    const paymentIntent = {
+      id: paymentId,
+      client_secret: `pi_${paymentId}_secret_test`,
+      amount: amount * 100, // centavos
+      currency: 'brl'
+    };
+
+    return jsonResponse(
+      {
+        success: true,
+        message: 'Pagamento criado',
+        data: { paymentIntent }
+      },
+      201
+    );
+  } catch (error) {
+    return jsonResponse(
+      { success: false, error: 'Erro ao criar pagamento', message: error.message },
+      500
+    );
+  }
+}
+
+async function handlePaymentWebhook(request, env) {
+  try {
+    const body = await request.text();
+    const signature = request.headers.get('stripe-signature');
+
+    // Validar webhook Stripe (simplificado)
+    if (!signature) {
+      return jsonResponse({ success: false, error: 'Signature inválida' }, 400);
+    }
+
+    const event = JSON.parse(body);
+
+    if (event.type === 'payment_intent.succeeded') {
+      const paymentId = event.data.object.id;
+
+      await env.DB.prepare('UPDATE payments SET status = ? WHERE id = ?')
+        .bind('completed', paymentId)
+        .run();
+    }
+
+    return jsonResponse({ success: true, message: 'Webhook processado' });
+  } catch (error) {
+    return jsonResponse({ success: false, error: 'Erro no webhook', message: error.message }, 500);
+  }
+}
+
+// ===== NEWS ROUTES =====
+
+async function handleNewsList(request, env) {
+  try {
+    const url = new URL(request.url);
+    const page = parseInt(url.searchParams.get('page') || '1', 10);
+    const limit = parseInt(url.searchParams.get('limit') || '10', 10);
+    const offset = (page - 1) * limit;
+
+    const { results } = await env.DB.prepare(
+      'SELECT * FROM news WHERE status = ? ORDER BY created_at DESC LIMIT ? OFFSET ?'
+    )
+      .bind('published', limit, offset)
+      .all();
+
+    return jsonResponse({
+      success: true,
+      data: { news: results || [] }
+    });
+  } catch (error) {
+    return jsonResponse(
+      { success: false, error: 'Erro ao buscar notícias', message: error.message },
+      500
+    );
+  }
+}
+
+async function handleNewsDetail(request, env) {
+  try {
+    const url = new URL(request.url);
+    const newsId = url.pathname.split('/').pop();
+
+    const news = await env.DB.prepare('SELECT * FROM news WHERE id = ? AND status = ?')
+      .bind(newsId, 'published')
+      .first();
+
+    if (!news) {
+      return jsonResponse({ success: false, error: 'Notícia não encontrada' }, 404);
+    }
+
+    return jsonResponse({ success: true, data: { news } });
+  } catch (error) {
+    return jsonResponse(
+      { success: false, error: 'Erro ao buscar notícia', message: error.message },
+      500
+    );
+  }
+}
+
+// ===== ADMIN ROUTES =====
+
+async function handleAdminUsers(request, env, user) {
+  try {
+    if (user.role !== 'admin' && user.role !== 'super-admin') {
+      return jsonResponse({ success: false, error: 'Acesso negado' }, 403);
+    }
+
+    const { results } = await env.DB.prepare(
+      'SELECT id, email, name, role, is_active, created_at FROM users ORDER BY created_at DESC LIMIT 50'
+    ).all();
+
+    return jsonResponse({
+      success: true,
+      data: { users: results || [] }
+    });
+  } catch (error) {
+    return jsonResponse(
+      { success: false, error: 'Erro ao buscar usuários', message: error.message },
+      500
+    );
+  }
+}
+
+async function handleAdminStats(request, env, user) {
+  try {
+    if (user.role !== 'admin' && user.role !== 'super-admin') {
+      return jsonResponse({ success: false, error: 'Acesso negado' }, 403);
+    }
+
+    const [usersCount, productsCount, messagesCount, paymentsCount] = await Promise.all([
+      env.DB.prepare('SELECT COUNT(*) as count FROM users').first(),
+      env.DB.prepare('SELECT COUNT(*) as count FROM products').first(),
+      env.DB.prepare('SELECT COUNT(*) as count FROM messages').first(),
+      env.DB.prepare('SELECT COUNT(*) as count FROM payments').first()
+    ]);
+
+    return jsonResponse({
+      success: true,
+      data: {
+        stats: {
+          users: usersCount?.count || 0,
+          products: productsCount?.count || 0,
+          messages: messagesCount?.count || 0,
+          payments: paymentsCount?.count || 0
+        }
+      }
+    });
+  } catch (error) {
+    return jsonResponse(
+      { success: false, error: 'Erro ao buscar estatísticas', message: error.message },
+      500
+    );
+  }
+}
+
 // ROUTER
 function router(request, env) {
   const { pathname: path } = new URL(request.url);
@@ -336,6 +765,77 @@ function router(request, env) {
       return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
     }
     return handleUserUpdate(request, env, user);
+  }
+
+  // Auth Extras
+  if (path === '/api/auth/forgot-password' && method === 'POST') {
+    return handlePasswordReset(request, env);
+  }
+  if (path === '/api/auth/reset-password' && method === 'POST') {
+    return handlePasswordResetConfirm(request, env);
+  }
+  if (path === '/api/auth/verify-email' && method === 'GET') {
+    return handleEmailVerify(request, env);
+  }
+
+  // Store/Loja
+  if (path === '/api/store' && method === 'GET') {
+    return handleStoreList(request, env);
+  }
+  if (path.startsWith('/api/store/product/') && method === 'GET') {
+    return handleStoreProductDetail(request, env);
+  }
+
+  // Messages
+  if (path === '/api/messages' && method === 'GET') {
+    const user = verifyJWT(request, env.JWT_SECRET);
+    if (!user) {
+      return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
+    }
+    return handleMessagesList(request, env, user);
+  }
+  if (path === '/api/messages' && method === 'POST') {
+    const user = verifyJWT(request, env.JWT_SECRET);
+    if (!user) {
+      return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
+    }
+    return handleMessageSend(request, env, user);
+  }
+
+  // Payments
+  if (path === '/api/payments' && method === 'POST') {
+    const user = verifyJWT(request, env.JWT_SECRET);
+    if (!user) {
+      return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
+    }
+    return handlePaymentCreate(request, env, user);
+  }
+  if (path === '/api/payments/webhook' && method === 'POST') {
+    return handlePaymentWebhook(request, env);
+  }
+
+  // News
+  if (path === '/api/news' && method === 'GET') {
+    return handleNewsList(request, env);
+  }
+  if (path.startsWith('/api/news/') && method === 'GET') {
+    return handleNewsDetail(request, env);
+  }
+
+  // Admin
+  if (path === '/api/admin/users' && method === 'GET') {
+    const user = verifyJWT(request, env.JWT_SECRET);
+    if (!user) {
+      return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
+    }
+    return handleAdminUsers(request, env, user);
+  }
+  if (path === '/api/admin/stats' && method === 'GET') {
+    const user = verifyJWT(request, env.JWT_SECRET);
+    if (!user) {
+      return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
+    }
+    return handleAdminStats(request, env, user);
   }
 
   // 404
