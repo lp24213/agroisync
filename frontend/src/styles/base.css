@@ -940,7 +940,7 @@ body {
   background: rgba(0, 255, 136, 0.1) !important;
 }
 
-/* Fix for red squares/boxes globally */
+/* Fix for red squares/boxes globally - ULTRA AGRESSIVO */
 .bg-red-50,
 .bg-red-100,
 .bg-red-200,
@@ -964,7 +964,23 @@ body {
 .border-red-700,
 .border-red-800,
 .border-red-900 {
-  border-color: #e5e7eb !important;
+  border-color: transparent !important;
+  border: none !important;
+}
+
+/* REMOÇÃO FORÇADA DE BORDAS/OUTLINES VERMELHAS EM TODOS OS ELEMENTOS */
+*[class*="border-red"],
+*[style*="border: 1px solid red"],
+*[style*="border: 2px solid red"],
+*[style*="border: 1px solid rgb(239"],
+*[style*="border: 2px solid rgb(239"],
+*[style*="border-color: red"],
+*[style*="border-color: rgb(239"],
+*[style*="outline: 1px solid red"],
+*[style*="outline: 2px solid red"] {
+  border: none !important;
+  border-color: transparent !important;
+  outline: none !important;
 }
 
 /* Removido seletor amplo que causava efeitos colaterais visuais */

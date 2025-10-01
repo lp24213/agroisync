@@ -537,7 +537,22 @@
 .border-red-700,
 .border-red-800,
 .border-red-900 {
-  border-color: #e5e7eb !important;
+  border-color: transparent !important;
+  border: none !important;
+}
+
+/* FORÇA REMOÇÃO DE TODAS AS BORDAS VERMELHAS - INCLUINDO INLINE STYLES */
+*[style*="border"][style*="red"],
+*[style*="border"][style*="rgb(239"],
+*[style*="border"][style*="#ef4444"],
+*[style*="border"][style*="#dc2626"],
+*[style*="border"][style*="#b91c1c"],
+*[style*="outline"][style*="red"],
+*[style*="outline"][style*="rgb(239"],
+*[style*="box-shadow"][style*="red"] {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .text-red-100,
