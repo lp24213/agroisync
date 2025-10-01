@@ -11,11 +11,13 @@ const AgroisyncPlans = () => {
     {
       name: 'Básico',
       price: 14.99, // Preço mensal normal
-      semiannualPrice: 85.44, // 14.99 x 6 meses - 5% = 89.94 - 4.50 = 85.44
-      annualPrice: 161.88, // 14.99 x 12 meses - 10% = 179.88 - 18.00 = 161.88
-      annualPixPrice: 143.88, // 14.99 x 12 meses - 20% = 179.88 - 36.00 = 143.88
+      // Sem descontos: valores brutos para 6 e 12 meses
+      semiannualPrice: 89.94, // 14.99 x 6 meses (sem desconto)
+      annualPrice: 179.88, // 14.99 x 12 meses (sem desconto)
+      annualPixPrice: 179.88, // Sem desconto no PIX para o básico
       description: 'Ideal para começar no agronegócio',
-      features: ['1 anúncio de produto por mês', 'Suporte por email', 'Dashboard básico', 'Relatórios simples'],
+      features: ['1 frete por mês', '1 anúncio de produto por mês', 'Suporte por email', 'Dashboard básico', 'Relatórios simples'],
+      noDiscount: true,
       popular: false,
       color: 'green'
     },
@@ -27,6 +29,7 @@ const AgroisyncPlans = () => {
       annualPixPrice: 287.88, // 29.99 x 12 meses - 20% = 359.88 - 72.00 = 287.88
       description: 'Para produtores em crescimento',
       features: [
+        '3 fretes por mês',
         '3 anúncios de produtos por mês',
         'Suporte prioritário',
         'Dashboard avançado',
@@ -44,7 +47,8 @@ const AgroisyncPlans = () => {
       annualPixPrice: 1439.88, // 149.99 x 12 meses - 20% = 1799.88 - 360.00 = 1439.88
       description: 'Para grandes operações',
       features: [
-        '20 anúncios de produtos por mês',
+        '25 fretes por mês',
+        '25 anúncios de produtos por mês',
         'Suporte 24/7',
         'Dashboard personalizado',
         'Relatórios avançados',
@@ -62,7 +66,9 @@ const AgroisyncPlans = () => {
       annualPixPrice: 4419.88, // 459.99 x 12 meses - 20% = 5519.88 - 1100.00 = 4419.88
       description: 'Para grandes empresas',
       features: [
-        'Anúncios ilimitados',
+        'Fretes ilimitados',
+        'Anúncios de produtos ilimitados',
+        'Loja com até 10 produtos',
         'Suporte 24/7 dedicado',
         'Dashboard personalizado',
         'Relatórios avançados',
@@ -74,20 +80,43 @@ const AgroisyncPlans = () => {
       ],
       popular: false,
       color: 'gold'
+    },
+    {
+      name: 'Loja Ilimitada',
+      price: 1099.0, // Preço mensal normal
+      semiannualPrice: 6264.3, // 1099 x 6 - 5%
+      annualPrice: 11869.2, // 1099 x 12 - 10%
+      annualPixPrice: 10550.4, // 1099 x 12 - 20% (PIX)
+      description: 'Operação completa com loja e produtos ilimitados',
+      features: [
+        'Loja com produtos ilimitados',
+        'Suporte premium 24/7',
+        'Dashboard e relatórios avançados',
+        'API completa e integrações'
+      ],
+      popular: false,
+      color: 'black'
     }
   ];
 
   const getPrice = plan => {
+    // Básico (14,99) sem descontos: apenas valores brutos
+    if (plan.noDiscount) {
+      if (billingCycle === 'semiannual') return plan.semiannualPrice;
+      if (billingCycle === 'annual') return plan.annualPrice;
+      return plan.price;
+    }
     if (billingCycle === 'semiannual') {
       return plan.semiannualPrice;
     }
     if (billingCycle === 'annual') {
       return paymentMethod === 'pix' ? plan.annualPixPrice : plan.annualPrice;
     }
-    return plan.price; // monthly - sem desconto
+    return plan.price; // monthly
   };
 
   const getDiscount = plan => {
+    if (plan.noDiscount) return 0;
     if (billingCycle === 'semiannual') {
       const totalPrice = plan.price * 6;
       return Math.round(((totalPrice - plan.semiannualPrice) / totalPrice) * 100);
@@ -97,7 +126,15 @@ const AgroisyncPlans = () => {
       const finalPrice = paymentMethod === 'pix' ? plan.annualPixPrice : plan.annualPrice;
       return Math.round(((totalPrice - finalPrice) / totalPrice) * 100);
     }
-    return 0; // monthly - sem desconto
+    return 0; // monthly
+  };
+
+  const formatBRL = value => {
+    try {
+      return Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    } catch (e) {
+      return value;
+    }
   };
 
   return (
@@ -277,7 +314,7 @@ const AgroisyncPlans = () => {
                     {/* Preço */}
                     <div className='mb-6'>
                       <div className='flex items-center justify-center gap-2'>
-                        <span className='text-4xl font-bold text-gray-900'>R$ {getPrice(plan).toFixed(2)}</span>
+                        <span className='text-4xl font-bold text-gray-900'>R$ {formatBRL(getPrice(plan))}</span>
                         <span className='text-gray-500'>
                           {billingCycle === 'monthly' ? '/mês' : billingCycle === 'semiannual' ? '/6 meses' : '/ano'}
                         </span>
@@ -285,8 +322,7 @@ const AgroisyncPlans = () => {
                       {getDiscount(plan) > 0 && (
                         <div className='mt-2 flex items-center justify-center gap-2'>
                           <span className='text-lg text-gray-400 line-through'>
-                            R${' '}
-                            {billingCycle === 'semiannual' ? (plan.price * 6).toFixed(2) : (plan.price * 12).toFixed(2)}
+                            R$ {formatBRL(billingCycle === 'semiannual' ? plan.price * 6 : plan.price * 12)}
                           </span>
                           <span className='rounded-full bg-green-100 px-2 py-1 text-sm font-semibold text-green-800'>
                             -{getDiscount(plan)}% desconto

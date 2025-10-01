@@ -31,14 +31,14 @@ const AgroisyncHeader = () => {
   };
 
   const navigationItems = [
-    { path: '/', label: 'Início', icon: Home },
-    { path: '/loja', label: 'Loja', icon: ShoppingCart },
-    { path: '/frete', label: 'Frete', icon: Truck },
-    { path: '/produtos', label: 'Produtos', icon: ShoppingCart },
-    { path: '/tecnologia', label: 'Crypto', icon: Coins },
-    { path: '/partnerships', label: 'Parcerias', icon: Users },
-    { path: '/sobre', label: 'Sobre', icon: Info },
-    { path: '/planos', label: 'Planos', icon: Crown }
+    { path: '/', label: 'Início', icon: Home, i18nKey: 'inicio' },
+    { path: '/loja', label: 'Loja', icon: ShoppingCart, i18nKey: 'loja' },
+    { path: '/frete', label: 'Frete', icon: Truck, i18nKey: 'agroconecta' },
+    { path: '/produtos', label: 'Produtos', icon: ShoppingCart, i18nKey: 'marketplace' },
+    { path: '/tecnologia', label: 'Crypto', icon: Coins, i18nKey: 'tecnologia' },
+    { path: '/partnerships', label: 'Parcerias', icon: Users, i18nKey: 'parcerias' },
+    { path: '/sobre', label: 'Sobre', icon: Info, i18nKey: 'about' },
+    { path: '/planos', label: 'Planos', icon: Crown, i18nKey: 'plans' }
   ];
 
   // Submenus (desktop)
@@ -64,16 +64,16 @@ const AgroisyncHeader = () => {
   };
 
   const mobileNavigationItems = [
-    { path: '/', label: 'Início', icon: Home },
-    { path: '/loja', label: 'Loja', icon: ShoppingCart },
-    { path: '/agroconecta', label: 'Frete', icon: Truck },
-    { path: '/marketplace', label: 'Produtos', icon: ShoppingCart },
-    { path: '/tecnologia', label: 'Crypto', icon: Coins },
-    { path: '/partnerships', label: 'Parcerias', icon: Users },
-    { path: '/sobre', label: 'Sobre', icon: Info },
-    { path: '/planos', label: 'Planos', icon: Crown },
-    { path: '/login', label: 'Entrar', icon: LogIn },
-    { path: '/signup', label: 'Cadastrar', icon: User }
+    { path: '/', label: 'Início', icon: Home, i18nKey: 'inicio' },
+    { path: '/loja', label: 'Loja', icon: ShoppingCart, i18nKey: 'loja' },
+    { path: '/frete', label: 'Frete', icon: Truck, i18nKey: 'agroconecta' },
+    { path: '/produtos', label: 'Produtos', icon: ShoppingCart, i18nKey: 'marketplace' },
+    { path: '/tecnologia', label: 'Crypto', icon: Coins, i18nKey: 'tecnologia' },
+    { path: '/partnerships', label: 'Parcerias', icon: Users, i18nKey: 'parcerias' },
+    { path: '/sobre', label: 'Sobre', icon: Info, i18nKey: 'about' },
+    { path: '/planos', label: 'Planos', icon: Crown, i18nKey: 'plans' },
+    { path: '/login', label: 'Entrar', icon: LogIn, i18nKey: 'login' },
+    { path: '/signup', label: 'Cadastrar', icon: User, i18nKey: 'register' }
   ];
 
   return (
@@ -108,7 +108,7 @@ const AgroisyncHeader = () => {
                       }`}
                     >
                       <Icon className='h-4 w-4' />
-                      {t ? t(`nav.${item.label.toLowerCase()}`, item.label) : item.label}
+                      {t ? t(`nav.${item.i18nKey}`, item.label) : item.label}
                     </Link>
                     {children && children.length > 0 && (
                       <div className='absolute left-0 z-50 mt-2 hidden min-w-[220px] rounded-lg border border-gray-200 bg-white shadow-lg group-hover:block'>
@@ -227,20 +227,20 @@ const AgroisyncHeader = () => {
                     }`}
                   >
                     <Icon className='h-4 w-4' />
-                    {t ? t(`nav.${item.label.toLowerCase()}`, item.label) : item.label}
+                    {t ? t(`nav.${item.i18nKey}`, item.label) : item.label}
                   </Link>
                 );
               })}
 
               {/* Subitens no mobile */}
               <div className='border-t border-gray-200/60 pt-2' />
-              {['/marketplace', '/agroconecta', '/partnerships'].map(parent => (
+              {['/produtos', '/frete', '/partnerships'].map(parent => (
                 <div key={parent} className=''>
                   <div className='px-4 py-2 text-xs font-semibold text-gray-500'>
-                    {parent === '/marketplace'
-                      ? 'Marketplace'
-                      : parent === '/agroconecta'
-                        ? 'AgroConecta'
+                    {parent === '/produtos'
+                      ? 'Produtos'
+                      : parent === '/frete'
+                        ? 'Frete'
                         : 'Parcerias'}
                   </div>
                   {(submenuItems[parent] || []).map(sub => (

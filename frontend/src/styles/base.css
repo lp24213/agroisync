@@ -941,6 +941,7 @@ body {
 }
 
 /* Fix for red squares/boxes globally */
+.bg-red-50,
 .bg-red-100,
 .bg-red-200,
 .bg-red-300,
@@ -953,6 +954,7 @@ body {
   background-color: transparent !important;
 }
 
+.border-red-50,
 .border-red-100,
 .border-red-200,
 .border-red-300,
@@ -965,11 +967,7 @@ body {
   border-color: #e5e7eb !important;
 }
 
-/* Fix for any red elements that might appear as squares */
-[class*="red"] {
-  background-color: transparent !important;
-  border-color: #e5e7eb !important;
-}
+/* Removido seletor amplo que causava efeitos colaterais visuais */
 
 /* Skip Links */
 .skip-link {

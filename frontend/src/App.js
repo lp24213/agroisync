@@ -152,9 +152,13 @@ function App() {
                         
                         {/* Produtos Routes (novo nome) */}
                         <Route path='/produtos' element={<AgroisyncMarketplace />} />
+                        <Route path='/produtos/:cryptoHash' element={<AgroisyncMarketplace />} />
                         <Route path='/produtos/categories' element={<MarketplaceCategories />} />
+                        <Route path='/produtos/categories/:cryptoHash' element={<MarketplaceCategories />} />
                         <Route path='/produtos/sellers' element={<MarketplaceSellers />} />
+                        <Route path='/produtos/sellers/:cryptoHash' element={<MarketplaceSellers />} />
                         <Route path='/produtos/sell' element={<MarketplaceSell />} />
+                        <Route path='/produtos/sell/:cryptoHash' element={<MarketplaceSell />} />
                         
                         {/* Marketplace Routes (compatibilidade - redireciona) */}
                         <Route path='/marketplace' element={<Navigate to="/produtos" replace />} />
@@ -168,9 +172,13 @@ function App() {
                         
                         {/* Frete Routes (novo nome) */}
                         <Route path='/frete' element={<AgroisyncAgroConecta />} />
+                        <Route path='/frete/:cryptoHash' element={<AgroisyncAgroConecta />} />
                         <Route path='/frete/offer' element={<AgroconectaOffer />} />
+                        <Route path='/frete/offer/:cryptoHash' element={<AgroconectaOffer />} />
                         <Route path='/frete/carriers' element={<AgroconectaCarriers />} />
+                        <Route path='/frete/carriers/:cryptoHash' element={<AgroconectaCarriers />} />
                         <Route path='/frete/tracking' element={<AgroconectaTracking />} />
+                        <Route path='/frete/tracking/:cryptoHash' element={<AgroconectaTracking />} />
                         
                         {/* AgroConecta Routes (compatibilidade - redireciona) */}
                         <Route path='/agroconecta' element={<Navigate to="/frete" replace />} />
@@ -180,9 +188,13 @@ function App() {
                         
                         {/* Partnerships Routes */}
                         <Route path='/partnerships' element={<Partnerships />} />
+                        <Route path='/partnerships/:cryptoHash' element={<Partnerships />} />
                         <Route path='/partnerships/current' element={<PartnershipsCurrent />} />
+                        <Route path='/partnerships/current/:cryptoHash' element={<PartnershipsCurrent />} />
                         <Route path='/partnerships/benefits' element={<PartnershipsBenefits />} />
+                        <Route path='/partnerships/benefits/:cryptoHash' element={<PartnershipsBenefits />} />
                         <Route path='/partnerships/contact' element={<PartnershipsContact />} />
+                        <Route path='/partnerships/contact/:cryptoHash' element={<PartnershipsContact />} />
                         
                         {/* Main Pages Routes */}
                         <Route path='/sobre' element={<AgroisyncAbout />} />

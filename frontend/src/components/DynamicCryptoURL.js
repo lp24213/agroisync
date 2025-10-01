@@ -7,131 +7,79 @@ const DynamicCryptoURL = ({ children }) => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const generateCryptoHash = useCallback(() => {
-    // Gerar hash único e limpo - formato mais simples
-    const timestamp = Date.now();
-    const random = Math.random().toString(36).substring(2, 10);
-    return `${timestamp}_${random}`.substring(0, 25);
+  // Gera valores de parâmetros criptografados (querystring)
+  const generateParams = useCallback(() => {
+    const ts = Date.now().toString();
+    const rand = Math.random().toString(36).substring(2, 10);
+    // IDs persistentes para estabilidade
+    const storedUsr = localStorage.getItem('agro_usr') || `${ts}${rand}`;
+    const storedSess = sessionStorage.getItem('agro_sess') || `${ts.substring(ts.length - 6)}${rand}`;
+    localStorage.setItem('agro_usr', storedUsr);
+    sessionStorage.setItem('agro_sess', storedSess);
+
+    return {
+      zx: ts, // timestamp atual
+      no_sw_cr: rand, // token aleatório simples
+      usr: storedUsr, // estável por dispositivo
+      sess: storedSess // estável por sessão do navegador
+    };
   }, []);
 
-  const hasValidHash = useCallback(pathname => {
-    // Verificar se a URL já tem um hash válido
-    const pathParts = pathname.split('/').filter(part => part.length > 0);
-    if (pathParts.length < 2) return false;
-
-    const lastPart = pathParts[pathParts.length - 1];
-    // Hash pode ser qualquer formato alfanumérico (mais flexível)
-    return /^[a-z0-9_-]+$/i.test(lastPart) && lastPart.length >= 10;
+  const hasValidParams = useCallback(search => {
+    const sp = new URLSearchParams(search || '');
+    const zx = sp.get('zx');
+    const no_sw_cr = sp.get('no_sw_cr');
+    const usr = sp.get('usr');
+    const sess = sp.get('sess');
+    const alnum = /^[a-z0-9_-]+$/i;
+    return !!(zx && zx.length >= 10 && alnum.test(no_sw_cr || '') && alnum.test(usr || '') && alnum.test(sess || ''));
   }, []);
 
-  const cleanPath = useCallback(pathname => {
-    // Remove hash existente da URL para obter o path limpo
-    const pathParts = pathname.split('/').filter(part => part.length > 0);
-
-    // Se o último segmento é um hash, removê-lo
-    if (pathParts.length > 0) {
-      const lastPart = pathParts[pathParts.length - 1];
-      if (/^\d+_[a-z0-9]+$/i.test(lastPart)) {
-        pathParts.pop();
-      }
-    }
-
-    return pathParts.length > 0 ? '/' + pathParts.join('/') : '/';
+  const mergeParams = useCallback((search, paramsToEnsure) => {
+    const sp = new URLSearchParams(search || '');
+    Object.entries(paramsToEnsure).forEach(([k, v]) => {
+      if (!sp.get(k)) sp.set(k, v);
+    });
+    return `?${sp.toString()}`;
   }, []);
 
   const updateCryptoURL = useCallback(() => {
     if (isUpdating) return; // Evitar múltiplas atualizações simultâneas
 
     try {
-      // Rotas que NÃO devem ter criptografia (rotas públicas)
+      // Rotas que NÃO devem ter criptografia (mantidas sem hash por compatibilidade externa)
       const excludeCrypto = [
         '/payment/success',
         '/payment/cancel',
-        '/unauthorized',
-        '/contact',
-        '/privacy',
-        '/terms',
-        '/faq',
-        '/help',
-        '/',
-        '/home',
-        '/home-prompt',
-        '/marketplace',
-        '/loja',
-        '/store',
-        '/agroconecta',
-        '/usuario-geral',
-        '/tecnologia',
-        '/insumos',
-        '/plans',
-        '/planos',
-        '/about',
-        '/sobre',
-        '/partnerships',
-        '/register',
-        '/login',
-        '/signup',
-        '/forgot-password',
-        '/reset-password',
-        '/two-factor-auth',
-        '/verify-email',
-        '/login-redirect'
+        '/unauthorized'
       ];
 
-      // Rotas que DEVEM ter criptografia (rotas protegidas/privadas)
-      const requireCrypto = [
-        '/dashboard',
-        '/user-dashboard',
-        '/messaging',
-        '/admin',
-        '/useradmin',
-        '/crypto-routes',
-        '/produto',
-        '/crypto',
-        '/payment'
-      ];
-
-      // Verificar se deve excluir da criptografia
       const shouldExclude = excludeCrypto.some(route => {
-        return location.pathname === route || 
-               (route !== '/' && location.pathname.startsWith(route + '/'));
+        return location.pathname === route || (route !== '/' && location.pathname.startsWith(route + '/'));
       });
 
-      // Verificar se deve ter criptografia
-      const shouldHaveCrypto = requireCrypto.some(route => {
-        return location.pathname === route || location.pathname.startsWith(route + '/');
-      });
-
-      // Se deve excluir da criptografia, não fazer nada
+      // Para todas as demais rotas, exigir hash criptográfico
       if (shouldExclude) {
         setIsInitialized(true);
         return;
       }
 
-      // Se não é rota que requer criptografia, não fazer nada
-      if (!shouldHaveCrypto) {
+      // Verificar se já tem parametros válidos
+      if (hasValidParams(location.search)) {
         setIsInitialized(true);
         return;
       }
 
-      // Verificar se já tem hash válido
-      if (hasValidHash(location.pathname)) {
-        setIsInitialized(true);
-        return;
-      }
-
-      // Aplicar criptografia para rotas protegidas/privadas
+      // Aplicar criptografia para todas as rotas (exceto excluídas)
       if (!isUpdating) {
         setIsUpdating(true);
 
-        const cryptoHash = generateCryptoHash();
-        const basePath = cleanPath(location.pathname);
-        
-        // Construir nova URL criptografada
-        const newPath = basePath === '/' ? `/${cryptoHash}` : `${basePath}/${cryptoHash}`;
+        const ensured = generateParams();
+        const newSearch = mergeParams(location.search, ensured);
+        const newUrl = `${location.pathname}${newSearch}`;
 
-        // Navegar para a URL criptografada
-        navigate(newPath, { replace: true });
+        // Navegar para a URL com query params criptografados
+        navigate(newUrl, { replace: true });
 
         // Reset flag após navegação
         setTimeout(() => setIsUpdating(false), 100);
@@ -142,7 +90,7 @@ const DynamicCryptoURL = ({ children }) => {
         console.error('Erro ao gerar URL criptografada:', error);
       }
     }
-  }, [location.pathname, navigate, generateCryptoHash, hasValidHash, cleanPath, isInitialized, isUpdating]);
+  }, [location.pathname, location.search, navigate, generateParams, hasValidParams, mergeParams, isInitialized, isUpdating]);
 
   useEffect(() => {
     // Marcar como inicializado imediatamente
