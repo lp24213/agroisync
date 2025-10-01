@@ -170,7 +170,92 @@ CREATE INDEX IF NOT EXISTS idx_password_resets_status ON password_resets(status)
 CREATE INDEX IF NOT EXISTS idx_password_resets_expires_at ON password_resets(expires_at);
 
 -- =============================================================
--- (Demais tabelas – products, freights, messages, etc.)
--- Permanecem para etapas posteriores da migração.
+-- Tabela: partners
 -- =============================================================
+CREATE TABLE IF NOT EXISTS partners (
+  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+  name TEXT NOT NULL,
+  company_name TEXT,
+  email TEXT,
+  phone TEXT,
+  website TEXT,
+  category TEXT NOT NULL,
+  description TEXT,
+  logo TEXT,
+  address TEXT,
+  city TEXT,
+  state TEXT,
+  country TEXT DEFAULT 'Brasil',
+  status TEXT CHECK (status IN ('active','inactive','pending')) DEFAULT 'active',
+  featured INTEGER NOT NULL DEFAULT 0,
+  partnership_level TEXT CHECK (partnership_level IN ('bronze','silver','gold','platinum')) DEFAULT 'bronze',
+  created_at INTEGER NOT NULL DEFAULT (strftime('%s','now')),
+  updated_at INTEGER NOT NULL DEFAULT (strftime('%s','now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_partners_status ON partners(status);
+CREATE INDEX IF NOT EXISTS idx_partners_category ON partners(category);
+CREATE INDEX IF NOT EXISTS idx_partners_featured ON partners(featured);
+
+-- =============================================================
+-- Tabela: freight_orders
+-- =============================================================
+CREATE TABLE IF NOT EXISTS freight_orders (
+  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+  customer_id TEXT NOT NULL,
+  origin TEXT NOT NULL,
+  destination TEXT NOT NULL,
+  cargo_type TEXT NOT NULL,
+  weight REAL,
+  volume REAL,
+  distance REAL,
+  estimated_price REAL,
+  final_price REAL,
+  scheduled_date INTEGER,
+  pickup_date INTEGER,
+  delivery_date INTEGER,
+  status TEXT CHECK (status IN ('pending','confirmed','in_transit','delivered','cancelled')) DEFAULT 'pending',
+  driver_id TEXT,
+  vehicle_plate TEXT,
+  tracking_code TEXT,
+  notes TEXT,
+  created_at INTEGER NOT NULL DEFAULT (strftime('%s','now')),
+  updated_at INTEGER NOT NULL DEFAULT (strftime('%s','now')),
+  FOREIGN KEY (customer_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (driver_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_freight_orders_customer ON freight_orders(customer_id);
+CREATE INDEX IF NOT EXISTS idx_freight_orders_status ON freight_orders(status);
+CREATE INDEX IF NOT EXISTS idx_freight_orders_driver ON freight_orders(driver_id);
+CREATE INDEX IF NOT EXISTS idx_freight_orders_created_at ON freight_orders(created_at);
+
+-- =============================================================
+-- Tabela: products
+-- =============================================================
+CREATE TABLE IF NOT EXISTS products (
+  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+  seller_id TEXT NOT NULL,
+  name TEXT NOT NULL,
+  description TEXT,
+  category TEXT NOT NULL,
+  subcategory TEXT,
+  price REAL NOT NULL,
+  quantity REAL NOT NULL DEFAULT 0,
+  unit TEXT DEFAULT 'kg',
+  origin TEXT,
+  quality_grade TEXT,
+  harvest_date INTEGER,
+  certifications TEXT,
+  images TEXT,
+  status TEXT CHECK (status IN ('active','sold','inactive')) DEFAULT 'active',
+  created_at INTEGER NOT NULL DEFAULT (strftime('%s','now')),
+  updated_at INTEGER NOT NULL DEFAULT (strftime('%s','now')),
+  FOREIGN KEY (seller_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_products_seller ON products(seller_id);
+CREATE INDEX IF NOT EXISTS idx_products_status ON products(status);
+CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
+CREATE INDEX IF NOT EXISTS idx_products_created_at ON products(created_at);
 
