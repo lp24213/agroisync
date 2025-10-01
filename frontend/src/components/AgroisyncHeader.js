@@ -33,8 +33,8 @@ const AgroisyncHeader = () => {
   const navigationItems = [
     { path: '/', label: 'Início', icon: Home },
     { path: '/loja', label: 'Loja', icon: ShoppingCart },
-    { path: '/agroconecta', label: 'Frete', icon: Truck },
-    { path: '/marketplace', label: 'Produtos', icon: ShoppingCart },
+    { path: '/frete', label: 'Frete', icon: Truck },
+    { path: '/produtos', label: 'Produtos', icon: ShoppingCart },
     { path: '/tecnologia', label: 'Crypto', icon: Coins },
     { path: '/partnerships', label: 'Parcerias', icon: Users },
     { path: '/sobre', label: 'Sobre', icon: Info },
@@ -43,17 +43,17 @@ const AgroisyncHeader = () => {
 
   // Submenus (desktop)
   const submenuItems = {
-    '/marketplace': [
-      { path: '/marketplace', label: 'Produtos' },
-      { path: '/marketplace/categories', label: 'Categorias' },
-      { path: '/marketplace/sellers', label: 'Vendedores' },
-      { path: '/marketplace/sell', label: 'Como Vender' }
+    '/produtos': [
+      { path: '/produtos', label: 'Produtos' },
+      { path: '/produtos/categories', label: 'Categorias' },
+      { path: '/produtos/sellers', label: 'Vendedores' },
+      { path: '/produtos/sell', label: 'Como Vender' }
     ],
-    '/agroconecta': [
-      { path: '/agroconecta', label: 'Buscar Frete' },
-      { path: '/agroconecta/offer', label: 'Oferecer Frete' },
-      { path: '/agroconecta/carriers', label: 'Transportadores' },
-      { path: '/agroconecta/tracking', label: 'Rastreamento' }
+    '/frete': [
+      { path: '/frete', label: 'Buscar Frete' },
+      { path: '/frete/offer', label: 'Oferecer Frete' },
+      { path: '/frete/carriers', label: 'Transportadores' },
+      { path: '/frete/tracking', label: 'Rastreamento' }
     ],
     '/partnerships': [
       { path: '/partnerships', label: 'Seja Parceiro' },

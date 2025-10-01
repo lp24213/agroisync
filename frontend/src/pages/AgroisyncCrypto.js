@@ -581,7 +581,7 @@ const AgroisyncCrypto = () => {
 
       {/* Features Section */}
       <section className='agro-section'>
-        <div className='agro-container'>
+        <div className='agro-container' style={{ textAlign: 'center' }}>
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}

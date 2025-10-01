@@ -1,6 +1,6 @@
 import React from 'react';
 import DynamicCryptoURL from './components/DynamicCryptoURL';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
@@ -150,25 +150,52 @@ function App() {
                         <Route path='/home' element={<Home />} />
                         <Route path='/home-prompt' element={<AgroisyncHomePrompt />} />
                         
-                        {/* Marketplace Routes */}
-                        <Route path='/marketplace' element={<AgroisyncMarketplace />} />
-                        <Route path='/marketplace/categories' element={<MarketplaceCategories />} />
-                        <Route path='/marketplace/sellers' element={<MarketplaceSellers />} />
-                        <Route path='/marketplace/sell' element={<MarketplaceSell />} />
+                        {/* Produtos Routes (novo nome) */}
+                        <Route path='/produtos' element={<AgroisyncMarketplace />} />
+                        <Route path='/produtos/categories' element={<MarketplaceCategories />} />
+                        <Route path='/produtos/sellers' element={<MarketplaceSellers />} />
+                        <Route path='/produtos/sell' element={<MarketplaceSell />} />
+                        
+                        {/* Marketplace Routes (compatibilidade - redireciona) */}
+                        <Route path='/marketplace' element={<Navigate to="/produtos" replace />} />
+                        <Route path='/marketplace/categories' element={<Navigate to="/produtos/categories" replace />} />
+                        <Route path='/marketplace/sellers' element={<Navigate to="/produtos/sellers" replace />} />
+                        <Route path='/marketplace/sell' element={<Navigate to="/produtos/sell" replace />} />
                         
                         {/* Store Routes */}
                         <Route path='/loja' element={<AgroisyncLoja />} />
                         <Route path='/store' element={<Store />} />
                         
-                        {/* Freight Routes */}
-                        <Route path='/agroconecta' element={<AgroisyncAgroConecta />} />
-                        <Route path='/agroconecta/offer' element={<AgroconectaOffer />} />
-                        <Route path='/agroconecta/carriers' element={<AgroconectaCarriers />} />
-                        <Route path='/agroconecta/tracking' element={<AgroconectaTracking />} />
+                        {/* Frete Routes (novo nome) */}
+                        <Route path='/frete' element={<AgroisyncAgroConecta />} />
+                        <Route path='/frete/offer' element={<AgroconectaOffer />} />
+                        <Route path='/frete/carriers' element={<AgroconectaCarriers />} />
+                        <Route path='/frete/tracking' element={<AgroconectaTracking />} />
+                        
+                        {/* AgroConecta Routes (compatibilidade - redireciona) */}
+                        <Route path='/agroconecta' element={<Navigate to="/frete" replace />} />
+                        <Route path='/agroconecta/offer' element={<Navigate to="/frete/offer" replace />} />
+                        <Route path='/agroconecta/carriers' element={<Navigate to="/frete/carriers" replace />} />
+                        <Route path='/agroconecta/tracking' element={<Navigate to="/frete/tracking" replace />} />
+                        
+                        {/* Partnerships Routes */}
+                        <Route path='/partnerships' element={<Partnerships />} />
+                        <Route path='/partnerships/current' element={<PartnershipsCurrent />} />
+                        <Route path='/partnerships/benefits' element={<PartnershipsBenefits />} />
+                        <Route path='/partnerships/contact' element={<PartnershipsContact />} />
+                        
+                        {/* Main Pages Routes */}
+                        <Route path='/sobre' element={<AgroisyncAbout />} />
+                        <Route path='/about' element={<AgroisyncAbout />} />
+                        <Route path='/planos' element={<AgroisyncPlans />} />
+                        <Route path='/plans' element={<AgroisyncPlans />} />
+                        <Route path='/contato' element={<AgroisyncContact />} />
+                        <Route path='/contact' element={<AgroisyncContact />} />
                         
                         {/* User Routes */}
                         <Route path='/usuario-geral' element={<UsuarioGeral />} />
                         <Route path='/tecnologia' element={<AgroisyncCrypto />} />
+                        <Route path='/crypto' element={<AgroisyncCrypto />} />
                         <Route path='/insumos' element={<Insumos />} />
                         
                         {/* Plans Routes - Consolidadas */}
@@ -360,8 +387,7 @@ function App() {
                         {/* Rotas específicas para páginas principais sem criptografia */}
                         <Route path='/loja' element={<AgroisyncLoja />} />
                         <Route path='/store' element={<Store />} />
-                        <Route path='/marketplace' element={<AgroisyncMarketplace />} />
-                        <Route path='/agroconecta' element={<AgroisyncAgroConecta />} />
+                        {/* Rotas duplicadas removidas - já definidas acima */}
                         <Route path='/usuario-geral' element={<UsuarioGeral />} />
                         <Route path='/tecnologia' element={<AgroisyncCrypto />} />
                         <Route path='/insumos' element={<Insumos />} />

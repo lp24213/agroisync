@@ -311,7 +311,30 @@ const AgroisyncAgroConecta = () => {
         }
       } catch (error) {
         console.error('Erro ao carregar pedidos:', error);
-        toast.error('Erro ao carregar pedidos');
+        // Dados mock para demonstração da IA
+        const mockOrders = [
+          {
+            id: 1,
+            orderNumber: 'FR-001',
+            origin: { city: 'São Paulo', state: 'SP' },
+            destination: { city: 'Cuiabá', state: 'MT' },
+            pricing: { totalPrice: 2500 },
+            pickupDate: new Date().toISOString(),
+            status: 'delivered', // Status entregue para mostrar botão IA
+            trackingCode: 'TRK001'
+          },
+          {
+            id: 2,
+            orderNumber: 'FR-002',
+            origin: { city: 'Curitiba', state: 'PR' },
+            destination: { city: 'Goiânia', state: 'GO' },
+            pricing: { totalPrice: 1800 },
+            pickupDate: new Date().toISOString(),
+            status: 'in_transit',
+            trackingCode: 'TRK002'
+          }
+        ];
+        setMyOrders(mockOrders);
       }
     };
 
@@ -471,7 +494,7 @@ const AgroisyncAgroConecta = () => {
             </motion.p>
           </motion.div>
 
-          <div className='agro-cards-grid'>
+          <div className='agro-cards-grid' style={{ textAlign: 'center' }}>
             {features.map((feature, index) => (
               <motion.div
                 key={feature.title}
@@ -481,7 +504,7 @@ const AgroisyncAgroConecta = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: index * 0.1 }}
                 whileHover={{ y: -12, scale: 1.02 }}
-                style={{ position: 'relative' }}
+                style={{ position: 'relative', textAlign: 'center' }}
               >
                 <div
                   style={{

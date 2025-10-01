@@ -25,42 +25,105 @@ const initializeStripe = async () => {
 
 // Planos disponíveis
 export const PLANS = {
-  BASIC: {
-    id: 'price_basic',
-    name: 'Plano Básico',
-    price: 29.9,
+  GERAL: {
+    id: 'price_geral',
+    name: 'Plano Geral',
+    price: 14.99,
     currency: 'BRL',
-    features: ['Cotações básicas de grãos', 'Acesso ao marketplace', 'Suporte por email'],
-    interval: 'month'
+    features: ['Até 1 frete e 1 produto', 'Acesso básico à plataforma', 'Suporte por email'],
+    interval: 'month',
+    semiannual: 89.94, // 6 meses sem desconto
+    annual: 179.88 // 12 meses sem desconto
   },
-  PROFESSIONAL: {
-    id: 'price_professional',
+  BASICO: {
+    id: 'price_basico',
+    name: 'Plano Básico',
+    price: 29.99,
+    currency: 'BRL',
+    features: ['Até 3 produtos', 'Até 3 fretes mensais', 'Suporte prioritário', 'Relatórios básicos'],
+    interval: 'month',
+    semiannual: 161.94, // 10% desconto
+    annual: 305.89 // 15% desconto
+  },
+  PROFISSIONAL: {
+    id: 'price_profissional',
     name: 'Plano Profissional',
-    price: 79.9,
+    price: 149.99,
     currency: 'BRL',
     features: [
-      'Cotações avançadas em tempo real',
-      'Análises de mercado',
-      'API de dados agrícolas',
+      'Até 25 fretes mensais',
+      'Até 25 produtos',
+      'Análises avançadas',
       'Suporte prioritário',
       'Relatórios personalizados'
     ],
-    interval: 'month'
+    interval: 'month',
+    semiannual: 809.94, // 10% desconto
+    annual: 1529.89 // 15% desconto
   },
-  ENTERPRISE: {
-    id: 'price_enterprise',
+  EMPRESARIAL: {
+    id: 'price_empresarial',
     name: 'Plano Empresarial',
-    price: 199.9,
+    price: 299.99,
     currency: 'BRL',
     features: [
-      'Todas as funcionalidades do Profissional',
+      'Fretes ilimitados',
+      'Produtos ilimitados',
       'Integração com sistemas ERP',
       'API dedicada',
       'Suporte 24/7',
-      'Consultoria especializada',
-      'Dashboard personalizado'
+      'Consultoria especializada'
     ],
-    interval: 'month'
+    interval: 'month',
+    semiannual: 1619.94, // 10% desconto
+    annual: 3059.89 // 15% desconto
+  }
+};
+
+// Planos específicos para LOJA (valores superiores)
+export const STORE_PLANS = {
+  LOJA_BASICA: {
+    id: 'price_loja_basica',
+    name: 'Loja Básica',
+    price: 49.99,
+    currency: 'BRL',
+    features: ['1 loja online', 'Até 25 produtos na loja', 'Painel de vendas', 'Suporte por email'],
+    interval: 'month',
+    semiannual: 269.94, // 10% desconto
+    annual: 509.89 // 15% desconto
+  },
+  LOJA_PROFISSIONAL: {
+    id: 'price_loja_profissional',
+    name: 'Loja Profissional',
+    price: 99.99,
+    currency: 'BRL',
+    features: [
+      '1 loja online',
+      'Até 100 produtos na loja',
+      'Relatórios de vendas',
+      'Integração com pagamentos',
+      'Suporte prioritário'
+    ],
+    interval: 'month',
+    semiannual: 539.94, // 10% desconto
+    annual: 1019.89 // 15% desconto
+  },
+  LOJA_ILIMITADA: {
+    id: 'price_loja_ilimitada',
+    name: 'Loja Ilimitada',
+    price: 199.99,
+    currency: 'BRL',
+    features: [
+      'Lojas ilimitadas',
+      'Produtos ilimitados',
+      'Dashboard avançado',
+      'API de vendas',
+      'Suporte 24/7',
+      'Consultoria de e-commerce'
+    ],
+    interval: 'month',
+    semiannual: 1079.94, // 10% desconto
+    annual: 2039.89 // 15% desconto
   }
 };
 

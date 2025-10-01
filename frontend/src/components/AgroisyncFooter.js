@@ -7,21 +7,21 @@ const AgroisyncFooter = () => {
 
   const footerSections = [
     {
-      title: 'Marketplace',
+      title: 'Produtos',
       links: [
-        { label: 'Produtos', path: '/marketplace' },
-        { label: 'Categorias', path: '/marketplace/categories' },
-        { label: 'Vendedores', path: '/marketplace/sellers' },
-        { label: 'Como Vender', path: '/marketplace/sell' }
+        { label: 'Produtos', path: '/produtos' },
+        { label: 'Categorias', path: '/produtos/categories' },
+        { label: 'Vendedores', path: '/produtos/sellers' },
+        { label: 'Como Vender', path: '/produtos/sell' }
       ]
     },
     {
-      title: 'AgroConecta',
+      title: 'Frete',
       links: [
-        { label: 'Buscar Frete', path: '/agroconecta' },
-        { label: 'Oferecer Frete', path: '/agroconecta/offer' },
-        { label: 'Transportadores', path: '/agroconecta/carriers' },
-        { label: 'Rastreamento', path: '/agroconecta/tracking' }
+        { label: 'Buscar Frete', path: '/frete' },
+        { label: 'Oferecer Frete', path: '/frete/offer' },
+        { label: 'Transportadores', path: '/frete/carriers' },
+        { label: 'Rastreamento', path: '/frete/tracking' }
       ]
     },
     {
