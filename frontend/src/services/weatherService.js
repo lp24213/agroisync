@@ -14,7 +14,11 @@ class WeatherService {
     
     // Log de aviso se API não estiver configurada
     if (!this.isConfigured && isDevelopment()) {
-      console.warn('⚠️ OpenWeather API key não configurada. Usando dados simulados.');
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.warn('⚠️ OpenWeather API key não configurada. Usando dados simulados.');
+
+      }
     }
   }
 
@@ -90,7 +94,9 @@ class WeatherService {
       
       // Tentar retornar dados do cache antigo se disponível
       if (cached) {
-        console.warn('Usando dados do clima em cache (podem estar desatualizados)');
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn('Usando dados do clima em cache (podem estar desatualizados)');
+        }
         return { ...cached.data, isStale: true };
       }
       

@@ -107,7 +107,13 @@ class ChatbotService {
         }
       }
 
-      console.log('Serviços de voz inicializados');
+      if (process.env.NODE_ENV !== 'production') {
+
+
+        console.log('Serviços de voz inicializados');
+
+
+      }
       return { success: true };
     } catch (error) {
       console.error('Erro ao inicializar serviços de voz:', error);

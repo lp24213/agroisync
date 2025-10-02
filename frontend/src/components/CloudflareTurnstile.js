@@ -61,7 +61,11 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
         try {
           window.turnstile.remove(widgetId);
         } catch (e) {
-          console.warn('Erro ao remover widget Turnstile:', e);
+          if (process.env.NODE_ENV !== 'production') {
+
+            console.warn('Erro ao remover widget Turnstile:', e);
+
+          }
         }
         setWidgetId(null);
       }

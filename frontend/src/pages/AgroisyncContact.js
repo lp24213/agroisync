@@ -52,7 +52,11 @@ const AgroisyncContact = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    if (process.env.NODE_ENV !== 'production') {
+
+      console.log('Form submitted:', formData);
+
+    }
     setIsSubmitted(true);
     setTimeout(() => setIsSubmitted(false), 3000);
   };

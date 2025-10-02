@@ -22,7 +22,11 @@ const Payment = () => {
     setStripeEnabled(!!stripeKey && stripeKey.startsWith('pk_'));
     
     if (!stripeKey || !stripeKey.startsWith('pk_')) {
-      console.warn('Stripe não configurado - pagamentos desabilitados');
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.warn('Stripe não configurado - pagamentos desabilitados');
+
+      }
     }
   }, []);
 

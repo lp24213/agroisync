@@ -30,11 +30,19 @@ class NewsService {
         try {
           newsData = await this.fetchNewsAPI(limit);
         } catch (apiError) {
-          console.warn('Erro na NewsAPI, usando dados mockados:', apiError);
+          if (process.env.NODE_ENV !== 'production') {
+
+            console.warn('Erro na NewsAPI, usando dados mockados:', apiError);
+
+          }
           newsData = this.getMockNews(limit);
         }
       } else {
-        console.warn('API Key da NewsAPI não configurada, usando dados mockados');
+        if (process.env.NODE_ENV !== 'production') {
+
+          console.warn('API Key da NewsAPI não configurada, usando dados mockados');
+
+        }
         newsData = this.getMockNews(limit);
       }
 

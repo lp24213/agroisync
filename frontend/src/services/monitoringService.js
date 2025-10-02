@@ -395,7 +395,13 @@ class MonitoringSystem {
     // Mostrar notificação
     this.showNotification(alert);
 
-    console.warn('🚨 ALERTA:', alert);
+    if (process.env.NODE_ENV !== 'production') {
+
+
+      console.warn('🚨 ALERTA:', alert);
+
+
+    }
   }
 
   // Obter severidade do alerta

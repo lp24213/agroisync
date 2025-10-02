@@ -34,7 +34,11 @@ export const useGeolocation = () => {
         return ipLocation;
       }
     } catch (error) {
-      console.warn('Proxy de geolocalização falhou, usando padrão');
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.warn('Proxy de geolocalização falhou, usando padrão');
+
+      }
     }
 
     // Fallback para localização padrão
@@ -132,7 +136,11 @@ export const useGeolocation = () => {
         try {
           await getGPSLocation();
         } catch (gpsError) {
-          console.warn('GPS falhou, usando fallback IP:', gpsError.message);
+          if (process.env.NODE_ENV !== 'production') {
+
+            console.warn('GPS falhou, usando fallback IP:', gpsError.message);
+
+          }
           // Fallback para IP
           await getLocationByIP();
         }

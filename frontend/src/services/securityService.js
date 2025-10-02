@@ -45,7 +45,11 @@ class SecurityService {
     dangerousElements.forEach(el => {
       if (el.src && !this.isAllowedDomain(el.src)) {
         el.remove();
-        console.warn('Removido elemento perigoso:', el);
+        if (process.env.NODE_ENV !== 'production') {
+
+          console.warn('Removido elemento perigoso:', el);
+
+        }
       }
     });
   }
@@ -268,7 +272,11 @@ class SecurityService {
     }
 
     // Log local para auditoria
-    console.log('Security Metrics:', metrics);
+    if (process.env.NODE_ENV !== 'production') {
+
+      console.log('Security Metrics:', metrics);
+
+    }
   }
 
   // Log de eventos de segurança
@@ -285,7 +293,11 @@ class SecurityService {
     this.sendAuditLog(event);
 
     // Log local
-    console.warn('Security Event:', event);
+    if (process.env.NODE_ENV !== 'production') {
+
+      console.warn('Security Event:', event);
+
+    }
   }
 
   // Log de atividade suspeita
@@ -354,7 +366,11 @@ class SecurityService {
   // Enviar email de emergência
   sendEmergencyEmail(alert) {
     // Implementar integração com serviço de email
-    console.warn('Emergency email should be sent:', alert);
+    if (process.env.NODE_ENV !== 'production') {
+
+      console.warn('Emergency email should be sent:', alert);
+
+    }
   }
 
   // Ativar proteção de emergência

@@ -91,7 +91,11 @@ const Partnerships = () => {
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       // Aqui seria a integração real com serviço de email
-      console.log('Dados enviados para suporte@agroisync.com:', formData);
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('Dados enviados para suporte@agroisync.com:', formData);
+
+      }
 
       setIsSubmitted(true);
     } catch (error) {

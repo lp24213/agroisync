@@ -19,7 +19,11 @@ export const devLog = {
    */
   info: (...args) => {
     if (isDevelopment()) {
-      console.log('%c[INFO]', 'color: #3b82f6; font-weight: bold', ...args);
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('%c[INFO]', 'color: #3b82f6; font-weight: bold', ...args);
+
+      }
     }
   },
 
@@ -28,7 +32,11 @@ export const devLog = {
    */
   success: (...args) => {
     if (isDevelopment()) {
-      console.log('%c[SUCCESS]', 'color: #10b981; font-weight: bold', ...args);
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('%c[SUCCESS]', 'color: #10b981; font-weight: bold', ...args);
+
+      }
     }
   },
 
@@ -37,7 +45,11 @@ export const devLog = {
    */
   warn: (...args) => {
     if (isDevelopment()) {
-      console.warn('%c[WARNING]', 'color: #f59e0b; font-weight: bold', ...args);
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.warn('%c[WARNING]', 'color: #f59e0b; font-weight: bold', ...args);
+
+      }
     }
   },
 
@@ -55,7 +67,11 @@ export const devLog = {
    */
   api: (method, url, data = null) => {
     if (isDevelopment()) {
-      console.log('%c[API]', 'color: #8b5cf6; font-weight: bold', `${method} ${url}`, data ? data : '');
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('%c[API]', 'color: #8b5cf6; font-weight: bold', `${method} ${url}`, data ? data : '');
+
+      }
     }
   },
 
@@ -64,7 +80,11 @@ export const devLog = {
    */
   render: (componentName, props = null) => {
     if (isDevelopment()) {
-      console.log('%c[RENDER]', 'color: #06b6d4; font-weight: bold', componentName, props ? props : '');
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('%c[RENDER]', 'color: #06b6d4; font-weight: bold', componentName, props ? props : '');
+
+      }
     }
   },
 
@@ -73,7 +93,11 @@ export const devLog = {
    */
   state: (label, value) => {
     if (isDevelopment()) {
-      console.log('%c[STATE]', 'color: #ec4899; font-weight: bold', label, value);
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('%c[STATE]', 'color: #ec4899; font-weight: bold', label, value);
+
+      }
     }
   },
 
@@ -116,7 +140,11 @@ export const perfTimer = label => {
   return {
     end: () => {
       const duration = performance.now() - start;
-      console.log('%c[PERF]', 'color: #14b8a6; font-weight: bold', `${label} took ${duration.toFixed(2)}ms`);
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('%c[PERF]', 'color: #14b8a6; font-weight: bold', `${label} took ${duration.toFixed(2);
+
+      }}ms`);
       return duration;
     }
   };
@@ -174,7 +202,11 @@ export const useWhyDidYouUpdate = (name, props) => {
 
       if (Object.keys(changedProps).length > 0) {
         devLog.group(`[WHY-UPDATE] ${name}`, () => {
-          console.log('Changed props:', changedProps);
+          if (process.env.NODE_ENV !== 'production') {
+
+            console.log('Changed props:', changedProps);
+
+          }
         });
       }
     }
@@ -307,8 +339,16 @@ export const stateDebugger = {
     if (!isDevelopment()) return;
 
     devLog.group(`[STATE CHANGE] ${storeName}`, () => {
-      console.log('Previous:', oldState);
-      console.log('Current:', newState);
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('Previous:', oldState);
+
+      }
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('Current:', newState);
+
+      }
       console.log('Changed:', {
         ...Object.keys(newState).reduce((acc, key) => {
           if (oldState[key] !== newState[key]) {

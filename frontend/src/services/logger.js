@@ -58,7 +58,11 @@ class Logger {
     };
 
     if (this.isDevelopment) {
-      console.warn('⚠️ [WARN]', message, data);
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.warn('⚠️ [WARN]', message, data);
+
+      }
     }
 
     if (this.isProduction) {

@@ -25,7 +25,11 @@ class AdvancedAgroService {
         return this.location;
       }
     } catch (error) {
-      console.warn('Proxy de geolocalização falhou, usando padrão');
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.warn('Proxy de geolocalização falhou, usando padrão');
+
+      }
     }
 
     // Fallback para localização padrão

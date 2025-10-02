@@ -100,7 +100,11 @@ const AgroisyncLogin = () => {
 
       if (process.env.NODE_ENV !== 'production') {
         console.log('Response status:', res.status);
-        console.log('Response ok:', res.ok);
+        if (process.env.NODE_ENV !== 'production') {
+
+          console.log('Response ok:', res.ok);
+
+        }
       }
 
       if (res.ok) {
@@ -115,7 +119,11 @@ const AgroisyncLogin = () => {
 
         if (process.env.NODE_ENV !== 'production') {
           console.log('Token:', token);
-          console.log('User:', user);
+          if (process.env.NODE_ENV !== 'production') {
+
+            console.log('User:', user);
+
+          }
         }
 
         if (token && user) {

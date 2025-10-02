@@ -253,7 +253,11 @@ class AuthService {
 
   async getPaymentPlans() {
     try {
-      console.log('💳 Buscando planos de pagamento...');
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('💳 Buscando planos de pagamento...');
+
+      }
       const response = await this.paymentApi.get('/payment/plans');
 
       return {
@@ -271,7 +275,11 @@ class AuthService {
 
   async processPayment(planId, paymentMethod, amount, userEmail) {
     try {
-      console.log('💳 Processando pagamento...');
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('💳 Processando pagamento...');
+
+      }
       const response = await this.paymentApi.post('/payment/process', {
         planId,
         paymentMethod,

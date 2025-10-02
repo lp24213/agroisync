@@ -62,7 +62,11 @@ class SecurityUtils {
 
     // Detectar padrões suspeitos
     if (this.detectSuspiciousPattern(sanitized)) {
-      console.warn('Padrão suspeito detectado:', sanitized.substring(0, 100));
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.warn('Padrão suspeito detectado:', sanitized.substring(0, 100);
+
+      });
       return this.escapeHtml(sanitized);
     }
 
@@ -333,7 +337,11 @@ class SecurityUtils {
     }
 
     // Log local para debug
-    console.warn('Security Event:', logEntry);
+    if (process.env.NODE_ENV !== 'production') {
+
+      console.warn('Security Event:', logEntry);
+
+    }
   }
 
   // Verificar integridade de dados

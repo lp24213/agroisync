@@ -91,7 +91,11 @@ class ReceitaService {
   async initialize() {
     try {
       this.isInitialized = true;
-      console.log('Serviço da Receita Federal inicializado');
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('Serviço da Receita Federal inicializado');
+
+      }
       return { success: true };
     } catch (error) {
       console.error('Erro ao inicializar serviço da Receita Federal:', error);
@@ -495,7 +499,11 @@ class ReceitaService {
 
   clearCache() {
     this.validationCache.clear();
-    console.log('Cache de validação limpo');
+    if (process.env.NODE_ENV !== 'production') {
+
+      console.log('Cache de validação limpo');
+
+    }
   }
 
   // Métodos mockados para desenvolvimento

@@ -35,24 +35,44 @@ const CryptoRoutesStatus = () => {
 
       // Testar geração de chaves
       const keysResult = await cryptoService.generateKeys();
-      console.log('Chaves geradas:', keysResult);
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('Chaves geradas:', keysResult);
+
+      }
 
       // Testar criptografia
       const testData = { message: 'Teste de criptografia AgroSync', timestamp: Date.now() };
       const encryptResult = await cryptoService.encryptData(testData, keysResult.data.symmetricKey);
-      console.log('Dados criptografados:', encryptResult);
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('Dados criptografados:', encryptResult);
+
+      }
 
       // Testar descriptografia
       const decryptResult = await cryptoService.decryptData(encryptResult.data, keysResult.data.symmetricKey);
-      console.log('Dados descriptografados:', decryptResult);
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('Dados descriptografados:', decryptResult);
+
+      }
 
       // Testar hash
       const hashResult = await cryptoService.generateHash(testData);
-      console.log('Hash gerado:', hashResult);
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('Hash gerado:', hashResult);
+
+      }
 
       // Testar nonce
       const nonceResult = await cryptoService.generateNonce();
-      console.log('Nonce gerado:', nonceResult);
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('Nonce gerado:', nonceResult);
+
+      }
 
       alert('Testes de criptografia executados com sucesso! Verifique o console para detalhes.');
     } catch (err) {

@@ -116,7 +116,11 @@ class AgriculturalQuotesService {
       try {
         quotes = await this.fetchAgroLinkQuotes(location);
       } catch (apiError) {
-        console.warn('Erro na API do AgroLink, usando dados mockados:', apiError);
+        if (process.env.NODE_ENV !== 'production') {
+
+          console.warn('Erro na API do AgroLink, usando dados mockados:', apiError);
+
+        }
         quotes = await this.getMockQuotes(location);
       }
 
@@ -183,7 +187,11 @@ class AgriculturalQuotesService {
           return this.processAgroSyncData(data);
         }
       } catch (error) {
-        console.warn(`API ${api.name} falhou:`, error.message);
+        if (process.env.NODE_ENV !== 'production') {
+
+          console.warn(`API ${api.name} falhou:`, error.message);
+
+        }
         continue; // Tentar próxima API
       }
     }
@@ -421,7 +429,11 @@ class AgriculturalQuotesService {
 
     this.updateInterval = setInterval(
       async () => {
-        console.log('Atualizando cotações automaticamente...');
+        if (process.env.NODE_ENV !== 'production') {
+
+          console.log('Atualizando cotações automaticamente...');
+
+        }
         await this.loadQuotes();
       },
       intervalMinutes * 60 * 1000

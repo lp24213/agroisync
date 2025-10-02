@@ -72,7 +72,13 @@ class NotificationService {
       // Carregar preferências do usuário
       await this.loadUserPreferences();
 
-      console.log('Serviço de notificações inicializado');
+      if (process.env.NODE_ENV !== 'production') {
+
+
+        console.log('Serviço de notificações inicializado');
+
+
+      }
       return { success: true };
     } catch (error) {
       console.error('Erro ao inicializar notificações:', error);

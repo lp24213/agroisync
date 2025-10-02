@@ -258,7 +258,11 @@ export const AuthProvider = ({ children }) => {
           );
         } catch (error) {
           // Ignorar erros de logout no backend
-          console.log('Logout error:', error);
+          if (process.env.NODE_ENV !== 'production') {
+
+            console.log('Logout error:', error);
+
+          }
         }
       }
 

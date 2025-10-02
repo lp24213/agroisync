@@ -165,7 +165,11 @@ const AgroisyncCrypto = () => {
 
   const handleEmailSubmit = e => {
     e.preventDefault();
-    console.log('Email submitted:', email);
+    if (process.env.NODE_ENV !== 'production') {
+
+      console.log('Email submitted:', email);
+
+    }
   };
 
   const heroVariants = {

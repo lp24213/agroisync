@@ -280,7 +280,11 @@ export const retryOnError = async (fn, options = {}) => {
         const retryDelay = backoff ? delay * Math.pow(2, attempt) : delay;
 
         if (isDevelopment()) {
-          console.log(`🔄 Retry attempt ${attempt + 1}/${maxRetries} after ${retryDelay}ms`);
+          if (process.env.NODE_ENV !== 'production') {
+
+            console.log(`🔄 Retry attempt ${attempt + 1}/${maxRetries} after ${retryDelay}ms`);
+
+          }
         }
 
         await new Promise(resolve => setTimeout(resolve, retryDelay));
@@ -310,7 +314,11 @@ export const validateApiResponse = response => {
 
   // Verificar se tem campo success
   if (typeof response.success === 'undefined') {
-    console.warn('⚠️ Resposta da API sem campo "success". Formato antigo?');
+    if (process.env.NODE_ENV !== 'production') {
+
+      console.warn('⚠️ Resposta da API sem campo "success". Formato antigo?');
+
+    }
   }
 
   // Se sucesso é false, lançar erro
@@ -331,7 +339,11 @@ export const validateApiResponse = response => {
 export const logErrorToMonitoring = (error, context = {}) => {
   // Em desenvolvimento, apenas log no console
   if (isDevelopment()) {
-    console.log('📊 Error logged:', { error, context });
+    if (process.env.NODE_ENV !== 'production') {
+
+      console.log('📊 Error logged:', { error, context });
+
+    }
     return;
   }
 

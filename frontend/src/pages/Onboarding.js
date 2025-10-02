@@ -55,9 +55,17 @@ const Onboarding = () => {
               city: viaCepData.localidade || '',
               state: viaCepData.uf || ''
             }));
-            console.log('CEP encontrado:', viaCepData);
+            if (process.env.NODE_ENV !== 'production') {
+
+              console.log('CEP encontrado:', viaCepData);
+
+            }
           } else {
-            console.log('CEP não encontrado');
+            if (process.env.NODE_ENV !== 'production') {
+
+              console.log('CEP não encontrado');
+
+            }
           }
         }
       } catch (error) {

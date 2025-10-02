@@ -83,13 +83,21 @@ class CryptoService {
 
         return cryptoData;
       } catch (error) {
-        console.warn(`API ${api.name} falhou, tentando próxima:`, error.message);
+        if (process.env.NODE_ENV !== 'production') {
+
+          console.warn(`API ${api.name} falhou, tentando próxima:`, error.message);
+
+        }
         continue; // Tentar próxima API
       }
     }
 
     // Se todas as APIs falharam, usar dados de fallback
-    console.warn('Todas as APIs de criptomoedas falharam, usando dados de fallback');
+    if (process.env.NODE_ENV !== 'production') {
+
+      console.warn('Todas as APIs de criptomoedas falharam, usando dados de fallback');
+
+    }
     return this.getFallbackCryptoData();
   }
 

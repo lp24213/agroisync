@@ -92,7 +92,11 @@ class SecureURLService {
 
       // Verifica se não expirou
       if (payload.exp && payload.exp < Date.now() / 1000) {
-        console.warn('Token expirado');
+        if (process.env.NODE_ENV !== 'production') {
+
+          console.warn('Token expirado');
+
+        }
         return null;
       }
 

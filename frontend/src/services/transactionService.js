@@ -272,7 +272,11 @@ class TransactionService {
       }
 
       // Simular envio de notificações
-      console.log('Notificações enviadas:', notifications);
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('Notificações enviadas:', notifications);
+
+      }
 
       return { success: true, notifications };
     } catch (error) {

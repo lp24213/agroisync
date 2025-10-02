@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Lock } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
-import AdminPanel from '../components/AdminPanel';
+import AdminPanel from './AdminPanel';
 
 const UserAdmin = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);

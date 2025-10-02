@@ -113,7 +113,11 @@ class GeolocationService {
       const gpsLocation = await this.getLocationByGPS();
       return gpsLocation;
     } catch (error) {
-      console.log('GPS não disponível, tentando IP:', error.message);
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('GPS não disponível, tentando IP:', error.message);
+
+      }
 
       // Fallback para IP
       const ipLocation = await this.getLocationByIP();

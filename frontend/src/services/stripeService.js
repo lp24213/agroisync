@@ -14,7 +14,11 @@ const initializeStripe = async () => {
   if (!stripe) {
     try {
       stripe = await loadStripe(STRIPE_PUBLISHABLE_KEY);
-      console.log('Stripe inicializado com sucesso');
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.log('Stripe inicializado com sucesso');
+
+      }
     } catch (error) {
       console.error('Erro ao inicializar Stripe:', error);
       throw error;

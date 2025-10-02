@@ -83,7 +83,11 @@ const CryptoDashboard = () => {
   const registerClient = async walletAddress => {
     // Aqui você faria a chamada para sua blockchain
     // Registrando o cliente e criando seu painel
-    console.log('Registrando cliente:', walletAddress);
+    if (process.env.NODE_ENV !== 'production') {
+
+      console.log('Registrando cliente:', walletAddress);
+
+    }
 
     // Simulação de registro
     const clientData = {
@@ -123,7 +127,13 @@ const CryptoDashboard = () => {
         params: [transactionParameters]
       });
 
-      console.log('Pagamento enviado:', txHash);
+      if (process.env.NODE_ENV !== 'production') {
+
+
+        console.log('Pagamento enviado:', txHash);
+
+
+      }
       alert(`Pagamento de ${amount} ${currency} enviado com sucesso!`);
     } catch (error) {
       console.error('Erro no pagamento:', error);

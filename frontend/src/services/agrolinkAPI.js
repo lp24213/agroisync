@@ -194,7 +194,11 @@ export const useAgrolinkGrains = () => {
         return ibgeData;
       }
     } catch (error) {
-      console.warn('Erro ao buscar dados IBGE:', error);
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.warn('Erro ao buscar dados IBGE:', error);
+
+      }
     }
     return null;
   }, []);

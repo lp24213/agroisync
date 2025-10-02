@@ -103,7 +103,11 @@ class PaymentService {
         const expectedChainId = '0x' + this.chainId.toString(16);
 
         if (chainId !== expectedChainId) {
-          console.warn(`MetaMask está na rede ${chainId}, esperado ${expectedChainId}`);
+          if (process.env.NODE_ENV !== 'production') {
+
+            console.warn(`MetaMask está na rede ${chainId}, esperado ${expectedChainId}`);
+
+          }
           // Solicitar mudança de rede
           try {
             await window.ethereum.request({

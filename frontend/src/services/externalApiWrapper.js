@@ -33,7 +33,11 @@ class ExternalApiWrapper {
     if (enableCache) {
       const cached = this.getFromCache(url);
       if (cached) {
-        console.log(`📦 Cache hit for ${apiName}:`, url);
+        if (process.env.NODE_ENV !== 'production') {
+
+          console.log(`📦 Cache hit for ${apiName}:`, url);
+
+        }
         return { success: true, data: cached, source: 'cache' };
       }
     }
@@ -49,11 +53,19 @@ class ExternalApiWrapper {
 
       return { success: true, data, source: 'api' };
     } catch (error) {
-      console.warn(`⚠️ ${apiName} API falhou:`, error.message);
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.warn(`⚠️ ${apiName} API falhou:`, error.message);
+
+      }
 
       // Usar fallback se disponível
       if (fallbackData || mockData) {
-        console.log(`🔄 Usando fallback para ${apiName}`);
+        if (process.env.NODE_ENV !== 'production') {
+
+          console.log(`🔄 Usando fallback para ${apiName}`);
+
+        }
         return {
           success: true,
           data: fallbackData || mockData,
@@ -83,7 +95,11 @@ class ExternalApiWrapper {
       return response.data;
     } catch (error) {
       if (attempt < this.retryAttempts) {
-        console.log(`🔄 Retry ${attempt}/${this.retryAttempts} for ${url}`);
+        if (process.env.NODE_ENV !== 'production') {
+
+          console.log(`🔄 Retry ${attempt}/${this.retryAttempts} for ${url}`);
+
+        }
         await this.sleep(this.retryDelay * attempt);
         return this.fetchWithRetry(url, options, attempt + 1);
       }
@@ -193,7 +209,11 @@ class ExternalApiWrapper {
   // Weather API com fallback
   async fetchWeather(city) {
     if (!EXTERNAL_APIS.weather.apiKey) {
-      console.warn('⚠️ Weather API key não configurada');
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.warn('⚠️ Weather API key não configurada');
+
+      }
       return this.getWeatherMockData(city);
     }
 
@@ -257,7 +277,11 @@ class ExternalApiWrapper {
   // Stocks API com fallback
   async fetchStockQuote(symbol) {
     if (!EXTERNAL_APIS.stocks.apiKey || EXTERNAL_APIS.stocks.apiKey === 'demo') {
-      console.warn('⚠️ Stocks API key não configurada, usando dados mockados');
+      if (process.env.NODE_ENV !== 'production') {
+
+        console.warn('⚠️ Stocks API key não configurada, usando dados mockados');
+
+      }
       return this.getStockMockData(symbol);
     }
 

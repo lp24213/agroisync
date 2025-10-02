@@ -541,7 +541,11 @@ class AdvancedSecurityService {
     this.sendThreatToMonitoring(threat);
 
     // Log local
-    console.warn('Security Threat:', threat);
+    if (process.env.NODE_ENV !== 'production') {
+
+      console.warn('Security Threat:', threat);
+
+    }
   }
 
   // Enviar ameaça para monitoramento
@@ -580,7 +584,11 @@ class AdvancedSecurityService {
     }
 
     // Log do alerta
-    console.warn('Security Alert:', message, data);
+    if (process.env.NODE_ENV !== 'production') {
+
+      console.warn('Security Alert:', message, data);
+
+    }
   }
 
   // Iniciar monitoramento contínuo
@@ -703,7 +711,11 @@ class AdvancedSecurityService {
     }
 
     // Log local
-    console.log('Security Metrics Updated:', metrics);
+    if (process.env.NODE_ENV !== 'production') {
+
+      console.log('Security Metrics Updated:', metrics);
+
+    }
   }
 
   // Validar ambiente de segurança
