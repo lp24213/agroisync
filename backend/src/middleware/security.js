@@ -230,7 +230,9 @@ export const detectAttackPatterns = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro na detecção de ataques:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na detecção de ataques:', error);
+    }
     next();
   }
 };
@@ -279,7 +281,9 @@ export const validateInput = (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro na validação de entrada:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na validação de entrada:', error);
+    }
     res.status(400).json({
       success: false,
       message: 'Erro na validação de entrada',
@@ -308,7 +312,9 @@ export const sanitizeData = (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro na sanitização:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na sanitização:', error);
+    }
     next();
   }
 };
@@ -343,7 +349,9 @@ export const securityLogging = async (req, res, next) => {
     await SecurityLog.create(logEntry);
     next();
   } catch (error) {
-    console.error('Erro no logging de segurança:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no logging de segurança:', error);
+    }
     next();
   }
 };
@@ -401,7 +409,9 @@ export const validateStripeWebhook = (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro na validação do webhook Stripe:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na validação do webhook Stripe:', error);
+    }
     res.status(400).json({
       success: false,
       message: 'Webhook inválido',
@@ -434,7 +444,9 @@ export const validateCSRF = (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro na validação CSRF:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na validação CSRF:', error);
+    }
     res.status(403).json({
       success: false,
       message: 'Erro na validação CSRF',
@@ -462,7 +474,9 @@ export const validateAPIKey = (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro na validação da API Key:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na validação da API Key:', error);
+    }
     res.status(401).json({
       success: false,
       message: 'API Key inválida',

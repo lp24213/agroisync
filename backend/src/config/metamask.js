@@ -129,7 +129,7 @@ export const verifyMetamaskAuth = async (address, signature, nonce, timestamp) =
       address: address.toLowerCase()
     };
   } catch (error) {
-    console.error('Error verifying Metamask auth:', error);
+    // Console log removido (dados sensíveis)
     return {
       valid: false,
       error: 'Verification failed'
@@ -176,7 +176,9 @@ export const createPaymentTransaction = async (
       estimatedGas: transaction.gasLimit * Number(transaction.gasPrice)
     };
   } catch (error) {
-    console.error('Error creating payment transaction:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error creating payment transaction:', error);
+    }
     throw error;
   }
 };
@@ -214,7 +216,9 @@ export const checkTransactionStatus = async (txHash, network = 'ethereum') => {
       effectiveGasPrice: receipt.effectiveGasPrice.toString()
     };
   } catch (error) {
-    console.error('Error checking transaction status:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error checking transaction status:', error);
+    }
     throw error;
   }
 };
@@ -240,7 +244,9 @@ export const getWalletBalance = async (address, network = 'ethereum') => {
       currency: networkConfig.nativeCurrency.symbol
     };
   } catch (error) {
-    console.error('Error getting wallet balance:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error getting wallet balance:', error);
+    }
     throw error;
   }
 };
@@ -297,7 +303,9 @@ export const getTransactionHistory = async (address, network = 'ethereum', limit
       timestamp: Date.now() // Seria melhor obter do bloco
     }));
   } catch (error) {
-    console.error('Error getting transaction history:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error getting transaction history:', error);
+    }
     throw error;
   }
 };
@@ -346,7 +354,7 @@ export const getTokenInfo = async (tokenAddress, network = 'ethereum') => {
       network: networkConfig.name
     };
   } catch (error) {
-    console.error('Error getting token info:', error);
+    // Console log removido (dados sensíveis)
     throw error;
   }
 };
@@ -377,7 +385,7 @@ export const getTokenBalance = async (tokenAddress, walletAddress, network = 'et
       network: networkConfig.name
     };
   } catch (error) {
-    console.error('Error getting token balance:', error);
+    // Console log removido (dados sensíveis)
     throw error;
   }
 };
@@ -408,7 +416,9 @@ export const isContractAddress = async (address, network = 'ethereum') => {
 
     return code !== '0x';
   } catch (error) {
-    console.error('Error checking if address is contract:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error checking if address is contract:', error);
+    }
     return false;
   }
 };
@@ -457,7 +467,9 @@ export const getConnectedAddress = async () => {
     const accounts = await window.ethereum.request({ method: 'eth_accounts' });
     return accounts[0] || null;
   } catch (error) {
-    console.error('Error getting connected address:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error getting connected address:', error);
+    }
     return null;
   }
 };
@@ -475,7 +487,9 @@ export const connectWallet = async () => {
 
     return accounts[0] || null;
   } catch (error) {
-    console.error('Error connecting wallet:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error connecting wallet:', error);
+    }
     throw error;
   }
 };
@@ -494,7 +508,9 @@ export const switchNetwork = async chainId => {
 
     return true;
   } catch (error) {
-    console.error('Error switching network:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error switching network:', error);
+    }
     throw error;
   }
 };

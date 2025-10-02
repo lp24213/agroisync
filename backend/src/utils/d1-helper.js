@@ -33,7 +33,9 @@ export const executeD1Query = async (db, query, params = []) => {
       meta: result.meta || {}
     };
   } catch (error) {
-    console.error('D1 Query Error:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('D1 Query Error:', error);
+    }
     return {
       success: false,
       error: error.message,
@@ -56,7 +58,9 @@ export const executeD1QueryFirst = async (db, query, params = []) => {
       result: result || null
     };
   } catch (error) {
-    console.error('D1 Query Error:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('D1 Query Error:', error);
+    }
     return {
       success: false,
       error: error.message,
@@ -80,7 +84,9 @@ export const executeD1Write = async (db, query, params = []) => {
       changes: result.meta?.changes || 0
     };
   } catch (error) {
-    console.error('D1 Write Error:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('D1 Write Error:', error);
+    }
     return {
       success: false,
       error: error.message,

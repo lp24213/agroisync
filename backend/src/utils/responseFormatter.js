@@ -149,7 +149,9 @@ export const notFoundResponse = (resource = 'Resource') => {
 export const serverErrorResponse = (message = 'Internal server error', error = null) => {
   // Log do erro para monitoramento
   if (error) {
-    console.error('Server Error:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Server Error:', error);
+    }
   }
 
   return {

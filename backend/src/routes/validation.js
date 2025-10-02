@@ -78,7 +78,9 @@ router.post('/cpf', async (req, res) => {
       message: 'CPF válido'
     });
   } catch (error) {
-    console.error('Erro ao validar CPF:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao validar CPF:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -185,7 +187,9 @@ router.post('/cnpj', async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Erro ao validar CNPJ:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao validar CNPJ:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -250,7 +254,9 @@ router.post('/cep', async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Erro ao buscar CEP:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar CEP:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -294,7 +300,9 @@ router.post('/plate', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao validar placa:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao validar placa:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -416,7 +424,9 @@ router.post('/phone', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao validar telefone:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao validar telefone:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'

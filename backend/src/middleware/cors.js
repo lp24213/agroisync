@@ -42,7 +42,9 @@ export const corsOptions = {
     if (isAllowed) {
       callback(null, true);
     } else {
-      // console.warn(`CORS: Origem bloqueada: ${origin}`);
+      // if (process.env.NODE_ENV !== 'production') {
+   console.warn(`CORS: Origem bloqueada: ${origin}`);
+ }
       callback(new Error('Não permitido pelo CORS'), false);
     }
   },

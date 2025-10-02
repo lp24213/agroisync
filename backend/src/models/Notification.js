@@ -323,7 +323,9 @@ notificationSchema.pre('save', function (next) {
 // Middleware para limpeza de cache
 notificationSchema.post('save', function () {
   // Em produção, invalidar cache aqui
-  console.log(`Notificação ${this.id} salva para usuário ${this.userId}`);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`Notificação ${this.id} salva para usuário ${this.userId}`);
+  }
 });
 
 export default mongoose.model('Notification', notificationSchema);

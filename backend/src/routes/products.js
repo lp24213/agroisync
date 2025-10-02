@@ -86,7 +86,9 @@ router.get('/', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching products:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching products:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -113,7 +115,9 @@ router.get('/featured', async (req, res) => {
       data: { products }
     });
   } catch (error) {
-    console.error('Error fetching featured products:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching featured products:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -131,7 +135,9 @@ router.get('/categories', async (req, res) => {
       data: { categories }
     });
   } catch (error) {
-    console.error('Error fetching categories:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching categories:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -170,7 +176,9 @@ router.get('/:id', async (req, res) => {
       data: { product }
     });
   } catch (error) {
-    console.error('Error fetching product:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching product:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -221,8 +229,9 @@ router.post('/', authenticateToken, validateProduct, async (req, res) => {
       data: { product }
     });
   } catch (error) {
-    console.error('Error creating product:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error creating product:', error);
+    }
     if (error.message.includes('Plano de loja não ativo')) {
       return res.status(403).json({
         success: false,
@@ -276,7 +285,9 @@ router.put('/:id', authenticateToken, validateProduct, async (req, res) => {
       data: { product }
     });
   } catch (error) {
-    console.error('Error updating product:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error updating product:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -315,7 +326,9 @@ router.delete('/:id', authenticateToken, async (req, res) => {
       message: 'Produto removido com sucesso'
     });
   } catch (error) {
-    console.error('Error deleting product:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error deleting product:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -352,7 +365,9 @@ router.post('/:id/favorite', authenticateToken, async (req, res) => {
       message: 'Produto adicionado aos favoritos'
     });
   } catch (error) {
-    console.error('Error adding to favorites:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error adding to favorites:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -382,7 +397,9 @@ router.delete('/:id/favorite', authenticateToken, async (req, res) => {
       message: 'Produto removido dos favoritos'
     });
   } catch (error) {
-    console.error('Error removing from favorites:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error removing from favorites:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -425,7 +442,9 @@ router.get('/user/favorites', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching favorite products:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching favorite products:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -466,7 +485,9 @@ router.get('/seller/my-products', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching seller products:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching seller products:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -519,7 +540,9 @@ router.post('/:id/contact', authenticateToken, async (req, res) => {
       message: 'Mensagem enviada com sucesso para o vendedor'
     });
   } catch (error) {
-    console.error('Error contacting seller:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error contacting seller:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

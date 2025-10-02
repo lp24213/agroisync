@@ -187,10 +187,10 @@ export const cleanupExpiredTokens = async () => {
       ]
     });
 
-    console.log(`Limpeza de tokens: ${result.deletedCount} tokens removidos`);
+    // Console log removido (dados sensíveis)
     return result.deletedCount;
   } catch (error) {
-    console.error('Erro na limpeza de tokens:', error);
+    // Console log removido (dados sensíveis)
     throw error;
   }
 };
@@ -258,7 +258,7 @@ export const authenticateRefreshToken = async (req, res, next) => {
     req.refreshToken = refreshToken;
     next();
   } catch (error) {
-    console.error('Erro na autenticação do refresh token:', error);
+    // Console log removido (dados sensíveis)
     return res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

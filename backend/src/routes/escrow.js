@@ -114,7 +114,9 @@ router.post(
         }
       });
     } catch (error) {
-      console.error('Erro ao criar escrow:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao criar escrow:', error);
+      }
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -228,7 +230,9 @@ router.post(
         }
       });
     } catch (error) {
-      console.error('Erro ao financiar escrow:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao financiar escrow:', error);
+      }
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -332,7 +336,9 @@ router.post(
         });
       }
     } catch (error) {
-      console.error('Erro ao processar escrow:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao processar escrow:', error);
+      }
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -402,7 +408,9 @@ router.get('/:id', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar escrow:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar escrow:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -436,7 +444,9 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
       data: escrows
     });
   } catch (error) {
-    console.error('Erro ao listar escrows:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao listar escrows:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

@@ -361,7 +361,9 @@ router.post('/agroconecta', registrationLimiter, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao cadastrar AgroConecta:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao cadastrar AgroConecta:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -428,7 +430,9 @@ router.post('/loja', registrationLimiter, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao cadastrar Loja:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao cadastrar Loja:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -495,7 +499,9 @@ router.post('/marketplace', registrationLimiter, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao cadastrar Marketplace:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao cadastrar Marketplace:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -565,7 +571,9 @@ router.post('/fazenda', registrationLimiter, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao cadastrar Fazenda:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao cadastrar Fazenda:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -613,7 +621,9 @@ router.get('/agroconecta/public', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar AgroConecta:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar AgroConecta:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -667,7 +677,9 @@ router.get('/loja/public', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar Lojas:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar Lojas:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -719,7 +731,9 @@ router.get('/marketplace/public', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar Marketplaces:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar Marketplaces:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -767,7 +781,9 @@ router.get('/fazenda/public', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar Fazendas:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar Fazendas:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',

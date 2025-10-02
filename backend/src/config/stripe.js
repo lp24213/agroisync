@@ -100,7 +100,9 @@ export const createCheckoutSession = async (priceId, customerEmail, userId) => {
 
     return { success: true, sessionId: session.id, url: session.url };
   } catch (error) {
-    // console.error('Erro ao criar sessão Stripe:', error);
+    // if (process.env.NODE_ENV !== 'production') {
+   console.error('Erro ao criar sessão Stripe:', error);
+ }
     return { success: false, error: error.message };
   }
 };
@@ -111,7 +113,9 @@ export const verifyWebhookSignature = (payload, signature) => {
     const event = stripe.webhooks.constructEvent(payload, signature, STRIPE_CONFIG.WEBHOOK_SECRET);
     return { success: true, event };
   } catch (error) {
-    // console.error('Erro na verificação do webhook:', error);
+    // if (process.env.NODE_ENV !== 'production') {
+   console.error('Erro na verificação do webhook:', error);
+ }
     return { success: false, error: error.message };
   }
 };
@@ -122,7 +126,9 @@ export const getSessionDetails = async sessionId => {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     return { success: true, session };
   } catch (error) {
-    // console.error('Erro ao obter sessão:', error);
+    // if (process.env.NODE_ENV !== 'production') {
+   console.error('Erro ao obter sessão:', error);
+ }
     return { success: false, error: error.message };
   }
 };
@@ -133,7 +139,9 @@ export const cancelSubscription = async subscriptionId => {
     const subscription = await stripe.subscriptions.cancel(subscriptionId);
     return { success: true, subscription };
   } catch (error) {
-    // console.error('Erro ao cancelar assinatura:', error);
+    // if (process.env.NODE_ENV !== 'production') {
+   console.error('Erro ao cancelar assinatura:', error);
+ }
     return { success: false, error: error.message };
   }
 };
@@ -144,7 +152,9 @@ export const getSubscription = async subscriptionId => {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
     return { success: true, subscription };
   } catch (error) {
-    // console.error('Erro ao obter assinatura:', error);
+    // if (process.env.NODE_ENV !== 'production') {
+   console.error('Erro ao obter assinatura:', error);
+ }
     return { success: false, error: error.message };
   }
 };

@@ -228,7 +228,9 @@ router.post('/subscribe', auth, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao criar assinatura:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao criar assinatura:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro ao processar pagamento',
@@ -282,9 +284,13 @@ async function handleCheckoutSessionCompleted(session) {
 
     await registration.save();
 
-    console.log(`Pagamento processado para ${type} ID: ${registrationId}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`Pagamento processado para ${type} ID: ${registrationId}`);
+    }
   } catch (error) {
-    console.error('Erro ao processar checkout session:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao processar checkout session:', error);
+    }
   }
 }
 
@@ -321,7 +327,9 @@ async function handleInvoicePaymentSucceeded(invoice) {
       await registration.save();
     }
   } catch (error) {
-    console.error('Erro ao processar pagamento bem-sucedido:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao processar pagamento bem-sucedido:', error);
+    }
   }
 }
 
@@ -359,7 +367,9 @@ async function handleInvoicePaymentFailed(invoice) {
       await registration.save();
     }
   } catch (error) {
-    console.error('Erro ao processar falha no pagamento:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao processar falha no pagamento:', error);
+    }
   }
 }
 
@@ -401,7 +411,9 @@ async function handleSubscriptionUpdated(subscription) {
       await registration.save();
     }
   } catch (error) {
-    console.error('Erro ao atualizar assinatura:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao atualizar assinatura:', error);
+    }
   }
 }
 
@@ -439,7 +451,9 @@ async function handleSubscriptionDeleted(subscription) {
       await registration.save();
     }
   } catch (error) {
-    console.error('Erro ao cancelar assinatura:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao cancelar assinatura:', error);
+    }
   }
 }
 
@@ -523,7 +537,9 @@ router.get('/subscription/:id', auth, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar assinatura:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar assinatura:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro ao buscar assinatura',
@@ -583,7 +599,9 @@ router.post('/cancel', auth, async (req, res) => {
       message: 'Assinatura cancelada com sucesso. Você manterá acesso até o final do período atual.'
     });
   } catch (error) {
-    console.error('Erro ao cancelar assinatura:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao cancelar assinatura:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro ao cancelar assinatura',

@@ -33,7 +33,7 @@ export const verifyToken = async token => {
       groups: payload.groups || []
     };
   } catch (error) {
-    console.error('Error verifying JWT token:', error);
+    // Console log removido (dados sensíveis)
     return {
       valid: false,
       error: error.message
@@ -126,7 +126,7 @@ export const authenticateToken = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Error in token authentication:', error);
+    // Console log removido (dados sensíveis)
     return res.status(500).json({
       success: false,
       message: 'Erro interno de autenticação'
@@ -153,7 +153,9 @@ export const requireAdmin = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Error in admin verification:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error in admin verification:', error);
+    }
     return res.status(500).json({
       success: false,
       message: 'Erro interno de verificação'
@@ -181,7 +183,9 @@ export const requireActivePlan = module => {
 
       next();
     } catch (error) {
-      console.error('Error in plan verification:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error in plan verification:', error);
+      }
       return res.status(500).json({
         success: false,
         message: 'Erro interno de verificação'
@@ -209,7 +213,9 @@ export const requireMessageAccess = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Error in message access verification:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error in message access verification:', error);
+    }
     return res.status(500).json({
       success: false,
       message: 'Erro interno de verificação'

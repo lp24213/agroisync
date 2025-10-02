@@ -22,7 +22,9 @@ router.get('/cep/:cep', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro ao consultar CEP:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao consultar CEP:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -36,7 +38,9 @@ router.get('/estados', async (req, res) => {
     const result = await externalAPIService.buscarEstados();
     res.json(result);
   } catch (error) {
-    console.error('Erro ao buscar estados:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar estados:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -51,7 +55,9 @@ router.get('/estados/:uf/municipios', async (req, res) => {
     const result = await externalAPIService.buscarMunicipiosPorEstado(uf);
     res.json(result);
   } catch (error) {
-    console.error('Erro ao buscar municípios:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar municípios:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -65,7 +71,9 @@ router.get('/regioes', async (req, res) => {
     const result = await externalAPIService.buscarRegioes();
     res.json(result);
   } catch (error) {
-    console.error('Erro ao buscar regiões:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar regiões:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -100,7 +108,9 @@ router.get('/clima/coordenadas', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro ao obter clima por coordenadas:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter clima por coordenadas:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -122,7 +132,9 @@ router.get('/clima/ip', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro ao obter clima por IP:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter clima por IP:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -144,7 +156,9 @@ router.get('/clima/ip/:ip', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro ao obter clima por IP:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter clima por IP:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -169,7 +183,9 @@ router.get('/baidu/geocode', async (req, res) => {
     const result = await externalAPIService.geocodeAddress(address, city, region);
     res.json(result);
   } catch (error) {
-    console.error('Erro no geocoding:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no geocoding:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -192,7 +208,9 @@ router.get('/baidu/reverse-geocode', async (req, res) => {
     const result = await externalAPIService.reverseGeocode(parseFloat(lat), parseFloat(lng));
     res.json(result);
   } catch (error) {
-    console.error('Erro no reverse geocoding:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no reverse geocoding:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -218,7 +236,9 @@ router.get('/baidu/route', async (req, res) => {
     const result = await externalAPIService.calculateRoute(origin, destination, mode);
     res.json(result);
   } catch (error) {
-    console.error('Erro ao calcular rota:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao calcular rota:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -240,7 +260,9 @@ router.get('/receita/cnpj/:cnpj', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro ao consultar CNPJ:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao consultar CNPJ:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -260,7 +282,9 @@ router.get('/receita/cpf/:cpf', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro ao consultar CPF:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao consultar CPF:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -285,7 +309,9 @@ router.post('/validar/endereco', async (req, res) => {
     const result = await externalAPIService.validarEndereco(endereco);
     res.json(result);
   } catch (error) {
-    console.error('Erro ao validar endereço:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao validar endereço:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -307,7 +333,9 @@ router.get('/geo/ip/:ip', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro ao obter coordenadas por IP:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter coordenadas por IP:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -327,7 +355,9 @@ router.get('/geo/ip', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro ao obter coordenadas do IP do cliente:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter coordenadas do IP do cliente:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -376,7 +406,9 @@ router.get('/status', async (req, res) => {
 
     res.json(status);
   } catch (error) {
-    console.error('Erro ao verificar status das APIs:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao verificar status das APIs:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

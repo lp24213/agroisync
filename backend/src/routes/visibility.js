@@ -45,7 +45,9 @@ router.get('/products/public', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar produtos públicos:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar produtos públicos:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -87,7 +89,9 @@ router.get('/freights/public', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar fretes públicos:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar fretes públicos:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -135,7 +139,9 @@ router.get('/products/:id/full', authenticateToken, async (req, res) => {
       data: product
     });
   } catch (error) {
-    console.error('Erro ao buscar dados completos do produto:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar dados completos do produto:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -183,7 +189,9 @@ router.get('/freights/:id/full', authenticateToken, async (req, res) => {
       data: freight
     });
   } catch (error) {
-    console.error('Erro ao buscar dados completos do frete:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar dados completos do frete:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -238,7 +246,9 @@ router.post('/unlock', authenticateToken, async (req, res) => {
       paymentId: payment._id
     });
   } catch (error) {
-    console.error('Erro ao liberar dados:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao liberar dados:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'

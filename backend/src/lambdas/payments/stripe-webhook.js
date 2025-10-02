@@ -51,7 +51,9 @@ exports.handler = async event => {
     try {
       stripeEvent = stripe.webhooks.constructEvent(event.body, signature, webhookSecret);
     } catch (err) {
-      console.error('Erro na verificação da assinatura:', err.message);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro na verificação da assinatura:', err.message);
+      }
       return {
         statusCode: 400,
         headers: corsHeaders,
@@ -70,7 +72,9 @@ exports.handler = async event => {
     const existingEvent = await db.collection('webhook_events').findOne({ eventId });
 
     if (existingEvent) {
-      console.log(`Evento já processado: ${eventId}`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`Evento já processado: ${eventId}`);
+      }
       return {
         statusCode: 200,
         headers: corsHeaders,
@@ -105,7 +109,9 @@ exports.handler = async event => {
         break;
 
       default:
-        console.log(`Evento não processado: ${stripeEvent.type}`);
+        if (process.env.NODE_ENV !== 'production') {
+          console.log(`Evento não processado: ${stripeEvent.type}`);
+        }
     }
 
     return {
@@ -114,8 +120,9 @@ exports.handler = async event => {
       body: JSON.stringify({ received: true })
     };
   } catch (error) {
-    console.error('Erro no webhook do Stripe:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no webhook do Stripe:', error);
+    }
     return {
       statusCode: 500,
       headers: {
@@ -138,18 +145,23 @@ exports.handler = async event => {
 // Função para processar checkout.session.completed
 async function handleCheckoutSessionCompleted(db, session) {
   try {
-    console.log('Processando checkout.session.completed:', session.id);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Processando checkout.session.completed:', session.id);
+    }
     const { cognitoSub, planType } = session.metadata;
     if (!cognitoSub || !planType) {
-      console.error('Metadados ausentes na sessão:', session.id);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Metadados ausentes na sessão:', session.id);
+      }
       return;
     }
 
     // Buscar usuário
     const user = await db.collection('users').findOne({ cognitoSub });
     if (!user) {
-      console.error('Usuário não encontrado:', cognitoSub);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Usuário não encontrado:', cognitoSub);
+      }
       return;
     }
 
@@ -160,7 +172,9 @@ async function handleCheckoutSessionCompleted(db, session) {
     });
 
     if (existingPayment) {
-      console.log(`Pagamento já processado para sessão: ${session.id}`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`Pagamento já processado para sessão: ${session.id}`);
+      }
       return;
     }
 
@@ -182,7 +196,9 @@ async function handleCheckoutSessionCompleted(db, session) {
 
     const plan = PLANS[planType];
     if (!plan) {
-      console.error('Plano inválido:', planType);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Plano inválido:', planType);
+      }
       return;
     }
 
@@ -230,10 +246,13 @@ async function handleCheckoutSessionCompleted(db, session) {
       eventType: 'checkout.session.completed'
     });
 
-    console.log(`Plano ${planType} ativado para usuário ${cognitoSub} - Sessão: ${session.id}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`Plano ${planType} ativado para usuário ${cognitoSub} - Sessão: ${session.id}`);
+    }
   } catch (error) {
-    console.error('Erro ao processar checkout.session.completed:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao processar checkout.session.completed:', error);
+    }
     // Registrar erro
     await db.collection('payment_logs').insertOne({
       userId: cognitoSub,
@@ -250,12 +269,15 @@ async function handleCheckoutSessionCompleted(db, session) {
 // Função para processar invoice.payment_succeeded
 async function handleInvoicePaymentSucceeded(db, invoice) {
   try {
-    console.log('Processando invoice.payment_succeeded:', invoice.id);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Processando invoice.payment_succeeded:', invoice.id);
+    }
     // Buscar assinatura
     const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
     if (!subscription) {
-      console.error('Assinatura não encontrada:', invoice.subscription);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Assinatura não encontrada:', invoice.subscription);
+      }
       return;
     }
 
@@ -268,7 +290,9 @@ async function handleInvoicePaymentSucceeded(db, invoice) {
     });
 
     if (!user) {
-      console.error('Usuário não encontrado para invoice:', invoice.id);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Usuário não encontrado para invoice:', invoice.id);
+      }
       return;
     }
 
@@ -286,17 +310,22 @@ async function handleInvoicePaymentSucceeded(db, invoice) {
       }
     );
 
-    console.log(`Plano renovado para usuário ${user.cognitoSub}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`Plano renovado para usuário ${user.cognitoSub}`);
+    }
   } catch (error) {
-    console.error('Erro ao processar invoice.payment_succeeded:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao processar invoice.payment_succeeded:', error);
+    }
   }
 }
 
 // Função para processar invoice.payment_failed
 async function handleInvoicePaymentFailed(db, invoice) {
   try {
-    console.log('Processando invoice.payment_failed:', invoice.id);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Processando invoice.payment_failed:', invoice.id);
+    }
     // Buscar usuário
     const user = await db.collection('users').findOne({
       $or: [
@@ -306,7 +335,9 @@ async function handleInvoicePaymentFailed(db, invoice) {
     });
 
     if (!user) {
-      console.error('Usuário não encontrado para invoice failed:', invoice.id);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Usuário não encontrado para invoice failed:', invoice.id);
+      }
       return;
     }
 
@@ -321,24 +352,31 @@ async function handleInvoicePaymentFailed(db, invoice) {
       }
     );
 
-    console.log(`Plano marcado como expirado para usuário ${user.cognitoSub}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`Plano marcado como expirado para usuário ${user.cognitoSub}`);
+    }
   } catch (error) {
-    console.error('Erro ao processar invoice.payment_failed:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao processar invoice.payment_failed:', error);
+    }
   }
 }
 
 // Função para processar customer.subscription.deleted
 async function handleSubscriptionDeleted(db, subscription) {
   try {
-    console.log('Processando customer.subscription.deleted:', subscription.id);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Processando customer.subscription.deleted:', subscription.id);
+    }
     // Buscar usuário
     const user = await db.collection('users').findOne({
       'stripe.subscriptionId': subscription.id
     });
 
     if (!user) {
-      console.error('Usuário não encontrado para subscription deleted:', subscription.id);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Usuário não encontrado para subscription deleted:', subscription.id);
+      }
       return;
     }
 
@@ -353,8 +391,12 @@ async function handleSubscriptionDeleted(db, subscription) {
       }
     );
 
-    console.log(`Plano marcado como expirado para usuário ${user.cognitoSub}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`Plano marcado como expirado para usuário ${user.cognitoSub}`);
+    }
   } catch (error) {
-    console.error('Erro ao processar customer.subscription.deleted:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao processar customer.subscription.deleted:', error);
+    }
   }
 }

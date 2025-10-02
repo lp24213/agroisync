@@ -96,7 +96,9 @@ router.get('/dashboard', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar dashboard do usuário:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar dashboard do usuário:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -151,7 +153,9 @@ router.get('/items', authenticateToken, async (req, res) => {
       data: items
     });
   } catch (error) {
-    console.error('Erro ao buscar itens do usuário:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar itens do usuário:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -260,7 +264,9 @@ router.get('/statistics', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar estatísticas do usuário:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar estatísticas do usuário:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -287,7 +293,9 @@ router.get('/profile', authenticateToken, async (req, res) => {
       data: user
     });
   } catch (error) {
-    console.error('Erro ao buscar perfil do usuário:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar perfil do usuário:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -325,7 +333,9 @@ router.put('/profile', authenticateToken, async (req, res) => {
       data: user
     });
   } catch (error) {
-    console.error('Erro ao atualizar perfil do usuário:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao atualizar perfil do usuário:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'

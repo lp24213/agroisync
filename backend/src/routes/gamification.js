@@ -36,7 +36,9 @@ router.get('/profile', async (req, res) => {
       data: userReputation
     });
   } catch (error) {
-    console.error('Erro ao buscar perfil de reputação:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar perfil de reputação:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -85,7 +87,9 @@ router.get('/leaderboard', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar ranking:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar ranking:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -123,7 +127,9 @@ router.get('/badges', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar badges:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar badges:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -170,7 +176,9 @@ router.post('/points', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao adicionar pontos:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao adicionar pontos:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -219,7 +227,9 @@ router.get('/stats', async (req, res) => {
       data: stats
     });
   } catch (error) {
-    console.error('Erro ao buscar estatísticas:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar estatísticas:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -261,7 +271,9 @@ router.put('/notifications', async (req, res) => {
       data: userReputation.notifications
     });
   } catch (error) {
-    console.error('Erro ao atualizar notificações:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao atualizar notificações:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -330,7 +342,9 @@ router.get('/achievements', async (req, res) => {
       data: achievements
     });
   } catch (error) {
-    console.error('Erro ao buscar conquistas:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar conquistas:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

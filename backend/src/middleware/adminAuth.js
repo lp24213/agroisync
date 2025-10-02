@@ -54,8 +54,9 @@ const requireAdmin = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro na verificação de admin:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na verificação de admin:', error);
+    }
     if (error.name === 'JsonWebTokenError') {
       return res.status(401).json({
         success: false,
@@ -115,8 +116,9 @@ const validateAdminAction = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro na validação da ação administrativa:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na validação da ação administrativa:', error);
+    }
     return res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

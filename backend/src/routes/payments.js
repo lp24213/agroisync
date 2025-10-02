@@ -61,7 +61,9 @@ router.post('/commission/calculate', async (req, res) => {
       ownerWallet: OWNER_WALLET
     });
   } catch (error) {
-    console.error('Erro ao calcular comissão:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao calcular comissão:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -115,7 +117,9 @@ router.post('/commission/process', async (req, res) => {
       ownerWallet: OWNER_WALLET
     });
   } catch (error) {
-    console.error('Erro ao processar comissão:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao processar comissão:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -143,7 +147,9 @@ router.get('/status', async (req, res) => {
       planExpiry: user.planExpiry || null
     });
   } catch (error) {
-    console.error('Erro ao verificar status de pagamento:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao verificar status de pagamento:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -212,7 +218,9 @@ router.post('/stripe/create-session', async (req, res) => {
       url: session.url
     });
   } catch (error) {
-    console.error('Erro ao criar sessão Stripe:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao criar sessão Stripe:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro ao processar pagamento'
@@ -228,7 +236,9 @@ router.post('/stripe/webhook', express.raw({ type: 'application/json' }), async 
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
-    console.error('Erro na assinatura do webhook:', err.message);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na assinatura do webhook:', err.message);
+    }
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
@@ -250,12 +260,16 @@ router.post('/stripe/webhook', express.raw({ type: 'application/json' }), async 
         break;
 
       default:
-        console.log(`Evento não tratado: ${event.type}`);
+        if (process.env.NODE_ENV !== 'production') {
+          console.log(`Evento não tratado: ${event.type}`);
+        }
     }
 
     res.json({ received: true });
   } catch (error) {
-    console.error('Erro ao processar webhook:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao processar webhook:', error);
+    }
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
@@ -354,7 +368,9 @@ router.post('/crypto/verify', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao verificar pagamento crypto:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao verificar pagamento crypto:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -387,7 +403,9 @@ router.get('/verify/:paymentId', async (req, res) => {
       payment
     });
   } catch (error) {
-    console.error('Erro ao verificar pagamento:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao verificar pagamento:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -421,7 +439,9 @@ router.post('/cancel', async (req, res) => {
           cancel_at_period_end: true
         });
       } catch (stripeError) {
-        console.error('Erro ao cancelar no Stripe:', stripeError);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Erro ao cancelar no Stripe:', stripeError);
+        }
       }
     }
 
@@ -445,7 +465,9 @@ router.post('/cancel', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao cancelar assinatura:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao cancelar assinatura:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -463,7 +485,9 @@ router.get('/history', async (req, res) => {
       payments
     });
   } catch (error) {
-    console.error('Erro ao buscar histórico:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar histórico:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -508,9 +532,13 @@ async function handleStripePaymentSuccess(session) {
 
     await payment.save();
 
-    console.log(`Pagamento Stripe confirmado para usuário ${userId}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`Pagamento Stripe confirmado para usuário ${userId}`);
+    }
   } catch (error) {
-    console.error('Erro ao processar pagamento Stripe:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao processar pagamento Stripe:', error);
+    }
   }
 }
 
@@ -525,10 +553,14 @@ async function handleStripeSubscriptionRenewal(invoice) {
         planExpiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
       });
 
-      console.log(`Renovação Stripe confirmada para usuário ${userId}`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`Renovação Stripe confirmada para usuário ${userId}`);
+      }
     }
   } catch (error) {
-    console.error('Erro ao processar renovação Stripe:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao processar renovação Stripe:', error);
+    }
   }
 }
 
@@ -545,10 +577,14 @@ async function handleStripeSubscriptionCancellation(subscription) {
         cancellationDate: new Date()
       });
 
-      console.log(`Cancelamento Stripe processado para usuário ${userId}`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`Cancelamento Stripe processado para usuário ${userId}`);
+      }
     }
   } catch (error) {
-    console.error('Erro ao processar cancelamento Stripe:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao processar cancelamento Stripe:', error);
+    }
   }
 }
 
@@ -595,7 +631,9 @@ router.post('/metamask/create-invoice', async (req, res) => {
       instructions: `Envie exatamente ${plan.price} ETH para a carteira especificada`
     });
   } catch (error) {
-    console.error('Erro ao criar fatura MetaMask:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao criar fatura MetaMask:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -697,7 +735,9 @@ router.post('/metamask/verify', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao verificar pagamento MetaMask:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao verificar pagamento MetaMask:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -731,7 +771,9 @@ router.get('/metamask/balance/:address', async (req, res) => {
       currency: 'ETH'
     });
   } catch (error) {
-    console.error('Erro ao obter saldo MetaMask:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter saldo MetaMask:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -767,7 +809,9 @@ router.get('/metamask/transactions/:address', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao obter transações MetaMask:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter transações MetaMask:', error);
+    }
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -789,7 +833,9 @@ async function verifyBlockchainTransaction(transactionHash, amount, walletAddres
     // Simular verificação bem-sucedida
     return true;
   } catch (error) {
-    console.error('Erro ao verificar transação blockchain:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao verificar transação blockchain:', error);
+    }
     return false;
   }
 }

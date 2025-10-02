@@ -470,8 +470,9 @@ exports.handler = async event => {
       })
     };
   } catch (error) {
-    console.error('Erro no gerenciamento de fretes:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no gerenciamento de fretes:', error);
+    }
     return {
       statusCode: 500,
       headers: {

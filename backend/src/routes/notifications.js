@@ -33,7 +33,9 @@ router.get('/', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro ao buscar notificações:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar notificações:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -59,7 +61,9 @@ router.get('/unread/count', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro ao contar notificações não lidas:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao contar notificações não lidas:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -96,7 +100,9 @@ router.get('/:id', async (req, res) => {
       data: notification
     });
   } catch (error) {
-    console.error('Erro ao buscar notificação:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar notificação:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -118,7 +124,9 @@ router.patch('/:id/read', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro ao marcar como lida:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao marcar como lida:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -140,7 +148,9 @@ router.patch('/:id/archive', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro ao arquivar notificação:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao arquivar notificação:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -176,7 +186,9 @@ router.patch('/read-all', async (req, res) => {
       count: notifications.length
     });
   } catch (error) {
-    console.error('Erro ao marcar todas como lidas:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao marcar todas como lidas:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -216,7 +228,9 @@ router.delete('/:id', async (req, res) => {
       message: 'Notificação deletada com sucesso'
     });
   } catch (error) {
-    console.error('Erro ao deletar notificação:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao deletar notificação:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -252,7 +266,9 @@ router.delete('/clear-read', async (req, res) => {
       count: notifications.length
     });
   } catch (error) {
-    console.error('Erro ao limpar notificações lidas:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao limpar notificações lidas:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -273,7 +289,9 @@ router.get('/stats/overview', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro ao obter estatísticas:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter estatísticas:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -346,7 +364,9 @@ router.get('/admin/all', adminAuth, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar todas as notificações:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar todas as notificações:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -384,7 +404,9 @@ router.post('/admin/send', adminAuth, async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro ao enviar notificação manual:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao enviar notificação manual:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -403,7 +425,9 @@ router.get('/admin/stats', adminAuth, async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro ao obter estatísticas gerais:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter estatísticas gerais:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -422,7 +446,9 @@ router.post('/admin/cleanup', adminAuth, async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro ao fazer limpeza manual:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao fazer limpeza manual:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

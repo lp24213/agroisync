@@ -35,7 +35,9 @@ router.get('/check-access/:adId', auth, async (req, res) => {
 
     res.json({ hasAccess, adId });
   } catch (error) {
-    console.error('Erro ao verificar acesso:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao verificar acesso:', error);
+    }
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
@@ -109,7 +111,9 @@ router.post('/unlock-data', auth, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao liberar dados:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao liberar dados:', error);
+    }
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
@@ -165,7 +169,9 @@ router.get('/unlocked-data/:adId', auth, async (req, res) => {
       paymentId: payment._id
     });
   } catch (error) {
-    console.error('Erro ao obter dados liberados:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter dados liberados:', error);
+    }
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
@@ -224,7 +230,9 @@ router.post('/configure-release/:adId', auth, async (req, res) => {
       releaseSettings: product.releaseSettings
     });
   } catch (error) {
-    console.error('Erro ao configurar liberação:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao configurar liberação:', error);
+    }
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
@@ -303,7 +311,9 @@ router.get('/release-stats', auth, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao obter estatísticas:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter estatísticas:', error);
+    }
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });

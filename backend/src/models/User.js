@@ -514,7 +514,9 @@ userSchema.methods.encryptPIIData = function (data) {
     };
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('Erro ao criptografar dados PII:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao criptografar dados PII:', error);
+    }
     throw error;
   }
 };
@@ -533,7 +535,9 @@ userSchema.methods.decryptPIIData = function (encryptedData) {
     return JSON.parse(decrypted);
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('Erro ao descriptografar dados PII:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao descriptografar dados PII:', error);
+    }
     throw error;
   }
 };
@@ -563,7 +567,9 @@ userSchema.methods.getPIIData = function (field) {
     return this.decryptPIIData(this.piiData[field]);
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error(`Erro ao descriptografar campo PII ${field}:`, error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error(`Erro ao descriptografar campo PII ${field}:`, error);
+    }
     return null;
   }
 };

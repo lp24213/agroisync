@@ -161,8 +161,9 @@ router.get('/', async (req, res) => {
 
       res.json(response);
     } catch (locationError) {
-      console.error('Erro ao obter localização:', locationError);
-
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao obter localização:', locationError);
+      }
       // Fallback com dados padrão
       const fallbackResponse = {
         success: true,
@@ -203,7 +204,9 @@ router.get('/', async (req, res) => {
       res.json(fallbackResponse);
     }
   } catch (error) {
-    console.error('Erro no endpoint de clima:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no endpoint de clima:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -336,7 +339,9 @@ router.get('/forecast', async (req, res) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Erro ao obter previsão:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter previsão:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',

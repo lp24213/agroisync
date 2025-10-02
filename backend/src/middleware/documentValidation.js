@@ -137,14 +137,18 @@ export const validateReceitaFederal = async (req, res, next) => {
           });
         }
       } catch (error) {
-        console.warn('Erro ao validar na Receita Federal:', error.message);
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn('Erro ao validar na Receita Federal:', error.message);
+        }
         // Em caso de erro na API, continuar com validação local
       }
     }
 
     next();
   } catch (error) {
-    console.error('Erro na validação da Receita Federal:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na validação da Receita Federal:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro na validação do documento'
@@ -163,7 +167,9 @@ async function validateWithReceitaFederal(document) {
     // Por enquanto, retorna true para simular validação bem-sucedida
     return true;
   } catch (error) {
-    console.error('Erro na API da Receita Federal:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na API da Receita Federal:', error);
+    }
     throw new Error('Erro na validação com a Receita Federal');
   }
 }
@@ -207,13 +213,17 @@ export const validateAddressIBGE = async (req, res, next) => {
         zipCode: cep
       };
     } catch (error) {
-      console.warn('Erro ao consultar CEP:', error.message);
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn('Erro ao consultar CEP:', error.message);
+      }
       // Em caso de erro na API, continuar com dados fornecidos
     }
 
     next();
   } catch (error) {
-    console.error('Erro na validação de endereço:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na validação de endereço:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro na validação de endereço'
@@ -254,7 +264,9 @@ export const validateRequiredDocuments = (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro na validação de documentos:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na validação de documentos:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro na validação de documentos'

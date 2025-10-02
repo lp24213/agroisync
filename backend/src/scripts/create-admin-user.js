@@ -9,12 +9,15 @@ const createAdminUser = async () => {
   try {
     // Conectar ao MongoDB
     await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/agroisync');
-    console.log('Conectado ao MongoDB');
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Conectado ao MongoDB');
+    }
     // Verificar se já existe um admin
     const existingAdmin = await User.findOne({ isAdmin: true });
     if (existingAdmin) {
-      console.log('Usuário administrador já existe:', existingAdmin.email);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Usuário administrador já existe:', existingAdmin.email);
+      }
       return;
     }
 
@@ -45,15 +48,27 @@ const createAdminUser = async () => {
     });
 
     await adminUser.save();
-    console.log('Usuário administrador criado com sucesso!');
-    console.log('Email: admin@agroisync.com');
-    console.log('Senha: admin123456');
-    console.log('IMPORTANTE: Altere a senha após o primeiro login!');
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Usuário administrador criado com sucesso!');
+    }
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Email: admin@agroisync.com');
+    }
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Senha: admin123456');
+    }
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('IMPORTANTE: Altere a senha após o primeiro login!');
+    }
   } catch (error) {
-    console.error('Erro ao criar usuário admin:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao criar usuário admin:', error);
+    }
   } finally {
     await mongoose.disconnect();
-    console.log('Desconectado do MongoDB');
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Desconectado do MongoDB');
+    }
   }
 };
 

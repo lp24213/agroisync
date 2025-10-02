@@ -159,7 +159,9 @@ router.post('/', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao criar transação:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao criar transação:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -219,7 +221,9 @@ router.get('/', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar transações:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar transações:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -260,7 +264,9 @@ router.get('/:id', async (req, res) => {
       transaction
     });
   } catch (error) {
-    console.error('Erro ao buscar transação:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar transação:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -337,7 +343,9 @@ router.put('/:id/status', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao atualizar status da transação:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao atualizar status da transação:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -426,7 +434,9 @@ router.post('/:id/escrow/enable', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao habilitar escrow:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao habilitar escrow:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -514,7 +524,9 @@ router.post('/:id/escrow/disable', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao desabilitar escrow:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao desabilitar escrow:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -592,7 +604,9 @@ router.get('/:id/escrow/status', async (req, res) => {
       data: escrowData
     });
   } catch (error) {
-    console.error('Erro ao obter status do escrow:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter status do escrow:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -644,7 +658,9 @@ router.get('/:id/messages', async (req, res) => {
       transactionId: id
     });
   } catch (error) {
-    console.error('Erro ao buscar mensagens:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar mensagens:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -723,7 +739,9 @@ router.post('/:id/messages', async (req, res) => {
       data: newMessage.getDisplayData(userId)
     });
   } catch (error) {
-    console.error('Erro ao enviar mensagem:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao enviar mensagem:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -756,7 +774,9 @@ router.get('/conversations', async (req, res) => {
       }))
     });
   } catch (error) {
-    console.error('Erro ao buscar conversas:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar conversas:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -816,7 +836,9 @@ router.get('/stats', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar estatísticas:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar estatísticas:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -863,7 +885,9 @@ router.get('/admin/all', requireRole('admin'), async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar transações (admin):', error);
+    if (process.env.NODE_ENV !== 'production') {
+      // Console log removido:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -904,7 +928,9 @@ router.patch('/admin/:id/status', requireRole('admin'), async (req, res) => {
       transaction
     });
   } catch (error) {
-    console.error('Erro ao atualizar status (admin):', error);
+    if (process.env.NODE_ENV !== 'production') {
+      // Console log removido:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

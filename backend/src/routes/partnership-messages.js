@@ -152,8 +152,9 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching partnership messages:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching partnership messages:', error);
+    }
     await createSecurityLog(
       'system_error',
       'high',
@@ -225,8 +226,9 @@ router.post('/', authenticateToken, requireAdmin, validatePartnershipMessage, as
       data: { message }
     });
   } catch (error) {
-    console.error('Error creating partnership message:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error creating partnership message:', error);
+    }
     await createSecurityLog(
       'system_error',
       'high',
@@ -285,8 +287,9 @@ router.get('/:id', authenticateToken, requireAdmin, async (req, res) => {
       data: { message }
     });
   } catch (error) {
-    console.error('Error fetching partnership message:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching partnership message:', error);
+    }
     await createSecurityLog(
       'system_error',
       'high',
@@ -372,8 +375,9 @@ router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
       data: { message }
     });
   } catch (error) {
-    console.error('Error updating partnership message:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error updating partnership message:', error);
+    }
     await createSecurityLog(
       'system_error',
       'high',
@@ -473,8 +477,9 @@ router.put('/:id/status', authenticateToken, requireAdmin, async (req, res) => {
       data: { message }
     });
   } catch (error) {
-    console.error('Error updating partnership message status:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error updating partnership message status:', error);
+    }
     await createSecurityLog(
       'system_error',
       'high',
@@ -534,8 +539,9 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
       message: 'Mensagem arquivada com sucesso'
     });
   } catch (error) {
-    console.error('Error archiving partnership message:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error archiving partnership message:', error);
+    }
     await createSecurityLog(
       'system_error',
       'high',
@@ -607,8 +613,9 @@ router.get('/stats/overview', authenticateToken, requireAdmin, async (req, res) 
       }
     });
   } catch (error) {
-    console.error('Error fetching partnership messages stats:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching partnership messages stats:', error);
+    }
     await createSecurityLog(
       'system_error',
       'high',
@@ -669,8 +676,9 @@ router.get('/search/:term', authenticateToken, requireAdmin, async (req, res) =>
       }
     });
   } catch (error) {
-    console.error('Error searching partnership messages:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error searching partnership messages:', error);
+    }
     await createSecurityLog(
       'system_error',
       'high',

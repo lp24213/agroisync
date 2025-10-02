@@ -21,21 +21,21 @@ Backend completo da plataforma AgroSync - Sistema de agronegócio com marketplac
 
 ## 🛠️ Tecnologias
 
-- **Runtime**: Node.js 16+
-- **Framework**: Express.js
-- **Database**: MongoDB + Mongoose
+- **Runtime**: Cloudflare Workers
+- **Database**: Cloudflare D1 (SQLite)
 - **Autenticação**: JWT + bcrypt
-- **Pagamentos**: Stripe + Ethers.js
+- **Email**: Resend API
+- **Pagamentos**: Stripe + Metamask
 - **Validação**: Joi + express-validator
-- **Segurança**: Helmet + CORS + Rate Limiting
+- **Segurança**: CORS + Rate Limiting + Turnstile
 
 ## 📋 Pré-requisitos
 
-- Node.js 16+ 
-- MongoDB 5+
-- npm ou yarn
+- Conta Cloudflare (Workers + D1)
+- Wrangler CLI instalado
 - Conta Stripe (para pagamentos)
-- Chaves de API (ReceitaWS, IBGE, Sefaz)
+- Conta Resend (para emails)
+- Chaves de API externas (IBGE, ViaCEP, OpenWeather)
 
 ## 🚀 Instalação
 
@@ -45,14 +45,29 @@ git clone https://github.com/agrosync/backend.git
 cd backend
 ```
 
-### 2. Instale as dependências
+### 2. Login no Cloudflare
 ```bash
-npm install
+npx wrangler login
+npx wrangler whoami  # Verificar login
 ```
 
 ### 3. Configure as variáveis de ambiente
 ```bash
-cp .env.example .env
+cp env.example .env
+```
+
+### 4. Deploy do Worker
+```bash
+npx wrangler deploy
+```
+
+### 5. Inicializar banco D1 (primeira vez)
+```bash
+# Aplicar schema
+npx wrangler d1 execute agroisync-db --file=schema.sql
+
+# Executar migrações
+npx wrangler d1 execute agroisync-db --file=migrations/001_create_users_table.sql
 ```
 
 Edite o arquivo `.env` com suas configurações:
@@ -63,8 +78,8 @@ NODE_ENV=development
 PORT=5000
 FRONTEND_URL=http://localhost:3000
 
-# MongoDB
-MONGODB_URI=mongodb://localhost:27017/agrosync
+# Cloudflare D1 Database
+CLOUDFLARE_D1_DATABASE_ID=your-d1-database-id
 
 # JWT
 JWT_SECRET=sua-chave-secreta-muito-segura
@@ -77,6 +92,26 @@ STRIPE_WEBHOOK_SECRET=whsec_seu_webhook_stripe
 # Crypto
 OWNER_WALLET=0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6
 WEB3_PROVIDER=https://mainnet.infura.io/v3/seu_projeto
+
+# APIs Externas
+
+## 🔒 Segurança
+
+### Medidas Implementadas:
+- **JWT Authentication**: Tokens seguros com expiração
+- **Rate Limiting**: Proteção contra abuso de API
+- **CORS**: Controle de acesso entre origens
+- **Cloudflare Turnstile**: Proteção contra bots
+- **Validação de Entrada**: Sanitização de dados
+- **Auditoria**: Log de ações críticas
+- **D1 Prepared Statements**: Proteção contra SQL injection
+
+### Variáveis Críticas:
+```env
+JWT_SECRET=sua-chave-jwt-muito-segura-min-32-chars
+CLOUDFLARE_TURNSTILE_SECRET_KEY=sua-chave-turnstile
+STRIPE_WEBHOOK_SECRET=whsec_sua_chave_webhook
+```
 
 # APIs Externas
 OPENWEATHER_API_KEY=sua_chave_openweather

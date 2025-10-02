@@ -50,7 +50,9 @@ router.get('/', authenticateToken, async (req, res) => {
       count: clients.length
     });
   } catch (error) {
-    console.error('Erro ao listar clientes:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao listar clientes:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -83,7 +85,9 @@ router.get('/:id', authenticateToken, async (req, res) => {
       data: client
     });
   } catch (error) {
-    console.error('Erro ao obter cliente:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter cliente:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -153,7 +157,9 @@ router.post(
         data: client
       });
     } catch (error) {
-      console.error('Erro ao criar cliente:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao criar cliente:', error);
+      }
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -241,7 +247,9 @@ router.put(
         data: updatedClient
       });
     } catch (error) {
-      console.error('Erro ao atualizar cliente:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao atualizar cliente:', error);
+      }
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -285,7 +293,9 @@ router.delete('/:id', authenticateToken, async (req, res) => {
       message: 'Cliente deletado com sucesso'
     });
   } catch (error) {
-    console.error('Erro ao deletar cliente:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao deletar cliente:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -322,7 +332,9 @@ router.patch('/:id/validate-documents', adminAuth, async (req, res) => {
       data: client
     });
   } catch (error) {
-    console.error('Erro ao validar documentos:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao validar documentos:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -379,7 +391,9 @@ router.patch('/:id/verify-payment', adminAuth, async (req, res) => {
       data: client
     });
   } catch (error) {
-    console.error('Erro ao verificar pagamento:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao verificar pagamento:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -434,7 +448,9 @@ router.get('/stats/overview', adminAuth, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao obter estatísticas:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter estatísticas:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

@@ -75,8 +75,9 @@ router.get('/status', authenticateToken, async (req, res) => {
       data: paymentStatus
     });
   } catch (error) {
-    console.error('Erro ao verificar status do pagamento:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao verificar status do pagamento:', error);
+    }
     await AuditLog.logAction({
       userId: req.user.id,
       userEmail: req.user.email,
@@ -174,8 +175,9 @@ router.post('/verify-stripe', authenticateToken, async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Erro ao verificar pagamento Stripe:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao verificar pagamento Stripe:', error);
+    }
     await AuditLog.logAction({
       userId: req.user.id,
       userEmail: req.user.email,
@@ -267,8 +269,9 @@ router.post('/verify-metamask', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao verificar pagamento Metamask:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao verificar pagamento Metamask:', error);
+    }
     await AuditLog.logAction({
       userId: req.user.id,
       userEmail: req.user.email,
@@ -342,7 +345,9 @@ router.get('/plans', authenticateToken, async (req, res) => {
       data: plans
     });
   } catch (error) {
-    console.error('Erro ao buscar planos:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar planos:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -436,8 +441,9 @@ router.post('/create-stripe-session', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao criar sessão do Stripe:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao criar sessão do Stripe:', error);
+    }
     await AuditLog.logAction({
       userId: req.user.id,
       userEmail: req.user.email,

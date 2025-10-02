@@ -203,8 +203,9 @@ router.post('/', validateContactMessage, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error sending contact message:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error sending contact message:', error);
+    }
     await createSecurityLog(
       'system_error',
       'high',
@@ -269,8 +270,9 @@ router.post('/partnership', validatePartnershipMessage, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error sending partnership inquiry:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error sending partnership inquiry:', error);
+    }
     await createSecurityLog(
       'system_error',
       'high',
@@ -326,7 +328,9 @@ router.get('/admin/messages', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching contact messages:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching contact messages:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -372,7 +376,9 @@ router.get('/admin/partnerships', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching partnership messages:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching partnership messages:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -398,7 +404,9 @@ router.get('/admin/messages/:id', async (req, res) => {
       data: { message }
     });
   } catch (error) {
-    console.error('Error fetching contact message:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching contact message:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -424,7 +432,9 @@ router.get('/admin/partnerships/:id', async (req, res) => {
       data: { message }
     });
   } catch (error) {
-    console.error('Error fetching partnership message:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching partnership message:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -475,7 +485,9 @@ router.put('/admin/messages/:id/status', async (req, res) => {
       data: { message }
     });
   } catch (error) {
-    console.error('Error updating contact message status:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error updating contact message status:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -526,7 +538,9 @@ router.put('/admin/partnerships/:id/status', async (req, res) => {
       data: { message }
     });
   } catch (error) {
-    console.error('Error updating partnership message status:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error updating partnership message status:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -552,7 +566,9 @@ router.delete('/admin/messages/:id', async (req, res) => {
       message: 'Mensagem excluída com sucesso'
     });
   } catch (error) {
-    console.error('Error deleting contact message:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error deleting contact message:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -578,7 +594,9 @@ router.delete('/admin/partnerships/:id', async (req, res) => {
       message: 'Mensagem de parceria excluída com sucesso'
     });
   } catch (error) {
-    console.error('Error deleting partnership message:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error deleting partnership message:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -637,7 +655,9 @@ router.get('/admin/stats', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching contact stats:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching contact stats:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

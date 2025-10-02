@@ -464,7 +464,9 @@ escrowTransactionSchema.pre('save', function (next) {
 // Middleware para notificações
 escrowTransactionSchema.post('save', function () {
   // Em produção, disparar notificações aqui
-  console.log(`Escrow ${this.id} salvo com status ${this.status}`);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`Escrow ${this.id} salvo com status ${this.status}`);
+  }
 });
 
 export default mongoose.model('EscrowTransaction', escrowTransactionSchema);

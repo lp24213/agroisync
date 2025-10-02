@@ -512,8 +512,9 @@ exports.handler = async event => {
       })
     };
   } catch (error) {
-    console.error('Erro na mensageria:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na mensageria:', error);
+    }
     return {
       statusCode: 500,
       headers: {

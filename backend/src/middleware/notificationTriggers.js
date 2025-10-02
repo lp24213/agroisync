@@ -20,7 +20,9 @@ export const notifyNewTransaction = async (req, res, next) => {
           try {
             await notificationService.notifyNewTransaction(data.data);
           } catch (error) {
-            console.error('Erro ao disparar notificação de nova transação:', error);
+            if (process.env.NODE_ENV !== 'production') {
+              console.error('Erro ao disparar notificação de nova transação:', error);
+            }
           }
         });
       }
@@ -32,7 +34,9 @@ export const notifyNewTransaction = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro no middleware de notificação de transação:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no middleware de notificação de transação:', error);
+    }
     next();
   }
 };
@@ -48,7 +52,9 @@ export const notifyNewMessage = async (req, res, next) => {
           try {
             await notificationService.notifyNewMessage(data.data);
           } catch (error) {
-            console.error('Erro ao disparar notificação de nova mensagem:', error);
+            if (process.env.NODE_ENV !== 'production') {
+              console.error('Erro ao disparar notificação de nova mensagem:', error);
+            }
           }
         });
       }
@@ -59,7 +65,9 @@ export const notifyNewMessage = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro no middleware de notificação de mensagem:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no middleware de notificação de mensagem:', error);
+    }
     next();
   }
 };
@@ -79,7 +87,9 @@ export const notifyStatusChange = async (req, res, next) => {
               data.data.newStatus
             );
           } catch (error) {
-            console.error('Erro ao disparar notificação de mudança de status:', error);
+            if (process.env.NODE_ENV !== 'production') {
+              console.error('Erro ao disparar notificação de mudança de status:', error);
+            }
           }
         });
       }
@@ -90,7 +100,9 @@ export const notifyStatusChange = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro no middleware de notificação de mudança de status:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no middleware de notificação de mudança de status:', error);
+    }
     next();
   }
 };
@@ -106,7 +118,9 @@ export const notifyPaymentReceived = async (req, res, next) => {
           try {
             await notificationService.notifyPaymentReceived(data.data);
           } catch (error) {
-            console.error('Erro ao disparar notificação de pagamento recebido:', error);
+            if (process.env.NODE_ENV !== 'production') {
+              console.error('Erro ao disparar notificação de pagamento recebido:', error);
+            }
           }
         });
       }
@@ -117,7 +131,9 @@ export const notifyPaymentReceived = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro no middleware de notificação de pagamento:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no middleware de notificação de pagamento:', error);
+    }
     next();
   }
 };
@@ -133,7 +149,9 @@ export const notifyPaymentFailed = async (req, res, next) => {
           try {
             await notificationService.notifyPaymentFailed(data.data);
           } catch (error) {
-            console.error('Erro ao disparar notificação de falha no pagamento:', error);
+            if (process.env.NODE_ENV !== 'production') {
+              console.error('Erro ao disparar notificação de falha no pagamento:', error);
+            }
           }
         });
       }
@@ -144,7 +162,9 @@ export const notifyPaymentFailed = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro no middleware de notificação de falha no pagamento:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no middleware de notificação de falha no pagamento:', error);
+    }
     next();
   }
 };
@@ -165,7 +185,9 @@ export const notifyWelcome = async (req, res, next) => {
           try {
             await notificationService.notifyWelcome(data.data.user);
           } catch (error) {
-            console.error('Erro ao disparar notificação de boas-vindas:', error);
+            if (process.env.NODE_ENV !== 'production') {
+              console.error('Erro ao disparar notificação de boas-vindas:', error);
+            }
           }
         });
       }
@@ -176,7 +198,9 @@ export const notifyWelcome = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro no middleware de notificação de boas-vindas:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no middleware de notificação de boas-vindas:', error);
+    }
     next();
   }
 };
@@ -192,7 +216,9 @@ export const notifyVerificationRequired = async (req, res, next) => {
           try {
             await notificationService.notifyVerificationRequired(data.data.user, 'email');
           } catch (error) {
-            console.error('Erro ao disparar notificação de verificação necessária:', error);
+            if (process.env.NODE_ENV !== 'production') {
+              console.error('Erro ao disparar notificação de verificação necessária:', error);
+            }
           }
         });
       }
@@ -203,7 +229,9 @@ export const notifyVerificationRequired = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro no middleware de notificação de verificação necessária:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no middleware de notificação de verificação necessária:', error);
+    }
     next();
   }
 };
@@ -215,7 +243,9 @@ export const checkExpiringPlans = async (req, res, next) => {
     // em rotas específicas ou executado periodicamente
     next();
   } catch (error) {
-    console.error('Erro ao verificar planos expirando:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao verificar planos expirando:', error);
+    }
     next();
   }
 };
@@ -225,12 +255,15 @@ export const checkExpiringPlansJob = async () => {
   try {
     // Esta função deve ser executada diariamente via cron job
     // para verificar usuários com planos expirando
-    console.log('Verificando planos expirando...');
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Verificando planos expirando...');
+    }
     // Implementar lógica para buscar usuários com planos expirando
     // e disparar notificações apropriadas
   } catch (error) {
-    console.error('Erro ao verificar planos expirando:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao verificar planos expirando:', error);
+    }
   }
 };
 

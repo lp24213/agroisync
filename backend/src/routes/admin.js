@@ -69,7 +69,9 @@ router.get('/dashboard', async (req, res) => {
       data: { stats, recentRegistrations }
     });
   } catch (error) {
-    console.error('Erro ao buscar estatísticas admin:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar estatísticas admin:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -127,7 +129,9 @@ router.get('/users', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar usuários:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar usuários:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -182,7 +186,9 @@ router.get('/products', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar produtos:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar produtos:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -237,7 +243,9 @@ router.get('/payments', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar pagamentos:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar pagamentos:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -292,7 +300,9 @@ router.get('/registrations', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao buscar cadastros:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar cadastros:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -326,7 +336,9 @@ router.get('/activity', async (req, res) => {
       data: { activities }
     });
   } catch (error) {
-    console.error('Erro ao buscar atividade:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar atividade:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -369,7 +381,9 @@ router.put('/users/:id/status', async (req, res) => {
       data: { user }
     });
   } catch (error) {
-    console.error('Erro ao alterar status do usuário:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao alterar status do usuário:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -408,7 +422,9 @@ router.delete('/products/:id', async (req, res) => {
       message: 'Produto deletado com sucesso'
     });
   } catch (error) {
-    console.error('Erro ao deletar produto:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao deletar produto:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

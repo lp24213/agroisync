@@ -93,7 +93,9 @@ router.post('/single', upload.single('file'), async (req, res) => {
 
         cloudinaryUrl = result.secure_url;
       } catch (cloudinaryError) {
-        console.error('Erro ao fazer upload para Cloudinary:', cloudinaryError);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Erro ao fazer upload para Cloudinary:', cloudinaryError);
+        }
         // Continuar mesmo se Cloudinary falhar
       }
     }
@@ -115,7 +117,9 @@ router.post('/single', upload.single('file'), async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro no upload:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no upload:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro ao fazer upload do arquivo',
@@ -148,7 +152,9 @@ router.post('/multiple', upload.array('files', 10), async (req, res) => {
       data: uploadedFiles
     });
   } catch (error) {
-    console.error('Erro no upload múltiplo:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no upload múltiplo:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro ao fazer upload dos arquivos',
@@ -177,7 +183,9 @@ router.delete('/:filename', (req, res) => {
       message: 'Arquivo deletado com sucesso'
     });
   } catch (error) {
-    console.error('Erro ao deletar arquivo:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao deletar arquivo:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro ao deletar arquivo',

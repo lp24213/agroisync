@@ -204,7 +204,9 @@ exports.handler = async (event) => {
         };
 
       } catch (stripeError) {
-        console.error('Erro do Stripe:', stripeError);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Erro do Stripe:', stripeError);
+        }
         return {
           statusCode: 500,
           headers: corsHeaders,
@@ -386,7 +388,9 @@ exports.handler = async (event) => {
         };
 
       } catch (blockchainError) {
-        console.error('Erro na validação blockchain:', blockchainError);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Erro na validação blockchain:', blockchainError);
+        }
         return {
           statusCode: 500,
           headers: corsHeaders,
@@ -407,8 +411,9 @@ exports.handler = async (event) => {
     };
 
   } catch (error) {
-    console.error('Erro no gerenciamento de planos e pagamentos:', error);
-    
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no gerenciamento de planos e pagamentos:', error);
+    }
     return {
       statusCode: 500,
       headers: {

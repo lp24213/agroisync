@@ -188,7 +188,9 @@ class ConfigurationValidator {
     if (process.env.NODE_ENV === 'production') {
       // Verificar HTTPS
       if (process.env.FRONTEND_URL && !process.env.FRONTEND_URL.startsWith('https://')) {
-        console.warn('⚠️ FRONTEND_URL deve usar HTTPS em produção');
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn('⚠️ FRONTEND_URL deve usar HTTPS em produção');
+        }
       }
 
       // Verificar CORS
@@ -221,7 +223,9 @@ class ConfigurationValidator {
     const envPath = path.join(process.cwd(), '.env');
 
     if (!fs.existsSync(envPath)) {
-      console.warn('⚠️ Arquivo .env não encontrado');
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn('⚠️ Arquivo .env não encontrado');
+      }
       return false;
     }
 

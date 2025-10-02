@@ -126,7 +126,9 @@ class AuditSystem {
 
       // Log no console se for crítico
       if (severity === 'critical') {
-        console.error('🚨 CRITICAL SECURITY EVENT:', securityEntry);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('🚨 CRITICAL SECURITY EVENT:', securityEntry);
+        }
       }
 
       return securityEntry;
@@ -200,7 +202,9 @@ class AuditSystem {
 
       return errorEntry;
     } catch (logError) {
-      console.error('Error logging error:', logError);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error logging error:', logError);
+      }
       throw logError;
     }
   }

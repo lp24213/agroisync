@@ -144,8 +144,9 @@ router.get('/', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error listing conversations:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error listing conversations:', error);
+    }
     await createSecurityLog(
       'system_error',
       'high',
@@ -235,8 +236,9 @@ router.post('/', authenticateToken, validateConversationData, async (req, res) =
       data: { conversation }
     });
   } catch (error) {
-    console.error('Error creating conversation:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error creating conversation:', error);
+    }
     await createSecurityLog(
       'system_error',
       'high',
@@ -315,8 +317,9 @@ router.get('/:id', authenticateToken, async (req, res) => {
       data: { conversation }
     });
   } catch (error) {
-    console.error('Error fetching conversation:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching conversation:', error);
+    }
     await createSecurityLog(
       'system_error',
       'high',
@@ -405,8 +408,9 @@ router.put('/:id', authenticateToken, async (req, res) => {
       data: { conversation }
     });
   } catch (error) {
-    console.error('Error updating conversation:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error updating conversation:', error);
+    }
     await createSecurityLog(
       'system_error',
       'high',
@@ -525,8 +529,9 @@ router.get('/:id/messages', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching messages:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching messages:', error);
+    }
     await createSecurityLog(
       'system_error',
       'high',
@@ -645,8 +650,9 @@ router.post('/:id/messages', authenticateToken, validateMessageData, async (req,
       data: { message }
     });
   } catch (error) {
-    console.error('Error sending message:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error sending message:', error);
+    }
     await createSecurityLog(
       'system_error',
       'high',
@@ -677,8 +683,9 @@ router.get('/stats/summary', authenticateToken, async (req, res) => {
       data: { stats }
     });
   } catch (error) {
-    console.error('Error fetching conversation stats:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching conversation stats:', error);
+    }
     await createSecurityLog(
       'system_error',
       'high',

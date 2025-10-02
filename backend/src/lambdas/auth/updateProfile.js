@@ -214,8 +214,9 @@ exports.handler = async event => {
       })
     };
   } catch (error) {
-    console.error('Erro na atualização de perfil:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na atualização de perfil:', error);
+    }
     return {
       statusCode: 500,
       headers: {

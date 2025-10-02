@@ -72,8 +72,9 @@ const requirePaidAccess = serviceType => {
       req.userHasPaidAccess = true;
       next();
     } catch (error) {
-      console.error('Erro ao verificar acesso pago:', error);
-
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao verificar acesso pago:', error);
+      }
       // Log do erro
       await AuditLog.logAction({
         userId: req.user?.id || 'unknown',

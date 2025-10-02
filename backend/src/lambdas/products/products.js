@@ -462,8 +462,9 @@ exports.handler = async event => {
       })
     };
   } catch (error) {
-    console.error('Erro no gerenciamento de produtos:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no gerenciamento de produtos:', error);
+    }
     return {
       statusCode: 500,
       headers: {

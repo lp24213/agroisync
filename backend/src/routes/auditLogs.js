@@ -32,7 +32,9 @@ router.get('/', auth, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao obter logs de auditoria:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter logs de auditoria:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -56,7 +58,9 @@ router.get('/pii-access', adminAuth, async (req, res) => {
       data: logs
     });
   } catch (error) {
-    console.error('Erro ao obter logs de acesso PII:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter logs de acesso PII:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -87,7 +91,9 @@ router.get('/stats', adminAuth, async (req, res) => {
       data: stats
     });
   } catch (error) {
-    console.error('Erro ao obter estatísticas de auditoria:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter estatísticas de auditoria:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -109,7 +115,9 @@ router.get('/expiring', adminAuth, async (req, res) => {
       data: logs
     });
   } catch (error) {
-    console.error('Erro ao obter logs próximos do vencimento:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter logs próximos do vencimento:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -149,7 +157,9 @@ router.post('/export', adminAuth, async (req, res) => {
       totalRecords: logs.length
     });
   } catch (error) {
-    console.error('Erro ao exportar logs de auditoria:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao exportar logs de auditoria:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -172,7 +182,9 @@ router.delete('/cleanup', adminAuth, async (req, res) => {
       deletedCount
     });
   } catch (error) {
-    console.error('Erro ao limpar logs expirados:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao limpar logs expirados:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -198,7 +210,9 @@ router.get('/:id/verify', adminAuth, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao verificar integridade do log:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao verificar integridade do log:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -231,7 +245,9 @@ router.get('/:id', adminAuth, async (req, res) => {
       data: log
     });
   } catch (error) {
-    console.error('Erro ao obter log específico:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter log específico:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

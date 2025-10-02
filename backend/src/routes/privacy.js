@@ -263,7 +263,9 @@ router.post('/request', authenticateToken, async (req, res) => {
       request
     });
   } catch (error) {
-    console.error('Erro ao criar solicitação de privacidade:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao criar solicitação de privacidade:', error);
+    }
     return res.status(500).json({
       success: false,
       message: 'Erro ao criar solicitação'

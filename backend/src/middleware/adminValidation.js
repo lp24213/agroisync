@@ -43,8 +43,9 @@ export const validateAdminAction = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro na validação da ação administrativa:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na validação da ação administrativa:', error);
+    }
     await AuditLog.logAction({
       userId: req.user.id,
       userEmail: req.user.email,

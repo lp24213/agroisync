@@ -137,7 +137,9 @@ class ExternalAPIService {
         const shouldRetry = this.shouldRetry(error, attempt, maxRetries);
 
         if (isLastAttempt || !shouldRetry) {
-          console.error(`Request failed after ${attempt + 1} attempts:`, error.message);
+          if (process.env.NODE_ENV !== 'production') {
+            console.error(`Request failed after ${attempt + 1} attempts:`, error.message);
+          }
           return {
             success: false,
             error: error.message,
@@ -148,7 +150,9 @@ class ExternalAPIService {
         // Aguardar antes de retry com backoff exponencial
         const delay = retryDelay * Math.pow(2, attempt);
         await this.sleep(delay);
-        console.log(`Retry attempt ${attempt + 1}/${maxRetries} after ${delay}ms`);
+        if (process.env.NODE_ENV !== 'production') {
+          console.log(`Retry attempt ${attempt + 1}/${maxRetries} after ${delay}ms`);
+        }
       }
     }
   }
@@ -167,12 +171,16 @@ class ExternalAPIService {
 
       // Verificar circuit breaker
       if (this.isCircuitOpen(apiName)) {
-        console.log(`Circuit breaker open for ${apiName}, skipping...`);
+        if (process.env.NODE_ENV !== 'production') {
+          console.log(`Circuit breaker open for ${apiName}, skipping...`);
+        }
         continue;
       }
 
       try {
-        console.log(`Trying ${apiName}...`);
+        if (process.env.NODE_ENV !== 'production') {
+          console.log(`Trying ${apiName}...`);
+        }
         const result = await requestBuilder(config);
 
         // Marcar API como saudável
@@ -184,7 +192,9 @@ class ExternalAPIService {
           source: apiName
         };
       } catch (error) {
-        console.error(`${apiName} failed:`, error.message);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error(`${apiName} failed:`, error.message);
+        }
         errors.push({ api: apiName, error: error.message });
 
         // Marcar falha para circuit breaker
@@ -192,7 +202,9 @@ class ExternalAPIService {
 
         // Se não for a última opção, tentar próxima
         if (i < apiConfigs.length - 1) {
-          console.log('Falling back to next API...');
+          if (process.env.NODE_ENV !== 'production') {
+            console.log('Falling back to next API...');
+          }
           continue;
         }
       }
@@ -431,7 +443,9 @@ class ExternalAPIService {
         }))
       };
     } catch (error) {
-      console.error('Erro ao buscar municípios:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao buscar municípios:', error);
+      }
       return {
         success: false,
         message: 'Erro ao buscar municípios',
@@ -458,7 +472,9 @@ class ExternalAPIService {
         }))
       };
     } catch (error) {
-      console.error('Erro ao buscar estados:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao buscar estados:', error);
+      }
       return {
         success: false,
         message: 'Erro ao buscar estados',
@@ -484,7 +500,9 @@ class ExternalAPIService {
         }))
       };
     } catch (error) {
-      console.error('Erro ao buscar regiões:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao buscar regiões:', error);
+      }
       return {
         success: false,
         message: 'Erro ao buscar regiões',
@@ -547,7 +565,9 @@ class ExternalAPIService {
         }
       };
     } catch (error) {
-      console.error('Erro ao obter clima:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao obter clima:', error);
+      }
       return {
         success: false,
         message: 'Erro ao obter dados do clima',
@@ -577,7 +597,9 @@ class ExternalAPIService {
       // Depois, obter clima pelas coordenadas
       return await this.obterClimaPorCoordenadas(lat, lon, units, lang);
     } catch (error) {
-      console.error('Erro ao obter clima por IP:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao obter clima por IP:', error);
+      }
       return {
         success: false,
         message: 'Erro ao obter clima por IP',
@@ -614,7 +636,9 @@ class ExternalAPIService {
         }
       };
     } catch (error) {
-      console.error('Erro ao obter coordenadas por IP:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao obter coordenadas por IP:', error);
+      }
       return {
         success: false,
         message: 'Erro ao obter coordenadas por IP',
@@ -683,7 +707,9 @@ class ExternalAPIService {
       this.setCache(cacheKey, geocodeResult, 10 * 60 * 1000); // 10 minutos para geocoding
       return geocodeResult;
     } catch (error) {
-      console.error('Erro no geocoding:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro no geocoding:', error);
+      }
       return {
         success: false,
         message: 'Erro ao geocodificar endereço',
@@ -747,7 +773,9 @@ class ExternalAPIService {
       this.setCache(cacheKey, reverseGeocodeResult, 10 * 60 * 1000); // 10 minutos
       return reverseGeocodeResult;
     } catch (error) {
-      console.error('Erro no reverse geocoding:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro no reverse geocoding:', error);
+      }
       return {
         success: false,
         message: 'Erro ao fazer reverse geocoding',
@@ -813,7 +841,9 @@ class ExternalAPIService {
       this.setCache(cacheKey, routeResult, 5 * 60 * 1000); // 5 minutos para rotas
       return routeResult;
     } catch (error) {
-      console.error('Erro ao calcular rota:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao calcular rota:', error);
+      }
       return {
         success: false,
         message: 'Erro ao calcular rota',
@@ -870,7 +900,9 @@ class ExternalAPIService {
         }
       };
     } catch (error) {
-      console.error('Erro ao consultar CNPJ:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao consultar CNPJ:', error);
+      }
       return {
         success: false,
         message: 'Erro ao consultar CNPJ',
@@ -911,7 +943,9 @@ class ExternalAPIService {
         }
       };
     } catch (error) {
-      console.error('Erro ao consultar CPF:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao consultar CPF:', error);
+      }
       return {
         success: false,
         message: 'Erro ao consultar CPF',
@@ -964,7 +998,9 @@ class ExternalAPIService {
         data: enderecoValidado
       };
     } catch (error) {
-      console.error('Erro ao validar endereço:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao validar endereço:', error);
+      }
       return {
         success: false,
         message: 'Erro ao validar endereço',
@@ -1029,7 +1065,9 @@ class ExternalAPIService {
         data
       };
     } catch (error) {
-      console.error('Erro ao buscar coordenadas Baidu:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao buscar coordenadas Baidu:', error);
+      }
       return {
         success: false,
         message: 'Erro ao buscar coordenadas',
@@ -1092,7 +1130,9 @@ class ExternalAPIService {
         data
       };
     } catch (error) {
-      console.error('Erro ao buscar endereço Baidu:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao buscar endereço Baidu:', error);
+      }
       return {
         success: false,
         message: 'Erro ao buscar endereço',
@@ -1157,7 +1197,9 @@ class ExternalAPIService {
         data
       };
     } catch (error) {
-      console.error('Erro ao buscar lugares Baidu:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao buscar lugares Baidu:', error);
+      }
       return {
         success: false,
         message: 'Erro ao buscar lugares',
@@ -1226,7 +1268,9 @@ class ExternalAPIService {
         data
       };
     } catch (error) {
-      console.error('Erro ao validar CNPJ:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao validar CNPJ:', error);
+      }
       return {
         success: false,
         message: 'Erro ao validar CNPJ',
@@ -1279,7 +1323,9 @@ class ExternalAPIService {
         data
       };
     } catch (error) {
-      console.error('Erro ao validar CPF:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao validar CPF:', error);
+      }
       return {
         success: false,
         message: 'Erro ao validar CPF',
@@ -1331,7 +1377,9 @@ class ExternalAPIService {
         data
       };
     } catch (error) {
-      console.error('Erro ao validar IE:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao validar IE:', error);
+      }
       return {
         success: false,
         message: 'Erro ao validar IE',
@@ -1408,7 +1456,9 @@ class ExternalAPIService {
         data
       };
     } catch (error) {
-      console.error('Erro ao obter dados da empresa:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao obter dados da empresa:', error);
+      }
       return {
         success: false,
         message: 'Erro ao obter dados da empresa',

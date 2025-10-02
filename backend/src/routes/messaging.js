@@ -69,7 +69,9 @@ router.get('/conversations', authenticateToken, async (req, res) => {
       data: { conversations: populatedConversations }
     });
   } catch (error) {
-    console.error('Error fetching conversations:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching conversations:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -99,7 +101,9 @@ router.get('/conversation/:otherUserId', authenticateToken, async (req, res) => 
       data: { messages }
     });
   } catch (error) {
-    console.error('Error fetching conversation:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching conversation:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -156,7 +160,9 @@ router.post('/send', authenticateToken, validateMessage, async (req, res) => {
       data: { message }
     });
   } catch (error) {
-    console.error('Error sending message:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error sending message:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -202,7 +208,9 @@ router.put('/:messageId/read', authenticateToken, async (req, res) => {
       message: 'Mensagem marcada como lida'
     });
   } catch (error) {
-    console.error('Error marking message as read:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error marking message as read:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -232,7 +240,9 @@ router.get('/unread', authenticateToken, async (req, res) => {
       data: { unreadCount, unreadMessages }
     });
   } catch (error) {
-    console.error('Error fetching unread messages:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching unread messages:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -277,7 +287,9 @@ router.post('/contact', async (req, res) => {
       message: 'Mensagem de contato enviada com sucesso'
     });
   } catch (error) {
-    console.error('Error sending contact message:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error sending contact message:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -324,7 +336,9 @@ router.post('/partnership', async (req, res) => {
       message: 'Solicitação de parceria enviada com sucesso'
     });
   } catch (error) {
-    console.error('Error sending partnership inquiry:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error sending partnership inquiry:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -374,7 +388,9 @@ router.get('/admin/contact', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching contact messages:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching contact messages:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -422,7 +438,9 @@ router.get('/admin/partnership', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching partnership messages:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching partnership messages:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -472,7 +490,9 @@ router.get('/admin/private', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching private messages:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching private messages:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -516,7 +536,9 @@ router.put('/admin/contact/:id/status', authenticateToken, async (req, res) => {
       message: 'Status da mensagem atualizado com sucesso'
     });
   } catch (error) {
-    console.error('Error updating contact message status:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error updating contact message status:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -560,7 +582,9 @@ router.put('/admin/partnership/:id/status', authenticateToken, async (req, res) 
       message: 'Status da mensagem atualizado com sucesso'
     });
   } catch (error) {
-    console.error('Error updating partnership message status:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error updating partnership message status:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

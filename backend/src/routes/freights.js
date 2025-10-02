@@ -89,7 +89,9 @@ router.get('/', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching freights:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching freights:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -116,7 +118,9 @@ router.get('/route/:originCity/:originState/:destCity/:destState', async (req, r
       data: { freights }
     });
   } catch (error) {
-    console.error('Error searching freights by route:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error searching freights by route:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -137,7 +141,9 @@ router.get('/cargo/:cargoType', async (req, res) => {
       data: { freights }
     });
   } catch (error) {
-    console.error('Error fetching freights by cargo type:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching freights by cargo type:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -231,7 +237,9 @@ router.get('/available', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching available freights:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching available freights:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -270,7 +278,9 @@ router.get('/:id', async (req, res) => {
       data: { freight }
     });
   } catch (error) {
-    console.error('Error fetching freight:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching freight:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -321,8 +331,9 @@ router.post('/', authenticateToken, requireActivePlan, validateFreight, async (r
       data: { freight }
     });
   } catch (error) {
-    console.error('Error creating freight:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error creating freight:', error);
+    }
     if (error.message.includes('Plano de frete não ativo')) {
       return res.status(403).json({
         success: false,
@@ -376,7 +387,9 @@ router.put('/:id', authenticateToken, validateFreight, async (req, res) => {
       data: { freight }
     });
   } catch (error) {
-    console.error('Error updating freight:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error updating freight:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -415,7 +428,9 @@ router.delete('/:id', authenticateToken, async (req, res) => {
       message: 'Frete removido com sucesso'
     });
   } catch (error) {
-    console.error('Error deleting freight:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error deleting freight:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -468,7 +483,9 @@ router.post('/:id/inquiry', authenticateToken, async (req, res) => {
       message: 'Consulta enviada com sucesso para o prestador de frete'
     });
   } catch (error) {
-    console.error('Error sending inquiry:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error sending inquiry:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -513,7 +530,9 @@ router.put('/:id/inquiry/:inquiryId/respond', authenticateToken, async (req, res
       message: 'Resposta enviada com sucesso'
     });
   } catch (error) {
-    console.error('Error responding to inquiry:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error responding to inquiry:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -554,7 +573,9 @@ router.get('/provider/my-freights', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching provider freights:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching provider freights:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -572,7 +593,9 @@ router.get('/cargo/types', async (req, res) => {
       data: { cargoTypes }
     });
   } catch (error) {
-    console.error('Error fetching cargo types:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching cargo types:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -590,7 +613,9 @@ router.get('/vehicle/types', async (req, res) => {
       data: { vehicleTypes }
     });
   } catch (error) {
-    console.error('Error fetching vehicle types:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching vehicle types:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

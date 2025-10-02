@@ -51,7 +51,9 @@ router.get('/baidu', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro no mirror Baidu Maps:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no mirror Baidu Maps:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -95,7 +97,9 @@ router.get('/receita/validate', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro no mirror Receita Federal:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no mirror Receita Federal:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -130,7 +134,9 @@ router.get('/receita/company/:cnpj', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro ao obter dados da empresa:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter dados da empresa:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -179,7 +185,9 @@ router.get('/ibge', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro no mirror IBGE:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro no mirror IBGE:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -205,7 +213,9 @@ router.get('/ibge/estados', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro ao buscar estados:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar estados:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -240,7 +250,9 @@ router.get('/ibge/estados/:uf/municipios', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    console.error('Erro ao buscar municípios:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar municípios:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -282,7 +294,9 @@ router.get('/status', async (req, res) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Erro ao verificar status dos mirrors:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao verificar status dos mirrors:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

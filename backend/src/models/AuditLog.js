@@ -127,7 +127,9 @@ auditLogSchema.statics.logAction = async function (actionData) {
     await log.save();
     return log;
   } catch (error) {
-    console.error('Erro ao registrar log de auditoria:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao registrar log de auditoria:', error);
+    }
     throw error;
   }
 };
@@ -190,7 +192,9 @@ auditLogSchema.statics.getLogs = async function (filters = {}) {
       }
     };
   } catch (error) {
-    console.error('Erro ao buscar logs:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar logs:', error);
+    }
     throw error;
   }
 };
@@ -252,7 +256,9 @@ auditLogSchema.statics.getAuditStats = async function (period = '7d') {
       recentActions
     };
   } catch (error) {
-    console.error('Erro ao buscar estatísticas de auditoria:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao buscar estatísticas de auditoria:', error);
+    }
     throw error;
   }
 };
@@ -267,10 +273,14 @@ auditLogSchema.statics.cleanupOldLogs = async function (retentionDays = 365) {
       createdAt: { $lt: cutoffDate }
     });
 
-    console.log(`Logs de auditoria limpos: ${result.deletedCount} registros removidos`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`Logs de auditoria limpos: ${result.deletedCount} registros removidos`);
+    }
     return result.deletedCount;
   } catch (error) {
-    console.error('Erro ao limpar logs antigos:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao limpar logs antigos:', error);
+    }
     throw error;
   }
 };

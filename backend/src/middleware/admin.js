@@ -34,7 +34,9 @@ export const requireAdmin = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro na verificação de admin:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na verificação de admin:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -63,7 +65,9 @@ export const requireAdminPermission = permission => {
 
       next();
     } catch (error) {
-      console.error('Erro na verificação de permissão:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro na verificação de permissão:', error);
+      }
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -97,7 +101,9 @@ export const auditLog = (action, resource) => {
                 userAgent: req.get('User-Agent')
               });
             } catch (logError) {
-              console.error('Erro ao registrar log de auditoria:', logError);
+              if (process.env.NODE_ENV !== 'production') {
+                console.error('Erro ao registrar log de auditoria:', logError);
+              }
             }
           });
         }
@@ -108,7 +114,9 @@ export const auditLog = (action, resource) => {
 
       next();
     } catch (error) {
-      console.error('Erro no middleware de auditoria:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro no middleware de auditoria:', error);
+      }
       next(error);
     }
   };

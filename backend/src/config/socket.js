@@ -53,7 +53,9 @@ export const configureSocket = server => {
 
       next();
     } catch (error) {
-      console.error('Erro na autenticação WebSocket:', error.message);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro na autenticação WebSocket:', error.message);
+      }
       next(new Error('Autenticação falhou'));
     }
   });
@@ -62,8 +64,9 @@ export const configureSocket = server => {
   const connectedUsers = new Map();
 
   io.on('connection', socket => {
-    console.log(`Usuário conectado: ${socket.user.email} (${socket.id})`);
-
+    if (process.env.NODE_ENV !== 'production') {
+      // Console log removido`);
+    }
     // Adicionar usuário à lista de conectados
     connectedUsers.set(socket.userId, {
       socketId: socket.id,
@@ -129,7 +132,9 @@ export const configureSocket = server => {
           }
         });
       } catch (error) {
-        console.error('Erro ao enviar mensagem via WebSocket:', error);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Erro ao enviar mensagem via WebSocket:', error);
+        }
         socket.emit('message_error', { message: 'Erro interno do servidor' });
       }
     });
@@ -185,7 +190,9 @@ export const configureSocket = server => {
           }
         });
       } catch (error) {
-        console.error('Erro ao marcar mensagem como lida:', error);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Erro ao marcar mensagem como lida:', error);
+        }
       }
     });
 
@@ -211,8 +218,9 @@ export const configureSocket = server => {
 
     // Evento de desconexão
     socket.on('disconnect', async () => {
-      console.log(`Usuário desconectado: ${socket.user.email} (${socket.id})`);
-
+      if (process.env.NODE_ENV !== 'production') {
+        // Console log removido`);
+      }
       // Remover usuário da lista de conectados
       connectedUsers.delete(socket.userId);
 
@@ -239,8 +247,9 @@ export const configureSocket = server => {
 
     // Evento de erro
     socket.on('error', async error => {
-      console.error('Erro no WebSocket:', error);
-
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro no WebSocket:', error);
+      }
       await createSecurityLog({
         eventType: 'websocket_error',
         severity: 'error',

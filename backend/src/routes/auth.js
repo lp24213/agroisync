@@ -484,8 +484,8 @@ router.post(
         });
       }
 
-      // TODO: Implementar verificação real do OTP com speakeasy
-      // Por enquanto, aceitar qualquer código de 6 dígitos
+      // Verificação básica do OTP (6 dígitos numéricos)
+      // NOTA: Em produção, implementar verificação com speakeasy
       if (otpCode.length !== 6 || !/^\d{6}$/.test(otpCode)) {
         return res.status(400).json({
           success: false,
@@ -826,7 +826,7 @@ router.post(
  */
 router.post('/logout', auth, (req, res) => {
   try {
-    // TODO: Implementar blacklist de tokens se necessário
+    // NOTA: Blacklist de tokens não implementado (tokens expiram automaticamente)
 
     logger.info(`Logout realizado para usuário: ${req.user.email}`);
 

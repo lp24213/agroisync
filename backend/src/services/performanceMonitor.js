@@ -51,7 +51,9 @@ class PerformanceMonitor {
       this.cleanupOldMetrics();
     }, 300000); // A cada 5 minutos
 
-    console.log('📊 Sistema de monitoramento de performance iniciado');
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('📊 Sistema de monitoramento de performance iniciado');
+    }
   }
 
   // Monitorar recursos do sistema
@@ -232,8 +234,9 @@ class PerformanceMonitor {
     });
 
     // Log no console
-    console.warn(`🚨 ALERTA DE PERFORMANCE [${severity.toUpperCase()}]: ${alert.message}`);
-
+    if (process.env.NODE_ENV !== 'production') {
+      // Console log removido}]: ${alert.message}`);
+    }
     return alert;
   }
 
@@ -266,7 +269,9 @@ class PerformanceMonitor {
         timestamp: new Date()
       });
     } catch (error) {
-      console.error('Erro ao registrar métrica de performance:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao registrar métrica de performance:', error);
+      }
     }
   }
 
@@ -283,7 +288,9 @@ class PerformanceMonitor {
         userAgent: 'PerformanceMonitor'
       });
     } catch (error) {
-      console.error('Erro ao registrar evento de segurança:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao registrar evento de segurança:', error);
+      }
     }
   }
 
@@ -393,13 +400,17 @@ class PerformanceMonitor {
   // Configurar limites
   setThresholds(newThresholds) {
     this.thresholds = { ...this.thresholds, ...newThresholds };
-    console.log('📊 Limites de performance atualizados:', this.thresholds);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('📊 Limites de performance atualizados:', this.thresholds);
+    }
   }
 
   // Parar monitoramento
   stopMonitoring() {
     this.isMonitoring = false;
-    console.log('📊 Sistema de monitoramento de performance parado');
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('📊 Sistema de monitoramento de performance parado');
+    }
   }
 }
 

@@ -39,7 +39,9 @@ export const checkGDPRConsent = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro na verificação LGPD:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na verificação LGPD:', error);
+    }
     next();
   }
 };
@@ -84,7 +86,9 @@ export const recordGDPRConsent = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro ao registrar consentimento LGPD:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao registrar consentimento LGPD:', error);
+    }
     return res.status(500).json({
       success: false,
       message: 'Erro ao registrar consentimento'
@@ -119,7 +123,9 @@ export const canProcessData = dataType => {
 
       next();
     } catch (error) {
-      console.error('Erro na verificação de processamento de dados:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro na verificação de processamento de dados:', error);
+      }
       return res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -232,7 +238,9 @@ export const exportUserData = async (req, res) => {
       data: exportData
     });
   } catch (error) {
-    console.error('Erro na exportação de dados:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na exportação de dados:', error);
+    }
     return res.status(500).json({
       success: false,
       message: 'Erro ao exportar dados'
@@ -330,7 +338,9 @@ export const deleteUserData = async (req, res) => {
       dataTypes
     });
   } catch (error) {
-    console.error('Erro na exclusão de dados:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro na exclusão de dados:', error);
+    }
     return res.status(500).json({
       success: false,
       message: 'Erro ao excluir dados'
@@ -370,7 +380,9 @@ export const getPrivacyStatus = async (req, res) => {
       privacyStatus
     });
   } catch (error) {
-    console.error('Erro ao obter status de privacidade:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao obter status de privacidade:', error);
+    }
     return res.status(500).json({
       success: false,
       message: 'Erro ao obter status de privacidade'
@@ -427,7 +439,9 @@ export const updatePrivacyPreferences = async (req, res) => {
       preferences: validatedPreferences
     });
   } catch (error) {
-    console.error('Erro ao atualizar preferências de privacidade:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao atualizar preferências de privacidade:', error);
+    }
     return res.status(500).json({
       success: false,
       message: 'Erro ao atualizar preferências'

@@ -23,14 +23,18 @@ export const createSecurityLog = async (
   try {
     // Validar parâmetros
     if (!eventType || !severity || !description) {
-      console.error('Security log: Parâmetros inválidos', { eventType, severity, description });
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Security log: Parâmetros inválidos', { eventType, severity, description });
+      }
       return;
     }
 
     // Validar severidade
     const validSeverities = ['low', 'medium', 'high', 'critical'];
     if (!validSeverities.includes(severity)) {
-      console.error('Security log: Severidade inválida', { severity });
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Security log: Severidade inválida', { severity });
+      }
       return;
     }
 
@@ -69,17 +73,23 @@ export const createSecurityLog = async (
 
     // Log no console para desenvolvimento
     if (process.env.NODE_ENV === 'development') {
-      console.log(`🔒 Security Log [${severity.toUpperCase()}]: ${eventType} - ${description}`);
+      if (process.env.NODE_ENV !== 'production') {
+        // Console log removido}]: ${eventType} - ${description}`);
+      }
     }
   } catch (error) {
-    console.error('Error creating security log:', error);
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error creating security log:', error);
+    }
     // Fallback: log no console se não conseguir salvar no banco
-    console.error(
-      `🔒 SECURITY LOG ERROR [${severity?.toUpperCase()}]: ${eventType} - ${description}`
+    // Console log removido}]: ${eventType} - ${description}`
     );
-    console.error('Additional data:', additionalData);
-    console.error('Error:', error.message);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Additional data:', additionalData);
+    }
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error:', error.message);
+    }
   }
 };
 
@@ -118,14 +128,14 @@ export const createSystemSecurityLog = async (
     await securityLog.save();
 
     if (process.env.NODE_ENV === 'development') {
-      console.log(
-        `🔒 System Security Log [${severity.toUpperCase()}]: ${eventType} - ${description}`
+      // Console log removido}]: ${eventType} - ${description}`
       );
     }
   } catch (error) {
-    console.error('Error creating system security log:', error);
-    console.error(
-      `🔒 SYSTEM SECURITY LOG ERROR [${severity?.toUpperCase()}]: ${eventType} - ${description}`
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error creating system security log:', error);
+    }
+    // Console log removido}]: ${eventType} - ${description}`
     );
   }
 };
@@ -163,10 +173,14 @@ export const createAuditLog = async (action, resource, req, userId, changes = {}
     await auditLog.save();
 
     if (process.env.NODE_ENV === 'development') {
-      console.log(`📋 Audit Log: ${action} em ${resource} por usuário ${userId}`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`📋 Audit Log: ${action} em ${resource} por usuário ${userId}`);
+      }
     }
   } catch (error) {
-    console.error('Error creating audit log:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error creating audit log:', error);
+    }
   }
 };
 
@@ -200,7 +214,9 @@ export const createAccessLog = async (resource, req, userId, metadata = {}) => {
 
     await accessLog.save();
   } catch (error) {
-    console.error('Error creating access log:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error creating access log:', error);
+    }
   }
 };
 
@@ -237,10 +253,14 @@ export const createDataModificationLog = async (resource, action, req, userId, c
     await modificationLog.save();
 
     if (process.env.NODE_ENV === 'development') {
-      console.log(`✏️ Data Modification Log: ${action} em ${resource} por usuário ${userId}`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`✏️ Data Modification Log: ${action} em ${resource} por usuário ${userId}`);
+      }
     }
   } catch (error) {
-    console.error('Error creating data modification log:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error creating data modification log:', error);
+    }
   }
 };
 
@@ -368,7 +388,9 @@ export const getSecurityLogStats = async (filters = {}) => {
 
     return stats;
   } catch (error) {
-    console.error('Error getting security log stats:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error getting security log stats:', error);
+    }
     return [];
   }
 };
@@ -389,12 +411,16 @@ export const cleanupOldLogs = async (daysToKeep = 90) => {
     });
 
     if (process.env.NODE_ENV === 'development') {
-      console.log(`🧹 Cleaned up ${result.deletedCount} old security logs`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`🧹 Cleaned up ${result.deletedCount} old security logs`);
+      }
     }
 
     return result.deletedCount;
   } catch (error) {
-    console.error('Error cleaning up old logs:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error cleaning up old logs:', error);
+    }
     return 0;
   }
 };

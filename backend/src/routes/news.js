@@ -149,7 +149,9 @@ router.get('/', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get news error:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Get news error:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro ao obter notícias'
@@ -201,7 +203,9 @@ router.get('/categories', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get categories error:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Get categories error:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro ao obter categorias'
@@ -235,7 +239,9 @@ router.get('/:id', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get news by ID error:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Get news by ID error:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro ao obter notícia'
@@ -287,7 +293,9 @@ router.get('/rss/agribusiness', async (req, res) => {
     res.set('Content-Type', 'application/xml');
     res.send(rssFeed);
   } catch (error) {
-    console.error('RSS feed error:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('RSS feed error:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro ao gerar feed RSS'
@@ -311,7 +319,9 @@ router.get('/featured', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get featured news error:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Get featured news error:', error);
+    }
     res.status(500).json({
       success: false,
       message: 'Erro ao obter notícias em destaque'
@@ -352,8 +362,9 @@ router.get(
         items: rssData.items || []
       });
     } catch (error) {
-      console.error('Erro ao obter notícias do Globo Rural:', error);
-
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao obter notícias do Globo Rural:', error);
+      }
       // Retornar dados de fallback
       res.json({
         success: true,
@@ -389,8 +400,9 @@ router.get(
         items: rssData.items || []
       });
     } catch (error) {
-      console.error('Erro ao obter notícias do Agrolink:', error);
-
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao obter notícias do Agrolink:', error);
+      }
       res.json({
         success: true,
         source: 'Agrolink (Fallback)',
@@ -425,8 +437,9 @@ router.get(
         items: rssData.items || []
       });
     } catch (error) {
-      console.error('Erro ao obter notícias do Canal Rural:', error);
-
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao obter notícias do Canal Rural:', error);
+      }
       res.json({
         success: true,
         source: 'Canal Rural (Fallback)',
@@ -462,7 +475,9 @@ router.get(
             allNews.push(...rssData.items.slice(0, Math.ceil(limit / sources.length)));
           }
         } catch (error) {
-          console.warn(`Erro ao obter notícias de ${source}:`, error.message);
+          if (process.env.NODE_ENV !== 'production') {
+            console.warn(`Erro ao obter notícias de ${source}:`, error.message);
+          }
         }
       }
 
@@ -479,8 +494,9 @@ router.get(
         items: sortedNews
       });
     } catch (error) {
-      console.error('Erro ao obter notícias de todas as fontes:', error);
-
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao obter notícias de todas as fontes:', error);
+      }
       res.json({
         success: true,
         sources: ['Fallback'],
@@ -524,7 +540,9 @@ function parseRSSXML(xmlString) {
 
     return { items };
   } catch (error) {
-    console.error('Erro ao parsear XML RSS:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Erro ao parsear XML RSS:', error);
+    }
     return { items: [] };
   }
 }
