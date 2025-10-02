@@ -521,7 +521,7 @@ const AgroisyncAgroConecta = () => {
                   }}
                 />
 
-                <div className='agro-card-icon' style={{ color: feature.color }}>
+                <div className='agro-card-icon' style={{ color: feature.color, display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0 auto' }}>
                   {feature.icon}
                 </div>
                 <h3 className='agro-card-title'>{feature.title}</h3>
@@ -1251,9 +1251,6 @@ const AgroisyncAgroConecta = () => {
               </Link>
               <Link to='/register' className='agro-btn agro-btn-secondary' style={{ textAlign: 'center' }}>
                 Sou Transportador
-              </Link>
-              <Link to='/weather' className='agro-btn agro-btn-outline' style={{ textAlign: 'center' }}>
-                Informações Climáticas
               </Link>
             </div>
           </motion.div>

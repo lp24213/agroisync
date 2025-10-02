@@ -45,16 +45,20 @@ const AgroisyncHome = () => {
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'scroll'
+          backgroundAttachment: 'scroll',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
         }}
       >
-        <div className='agro-hero-overlay'>
-          <div className='agro-hero-content-centered agro-stagger-children'>
+        <div className='agro-hero-overlay' style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className='agro-hero-content-centered agro-stagger-children' style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
             <motion.h1
               className='agro-hero-title'
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
+              style={{ textAlign: 'center', margin: '0 auto' }}
             >
               Seja Nosso Parceiro
             </motion.h1>
@@ -64,6 +68,7 @@ const AgroisyncHome = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
+              style={{ textAlign: 'center', margin: '0 auto' }}
             >
               Junte-se à AGROISYNC e faça parte da revolução do agronegócio brasileiro
             </motion.p>
@@ -73,6 +78,7 @@ const AgroisyncHome = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
+              style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}
             >
               <Link to='/' className='agro-btn-primary agro-btn-animated'>
                 Explorar Plataforma
