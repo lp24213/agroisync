@@ -482,10 +482,99 @@
     transition-duration: 3s !important;
   }
 
+  /* ESPECÍFICO: Corrigir transition-colors no footer */
+  footer .transition-colors,
+  footer [class*="transition"] {
+    transition: none !important;
+    transition-duration: 0s !important;
+  }
+
+  /* ESPECÍFICO: GrainsChart - remover bordas vermelhas do span de variação */
+  .grains-chart span[class*="text-red"],
+  [class*="grains"] span[class*="text-red"],
+  .recharts-wrapper span[class*="text-red"] {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* ESPECÍFICO: AIChatbot - desacelerar animações Framer Motion */
+  [class*="messaging"] .motion-div,
+  [class*="chat"] .motion-div,
+  [data-framer-appear-id] {
+    animation-duration: 2s !important;
+    transition-duration: 2s !important;
+  }
+
   /* Force override any fast animations */
   [style*="animation-duration"],
   [style*="transition-duration"] {
     animation-duration: 1s !important;
     transition-duration: 1s !important;
+  }
+}
+
+/* MOBILE ULTRA DRÁSTICO: Aplicar EXATAMENTE as mesmas regras que funcionaram no desktop */
+@media (max-width: 768px) {
+  /* Remove QUALQUER validação de formulário que adicione bordas vermelhas */
+  input:invalid,
+  textarea:invalid,
+  select:invalid,
+  .invalid,
+  .error,
+  .is-invalid,
+  [aria-invalid="true"] {
+    border-color: #d1d5db !important;
+    outline-color: #d1d5db !important;
+    box-shadow: none !important;
+  }
+
+  /* Remove estilos de validação HTML5 */
+  input:invalid,
+  input:out-of-range,
+  input:required:invalid {
+    border-color: #d1d5db !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Force override QUALQUER elemento com estilo inline vermelho */
+  *[style*="border-color: red"],
+  *[style*="border-color:red"],
+  *[style*="border-color:#ff0000"],
+  *[style*="border-color:#ef4444"],
+  *[style*="border-color: #dc2626"],
+  *[style*="border: 1px solid red"],
+  *[style*="border:1px solid red"],
+  *[style*="outline-color: red"],
+  *[style*="outline-color:red"] {
+    border-color: #e5e7eb !important;
+    outline-color: #e5e7eb !important;
+    border: 1px solid #e5e7eb !important;
+    outline: none !important;
+  }
+
+  /* Remove QUALQUER ::before ou ::after que possa ter borda vermelha */
+  *::before,
+  *::after {
+    border-color: inherit !important;
+    outline-color: inherit !important;
+  }
+
+  /* Force override elementos específicos que podem ter bordas vermelhas */
+  .StockTicker,
+  .StockTicker *,
+  .GrainsChart,
+  .GrainsChart *,
+  .Header,
+  .Header *,
+  .Footer,
+  .Footer * {
+    border-color: #e5e7eb !important;
+    outline-color: #e5e7eb !important;
+    box-shadow: none !important;
   }
 }
