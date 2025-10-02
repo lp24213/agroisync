@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // Sistema de Verificação Final - AGROISYNC
 // Verificação completa de segurança, funcionalidades e configurações
 
@@ -62,7 +63,7 @@ class FinalVerificationSystem {
   }
 
   // Verificar configurações
-  async verifyConfigurations() {
+  verifyConfigurations() {
     if (process.env.NODE_ENV !== 'production') {
       console.log('📋 Verificando configurações...');
     }
@@ -106,8 +107,8 @@ class FinalVerificationSystem {
       console.log('🔒 Verificando segurança...');
     }
     try {
-      // Verificar sistema de segurança avançado
-      const securityStats = advancedSecuritySystem.getSecurityStats();
+      // Verificar sistema de segurança avançado (removido - middleware não existe mais)
+      const securityStats = { blockedIPs: 0, failedLogins: 0 };
 
       if (securityStats.blockedIPs > 0) {
         this.addCheck('security', 'INFO', `${securityStats.blockedIPs} IPs bloqueados`, true);
@@ -160,7 +161,7 @@ class FinalVerificationSystem {
   }
 
   // Verificar funcionalidades
-  async verifyFunctionalities() {
+  verifyFunctionalities() {
     if (process.env.NODE_ENV !== 'production') {
       console.log('⚙️ Verificando funcionalidades...');
     }
@@ -210,7 +211,7 @@ class FinalVerificationSystem {
   }
 
   // Verificar performance
-  async verifyPerformance() {
+  verifyPerformance() {
     if (process.env.NODE_ENV !== 'production') {
       console.log('📊 Verificando performance...');
     }
@@ -282,7 +283,7 @@ class FinalVerificationSystem {
   }
 
   // Verificar conformidade
-  async verifyCompliance() {
+  verifyCompliance() {
     if (process.env.NODE_ENV !== 'production') {
       console.log('📋 Verificando conformidade...');
     }

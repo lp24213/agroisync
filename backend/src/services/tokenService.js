@@ -120,7 +120,7 @@ export const refreshAccessToken = async (refreshToken, userAgent, ipAddress) => 
     }
 
     // Verificar o JWT token
-    const decoded = verifyRefreshToken(storedToken.jwtToken);
+    verifyRefreshToken(storedToken.jwtToken);
 
     // Gerar novo token de acesso
     const payload = {
@@ -179,20 +179,15 @@ export const revokeAllUserTokens = async userId => {
  * Limpa refresh tokens expirados
  */
 export const cleanupExpiredTokens = async () => {
-  try {
-    const result = await RefreshToken.deleteMany({
-      $or: [
-        { expiresAt: { $lt: new Date() } },
-        { isActive: false, revokedAt: { $lt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } } // Remove tokens revogados há mais de 30 dias
-      ]
-    });
+  const result = await RefreshToken.deleteMany({
+    $or: [
+      { expiresAt: { $lt: new Date() } },
+      { isActive: false, revokedAt: { $lt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } } // Remove tokens revogados há mais de 30 dias
+    ]
+  });
 
-    // Console log removido (dados sensíveis)
-    return result.deletedCount;
-  } catch (error) {
-    // Console log removido (dados sensíveis)
-    throw error;
-  }
+  // Console log removido (dados sensíveis)
+  return result.deletedCount;
 };
 
 /**
@@ -256,8 +251,8 @@ export const authenticateRefreshToken = async (req, res, next) => {
 
     req.tokenInfo = tokenInfo;
     req.refreshToken = refreshToken;
-    next();
-  } catch (error) {
+    return next();
+  } catch {
     // Console log removido (dados sensíveis)
     return res.status(500).json({
       success: false,
