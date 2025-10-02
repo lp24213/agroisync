@@ -89,6 +89,26 @@
   .border-red-500 {
     border-color: #e5e7eb !important;
   }
+
+  /* MOBILE SPECIFIC: Remove ANY red borders/outlines that might appear */
+  *[style*="border"][style*="red"],
+  *[style*="border-color: red"],
+  *[style*="border: 1px solid red"],
+  *[style*="border: 2px solid red"],
+  *[style*="outline"][style*="red"],
+  *[style*="outline-color: red"] {
+    border-color: #e5e7eb !important;
+    outline-color: #e5e7eb !important;
+  }
+
+  /* Force remove red from ANY Tailwind class that might appear */
+  [class*="border-red"],
+  [class*="ring-red"],
+  [class*="outline-red"] {
+    border-color: #e5e7eb !important;
+    outline-color: #e5e7eb !important;
+    --tw-ring-color: #e5e7eb !important;
+  }
 }
 
 /* Fix for form elements on mobile */
@@ -333,5 +353,34 @@
     padding-bottom: env(safe-area-inset-bottom) !important;
     padding-left: env(safe-area-inset-left) !important;
     padding-right: env(safe-area-inset-right) !important;
+  }
+}
+
+/* MOBILE SPECIFIC: Fix for animations and footer speed */
+@media (max-width: 768px) {
+  /* Slow down ALL Framer Motion animations */
+  [data-framer-name],
+  .framer-motion,
+  [style*="transform"],
+  [style*="transition"] {
+    animation-duration: 0.8s !important;
+    transition-duration: 0.8s !important;
+  }
+
+  /* Footer specific: Reduce animation speed drastically */
+  footer,
+  footer *,
+  [data-testid="footer"],
+  .footer {
+    animation-duration: 1.5s !important;
+    transition-duration: 1.5s !important;
+    transform: none !important;
+  }
+
+  /* Force override any fast animations */
+  [style*="animation-duration"],
+  [style*="transition-duration"] {
+    animation-duration: 1s !important;
+    transition-duration: 1s !important;
   }
 }
