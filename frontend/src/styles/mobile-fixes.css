@@ -109,6 +109,82 @@
     outline-color: #e5e7eb !important;
     --tw-ring-color: #e5e7eb !important;
   }
+
+  /* ULTRA AGRESSIVO: Remove QUALQUER borda vermelha - MESMAS REGRAS DO DESKTOP */
+  * {
+    border-color: inherit !important;
+  }
+
+  /* Remove especificamente bordas e outlines vermelhas com seletores agressivos */
+  [style*="border"][style*="red"],
+  [style*="border"][style*="Red"],
+  [style*="border"][style*="RED"],
+  [style*="border"][style*="rgb(255, 0, 0)"],
+  [style*="border"][style*="rgb(239, 68, 68)"],
+  [style*="border"][style*="#ff0000"],
+  [style*="border"][style*="#ef4444"],
+  [style*="border"][style*="#dc2626"],
+  [style*="border"][style*="#b91c1c"],
+  [style*="outline"][style*="red"],
+  [style*="outline"][style*="Red"],
+  [style*="outline"][style*="RED"],
+  [style*="outline"][style*="rgb(255, 0, 0)"],
+  [style*="outline"][style*="rgb(239, 68, 68)"] {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Remove rings vermelhos do Tailwind */
+  .ring-red-50, .ring-red-100, .ring-red-200, .ring-red-300, .ring-red-400,
+  .ring-red-500, .ring-red-600, .ring-red-700, .ring-red-800, .ring-red-900, .ring-red {
+    --tw-ring-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  /* Remove outlines vermelhos */
+  .outline-red-50, .outline-red-100, .outline-red-200, .outline-red-300, .outline-red-400,
+  .outline-red-500, .outline-red-600, .outline-red-700, .outline-red-800, .outline-red-900, .outline-red {
+    outline-color: transparent !important;
+  }
+
+  /* Remove dividers vermelhos */
+  .divide-red-50 > * + *, .divide-red-100 > * + *, .divide-red-200 > * + *,
+  .divide-red-300 > * + *, .divide-red-400 > * + *, .divide-red-500 > * + *,
+  .divide-red-600 > * + *, .divide-red-700 > * + *, .divide-red-800 > * + *,
+  .divide-red-900 > * + * {
+    border-color: transparent !important;
+  }
+
+  /* GRAINS CHART SPECIFIC: Force remove red borders/backgrounds */
+  .grains-chart,
+  .grains-chart *,
+  [data-testid*="grains"],
+  [class*="grains"],
+  .recharts-wrapper,
+  .recharts-wrapper * {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Force override red colors in charts */
+  .recharts-wrapper .text-red-500,
+  .recharts-wrapper .text-red-600,
+  .grains-chart .text-red-500,
+  .grains-chart .text-red-600 {
+    color: #ef4444 !important; /* Manter texto vermelho para variações negativas */
+    border: none !important;
+    background: transparent !important;
+  }
+
+  /* Remove ANY background red that might appear as squares */
+  .bg-red-50, .bg-red-100, .bg-red-200, .bg-red-300, .bg-red-400,
+  .bg-red-500, .bg-red-600, .bg-red-700, .bg-red-800, .bg-red-900 {
+    background-color: transparent !important;
+    border: none !important;
+    outline: none !important;
+  }
 }
 
 /* Fix for form elements on mobile */
@@ -372,9 +448,38 @@
   footer *,
   [data-testid="footer"],
   .footer {
-    animation-duration: 1.5s !important;
-    transition-duration: 1.5s !important;
+    animation-duration: 3s !important;
+    transition-duration: 3s !important;
     transform: none !important;
+    animation-timing-function: ease-out !important;
+    transition-timing-function: ease-out !important;
+  }
+
+  /* Force disable ALL fast animations on footer */
+  footer [style*="animation"],
+  footer [style*="transform"],
+  footer [style*="transition"] {
+    animation: none !important;
+    transform: none !important;
+    transition: all 2s ease-out !important;
+  }
+
+  /* ULTRA AGRESSIVO: Desacelerar TODAS as animações do Framer Motion no footer */
+  footer [data-framer-name],
+  footer .framer-motion,
+  footer [data-framer-appear-id],
+  footer [data-projection-id] {
+    animation: none !important;
+    transform: none !important;
+    transition: all 3s ease-out !important;
+    will-change: auto !important;
+  }
+
+  /* Disable motion completely for footer on mobile */
+  footer * {
+    animation-play-state: paused !important;
+    animation-duration: 5s !important;
+    transition-duration: 3s !important;
   }
 
   /* Force override any fast animations */
