@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import { authenticateToken } from '../middleware/auth.js';
 import { requirePaidAccess as _requirePaidAccess } from '../middleware/requirePaidAccess.js';
 import { rateLimiter as _rateLimiter } from '../middleware/rateLimiter.js';
@@ -7,32 +7,33 @@ import Payment from '../models/Payment.js';
 import AuditLog from '../models/AuditLog.js';
 import Stripe from 'stripe';
 import { ethers } from 'ethers';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-// Configurações
+// ConfiguraÃ§Ãµes
 const OWNER_WALLET = process.env.OWNER_WALLET || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6';
 const _WEB3_PROVIDER = process.env.WEB3_PROVIDER || 'https://mainnet.infura.io/v3/your-project-id';
-const COMMISSION_RATE = 0.05; // 5% de comissão para intermediação
-const MIN_COMMISSION = 0.01; // Comissão mínima
+const COMMISSION_RATE = 0.05; // 5% de comissÃ£o para intermediaÃ§Ã£o
+const MIN_COMMISSION = 0.01; // ComissÃ£o mÃ­nima
 
-// Middleware de autenticação para todas as rotas
+// Middleware de autenticaÃ§Ã£o para todas as rotas
 router.use(authenticateToken);
 
-// Sistema de comissões automáticas para intermediação
-router.post('/commission/calculate', async (req, res) => {
+// Sistema de comissÃµes automÃ¡ticas para intermediaÃ§Ã£o
+router.post('/commission/calculate', (req, res) => {
   try {
     const { transactionAmount, transactionType } = req.body;
 
     if (!transactionAmount || transactionAmount <= 0) {
       return res.status(400).json({
         success: false,
-        error: 'Valor da transação inválido'
+        error: 'Valor da transaÃ§Ã£o invÃ¡lido'
       });
     }
 
-    // Calcular comissão baseada no tipo de transação
+    // Calcular comissÃ£o baseada no tipo de transaÃ§Ã£o
     let commissionRate = COMMISSION_RATE;
 
     switch (transactionType) {
@@ -40,7 +41,7 @@ router.post('/commission/calculate', async (req, res) => {
         commissionRate = 0.05; // 5% para vendas de produtos
         break;
       case 'freight_service':
-        commissionRate = 0.03; // 3% para serviços de frete
+        commissionRate = 0.03; // 3% para serviÃ§os de frete
         break;
       case 'premium_plan':
         commissionRate = 0.1; // 10% para planos premium
@@ -62,7 +63,7 @@ router.post('/commission/calculate', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao calcular comissão:', error);
+      logger.error('Erro ao calcular comissÃ£o:', error);
     }
     res.status(500).json({
       success: false,
@@ -71,7 +72,7 @@ router.post('/commission/calculate', async (req, res) => {
   }
 });
 
-// Processar pagamento de comissão para carteira do proprietário
+// Processar pagamento de comissÃ£o para carteira do proprietÃ¡rio
 router.post('/commission/process', async (req, res) => {
   try {
     const { transactionId, amount, paymentMethod, userWallet } = req.body;
@@ -79,11 +80,11 @@ router.post('/commission/process', async (req, res) => {
     if (!transactionId || !amount || !paymentMethod) {
       return res.status(400).json({
         success: false,
-        error: 'Dados de comissão inválidos'
+        error: 'Dados de comissÃ£o invÃ¡lidos'
       });
     }
 
-    // Registrar comissão no banco de dados
+    // Registrar comissÃ£o no banco de dados
     const commission = new Payment({
       userId: req.user.id,
       transactionId,
@@ -93,7 +94,7 @@ router.post('/commission/process', async (req, res) => {
       status: 'pending',
       recipientWallet: OWNER_WALLET,
       senderWallet: userWallet,
-      description: 'Comissão de intermediação AgroSync'
+      description: 'ComissÃ£o de intermediaÃ§Ã£o AgroSync'
     });
 
     await commission.save();
@@ -113,12 +114,12 @@ router.post('/commission/process', async (req, res) => {
     res.json({
       success: true,
       commissionId: commission._id,
-      message: 'Comissão processada com sucesso',
+      message: 'ComissÃ£o processada com sucesso',
       ownerWallet: OWNER_WALLET
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao processar comissão:', error);
+      logger.error('Erro ao processar comissÃ£o:', error);
     }
     res.status(500).json({
       success: false,
@@ -127,7 +128,7 @@ router.post('/commission/process', async (req, res) => {
   }
 });
 
-// Verificar status de pagamento do usuário
+// Verificar status de pagamento do usuÃ¡rio
 router.get('/status', async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('isPaid planActive planType planExpiry');
@@ -135,7 +136,7 @@ router.get('/status', async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        error: 'Usuário não encontrado'
+        error: 'UsuÃ¡rio nÃ£o encontrado'
       });
     }
 
@@ -148,7 +149,7 @@ router.get('/status', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao verificar status de pagamento:', error);
+      logger.error('Erro ao verificar status de pagamento:', error);
     }
     res.status(500).json({
       success: false,
@@ -157,7 +158,7 @@ router.get('/status', async (req, res) => {
   }
 });
 
-// Criar sessão de pagamento Stripe
+// Criar sessÃ£o de pagamento Stripe
 router.post('/stripe/create-session', async (req, res) => {
   try {
     const { planId, planData } = req.body;
@@ -165,15 +166,15 @@ router.post('/stripe/create-session', async (req, res) => {
     if (!planId || !planData) {
       return res.status(400).json({
         success: false,
-        error: 'Dados do plano são obrigatórios'
+        error: 'Dados do plano sÃ£o obrigatÃ³rios'
       });
     }
 
     // Validar dados do plano
     const validPlans = {
-      'loja-basic': { price: 2500, name: 'Loja Básico' },
+      'loja-basic': { price: 2500, name: 'Loja BÃ¡sico' },
       'loja-pro': { price: 5000, name: 'Loja Pro' },
-      'agroconecta-basic': { price: 5000, name: 'AgroConecta Básico' },
+      'agroconecta-basic': { price: 5000, name: 'AgroConecta BÃ¡sico' },
       'agroconecta-pro': { price: 14900, name: 'AgroConecta Pro' }
     };
 
@@ -181,11 +182,11 @@ router.post('/stripe/create-session', async (req, res) => {
     if (!plan) {
       return res.status(400).json({
         success: false,
-        error: 'Plano inválido'
+        error: 'Plano invÃ¡lido'
       });
     }
 
-    // Criar sessão do Stripe
+    // Criar sessÃ£o do Stripe
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -219,7 +220,7 @@ router.post('/stripe/create-session', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao criar sessão Stripe:', error);
+      logger.error('Erro ao criar sessÃ£o Stripe:', error);
     }
     res.status(500).json({
       success: false,
@@ -237,7 +238,7 @@ router.post('/stripe/webhook', express.raw({ type: 'application/json' }), async 
     event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro na assinatura do webhook:', err.message);
+      logger.error('Erro na assinatura do webhook:', err.message);
     }
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
@@ -261,14 +262,14 @@ router.post('/stripe/webhook', express.raw({ type: 'application/json' }), async 
 
       default:
         if (process.env.NODE_ENV !== 'production') {
-          console.log(`Evento não tratado: ${event.type}`);
+          logger.log(`Evento nÃ£o tratado: ${event.type}`);
         }
     }
 
     res.json({ received: true });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao processar webhook:', error);
+      logger.error('Erro ao processar webhook:', error);
     }
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
@@ -282,15 +283,15 @@ router.post('/crypto/verify', async (req, res) => {
     if (!planId || !transactionHash || !amount || !walletAddress) {
       return res.status(400).json({
         success: false,
-        error: 'Dados da transação são obrigatórios'
+        error: 'Dados da transaÃ§Ã£o sÃ£o obrigatÃ³rios'
       });
     }
 
     // Validar dados do plano
     const validPlans = {
-      'loja-basic': { price: 0.001, name: 'Loja Básico' },
+      'loja-basic': { price: 0.001, name: 'Loja BÃ¡sico' },
       'loja-pro': { price: 0.002, name: 'Loja Pro' },
-      'agroconecta-basic': { price: 0.002, name: 'AgroConecta Básico' },
+      'agroconecta-basic': { price: 0.002, name: 'AgroConecta BÃ¡sico' },
       'agroconecta-pro': { price: 0.005, name: 'AgroConecta Pro' }
     };
 
@@ -298,11 +299,11 @@ router.post('/crypto/verify', async (req, res) => {
     if (!plan) {
       return res.status(400).json({
         success: false,
-        error: 'Plano inválido'
+        error: 'Plano invÃ¡lido'
       });
     }
 
-    // Verificar se o valor está correto
+    // Verificar se o valor estÃ¡ correto
     if (parseFloat(amount) < plan.price) {
       return res.status(400).json({
         success: false,
@@ -310,7 +311,7 @@ router.post('/crypto/verify', async (req, res) => {
       });
     }
 
-    // Verificar transação na blockchain (simulado)
+    // Verificar transaÃ§Ã£o na blockchain (simulado)
     const transactionValid = await verifyBlockchainTransaction(
       transactionHash,
       amount,
@@ -320,11 +321,11 @@ router.post('/crypto/verify', async (req, res) => {
     if (!transactionValid) {
       return res.status(400).json({
         success: false,
-        error: 'Transação inválida ou não confirmada'
+        error: 'TransaÃ§Ã£o invÃ¡lida ou nÃ£o confirmada'
       });
     }
 
-    // Atualizar usuário como pago
+    // Atualizar usuÃ¡rio como pago
     const user = await User.findByIdAndUpdate(
       req.user.id,
       {
@@ -369,7 +370,7 @@ router.post('/crypto/verify', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao verificar pagamento crypto:', error);
+      logger.error('Erro ao verificar pagamento crypto:', error);
     }
     res.status(500).json({
       success: false,
@@ -378,7 +379,7 @@ router.post('/crypto/verify', async (req, res) => {
   }
 });
 
-// Verificar pagamento específico
+// Verificar pagamento especÃ­fico
 router.get('/verify/:paymentId', async (req, res) => {
   try {
     const payment = await Payment.findById(req.params.paymentId);
@@ -386,11 +387,11 @@ router.get('/verify/:paymentId', async (req, res) => {
     if (!payment) {
       return res.status(404).json({
         success: false,
-        error: 'Pagamento não encontrado'
+        error: 'Pagamento nÃ£o encontrado'
       });
     }
 
-    // Verificar se o usuário tem acesso ao pagamento
+    // Verificar se o usuÃ¡rio tem acesso ao pagamento
     if (payment.userId.toString() !== req.user.id && !req.user.isAdmin) {
       return res.status(403).json({
         success: false,
@@ -404,7 +405,7 @@ router.get('/verify/:paymentId', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao verificar pagamento:', error);
+      logger.error('Erro ao verificar pagamento:', error);
     }
     res.status(500).json({
       success: false,
@@ -421,14 +422,14 @@ router.post('/cancel', async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        error: 'Usuário não encontrado'
+        error: 'UsuÃ¡rio nÃ£o encontrado'
       });
     }
 
     if (!user.isPaid) {
       return res.status(400).json({
         success: false,
-        error: 'Usuário não possui plano ativo'
+        error: 'UsuÃ¡rio nÃ£o possui plano ativo'
       });
     }
 
@@ -440,12 +441,12 @@ router.post('/cancel', async (req, res) => {
         });
       } catch (stripeError) {
         if (process.env.NODE_ENV !== 'production') {
-          console.error('Erro ao cancelar no Stripe:', stripeError);
+          logger.error('Erro ao cancelar no Stripe:', stripeError);
         }
       }
     }
 
-    // Atualizar usuário
+    // Atualizar usuÃ¡rio
     user.isPaid = false;
     user.planActive = null;
     user.planType = null;
@@ -466,7 +467,7 @@ router.post('/cancel', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao cancelar assinatura:', error);
+      logger.error('Erro ao cancelar assinatura:', error);
     }
     res.status(500).json({
       success: false,
@@ -475,7 +476,7 @@ router.post('/cancel', async (req, res) => {
   }
 });
 
-// Histórico de pagamentos
+// HistÃ³rico de pagamentos
 router.get('/history', async (req, res) => {
   try {
     const payments = await Payment.find({ userId: req.user.id }).sort({ createdAt: -1 }).limit(20);
@@ -486,7 +487,7 @@ router.get('/history', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar histórico:', error);
+      logger.error('Erro ao buscar histÃ³rico:', error);
     }
     res.status(500).json({
       success: false,
@@ -495,14 +496,14 @@ router.get('/history', async (req, res) => {
   }
 });
 
-// Funções auxiliares
+// FunÃ§Ãµes auxiliares
 async function handleStripePaymentSuccess(session) {
   try {
     const { userId } = session.metadata;
     const { planId } = session.metadata;
     const { planName } = session.metadata;
 
-    // Atualizar usuário
+    // Atualizar usuÃ¡rio
     await User.findByIdAndUpdate(userId, {
       isPaid: true,
       planActive: planId,
@@ -533,11 +534,11 @@ async function handleStripePaymentSuccess(session) {
     await payment.save();
 
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`Pagamento Stripe confirmado para usuário ${userId}`);
+      logger.log(`Pagamento Stripe confirmado para usuÃ¡rio ${userId}`);
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao processar pagamento Stripe:', error);
+      logger.error('Erro ao processar pagamento Stripe:', error);
     }
   }
 }
@@ -554,12 +555,12 @@ async function handleStripeSubscriptionRenewal(invoice) {
       });
 
       if (process.env.NODE_ENV !== 'production') {
-        console.log(`Renovação Stripe confirmada para usuário ${userId}`);
+        logger.log(`RenovaÃ§Ã£o Stripe confirmada para usuÃ¡rio ${userId}`);
       }
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao processar renovação Stripe:', error);
+      logger.error('Erro ao processar renovaÃ§Ã£o Stripe:', error);
     }
   }
 }
@@ -578,12 +579,12 @@ async function handleStripeSubscriptionCancellation(subscription) {
       });
 
       if (process.env.NODE_ENV !== 'production') {
-        console.log(`Cancelamento Stripe processado para usuário ${userId}`);
+        logger.log(`Cancelamento Stripe processado para usuÃ¡rio ${userId}`);
       }
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao processar cancelamento Stripe:', error);
+      logger.error('Erro ao processar cancelamento Stripe:', error);
     }
   }
 }
@@ -591,22 +592,22 @@ async function handleStripeSubscriptionCancellation(subscription) {
 // ===== ROTAS METAMASK =====
 
 // Criar fatura para pagamento MetaMask
-router.post('/metamask/create-invoice', async (req, res) => {
+router.post('/metamask/create-invoice', (req, res) => {
   try {
     const { planId, planData } = req.body;
 
     if (!planId || !planData) {
       return res.status(400).json({
         success: false,
-        error: 'Dados do plano são obrigatórios'
+        error: 'Dados do plano sÃ£o obrigatÃ³rios'
       });
     }
 
     // Validar dados do plano
     const validPlans = {
-      'loja-basic': { price: 0.001, name: 'Loja Básico' },
+      'loja-basic': { price: 0.001, name: 'Loja BÃ¡sico' },
       'loja-pro': { price: 0.002, name: 'Loja Pro' },
-      'agroconecta-medio': { price: 0.002, name: 'AgroConecta Médio' },
+      'agroconecta-medio': { price: 0.002, name: 'AgroConecta MÃ©dio' },
       'agroconecta-pro': { price: 0.005, name: 'AgroConecta Pro' }
     };
 
@@ -614,11 +615,11 @@ router.post('/metamask/create-invoice', async (req, res) => {
     if (!plan) {
       return res.status(400).json({
         success: false,
-        error: 'Plano inválido'
+        error: 'Plano invÃ¡lido'
       });
     }
 
-    // Gerar ID único para a fatura
+    // Gerar ID Ãºnico para a fatura
     const invoiceId = `INV_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     res.json({
@@ -632,7 +633,7 @@ router.post('/metamask/create-invoice', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao criar fatura MetaMask:', error);
+      logger.error('Erro ao criar fatura MetaMask:', error);
     }
     res.status(500).json({
       success: false,
@@ -649,15 +650,15 @@ router.post('/metamask/verify', async (req, res) => {
     if (!planId || !transactionHash || !amount || !walletAddress) {
       return res.status(400).json({
         success: false,
-        error: 'Dados da transação são obrigatórios'
+        error: 'Dados da transaÃ§Ã£o sÃ£o obrigatÃ³rios'
       });
     }
 
     // Validar dados do plano
     const validPlans = {
-      'loja-basic': { price: 0.001, name: 'Loja Básico' },
+      'loja-basic': { price: 0.001, name: 'Loja BÃ¡sico' },
       'loja-pro': { price: 0.002, name: 'Loja Pro' },
-      'agroconecta-medio': { price: 0.002, name: 'AgroConecta Médio' },
+      'agroconecta-medio': { price: 0.002, name: 'AgroConecta MÃ©dio' },
       'agroconecta-pro': { price: 0.005, name: 'AgroConecta Pro' }
     };
 
@@ -665,11 +666,11 @@ router.post('/metamask/verify', async (req, res) => {
     if (!plan) {
       return res.status(400).json({
         success: false,
-        error: 'Plano inválido'
+        error: 'Plano invÃ¡lido'
       });
     }
 
-    // Verificar se o valor está correto
+    // Verificar se o valor estÃ¡ correto
     if (parseFloat(amount) < plan.price) {
       return res.status(400).json({
         success: false,
@@ -677,7 +678,7 @@ router.post('/metamask/verify', async (req, res) => {
       });
     }
 
-    // Verificar transação na blockchain (simulado)
+    // Verificar transaÃ§Ã£o na blockchain (simulado)
     const transactionValid = await verifyBlockchainTransaction(
       transactionHash,
       amount,
@@ -687,11 +688,11 @@ router.post('/metamask/verify', async (req, res) => {
     if (!transactionValid) {
       return res.status(400).json({
         success: false,
-        error: 'Transação inválida ou não confirmada'
+        error: 'TransaÃ§Ã£o invÃ¡lida ou nÃ£o confirmada'
       });
     }
 
-    // Atualizar usuário como pago
+    // Atualizar usuÃ¡rio como pago
     const user = await User.findByIdAndUpdate(
       req.user.id,
       {
@@ -736,7 +737,7 @@ router.post('/metamask/verify', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao verificar pagamento MetaMask:', error);
+      logger.error('Erro ao verificar pagamento MetaMask:', error);
     }
     res.status(500).json({
       success: false,
@@ -753,11 +754,11 @@ router.get('/metamask/balance/:address', async (req, res) => {
     if (!address || !ethers.utils.isAddress(address)) {
       return res.status(400).json({
         success: false,
-        error: 'Endereço de carteira inválido'
+        error: 'EndereÃ§o de carteira invÃ¡lido'
       });
     }
 
-    // Em produção, usar provider real
+    // Em produÃ§Ã£o, usar provider real
     // const provider = new ethers.providers.JsonRpcProvider(WEB3_PROVIDER);
     // const balance = await provider.getBalance(address);
 
@@ -772,7 +773,7 @@ router.get('/metamask/balance/:address', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter saldo MetaMask:', error);
+      logger.error('Erro ao obter saldo MetaMask:', error);
     }
     res.status(500).json({
       success: false,
@@ -781,8 +782,8 @@ router.get('/metamask/balance/:address', async (req, res) => {
   }
 });
 
-// Obter transações da carteira MetaMask
-router.get('/metamask/transactions/:address', async (req, res) => {
+// Obter transaÃ§Ãµes da carteira MetaMask
+router.get('/metamask/transactions/:address', (req, res) => {
   try {
     const { address } = req.params;
     const { limit = 10, offset = 0 } = req.query;
@@ -790,12 +791,12 @@ router.get('/metamask/transactions/:address', async (req, res) => {
     if (!address || !ethers.utils.isAddress(address)) {
       return res.status(400).json({
         success: false,
-        error: 'Endereço de carteira inválido'
+        error: 'EndereÃ§o de carteira invÃ¡lido'
       });
     }
 
-    // Em produção, usar provider real para buscar transações
-    // Por enquanto, retornar transações vazias
+    // Em produÃ§Ã£o, usar provider real para buscar transaÃ§Ãµes
+    // Por enquanto, retornar transaÃ§Ãµes vazias
     const transactions = [];
 
     res.json({
@@ -803,14 +804,14 @@ router.get('/metamask/transactions/:address', async (req, res) => {
       address,
       transactions,
       pagination: {
-        limit: parseInt(limit, 10),
-        offset: parseInt(offset, 10),
+        limit: parseInt(limit, 10, 10),
+        offset: parseInt(offset, 10, 10),
         total: 0
       }
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter transações MetaMask:', error);
+      logger.error('Erro ao obter transaÃ§Ãµes MetaMask:', error);
     }
     res.status(500).json({
       success: false,
@@ -819,22 +820,22 @@ router.get('/metamask/transactions/:address', async (req, res) => {
   }
 });
 
-// ===== FUNÇÕES AUXILIARES =====
+// ===== FUNÃ‡Ã•ES AUXILIARES =====
 
 async function verifyBlockchainTransaction(transactionHash, amount, walletAddress) {
   try {
-    // Em produção, usar provider real (Infura, Alchemy, etc.)
+    // Em produÃ§Ã£o, usar provider real (Infura, Alchemy, etc.)
     // const provider = new ethers.providers.JsonRpcProvider(WEB3_PROVIDER);
     // const tx = await provider.getTransaction(transactionHash);
 
-    // Por enquanto, simular verificação
+    // Por enquanto, simular verificaÃ§Ã£o
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    // Simular verificação bem-sucedida
+    // Simular verificaÃ§Ã£o bem-sucedida
     return true;
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao verificar transação blockchain:', error);
+      logger.error('Erro ao verificar transaÃ§Ã£o blockchain:', error);
     }
     return false;
   }

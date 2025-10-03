@@ -1,4 +1,4 @@
-import { Resend } from 'resend';
+﻿import { Resend } from 'resend';
 import logger from '../utils/logger.js';
 import { EMAIL_CONFIG } from '../config/constants.js';
 
@@ -35,7 +35,7 @@ class EmailService {
   }
 
   async sendPasswordResetEmail({ to, name, resetToken }) {
-    const subject = 'Redefinição de Senha - AgroSync';
+    const subject = 'RedefiniÃ§Ã£o de Senha - AgroSync';
     const resetUrl = EMAIL_CONFIG.resetPasswordURL(resetToken);
 
     const html = `
@@ -44,7 +44,7 @@ class EmailService {
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Redefinição de Senha</title>
+        <title>RedefiniÃ§Ã£o de Senha</title>
         <style>
           body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
           .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -58,16 +58,16 @@ class EmailService {
       <body>
         <div class="container">
           <div class="header">
-            <h1>Redefinição de Senha</h1>
-            <p>AgroSync - Plataforma Inteligente de Agronegócio</p>
+            <h1>RedefiniÃ§Ã£o de Senha</h1>
+            <p>AgroSync - Plataforma Inteligente de AgronegÃ³cio</p>
           </div>
 
           <div class="content">
-            <h2>Olá, ${name}!</h2>
+            <h2>OlÃ¡, ${name}!</h2>
 
-            <p>Recebemos uma solicitação para redefinir a senha da sua conta AgroSync.</p>
+            <p>Recebemos uma solicitaÃ§Ã£o para redefinir a senha da sua conta AgroSync.</p>
 
-            <p>Clique no botão abaixo para criar uma nova senha:</p>
+            <p>Clique no botÃ£o abaixo para criar uma nova senha:</p>
 
             <a href="${resetUrl}" class="button">Redefinir Senha</a>
 
@@ -75,20 +75,20 @@ class EmailService {
               <strong>Importante:</strong>
               <ul>
                 <li>Este link expira em <strong>1 hora</strong></li>
-                <li>Se você não solicitou esta redefinição, ignore este email</li>
-                <li>Não compartilhe este link com outras pessoas</li>
+                <li>Se vocÃª nÃ£o solicitou esta redefiniÃ§Ã£o, ignore este email</li>
+                <li>NÃ£o compartilhe este link com outras pessoas</li>
               </ul>
             </div>
 
-            <p>Se o botão não funcionar, copie e cole o link abaixo no seu navegador:</p>
+            <p>Se o botÃ£o nÃ£o funcionar, copie e cole o link abaixo no seu navegador:</p>
             <p style="word-break: break-all; color: #666;">${resetUrl}</p>
 
             <p>Atenciosamente,<br>Equipe AgroSync</p>
           </div>
 
           <div class="footer">
-            <p>Este é um email automático, não responda a esta mensagem.</p>
-            <p>© 2024 AgroSync. Todos os direitos reservados.</p>
+            <p>Este Ã© um email automÃ¡tico, nÃ£o responda a esta mensagem.</p>
+            <p>Â© 2024 AgroSync. Todos os direitos reservados.</p>
           </div>
         </div>
       </body>
@@ -99,7 +99,7 @@ class EmailService {
       to,
       subject,
       html,
-      text: `Redefinição de senha AgroSync\n\nOlá, ${name}!\n\nClique no link para redefinir sua senha: ${resetUrl}\n\nEste link expira em 1 hora.`
+      text: `RedefiniÃ§Ã£o de senha AgroSync\n\nOlÃ¡, ${name}!\n\nClique no link para redefinir sua senha: ${resetUrl}\n\nEste link expira em 1 hora.`
     });
   }
 
@@ -128,22 +128,22 @@ class EmailService {
         <div class="container">
           <div class="header">
             <h1>Bem-vindo ao AgroSync!</h1>
-            <p>Plataforma Inteligente de Agronegócio</p>
+            <p>Plataforma Inteligente de AgronegÃ³cio</p>
           </div>
 
           <div class="content">
-            <h2>Olá, ${name}!</h2>
+            <h2>OlÃ¡, ${name}!</h2>
 
-            <p>Seja muito bem-vindo ao AgroSync! Estamos felizes em tê-lo conosco nesta jornada de transformação do agronegócio.</p>
+            <p>Seja muito bem-vindo ao AgroSync! Estamos felizes em tÃª-lo conosco nesta jornada de transformaÃ§Ã£o do agronegÃ³cio.</p>
 
             <div class="features">
               <div class="feature">
                 <h3>Marketplace</h3>
-                <p>Compre e venda produtos agrícolas com segurança</p>
+                <p>Compre e venda produtos agrÃ­colas com seguranÃ§a</p>
               </div>
               <div class="feature">
                 <h3>Frete</h3>
-                <p>Encontre transportadores confiáveis</p>
+                <p>Encontre transportadores confiÃ¡veis</p>
               </div>
               <div class="feature">
                 <h3>Crypto</h3>
@@ -151,7 +151,7 @@ class EmailService {
               </div>
               <div class="feature">
                 <h3>Analytics</h3>
-                <p>Dados em tempo real para suas decisões</p>
+                <p>Dados em tempo real para suas decisÃµes</p>
               </div>
             </div>
 
@@ -159,14 +159,14 @@ class EmailService {
 
             <a href="https://agroisync.com/dashboard" class="button">Acessar Dashboard</a>
 
-            <p>Se tiver alguma dúvida, nossa equipe de suporte está sempre pronta para ajudar!</p>
+            <p>Se tiver alguma dÃºvida, nossa equipe de suporte estÃ¡ sempre pronta para ajudar!</p>
 
             <p>Atenciosamente,<br>Equipe AgroSync</p>
           </div>
 
           <div class="footer">
-            <p>Este é um email automático, não responda a esta mensagem.</p>
-            <p>© 2024 AgroSync. Todos os direitos reservados.</p>
+            <p>Este Ã© um email automÃ¡tico, nÃ£o responda a esta mensagem.</p>
+            <p>Â© 2024 AgroSync. Todos os direitos reservados.</p>
           </div>
         </div>
       </body>
@@ -177,12 +177,12 @@ class EmailService {
       to,
       subject,
       html,
-      text: `Bem-vindo ao AgroSync!\n\nOlá, ${name}!\n\nSeja muito bem-vindo ao AgroSync! Acesse seu dashboard: https://agroisync.com/dashboard`
+      text: `Bem-vindo ao AgroSync!\n\nOlÃ¡, ${name}!\n\nSeja muito bem-vindo ao AgroSync! Acesse seu dashboard: https://agroisync.com/dashboard`
     });
   }
 
   async sendVerificationCode({ to, name, code }) {
-    const subject = 'Código de Verificação - AgroSync';
+    const subject = 'CÃ³digo de VerificaÃ§Ã£o - AgroSync';
 
     const html = `
       <!DOCTYPE html>
@@ -190,7 +190,7 @@ class EmailService {
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Código de Verificação</title>
+        <title>CÃ³digo de VerificaÃ§Ã£o</title>
         <style>
           body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
           .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -204,34 +204,34 @@ class EmailService {
       <body>
         <div class="container">
           <div class="header">
-            <h1>Código de Verificação</h1>
-            <p>AgroSync - Plataforma Inteligente de Agronegócio</p>
+            <h1>CÃ³digo de VerificaÃ§Ã£o</h1>
+            <p>AgroSync - Plataforma Inteligente de AgronegÃ³cio</p>
           </div>
 
           <div class="content">
-            <h2>Olá, ${name}!</h2>
+            <h2>OlÃ¡, ${name}!</h2>
 
-            <p>Seu código de verificação para completar o cadastro é:</p>
+            <p>Seu cÃ³digo de verificaÃ§Ã£o para completar o cadastro Ã©:</p>
 
             <div class="code">${code}</div>
 
             <div class="warning">
               <strong>Importante:</strong>
               <ul>
-                <li>Este código expira em <strong>10 minutos</strong></li>
-                <li>Não compartilhe este código com outras pessoas</li>
-                <li>Se você não solicitou este código, ignore este email</li>
+                <li>Este cÃ³digo expira em <strong>10 minutos</strong></li>
+                <li>NÃ£o compartilhe este cÃ³digo com outras pessoas</li>
+                <li>Se vocÃª nÃ£o solicitou este cÃ³digo, ignore este email</li>
               </ul>
             </div>
 
-            <p>Digite este código na tela de verificação para ativar sua conta.</p>
+            <p>Digite este cÃ³digo na tela de verificaÃ§Ã£o para ativar sua conta.</p>
 
             <p>Atenciosamente,<br>Equipe AgroSync</p>
           </div>
 
           <div class="footer">
-            <p>Este é um email automático, não responda a esta mensagem.</p>
-            <p>© 2024 AgroSync. Todos os direitos reservados.</p>
+            <p>Este Ã© um email automÃ¡tico, nÃ£o responda a esta mensagem.</p>
+            <p>Â© 2024 AgroSync. Todos os direitos reservados.</p>
           </div>
         </div>
       </body>
@@ -243,13 +243,13 @@ class EmailService {
         to,
         subject,
         html,
-        text: `Código de verificação AgroSync: ${code}\n\nOlá, ${name}!\n\nSeu código de verificação é: ${code}\n\nEste código expira em 10 minutos.`
+        text: `CÃ³digo de verificaÃ§Ã£o AgroSync: ${code}\n\nOlÃ¡, ${name}!\n\nSeu cÃ³digo de verificaÃ§Ã£o Ã©: ${code}\n\nEste cÃ³digo expira em 10 minutos.`
       });
 
-      logger.info(`Código de verificação enviado para ${to}: ${code}`);
+      logger.info(`CÃ³digo de verificaÃ§Ã£o enviado para ${to}: ${code}`);
       return result;
     } catch (error) {
-      logger.error(`Erro ao enviar código de verificação para ${to}:`, error);
+      logger.error(`Erro ao enviar cÃ³digo de verificaÃ§Ã£o para ${to}:`, error);
       throw error;
     }
   }

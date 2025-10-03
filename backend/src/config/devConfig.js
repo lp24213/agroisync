@@ -1,4 +1,4 @@
-// Configurações de desenvolvimento para notificações
+﻿// ConfiguraÃ§Ãµes de desenvolvimento para notificaÃ§Ãµes
 export const devConfig = {
   // Email SMTP (Gmail)
   email: {

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 // Private Message schema for user-to-user communication
 const privateMessageSchema = new mongoose.Schema({
@@ -104,7 +104,7 @@ const privateMessageSchema = new mongoose.Schema({
   }
 });
 
-// Índices para melhor performance
+// Ãndices para melhor performance
 privateMessageSchema.index({ senderId: 1, receiverId: 1 });
 privateMessageSchema.index({ receiverId: 1, status: 1 });
 privateMessageSchema.index({ createdAt: -1 });
@@ -117,7 +117,7 @@ privateMessageSchema.pre('save', function (next) {
   next();
 });
 
-// Método para marcar mensagem como lida
+// MÃ©todo para marcar mensagem como lida
 privateMessageSchema.methods.markAsRead = function () {
   this.isRead = true;
   this.status = 'read';
@@ -125,19 +125,19 @@ privateMessageSchema.methods.markAsRead = function () {
   return this.save();
 };
 
-// Método para marcar mensagem como respondida
+// MÃ©todo para marcar mensagem como respondida
 privateMessageSchema.methods.markAsReplied = function () {
   this.status = 'replied';
   return this.save();
 };
 
-// Método para arquivar mensagem
+// MÃ©todo para arquivar mensagem
 privateMessageSchema.methods.archive = function () {
   this.status = 'archived';
   return this.save();
 };
 
-// Método para obter conversa entre dois usuários
+// MÃ©todo para obter conversa entre dois usuÃ¡rios
 privateMessageSchema.statics.getConversation = function (user1Id, user2Id, limit = 50) {
   return this.find({
     $or: [
@@ -153,7 +153,7 @@ privateMessageSchema.statics.getConversation = function (user1Id, user2Id, limit
     .populate('relatedFreight', 'origin destination price');
 };
 
-// Método para obter mensagens não lidas de um usuário
+// MÃ©todo para obter mensagens nÃ£o lidas de um usuÃ¡rio
 privateMessageSchema.statics.getUnreadMessages = function (userId) {
   return this.find({
     receiverId: userId,
@@ -165,7 +165,7 @@ privateMessageSchema.statics.getUnreadMessages = function (userId) {
     .populate('relatedFreight', 'origin destination price');
 };
 
-// Método para obter estatísticas de mensagens
+// MÃ©todo para obter estatÃ­sticas de mensagens
 privateMessageSchema.statics.getMessageStats = async function (userId) {
   const stats = await this.aggregate([
     {

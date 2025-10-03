@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 // Staking Pool schema for cryptocurrency staking
 const stakingPoolSchema = new mongoose.Schema({
@@ -61,7 +61,7 @@ const stakingPoolSchema = new mongoose.Schema({
   }
 });
 
-// Índices para melhor performance
+// Ãndices para melhor performance
 stakingPoolSchema.index({ name: 1 });
 stakingPoolSchema.index({ isActive: 1 });
 stakingPoolSchema.index({ token: 1 });
@@ -73,17 +73,17 @@ stakingPoolSchema.pre('save', function (next) {
   next();
 });
 
-// Método para encontrar pools ativos
+// MÃ©todo para encontrar pools ativos
 stakingPoolSchema.statics.findActive = function () {
   return this.find({ isActive: true }).sort({ apy: -1 });
 };
 
-// Método para encontrar pools por token
+// MÃ©todo para encontrar pools por token
 stakingPoolSchema.statics.findByToken = function (token) {
   return this.find({ token, isActive: true }).sort({ apy: -1 });
 };
 
-// Método para atualizar total staked
+// MÃ©todo para atualizar total staked
 stakingPoolSchema.methods.updateTotalStaked = function (amount) {
   this.totalStaked = Math.max(0, this.totalStaked + amount);
   return this.save();

@@ -1,14 +1,14 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 const partnershipMessageSchema = new mongoose.Schema({
-  // Informações do Parceiro
+  // InformaÃ§Ãµes do Parceiro
   partnerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Partner',
     required: true
   },
 
-  // Informações da Mensagem
+  // InformaÃ§Ãµes da Mensagem
   subject: {
     type: String,
     required: true,
@@ -80,7 +80,7 @@ const partnershipMessageSchema = new mongoose.Schema({
     ref: 'User'
   },
 
-  // Resposta da Administração
+  // Resposta da AdministraÃ§Ã£o
   adminReply: {
     content: {
       type: String,
@@ -96,7 +96,7 @@ const partnershipMessageSchema = new mongoose.Schema({
     repliedAt: Date
   },
 
-  // Atribuição e Notas
+  // AtribuiÃ§Ã£o e Notas
   assignedTo: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
@@ -157,7 +157,7 @@ const partnershipMessageSchema = new mongoose.Schema({
     }
   ],
 
-  // Sinalização e Moderação
+  // SinalizaÃ§Ã£o e ModeraÃ§Ã£o
   isFlagged: {
     type: Boolean,
     default: false
@@ -187,7 +187,7 @@ const partnershipMessageSchema = new mongoose.Schema({
   }
 });
 
-// Índices para melhor performance
+// Ãndices para melhor performance
 partnershipMessageSchema.index({ partnerId: 1, status: 1 });
 partnershipMessageSchema.index({ status: 1, priority: 1 });
 partnershipMessageSchema.index({ createdAt: -1 });
@@ -205,7 +205,7 @@ partnershipMessageSchema.pre('save', function (next) {
 // Middleware para validar tamanho dos anexos
 partnershipMessageSchema.pre('save', function (next) {
   if (this.attachments && this.attachments.length > 10) {
-    return next(new Error('Máximo de 10 anexos permitidos'));
+    return next(new Error('MÃ¡ximo de 10 anexos permitidos'));
   }
 
   const totalSize = this.attachments.reduce((sum, att) => sum + att.size, 0);
@@ -217,7 +217,7 @@ partnershipMessageSchema.pre('save', function (next) {
   next();
 });
 
-// Método para marcar mensagem como lida
+// MÃ©todo para marcar mensagem como lida
 partnershipMessageSchema.methods.markAsRead = function (adminId) {
   this.isRead = true;
   this.status = 'read';
@@ -226,7 +226,7 @@ partnershipMessageSchema.methods.markAsRead = function (adminId) {
   return this.save();
 };
 
-// Método para marcar mensagem como em progresso
+// MÃ©todo para marcar mensagem como em progresso
 partnershipMessageSchema.methods.markInProgress = function (adminId) {
   this.status = 'in_progress';
   this.assignedTo = adminId;
@@ -234,7 +234,7 @@ partnershipMessageSchema.methods.markInProgress = function (adminId) {
   return this.save();
 };
 
-// Método para responder mensagem
+// MÃ©todo para responder mensagem
 partnershipMessageSchema.methods.reply = function (content, adminId) {
   this.status = 'replied';
   this.repliedAt = new Date();
@@ -247,7 +247,7 @@ partnershipMessageSchema.methods.reply = function (content, adminId) {
   return this.save();
 };
 
-// Método para fechar mensagem
+// MÃ©todo para fechar mensagem
 partnershipMessageSchema.methods.close = function (adminId) {
   this.status = 'closed';
   this.assignedTo = adminId;
@@ -255,7 +255,7 @@ partnershipMessageSchema.methods.close = function (adminId) {
   return this.save();
 };
 
-// Método para arquivar mensagem
+// MÃ©todo para arquivar mensagem
 partnershipMessageSchema.methods.archive = function (adminId) {
   this.status = 'archived';
   this.assignedTo = adminId;
@@ -263,7 +263,7 @@ partnershipMessageSchema.methods.archive = function (adminId) {
   return this.save();
 };
 
-// Método para marcar mensagem como sinalizada
+// MÃ©todo para marcar mensagem como sinalizada
 partnershipMessageSchema.methods.flag = function (reason, flaggedBy) {
   this.isFlagged = true;
   this.flagReason = reason;
@@ -272,7 +272,7 @@ partnershipMessageSchema.methods.flag = function (reason, flaggedBy) {
   return this.save();
 };
 
-// Método para remover sinalização
+// MÃ©todo para remover sinalizaÃ§Ã£o
 partnershipMessageSchema.methods.unflag = function () {
   this.isFlagged = false;
   this.flagReason = undefined;
@@ -281,7 +281,7 @@ partnershipMessageSchema.methods.unflag = function () {
   return this.save();
 };
 
-// Método estático para obter mensagens por parceiro
+// MÃ©todo estÃ¡tico para obter mensagens por parceiro
 partnershipMessageSchema.statics.getMessagesByPartner = function (partnerId, limit = 50, skip = 0) {
   return this.find({
     partnerId,
@@ -296,7 +296,7 @@ partnershipMessageSchema.statics.getMessagesByPartner = function (partnerId, lim
     .populate('repliedBy', 'name email');
 };
 
-// Método estático para obter mensagens não lidas
+// MÃ©todo estÃ¡tico para obter mensagens nÃ£o lidas
 partnershipMessageSchema.statics.getUnreadMessages = function (limit = 100) {
   return this.find({
     isRead: false,
@@ -308,7 +308,7 @@ partnershipMessageSchema.statics.getUnreadMessages = function (limit = 100) {
     .populate('assignedTo', 'name email');
 };
 
-// Método estático para obter mensagens por status
+// MÃ©todo estÃ¡tico para obter mensagens por status
 partnershipMessageSchema.statics.getMessagesByStatus = function (status, limit = 100) {
   return this.find({ status })
     .sort({ createdAt: -1 })
@@ -317,7 +317,7 @@ partnershipMessageSchema.statics.getMessagesByStatus = function (status, limit =
     .populate('assignedTo', 'name email');
 };
 
-// Método estático para obter mensagens por prioridade
+// MÃ©todo estÃ¡tico para obter mensagens por prioridade
 partnershipMessageSchema.statics.getMessagesByPriority = function (priority, limit = 100) {
   return this.find({
     priority,
@@ -329,7 +329,7 @@ partnershipMessageSchema.statics.getMessagesByPriority = function (priority, lim
     .populate('assignedTo', 'name email');
 };
 
-// Método estático para obter estatísticas de mensagens
+// MÃ©todo estÃ¡tico para obter estatÃ­sticas de mensagens
 partnershipMessageSchema.statics.getMessageStats = async function () {
   const stats = await this.aggregate([
     {
@@ -346,7 +346,7 @@ partnershipMessageSchema.statics.getMessageStats = async function () {
   }, {});
 };
 
-// Método estático para obter mensagens sinalizadas
+// MÃ©todo estÃ¡tico para obter mensagens sinalizadas
 partnershipMessageSchema.statics.getFlaggedMessages = function (limit = 100) {
   return this.find({
     isFlagged: true
@@ -357,7 +357,7 @@ partnershipMessageSchema.statics.getFlaggedMessages = function (limit = 100) {
     .populate('flaggedBy', 'name email');
 };
 
-// Método estático para buscar mensagens por texto
+// MÃ©todo estÃ¡tico para buscar mensagens por texto
 partnershipMessageSchema.statics.searchMessages = function (searchTerm, limit = 50) {
   return this.find({
     $or: [

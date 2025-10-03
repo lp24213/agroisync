@@ -1,5 +1,5 @@
-// Sistema de Backup e Recuperação - AGROISYNC
-// Backup automático de dados críticos e recuperação de desastres
+﻿// Sistema de Backup e RecuperaÃ§Ã£o - AGROISYNC
+// Backup automÃ¡tico de dados crÃ­ticos e recuperaÃ§Ã£o de desastres
 
 import mongoose from 'mongoose';
 import fs from 'fs/promises';
@@ -8,28 +8,29 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import { AuditLog } from '../models/AuditLog.js';
 import { SecurityLog } from '../models/SecurityLog.js';
+import logger from '../utils/logger.js';
 
 const execAsync = promisify(exec);
 
 class BackupSystem {
   constructor() {
     this.backupConfig = {
-      // Configurações de backup
+      // ConfiguraÃ§Ãµes de backup
       enabled: process.env.BACKUP_ENABLED === 'true',
-      interval: parseInt(process.env.BACKUP_INTERVAL, 10) || 24 * 60 * 60 * 1000, // 24 horas
-      retentionDays: parseInt(process.env.BACKUP_RETENTION_DAYS, 10) || 30,
-      maxBackups: parseInt(process.env.BACKUP_MAX_COUNT, 10) || 10,
+      interval: parseInt(process.env.BACKUP_INTERVAL, 10, 10) || 24 * 60 * 60 * 1000, // 24 horas
+      retentionDays: parseInt(process.env.BACKUP_RETENTION_DAYS, 10, 10) || 30,
+      maxBackups: parseInt(process.env.BACKUP_MAX_COUNT, 10, 10) || 10,
 
-      // Configurações de armazenamento
+      // ConfiguraÃ§Ãµes de armazenamento
       localPath: process.env.BACKUP_LOCAL_PATH || './backups',
       s3Bucket: process.env.BACKUP_S3_BUCKET,
       s3Region: process.env.BACKUP_S3_REGION || 'us-east-1',
 
-      // Configurações de criptografia
+      // ConfiguraÃ§Ãµes de criptografia
       encryptionKey: process.env.BACKUP_ENCRYPTION_KEY,
       encryptBackups: process.env.BACKUP_ENCRYPT === 'true',
 
-      // Configurações de notificação
+      // ConfiguraÃ§Ãµes de notificaÃ§Ã£o
       notifyOnSuccess: process.env.BACKUP_NOTIFY_SUCCESS === 'true',
       notifyOnFailure: process.env.BACKUP_NOTIFY_FAILURE === 'true',
       notificationEmail: process.env.BACKUP_NOTIFICATION_EMAIL
@@ -46,9 +47,7 @@ class BackupSystem {
 
   // Iniciar backups agendados
   startScheduledBackups() {
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('🔄 Sistema de backup iniciado');
-    }
+    logger.info('Sistema de backup iniciado');
     // Executar backup inicial
     this.performBackup();
 
@@ -61,9 +60,7 @@ class BackupSystem {
   // Executar backup completo
   async performBackup() {
     if (this.isRunning) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('⚠️ Backup já em execução, pulando...');
-      }
+      logger.info('Backup já em execução, pulando...');
       return;
     }
 
@@ -72,10 +69,8 @@ class BackupSystem {
     const startTime = new Date();
 
     try {
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`🔄 Iniciando backup: ${backupId}`);
-      }
-      // Criar diretório de backup
+      logger.info(`Iniciando backup: ${backupId}`);
+      // Criar diretÃ³rio de backup
       await this.createBackupDirectory();
 
       // Executar backup do banco de dados
@@ -84,7 +79,7 @@ class BackupSystem {
       // Executar backup de arquivos
       const filesBackup = await this.backupFiles(backupId);
 
-      // Executar backup de configurações
+      // Executar backup de configuraÃ§Ãµes
       const configBackup = await this.backupConfigurations(backupId);
 
       // Criar arquivo de manifesto
@@ -96,7 +91,7 @@ class BackupSystem {
         endTime: new Date()
       });
 
-      // Criptografar backup se necessário
+      // Criptografar backup se necessÃ¡rio
       if (this.backupConfig.encryptBackups) {
         await this.encryptBackup(backupId);
       }
@@ -119,17 +114,13 @@ class BackupSystem {
         size: await this.getBackupSize(backupId)
       };
 
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`✅ Backup concluído: ${backupId}`);
-      }
+      logger.info(`Backup concluído: ${backupId}`);
       // Notificar sucesso
       if (this.backupConfig.notifyOnSuccess) {
         await this.sendNotification('success', backupId);
       }
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error(`❌ Erro no backup ${backupId}:`, error);
-      }
+      logger.error(`Erro no backup ${backupId}:`, error);
       // Registrar erro
       await this.logBackupError(backupId, error);
 
@@ -155,9 +146,7 @@ class BackupSystem {
       const dumpCommand = `mongodump --uri="${mongoUri}" --out="${dbBackupPath}"`;
       await execAsync(dumpCommand);
 
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`📊 Backup do banco de dados concluído: ${dbBackupPath}`);
-      }
+      logger.info(`Backup do banco de dados concluído: ${dbBackupPath}`);
       return {
         type: 'database',
         path: dbBackupPath,
@@ -165,9 +154,7 @@ class BackupSystem {
         collections: await this.getCollectionCount(dbBackupPath)
       };
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro no backup do banco:', error);
-      }
+      logger.error('Erro no backup do banco:', error);
       throw error;
     }
   }
@@ -190,39 +177,35 @@ class BackupSystem {
         await this.copyDirectory(logsPath, path.join(filesBackupPath, 'logs'));
       }
 
-      // Backup de configurações
+      // Backup de configuraÃ§Ãµes
       const configPath = path.join(process.cwd(), 'config');
       if (await this.pathExists(configPath)) {
         await this.copyDirectory(configPath, path.join(filesBackupPath, 'config'));
       }
 
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`📁 Backup de arquivos concluído: ${filesBackupPath}`);
-      }
+      logger.info(`Backup de arquivos concluído: ${filesBackupPath}`);
       return {
         type: 'files',
         path: filesBackupPath,
         size: await this.getDirectorySize(filesBackupPath)
       };
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro no backup de arquivos:', error);
-      }
+      logger.error('Erro no backup de arquivos:', error);
       throw error;
     }
   }
 
-  // Backup de configurações
+  // Backup de configuraÃ§Ãµes
   async backupConfigurations(backupId) {
     const configBackupPath = path.join(this.backupConfig.localPath, backupId, 'configurations');
     await fs.mkdir(configBackupPath, { recursive: true });
 
     try {
-      // Backup de variáveis de ambiente (sem valores sensíveis)
+      // Backup de variÃ¡veis de ambiente (sem valores sensÃ­veis)
       const envBackup = {};
       for (const [key, value] of Object.entries(process.env)) {
         if (key.startsWith('AGROISYNC_') || key.startsWith('BACKUP_')) {
-          // Mascarar valores sensíveis
+          // Mascarar valores sensÃ­veis
           if (key.includes('PASSWORD') || key.includes('SECRET') || key.includes('KEY')) {
             envBackup[key] = '***MASKED***';
           } else {
@@ -236,7 +219,7 @@ class BackupSystem {
         JSON.stringify(envBackup, null, 2)
       );
 
-      // Backup de configurações da aplicação
+      // Backup de configuraÃ§Ãµes da aplicaÃ§Ã£o
       const appConfig = {
         version: process.env.npm_package_version || '1.0.0',
         nodeVersion: process.version,
@@ -251,18 +234,14 @@ class BackupSystem {
         JSON.stringify(appConfig, null, 2)
       );
 
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`⚙️ Backup de configurações concluído: ${configBackupPath}`);
-      }
+      logger.info(`Backup de configurações concluído: ${configBackupPath}`);
       return {
         type: 'configurations',
         path: configBackupPath,
         size: await this.getDirectorySize(configBackupPath)
       };
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro no backup de configurações:', error);
-      }
+      logger.error('Erro no backup de configurações:', error);
       throw error;
     }
   }
@@ -295,7 +274,7 @@ class BackupSystem {
   // Criptografar backup
   async encryptBackup(backupId) {
     if (!this.backupConfig.encryptionKey) {
-      throw new Error('Chave de criptografia não configurada');
+      throw new Error('Chave de criptografia nÃ£o configurada');
     }
 
     const backupPath = path.join(this.backupConfig.localPath, backupId);
@@ -306,16 +285,12 @@ class BackupSystem {
       const encryptCommand = `openssl enc -aes-256-cbc -salt -in "${backupPath}" -out "${encryptedPath}" -k "${this.backupConfig.encryptionKey}"`;
       await execAsync(encryptCommand);
 
-      // Remover backup não criptografado
+      // Remover backup nÃ£o criptografado
       await fs.rm(backupPath, { recursive: true, force: true });
 
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`🔐 Backup criptografado: ${encryptedPath}`);
-      }
+      logger.info(`Backup criptografado: ${encryptedPath}`);
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro na criptografia:', error);
-      }
+      logger.error('Erro na criptografia:', error);
       throw error;
     }
   }
@@ -334,16 +309,11 @@ class BackupSystem {
       const tarCommand = `tar -czf "${backupPath}.tar.gz" -C "${this.backupConfig.localPath}" "${backupId}"`;
       await execAsync(tarCommand);
 
-      // Upload para S3 (implementar com AWS SDK)
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`☁️ Upload para S3: ${s3Key}`);
-      }
-      // Remover arquivo local após upload
+      logger.info(`Upload para S3: ${s3Key}`);
+      // Remover arquivo local apÃ³s upload
       await fs.rm(`${backupPath}.tar.gz`, { force: true });
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro no upload S3:', error);
-      }
+      logger.error('Erro no upload S3:', error);
       throw error;
     }
   }
@@ -356,8 +326,8 @@ class BackupSystem {
 
       // Ordenar por data
       backupDirs.sort((a, b) => {
-        const aTime = parseInt(a.split('_', 10)[1]);
-        const bTime = parseInt(b.split('_', 10)[1]);
+        const aTime = parseInt(a.split('_', 10, 10)[1]);
+        const bTime = parseInt(b.split('_', 10, 10)[1]);
         return bTime - aTime;
       });
 
@@ -368,15 +338,11 @@ class BackupSystem {
         for (const dir of toRemove) {
           const dirPath = path.join(this.backupConfig.localPath, dir);
           await fs.rm(dirPath, { recursive: true, force: true });
-          if (process.env.NODE_ENV !== 'production') {
-            console.log(`🗑️ Backup antigo removido: ${dir}`);
-          }
+          logger.info(`Backup antigo removido: ${dir}`);
         }
       }
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro na limpeza de backups:', error);
-      }
+      logger.error('Erro na limpeza de backups:', error);
     }
   }
 
@@ -385,14 +351,12 @@ class BackupSystem {
     const { restoreDatabase = true, restoreFiles = true, restoreConfigurations = false } = options;
 
     try {
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`🔄 Iniciando restauração: ${backupId}`);
-      }
+      logger.info(`Iniciando restauraÃ§Ã£o: ${backupId}`);
       const backupPath = path.join(this.backupConfig.localPath, backupId);
 
       // Verificar se backup existe
       if (!(await this.pathExists(backupPath))) {
-        throw new Error(`Backup não encontrado: ${backupId}`);
+        throw new Error(`Backup nÃ£o encontrado: ${backupId}`);
       }
 
       // Ler manifesto
@@ -409,18 +373,14 @@ class BackupSystem {
         await this.restoreFiles(backupId);
       }
 
-      // Restaurar configurações
+      // Restaurar configuraÃ§Ãµes
       if (restoreConfigurations && manifest.components.configBackup) {
         await this.restoreConfigurations(backupId);
       }
 
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`✅ Restauração concluída: ${backupId}`);
-      }
+      logger.info(`RestauraÃ§Ã£o concluÃ­da: ${backupId}`);
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error(`❌ Erro na restauração ${backupId}:`, error);
-      }
+      logger.error(`Erro na restauraÃ§Ã£o ${backupId}:`, error);
       throw error;
     }
   }
@@ -434,13 +394,9 @@ class BackupSystem {
       const restoreCommand = `mongorestore --uri="${mongoUri}" --drop "${backupPath}"`;
       await execAsync(restoreCommand);
 
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`📊 Banco de dados restaurado: ${backupId}`);
-      }
+      logger.info(`Banco de dados restaurado: ${backupId}`);
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro na restauração do banco:', error);
-      }
+      logger.error('Erro na restauraÃ§Ã£o do banco:', error);
       throw error;
     }
   }
@@ -464,18 +420,14 @@ class BackupSystem {
         await this.copyDirectory(logsBackup, logsPath);
       }
 
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`📁 Arquivos restaurados: ${backupId}`);
-      }
+      logger.info(`Arquivos restaurados: ${backupId}`);
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro na restauração de arquivos:', error);
-      }
+      logger.error('Erro na restauraÃ§Ã£o de arquivos:', error);
       throw error;
     }
   }
 
-  // Restaurar configurações
+  // Restaurar configuraÃ§Ãµes
   async restoreConfigurations(backupId) {
     const backupPath = path.join(this.backupConfig.localPath, backupId, 'configurations');
 
@@ -486,18 +438,14 @@ class BackupSystem {
         await this.copyDirectory(configBackup, configPath);
       }
 
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`⚙️ Configurações restauradas: ${backupId}`);
-      }
+      logger.info(`ConfiguraÃ§Ãµes restauradas: ${backupId}`);
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro na restauração de configurações:', error);
-      }
+      logger.error('Erro na restauraÃ§Ã£o de configuraÃ§Ãµes:', error);
       throw error;
     }
   }
 
-  // Funções auxiliares
+  // FunÃ§Ãµes auxiliares
   async createBackupDirectory() {
     await fs.mkdir(this.backupConfig.localPath, { recursive: true });
   }
@@ -566,7 +514,7 @@ class BackupSystem {
       action: 'BACKUP_SUCCESS',
       resource: 'backup_system',
       resourceId: backupId,
-      details: `Backup concluído com sucesso: ${backupId}`,
+      details: `Backup concluÃ­do com sucesso: ${backupId}`,
       ip: '127.0.0.1',
       userAgent: 'BackupSystem',
       metadata: {
@@ -595,9 +543,9 @@ class BackupSystem {
   }
 
   async sendNotification(type, backupId, errorMessage = null) {
-    // Implementar envio de notificação por email
+    // Implementar envio de notificaÃ§Ã£o por email
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`📧 Notificação ${type}: ${backupId}`);
+      logger.info(`ðŸ“§ NotificaÃ§Ã£o ${type}: ${backupId}`);
     }
   }
 

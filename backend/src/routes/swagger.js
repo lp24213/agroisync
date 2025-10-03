@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Swagger UI Routes
  */
 
@@ -8,7 +8,7 @@ import swaggerSpec from '../config/swagger.js';
 
 const router = express.Router();
 
-// Customização do Swagger UI
+// CustomizaÃ§Ã£o do Swagger UI
 const swaggerUiOptions = {
   customCss: `
     .swagger-ui .topbar { display: none }
@@ -33,11 +33,11 @@ router.get('/', swaggerUi.setup(swaggerSpec, swaggerUiOptions));
  * @swagger
  * /api/health:
  *   get:
- *     summary: Health check básico
+ *     summary: Health check bÃ¡sico
  *     tags: [Health]
  *     responses:
  *       200:
- *         description: API está funcionando
+ *         description: API estÃ¡ funcionando
  *         content:
  *           application/json:
  *             schema:
@@ -48,7 +48,7 @@ router.get('/', swaggerUi.setup(swaggerSpec, swaggerUiOptions));
  * @swagger
  * /api/auth/login:
  *   post:
- *     summary: Login de usuário
+ *     summary: Login de usuÃ¡rio
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -73,7 +73,7 @@ router.get('/', swaggerUi.setup(swaggerSpec, swaggerUiOptions));
  * @swagger
  * /api/auth/register:
  *   post:
- *     summary: Registro de novo usuário
+ *     summary: Registro de novo usuÃ¡rio
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -83,7 +83,7 @@ router.get('/', swaggerUi.setup(swaggerSpec, swaggerUiOptions));
  *             $ref: '#/components/schemas/RegisterRequest'
  *     responses:
  *       201:
- *         description: Usuário registrado com sucesso
+ *         description: UsuÃ¡rio registrado com sucesso
  *         content:
  *           application/json:
  *             schema:
@@ -96,13 +96,13 @@ router.get('/', swaggerUi.setup(swaggerSpec, swaggerUiOptions));
  * @swagger
  * /api/users/me:
  *   get:
- *     summary: Obter dados do usuário autenticado
+ *     summary: Obter dados do usuÃ¡rio autenticado
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Dados do usuário
+ *         description: Dados do usuÃ¡rio
  *         content:
  *           application/json:
  *             schema:
@@ -129,13 +129,13 @@ router.get('/', swaggerUi.setup(swaggerSpec, swaggerUiOptions));
  *         schema:
  *           type: integer
  *           default: 1
- *         description: Número da página
+ *         description: NÃºmero da pÃ¡gina
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
  *           default: 10
- *         description: Itens por página
+ *         description: Itens por pÃ¡gina
  *       - in: query
  *         name: category
  *         schema:

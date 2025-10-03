@@ -1,8 +1,9 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
+import logger from '../utils/logger.js';
 const escrowTransactionSchema = new mongoose.Schema(
   {
-    // Identificação única
+    // IdentificaÃ§Ã£o Ãºnica
     id: {
       type: String,
       required: true,
@@ -10,7 +11,7 @@ const escrowTransactionSchema = new mongoose.Schema(
       default: () => `ESCROW_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     },
 
-    // Transação relacionada
+    // TransaÃ§Ã£o relacionada
     transactionId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Transaction',
@@ -18,7 +19,7 @@ const escrowTransactionSchema = new mongoose.Schema(
       index: true
     },
 
-    // Usuários envolvidos
+    // UsuÃ¡rios envolvidos
     payerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -60,14 +61,14 @@ const escrowTransactionSchema = new mongoose.Schema(
       min: 0
     },
 
-    // Status da transação
+    // Status da transaÃ§Ã£o
     status: {
       type: String,
       required: true,
       enum: [
-        'PENDING', // Aguardando depósito
+        'PENDING', // Aguardando depÃ³sito
         'FUNDED', // Valor depositado
-        'IN_TRANSIT', // Em trânsito
+        'IN_TRANSIT', // Em trÃ¢nsito
         'DELIVERED', // Entregue ao comprador
         'CONFIRMED', // Confirmado pelo comprador
         'DISPUTED', // Em disputa
@@ -95,17 +96,17 @@ const escrowTransactionSchema = new mongoose.Schema(
     cancelledAt: Date, // Quando foi cancelado
     expiredAt: Date, // Quando expirou
 
-    // Configurações de tempo
+    // ConfiguraÃ§Ãµes de tempo
     autoReleaseDays: {
       type: Number,
-      default: 7, // Liberação automática em 7 dias
+      default: 7, // LiberaÃ§Ã£o automÃ¡tica em 7 dias
       min: 1,
       max: 30
     },
 
     disputePeriod: {
       type: Number,
-      default: 3, // Período de disputa em 3 dias
+      default: 3, // PerÃ­odo de disputa em 3 dias
       min: 1,
       max: 14
     },
@@ -114,16 +115,16 @@ const escrowTransactionSchema = new mongoose.Schema(
     paymentDetails: {
       method: {
         type: String,
-        enum: ['PIX', 'Boleto', 'Cartão', 'Transferência', 'Cripto'],
+        enum: ['PIX', 'Boleto', 'CartÃ£o', 'TransferÃªncia', 'Cripto'],
         required: true
       },
-      transactionHash: String, // Hash da transação (para cripto)
+      transactionHash: String, // Hash da transaÃ§Ã£o (para cripto)
       paymentId: String, // ID do pagamento
       gateway: String, // Gateway de pagamento
       metadata: mongoose.Schema.Types.Mixed
     },
 
-    // Informações de entrega
+    // InformaÃ§Ãµes de entrega
     deliveryInfo: {
       trackingCode: String,
       carrier: String,
@@ -169,11 +170,11 @@ const escrowTransactionSchema = new mongoose.Schema(
         description: {
           type: String,
           required: true,
-          maxlength: [1000, 'Descrição não pode ter mais de 1000 caracteres']
+          maxlength: [1000, 'DescriÃ§Ã£o nÃ£o pode ter mais de 1000 caracteres']
         },
         evidence: [
           {
-            type: String, // URLs de evidências
+            type: String, // URLs de evidÃªncias
             description: String
           }
         ],
@@ -200,7 +201,7 @@ const escrowTransactionSchema = new mongoose.Schema(
       }
     ],
 
-    // Histórico de mudanças de status
+    // HistÃ³rico de mudanÃ§as de status
     statusHistory: [
       {
         status: {
@@ -220,7 +221,7 @@ const escrowTransactionSchema = new mongoose.Schema(
       }
     ],
 
-    // Configurações de notificação
+    // ConfiguraÃ§Ãµes de notificaÃ§Ã£o
     notifications: {
       emailEnabled: { type: Boolean, default: true },
       smsEnabled: { type: Boolean, default: false },
@@ -230,13 +231,13 @@ const escrowTransactionSchema = new mongoose.Schema(
     // Metadados adicionais
     metadata: {
       source: String, // Sistema que criou o escrow
-      tags: [String], // Tags para categorização
+      tags: [String], // Tags para categorizaÃ§Ã£o
       priority: {
         type: String,
         enum: ['LOW', 'NORMAL', 'HIGH', 'URGENT'],
         default: 'NORMAL'
       },
-      category: String, // Categoria da transação
+      category: String, // Categoria da transaÃ§Ã£o
       notes: String // Notas adicionais
     }
   },
@@ -247,7 +248,7 @@ const escrowTransactionSchema = new mongoose.Schema(
   }
 );
 
-// Índices para performance
+// Ãndices para performance
 escrowTransactionSchema.index({ transactionId: 1, status: 1 });
 escrowTransactionSchema.index({ payerId: 1, status: 1 });
 escrowTransactionSchema.index({ payeeId: 1, status: 1 });
@@ -274,7 +275,7 @@ escrowTransactionSchema.virtual('canBeDisputed').get(function () {
   return daysSinceDelivery <= this.disputePeriod;
 });
 
-// Virtual para calcular tempo restante para liberação automática
+// Virtual para calcular tempo restante para liberaÃ§Ã£o automÃ¡tica
 escrowTransactionSchema.virtual('timeToAutoRelease').get(function () {
   if (this.status !== 'CONFIRMED') {
     return null;
@@ -298,7 +299,7 @@ escrowTransactionSchema.virtual('timeToDispute').get(function () {
   return Math.max(0, remainingDays);
 });
 
-// Métodos de instância
+// MÃ©todos de instÃ¢ncia
 escrowTransactionSchema.methods.fund = function () {
   this.status = 'FUNDED';
   this.fundedAt = new Date();
@@ -322,7 +323,7 @@ escrowTransactionSchema.methods.confirm = function () {
   return this.save();
 };
 
-escrowTransactionSchema.methods.release = function (reason = 'Liberação automática') {
+escrowTransactionSchema.methods.release = function (reason = 'LiberaÃ§Ã£o automÃ¡tica') {
   this.status = 'RELEASED';
   this.releasedAt = new Date();
   this.addStatusHistory('RELEASED', reason);
@@ -336,7 +337,7 @@ escrowTransactionSchema.methods.refund = function (reason = 'Reembolso solicitad
   return this.save();
 };
 
-escrowTransactionSchema.methods.cancel = function (reason = 'Transação cancelada') {
+escrowTransactionSchema.methods.cancel = function (reason = 'TransaÃ§Ã£o cancelada') {
   this.status = 'CANCELLED';
   this.cancelledAt = new Date();
   this.addStatusHistory('CANCELLED', reason);
@@ -365,7 +366,7 @@ escrowTransactionSchema.methods.resolveDispute = function (
 ) {
   const dispute = this.disputes.id(disputeId);
   if (!dispute) {
-    throw new Error('Disputa não encontrada');
+    throw new Error('Disputa nÃ£o encontrada');
   }
 
   dispute.status = 'RESOLVED';
@@ -374,7 +375,7 @@ escrowTransactionSchema.methods.resolveDispute = function (
   dispute.resolvedBy = resolvedBy;
   dispute.resolvedAt = new Date();
 
-  // Aplicar resolução
+  // Aplicar resoluÃ§Ã£o
   if (resolution === 'RELEASE_TO_SELLER') {
     this.status = 'RELEASED';
     this.releasedAt = new Date();
@@ -403,7 +404,7 @@ escrowTransactionSchema.methods.addStatusHistory = function (
   });
 };
 
-// Métodos estáticos
+// MÃ©todos estÃ¡ticos
 escrowTransactionSchema.statics.findByTransaction = function (transactionId) {
   return this.findOne({ transactionId }).populate('payerId payeeId');
 };
@@ -421,7 +422,7 @@ escrowTransactionSchema.statics.findByUser = function (userId, status = null) {
 };
 
 escrowTransactionSchema.statics.findPendingAutoRelease = function () {
-  const cutoffDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // 7 dias atrás
+  const cutoffDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // 7 dias atrÃ¡s
 
   return this.find({
     status: 'CONFIRMED',
@@ -430,7 +431,7 @@ escrowTransactionSchema.statics.findPendingAutoRelease = function () {
 };
 
 escrowTransactionSchema.statics.findExpiredDisputes = function () {
-  const cutoffDate = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000); // 3 dias atrás
+  const cutoffDate = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000); // 3 dias atrÃ¡s
 
   return this.find({
     'disputes.status': 'OPEN',
@@ -438,7 +439,7 @@ escrowTransactionSchema.statics.findExpiredDisputes = function () {
   });
 };
 
-// Middleware para validações
+// Middleware para validaÃ§Ãµes
 escrowTransactionSchema.pre('save', function (next) {
   // Calcular total com taxa
   if (this.amount && this.fee) {
@@ -461,11 +462,11 @@ escrowTransactionSchema.pre('save', function (next) {
   next();
 });
 
-// Middleware para notificações
+// Middleware para notificaÃ§Ãµes
 escrowTransactionSchema.post('save', function () {
-  // Em produção, disparar notificações aqui
+  // Em produÃ§Ã£o, disparar notificaÃ§Ãµes aqui
   if (process.env.NODE_ENV !== 'production') {
-    console.log(`Escrow ${this.id} salvo com status ${this.status}`);
+    logger.info(`Escrow ${this.id} salvo com status ${this.status}`);
   }
 });
 

@@ -1,22 +1,22 @@
-const rateLimit = require('express-rate-limit');
+﻿const rateLimit = require('express-rate-limit');
 
 /**
- * Middleware de rate limiting configurável
- * @param {Object} options - Opções de configuração
+ * Middleware de rate limiting configurÃ¡vel
+ * @param {Object} options - OpÃ§Ãµes de configuraÃ§Ã£o
  * @param {number} options.windowMs - Janela de tempo em milissegundos
- * @param {number} options.max - Máximo de requests por janela
+ * @param {number} options.max - MÃ¡ximo de requests por janela
  * @param {string} options.message - Mensagem de erro personalizada
- * @param {boolean} options.standardHeaders - Incluir headers padrão
+ * @param {boolean} options.standardHeaders - Incluir headers padrÃ£o
  * @param {boolean} options.legacyHeaders - Incluir headers legados
  * @returns {Function} Middleware de rate limiting
  */
 const createRateLimit = (options = {}) => {
   const defaultOptions = {
-    windowMs: 15 * 60 * 1000, // 15 minutos por padrão
-    max: 100, // 100 requests por padrão
+    windowMs: 15 * 60 * 1000, // 15 minutos por padrÃ£o
+    max: 100, // 100 requests por padrÃ£o
     message: {
       success: false,
-      message: 'Muitas requisições. Tente novamente mais tarde.',
+      message: 'Muitas requisiÃ§Ãµes. Tente novamente mais tarde.',
       retryAfter: Math.ceil(options.windowMs / 1000)
     },
     standardHeaders: true, // Retorna `RateLimit-*` headers
@@ -25,7 +25,7 @@ const createRateLimit = (options = {}) => {
       res.status(429).json(
         options.message || {
           success: false,
-          message: 'Muitas requisições. Tente novamente mais tarde.'
+          message: 'Muitas requisiÃ§Ãµes. Tente novamente mais tarde.'
         }
       );
     },
@@ -46,22 +46,22 @@ const createRateLimit = (options = {}) => {
   return rateLimit({ ...defaultOptions, ...options });
 };
 
-// Rate limiters pré-configurados para diferentes cenários
+// Rate limiters prÃ©-configurados para diferentes cenÃ¡rios
 
 /**
- * Rate limiter para APIs públicas (mais permissivo)
+ * Rate limiter para APIs pÃºblicas (mais permissivo)
  */
 const publicAPILimiter = createRateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
   max: 200, // 200 requests por 15 minutos
   message: {
     success: false,
-    message: 'Limite de requisições atingido para APIs públicas. Tente novamente em 15 minutos.'
+    message: 'Limite de requisiÃ§Ãµes atingido para APIs pÃºblicas. Tente novamente em 15 minutos.'
   }
 });
 
 /**
- * Rate limiter para autenticação (mais restritivo)
+ * Rate limiter para autenticaÃ§Ã£o (mais restritivo)
  */
 const authLimiter = createRateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
@@ -69,7 +69,7 @@ const authLimiter = createRateLimit({
   message: {
     success: false,
     message: 'Muitas tentativas de login. Tente novamente em 15 minutos.',
-    security: 'Sua conta pode ser temporariamente bloqueada por segurança.'
+    security: 'Sua conta pode ser temporariamente bloqueada por seguranÃ§a.'
   }
 });
 
@@ -82,7 +82,7 @@ const paymentLimiter = createRateLimit({
   message: {
     success: false,
     message: 'Muitas tentativas de pagamento. Tente novamente em 15 minutos.',
-    security: 'Por segurança, suas tentativas de pagamento foram limitadas.'
+    security: 'Por seguranÃ§a, suas tentativas de pagamento foram limitadas.'
   }
 });
 
@@ -123,7 +123,7 @@ const searchLimiter = createRateLimit({
 });
 
 /**
- * Rate limiter para webhooks (muito permissivo para serviços externos)
+ * Rate limiter para webhooks (muito permissivo para serviÃ§os externos)
  */
 const webhookLimiter = createRateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
@@ -133,7 +133,7 @@ const webhookLimiter = createRateLimit({
     message: 'Limite de webhooks atingido.'
   },
   skip: req => {
-    // Pular rate limiting para webhooks de serviços confiáveis
+    // Pular rate limiting para webhooks de serviÃ§os confiÃ¡veis
     const trustedWebhooks = ['stripe.com', 'github.com', 'gitlab.com', 'bitbucket.org'];
 
     const origin = req.get('Origin') || req.get('User-Agent') || '';
@@ -149,26 +149,26 @@ const adminLimiter = createRateLimit({
   max: 500, // 500 requests por 15 minutos
   message: {
     success: false,
-    message: 'Limite de requisições admin atingido.'
+    message: 'Limite de requisiÃ§Ãµes admin atingido.'
   },
   skip: req => {
-    // Pular rate limiting para usuários admin
+    // Pular rate limiting para usuÃ¡rios admin
     return req.user && req.user.role === 'admin';
   }
 });
 
 /**
- * Rate limiter para usuários premium (mais permissivo)
+ * Rate limiter para usuÃ¡rios premium (mais permissivo)
  */
 const premiumLimiter = createRateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
   max: 300, // 300 requests por 15 minutos
   message: {
     success: false,
-    message: 'Limite de requisições atingido para usuários premium.'
+    message: 'Limite de requisiÃ§Ãµes atingido para usuÃ¡rios premium.'
   },
   skip: req => {
-    // Pular rate limiting para usuários premium
+    // Pular rate limiting para usuÃ¡rios premium
     return req.user && req.user.isPaid && req.user.planActive;
   }
 });
@@ -181,7 +181,7 @@ const devLimiter = createRateLimit({
   max: 1000, // 1000 requests por 15 minutos
   message: {
     success: false,
-    message: 'Limite de requisições atingido em desenvolvimento.'
+    message: 'Limite de requisiÃ§Ãµes atingido em desenvolvimento.'
   },
   skip: req => {
     // Pular rate limiting em desenvolvimento
@@ -190,7 +190,7 @@ const devLimiter = createRateLimit({
 });
 
 /**
- * Rate limiter personalizado baseado em headers específicos
+ * Rate limiter personalizado baseado em headers especÃ­ficos
  */
 const headerBasedLimiter = (headerName, maxRequests) => {
   return createRateLimit({
@@ -201,13 +201,13 @@ const headerBasedLimiter = (headerName, maxRequests) => {
     },
     message: {
       success: false,
-      message: `Limite de requisições atingido para ${headerName}.`
+      message: `Limite de requisiÃ§Ãµes atingido para ${headerName}.`
     }
   });
 };
 
 /**
- * Rate limiter para diferentes tipos de usuário
+ * Rate limiter para diferentes tipos de usuÃ¡rio
  */
 const userTypeLimiter = {
   guest: createRateLimit({
@@ -215,7 +215,8 @@ const userTypeLimiter = {
     max: 50,
     message: {
       success: false,
-      message: 'Limite de requisições para visitantes atingido. Faça login para aumentar o limite.'
+      message:
+        'Limite de requisiÃ§Ãµes para visitantes atingido. FaÃ§a login para aumentar o limite.'
     }
   }),
 
@@ -224,7 +225,7 @@ const userTypeLimiter = {
     max: 150,
     message: {
       success: false,
-      message: 'Limite de requisições para usuários básicos atingido.'
+      message: 'Limite de requisiÃ§Ãµes para usuÃ¡rios bÃ¡sicos atingido.'
     }
   }),
 
@@ -233,7 +234,7 @@ const userTypeLimiter = {
     max: 300,
     message: {
       success: false,
-      message: 'Limite de requisições para usuários premium atingido.'
+      message: 'Limite de requisiÃ§Ãµes para usuÃ¡rios premium atingido.'
     }
   }),
 
@@ -242,13 +243,13 @@ const userTypeLimiter = {
     max: 500,
     message: {
       success: false,
-      message: 'Limite de requisições para administradores atingido.'
+      message: 'Limite de requisiÃ§Ãµes para administradores atingido.'
     }
   })
 };
 
 /**
- * Função para aplicar rate limiting baseado no tipo de usuário
+ * FunÃ§Ã£o para aplicar rate limiting baseado no tipo de usuÃ¡rio
  */
 const applyUserTypeLimiting = (req, res, next) => {
   let limiter;

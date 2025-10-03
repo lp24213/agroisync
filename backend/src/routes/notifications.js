@@ -1,26 +1,27 @@
-import express from 'express';
+﻿import express from 'express';
 import { authenticateToken } from '../middleware/auth.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
 import notificationService from '../services/notificationService.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
 // Aplicar rate limiting
 router.use(apiLimiter);
 
-// Aplicar autenticação em todas as rotas
+// Aplicar autenticaÃ§Ã£o em todas as rotas
 router.use(authenticateToken);
 
-// ===== ROTAS DE NOTIFICAÇÕES =====
+// ===== ROTAS DE NOTIFICAÃ‡Ã•ES =====
 
-// GET /api/notifications - Listar notificações do usuário
+// GET /api/notifications - Listar notificaÃ§Ãµes do usuÃ¡rio
 router.get('/', async (req, res) => {
   try {
     const { page = 1, limit = 20, read, archived = false, type, category } = req.query;
 
     const result = await notificationService.getUserNotifications(req.user.userId, {
-      page: parseInt(page, 10),
-      limit: parseInt(limit, 10),
+      page: parseInt(page, 10, 10),
+      limit: parseInt(limit, 10, 10),
       read: read === 'true' ? true : read === 'false' ? false : null,
       archived: archived === 'true',
       type,
@@ -33,9 +34,7 @@ router.get('/', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar notificações:', error);
-    }
+    logger.error('Erro ao buscar notificaÃ§Ãµes:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -43,7 +42,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/notifications/unread - Contar notificações não lidas
+// GET /api/notifications/unread - Contar notificaÃ§Ãµes nÃ£o lidas
 router.get('/unread/count', async (req, res) => {
   try {
     const result = await notificationService.getUserNotifications(req.user.userId, {
@@ -61,9 +60,7 @@ router.get('/unread/count', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao contar notificações não lidas:', error);
-    }
+    logger.error('Erro ao contar notificaÃ§Ãµes nÃ£o lidas:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -71,15 +68,15 @@ router.get('/unread/count', async (req, res) => {
   }
 });
 
-// GET /api/notifications/:id - Obter notificação específica
+// GET /api/notifications/:id - Obter notificaÃ§Ã£o especÃ­fica
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { userId } = req.user;
 
-    // Buscar notificação específica do usuário
+    // Buscar notificaÃ§Ã£o especÃ­fica do usuÃ¡rio
     const result = await notificationService.getUserNotifications(userId, {
-      limit: 1000 // Buscar todas para encontrar a específica
+      limit: 1000 // Buscar todas para encontrar a especÃ­fica
     });
 
     if (!result.success) {
@@ -91,7 +88,7 @@ router.get('/:id', async (req, res) => {
     if (!notification) {
       return res.status(404).json({
         success: false,
-        message: 'Notificação não encontrada'
+        message: 'NotificaÃ§Ã£o nÃ£o encontrada'
       });
     }
 
@@ -100,9 +97,7 @@ router.get('/:id', async (req, res) => {
       data: notification
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar notificação:', error);
-    }
+    logger.error('Erro ao buscar notificaÃ§Ã£o:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -124,9 +119,7 @@ router.patch('/:id/read', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao marcar como lida:', error);
-    }
+    logger.error('Erro ao marcar como lida:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -134,7 +127,7 @@ router.patch('/:id/read', async (req, res) => {
   }
 });
 
-// PATCH /api/notifications/:id/archive - Arquivar notificação
+// PATCH /api/notifications/:id/archive - Arquivar notificaÃ§Ã£o
 router.patch('/:id/archive', async (req, res) => {
   try {
     const { id } = req.params;
@@ -148,9 +141,7 @@ router.patch('/:id/archive', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao arquivar notificação:', error);
-    }
+    logger.error('Erro ao arquivar notificaÃ§Ã£o:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -163,7 +154,7 @@ router.patch('/read-all', async (req, res) => {
   try {
     const { userId } = req.user;
 
-    // Buscar todas as notificações não lidas
+    // Buscar todas as notificaÃ§Ãµes nÃ£o lidas
     const result = await notificationService.getUserNotifications(userId, {
       read: false,
       archived: false,
@@ -182,12 +173,12 @@ router.patch('/read-all', async (req, res) => {
 
     res.json({
       success: true,
-      message: `${notifications.length} notificações marcadas como lidas`,
+      message: `${notifications.length} notificaÃ§Ãµes marcadas como lidas`,
       count: notifications.length
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao marcar todas como lidas:', error);
+      logger.error('Erro ao marcar todas como lidas:', error);
     }
     res.status(500).json({
       success: false,
@@ -196,13 +187,13 @@ router.patch('/read-all', async (req, res) => {
   }
 });
 
-// DELETE /api/notifications/:id - Deletar notificação
+// DELETE /api/notifications/:id - Deletar notificaÃ§Ã£o
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { userId } = req.user;
 
-    // Buscar notificação
+    // Buscar notificaÃ§Ã£o
     const result = await notificationService.getUserNotifications(userId, {
       limit: 1000
     });
@@ -216,20 +207,20 @@ router.delete('/:id', async (req, res) => {
     if (!notification) {
       return res.status(404).json({
         success: false,
-        message: 'Notificação não encontrada'
+        message: 'NotificaÃ§Ã£o nÃ£o encontrada'
       });
     }
 
-    // Deletar notificação
+    // Deletar notificaÃ§Ã£o
     await notification.deleteOne();
 
     res.json({
       success: true,
-      message: 'Notificação deletada com sucesso'
+      message: 'NotificaÃ§Ã£o deletada com sucesso'
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao deletar notificação:', error);
+      logger.error('Erro ao deletar notificaÃ§Ã£o:', error);
     }
     res.status(500).json({
       success: false,
@@ -238,12 +229,12 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// DELETE /api/notifications/clear-read - Limpar notificações lidas
+// DELETE /api/notifications/clear-read - Limpar notificaÃ§Ãµes lidas
 router.delete('/clear-read', async (req, res) => {
   try {
     const { userId } = req.user;
 
-    // Buscar todas as notificações lidas
+    // Buscar todas as notificaÃ§Ãµes lidas
     const result = await notificationService.getUserNotifications(userId, {
       read: true,
       archived: false,
@@ -262,12 +253,12 @@ router.delete('/clear-read', async (req, res) => {
 
     res.json({
       success: true,
-      message: `${notifications.length} notificações lidas removidas`,
+      message: `${notifications.length} notificaÃ§Ãµes lidas removidas`,
       count: notifications.length
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao limpar notificações lidas:', error);
+      logger.error('Erro ao limpar notificaÃ§Ãµes lidas:', error);
     }
     res.status(500).json({
       success: false,
@@ -276,7 +267,7 @@ router.delete('/clear-read', async (req, res) => {
   }
 });
 
-// GET /api/notifications/stats - Estatísticas das notificações
+// GET /api/notifications/stats - EstatÃ­sticas das notificaÃ§Ãµes
 router.get('/stats/overview', async (req, res) => {
   try {
     const { userId } = req.user;
@@ -290,7 +281,7 @@ router.get('/stats/overview', async (req, res) => {
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter estatísticas:', error);
+      logger.error('Erro ao obter estatÃ­sticas:', error);
     }
     res.status(500).json({
       success: false,
@@ -301,7 +292,7 @@ router.get('/stats/overview', async (req, res) => {
 
 // ===== ROTAS ADMIN (APENAS PARA ADMINISTRADORES) =====
 
-// Middleware para verificar se é admin
+// Middleware para verificar se Ã© admin
 const adminAuth = (req, res, next) => {
   if (!req.user.isAdmin) {
     return res.status(403).json({
@@ -312,7 +303,7 @@ const adminAuth = (req, res, next) => {
   next();
 };
 
-// GET /api/notifications/admin/all - Listar todas as notificações (admin)
+// GET /api/notifications/admin/all - Listar todas as notificaÃ§Ãµes (admin)
 router.get('/admin/all', adminAuth, async (req, res) => {
   try {
     const { page = 1, limit = 50, userId, type, category, status } = req.query;
@@ -338,9 +329,9 @@ router.get('/admin/all', adminAuth, async (req, res) => {
       }
     }
 
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const skip = (parseInt(page, 10, 10) - 1) * parseInt(limit, 10, 10);
 
-    // Buscar notificações
+    // Buscar notificaÃ§Ãµes
     const notifications = await notificationService.getUserNotifications(null, {
       limit: 1000
     });
@@ -356,16 +347,16 @@ router.get('/admin/all', adminAuth, async (req, res) => {
       data: {
         notifications,
         pagination: {
-          page: parseInt(page, 10),
-          limit: parseInt(limit, 10),
+          page: parseInt(page, 10, 10),
+          limit: parseInt(limit, 10, 10),
           total,
-          pages: Math.ceil(total / parseInt(limit, 10))
+          pages: Math.ceil(total / parseInt(limit, 10, 10))
         }
       }
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar todas as notificações:', error);
+      logger.error('Erro ao buscar todas as notificaÃ§Ãµes:', error);
     }
     res.status(500).json({
       success: false,
@@ -374,7 +365,7 @@ router.get('/admin/all', adminAuth, async (req, res) => {
   }
 });
 
-// POST /api/notifications/admin/send - Enviar notificação manual (admin)
+// POST /api/notifications/admin/send - Enviar notificaÃ§Ã£o manual (admin)
 router.post('/admin/send', adminAuth, async (req, res) => {
   try {
     const { userId, type, title, body, channels, priority, category, data, metadata } = req.body;
@@ -382,7 +373,7 @@ router.post('/admin/send', adminAuth, async (req, res) => {
     if (!userId || !type || !title || !body) {
       return res.status(400).json({
         success: false,
-        message: 'userId, type, title e body são obrigatórios'
+        message: 'userId, type, title e body sÃ£o obrigatÃ³rios'
       });
     }
 
@@ -405,7 +396,7 @@ router.post('/admin/send', adminAuth, async (req, res) => {
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao enviar notificação manual:', error);
+      logger.error('Erro ao enviar notificaÃ§Ã£o manual:', error);
     }
     res.status(500).json({
       success: false,
@@ -414,7 +405,7 @@ router.post('/admin/send', adminAuth, async (req, res) => {
   }
 });
 
-// GET /api/notifications/admin/stats - Estatísticas gerais (admin)
+// GET /api/notifications/admin/stats - EstatÃ­sticas gerais (admin)
 router.get('/admin/stats', adminAuth, async (req, res) => {
   try {
     const result = await notificationService.getNotificationStats();
@@ -426,7 +417,7 @@ router.get('/admin/stats', adminAuth, async (req, res) => {
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter estatísticas gerais:', error);
+      logger.error('Erro ao obter estatÃ­sticas gerais:', error);
     }
     res.status(500).json({
       success: false,
@@ -447,7 +438,7 @@ router.post('/admin/cleanup', adminAuth, async (req, res) => {
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao fazer limpeza manual:', error);
+      logger.error('Erro ao fazer limpeza manual:', error);
     }
     res.status(500).json({
       success: false,

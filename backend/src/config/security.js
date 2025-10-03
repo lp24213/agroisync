@@ -1,7 +1,7 @@
-// ===== CONFIGURAÇÃO DE SEGURANÇA =====
+﻿// ===== CONFIGURAÃ‡ÃƒO DE SEGURANÃ‡A =====
 
 export const securityConfig = {
-  // Configurações de JWT
+  // ConfiguraÃ§Ãµes de JWT
   jwt: {
     secret: process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production',
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
@@ -10,7 +10,7 @@ export const securityConfig = {
     audience: process.env.JWT_AUDIENCE || 'agroisync-users'
   },
 
-  // Configurações de senha
+  // ConfiguraÃ§Ãµes de senha
   password: {
     minLength: 8,
     requireUppercase: true,
@@ -18,34 +18,34 @@ export const securityConfig = {
     requireNumbers: true,
     requireSpecialChars: true,
     maxAge: 90, // dias
-    historyCount: 5 // manter histórico de últimas 5 senhas
+    historyCount: 5 // manter histÃ³rico de Ãºltimas 5 senhas
   },
 
-  // Configurações de 2FA
+  // ConfiguraÃ§Ãµes de 2FA
   twoFactor: {
     enabled: true,
     algorithm: 'sha1',
     digits: 6,
     period: 30, // segundos
-    window: 1, // tolerância de 1 período
+    window: 1, // tolerÃ¢ncia de 1 perÃ­odo
     maxAttempts: 3,
     lockoutDuration: 15 * 60 * 1000 // 15 minutos
   },
 
-  // Configurações de rate limiting
+  // ConfiguraÃ§Ãµes de rate limiting
   rateLimit: {
     windowMs: 15 * 60 * 1000, // 15 minutos
     max: {
-      public: 100, // usuários não autenticados
-      authenticated: 500, // usuários autenticados
+      public: 100, // usuÃ¡rios nÃ£o autenticados
+      authenticated: 500, // usuÃ¡rios autenticados
       admin: 1000, // administradores
-      critical: 10 // endpoints críticos
+      critical: 10 // endpoints crÃ­ticos
     },
     skipSuccessfulRequests: false,
     skipFailedRequests: false
   },
 
-  // Configurações de sessão
+  // ConfiguraÃ§Ãµes de sessÃ£o
   session: {
     secret: process.env.SESSION_SECRET || 'your-super-secret-session-key',
     resave: false,
@@ -58,7 +58,7 @@ export const securityConfig = {
     }
   },
 
-  // Configurações de CORS
+  // ConfiguraÃ§Ãµes de CORS
   cors: {
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
     credentials: true,
@@ -73,7 +73,7 @@ export const securityConfig = {
     ]
   },
 
-  // Configurações de Helmet
+  // ConfiguraÃ§Ãµes de Helmet
   helmet: {
     contentSecurityPolicy: {
       directives: {
@@ -102,7 +102,7 @@ export const securityConfig = {
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
   },
 
-  // Configurações de validação de entrada
+  // ConfiguraÃ§Ãµes de validaÃ§Ã£o de entrada
   inputValidation: {
     maxFieldLength: 10000, // 10KB por campo
     maxTotalLength: 100000, // 100KB total
@@ -111,7 +111,7 @@ export const securityConfig = {
     sanitizeHtml: true
   },
 
-  // Configurações de auditoria
+  // ConfiguraÃ§Ãµes de auditoria
   audit: {
     enabled: true,
     logLevel: process.env.AUDIT_LOG_LEVEL || 'info',
@@ -119,7 +119,7 @@ export const securityConfig = {
     sensitiveFields: ['password', 'token', 'secret', 'key', 'creditCard', 'ssn', 'cpf', 'cnpj']
   },
 
-  // Configurações de LGPD
+  // ConfiguraÃ§Ãµes de LGPD
   gdpr: {
     enabled: true,
     consentExpiryDays: 365,
@@ -134,19 +134,19 @@ export const securityConfig = {
     dataProcessingBasis: ['consent', 'contract', 'legal_obligation', 'legitimate_interest']
   },
 
-  // Configurações de monitoramento de segurança
+  // ConfiguraÃ§Ãµes de monitoramento de seguranÃ§a
   securityMonitoring: {
     enabled: true,
     alertThresholds: {
-      failedLogins: 5, // alertar após 5 tentativas falhadas
-      suspiciousActivity: 3, // alertar após 3 atividades suspeitas
-      rateLimitExceeded: 10 // alertar após 10 violações de rate limit
+      failedLogins: 5, // alertar apÃ³s 5 tentativas falhadas
+      suspiciousActivity: 3, // alertar apÃ³s 3 atividades suspeitas
+      rateLimitExceeded: 10 // alertar apÃ³s 10 violaÃ§Ãµes de rate limit
     },
     notificationChannels: ['email', 'slack', 'webhook'],
     realTimeAlerts: true
   },
 
-  // Configurações de backup e recuperação
+  // ConfiguraÃ§Ãµes de backup e recuperaÃ§Ã£o
   backup: {
     enabled: true,
     frequency: 'daily',
@@ -156,7 +156,7 @@ export const securityConfig = {
     location: process.env.BACKUP_LOCATION || 'local'
   },
 
-  // Configurações de criptografia
+  // ConfiguraÃ§Ãµes de criptografia
   encryption: {
     algorithm: 'aes-256-gcm',
     keyLength: 32,
@@ -165,7 +165,7 @@ export const securityConfig = {
     pepper: process.env.ENCRYPTION_PEPPER || 'your-encryption-pepper'
   },
 
-  // Configurações de headers de segurança
+  // ConfiguraÃ§Ãµes de headers de seguranÃ§a
   securityHeaders: {
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'DENY',
@@ -177,7 +177,7 @@ export const securityConfig = {
     'Cross-Origin-Resource-Policy': 'same-origin'
   },
 
-  // Configurações de ambiente
+  // ConfiguraÃ§Ãµes de ambiente
   environment: {
     production: {
       secureCookies: true,
@@ -196,39 +196,39 @@ export const securityConfig = {
   }
 };
 
-// ===== FUNÇÕES DE VALIDAÇÃO DE SEGURANÇA =====
+// ===== FUNÃ‡Ã•ES DE VALIDAÃ‡ÃƒO DE SEGURANÃ‡A =====
 
 /**
- * Validar configuração de segurança
+ * Validar configuraÃ§Ã£o de seguranÃ§a
  */
 export const validateSecurityConfig = () => {
   const errors = [];
 
   // Validar JWT secret
   if (securityConfig.jwt.secret === 'your-super-secret-jwt-key-change-in-production') {
-    errors.push('JWT_SECRET deve ser alterado em produção');
+    errors.push('JWT_SECRET deve ser alterado em produÃ§Ã£o');
   }
 
   // Validar session secret
   if (securityConfig.session.secret === 'your-super-secret-session-key') {
-    errors.push('SESSION_SECRET deve ser alterado em produção');
+    errors.push('SESSION_SECRET deve ser alterado em produÃ§Ã£o');
   }
 
   // Validar encryption pepper
   if (securityConfig.encryption.pepper === 'your-encryption-pepper') {
-    errors.push('ENCRYPTION_PEPPER deve ser alterado em produção');
+    errors.push('ENCRYPTION_PEPPER deve ser alterado em produÃ§Ã£o');
   }
 
   // Validar ambiente
   if (process.env.NODE_ENV === 'production') {
     if (!process.env.JWT_SECRET) {
-      errors.push('JWT_SECRET é obrigatório em produção');
+      errors.push('JWT_SECRET Ã© obrigatÃ³rio em produÃ§Ã£o');
     }
     if (!process.env.SESSION_SECRET) {
-      errors.push('SESSION_SECRET é obrigatório em produção');
+      errors.push('SESSION_SECRET Ã© obrigatÃ³rio em produÃ§Ã£o');
     }
     if (!process.env.ENCRYPTION_PEPPER) {
-      errors.push('ENCRYPTION_PEPPER é obrigatório em produção');
+      errors.push('ENCRYPTION_PEPPER Ã© obrigatÃ³rio em produÃ§Ã£o');
     }
   }
 
@@ -239,7 +239,7 @@ export const validateSecurityConfig = () => {
 };
 
 /**
- * Obter configuração baseada no ambiente
+ * Obter configuraÃ§Ã£o baseada no ambiente
  */
 export const getEnvironmentConfig = () => {
   const env = process.env.NODE_ENV || 'development';
@@ -250,7 +250,7 @@ export const getEnvironmentConfig = () => {
 };
 
 /**
- * Gerar configuração de segurança para produção
+ * Gerar configuraÃ§Ã£o de seguranÃ§a para produÃ§Ã£o
  */
 export const generateProductionConfig = () => {
   return {
@@ -258,7 +258,7 @@ export const generateProductionConfig = () => {
     jwt: {
       ...securityConfig.jwt,
       secret: process.env.JWT_SECRET,
-      expiresIn: '1d', // Reduzir tempo de expiração em produção
+      expiresIn: '1d', // Reduzir tempo de expiraÃ§Ã£o em produÃ§Ã£o
       refreshExpiresIn: '7d'
     },
     session: {

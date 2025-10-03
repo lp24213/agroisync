@@ -1,13 +1,14 @@
-const { MongoClient, ObjectId } = require('mongodb');
+﻿const { MongoClient, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
 
+const logger = require('../../utils/logger.js');
 const mongoClient = new MongoClient(process.env.MONGODB_URI);
 
-// Função auxiliar para verificar autorização
+// FunÃ§Ã£o auxiliar para verificar autorizaÃ§Ã£o
 const verifyAuth = event => {
   const authHeader = event.headers.Authorization || event.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return { error: 'UNAUTHORIZED', message: 'Token de autorização não fornecido' };
+    return { error: 'UNAUTHORIZED', message: 'Token de autorizaÃ§Ã£o nÃ£o fornecido' };
   }
 
   const token = authHeader.substring(7);
@@ -16,27 +17,27 @@ const verifyAuth = event => {
   try {
     decodedToken = jwt.decode(token);
     if (!decodedToken) {
-      return { error: 'INVALID_TOKEN', message: 'Token inválido' };
+      return { error: 'INVALID_TOKEN', message: 'Token invÃ¡lido' };
     }
   } catch (error) {
-    return { error: 'INVALID_TOKEN', message: 'Token inválido' };
+    return { error: 'INVALID_TOKEN', message: 'Token invÃ¡lido' };
   }
 
   const cognitoSub = decodedToken.sub;
   const { email } = decodedToken;
 
   if (!cognitoSub || !email) {
-    return { error: 'INVALID_TOKEN_DATA', message: 'Dados do token inválidos' };
+    return { error: 'INVALID_TOKEN_DATA', message: 'Dados do token invÃ¡lidos' };
   }
 
   return { cognitoSub, email };
 };
 
-// Função para verificar limites do plano para fretes
+// FunÃ§Ã£o para verificar limites do plano para fretes
 const checkFreightLimits = async (db, cognitoSub, operation) => {
   const user = await db.collection('users').findOne({ cognitoSub });
   if (!user) {
-    return { error: 'USER_NOT_FOUND', message: 'Usuário não encontrado' };
+    return { error: 'USER_NOT_FOUND', message: 'UsuÃ¡rio nÃ£o encontrado' };
   }
 
   const { plan } = user;
@@ -51,7 +52,7 @@ const checkFreightLimits = async (db, cognitoSub, operation) => {
     }
 
     if (plan.type === 'fretes_avancado') {
-      // Plano Fretes Avançado: máximo 30 fretes/mês
+      // Plano Fretes AvanÃ§ado: mÃ¡ximo 30 fretes/mÃªs
       const currentMonth = new Date();
       currentMonth.setDate(1);
       currentMonth.setHours(0, 0, 0, 0);
@@ -64,11 +65,11 @@ const checkFreightLimits = async (db, cognitoSub, operation) => {
       if (currentFreights >= 30) {
         return {
           error: 'LIMIT_EXCEEDED',
-          message: 'Limite de 30 fretes/mês atingido para o plano Fretes Avançado.'
+          message: 'Limite de 30 fretes/mÃªs atingido para o plano Fretes AvanÃ§ado.'
         };
       }
     }
-    // Planos básicos: ilimitado
+    // Planos bÃ¡sicos: ilimitado
   }
 
   return { user, plan };
@@ -97,7 +98,7 @@ exports.handler = async event => {
     await mongoClient.connect();
     const db = mongoClient.db();
 
-    // GET /shipments - Fretes do usuário
+    // GET /shipments - Fretes do usuÃ¡rio
     if (event.httpMethod === 'GET') {
       const auth = verifyAuth(event);
       if (auth.error) {
@@ -114,13 +115,13 @@ exports.handler = async event => {
       const { owner, id } = queryStringParameters || {};
 
       if (id) {
-        // Buscar frete específico por ID
+        // Buscar frete especÃ­fico por ID
         if (!ObjectId.isValid(id)) {
           return {
             statusCode: 400,
             headers: corsHeaders,
             body: JSON.stringify({
-              error: { code: 'INVALID_ID', message: 'ID inválido' }
+              error: { code: 'INVALID_ID', message: 'ID invÃ¡lido' }
             })
           };
         }
@@ -131,12 +132,12 @@ exports.handler = async event => {
             statusCode: 404,
             headers: corsHeaders,
             body: JSON.stringify({
-              error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete não encontrado' }
+              error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete nÃ£o encontrado' }
             })
           };
         }
 
-        // Se não for o dono, retornar apenas dados públicos
+        // Se nÃ£o for o dono, retornar apenas dados pÃºblicos
         if (shipment.ownerId !== auth.cognitoSub) {
           const publicShipment = {
             _id: shipment._id,
@@ -158,7 +159,7 @@ exports.handler = async event => {
         };
       }
 
-      // Buscar fretes do usuário
+      // Buscar fretes do usuÃ¡rio
       const filter = owner === 'me' ? { ownerId: auth.cognitoSub } : {};
       const shipments = await db
         .collection('shipments')
@@ -207,12 +208,12 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_JSON', message: 'JSON inválido' }
+            error: { code: 'INVALID_JSON', message: 'JSON invÃ¡lido' }
           })
         };
       }
 
-      // Validar dados obrigatórios
+      // Validar dados obrigatÃ³rios
       const { public: publicData, private: privateData } = requestBody;
 
       if (
@@ -227,7 +228,7 @@ exports.handler = async event => {
           body: JSON.stringify({
             error: {
               code: 'MISSING_FIELDS',
-              message: 'Dados públicos obrigatórios: rota de origem, destino e dias estimados'
+              message: 'Dados pÃºblicos obrigatÃ³rios: rota de origem, destino e dias estimados'
             }
           })
         };
@@ -240,7 +241,7 @@ exports.handler = async event => {
           body: JSON.stringify({
             error: {
               code: 'MISSING_FIELDS',
-              message: 'Dados privados obrigatórios: preço do frete e peso'
+              message: 'Dados privados obrigatÃ³rios: preÃ§o do frete e peso'
             }
           })
         };
@@ -252,7 +253,7 @@ exports.handler = async event => {
         public: {
           routeFrom: publicData.routeFrom.trim(),
           routeTo: publicData.routeTo.trim(),
-          estimatedDays: parseInt(publicData.estimatedDays, 10)
+          estimatedDays: parseInt(publicData.estimatedDays, 10, 10)
         },
         private: {
           freightPrice: parseFloat(privateData.freightPrice),
@@ -266,7 +267,7 @@ exports.handler = async event => {
 
       const result = await db.collection('shipments').insertOne(newShipment);
 
-      // Criar índices se não existirem
+      // Criar Ã­ndices se nÃ£o existirem
       await db.collection('shipments').createIndex({ ownerId: 1 });
 
       return {
@@ -304,12 +305,12 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_ID', message: 'ID inválido' }
+            error: { code: 'INVALID_ID', message: 'ID invÃ¡lido' }
           })
         };
       }
 
-      // Verificar se o frete existe e pertence ao usuário
+      // Verificar se o frete existe e pertence ao usuÃ¡rio
       const existingShipment = await db.collection('shipments').findOne({
         _id: new ObjectId(id),
         ownerId: auth.cognitoSub
@@ -320,7 +321,7 @@ exports.handler = async event => {
           statusCode: 404,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete não encontrado' }
+            error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete nÃ£o encontrado' }
           })
         };
       }
@@ -334,39 +335,44 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_JSON', message: 'JSON inválido' }
+            error: { code: 'INVALID_JSON', message: 'JSON invÃ¡lido' }
           })
         };
       }
 
-      // Preparar dados para atualização
+      // Preparar dados para atualizaÃ§Ã£o
       const updateData = {
         updatedAt: new Date()
       };
 
       if (requestBody.public) {
         if (requestBody.public.routeFrom) {
-        {updateData['public.routeFrom'] = requestBody.public.routeFrom.trim();}
+          updateData['public.routeFrom'] = requestBody.public.routeFrom.trim();
+        }
         if (requestBody.public.routeTo) {
-        {updateData['public.routeTo'] = requestBody.public.routeTo.trim();}
+          updateData['public.routeTo'] = requestBody.public.routeTo.trim();
+        }
         if (requestBody.public.estimatedDays) {
-        {updateData['public.estimatedDays'] = parseInt(requestBody.public.estimatedDays, 10);}
+          updateData['public.estimatedDays'] = parseInt(requestBody.public.estimatedDays, 10, 10);
+        }
       }
 
       if (requestBody.private) {
         if (requestBody.private.freightPrice) {
-        {updateData['private.freightPrice'] = parseFloat(requestBody.private.freightPrice);}
+          updateData['private.freightPrice'] = parseFloat(requestBody.private.freightPrice);
+        }
         if (requestBody.private.weightKg) {
-        {updateData['private.weightKg'] = parseFloat(requestBody.private.weightKg);}
+          updateData['private.weightKg'] = parseFloat(requestBody.private.weightKg);
+        }
         if (requestBody.private.nfNumber !== undefined) {
-        {updateData['private.nfNumber'] = requestBody.private.nfNumber
-          ? requestBody.private.nfNumber.trim()
-          : '';
+          updateData['private.nfNumber'] = requestBody.private.nfNumber
+            ? requestBody.private.nfNumber.trim()
+            : '';
         }
         if (requestBody.private.notes !== undefined) {
-        {updateData['private.notes'] = requestBody.private.notes
-          ? requestBody.private.notes.trim()
-          : '';
+          updateData['private.notes'] = requestBody.private.notes
+            ? requestBody.private.notes.trim()
+            : '';
         }
       }
 
@@ -380,7 +386,7 @@ exports.handler = async event => {
           statusCode: 404,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete não encontrado' }
+            error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete nÃ£o encontrado' }
           })
         };
       }
@@ -416,12 +422,12 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_ID', message: 'ID inválido' }
+            error: { code: 'INVALID_ID', message: 'ID invÃ¡lido' }
           })
         };
       }
 
-      // Verificar se o frete existe e pertence ao usuário
+      // Verificar se o frete existe e pertence ao usuÃ¡rio
       const existingShipment = await db.collection('shipments').findOne({
         _id: new ObjectId(id),
         ownerId: auth.cognitoSub
@@ -432,7 +438,7 @@ exports.handler = async event => {
           statusCode: 404,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete não encontrado' }
+            error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete nÃ£o encontrado' }
           })
         };
       }
@@ -447,7 +453,7 @@ exports.handler = async event => {
           statusCode: 404,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete não encontrado' }
+            error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete nÃ£o encontrado' }
           })
         };
       }
@@ -461,17 +467,17 @@ exports.handler = async event => {
       };
     }
 
-    // Método não suportado
+    // MÃ©todo nÃ£o suportado
     return {
       statusCode: 405,
       headers: corsHeaders,
       body: JSON.stringify({
-        error: { code: 'METHOD_NOT_ALLOWED', message: 'Método não permitido' }
+        error: { code: 'METHOD_NOT_ALLOWED', message: 'MÃ©todo nÃ£o permitido' }
       })
     };
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro no gerenciamento de fretes:', error);
+      logger.error('Erro no gerenciamento de fretes:', error);
     }
     return {
       statusCode: 500,

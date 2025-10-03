@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import Partner from '../models/Partner.js';
 import { authenticateToken, requireAdmin } from '../middleware/auth.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
@@ -10,16 +10,16 @@ const router = express.Router();
 // Apply rate limiting
 router.use(apiLimiter);
 
-// ===== MIDDLEWARE DE VALIDAÇÃO =====
+// ===== MIDDLEWARE DE VALIDAÃ‡ÃƒO =====
 
-// Validação para criação/atualização de parceiros
+// ValidaÃ§Ã£o para criaÃ§Ã£o/atualizaÃ§Ã£o de parceiros
 const validatePartnerData = (req, res, next) => {
   const { name, description, category, contact } = req.body;
 
   if (!name || !description || !category) {
     return res.status(400).json({
       success: false,
-      message: 'Nome, descrição e categoria são obrigatórios'
+      message: 'Nome, descriÃ§Ã£o e categoria sÃ£o obrigatÃ³rios'
     });
   }
 
@@ -34,7 +34,7 @@ const validatePartnerData = (req, res, next) => {
   if (description.trim().length < 10 || description.trim().length > 2000) {
     return res.status(400).json({
       success: false,
-      message: 'Descrição deve ter entre 10 e 2000 caracteres'
+      message: 'DescriÃ§Ã£o deve ter entre 10 e 2000 caracteres'
     });
   }
 
@@ -51,7 +51,7 @@ const validatePartnerData = (req, res, next) => {
   if (!validCategories.includes(category)) {
     return res.status(400).json({
       success: false,
-      message: 'Categoria inválida'
+      message: 'Categoria invÃ¡lida'
     });
   }
 
@@ -61,7 +61,7 @@ const validatePartnerData = (req, res, next) => {
     if (!emailRegex.test(contact.email)) {
       return res.status(400).json({
         success: false,
-        message: 'Formato de email inválido'
+        message: 'Formato de email invÃ¡lido'
       });
     }
   }
@@ -69,13 +69,13 @@ const validatePartnerData = (req, res, next) => {
   next();
 };
 
-// ===== ROTAS PÚBLICAS =====
+// ===== ROTAS PÃšBLICAS =====
 
 // GET /api/partners - Listar todos os parceiros
 router.get('/', async (req, res) => {
   try {
     const { page = 1, limit = 20, category, status, featured, search } = req.query;
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const skip = (parseInt(page, 10, 10) - 1) * parseInt(limit, 10, 10);
 
     const query = {};
 
@@ -106,7 +106,7 @@ router.get('/', async (req, res) => {
     const partners = await Partner.find(query)
       .sort({ isFeatured: -1, createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit, 10))
+      .limit(parseInt(limit, 10, 10))
       .lean();
 
     const total = await Partner.countDocuments(query);
@@ -116,10 +116,10 @@ router.get('/', async (req, res) => {
       data: {
         partners,
         pagination: {
-          currentPage: parseInt(page, 10),
-          totalPages: Math.ceil(total / parseInt(limit, 10)),
+          currentPage: parseInt(page, 10, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit, 10)
+          itemsPerPage: parseInt(limit, 10, 10)
         }
       }
     });
@@ -142,7 +142,7 @@ router.get('/featured', async (req, res) => {
       status: 'active'
     })
       .sort({ partnershipLevel: -1, createdAt: -1 })
-      .limit(parseInt(limit, 10))
+      .limit(parseInt(limit, 10, 10))
       .lean();
 
     res.json({
@@ -158,7 +158,7 @@ router.get('/featured', async (req, res) => {
   }
 });
 
-// GET /api/partners/categories - Obter categorias disponíveis
+// GET /api/partners/categories - Obter categorias disponÃ­veis
 router.get('/categories', async (req, res) => {
   try {
     const categories = await Partner.distinct('category');
@@ -176,7 +176,7 @@ router.get('/categories', async (req, res) => {
   }
 });
 
-// GET /api/partners/:id - Obter parceiro específico
+// GET /api/partners/:id - Obter parceiro especÃ­fico
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -185,15 +185,15 @@ router.get('/:id', async (req, res) => {
     if (!partner) {
       return res.status(404).json({
         success: false,
-        message: 'Parceiro não encontrado'
+        message: 'Parceiro nÃ£o encontrado'
       });
     }
 
-    // Verificar se o parceiro está ativo
+    // Verificar se o parceiro estÃ¡ ativo
     if (partner.status !== 'active') {
       return res.status(404).json({
         success: false,
-        message: 'Parceiro não encontrado'
+        message: 'Parceiro nÃ£o encontrado'
       });
     }
 
@@ -232,7 +232,7 @@ router.post('/', authenticateToken, requireAdmin, validatePartnerData, async (re
       notes
     } = req.body;
 
-    // Sanitizar inputs
+    // Sanitizar inputs (estrutura achatada para evitar problemas de indentação)
     const sanitizedData = {
       name: sanitizeInput(name),
       description: sanitizeInput(description),
@@ -240,20 +240,8 @@ router.post('/', authenticateToken, requireAdmin, validatePartnerData, async (re
       logo: logo ? sanitizeInput(logo) : undefined,
       category: sanitizeInput(category),
       industry: industry ? sanitizeInput(industry) : undefined,
-      founded: founded ? parseInt(founded, 10) : undefined,
+      founded: founded ? parseInt(founded, 10, 10) : undefined,
       employees: employees || undefined,
-      /* eslint-disable prettier/prettier */
-      location: location ? {
-        country: sanitizeInput(location.country || 'Brasil'),
-        state: location.state ? sanitizeInput(location.state) : undefined,
-        city: location.city ? sanitizeInput(location.city) : undefined
-      } : undefined,
-      contact: contact ? {
-        email: contact.email ? sanitizeInput(contact.email).toLowerCase() : undefined,
-        phone: contact.phone ? sanitizeInput(contact.phone) : undefined,
-        contactPerson: contact.contactPerson ? sanitizeInput(contact.contactPerson) : undefined
-      } : undefined,
-      /* eslint-enable prettier/prettier */
       services: services ? services.map(service => sanitizeInput(service)) : [],
       certifications: certifications || [],
       partnershipLevel: partnershipLevel || 'bronze',
@@ -261,11 +249,28 @@ router.post('/', authenticateToken, requireAdmin, validatePartnerData, async (re
       createdBy: req.user.userId
     };
 
+    // Campos aninhados (definidos separadamente para manter indentação consistente)
+    if (location) {
+      sanitizedData.location = {
+        country: sanitizeInput(location.country || 'Brasil'),
+        state: location.state ? sanitizeInput(location.state) : undefined,
+        city: location.city ? sanitizeInput(location.city) : undefined
+      };
+    }
+
+    if (contact) {
+      sanitizedData.contact = {
+        email: contact.email ? sanitizeInput(contact.email).toLowerCase() : undefined,
+        phone: contact.phone ? sanitizeInput(contact.phone) : undefined,
+        contactPerson: contact.contactPerson ? sanitizeInput(contact.contactPerson) : undefined
+      };
+    }
+
     // Criar parceiro
     const partner = new Partner(sanitizedData);
     await partner.save();
 
-    // Log de segurança
+    // Log de seguranÃ§a
     await createSecurityLog(
       'data_modification',
       'medium',
@@ -311,7 +316,7 @@ router.put('/:id', authenticateToken, requireAdmin, validatePartnerData, async (
     if (!partner) {
       return res.status(404).json({
         success: false,
-        message: 'Parceiro não encontrado'
+        message: 'Parceiro nÃ£o encontrado'
       });
     }
 
@@ -335,7 +340,7 @@ router.put('/:id', authenticateToken, requireAdmin, validatePartnerData, async (
       partner.industry = updateData.industry ? sanitizeInput(updateData.industry) : undefined;
     }
     if (updateData.founded !== undefined) {
-      partner.founded = updateData.founded ? parseInt(updateData.founded, 10) : undefined;
+      partner.founded = updateData.founded ? parseInt(updateData.founded, 10, 10) : undefined;
     }
     if (updateData.employees !== undefined) {
       partner.employees = updateData.employees;
@@ -376,7 +381,7 @@ router.put('/:id', authenticateToken, requireAdmin, validatePartnerData, async (
 
     await partner.save();
 
-    // Log de segurança
+    // Log de seguranÃ§a
     await createSecurityLog(
       'data_modification',
       'medium',
@@ -421,7 +426,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
     if (!partner) {
       return res.status(404).json({
         success: false,
-        message: 'Parceiro não encontrado'
+        message: 'Parceiro nÃ£o encontrado'
       });
     }
 
@@ -429,7 +434,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
     partner.status = 'inactive';
     await partner.save();
 
-    // Log de segurança
+    // Log de seguranÃ§a
     await createSecurityLog(
       'data_modification',
       'medium',
@@ -473,14 +478,14 @@ router.put('/:id/feature', authenticateToken, requireAdmin, async (req, res) => 
     if (!partner) {
       return res.status(404).json({
         success: false,
-        message: 'Parceiro não encontrado'
+        message: 'Parceiro nÃ£o encontrado'
       });
     }
 
     partner.isFeatured = !partner.isFeatured;
     await partner.save();
 
-    // Log de segurança
+    // Log de seguranÃ§a
     await createSecurityLog(
       'data_modification',
       'low',
@@ -508,7 +513,7 @@ router.put('/:id/feature', authenticateToken, requireAdmin, async (req, res) => 
   }
 });
 
-// PUT /api/partners/:id/level - Atualizar nível de parceria (admin only)
+// PUT /api/partners/:id/level - Atualizar nÃ­vel de parceria (admin only)
 router.put('/:id/level', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -517,7 +522,7 @@ router.put('/:id/level', authenticateToken, requireAdmin, async (req, res) => {
     if (!partnershipLevel) {
       return res.status(400).json({
         success: false,
-        message: 'Nível de parceria é obrigatório'
+        message: 'NÃ­vel de parceria Ã© obrigatÃ³rio'
       });
     }
 
@@ -525,7 +530,7 @@ router.put('/:id/level', authenticateToken, requireAdmin, async (req, res) => {
     if (!validLevels.includes(partnershipLevel)) {
       return res.status(400).json({
         success: false,
-        message: 'Nível de parceria inválido'
+        message: 'NÃ­vel de parceria invÃ¡lido'
       });
     }
 
@@ -533,14 +538,14 @@ router.put('/:id/level', authenticateToken, requireAdmin, async (req, res) => {
     if (!partner) {
       return res.status(404).json({
         success: false,
-        message: 'Parceiro não encontrado'
+        message: 'Parceiro nÃ£o encontrado'
       });
     }
 
     partner.partnershipLevel = partnershipLevel;
     await partner.save();
 
-    // Log de segurança
+    // Log de seguranÃ§a
     await createSecurityLog(
       'data_modification',
       'medium',
@@ -556,7 +561,7 @@ router.put('/:id/level', authenticateToken, requireAdmin, async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Nível de parceria atualizado com sucesso',
+      message: 'NÃ­vel de parceria atualizado com sucesso',
       data: { partnershipLevel: partner.partnershipLevel }
     });
   } catch {
@@ -568,9 +573,9 @@ router.put('/:id/level', authenticateToken, requireAdmin, async (req, res) => {
   }
 });
 
-// ===== ROTAS DE ESTATÍSTICAS =====
+// ===== ROTAS DE ESTATÃSTICAS =====
 
-// GET /api/partners/admin/stats - Estatísticas dos parceiros (admin only)
+// GET /api/partners/admin/stats - EstatÃ­sticas dos parceiros (admin only)
 router.get('/admin/stats', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const [statusStats, categoryStats, levelStats] = await Promise.all([

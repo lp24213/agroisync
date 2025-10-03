@@ -1,10 +1,11 @@
-// Sistema de Monitoramento de Performance - AGROISYNC
-// Monitoramento em tempo real de performance, recursos e métricas
+﻿// Sistema de Monitoramento de Performance - AGROISYNC
+// Monitoramento em tempo real de performance, recursos e mÃ©tricas
 
 import { performance } from 'perf_hooks';
 import { SecurityLog } from '../models/SecurityLog.js';
 import { AuditLog } from '../models/AuditLog.js';
 
+import logger from '../utils/logger.js';
 class PerformanceMonitor {
   constructor() {
     this.metrics = {
@@ -41,18 +42,18 @@ class PerformanceMonitor {
       this.monitorSystemResources();
     }, 30000); // A cada 30 segundos
 
-    // Monitorar performance da aplicação
+    // Monitorar performance da aplicaÃ§Ã£o
     setInterval(() => {
       this.monitorApplicationPerformance();
     }, 60000); // A cada minuto
 
-    // Limpar métricas antigas
+    // Limpar mÃ©tricas antigas
     setInterval(() => {
       this.cleanupOldMetrics();
     }, 300000); // A cada 5 minutos
 
     if (process.env.NODE_ENV !== 'production') {
-      console.log('📊 Sistema de monitoramento de performance iniciado');
+      logger.info('ðŸ“Š Sistema de monitoramento de performance iniciado');
     }
   }
 
@@ -86,19 +87,19 @@ class PerformanceMonitor {
       });
     }
 
-    // Armazenar métricas
+    // Armazenar mÃ©tricas
     this.metrics.resources.set(Date.now(), metrics);
 
     // Log de performance
     this.logPerformanceMetric('SYSTEM_RESOURCES', metrics);
   }
 
-  // Monitorar performance da aplicação
+  // Monitorar performance da aplicaÃ§Ã£o
   monitorApplicationPerformance() {
     const now = Date.now();
     const oneMinuteAgo = now - 60000;
 
-    // Calcular métricas de requisições
+    // Calcular mÃ©tricas de requisiÃ§Ãµes
     const recentRequests = Array.from(this.metrics.requests.values()).filter(
       req => req.timestamp > oneMinuteAgo
     );
@@ -144,14 +145,14 @@ class PerformanceMonitor {
       });
     }
 
-    // Armazenar métricas
+    // Armazenar mÃ©tricas
     this.metrics.responses.set(now, metrics);
 
     // Log de performance
     this.logPerformanceMetric('APPLICATION_PERFORMANCE', metrics);
   }
 
-  // Registrar requisição
+  // Registrar requisiÃ§Ã£o
   recordRequest(req, res, next) {
     const startTime = performance.now();
     const requestId = Math.random().toString(36).substr(2, 9);
@@ -160,7 +161,7 @@ class PerformanceMonitor {
     req.requestId = requestId;
     req.startTime = startTime;
 
-    // Registrar requisição
+    // Registrar requisiÃ§Ã£o
     this.metrics.requests.set(requestId, {
       id: requestId,
       method: req.method,
@@ -186,7 +187,7 @@ class PerformanceMonitor {
         timestamp: Date.now()
       });
 
-      // Verificar se é erro
+      // Verificar se Ã© erro
       if (res.statusCode >= 400) {
         this.metrics.errors.set(requestId, {
           id: requestId,
@@ -203,7 +204,7 @@ class PerformanceMonitor {
     next();
   }
 
-  // Calcular tempo médio de resposta
+  // Calcular tempo mÃ©dio de resposta
   calculateAverageResponseTime(responses) {
     if (responses.length === 0) {
       return 0;
@@ -227,7 +228,7 @@ class PerformanceMonitor {
 
     this.alerts.push(alert);
 
-    // Log de segurança
+    // Log de seguranÃ§a
     this.logSecurityEvent('PERFORMANCE_ALERT', severity, {
       alertType: type,
       details
@@ -243,7 +244,7 @@ class PerformanceMonitor {
   // Obter mensagem do alerta
   getAlertMessage(type, details) {
     const messages = {
-      HIGH_MEMORY_USAGE: `Uso de memória alto: ${(details.usage * 100).toFixed(1)}%`,
+      HIGH_MEMORY_USAGE: `Uso de memÃ³ria alto: ${(details.usage * 100).toFixed(1)}%`,
       SLOW_RESPONSE_TIME: `Tempo de resposta lento: ${details.responseTime.toFixed(2)}ms`,
       HIGH_ERROR_RATE: `Taxa de erro alta: ${(details.errorRate * 100).toFixed(2)}%`,
       HIGH_THROUGHPUT: `Throughput alto: ${details.throughput} req/min`,
@@ -254,7 +255,7 @@ class PerformanceMonitor {
     return messages[type] || 'Alerta de performance desconhecido';
   }
 
-  // Log de métrica de performance
+  // Log de mÃ©trica de performance
   async logPerformanceMetric(type, metrics) {
     try {
       await AuditLog.create({
@@ -270,12 +271,12 @@ class PerformanceMonitor {
       });
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao registrar métrica de performance:', error);
+        logger.error('Erro ao registrar mÃ©trica de performance:', error);
       }
     }
   }
 
-  // Log de evento de segurança
+  // Log de evento de seguranÃ§a
   async logSecurityEvent(eventType, severity, details) {
     try {
       await SecurityLog.create({
@@ -289,17 +290,17 @@ class PerformanceMonitor {
       });
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao registrar evento de segurança:', error);
+        logger.error('Erro ao registrar evento de seguranÃ§a:', error);
       }
     }
   }
 
-  // Limpar métricas antigas
+  // Limpar mÃ©tricas antigas
   cleanupOldMetrics() {
     const now = Date.now();
     const oneHourAgo = now - 3600000;
 
-    // Limpar requisições antigas
+    // Limpar requisiÃ§Ãµes antigas
     for (const [key, data] of this.metrics.requests.entries()) {
       if (data.timestamp < oneHourAgo) {
         this.metrics.requests.delete(key);
@@ -331,7 +332,7 @@ class PerformanceMonitor {
     this.alerts = this.alerts.filter(alert => alert.timestamp.getTime() > oneHourAgo);
   }
 
-  // Obter estatísticas
+  // Obter estatÃ­sticas
   getStats() {
     const now = Date.now();
     const oneMinuteAgo = now - 60000;
@@ -386,7 +387,7 @@ class PerformanceMonitor {
     };
   }
 
-  // Obter métricas detalhadas
+  // Obter mÃ©tricas detalhadas
   getDetailedMetrics() {
     return {
       requests: Object.fromEntries(this.metrics.requests),
@@ -401,7 +402,7 @@ class PerformanceMonitor {
   setThresholds(newThresholds) {
     this.thresholds = { ...this.thresholds, ...newThresholds };
     if (process.env.NODE_ENV !== 'production') {
-      console.log('📊 Limites de performance atualizados:', this.thresholds);
+      logger.info('ðŸ“Š Limites de performance atualizados:', this.thresholds);
     }
   }
 
@@ -409,12 +410,12 @@ class PerformanceMonitor {
   stopMonitoring() {
     this.isMonitoring = false;
     if (process.env.NODE_ENV !== 'production') {
-      console.log('📊 Sistema de monitoramento de performance parado');
+      logger.info('ðŸ“Š Sistema de monitoramento de performance parado');
     }
   }
 }
 
-// Instância única
+// InstÃ¢ncia Ãºnica
 const performanceMonitor = new PerformanceMonitor();
 
 export default performanceMonitor;

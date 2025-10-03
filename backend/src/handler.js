@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
@@ -18,24 +18,25 @@ app.use(helmet());
 import { cspMiddleware } from './middleware/csp.js';
 app.use(cspMiddleware);
 
-// CSRF Protection (aplicado em rotas específicas via middleware)
+// CSRF Protection (aplicado em rotas especÃ­ficas via middleware)
 import { csrfToken } from './middleware/csrf.js';
+import logger from './utils/logger.js';
 app.use(csrfToken); // Adiciona token CSRF a todas as respostas
 
-// ===== CONFIGURAÇÃO CORS CONSOLIDADA =====
-// ÚNICA configuração CORS do projeto - não duplicar em outros arquivos
+// ===== CONFIGURAÃ‡ÃƒO CORS CONSOLIDADA =====
+// ÃšNICA configuraÃ§Ã£o CORS do projeto - nÃ£o duplicar em outros arquivos
 const configureCORS = () => {
-  // Usar configuração centralizada
+  // Usar configuraÃ§Ã£o centralizada
   const allowedOrigins = SECURITY_CONFIG.corsOrigin;
 
   // Log CORS em desenvolvimento (desativado por eslint)
   // if (process.env.NODE_ENV !== 'production') {
-  //   console.log('🌐 CORS - Origens permitidas:', allowedOrigins);
+  //   logger.info('ðŸŒ CORS - Origens permitidas:', allowedOrigins);
   // }
 
   return {
     origin: (origin, callback) => {
-      // Permitir requisições sem origin (mobile apps, Postman, curl, etc)
+      // Permitir requisiÃ§Ãµes sem origin (mobile apps, Postman, curl, etc)
       if (!origin) {
         return callback(null, true);
       }
@@ -50,9 +51,9 @@ const configureCORS = () => {
         return callback(null, true);
       }
 
-      // Bloquear origem não autorizada
-      // console.warn(`⚠️ CORS bloqueado: ${origin}`);
-      callback(new Error(`Origem ${origin} não permitida pelo CORS`));
+      // Bloquear origem nÃ£o autorizada
+      // logger.warn(`âš ï¸ CORS bloqueado: ${origin}`);
+      callback(new Error(`Origem ${origin} nÃ£o permitida pelo CORS`));
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
@@ -81,7 +82,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Routes
 app.use('/health', healthRoutes);
 app.use('/api', apiRoutes);
-app.use('/api-docs', swaggerRoutes); // Documentação Swagger
+app.use('/api-docs', swaggerRoutes); // DocumentaÃ§Ã£o Swagger
 
 // Health check endpoint
 app.get('/', (_req, res) => {
@@ -102,9 +103,9 @@ app.use('*', (_req, res) => {
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 app.use((err, req, res, _next) => {
   // eslint-disable-next-line no-console
-  console.error('Error:', err);
+  logger.error('Error:', err);
 
-  // Se for erro de CORS, enviar mensagem específica
+  // Se for erro de CORS, enviar mensagem especÃ­fica
   if (err.message && err.message.includes('CORS')) {
     return res.status(403).json({
       success: false,
@@ -113,7 +114,7 @@ app.use((err, req, res, _next) => {
     });
   }
 
-  // Erro genérico
+  // Erro genÃ©rico
   res.status(500).json({
     success: false,
     error: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message,
@@ -129,6 +130,6 @@ if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 3001;
   app.listen(PORT, () => {
     // eslint-disable-next-line no-console
-    console.log(`Server running on port ${PORT}`);
+    logger.info(`Server running on port ${PORT}`);
   });
 }

@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const router = express.Router();
 const { AgroConecta, Loja, Marketplace, Fazenda } = require('../models/Registration');
 const auth = require('../middleware/auth');
@@ -7,25 +7,25 @@ const rateLimit = require('express-rate-limit');
 // Rate limiting para APIs externas
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // máximo 100 requests por IP
+  max: 100, // mÃ¡ximo 100 requests por IP
   message: 'Muitas tentativas de acesso. Tente novamente em 15 minutos.'
 });
 
 // Rate limiting para cadastros
 const registrationLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hora
-  max: 5, // máximo 5 cadastros por IP por hora
+  max: 5, // mÃ¡ximo 5 cadastros por IP por hora
   message: 'Muitos cadastros realizados. Tente novamente em 1 hora.'
 });
 
-// Função para buscar dados por CEP
+// FunÃ§Ã£o para buscar dados por CEP
 const fetchCEPData = async cep => {
   try {
     // Simular API dos Correios (substituir por API real)
     const cleanCEP = cep.replace(/\D/g, '');
 
     if (cleanCEP.length !== 8) {
-      throw new Error('CEP inválido');
+      throw new Error('CEP invÃ¡lido');
     }
 
     // Mock data - substituir por chamada real para API dos Correios
@@ -33,7 +33,7 @@ const fetchCEPData = async cep => {
       cep,
       logradouro: 'Avenida Paulista',
       bairro: 'Bela Vista',
-      localidade: 'São Paulo',
+      localidade: 'SÃ£o Paulo',
       uf: 'SP',
       ibge: '3550308',
       gia: '1004',
@@ -47,27 +47,27 @@ const fetchCEPData = async cep => {
   }
 };
 
-// Função para validar CPF na Receita Federal
+// FunÃ§Ã£o para validar CPF na Receita Federal
 const validateCPF = async cpf => {
   try {
     const cleanCPF = cpf.replace(/\D/g, '');
 
     if (cleanCPF.length !== 11) {
-      throw new Error('CPF deve ter 11 dígitos');
+      throw new Error('CPF deve ter 11 dÃ­gitos');
     }
 
-    // Simular validação na Receita Federal
-    // Em produção, usar API real da Receita Federal
+    // Simular validaÃ§Ã£o na Receita Federal
+    // Em produÃ§Ã£o, usar API real da Receita Federal
     const isValid = true; // Mock validation
 
     if (!isValid) {
-      throw new Error('CPF inválido na Receita Federal');
+      throw new Error('CPF invÃ¡lido na Receita Federal');
     }
 
     return {
       isValid: true,
       status: 'VALID',
-      name: 'Nome da Pessoa', // Mock - em produção viria da API
+      name: 'Nome da Pessoa', // Mock - em produÃ§Ã£o viria da API
       birthDate: '1990-01-01' // Mock
     };
   } catch (error) {
@@ -75,38 +75,38 @@ const validateCPF = async cpf => {
   }
 };
 
-// Função para validar CNPJ na Receita Federal
+// FunÃ§Ã£o para validar CNPJ na Receita Federal
 const validateCNPJ = async cnpj => {
   try {
     const cleanCNPJ = cnpj.replace(/\D/g, '');
 
     if (cleanCNPJ.length !== 14) {
-      throw new Error('CNPJ deve ter 14 dígitos');
+      throw new Error('CNPJ deve ter 14 dÃ­gitos');
     }
 
-    // Simular validação na Receita Federal
-    // Em produção, usar API real da Receita Federal
+    // Simular validaÃ§Ã£o na Receita Federal
+    // Em produÃ§Ã£o, usar API real da Receita Federal
     const isValid = true; // Mock validation
 
     if (!isValid) {
-      throw new Error('CNPJ inválido na Receita Federal');
+      throw new Error('CNPJ invÃ¡lido na Receita Federal');
     }
 
     return {
       isValid: true,
       status: 'ATIVA',
-      companyName: 'Empresa Exemplo LTDA', // Mock - em produção viria da API
+      companyName: 'Empresa Exemplo LTDA', // Mock - em produÃ§Ã£o viria da API
       fantasyName: 'Empresa Exemplo',
       openingDate: '2020-01-01',
       ie: '123.456.789.012',
       address: {
         street: 'Rua das Flores, 123',
         neighborhood: 'Centro',
-        city: 'São Paulo',
+        city: 'SÃ£o Paulo',
         state: 'SP',
         zipCode: '01000-000'
       },
-      activities: ['Comércio de produtos agrícolas'],
+      activities: ['ComÃ©rcio de produtos agrÃ­colas'],
       capital: 100000
     };
   } catch (error) {
@@ -114,14 +114,14 @@ const validateCNPJ = async cnpj => {
   }
 };
 
-// Função para buscar localização por IP
+// FunÃ§Ã£o para buscar localizaÃ§Ã£o por IP
 const fetchLocationByIP = async ip => {
   try {
     // Simular busca por IP (substituir por API real como ipapi.co)
     const mockData = {
       ip,
-      city: 'São Paulo',
-      region: 'São Paulo',
+      city: 'SÃ£o Paulo',
+      region: 'SÃ£o Paulo',
       country: 'BR',
       country_name: 'Brazil',
       postal: '01000-000',
@@ -132,11 +132,11 @@ const fetchLocationByIP = async ip => {
 
     return mockData;
   } catch (error) {
-    throw new Error(`Erro ao buscar localização: ${error.message}`);
+    throw new Error(`Erro ao buscar localizaÃ§Ã£o: ${error.message}`);
   }
 };
 
-// Função para buscar produtos por API
+// FunÃ§Ã£o para buscar produtos por API
 const searchProducts = async query => {
   try {
     // Simular busca de produtos (substituir por API real)
@@ -144,26 +144,32 @@ const searchProducts = async query => {
       {
         id: '1',
         name: 'Soja',
-        category: 'Grãos',
+        category: 'GrÃ£os',
         unit: 'saca',
-        description: 'Soja para alimentação animal'
+        description: 'Soja para alimentaÃ§Ã£o animal'
       },
       {
         id: '2',
         name: 'Milho',
-        category: 'Grãos',
+        category: 'GrÃ£os',
         unit: 'saca',
-        description: 'Milho para alimentação animal'
+        description: 'Milho para alimentaÃ§Ã£o animal'
       },
       {
         id: '3',
         name: 'Trigo',
-        category: 'Grãos',
+        category: 'GrÃ£os',
         unit: 'saca',
-        description: 'Trigo para panificação'
+        description: 'Trigo para panificaÃ§Ã£o'
       },
-      { id: '4', name: 'Café', category: 'Bebidas', unit: 'kg', description: 'Café em grão' },
-      { id: '5', name: 'Açúcar', category: 'Dulçor', unit: 'kg', description: 'Açúcar cristal' },
+      { id: '4', name: 'CafÃ©', category: 'Bebidas', unit: 'kg', description: 'CafÃ© em grÃ£o' },
+      {
+        id: '5',
+        name: 'AÃ§Ãºcar',
+        category: 'DulÃ§or',
+        unit: 'kg',
+        description: 'AÃ§Ãºcar cristal'
+      },
       {
         id: '6',
         name: 'Fertilizante NPK',
@@ -180,7 +186,7 @@ const searchProducts = async query => {
       },
       {
         id: '8',
-        name: 'Defensivo Agrícola',
+        name: 'Defensivo AgrÃ­cola',
         category: 'Insumos',
         unit: 'L',
         description: 'Defensivo para controle de pragas'
@@ -254,7 +260,7 @@ router.get('/validate/cnpj/:cnpj', apiLimiter, async (req, res) => {
   }
 });
 
-// GET /api/registration/location/:ip - Buscar localização por IP
+// GET /api/registration/location/:ip - Buscar localizaÃ§Ã£o por IP
 router.get('/location/:ip', apiLimiter, async (req, res) => {
   try {
     const { ip } = req.params;
@@ -308,12 +314,12 @@ router.post('/agroconecta', registrationLimiter, async (req, res) => {
       isPublic
     } = req.body;
 
-    // Verificar se já existe cadastro
+    // Verificar se jÃ¡ existe cadastro
     const existingEmail = await AgroConecta.findOne({ email });
     if (existingEmail) {
       return res.status(400).json({
         success: false,
-        message: 'Email já cadastrado'
+        message: 'Email jÃ¡ cadastrado'
       });
     }
 
@@ -321,7 +327,7 @@ router.post('/agroconecta', registrationLimiter, async (req, res) => {
     if (existingCPF) {
       return res.status(400).json({
         success: false,
-        message: 'CPF já cadastrado'
+        message: 'CPF jÃ¡ cadastrado'
       });
     }
 
@@ -329,7 +335,7 @@ router.post('/agroconecta', registrationLimiter, async (req, res) => {
     if (existingCNPJ) {
       return res.status(400).json({
         success: false,
-        message: 'CNPJ já cadastrado'
+        message: 'CNPJ jÃ¡ cadastrado'
       });
     }
 
@@ -361,9 +367,8 @@ router.post('/agroconecta', registrationLimiter, async (req, res) => {
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao cadastrar AgroConecta:', error);
-    }
+    const logger = require('../utils/logger');
+    logger.error('Erro ao cadastrar AgroConecta:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -378,12 +383,12 @@ router.post('/loja', registrationLimiter, async (req, res) => {
     const { name, email, phone, cpf, companyName, cnpj, ie, address, products, plan, isPublic } =
       req.body;
 
-    // Verificar se já existe cadastro
+    // Verificar se jÃ¡ existe cadastro
     const existingEmail = await Loja.findOne({ email });
     if (existingEmail) {
       return res.status(400).json({
         success: false,
-        message: 'Email já cadastrado'
+        message: 'Email jÃ¡ cadastrado'
       });
     }
 
@@ -391,7 +396,7 @@ router.post('/loja', registrationLimiter, async (req, res) => {
     if (existingCPF) {
       return res.status(400).json({
         success: false,
-        message: 'CPF já cadastrado'
+        message: 'CPF jÃ¡ cadastrado'
       });
     }
 
@@ -399,7 +404,7 @@ router.post('/loja', registrationLimiter, async (req, res) => {
     if (existingCNPJ) {
       return res.status(400).json({
         success: false,
-        message: 'CNPJ já cadastrado'
+        message: 'CNPJ jÃ¡ cadastrado'
       });
     }
 
@@ -430,9 +435,8 @@ router.post('/loja', registrationLimiter, async (req, res) => {
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao cadastrar Loja:', error);
-    }
+    const logger = require('../utils/logger');
+    logger.error('Erro ao cadastrar Loja:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -447,12 +451,12 @@ router.post('/marketplace', registrationLimiter, async (req, res) => {
     const { name, email, phone, cpf, companyName, cnpj, ie, address, offerings, plan, isPublic } =
       req.body;
 
-    // Verificar se já existe cadastro
+    // Verificar se jÃ¡ existe cadastro
     const existingEmail = await Marketplace.findOne({ email });
     if (existingEmail) {
       return res.status(400).json({
         success: false,
-        message: 'Email já cadastrado'
+        message: 'Email jÃ¡ cadastrado'
       });
     }
 
@@ -460,7 +464,7 @@ router.post('/marketplace', registrationLimiter, async (req, res) => {
     if (existingCPF) {
       return res.status(400).json({
         success: false,
-        message: 'CPF já cadastrado'
+        message: 'CPF jÃ¡ cadastrado'
       });
     }
 
@@ -468,7 +472,7 @@ router.post('/marketplace', registrationLimiter, async (req, res) => {
     if (existingCNPJ) {
       return res.status(400).json({
         success: false,
-        message: 'CNPJ já cadastrado'
+        message: 'CNPJ jÃ¡ cadastrado'
       });
     }
 
@@ -499,9 +503,8 @@ router.post('/marketplace', registrationLimiter, async (req, res) => {
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao cadastrar Marketplace:', error);
-    }
+    const logger = require('../utils/logger');
+    logger.error('Erro ao cadastrar Marketplace:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -527,12 +530,12 @@ router.post('/fazenda', registrationLimiter, async (req, res) => {
       isPublic
     } = req.body;
 
-    // Verificar se já existe cadastro
+    // Verificar se jÃ¡ existe cadastro
     const existingEmail = await Fazenda.findOne({ email });
     if (existingEmail) {
       return res.status(400).json({
         success: false,
-        message: 'Email já cadastrado'
+        message: 'Email jÃ¡ cadastrado'
       });
     }
 
@@ -540,7 +543,7 @@ router.post('/fazenda', registrationLimiter, async (req, res) => {
     if (existingCPF) {
       return res.status(400).json({
         success: false,
-        message: 'CPF já cadastrado'
+        message: 'CPF jÃ¡ cadastrado'
       });
     }
 
@@ -571,9 +574,8 @@ router.post('/fazenda', registrationLimiter, async (req, res) => {
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao cadastrar Fazenda:', error);
-    }
+    const logger = require('../utils/logger');
+    logger.error('Erro ao cadastrar Fazenda:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -582,7 +584,7 @@ router.post('/fazenda', registrationLimiter, async (req, res) => {
   }
 });
 
-// GET /api/registration/agroconecta/public - Listar cadastros públicos do AgroConecta
+// GET /api/registration/agroconecta/public - Listar cadastros pÃºblicos do AgroConecta
 router.get('/agroconecta/public', async (req, res) => {
   try {
     const { page = 1, limit = 20, city, state, vehicleType } = req.query;
@@ -605,7 +607,7 @@ router.get('/agroconecta/public', async (req, res) => {
       AgroConecta.find(filter)
         .select('name companyName address vehicle services stats plan')
         .skip(skip)
-        .limit(parseInt(limit, 10))
+        .limit(parseInt(limit, 10, 10))
         .sort({ createdAt: -1 }),
       AgroConecta.countDocuments(filter)
     ]);
@@ -614,16 +616,15 @@ router.get('/agroconecta/public', async (req, res) => {
       success: true,
       data: agroconectas,
       pagination: {
-        page: parseInt(page, 10),
-        limit: parseInt(limit, 10),
+        page: parseInt(page, 10, 10),
+        limit: parseInt(limit, 10, 10),
         total,
         pages: Math.ceil(total / limit)
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar AgroConecta:', error);
-    }
+    const logger = require('../utils/logger');
+    logger.error('Erro ao buscar AgroConecta:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -632,7 +633,7 @@ router.get('/agroconecta/public', async (req, res) => {
   }
 });
 
-// GET /api/registration/loja/public - Listar cadastros públicos da Loja
+// GET /api/registration/loja/public - Listar cadastros pÃºblicos da Loja
 router.get('/loja/public', async (req, res) => {
   try {
     const { page = 1, limit = 20, city, state, category } = req.query;
@@ -652,7 +653,7 @@ router.get('/loja/public', async (req, res) => {
       Loja.find(filter)
         .select('name companyName address products stats plan')
         .skip(skip)
-        .limit(parseInt(limit, 10))
+        .limit(parseInt(limit, 10, 10))
         .sort({ createdAt: -1 }),
       Loja.countDocuments(filter)
     ]);
@@ -670,16 +671,15 @@ router.get('/loja/public', async (req, res) => {
       success: true,
       data: lojas,
       pagination: {
-        page: parseInt(page, 10),
-        limit: parseInt(limit, 10),
+        page: parseInt(page, 10, 10),
+        limit: parseInt(limit, 10, 10),
         total,
         pages: Math.ceil(total / limit)
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar Lojas:', error);
-    }
+    const logger = require('../utils/logger');
+    logger.error('Erro ao buscar Lojas:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -688,7 +688,7 @@ router.get('/loja/public', async (req, res) => {
   }
 });
 
-// GET /api/registration/marketplace/public - Listar cadastros públicos do Marketplace
+// GET /api/registration/marketplace/public - Listar cadastros pÃºblicos do Marketplace
 router.get('/marketplace/public', async (req, res) => {
   try {
     const { page = 1, limit = 20, city, state, type } = req.query;
@@ -708,7 +708,7 @@ router.get('/marketplace/public', async (req, res) => {
       Marketplace.find(filter)
         .select('name companyName address offerings stats plan')
         .skip(skip)
-        .limit(parseInt(limit, 10))
+        .limit(parseInt(limit, 10, 10))
         .sort({ createdAt: -1 }),
       Marketplace.countDocuments(filter)
     ]);
@@ -724,16 +724,15 @@ router.get('/marketplace/public', async (req, res) => {
       success: true,
       data: marketplaces,
       pagination: {
-        page: parseInt(page, 10),
-        limit: parseInt(limit, 10),
+        page: parseInt(page, 10, 10),
+        limit: parseInt(limit, 10, 10),
         total,
         pages: Math.ceil(total / limit)
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar Marketplaces:', error);
-    }
+    const logger = require('../utils/logger');
+    logger.error('Erro ao buscar Marketplaces:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
@@ -742,7 +741,7 @@ router.get('/marketplace/public', async (req, res) => {
   }
 });
 
-// GET /api/registration/fazenda/public - Listar cadastros públicos de Fazendas
+// GET /api/registration/fazenda/public - Listar cadastros pÃºblicos de Fazendas
 router.get('/fazenda/public', async (req, res) => {
   try {
     const { page = 1, limit = 20, city, state, farmType } = req.query;
@@ -765,7 +764,7 @@ router.get('/fazenda/public', async (req, res) => {
       Fazenda.find(filter)
         .select('name farmName farmSize farmType address products stats plan')
         .skip(skip)
-        .limit(parseInt(limit, 10))
+        .limit(parseInt(limit, 10, 10))
         .sort({ createdAt: -1 }),
       Fazenda.countDocuments(filter)
     ]);
@@ -774,16 +773,15 @@ router.get('/fazenda/public', async (req, res) => {
       success: true,
       data: fazendas,
       pagination: {
-        page: parseInt(page, 10),
-        limit: parseInt(limit, 10),
+        page: parseInt(page, 10, 10),
+        limit: parseInt(limit, 10, 10),
         total,
         pages: Math.ceil(total / limit)
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar Fazendas:', error);
-    }
+    const logger = require('../utils/logger');
+    logger.error('Erro ao buscar Fazendas:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',

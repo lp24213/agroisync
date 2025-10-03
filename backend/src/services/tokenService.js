@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+﻿import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import RefreshToken from '../models/RefreshToken.js';
 
@@ -30,7 +30,7 @@ export const generateRefreshToken = payload => {
 };
 
 /**
- * Gera um token de refresh único e seguro
+ * Gera um token de refresh Ãºnico e seguro
  */
 export const generateSecureRefreshToken = () => {
   return crypto.randomBytes(64).toString('hex');
@@ -46,7 +46,7 @@ export const verifyAccessToken = token => {
       audience: 'agroisync-users'
     });
   } catch (error) {
-    throw new Error(`Token de acesso inválido: ${error.message}`);
+    throw new Error(`Token de acesso invÃ¡lido: ${error.message}`);
   }
 };
 
@@ -60,7 +60,7 @@ export const verifyRefreshToken = token => {
       audience: 'agroisync-refresh'
     });
   } catch (error) {
-    throw new Error(`Token de refresh inválido: ${error.message}`);
+    throw new Error(`Token de refresh invÃ¡lido: ${error.message}`);
   }
 };
 
@@ -85,8 +85,8 @@ export const createTokenPair = async user => {
     token: secureRefreshToken,
     jwtToken: refreshToken,
     expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 dias
-    userAgent: null, // Será preenchido pelo middleware
-    ipAddress: null, // Será preenchido pelo middleware
+    userAgent: null, // SerÃ¡ preenchido pelo middleware
+    ipAddress: null, // SerÃ¡ preenchido pelo middleware
     isActive: true
   });
 
@@ -110,13 +110,13 @@ export const refreshAccessToken = async (refreshToken, userAgent, ipAddress) => 
     }).populate('userId');
 
     if (!storedToken) {
-      throw new Error('Refresh token inválido ou expirado');
+      throw new Error('Refresh token invÃ¡lido ou expirado');
     }
 
-    // Verificar se o usuário ainda está ativo
+    // Verificar se o usuÃ¡rio ainda estÃ¡ ativo
     if (!storedToken.userId.isActive) {
       await RefreshToken.findByIdAndUpdate(storedToken._id, { isActive: false });
-      throw new Error('Usuário inativo');
+      throw new Error('UsuÃ¡rio inativo');
     }
 
     // Verificar o JWT token
@@ -132,7 +132,7 @@ export const refreshAccessToken = async (refreshToken, userAgent, ipAddress) => 
 
     const newAccessToken = generateAccessToken(payload);
 
-    // Atualizar informações do refresh token
+    // Atualizar informaÃ§Ãµes do refresh token
     storedToken.lastUsedAt = new Date();
     storedToken.userAgent = userAgent;
     storedToken.ipAddress = ipAddress;
@@ -162,7 +162,7 @@ export const revokeRefreshToken = async refreshToken => {
 };
 
 /**
- * Revoga todos os refresh tokens de um usuário
+ * Revoga todos os refresh tokens de um usuÃ¡rio
  */
 export const revokeAllUserTokens = async userId => {
   try {
@@ -171,7 +171,7 @@ export const revokeAllUserTokens = async userId => {
       { isActive: false, revokedAt: new Date() }
     );
   } catch (error) {
-    throw new Error(`Erro ao revogar tokens do usuário: ${error.message}`);
+    throw new Error(`Erro ao revogar tokens do usuÃ¡rio: ${error.message}`);
   }
 };
 
@@ -182,16 +182,16 @@ export const cleanupExpiredTokens = async () => {
   const result = await RefreshToken.deleteMany({
     $or: [
       { expiresAt: { $lt: new Date() } },
-      { isActive: false, revokedAt: { $lt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } } // Remove tokens revogados há mais de 30 dias
+      { isActive: false, revokedAt: { $lt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } } // Remove tokens revogados hÃ¡ mais de 30 dias
     ]
   });
 
-  // Console log removido (dados sensíveis)
+  // Console log removido (dados sensÃ­veis)
   return result.deletedCount;
 };
 
 /**
- * Obtém informações de um token
+ * ObtÃ©m informaÃ§Ãµes de um token
  */
 export const getTokenInfo = async refreshToken => {
   try {
@@ -216,7 +216,7 @@ export const getTokenInfo = async refreshToken => {
       ipAddress: token.ipAddress
     };
   } catch (error) {
-    throw new Error(`Erro ao obter informações do token: ${error.message}`);
+    throw new Error(`Erro ao obter informaÃ§Ãµes do token: ${error.message}`);
   }
 };
 
@@ -230,7 +230,7 @@ export const authenticateRefreshToken = async (req, res, next) => {
     if (!refreshToken) {
       return res.status(401).json({
         success: false,
-        message: 'Refresh token não fornecido'
+        message: 'Refresh token nÃ£o fornecido'
       });
     }
 
@@ -238,14 +238,14 @@ export const authenticateRefreshToken = async (req, res, next) => {
     if (!tokenInfo) {
       return res.status(401).json({
         success: false,
-        message: 'Refresh token inválido ou expirado'
+        message: 'Refresh token invÃ¡lido ou expirado'
       });
     }
 
     if (!tokenInfo.isActive) {
       return res.status(401).json({
         success: false,
-        message: 'Usuário inativo'
+        message: 'UsuÃ¡rio inativo'
       });
     }
 
@@ -253,7 +253,7 @@ export const authenticateRefreshToken = async (req, res, next) => {
     req.refreshToken = refreshToken;
     return next();
   } catch {
-    // Console log removido (dados sensíveis)
+    // Console log removido (dados sensÃ­veis)
     return res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

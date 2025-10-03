@@ -1,5 +1,6 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
+import logger from '../utils/logger.js';
 const auditLogSchema = new mongoose.Schema(
   {
     userId: {
@@ -101,14 +102,14 @@ const auditLogSchema = new mongoose.Schema(
   }
 );
 
-// Índices para performance
+// Ãndices para performance
 auditLogSchema.index({ userId: 1, createdAt: -1 });
 auditLogSchema.index({ action: 1, createdAt: -1 });
 auditLogSchema.index({ resource: 1, createdAt: -1 });
 auditLogSchema.index({ createdAt: -1 });
 auditLogSchema.index({ ip: 1, createdAt: -1 });
 
-// Método estático para registrar ações
+// MÃ©todo estÃ¡tico para registrar aÃ§Ãµes
 auditLogSchema.statics.logAction = async function (actionData) {
   try {
     const log = new this({
@@ -128,13 +129,13 @@ auditLogSchema.statics.logAction = async function (actionData) {
     return log;
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao registrar log de auditoria:', error);
+      logger.error('Erro ao registrar log de auditoria:', error);
     }
     throw error;
   }
 };
 
-// Método para buscar logs com filtros
+// MÃ©todo para buscar logs com filtros
 auditLogSchema.statics.getLogs = async function (filters = {}) {
   try {
     const {
@@ -178,28 +179,28 @@ auditLogSchema.statics.getLogs = async function (filters = {}) {
         .populate('userId', 'name email')
         .sort(sort)
         .skip(skip)
-        .limit(parseInt(limit, 10)),
+        .limit(parseInt(limit, 10, 10)),
       this.countDocuments(query)
     ]);
 
     return {
       logs,
       pagination: {
-        page: parseInt(page, 10),
-        limit: parseInt(limit, 10),
+        page: parseInt(page, 10, 10),
+        limit: parseInt(limit, 10, 10),
         total,
         pages: Math.ceil(total / limit)
       }
     };
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar logs:', error);
+      logger.error('Erro ao buscar logs:', error);
     }
     throw error;
   }
 };
 
-// Método para estatísticas de auditoria
+// MÃ©todo para estatÃ­sticas de auditoria
 auditLogSchema.statics.getAuditStats = async function (period = '7d') {
   try {
     const now = new Date();
@@ -257,13 +258,13 @@ auditLogSchema.statics.getAuditStats = async function (period = '7d') {
     };
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar estatísticas de auditoria:', error);
+      logger.error('Erro ao buscar estatÃ­sticas de auditoria:', error);
     }
     throw error;
   }
 };
 
-// Método para limpeza de logs antigos
+// MÃ©todo para limpeza de logs antigos
 auditLogSchema.statics.cleanupOldLogs = async function (retentionDays = 365) {
   try {
     const cutoffDate = new Date();
@@ -274,12 +275,12 @@ auditLogSchema.statics.cleanupOldLogs = async function (retentionDays = 365) {
     });
 
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`Logs de auditoria limpos: ${result.deletedCount} registros removidos`);
+      logger.info(`Logs de auditoria limpos: ${result.deletedCount} registros removidos`);
     }
     return result.deletedCount;
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao limpar logs antigos:', error);
+      logger.error('Erro ao limpar logs antigos:', error);
     }
     throw error;
   }

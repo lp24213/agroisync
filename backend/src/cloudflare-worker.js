@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Cloudflare Worker - AgroSync Backend
  * Stack: Cloudflare Workers + D1 + Resend + JWT ONLY
  */
@@ -75,7 +75,7 @@ async function handleRegister(request, env) {
     .first();
 
   if (exists) {
-    return jsonResponse({ success: false, error: 'Email já cadastrado' }, 409);
+    return jsonResponse({ success: false, error: 'Email jÃ¡ cadastrado' }, 409);
   }
 
   const userId = crypto.randomUUID();
@@ -88,7 +88,7 @@ async function handleRegister(request, env) {
   await sendEmail(env, {
     to: email,
     subject: 'Bem-vindo ao AgroSync',
-    html: `<h1>Olá ${name}!</h1><p>Conta criada com sucesso.</p>`
+    html: `<h1>OlÃ¡ ${name}!</h1><p>Conta criada com sucesso.</p>`
   });
 
   const token = generateJWT({ userId, email, name }, env.JWT_SECRET);
@@ -106,7 +106,7 @@ async function handleLogin(request, env) {
     .first();
 
   if (!user || user.password !== password) {
-    return jsonResponse({ success: false, error: 'Credenciais inválidas' }, 401);
+    return jsonResponse({ success: false, error: 'Credenciais invÃ¡lidas' }, 401);
   }
 
   const token = generateJWT(
@@ -122,8 +122,8 @@ async function handleLogin(request, env) {
 // PRODUCTS ROUTES
 async function handleProductsList(request, env) {
   const url = new URL(request.url);
-  const page = parseInt(url.searchParams.get('page') || '1', 10);
-  const limit = parseInt(url.searchParams.get('limit') || '20', 10);
+  const page = parseInt(url.searchParams.get('page', 10, 10) || '1', 10);
+  const limit = parseInt(url.searchParams.get('limit', 10, 10) || '20', 10);
   const offset = (page - 1) * limit;
 
   const { results } = await env.DB.prepare(
@@ -169,8 +169,8 @@ async function handleProductCreate(request, env, user) {
 // PARTNERS ROUTES
 async function handlePartnersList(request, env) {
   const url = new URL(request.url);
-  const page = parseInt(url.searchParams.get('page') || '1', 10);
-  const limit = parseInt(url.searchParams.get('limit') || '20', 10);
+  const page = parseInt(url.searchParams.get('page', 10, 10) || '1', 10);
+  const limit = parseInt(url.searchParams.get('limit', 10, 10) || '20', 10);
   const offset = (page - 1) * limit;
 
   const { results } = await env.DB.prepare(
@@ -199,8 +199,8 @@ async function handlePartnersList(request, env) {
 // FREIGHT ROUTES
 async function handleFreightList(request, env) {
   const url = new URL(request.url);
-  const page = parseInt(url.searchParams.get('page') || '1', 10);
-  const limit = parseInt(url.searchParams.get('limit') || '20', 10);
+  const page = parseInt(url.searchParams.get('page', 10, 10) || '1', 10);
+  const limit = parseInt(url.searchParams.get('limit', 10, 10) || '20', 10);
   const offset = (page - 1) * limit;
 
   const { results } = await env.DB.prepare(
@@ -249,7 +249,7 @@ async function handleUserProfile(request, env, user) {
     .first();
 
   if (!profile) {
-    return jsonResponse({ success: false, error: 'Usuário não encontrado' }, 404);
+    return jsonResponse({ success: false, error: 'UsuÃ¡rio nÃ£o encontrado' }, 404);
   }
 
   return jsonResponse({ success: true, data: { user: profile } });
@@ -273,7 +273,7 @@ async function handlePasswordReset(request, env) {
   try {
     const { email } = await request.json();
     if (!email) {
-      return jsonResponse({ success: false, error: 'Email é obrigatório' }, 400);
+      return jsonResponse({ success: false, error: 'Email Ã© obrigatÃ³rio' }, 400);
     }
 
     const user = await env.DB.prepare('SELECT id, name FROM users WHERE email = ?')
@@ -283,7 +283,7 @@ async function handlePasswordReset(request, env) {
     if (!user) {
       return jsonResponse({
         success: true,
-        message: 'Se o email existir, você receberá instruções'
+        message: 'Se o email existir, vocÃª receberÃ¡ instruÃ§Ãµes'
       });
     }
 
@@ -298,17 +298,20 @@ async function handlePasswordReset(request, env) {
 
     await sendEmail(env, {
       to: email,
-      subject: 'Recuperação de Senha - AgroSync',
+      subject: 'RecuperaÃ§Ã£o de Senha - AgroSync',
       html: `
-        <h1>Recuperação de Senha</h1>
-        <p>Olá ${user.name},</p>
+        <h1>RecuperaÃ§Ã£o de Senha</h1>
+        <p>OlÃ¡ ${user.name},</p>
         <p>Clique no link para redefinir sua senha:</p>
         <a href="https://agroisync.com/reset-password?token=${resetToken}">Redefinir Senha</a>
         <p>Este link expira em 1 hora.</p>
       `
     });
 
-    return jsonResponse({ success: true, message: 'Se o email existir, você receberá instruções' });
+    return jsonResponse({
+      success: true,
+      message: 'Se o email existir, vocÃª receberÃ¡ instruÃ§Ãµes'
+    });
   } catch (error) {
     return jsonResponse({ success: false, error: 'Erro interno', message: error.message }, 500);
   }
@@ -318,7 +321,7 @@ async function handlePasswordResetConfirm(request, env) {
   try {
     const { token, newPassword } = await request.json();
     if (!token || !newPassword) {
-      return jsonResponse({ success: false, error: 'Token e nova senha são obrigatórios' }, 400);
+      return jsonResponse({ success: false, error: 'Token e nova senha sÃ£o obrigatÃ³rios' }, 400);
     }
 
     const reset = await env.DB.prepare(
@@ -328,7 +331,7 @@ async function handlePasswordResetConfirm(request, env) {
       .first();
 
     if (!reset) {
-      return jsonResponse({ success: false, error: 'Token inválido ou expirado' }, 400);
+      return jsonResponse({ success: false, error: 'Token invÃ¡lido ou expirado' }, 400);
     }
 
     await env.DB.prepare('UPDATE users SET password = ? WHERE id = ?')
@@ -351,7 +354,7 @@ async function handleEmailVerify(request, env) {
     const token = url.searchParams.get('token');
 
     if (!token) {
-      return jsonResponse({ success: false, error: 'Token é obrigatório' }, 400);
+      return jsonResponse({ success: false, error: 'Token Ã© obrigatÃ³rio' }, 400);
     }
 
     const user = await env.DB.prepare(
@@ -361,7 +364,7 @@ async function handleEmailVerify(request, env) {
       .first();
 
     if (!user) {
-      return jsonResponse({ success: false, error: 'Token inválido ou expirado' }, 400);
+      return jsonResponse({ success: false, error: 'Token invÃ¡lido ou expirado' }, 400);
     }
 
     await env.DB.prepare(
@@ -381,8 +384,8 @@ async function handleEmailVerify(request, env) {
 async function handleStoreList(request, env) {
   try {
     const url = new URL(request.url);
-    const page = parseInt(url.searchParams.get('page') || '1', 10);
-    const limit = parseInt(url.searchParams.get('limit') || '20', 10);
+    const page = parseInt(url.searchParams.get('page', 10, 10) || '1', 10);
+    const limit = parseInt(url.searchParams.get('limit', 10, 10) || '20', 10);
     const category = url.searchParams.get('category');
     const search = url.searchParams.get('search');
 
@@ -437,7 +440,7 @@ async function handleStoreProductDetail(request, env) {
       .first();
 
     if (!product) {
-      return jsonResponse({ success: false, error: 'Produto não encontrado' }, 404);
+      return jsonResponse({ success: false, error: 'Produto nÃ£o encontrado' }, 404);
     }
 
     return jsonResponse({ success: true, data: { product } });
@@ -454,8 +457,8 @@ async function handleStoreProductDetail(request, env) {
 async function handleMessagesList(request, env, user) {
   try {
     const url = new URL(request.url);
-    const page = parseInt(url.searchParams.get('page') || '1', 10);
-    const limit = parseInt(url.searchParams.get('limit') || '20', 10);
+    const page = parseInt(url.searchParams.get('page', 10, 10) || '1', 10);
+    const limit = parseInt(url.searchParams.get('limit', 10, 10) || '20', 10);
     const offset = (page - 1) * limit;
 
     const { results } = await env.DB.prepare(
@@ -492,7 +495,7 @@ async function handleMessageSend(request, env, user) {
 
     if (!receiverId || !content) {
       return jsonResponse(
-        { success: false, error: 'Destinatário e conteúdo são obrigatórios' },
+        { success: false, error: 'DestinatÃ¡rio e conteÃºdo sÃ£o obrigatÃ³rios' },
         400
       );
     }
@@ -531,7 +534,7 @@ async function handlePaymentCreate(request, env, user) {
     const { amount, type, description } = await request.json();
 
     if (!amount || !type) {
-      return jsonResponse({ success: false, error: 'Valor e tipo são obrigatórios' }, 400);
+      return jsonResponse({ success: false, error: 'Valor e tipo sÃ£o obrigatÃ³rios' }, 400);
     }
 
     const paymentId = crypto.randomUUID();
@@ -541,7 +544,7 @@ async function handlePaymentCreate(request, env, user) {
       .bind(paymentId, user.userId, amount, type, description || '', 'pending')
       .run();
 
-    // Simular integração Stripe
+    // Simular integraÃ§Ã£o Stripe
     const paymentIntent = {
       id: paymentId,
       client_secret: `pi_${paymentId}_secret_test`,
@@ -572,7 +575,7 @@ async function handlePaymentWebhook(request, env) {
 
     // Validar webhook Stripe (simplificado)
     if (!signature) {
-      return jsonResponse({ success: false, error: 'Signature inválida' }, 400);
+      return jsonResponse({ success: false, error: 'Signature invÃ¡lida' }, 400);
     }
 
     const event = JSON.parse(body);
@@ -596,8 +599,8 @@ async function handlePaymentWebhook(request, env) {
 async function handleNewsList(request, env) {
   try {
     const url = new URL(request.url);
-    const page = parseInt(url.searchParams.get('page') || '1', 10);
-    const limit = parseInt(url.searchParams.get('limit') || '10', 10);
+    const page = parseInt(url.searchParams.get('page', 10, 10) || '1', 10);
+    const limit = parseInt(url.searchParams.get('limit', 10, 10) || '10', 10);
     const offset = (page - 1) * limit;
 
     const { results } = await env.DB.prepare(
@@ -612,7 +615,7 @@ async function handleNewsList(request, env) {
     });
   } catch (error) {
     return jsonResponse(
-      { success: false, error: 'Erro ao buscar notícias', message: error.message },
+      { success: false, error: 'Erro ao buscar notÃ­cias', message: error.message },
       500
     );
   }
@@ -628,13 +631,13 @@ async function handleNewsDetail(request, env) {
       .first();
 
     if (!news) {
-      return jsonResponse({ success: false, error: 'Notícia não encontrada' }, 404);
+      return jsonResponse({ success: false, error: 'NotÃ­cia nÃ£o encontrada' }, 404);
     }
 
     return jsonResponse({ success: true, data: { news } });
   } catch (error) {
     return jsonResponse(
-      { success: false, error: 'Erro ao buscar notícia', message: error.message },
+      { success: false, error: 'Erro ao buscar notÃ­cia', message: error.message },
       500
     );
   }
@@ -658,7 +661,7 @@ async function handleAdminUsers(request, env, user) {
     });
   } catch (error) {
     return jsonResponse(
-      { success: false, error: 'Erro ao buscar usuários', message: error.message },
+      { success: false, error: 'Erro ao buscar usuÃ¡rios', message: error.message },
       500
     );
   }
@@ -690,7 +693,7 @@ async function handleAdminStats(request, env, user) {
     });
   } catch (error) {
     return jsonResponse(
-      { success: false, error: 'Erro ao buscar estatísticas', message: error.message },
+      { success: false, error: 'Erro ao buscar estatÃ­sticas', message: error.message },
       500
     );
   }

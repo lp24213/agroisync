@@ -1,8 +1,9 @@
-// =============================================================
-// AGROISYNC BACKEND • Configuração Stripe
+﻿// =============================================================
+// AGROISYNC BACKEND â€¢ ConfiguraÃ§Ã£o Stripe
 // =============================================================
 
 import Stripe from 'stripe';
+import logger from '../utils/logger.js';
 
 // Inicializar Stripe com chave secreta
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -17,7 +18,7 @@ export const STRIPE_PRODUCTS = {
     BASIC: {
       priceId: process.env.STRIPE_STORE_BASIC_PRICE_ID || 'price_1QEXAMPLE1',
       productId: process.env.STRIPE_STORE_BASIC_PRODUCT_ID || 'prod_EXAMPLE1',
-      name: 'Loja Básica',
+      name: 'Loja BÃ¡sica',
       price: 2990, // em centavos
       interval: 'month'
     },
@@ -42,7 +43,7 @@ export const STRIPE_PRODUCTS = {
     BASIC: {
       priceId: process.env.STRIPE_FREIGHT_BASIC_PRICE_ID || 'price_1QEXAMPLE4',
       productId: process.env.STRIPE_FREIGHT_BASIC_PRODUCT_ID || 'prod_EXAMPLE4',
-      name: 'Frete Básico',
+      name: 'Frete BÃ¡sico',
       price: 1990, // em centavos
       interval: 'month'
     },
@@ -63,7 +64,7 @@ export const STRIPE_PRODUCTS = {
   }
 };
 
-// Configurações do Stripe
+// ConfiguraÃ§Ãµes do Stripe
 export const STRIPE_CONFIG = {
   CURRENCY: 'brl',
   LOCALE: 'pt-BR',
@@ -72,7 +73,7 @@ export const STRIPE_CONFIG = {
   WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET
 };
 
-// Função para criar sessão de checkout
+// FunÃ§Ã£o para criar sessÃ£o de checkout
 export const createCheckoutSession = async (priceId, customerEmail, userId) => {
   try {
     const session = await stripe.checkout.sessions.create({
@@ -100,61 +101,51 @@ export const createCheckoutSession = async (priceId, customerEmail, userId) => {
 
     return { success: true, sessionId: session.id, url: session.url };
   } catch (error) {
-    // if (process.env.NODE_ENV !== 'production') {
-   console.error('Erro ao criar sessão Stripe:', error);
- }
+    logger.error('Erro ao criar sessão Stripe:', error);
     return { success: false, error: error.message };
   }
 };
 
-// Função para verificar webhook
+// FunÃ§Ã£o para verificar webhook
 export const verifyWebhookSignature = (payload, signature) => {
   try {
     const event = stripe.webhooks.constructEvent(payload, signature, STRIPE_CONFIG.WEBHOOK_SECRET);
     return { success: true, event };
   } catch (error) {
-    // if (process.env.NODE_ENV !== 'production') {
-   console.error('Erro na verificação do webhook:', error);
- }
+    logger.error('Erro na verificação do webhook:', error);
     return { success: false, error: error.message };
   }
 };
 
-// Função para obter detalhes da sessão
+// FunÃ§Ã£o para obter detalhes da sessÃ£o
 export const getSessionDetails = async sessionId => {
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     return { success: true, session };
   } catch (error) {
-    // if (process.env.NODE_ENV !== 'production') {
-   console.error('Erro ao obter sessão:', error);
- }
+    logger.error('Erro ao obter sessão:', error);
     return { success: false, error: error.message };
   }
 };
 
-// Função para cancelar assinatura
+// FunÃ§Ã£o para cancelar assinatura
 export const cancelSubscription = async subscriptionId => {
   try {
     const subscription = await stripe.subscriptions.cancel(subscriptionId);
     return { success: true, subscription };
   } catch (error) {
-    // if (process.env.NODE_ENV !== 'production') {
-   console.error('Erro ao cancelar assinatura:', error);
- }
+    logger.error('Erro ao cancelar assinatura:', error);
     return { success: false, error: error.message };
   }
 };
 
-// Função para obter assinatura
+// FunÃ§Ã£o para obter assinatura
 export const getSubscription = async subscriptionId => {
   try {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
     return { success: true, subscription };
   } catch (error) {
-    // if (process.env.NODE_ENV !== 'production') {
-   console.error('Erro ao obter assinatura:', error);
- }
+    logger.error('Erro ao obter assinatura:', error);
     return { success: false, error: error.message };
   }
 };

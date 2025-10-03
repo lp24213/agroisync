@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import { body, validationResult } from 'express-validator';
 import rateLimit from 'express-rate-limit';
 import jwt from 'jsonwebtoken';
@@ -7,7 +7,7 @@ import PasswordReset from '../models/PasswordResetD1.js';
 import { auth } from '../middleware/auth.js';
 import logger from '../utils/logger.js';
 import emailService from '../services/emailService.js';
-// import cloudflareService from '../services/cloudflareService.js'; // Removido - não usado
+// import cloudflareService from '../services/cloudflareService.js'; // Removido - nÃ£o usado
 import { verifyTurnstile } from '../utils/verifyTurnstile.js';
 import notificationService from '../services/notificationService.js';
 import {
@@ -21,10 +21,10 @@ import {
 
 const router = express.Router();
 
-// Rate limiting específico para auth
+// Rate limiting especÃ­fico para auth
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 5, // máximo 5 tentativas por IP
+  max: 5, // mÃ¡ximo 5 tentativas por IP
   message: {
     error: 'Muitas tentativas de login. Tente novamente em 15 minutos.',
     retryAfter: 15 * 60
@@ -37,7 +37,7 @@ const authLimiter = rateLimit({
  * @swagger
  * /api/auth/register:
  *   post:
- *     summary: Registrar novo usuário
+ *     summary: Registrar novo usuÃ¡rio
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -61,11 +61,11 @@ const authLimiter = rateLimit({
  *                 enum: [producer, buyer, transporter, all]
  *     responses:
  *       201:
- *         description: Usuário registrado com sucesso
+ *         description: UsuÃ¡rio registrado com sucesso
  *       400:
- *         description: Dados inválidos
+ *         description: Dados invÃ¡lidos
  *       409:
- *         description: E-mail já cadastrado
+ *         description: E-mail jÃ¡ cadastrado
  */
 router.post(
   '/register',
@@ -79,16 +79,16 @@ router.post(
       .trim()
       .isLength({ min: 2, max: 100 })
       .withMessage('Nome deve ter entre 2 e 100 caracteres'),
-    body('email').isEmail().normalizeEmail().withMessage('E-mail inválido'),
+    body('email').isEmail().normalizeEmail().withMessage('E-mail invÃ¡lido'),
     body('phone')
       .optional()
       .matches(/^\+?[\d\s\-()]+$/)
-      .withMessage('Telefone inválido'),
+      .withMessage('Telefone invÃ¡lido'),
     body('businessType')
       .optional()
       .isIn(['producer', 'buyer', 'transporter', 'all'])
-      .withMessage('Tipo de negócio inválido'),
-    body('turnstileToken').notEmpty().withMessage('Token Turnstile é obrigatório')
+      .withMessage('Tipo de negÃ³cio invÃ¡lido'),
+    body('turnstileToken').notEmpty().withMessage('Token Turnstile Ã© obrigatÃ³rio')
   ],
   async (req, res) => {
     try {
@@ -97,7 +97,7 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
@@ -112,20 +112,20 @@ router.post(
         );
         return res.status(401).json({
           success: false,
-          message: 'Verificação de segurança falhou. Tente novamente.'
+          message: 'VerificaÃ§Ã£o de seguranÃ§a falhou. Tente novamente.'
         });
       }
 
-      // Verificar se usuário já existe
+      // Verificar se usuÃ¡rio jÃ¡ existe
       const existingUser = await User.findByEmail(req.db, email);
       if (existingUser) {
         return res.status(409).json({
           success: false,
-          message: 'E-mail já cadastrado'
+          message: 'E-mail jÃ¡ cadastrado'
         });
       }
 
-      // Criar usuário admin especial se for o email específico
+      // Criar usuÃ¡rio admin especial se for o email especÃ­fico
       if (email === 'luispaulodeoliveira@agrotm.com.br') {
         const adminPayload = {
           name: 'Luis Paulo de Oliveira',
@@ -150,16 +150,16 @@ router.post(
 
         if (adminUser) {
           adminUser = await User.update(req.db, adminUser.id, adminPayload);
-          logger.info('Usuário admin existente atualizado: luispaulodeoliveira@agrotm.com.br');
+          logger.info('UsuÃ¡rio admin existente atualizado: luispaulodeoliveira@agrotm.com.br');
         } else {
           adminUser = await User.create(req.db, adminPayload);
-          logger.info('Novo usuário admin criado: luispaulodeoliveira@agrotm.com.br');
+          logger.info('Novo usuÃ¡rio admin criado: luispaulodeoliveira@agrotm.com.br');
         }
 
         const token = adminUser.generateAuthToken();
         return res.status(201).json({
           success: true,
-          message: 'Usuário admin registrado com sucesso',
+          message: 'UsuÃ¡rio admin registrado com sucesso',
           data: {
             user: {
               id: adminUser.id,
@@ -204,11 +204,11 @@ router.post(
           phoneVerificationExpires: Math.floor((Date.now() + 5 * 60 * 1000) / 1000)
         });
 
-        // Enviar SMS de verificação
+        // Enviar SMS de verificaÃ§Ã£o
         try {
           const smsResult = await notificationService.sendOTPSMS(phone, smsCode, name);
           if (smsResult.success) {
-            logger.info(`SMS de verificação enviado para ${phone}: ${smsCode}`);
+            logger.info(`SMS de verificaÃ§Ã£o enviado para ${phone}: ${smsCode}`);
           } else {
             logger.error(`Erro ao enviar SMS para ${phone}:`, smsResult.error);
           }
@@ -217,26 +217,26 @@ router.post(
         }
       }
 
-      // Enviar código de verificação por email
+      // Enviar cÃ³digo de verificaÃ§Ã£o por email
       try {
         await emailService.sendVerificationCode({
           to: email,
           name,
           code: verificationCode
         });
-        logger.info(`Código de verificação enviado para ${email}: ${verificationCode}`);
+        logger.info(`CÃ³digo de verificaÃ§Ã£o enviado para ${email}: ${verificationCode}`);
       } catch (error) {
         logger.error(`Erro ao enviar email para ${email}:`, error);
       }
 
-      // Gerar token de autenticação
+      // Gerar token de autenticaÃ§Ã£o
       const token = user.generateAuthToken();
 
-      logger.info(`Novo usuário registrado: ${email}`);
+      logger.info(`Novo usuÃ¡rio registrado: ${email}`);
 
       res.status(201).json({
         success: true,
-        message: 'Usuário registrado com sucesso. Verifique seu email para ativar a conta.',
+        message: 'UsuÃ¡rio registrado com sucesso. Verifique seu email para ativar a conta.',
         data: {
           user: {
             id: user.id,
@@ -286,7 +286,7 @@ router.post(
  *       200:
  *         description: Login realizado com sucesso
  *       401:
- *         description: Credenciais inválidas
+ *         description: Credenciais invÃ¡lidas
  *       429:
  *         description: Muitas tentativas
  */
@@ -297,9 +297,9 @@ router.post(
   sanitizeInput,
   validateEmail,
   [
-    body('email').isEmail().normalizeEmail().withMessage('E-mail inválido'),
-    body('password').notEmpty().withMessage('Senha é obrigatória'),
-    body('turnstileToken').notEmpty().withMessage('Token Turnstile é obrigatório')
+    body('email').isEmail().normalizeEmail().withMessage('E-mail invÃ¡lido'),
+    body('password').notEmpty().withMessage('Senha Ã© obrigatÃ³ria'),
+    body('turnstileToken').notEmpty().withMessage('Token Turnstile Ã© obrigatÃ³rio')
   ],
   async (req, res) => {
     try {
@@ -308,7 +308,7 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
@@ -323,30 +323,30 @@ router.post(
         );
         return res.status(401).json({
           success: false,
-          message: 'Verificação de segurança falhou. Tente novamente.'
+          message: 'VerificaÃ§Ã£o de seguranÃ§a falhou. Tente novamente.'
         });
       }
 
-      // Buscar usuário
-      logger.info(`[LOGIN] Buscando usuário: ${email}`);
+      // Buscar usuÃ¡rio
+      logger.info(`[LOGIN] Buscando usuÃ¡rio: ${email}`);
       const user = await User.findByEmail(req.db, email);
-      logger.info('[LOGIN] Usuário encontrado:', user ? 'SIM' : 'NÃO');
+      logger.info('[LOGIN] UsuÃ¡rio encontrado:', user ? 'SIM' : 'NÃƒO');
 
       if (user) {
         logger.info(
-          `[LOGIN] Usuário encontrado - ID: ${user._id}, Email: ${user.email}, Ativo: ${user.isActive}`
+          `[LOGIN] UsuÃ¡rio encontrado - ID: ${user._id}, Email: ${user.email}, Ativo: ${user.isActive}`
         );
       }
 
       if (!user) {
-        logger.info(`[LOGIN] Usuário não encontrado: ${email}`);
+        logger.info(`[LOGIN] UsuÃ¡rio nÃ£o encontrado: ${email}`);
         return res.status(401).json({
           success: false,
-          message: 'Credenciais inválidas'
+          message: 'Credenciais invÃ¡lidas'
         });
       }
 
-      // Verificar se conta está ativa
+      // Verificar se conta estÃ¡ ativa
       if (!user.isActive || user.isBlocked) {
         return res.status(401).json({
           success: false,
@@ -357,23 +357,23 @@ router.post(
       // Verificar senha
       const isPasswordValid = await user.comparePassword(password);
       if (!isPasswordValid) {
-        logger.info(`[LOGIN] Senha inválida para usuário: ${email}`);
+        logger.info(`[LOGIN] Senha invÃ¡lida para usuÃ¡rio: ${email}`);
         return res.status(401).json({
           success: false,
-          message: 'Credenciais inválidas'
+          message: 'Credenciais invÃ¡lidas'
         });
       }
 
-      // Verificar se 2FA está habilitado
+      // Verificar se 2FA estÃ¡ habilitado
       if (user.twoFactorEnabled) {
-        // Gerar token temporário para 2FA
+        // Gerar token temporÃ¡rio para 2FA
         const tempToken = jwt.sign({ userId: user._id, temp: true }, process.env.JWT_SECRET, {
           expiresIn: '5m'
         });
 
         return res.status(200).json({
           success: true,
-          message: '2FA necessário',
+          message: '2FA necessÃ¡rio',
           data: {
             requires2FA: true,
             tempToken,
@@ -382,13 +382,13 @@ router.post(
         });
       }
 
-      // Atualizar última atividade
+      // Atualizar Ãºltima atividade
       await User.update(req.db, user.id, {
         lastLoginAt: Math.floor(Date.now() / 1000),
         lastActivityAt: Math.floor(Date.now() / 1000)
       });
 
-      // Gerar token de autenticação
+      // Gerar token de autenticaÃ§Ã£o
       const token = user.generateAuthToken();
       const refreshToken = user.generateRefreshToken();
 
@@ -431,7 +431,7 @@ router.post(
  * @swagger
  * /api/auth/verify-otp:
  *   post:
- *     summary: Verificar código 2FA
+ *     summary: Verificar cÃ³digo 2FA
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -451,16 +451,16 @@ router.post(
  *       200:
  *         description: 2FA verificado com sucesso
  *       400:
- *         description: Código inválido
+ *         description: CÃ³digo invÃ¡lido
  */
 router.post(
   '/verify-otp',
   [
-    body('userId').isMongoId().withMessage('ID de usuário inválido'),
+    body('userId').isMongoId().withMessage('ID de usuÃ¡rio invÃ¡lido'),
     body('otpCode')
       .isLength({ min: 6, max: 6 })
       .isNumeric()
-      .withMessage('Código OTP deve ter 6 dígitos')
+      .withMessage('CÃ³digo OTP deve ter 6 dÃ­gitos')
   ],
   async (req, res) => {
     try {
@@ -468,42 +468,42 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
 
       const { userId, otpCode } = req.body;
 
-      // Buscar usuário
+      // Buscar usuÃ¡rio
       const user = await User.findById(req.db, userId);
       if (!user) {
         return res.status(404).json({
           success: false,
-          message: 'Usuário não encontrado'
+          message: 'UsuÃ¡rio nÃ£o encontrado'
         });
       }
 
-      // Verificação básica do OTP (6 dígitos numéricos)
-      // NOTA: Em produção, implementar verificação com speakeasy
+      // VerificaÃ§Ã£o bÃ¡sica do OTP (6 dÃ­gitos numÃ©ricos)
+      // NOTA: Em produÃ§Ã£o, implementar verificaÃ§Ã£o com speakeasy
       if (otpCode.length !== 6 || !/^\d{6}$/.test(otpCode)) {
         return res.status(400).json({
           success: false,
-          message: 'Código OTP inválido'
+          message: 'CÃ³digo OTP invÃ¡lido'
         });
       }
 
-      // Atualizar última atividade
+      // Atualizar Ãºltima atividade
       await User.update(req.db, user.id, {
         lastLoginAt: Math.floor(Date.now() / 1000),
         lastActivityAt: Math.floor(Date.now() / 1000)
       });
 
-      // Gerar token de autenticação
+      // Gerar token de autenticaÃ§Ã£o
       const token = user.generateAuthToken();
       const refreshToken = user.generateRefreshToken();
 
-      logger.info(`2FA verificado para usuário: ${user.email}`);
+      logger.info(`2FA verificado para usuÃ¡rio: ${user.email}`);
 
       res.status(200).json({
         success: true,
@@ -525,7 +525,7 @@ router.post(
         }
       });
     } catch (error) {
-      logger.error('Erro na verificação 2FA:', error);
+      logger.error('Erro na verificaÃ§Ã£o 2FA:', error);
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -538,15 +538,15 @@ router.post(
  * @swagger
  * /api/auth/verify:
  *   get:
- *     summary: Verificar token de autenticação
+ *     summary: Verificar token de autenticaÃ§Ã£o
  *     tags: [Auth]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Token válido
+ *         description: Token vÃ¡lido
  *       401:
- *         description: Token inválido
+ *         description: Token invÃ¡lido
  */
 router.get('/verify', auth, async (req, res) => {
   try {
@@ -554,13 +554,13 @@ router.get('/verify', auth, async (req, res) => {
     if (!user || !user.isActive || user.isBlocked) {
       return res.status(401).json({
         success: false,
-        message: 'Usuário não encontrado ou inativo'
+        message: 'UsuÃ¡rio nÃ£o encontrado ou inativo'
       });
     }
 
     res.status(200).json({
       success: true,
-      message: 'Token válido',
+      message: 'Token vÃ¡lido',
       data: {
         valid: true,
         user: {
@@ -577,7 +577,7 @@ router.get('/verify', auth, async (req, res) => {
       }
     });
   } catch (error) {
-    logger.error('Erro na verificação de token:', error);
+    logger.error('Erro na verificaÃ§Ã£o de token:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -609,15 +609,15 @@ router.get('/verify', auth, async (req, res) => {
  *       200:
  *         description: E-mail de reset enviado
  *       400:
- *         description: Token Turnstile inválido
+ *         description: Token Turnstile invÃ¡lido
  *       404:
- *         description: E-mail não encontrado
+ *         description: E-mail nÃ£o encontrado
  */
 router.post(
   '/forgot-password',
   [
-    body('email').isEmail().normalizeEmail().withMessage('E-mail inválido'),
-    body('turnstileToken').notEmpty().withMessage('Token Turnstile é obrigatório')
+    body('email').isEmail().normalizeEmail().withMessage('E-mail invÃ¡lido'),
+    body('turnstileToken').notEmpty().withMessage('Token Turnstile Ã© obrigatÃ³rio')
   ],
   async (req, res) => {
     try {
@@ -625,7 +625,7 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
@@ -637,26 +637,26 @@ router.post(
       if (!turnstileResult.success) {
         return res.status(401).json({
           success: false,
-          message: 'Token de verificação inválido'
+          message: 'Token de verificaÃ§Ã£o invÃ¡lido'
         });
       }
 
       const user = await User.findByEmail(req.db, email);
       if (!user) {
-        // Por segurança, sempre retornar sucesso mesmo se email não existir
+        // Por seguranÃ§a, sempre retornar sucesso mesmo se email nÃ£o existir
         logger.warn(`Tentativa de reset para email inexistente: ${email} - IP: ${req.ip}`);
         return res.status(200).json({
           success: true,
-          message: 'Se o e-mail estiver cadastrado, você receberá instruções de redefinição'
+          message: 'Se o e-mail estiver cadastrado, vocÃª receberÃ¡ instruÃ§Ãµes de redefiniÃ§Ã£o'
         });
       }
 
-      // Verificar se usuário está ativo
+      // Verificar se usuÃ¡rio estÃ¡ ativo
       if (!user.isActive || user.isBlocked) {
         logger.warn(`Tentativa de reset para conta inativa: ${email} - IP: ${req.ip}`);
         return res.status(200).json({
           success: true,
-          message: 'Se o e-mail estiver cadastrado, você receberá instruções de redefinição'
+          message: 'Se o e-mail estiver cadastrado, vocÃª receberÃ¡ instruÃ§Ãµes de redefiniÃ§Ã£o'
         });
       }
 
@@ -682,7 +682,7 @@ router.post(
 
       res.status(200).json({
         success: true,
-        message: 'Se o e-mail estiver cadastrado, você receberá instruções de redefinição'
+        message: 'Se o e-mail estiver cadastrado, vocÃª receberÃ¡ instruÃ§Ãµes de redefiniÃ§Ã£o'
       });
     } catch (error) {
       logger.error('Erro no reset de senha:', error);
@@ -698,7 +698,7 @@ router.post(
  * @swagger
  * /api/auth/reset-password:
  *   post:
- *     summary: Redefinir senha com validação segura
+ *     summary: Redefinir senha com validaÃ§Ã£o segura
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -721,15 +721,15 @@ router.post(
  *       200:
  *         description: Senha redefinida com sucesso
  *       400:
- *         description: Token inválido ou expirado
+ *         description: Token invÃ¡lido ou expirado
  */
 router.post(
   '/reset-password',
   [
-    body('token').notEmpty().withMessage('Token é obrigatório'),
+    body('token').notEmpty().withMessage('Token Ã© obrigatÃ³rio'),
     body('password').isLength({ min: 6 }).withMessage('Senha deve ter pelo menos 6 caracteres'),
-    body('userId').notEmpty().withMessage('ID de usuário inválido'),
-    body('turnstileToken').notEmpty().withMessage('Token Turnstile é obrigatório')
+    body('userId').notEmpty().withMessage('ID de usuÃ¡rio invÃ¡lido'),
+    body('turnstileToken').notEmpty().withMessage('Token Turnstile Ã© obrigatÃ³rio')
   ],
   async (req, res) => {
     try {
@@ -737,7 +737,7 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
@@ -749,7 +749,7 @@ router.post(
       if (!turnstileResult.success) {
         return res.status(401).json({
           success: false,
-          message: 'Token de verificação inválido'
+          message: 'Token de verificaÃ§Ã£o invÃ¡lido'
         });
       }
 
@@ -757,23 +757,23 @@ router.post(
       const resetRecord = await PasswordReset.validateToken(req.db, token);
 
       if (!resetRecord || resetRecord.userId !== userId) {
-        // Incrementar tentativas se token existe mas é inválido
+        // Incrementar tentativas se token existe mas Ã© invÃ¡lido
         if (resetRecord) {
           await PasswordReset.incrementAttempt(req.db, token);
         }
 
         return res.status(400).json({
           success: false,
-          message: 'Token inválido ou expirado'
+          message: 'Token invÃ¡lido ou expirado'
         });
       }
 
-      // Buscar usuário
+      // Buscar usuÃ¡rio
       const user = await User.findById(req.db, userId);
       if (!user || !user.isActive || user.isBlocked) {
         return res.status(400).json({
           success: false,
-          message: 'Usuário não encontrado ou inativo'
+          message: 'UsuÃ¡rio nÃ£o encontrado ou inativo'
         });
       }
 
@@ -786,14 +786,14 @@ router.post(
         userAgent: req.get('User-Agent')
       });
 
-      // Limpar tokens antigos do usuário
+      // Limpar tokens antigos do usuÃ¡rio
       await PasswordReset.updateMany(
         req.db,
         { userId: user.id, status: 'pending' },
         { status: 'revoked' }
       );
 
-      logger.info(`Senha redefinida para usuário: ${user.email} - IP: ${req.ip}`);
+      logger.info(`Senha redefinida para usuÃ¡rio: ${user.email} - IP: ${req.ip}`);
 
       res.status(200).json({
         success: true,
@@ -803,7 +803,7 @@ router.post(
         }
       });
     } catch (error) {
-      logger.error('Erro na redefinição de senha:', error);
+      logger.error('Erro na redefiniÃ§Ã£o de senha:', error);
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -826,9 +826,9 @@ router.post(
  */
 router.post('/logout', auth, (req, res) => {
   try {
-    // NOTA: Blacklist de tokens não implementado (tokens expiram automaticamente)
+    // NOTA: Blacklist de tokens nÃ£o implementado (tokens expiram automaticamente)
 
-    logger.info(`Logout realizado para usuário: ${req.user.email}`);
+    logger.info(`Logout realizado para usuÃ¡rio: ${req.user.email}`);
 
     res.status(200).json({
       success: true,
@@ -847,11 +847,11 @@ router.post('/logout', auth, (req, res) => {
  * @swagger
  * /api/auth/users:
  *   get:
- *     summary: Listar usuários (DEBUG)
+ *     summary: Listar usuÃ¡rios (DEBUG)
  *     tags: [Auth]
  *     responses:
  *       200:
- *         description: Lista de usuários
+ *         description: Lista de usuÃ¡rios
  */
 router.get('/users', async (req, res) => {
   try {
@@ -874,7 +874,7 @@ router.get('/users', async (req, res) => {
       }
     });
   } catch (error) {
-    logger.error('Erro ao listar usuários:', error);
+    logger.error('Erro ao listar usuÃ¡rios:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -885,7 +885,7 @@ router.get('/users', async (req, res) => {
 // Endpoint para dados do painel administrativo
 router.get('/admin/dashboard', auth, async (req, res) => {
   try {
-    // Verificar se é super-admin
+    // Verificar se Ã© super-admin
     if (req.user.role !== 'super-admin') {
       return res.status(403).json({
         success: false,
@@ -893,7 +893,7 @@ router.get('/admin/dashboard', auth, async (req, res) => {
       });
     }
 
-    // Buscar estatísticas gerais
+    // Buscar estatÃ­sticas gerais
     const totalUsers = await User.count(req.db);
     const activeUsers = await User.count(req.db, { isActive: true });
     const paidUsers =
@@ -902,10 +902,10 @@ router.get('/admin/dashboard', auth, async (req, res) => {
     const transporters = await User.count(req.db, { businessType: 'transporter' });
     const producers = await User.count(req.db, { businessType: 'producer' });
 
-    // Usuários recentes
+    // UsuÃ¡rios recentes
     const recentUsers = await User.findAll(req.db, { limit: 10 });
 
-    // Estatísticas por plano (simplificado)
+    // EstatÃ­sticas por plano (simplificado)
     const planStats = [
       { plan: 'free', count: await User.count(req.db, { plan: 'free' }) },
       { plan: 'pro', count: await User.count(req.db, { plan: 'pro' }) },
@@ -937,10 +937,10 @@ router.get('/admin/dashboard', auth, async (req, res) => {
   }
 });
 
-// Endpoint para listar todos os usuários (admin)
+// Endpoint para listar todos os usuÃ¡rios (admin)
 router.get('/admin/users', auth, async (req, res) => {
   try {
-    // Verificar se é super-admin
+    // Verificar se Ã© super-admin
     if (req.user.role !== 'super-admin') {
       return res.status(403).json({
         success: false,
@@ -963,7 +963,7 @@ router.get('/admin/users', auth, async (req, res) => {
     const users = await User.findAll(req.db, {
       ...filters,
       offset: skip,
-      limit: parseInt(limit, 10)
+      limit: parseInt(limit, 10, 10)
     });
 
     const total = await User.count(req.db, filters);
@@ -973,15 +973,15 @@ router.get('/admin/users', auth, async (req, res) => {
       data: {
         users,
         pagination: {
-          page: parseInt(page, 10),
-          limit: parseInt(limit, 10),
+          page: parseInt(page, 10, 10),
+          limit: parseInt(limit, 10, 10),
           total,
           pages: Math.ceil(total / limit)
         }
       }
     });
   } catch (error) {
-    logger.error('Erro ao listar usuários (admin):', error);
+    logger.error('Erro ao listar usuÃ¡rios (admin):', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -989,10 +989,10 @@ router.get('/admin/users', auth, async (req, res) => {
   }
 });
 
-// Endpoint para estatísticas de pagamentos (admin)
+// Endpoint para estatÃ­sticas de pagamentos (admin)
 router.get('/admin/payments', auth, async (req, res) => {
   try {
-    // Verificar se é super-admin
+    // Verificar se Ã© super-admin
     if (req.user.role !== 'super-admin') {
       return res.status(403).json({
         success: false,
@@ -1000,14 +1000,14 @@ router.get('/admin/payments', auth, async (req, res) => {
       });
     }
 
-    // Estatísticas de planos (simplificado)
+    // EstatÃ­sticas de planos (simplificado)
     const planStats = [
       { plan: 'free', count: await User.count(req.db, { plan: 'free' }) },
       { plan: 'pro', count: await User.count(req.db, { plan: 'pro' }) },
       { plan: 'enterprise', count: await User.count(req.db, { plan: 'enterprise' }) }
     ];
 
-    // Usuários por tipo de negócio (simplificado)
+    // UsuÃ¡rios por tipo de negÃ³cio (simplificado)
     const businessStats = [
       { businessType: 'producer', count: await User.count(req.db, { businessType: 'producer' }) },
       { businessType: 'buyer', count: await User.count(req.db, { businessType: 'buyer' }) },
@@ -1038,7 +1038,7 @@ router.get('/admin/payments', auth, async (req, res) => {
       }
     });
   } catch (error) {
-    logger.error('Erro ao buscar estatísticas de pagamentos:', error);
+    logger.error('Erro ao buscar estatÃ­sticas de pagamentos:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -1046,12 +1046,12 @@ router.get('/admin/payments', auth, async (req, res) => {
   }
 });
 
-// POST /api/auth/verify-email - Verificar email com código
+// POST /api/auth/verify-email - Verificar email com cÃ³digo
 router.post(
   '/verify-email',
   [
-    body('email').isEmail().normalizeEmail().withMessage('E-mail inválido'),
-    body('code').isLength({ min: 6, max: 6 }).withMessage('Código deve ter 6 dígitos')
+    body('email').isEmail().normalizeEmail().withMessage('E-mail invÃ¡lido'),
+    body('code').isLength({ min: 6, max: 6 }).withMessage('CÃ³digo deve ter 6 dÃ­gitos')
   ],
   async (req, res) => {
     try {
@@ -1059,43 +1059,43 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
 
       const { email, code } = req.body;
 
-      // Buscar usuário
+      // Buscar usuÃ¡rio
       const user = await User.findByEmail(req.db, email);
       if (!user) {
         return res.status(404).json({
           success: false,
-          message: 'Usuário não encontrado'
+          message: 'UsuÃ¡rio nÃ£o encontrado'
         });
       }
 
-      // Verificar se email já está verificado
+      // Verificar se email jÃ¡ estÃ¡ verificado
       if (user.isEmailVerified) {
         return res.status(400).json({
           success: false,
-          message: 'Email já está verificado'
+          message: 'Email jÃ¡ estÃ¡ verificado'
         });
       }
 
-      // Verificar código
+      // Verificar cÃ³digo
       if (!user.verificationCode || user.verificationCode !== code) {
         return res.status(400).json({
           success: false,
-          message: 'Código inválido'
+          message: 'CÃ³digo invÃ¡lido'
         });
       }
 
-      // Verificar se código não expirou
+      // Verificar se cÃ³digo nÃ£o expirou
       if (user.codeExpires < Math.floor(Date.now() / 1000)) {
         return res.status(400).json({
           success: false,
-          message: 'Código expirado. Solicite um novo código.'
+          message: 'CÃ³digo expirado. Solicite um novo cÃ³digo.'
         });
       }
 
@@ -1106,7 +1106,7 @@ router.post(
         codeExpires: null
       });
 
-      logger.info(`Email verificado para usuário: ${email}`);
+      logger.info(`Email verificado para usuÃ¡rio: ${email}`);
 
       res.status(200).json({
         success: true,
@@ -1130,41 +1130,41 @@ router.post(
   }
 );
 
-// POST /api/auth/resend-verification - Reenviar código de verificação
+// POST /api/auth/resend-verification - Reenviar cÃ³digo de verificaÃ§Ã£o
 router.post(
   '/resend-verification',
-  [body('email').isEmail().normalizeEmail().withMessage('E-mail inválido')],
+  [body('email').isEmail().normalizeEmail().withMessage('E-mail invÃ¡lido')],
   async (req, res) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
 
       const { email } = req.body;
 
-      // Buscar usuário
+      // Buscar usuÃ¡rio
       const user = await User.findByEmail(req.db, email);
       if (!user) {
         return res.status(404).json({
           success: false,
-          message: 'Usuário não encontrado'
+          message: 'UsuÃ¡rio nÃ£o encontrado'
         });
       }
 
-      // Verificar se email já está verificado
+      // Verificar se email jÃ¡ estÃ¡ verificado
       if (user.isEmailVerified) {
         return res.status(409).json({
           success: false,
-          message: 'Email já está verificado'
+          message: 'Email jÃ¡ estÃ¡ verificado'
         });
       }
 
-      // Gerar novo código
+      // Gerar novo cÃ³digo
       const emailCode = Math.floor(100000 + Math.random() * 900000).toString();
       const codeExpires = Math.floor((Date.now() + 10 * 60 * 1000) / 1000);
 
@@ -1173,25 +1173,25 @@ router.post(
         codeExpires
       });
 
-      // Enviar novo código
+      // Enviar novo cÃ³digo
       try {
         await emailService.sendVerificationCode({
           to: email,
           name: user.name,
           code: emailCode
         });
-        logger.info(`Novo código de verificação enviado para ${email}: ${emailCode}`);
+        logger.info(`Novo cÃ³digo de verificaÃ§Ã£o enviado para ${email}: ${emailCode}`);
       } catch (error) {
         logger.error(`Erro ao reenviar email para ${email}:`, error);
         return res.status(500).json({
           success: false,
-          message: 'Erro ao enviar email de verificação'
+          message: 'Erro ao enviar email de verificaÃ§Ã£o'
         });
       }
 
       res.status(200).json({
         success: true,
-        message: 'Novo código de verificação enviado',
+        message: 'Novo cÃ³digo de verificaÃ§Ã£o enviado',
         data: {
           email: email.replace(/(.{2}).*(@.*)/, '$1***$2'),
           emailCode, // Apenas para desenvolvimento
@@ -1200,7 +1200,7 @@ router.post(
         }
       });
     } catch (error) {
-      logger.error('Erro ao reenviar verificação:', error);
+      logger.error('Erro ao reenviar verificaÃ§Ã£o:', error);
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -1209,34 +1209,34 @@ router.post(
   }
 );
 
-// POST /api/auth/forgot-password - Solicitar recuperação de senha
+// POST /api/auth/forgot-password - Solicitar recuperaÃ§Ã£o de senha
 router.post(
   '/forgot-password',
-  [body('email').isEmail().normalizeEmail().withMessage('E-mail inválido')],
+  [body('email').isEmail().normalizeEmail().withMessage('E-mail invÃ¡lido')],
   async (req, res) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
 
       const { email } = req.body;
 
-      // Buscar usuário
+      // Buscar usuÃ¡rio
       const user = await User.findByEmail(req.db, email);
       if (!user) {
-        // Por segurança, sempre retornar sucesso mesmo se usuário não existir
+        // Por seguranÃ§a, sempre retornar sucesso mesmo se usuÃ¡rio nÃ£o existir
         return res.status(200).json({
           success: true,
-          message: 'Se o email existir, você receberá um código de recuperação'
+          message: 'Se o email existir, vocÃª receberÃ¡ um cÃ³digo de recuperaÃ§Ã£o'
         });
       }
 
-      // Gerar código de recuperação
+      // Gerar cÃ³digo de recuperaÃ§Ã£o
       const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
       const resetExpires = Math.floor((Date.now() + 15 * 60 * 1000) / 1000);
 
@@ -1245,7 +1245,7 @@ router.post(
         passwordResetExpires: resetExpires
       });
 
-      // Enviar email de recuperação
+      // Enviar email de recuperaÃ§Ã£o
       try {
         const emailResult = await notificationService.sendPasswordResetEmail(
           email,
@@ -1253,17 +1253,17 @@ router.post(
           user.name
         );
         if (emailResult.success) {
-          logger.info(`Código de recuperação enviado para ${email}: ${resetCode}`);
+          logger.info(`CÃ³digo de recuperaÃ§Ã£o enviado para ${email}: ${resetCode}`);
         } else {
-          logger.error(`Erro ao enviar email de recuperação para ${email}:`, emailResult.error);
+          logger.error(`Erro ao enviar email de recuperaÃ§Ã£o para ${email}:`, emailResult.error);
         }
       } catch (error) {
-        logger.error(`Erro ao enviar email de recuperação para ${email}:`, error);
+        logger.error(`Erro ao enviar email de recuperaÃ§Ã£o para ${email}:`, error);
       }
 
       res.status(200).json({
         success: true,
-        message: 'Se o email existir, você receberá um código de recuperação',
+        message: 'Se o email existir, vocÃª receberÃ¡ um cÃ³digo de recuperaÃ§Ã£o',
         data: {
           email: email.replace(/(.{2}).*(@.*)/, '$1***$2'),
           resetCode, // Apenas para desenvolvimento
@@ -1271,7 +1271,7 @@ router.post(
         }
       });
     } catch (error) {
-      logger.error('Erro ao solicitar recuperação de senha:', error);
+      logger.error('Erro ao solicitar recuperaÃ§Ã£o de senha:', error);
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -1280,12 +1280,12 @@ router.post(
   }
 );
 
-// POST /api/auth/reset-password - Redefinir senha com código
+// POST /api/auth/reset-password - Redefinir senha com cÃ³digo
 router.post(
   '/reset-password',
   [
-    body('email').isEmail().normalizeEmail().withMessage('E-mail inválido'),
-    body('code').isLength({ min: 6, max: 6 }).withMessage('Código deve ter 6 dígitos'),
+    body('email').isEmail().normalizeEmail().withMessage('E-mail invÃ¡lido'),
+    body('code').isLength({ min: 6, max: 6 }).withMessage('CÃ³digo deve ter 6 dÃ­gitos'),
     body('newPassword')
       .isLength({ min: 6 })
       .withMessage('Nova senha deve ter pelo menos 6 caracteres')
@@ -1296,35 +1296,35 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
 
       const { email, code, newPassword } = req.body;
 
-      // Buscar usuário
+      // Buscar usuÃ¡rio
       const user = await User.findByEmail(req.db, email);
       if (!user) {
         return res.status(404).json({
           success: false,
-          message: 'Usuário não encontrado'
+          message: 'UsuÃ¡rio nÃ£o encontrado'
         });
       }
 
-      // Verificar código
+      // Verificar cÃ³digo
       if (!user.passwordResetToken || user.passwordResetToken !== code) {
         return res.status(400).json({
           success: false,
-          message: 'Código inválido'
+          message: 'CÃ³digo invÃ¡lido'
         });
       }
 
-      // Verificar se código não expirou
+      // Verificar se cÃ³digo nÃ£o expirou
       if (user.passwordResetExpires < Math.floor(Date.now() / 1000)) {
         return res.status(400).json({
           success: false,
-          message: 'Código expirado. Solicite um novo código.'
+          message: 'CÃ³digo expirado. Solicite um novo cÃ³digo.'
         });
       }
 
@@ -1335,7 +1335,7 @@ router.post(
         passwordResetExpires: null
       });
 
-      logger.info(`Senha redefinida para usuário: ${email}`);
+      logger.info(`Senha redefinida para usuÃ¡rio: ${email}`);
 
       res.status(200).json({
         success: true,

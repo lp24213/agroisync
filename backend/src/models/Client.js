@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 const clientSchema = new mongoose.Schema({
   // Basic Information
@@ -157,7 +157,7 @@ const clientSchema = new mongoose.Schema({
   }
 });
 
-// Índices para melhor performance
+// Ãndices para melhor performance
 clientSchema.index({ email: 1 });
 clientSchema.index({ cpfCnpj: 1 });
 clientSchema.index({ userId: 1 });
@@ -171,12 +171,12 @@ clientSchema.pre('save', function (next) {
   next();
 });
 
-// Método para verificar se cliente está completamente validado
+// MÃ©todo para verificar se cliente estÃ¡ completamente validado
 clientSchema.methods.isFullyValidated = function () {
   return this.isDocumentValidated && this.isPaymentVerified;
 };
 
-// Método para verificar se pode ser ativado
+// MÃ©todo para verificar se pode ser ativado
 clientSchema.methods.canBeActivated = function () {
   return this.isDocumentValidated && this.isPaymentVerified && this.paymentStatus === 'approved';
 };

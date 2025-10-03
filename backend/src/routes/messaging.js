@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import PrivateMessage from '../models/PrivateMessage.js';
 import ContactMessage from '../models/ContactMessage.js';
 import PartnershipMessage from '../models/PartnershipMessage.js';
@@ -8,6 +8,7 @@ import { apiLimiter } from '../middleware/rateLimiter.js';
 import { authenticateToken, requireActivePlan } from '../middleware/auth.js';
 
 const router = express.Router();
+import logger from '../utils/logger.js';
 
 // Apply rate limiting
 router.use(apiLimiter);
@@ -24,7 +25,7 @@ router.get('/conversations', authenticateToken, async (req, res) => {
     if (!user.hasActivePlan('store') && !user.hasActivePlan('freight')) {
       return res.status(403).json({
         success: false,
-        message: 'Plano ativo necessário para acessar mensagens privadas'
+        message: 'Plano ativo necessÃ¡rio para acessar mensagens privadas'
       });
     }
 
@@ -69,9 +70,7 @@ router.get('/conversations', authenticateToken, async (req, res) => {
       data: { conversations: populatedConversations }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching conversations:', error);
-    }
+    logger.error('Error fetching conversations:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -90,7 +89,7 @@ router.get('/conversation/:otherUserId', authenticateToken, async (req, res) => 
     if (!user.hasActivePlan('store') && !user.hasActivePlan('freight')) {
       return res.status(403).json({
         success: false,
-        message: 'Plano ativo necessário para acessar mensagens privadas'
+        message: 'Plano ativo necessÃ¡rio para acessar mensagens privadas'
       });
     }
 
@@ -101,9 +100,7 @@ router.get('/conversation/:otherUserId', authenticateToken, async (req, res) => 
       data: { messages }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching conversation:', error);
-    }
+    logger.error('Error fetching conversation:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -122,7 +119,7 @@ router.post('/send', authenticateToken, validateMessage, async (req, res) => {
     if (!user.hasActivePlan('store') && !user.hasActivePlan('freight')) {
       return res.status(403).json({
         success: false,
-        message: 'Plano ativo necessário para enviar mensagens privadas'
+        message: 'Plano ativo necessÃ¡rio para enviar mensagens privadas'
       });
     }
 
@@ -131,7 +128,7 @@ router.post('/send', authenticateToken, validateMessage, async (req, res) => {
     if (!receiver) {
       return res.status(404).json({
         success: false,
-        message: 'Destinatário não encontrado'
+        message: 'DestinatÃ¡rio nÃ£o encontrado'
       });
     }
 
@@ -160,9 +157,7 @@ router.post('/send', authenticateToken, validateMessage, async (req, res) => {
       data: { message }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Error sending message:', error);
-    }
+    logger.error('Error sending message:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -181,7 +176,7 @@ router.put('/:messageId/read', authenticateToken, async (req, res) => {
     if (!user.hasActivePlan('store') && !user.hasActivePlan('freight')) {
       return res.status(403).json({
         success: false,
-        message: 'Plano ativo necessário para acessar mensagens privadas'
+        message: 'Plano ativo necessÃ¡rio para acessar mensagens privadas'
       });
     }
 
@@ -189,7 +184,7 @@ router.put('/:messageId/read', authenticateToken, async (req, res) => {
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: 'Mensagem não encontrada'
+        message: 'Mensagem nÃ£o encontrada'
       });
     }
 
@@ -208,9 +203,7 @@ router.put('/:messageId/read', authenticateToken, async (req, res) => {
       message: 'Mensagem marcada como lida'
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Error marking message as read:', error);
-    }
+    logger.error('Error marking message as read:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -228,7 +221,7 @@ router.get('/unread', authenticateToken, async (req, res) => {
     if (!user.hasActivePlan('store') && !user.hasActivePlan('freight')) {
       return res.status(403).json({
         success: false,
-        message: 'Plano ativo necessário para acessar mensagens privadas'
+        message: 'Plano ativo necessÃ¡rio para acessar mensagens privadas'
       });
     }
 
@@ -240,9 +233,7 @@ router.get('/unread', authenticateToken, async (req, res) => {
       data: { unreadCount, unreadMessages }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching unread messages:', error);
-    }
+    logger.error('Error fetching unread messages:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -261,7 +252,7 @@ router.post('/contact', async (req, res) => {
     if (!name || !email || !subject || !message) {
       return res.status(400).json({
         success: false,
-        message: 'Todos os campos são obrigatórios'
+        message: 'Todos os campos sÃ£o obrigatÃ³rios'
       });
     }
 
@@ -288,7 +279,7 @@ router.post('/contact', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error sending contact message:', error);
+      logger.error('Error sending contact message:', error);
     }
     res.status(500).json({
       success: false,
@@ -308,14 +299,14 @@ router.post('/partnership', async (req, res) => {
     if (!company || !contactPerson || !email || !partnershipType || !description) {
       return res.status(400).json({
         success: false,
-        message: 'Todos os campos obrigatórios devem ser preenchidos'
+        message: 'Todos os campos obrigatÃ³rios devem ser preenchidos'
       });
     }
 
     if (description.trim().length < 20) {
       return res.status(400).json({
         success: false,
-        message: 'Descrição deve ter pelo menos 20 caracteres'
+        message: 'DescriÃ§Ã£o deve ter pelo menos 20 caracteres'
       });
     }
 
@@ -333,11 +324,11 @@ router.post('/partnership', async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: 'Solicitação de parceria enviada com sucesso'
+      message: 'SolicitaÃ§Ã£o de parceria enviada com sucesso'
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error sending partnership inquiry:', error);
+      logger.error('Error sending partnership inquiry:', error);
     }
     res.status(500).json({
       success: false,
@@ -355,12 +346,12 @@ router.get('/admin/contact', authenticateToken, async (req, res) => {
     if (req.user.userType !== 'admin') {
       return res.status(403).json({
         success: false,
-        message: 'Acesso negado. Privilégios de administrador necessários.'
+        message: 'Acesso negado. PrivilÃ©gios de administrador necessÃ¡rios.'
       });
     }
 
     const { page = 1, limit = 20, status } = req.query;
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const skip = (parseInt(page, 10, 10) - 1) * parseInt(limit, 10, 10);
 
     const query = {};
     if (status) {
@@ -370,7 +361,7 @@ router.get('/admin/contact', authenticateToken, async (req, res) => {
     const messages = await ContactMessage.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit, 10))
+      .limit(parseInt(limit, 10, 10))
       .lean();
 
     const total = await ContactMessage.countDocuments(query);
@@ -380,17 +371,15 @@ router.get('/admin/contact', authenticateToken, async (req, res) => {
       data: {
         messages,
         pagination: {
-          currentPage: parseInt(page, 10),
-          totalPages: Math.ceil(total / parseInt(limit, 10)),
+          currentPage: parseInt(page, 10, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit, 10)
+          itemsPerPage: parseInt(limit, 10, 10)
         }
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching contact messages:', error);
-    }
+    logger.error('Error fetching contact messages:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -405,12 +394,12 @@ router.get('/admin/partnership', authenticateToken, async (req, res) => {
     if (req.user.userType !== 'admin') {
       return res.status(403).json({
         success: false,
-        message: 'Acesso negado. Privilégios de administrador necessários.'
+        message: 'Acesso negado. PrivilÃ©gios de administrador necessÃ¡rios.'
       });
     }
 
     const { page = 1, limit = 20, status } = req.query;
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const skip = (parseInt(page, 10, 10) - 1) * parseInt(limit, 10, 10);
 
     const query = {};
     if (status) {
@@ -420,7 +409,7 @@ router.get('/admin/partnership', authenticateToken, async (req, res) => {
     const messages = await PartnershipMessage.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit, 10))
+      .limit(parseInt(limit, 10, 10))
       .lean();
 
     const total = await PartnershipMessage.countDocuments(query);
@@ -430,16 +419,16 @@ router.get('/admin/partnership', authenticateToken, async (req, res) => {
       data: {
         messages,
         pagination: {
-          currentPage: parseInt(page, 10),
-          totalPages: Math.ceil(total / parseInt(limit, 10)),
+          currentPage: parseInt(page, 10, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit, 10)
+          itemsPerPage: parseInt(limit, 10, 10)
         }
       }
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching partnership messages:', error);
+      logger.error('Error fetching partnership messages:', error);
     }
     res.status(500).json({
       success: false,
@@ -455,12 +444,12 @@ router.get('/admin/private', authenticateToken, async (req, res) => {
     if (req.user.userType !== 'admin') {
       return res.status(403).json({
         success: false,
-        message: 'Acesso negado. Privilégios de administrador necessários.'
+        message: 'Acesso negado. PrivilÃ©gios de administrador necessÃ¡rios.'
       });
     }
 
     const { page = 1, limit = 20, status } = req.query;
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const skip = (parseInt(page, 10, 10) - 1) * parseInt(limit, 10, 10);
 
     const query = {};
     if (status) {
@@ -470,7 +459,7 @@ router.get('/admin/private', authenticateToken, async (req, res) => {
     const messages = await PrivateMessage.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit, 10))
+      .limit(parseInt(limit, 10, 10))
       .populate('senderId', 'name email company.name')
       .populate('receiverId', 'name email company.name')
       .lean();
@@ -482,16 +471,16 @@ router.get('/admin/private', authenticateToken, async (req, res) => {
       data: {
         messages,
         pagination: {
-          currentPage: parseInt(page, 10),
-          totalPages: Math.ceil(total / parseInt(limit, 10)),
+          currentPage: parseInt(page, 10, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit, 10)
+          itemsPerPage: parseInt(limit, 10, 10)
         }
       }
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching private messages:', error);
+      logger.error('Error fetching private messages:', error);
     }
     res.status(500).json({
       success: false,
@@ -507,7 +496,7 @@ router.put('/admin/contact/:id/status', authenticateToken, async (req, res) => {
     if (req.user.userType !== 'admin') {
       return res.status(403).json({
         success: false,
-        message: 'Acesso negado. Privilégios de administrador necessários.'
+        message: 'Acesso negado. PrivilÃ©gios de administrador necessÃ¡rios.'
       });
     }
 
@@ -518,7 +507,7 @@ router.put('/admin/contact/:id/status', authenticateToken, async (req, res) => {
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: 'Mensagem não encontrada'
+        message: 'Mensagem nÃ£o encontrada'
       });
     }
 
@@ -537,7 +526,7 @@ router.put('/admin/contact/:id/status', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error updating contact message status:', error);
+      logger.error('Error updating contact message status:', error);
     }
     res.status(500).json({
       success: false,
@@ -553,7 +542,7 @@ router.put('/admin/partnership/:id/status', authenticateToken, async (req, res) 
     if (req.user.userType !== 'admin') {
       return res.status(403).json({
         success: false,
-        message: 'Acesso negado. Privilégios de administrador necessários.'
+        message: 'Acesso negado. PrivilÃ©gios de administrador necessÃ¡rios.'
       });
     }
 
@@ -564,7 +553,7 @@ router.put('/admin/partnership/:id/status', authenticateToken, async (req, res) 
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: 'Mensagem não encontrada'
+        message: 'Mensagem nÃ£o encontrada'
       });
     }
 
@@ -583,7 +572,7 @@ router.put('/admin/partnership/:id/status', authenticateToken, async (req, res) 
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error updating partnership message status:', error);
+      logger.error('Error updating partnership message status:', error);
     }
     res.status(500).json({
       success: false,

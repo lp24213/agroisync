@@ -1,18 +1,18 @@
-// Modelo Chat - arquivo temporário para deploy
+﻿// Modelo Chat - arquivo temporÃ¡rio para deploy
 export default class Chat {
   constructor(data) {
     Object.assign(this, data);
   }
 
-  static async findById(id) {
+  static findById(id) {
     return null;
   }
 
-  static async create(data) {
+  static create(data) {
     return new Chat(data);
   }
 
-  async save() {
+  save() {
     return this;
   }
 }

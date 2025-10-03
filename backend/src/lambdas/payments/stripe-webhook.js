@@ -1,6 +1,7 @@
-const { MongoClient } = require('mongodb');
+﻿const { MongoClient } = require('mongodb');
 const Stripe = require('stripe');
 const crypto = require('crypto');
+const logger = require('../../utils/logger');
 
 const mongoClient = new MongoClient(process.env.MONGODB_URI);
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -30,7 +31,7 @@ exports.handler = async event => {
         statusCode: 405,
         headers: corsHeaders,
         body: JSON.stringify({
-          error: { code: 'METHOD_NOT_ALLOWED', message: 'Método não permitido' }
+          error: { code: 'METHOD_NOT_ALLOWED', message: 'MÃ©todo nÃ£o permitido' }
         })
       };
     }
@@ -42,7 +43,7 @@ exports.handler = async event => {
         statusCode: 400,
         headers: corsHeaders,
         body: JSON.stringify({
-          error: { code: 'MISSING_SIGNATURE', message: 'Assinatura do webhook não fornecida' }
+          error: { code: 'MISSING_SIGNATURE', message: 'Assinatura do webhook nÃ£o fornecida' }
         })
       };
     }
@@ -52,13 +53,13 @@ exports.handler = async event => {
       stripeEvent = stripe.webhooks.constructEvent(event.body, signature, webhookSecret);
     } catch (err) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro na verificação da assinatura:', err.message);
+        logger.error('Erro na verificaÃ§Ã£o da assinatura:', err.message);
       }
       return {
         statusCode: 400,
         headers: corsHeaders,
         body: JSON.stringify({
-          error: { code: 'INVALID_SIGNATURE', message: 'Assinatura inválida' }
+          error: { code: 'INVALID_SIGNATURE', message: 'Assinatura invÃ¡lida' }
         })
       };
     }
@@ -67,13 +68,13 @@ exports.handler = async event => {
     await mongoClient.connect();
     const db = mongoClient.db();
 
-    // Verificar idempotência - evitar processamento duplicado
+    // Verificar idempotÃªncia - evitar processamento duplicado
     const eventId = stripeEvent.id;
     const existingEvent = await db.collection('webhook_events').findOne({ eventId });
 
     if (existingEvent) {
       if (process.env.NODE_ENV !== 'production') {
-        console.log(`Evento já processado: ${eventId}`);
+        logger.log(`Evento jÃ¡ processado: ${eventId}`);
       }
       return {
         statusCode: 200,
@@ -82,7 +83,7 @@ exports.handler = async event => {
       };
     }
 
-    // Registrar evento para idempotência
+    // Registrar evento para idempotÃªncia
     await db.collection('webhook_events').insertOne({
       eventId,
       type: stripeEvent.type,
@@ -110,7 +111,7 @@ exports.handler = async event => {
 
       default:
         if (process.env.NODE_ENV !== 'production') {
-          console.log(`Evento não processado: ${stripeEvent.type}`);
+          logger.log(`Evento nÃ£o processado: ${stripeEvent.type}`);
         }
     }
 
@@ -121,7 +122,7 @@ exports.handler = async event => {
     };
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro no webhook do Stripe:', error);
+      logger.error('Erro no webhook do Stripe:', error);
     }
     return {
       statusCode: 500,
@@ -142,30 +143,30 @@ exports.handler = async event => {
   }
 };
 
-// Função para processar checkout.session.completed
+// FunÃ§Ã£o para processar checkout.session.completed
 async function handleCheckoutSessionCompleted(db, session) {
   try {
     if (process.env.NODE_ENV !== 'production') {
-      console.log('Processando checkout.session.completed:', session.id);
+      logger.log('Processando checkout.session.completed:', session.id);
     }
     const { cognitoSub, planType } = session.metadata;
     if (!cognitoSub || !planType) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Metadados ausentes na sessão:', session.id);
+        logger.error('Metadados ausentes na sessÃ£o:', session.id);
       }
       return;
     }
 
-    // Buscar usuário
+    // Buscar usuÃ¡rio
     const user = await db.collection('users').findOne({ cognitoSub });
     if (!user) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Usuário não encontrado:', cognitoSub);
+        logger.error('UsuÃ¡rio nÃ£o encontrado:', cognitoSub);
       }
       return;
     }
 
-    // Verificar se o pagamento já foi processado
+    // Verificar se o pagamento jÃ¡ foi processado
     const existingPayment = await db.collection('payments').findOne({
       'providerRef.stripeSessionId': session.id,
       status: 'succeeded'
@@ -173,12 +174,12 @@ async function handleCheckoutSessionCompleted(db, session) {
 
     if (existingPayment) {
       if (process.env.NODE_ENV !== 'production') {
-        console.log(`Pagamento já processado para sessão: ${session.id}`);
+        logger.log(`Pagamento jÃ¡ processado para sessÃ£o: ${session.id}`);
       }
       return;
     }
 
-    // Configurações dos planos
+    // ConfiguraÃ§Ãµes dos planos
     const PLANS = {
       loja: {
         limitAds: 3,
@@ -197,16 +198,16 @@ async function handleCheckoutSessionCompleted(db, session) {
     const plan = PLANS[planType];
     if (!plan) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Plano inválido:', planType);
+        logger.error('Plano invÃ¡lido:', planType);
       }
       return;
     }
 
-    // Calcular data de expiração
+    // Calcular data de expiraÃ§Ã£o
     const expiresAt = new Date();
     expiresAt.setMonth(expiresAt.getMonth() + 1);
 
-    // Atualizar usuário com plano ativo
+    // Atualizar usuÃ¡rio com plano ativo
     await db.collection('users').updateOne(
       { cognitoSub },
       {
@@ -247,11 +248,11 @@ async function handleCheckoutSessionCompleted(db, session) {
     });
 
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`Plano ${planType} ativado para usuário ${cognitoSub} - Sessão: ${session.id}`);
+      logger.log(`Plano ${planType} ativado para usuÃ¡rio ${cognitoSub} - SessÃ£o: ${session.id}`);
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao processar checkout.session.completed:', error);
+      logger.error('Erro ao processar checkout.session.completed:', error);
     }
     // Registrar erro
     await db.collection('payment_logs').insertOne({
@@ -266,22 +267,22 @@ async function handleCheckoutSessionCompleted(db, session) {
   }
 }
 
-// Função para processar invoice.payment_succeeded
+// FunÃ§Ã£o para processar invoice.payment_succeeded
 async function handleInvoicePaymentSucceeded(db, invoice) {
   try {
     if (process.env.NODE_ENV !== 'production') {
-      console.log('Processando invoice.payment_succeeded:', invoice.id);
+      logger.log('Processando invoice.payment_succeeded:', invoice.id);
     }
     // Buscar assinatura
     const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
     if (!subscription) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Assinatura não encontrada:', invoice.subscription);
+        logger.error('Assinatura nÃ£o encontrada:', invoice.subscription);
       }
       return;
     }
 
-    // Buscar usuário pelo customer ID ou metadata
+    // Buscar usuÃ¡rio pelo customer ID ou metadata
     const user = await db.collection('users').findOne({
       $or: [
         { 'stripe.customerId': invoice.customer },
@@ -291,7 +292,7 @@ async function handleInvoicePaymentSucceeded(db, invoice) {
 
     if (!user) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Usuário não encontrado para invoice:', invoice.id);
+        logger.error('UsuÃ¡rio nÃ£o encontrado para invoice:', invoice.id);
       }
       return;
     }
@@ -311,22 +312,22 @@ async function handleInvoicePaymentSucceeded(db, invoice) {
     );
 
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`Plano renovado para usuário ${user.cognitoSub}`);
+      logger.log(`Plano renovado para usuÃ¡rio ${user.cognitoSub}`);
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao processar invoice.payment_succeeded:', error);
+      logger.error('Erro ao processar invoice.payment_succeeded:', error);
     }
   }
 }
 
-// Função para processar invoice.payment_failed
+// FunÃ§Ã£o para processar invoice.payment_failed
 async function handleInvoicePaymentFailed(db, invoice) {
   try {
     if (process.env.NODE_ENV !== 'production') {
-      console.log('Processando invoice.payment_failed:', invoice.id);
+      logger.log('Processando invoice.payment_failed:', invoice.id);
     }
-    // Buscar usuário
+    // Buscar usuÃ¡rio
     const user = await db.collection('users').findOne({
       $or: [
         { 'stripe.customerId': invoice.customer },
@@ -336,7 +337,7 @@ async function handleInvoicePaymentFailed(db, invoice) {
 
     if (!user) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Usuário não encontrado para invoice failed:', invoice.id);
+        logger.error('UsuÃ¡rio nÃ£o encontrado para invoice failed:', invoice.id);
       }
       return;
     }
@@ -353,29 +354,29 @@ async function handleInvoicePaymentFailed(db, invoice) {
     );
 
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`Plano marcado como expirado para usuário ${user.cognitoSub}`);
+      logger.log(`Plano marcado como expirado para usuÃ¡rio ${user.cognitoSub}`);
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao processar invoice.payment_failed:', error);
+      logger.error('Erro ao processar invoice.payment_failed:', error);
     }
   }
 }
 
-// Função para processar customer.subscription.deleted
+// FunÃ§Ã£o para processar customer.subscription.deleted
 async function handleSubscriptionDeleted(db, subscription) {
   try {
     if (process.env.NODE_ENV !== 'production') {
-      console.log('Processando customer.subscription.deleted:', subscription.id);
+      logger.log('Processando customer.subscription.deleted:', subscription.id);
     }
-    // Buscar usuário
+    // Buscar usuÃ¡rio
     const user = await db.collection('users').findOne({
       'stripe.subscriptionId': subscription.id
     });
 
     if (!user) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Usuário não encontrado para subscription deleted:', subscription.id);
+        logger.error('UsuÃ¡rio nÃ£o encontrado para subscription deleted:', subscription.id);
       }
       return;
     }
@@ -392,11 +393,11 @@ async function handleSubscriptionDeleted(db, subscription) {
     );
 
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`Plano marcado como expirado para usuário ${user.cognitoSub}`);
+      logger.log(`Plano marcado como expirado para usuÃ¡rio ${user.cognitoSub}`);
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao processar customer.subscription.deleted:', error);
+      logger.error('Erro ao processar customer.subscription.deleted:', error);
     }
   }
 }

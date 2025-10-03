@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+﻿import crypto from 'crypto';
 
 class PasswordReset {
   constructor(row = {}) {
@@ -20,7 +20,7 @@ class PasswordReset {
     const expiresAt = Math.floor((Date.now() + 60 * 60 * 1000) / 1000); // 1 hora
     const now = Math.floor(Date.now() / 1000);
 
-    // Limpar tokens antigos do usuário
+    // Limpar tokens antigos do usuÃ¡rio
     await db
       .prepare('UPDATE password_resets SET status = ? WHERE user_id = ? AND status = ?')
       .bind('revoked', userId, 'pending')
@@ -131,8 +131,8 @@ class PasswordReset {
   }
 
   static async updateMany(db, conditions = {}, updateData = {}) {
-    // Implementação básica para compatibilidade
-    // Em um cenário real, você implementaria lógica mais sofisticada
+    // ImplementaÃ§Ã£o bÃ¡sica para compatibilidade
+    // Em um cenÃ¡rio real, vocÃª implementaria lÃ³gica mais sofisticada
     const { userId, status } = conditions;
     const { status: newStatus } = updateData;
 

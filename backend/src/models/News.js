@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 // News schema for agribusiness news
 const newsSchema = new mongoose.Schema({
@@ -123,7 +123,7 @@ const weatherSchema = new mongoose.Schema({
   }
 });
 
-// Índices para melhor performance
+// Ãndices para melhor performance
 newsSchema.index({ category: 1, publishedAt: -1 });
 newsSchema.index({ tags: 1 });
 newsSchema.index({ isActive: 1 });
@@ -142,7 +142,7 @@ weatherSchema.pre('save', function (next) {
   next();
 });
 
-// Método para obter notícias por categoria
+// MÃ©todo para obter notÃ­cias por categoria
 newsSchema.statics.findByCategory = function (category, limit = 10) {
   return this.find({
     category,
@@ -152,7 +152,7 @@ newsSchema.statics.findByCategory = function (category, limit = 10) {
     .limit(limit);
 };
 
-// Método para obter notícias recentes
+// MÃ©todo para obter notÃ­cias recentes
 newsSchema.statics.findRecent = function (limit = 10) {
   return this.find({
     isActive: true
@@ -161,7 +161,7 @@ newsSchema.statics.findRecent = function (limit = 10) {
     .limit(limit);
 };
 
-// Método para obter clima por localização
+// MÃ©todo para obter clima por localizaÃ§Ã£o
 weatherSchema.statics.findByLocation = function (city, state) {
   return this.findOne({
     'location.city': city,

@@ -1,9 +1,9 @@
-// Utilitários para Cloudflare Worker
-// NOTA: Configuração CORS principal está em backend/src/handler.js
-// Esta é apenas para workers específicos do Cloudflare
+﻿// UtilitÃ¡rios para Cloudflare Worker
+// NOTA: ConfiguraÃ§Ã£o CORS principal estÃ¡ em backend/src/handler.js
+// Esta Ã© apenas para workers especÃ­ficos do Cloudflare
 
 // Headers CORS para Cloudflare Workers
-// IMPORTANTE: Não usar '*' em produção - configurar origem específica
+// IMPORTANTE: NÃ£o usar '*' em produÃ§Ã£o - configurar origem especÃ­fica
 export const corsHeaders = {
   'Access-Control-Allow-Origin': process.env.FRONTEND_URL || 'http://localhost:3000',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -28,7 +28,7 @@ export const corsMiddleware = request => {
   return null;
 };
 
-// Utilitário para resposta JSON
+// UtilitÃ¡rio para resposta JSON
 export const jsonResponse = (data, status = 200, headers = {}) => {
   return new Response(JSON.stringify(data), {
     status,
@@ -40,7 +40,7 @@ export const jsonResponse = (data, status = 200, headers = {}) => {
   });
 };
 
-// Utilitário para erro
+// UtilitÃ¡rio para erro
 export const errorResponse = (message, status = 400) => {
   return jsonResponse(
     {
@@ -51,7 +51,7 @@ export const errorResponse = (message, status = 400) => {
   );
 };
 
-// Utilitário para sucesso
+// UtilitÃ¡rio para sucesso
 export const successResponse = (data, message = 'Success') => {
   return jsonResponse({
     success: true,
@@ -60,11 +60,11 @@ export const successResponse = (data, message = 'Success') => {
   });
 };
 
-// Validação de método HTTP
+// ValidaÃ§Ã£o de mÃ©todo HTTP
 export const validateMethod = allowedMethods => {
   return request => {
     if (!allowedMethods.includes(request.method)) {
-      return errorResponse(`Método ${request.method} não permitido`, 405);
+      return errorResponse(`MÃ©todo ${request.method} nÃ£o permitido`, 405);
     }
     return null;
   };

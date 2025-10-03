@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 const transactionMessageSchema = new mongoose.Schema(
   {
-    // ID da transação relacionada
+    // ID da transaÃ§Ã£o relacionada
     transactionId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Transaction',
@@ -10,7 +10,7 @@ const transactionMessageSchema = new mongoose.Schema(
       index: true
     },
 
-    // Usuário que enviou a mensagem
+    // UsuÃ¡rio que enviou a mensagem
     from: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -18,7 +18,7 @@ const transactionMessageSchema = new mongoose.Schema(
       index: true
     },
 
-    // Usuário que recebeu a mensagem
+    // UsuÃ¡rio que recebeu a mensagem
     to: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -26,12 +26,12 @@ const transactionMessageSchema = new mongoose.Schema(
       index: true
     },
 
-    // Conteúdo da mensagem
+    // ConteÃºdo da mensagem
     body: {
       type: String,
       required: true,
       trim: true,
-      maxlength: [2000, 'Mensagem não pode ter mais de 2000 caracteres']
+      maxlength: [2000, 'Mensagem nÃ£o pode ter mais de 2000 caracteres']
     },
 
     // Tipo da mensagem
@@ -62,13 +62,13 @@ const transactionMessageSchema = new mongoose.Schema(
 
     // Metadados
     metadata: {
-      // Coordenadas se for mensagem de localização
+      // Coordenadas se for mensagem de localizaÃ§Ã£o
       coordinates: {
         lat: Number,
         lng: Number,
         address: String
       },
-      // Informações do arquivo se for anexo
+      // InformaÃ§Ãµes do arquivo se for anexo
       fileInfo: {
         originalName: String,
         mimeType: String,
@@ -89,7 +89,7 @@ const transactionMessageSchema = new mongoose.Schema(
     // Quando foi lida
     readAt: Date,
 
-    // Usuários que leram a mensagem
+    // UsuÃ¡rios que leram a mensagem
     readBy: [
       {
         userId: {
@@ -117,7 +117,7 @@ const transactionMessageSchema = new mongoose.Schema(
       }
     ],
 
-    // Flags e moderação
+    // Flags e moderaÃ§Ã£o
     isFlagged: {
       type: Boolean,
       default: false
@@ -152,7 +152,7 @@ const transactionMessageSchema = new mongoose.Schema(
   }
 );
 
-// Índices para performance
+// Ãndices para performance
 transactionMessageSchema.index({ transactionId: 1, createdAt: -1 });
 transactionMessageSchema.index({ from: 1, createdAt: -1 });
 transactionMessageSchema.index({ to: 1, createdAt: -1 });
@@ -193,41 +193,41 @@ transactionMessageSchema.virtual('hasAttachments').get(function () {
   return this.attachments && this.attachments.length > 0;
 });
 
-// Virtual para verificar se é imagem
+// Virtual para verificar se Ã© imagem
 transactionMessageSchema.virtual('isImage').get(function () {
   return this.type === 'image';
 });
 
-// Virtual para verificar se é arquivo
+// Virtual para verificar se Ã© arquivo
 transactionMessageSchema.virtual('isFile').get(function () {
   return this.type === 'file';
 });
 
-// Virtual para verificar se é localização
+// Virtual para verificar se Ã© localizaÃ§Ã£o
 transactionMessageSchema.virtual('isLocation').get(function () {
   return this.type === 'location';
 });
 
-// Virtual para verificar se é sistema
+// Virtual para verificar se Ã© sistema
 transactionMessageSchema.virtual('isSystem').get(function () {
   return this.type === 'system';
 });
 
-// Método para marcar como entregue
+// MÃ©todo para marcar como entregue
 transactionMessageSchema.methods.markAsDelivered = function () {
   this.status = 'delivered';
   this.deliveredAt = new Date();
   return this.save();
 };
 
-// Método para marcar como lida
+// MÃ©todo para marcar como lida
 transactionMessageSchema.methods.markAsRead = function (userId) {
   if (this.status !== 'read') {
     this.status = 'read';
     this.readAt = new Date();
   }
 
-  // Adicionar usuário à lista de leitores se não estiver
+  // Adicionar usuÃ¡rio Ã  lista de leitores se nÃ£o estiver
   const alreadyRead = this.readBy.find(reader => reader.userId.toString() === userId.toString());
 
   if (!alreadyRead) {
@@ -240,18 +240,18 @@ transactionMessageSchema.methods.markAsRead = function (userId) {
   return this.save();
 };
 
-// Método para marcar como falhou
+// MÃ©todo para marcar como falhou
 transactionMessageSchema.methods.markAsFailed = function (reason = 'Erro de entrega') {
   this.status = 'failed';
   return this.save();
 };
 
-// Método para verificar se foi lida por um usuário específico
+// MÃ©todo para verificar se foi lida por um usuÃ¡rio especÃ­fico
 transactionMessageSchema.methods.isReadBy = function (userId) {
   return this.readBy.some(reader => reader.userId.toString() === userId.toString());
 };
 
-// Método para obter dados públicos (sem informações sensíveis)
+// MÃ©todo para obter dados pÃºblicos (sem informaÃ§Ãµes sensÃ­veis)
 transactionMessageSchema.methods.getPublicData = function () {
   return {
     id: this._id,
@@ -271,7 +271,7 @@ transactionMessageSchema.methods.getPublicData = function () {
   };
 };
 
-// Método para obter dados completos (para usuários autorizados)
+// MÃ©todo para obter dados completos (para usuÃ¡rios autorizados)
 transactionMessageSchema.methods.getFullData = function (userId) {
   const baseData = this.getPublicData();
 
@@ -285,10 +285,10 @@ transactionMessageSchema.methods.getFullData = function (userId) {
     baseData.metadata = this.metadata;
   }
 
-  // Adicionar informações de leitura
+  // Adicionar informaÃ§Ãµes de leitura
   baseData.readBy = this.readBy;
 
-  // Adicionar informações de resposta
+  // Adicionar informaÃ§Ãµes de resposta
   if (this.parentMessage) {
     baseData.parentMessage = this.parentMessage;
   }
@@ -300,14 +300,14 @@ transactionMessageSchema.methods.getFullData = function (userId) {
   return baseData;
 };
 
-// Método para obter dados de exibição (para UI)
+// MÃ©todo para obter dados de exibiÃ§Ã£o (para UI)
 transactionMessageSchema.methods.getDisplayData = function (currentUserId) {
   const baseData = this.getPublicData();
 
-  // Adicionar flag se é mensagem do usuário atual
+  // Adicionar flag se Ã© mensagem do usuÃ¡rio atual
   baseData.isOwnMessage = this.from.toString() === currentUserId.toString();
 
-  // Adicionar informações de anexos para exibição
+  // Adicionar informaÃ§Ãµes de anexos para exibiÃ§Ã£o
   if (this.attachments && this.attachments.length > 0) {
     baseData.attachments = this.attachments.map(attachment => ({
       name: attachment.name,
@@ -320,7 +320,7 @@ transactionMessageSchema.methods.getDisplayData = function (currentUserId) {
     }));
   }
 
-  // Adicionar metadados de localização se aplicável
+  // Adicionar metadados de localizaÃ§Ã£o se aplicÃ¡vel
   if (this.type === 'location' && this.metadata?.coordinates) {
     baseData.location = {
       lat: this.metadata.coordinates.lat,
@@ -332,9 +332,9 @@ transactionMessageSchema.methods.getDisplayData = function (currentUserId) {
   return baseData;
 };
 
-// Métodos estáticos para consultas comuns
+// MÃ©todos estÃ¡ticos para consultas comuns
 
-// Buscar mensagens de uma transação
+// Buscar mensagens de uma transaÃ§Ã£o
 transactionMessageSchema.statics.findByTransaction = function (transactionId, options = {}) {
   const { limit = 50, skip = 0, sort = { createdAt: -1 }, includeDeleted = false } = options;
 
@@ -354,7 +354,7 @@ transactionMessageSchema.statics.findByTransaction = function (transactionId, op
     .populate('replies');
 };
 
-// Buscar mensagens não lidas de um usuário
+// Buscar mensagens nÃ£o lidas de um usuÃ¡rio
 transactionMessageSchema.statics.findUnreadByUser = function (userId, transactionId = null) {
   const query = {
     to: userId,
@@ -372,7 +372,7 @@ transactionMessageSchema.statics.findUnreadByUser = function (userId, transactio
     .sort({ createdAt: -1 });
 };
 
-// Buscar mensagens de um usuário
+// Buscar mensagens de um usuÃ¡rio
 transactionMessageSchema.statics.findByUser = function (userId, options = {}) {
   const {
     limit = 50,
@@ -404,7 +404,7 @@ transactionMessageSchema.statics.findByUser = function (userId, options = {}) {
     .populate('transactionId', 'type itemDetails');
 };
 
-// Estatísticas de mensagens
+// EstatÃ­sticas de mensagens
 transactionMessageSchema.statics.getStats = async function (userId = null) {
   const matchStage = userId ? { $or: [{ from: userId }, { to: userId }] } : {};
 
@@ -461,7 +461,7 @@ transactionMessageSchema.statics.getStats = async function (userId = null) {
   );
 };
 
-// Buscar conversas ativas de um usuário
+// Buscar conversas ativas de um usuÃ¡rio
 transactionMessageSchema.statics.findActiveConversations = function (userId, limit = 20) {
   return this.aggregate([
     {

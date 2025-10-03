@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import { authenticateToken } from '../middleware/auth.js';
 import {
   exportUserData,
@@ -12,6 +12,8 @@ import {
   auditDataDeletion,
   auditUserAction
 } from '../middleware/auditMiddleware.js';
+import { createAuditLog } from '../utils/securityLogger.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -19,7 +21,7 @@ const router = express.Router();
 
 /**
  * @route   GET /api/privacy/status
- * @desc    Obter status de privacidade do usuário
+ * @desc    Obter status de privacidade do usuÃ¡rio
  * @access  Private
  */
 router.get('/status', authenticateToken, getPrivacyStatus);
@@ -38,28 +40,28 @@ router.post(
 
 /**
  * @route   POST /api/privacy/preferences
- * @desc    Atualizar preferências de privacidade
+ * @desc    Atualizar preferÃªncias de privacidade
  * @access  Private
  */
 router.post('/preferences', authenticateToken, updatePrivacyPreferences);
 
 /**
  * @route   GET /api/privacy/export
- * @desc    Exportar dados do usuário (Direito de Portabilidade)
+ * @desc    Exportar dados do usuÃ¡rio (Direito de Portabilidade)
  * @access  Private
  */
 router.get('/export', authenticateToken, auditDataExport('user_data'), exportUserData);
 
 /**
  * @route   DELETE /api/privacy/data
- * @desc    Excluir dados do usuário (Direito ao Esquecimento)
+ * @desc    Excluir dados do usuÃ¡rio (Direito ao Esquecimento)
  * @access  Private
  */
 router.delete('/data', authenticateToken, auditDataDeletion('user_data'), deleteUserData);
 
 /**
  * @route   GET /api/privacy/terms
- * @desc    Obter termos de uso e política de privacidade
+ * @desc    Obter termos de uso e polÃ­tica de privacidade
  * @access  Public
  */
 router.get('/terms', (req, res) => {
@@ -71,62 +73,62 @@ router.get('/terms', (req, res) => {
       sections: {
         dataCollection: {
           title: 'Coleta de Dados',
-          description: 'Coletamos apenas os dados necessários para o funcionamento da plataforma',
+          description: 'Coletamos apenas os dados necessÃ¡rios para o funcionamento da plataforma',
           dataTypes: [
-            'Informações de perfil (nome, email, telefone)',
-            'Dados de localização para geolocalização',
-            'Histórico de transações',
-            'Dados de comunicação entre usuários'
+            'InformaÃ§Ãµes de perfil (nome, email, telefone)',
+            'Dados de localizaÃ§Ã£o para geolocalizaÃ§Ã£o',
+            'HistÃ³rico de transaÃ§Ãµes',
+            'Dados de comunicaÃ§Ã£o entre usuÃ¡rios'
           ]
         },
         dataUsage: {
           title: 'Uso dos Dados',
-          description: 'Seus dados são utilizados exclusivamente para:',
+          description: 'Seus dados sÃ£o utilizados exclusivamente para:',
           purposes: [
-            'Fornecer serviços da plataforma',
-            'Processar transações e pagamentos',
-            'Enviar notificações importantes',
-            'Melhorar a experiência do usuário'
+            'Fornecer serviÃ§os da plataforma',
+            'Processar transaÃ§Ãµes e pagamentos',
+            'Enviar notificaÃ§Ãµes importantes',
+            'Melhorar a experiÃªncia do usuÃ¡rio'
           ]
         },
         dataSharing: {
           title: 'Compartilhamento de Dados',
-          description: 'Não compartilhamos seus dados com terceiros, exceto:',
+          description: 'NÃ£o compartilhamos seus dados com terceiros, exceto:',
           exceptions: [
             'Quando exigido por lei',
             'Para processamento de pagamentos (Stripe)',
-            'Com seu consentimento explícito'
+            'Com seu consentimento explÃ­cito'
           ]
         },
         userRights: {
           title: 'Seus Direitos',
-          description: 'Você tem os seguintes direitos:',
+          description: 'VocÃª tem os seguintes direitos:',
           rights: [
             'Acesso aos seus dados',
             'Portabilidade dos dados',
-            'Correção de dados incorretos',
-            'Exclusão de dados',
-            'Restrição do processamento',
-            'Oposição ao processamento'
+            'CorreÃ§Ã£o de dados incorretos',
+            'ExclusÃ£o de dados',
+            'RestriÃ§Ã£o do processamento',
+            'OposiÃ§Ã£o ao processamento'
           ]
         },
         dataRetention: {
-          title: 'Retenção de Dados',
+          title: 'RetenÃ§Ã£o de Dados',
           description: 'Mantemos seus dados por:',
           periods: [
             'Dados de perfil: enquanto a conta estiver ativa',
-            'Dados de transação: 7 anos (requisito legal)',
-            'Logs de segurança: 90 dias',
-            'Dados de comunicação: até exclusão solicitada'
+            'Dados de transaÃ§Ã£o: 7 anos (requisito legal)',
+            'Logs de seguranÃ§a: 90 dias',
+            'Dados de comunicaÃ§Ã£o: atÃ© exclusÃ£o solicitada'
           ]
         },
         security: {
-          title: 'Segurança dos Dados',
-          description: 'Implementamos medidas de segurança:',
+          title: 'SeguranÃ§a dos Dados',
+          description: 'Implementamos medidas de seguranÃ§a:',
           measures: [
-            'Criptografia em trânsito e em repouso',
+            'Criptografia em trÃ¢nsito e em repouso',
             'Controle de acesso baseado em roles',
-            'Monitoramento contínuo de segurança',
+            'Monitoramento contÃ­nuo de seguranÃ§a',
             'Backups regulares e seguros'
           ]
         }
@@ -137,7 +139,7 @@ router.get('/terms', (req, res) => {
 
 /**
  * @route   GET /api/privacy/cookies
- * @desc    Obter política de cookies
+ * @desc    Obter polÃ­tica de cookies
  * @access  Public
  */
 router.get('/cookies', (req, res) => {
@@ -148,29 +150,29 @@ router.get('/cookies', (req, res) => {
       types: {
         essential: {
           name: 'Cookies Essenciais',
-          description: 'Necessários para o funcionamento da plataforma',
-          examples: ['Sessão de usuário', 'Preferências de idioma', 'Token de autenticação'],
-          duration: 'Sessão ou 1 ano'
+          description: 'NecessÃ¡rios para o funcionamento da plataforma',
+          examples: ['SessÃ£o de usuÃ¡rio', 'PreferÃªncias de idioma', 'Token de autenticaÃ§Ã£o'],
+          duration: 'SessÃ£o ou 1 ano'
         },
         analytics: {
-          name: 'Cookies Analíticos',
-          description: 'Ajudam a entender como a plataforma é utilizada',
-          examples: ['Google Analytics', 'Estatísticas de uso', 'Métricas de performance'],
+          name: 'Cookies AnalÃ­ticos',
+          description: 'Ajudam a entender como a plataforma Ã© utilizada',
+          examples: ['Google Analytics', 'EstatÃ­sticas de uso', 'MÃ©tricas de performance'],
           duration: '2 anos',
           optional: true
         },
         marketing: {
           name: 'Cookies de Marketing',
           description: 'Utilizados para publicidade personalizada',
-          examples: ['Anúncios direcionados', 'Redes sociais', 'Parceiros de marketing'],
+          examples: ['AnÃºncios direcionados', 'Redes sociais', 'Parceiros de marketing'],
           duration: '1 ano',
           optional: true
         }
       },
       management: {
-        browser: 'Configure as preferências de cookies no seu navegador',
+        browser: 'Configure as preferÃªncias de cookies no seu navegador',
         platform: 'Utilize o painel de privacidade da plataforma',
-        optOut: 'Entre em contato para solicitar exclusão'
+        optOut: 'Entre em contato para solicitar exclusÃ£o'
       }
     }
   });
@@ -178,7 +180,7 @@ router.get('/cookies', (req, res) => {
 
 /**
  * @route   GET /api/privacy/contact
- * @desc    Obter informações de contato para questões de privacidade
+ * @desc    Obter informaÃ§Ãµes de contato para questÃµes de privacidade
  * @access  Public
  */
 router.get('/contact', (req, res) => {
@@ -192,8 +194,8 @@ router.get('/contact', (req, res) => {
       },
       privacy: {
         email: 'privacy@agroisync.com',
-        address: 'Rua da Privacidade, 123 - São Paulo, SP',
-        responseTime: '72 horas úteis'
+        address: 'Rua da Privacidade, 123 - SÃ£o Paulo, SP',
+        responseTime: '72 horas Ãºteis'
       },
       legal: {
         email: 'legal@agroisync.com',
@@ -205,7 +207,7 @@ router.get('/contact', (req, res) => {
 
 /**
  * @route   POST /api/privacy/request
- * @desc    Solicitar ação relacionada à privacidade
+ * @desc    Solicitar aÃ§Ã£o relacionada Ã  privacidade
  * @access  Private
  */
 router.post('/request', authenticateToken, async (req, res) => {
@@ -215,7 +217,7 @@ router.post('/request', authenticateToken, async (req, res) => {
     if (!requestType || !description) {
       return res.status(400).json({
         success: false,
-        message: 'Tipo de solicitação e descrição são obrigatórios'
+        message: 'Tipo de solicitaÃ§Ã£o e descriÃ§Ã£o sÃ£o obrigatÃ³rios'
       });
     }
 
@@ -232,11 +234,11 @@ router.post('/request', authenticateToken, async (req, res) => {
     if (!validRequestTypes.includes(requestType)) {
       return res.status(400).json({
         success: false,
-        message: 'Tipo de solicitação inválido'
+        message: 'Tipo de solicitaÃ§Ã£o invÃ¡lido'
       });
     }
 
-    // Aqui você pode implementar a lógica para criar um ticket
+    // Aqui vocÃª pode implementar a lÃ³gica para criar um ticket
     // ou enviar email para o DPO
     const request = {
       id: `PRIV-${Date.now()}`,
@@ -246,10 +248,10 @@ router.post('/request', authenticateToken, async (req, res) => {
       urgency: urgency || 'normal',
       status: 'pending',
       createdAt: new Date(),
-      estimatedResponse: '72 horas úteis'
+      estimatedResponse: '72 horas Ãºteis'
     };
 
-    // Log da solicitação
+    // Log da solicitaÃ§Ã£o
     await createAuditLog('PRIVACY_REQUEST_CREATED', 'user_privacy', req, req.user.userId, {
       requestType,
       description,
@@ -259,16 +261,14 @@ router.post('/request', authenticateToken, async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Solicitação de privacidade criada com sucesso',
+      message: 'SolicitaÃ§Ã£o de privacidade criada com sucesso',
       request
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao criar solicitação de privacidade:', error);
-    }
+    logger.error('Erro ao criar solicitaÃ§Ã£o de privacidade:', error);
     return res.status(500).json({
       success: false,
-      message: 'Erro ao criar solicitação'
+      message: 'Erro ao criar solicitaÃ§Ã£o'
     });
   }
 });

@@ -1,27 +1,28 @@
-import express from 'express';
+﻿import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 
+import logger from '../utils/logger.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
-// Criar diretório de uploads se não existir
+// Criar diretÃ³rio de uploads se nÃ£o existir
 const uploadsDir = path.join(__dirname, '../../uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Configuração do Multer
+// ConfiguraÃ§Ã£o do Multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadsDir);
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     const ext = path.extname(file.originalname);
     const name = path.basename(file.originalname, ext);
     cb(null, `${name}-${uniqueSuffix}${ext}`);
@@ -42,7 +43,7 @@ const fileFilter = (req, file, cb) => {
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('Tipo de arquivo não permitido. Use JPEG, PNG, GIF, WEBP ou PDF.'), false);
+    cb(new Error('Tipo de arquivo nÃ£o permitido. Use JPEG, PNG, GIF, WEBP ou PDF.'), false);
   }
 };
 
@@ -75,7 +76,7 @@ router.post('/single', upload.single('file'), async (req, res) => {
       });
     }
 
-    // Se Cloudinary estiver configurado, fazer upload para lá também
+    // Se Cloudinary estiver configurado, fazer upload para lÃ¡ tambÃ©m
     let cloudinaryUrl = null;
     if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY) {
       try {
@@ -94,13 +95,13 @@ router.post('/single', upload.single('file'), async (req, res) => {
         cloudinaryUrl = result.secure_url;
       } catch (cloudinaryError) {
         if (process.env.NODE_ENV !== 'production') {
-          console.error('Erro ao fazer upload para Cloudinary:', cloudinaryError);
+          logger.error('Erro ao fazer upload para Cloudinary:', cloudinaryError);
         }
         // Continuar mesmo se Cloudinary falhar
       }
     }
 
-    // Retornar URL local (sempre) e Cloudinary (se disponível)
+    // Retornar URL local (sempre) e Cloudinary (se disponÃ­vel)
     const localUrl = `/uploads/${req.file.filename}`;
 
     res.json({
@@ -113,12 +114,12 @@ router.post('/single', upload.single('file'), async (req, res) => {
         size: req.file.size,
         localUrl: localUrl,
         cloudinaryUrl: cloudinaryUrl,
-        url: cloudinaryUrl || localUrl // Priorizar Cloudinary se disponível
+        url: cloudinaryUrl || localUrl // Priorizar Cloudinary se disponÃ­vel
       }
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro no upload:', error);
+      logger.error('Erro no upload:', error);
     }
     res.status(500).json({
       success: false,
@@ -129,7 +130,7 @@ router.post('/single', upload.single('file'), async (req, res) => {
 });
 
 // Upload multiple files
-router.post('/multiple', upload.array('files', 10), async (req, res) => {
+router.post('/multiple', upload.array('files', 10), (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({
@@ -153,7 +154,7 @@ router.post('/multiple', upload.array('files', 10), async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro no upload múltiplo:', error);
+      logger.error('Erro no upload mÃºltiplo:', error);
     }
     res.status(500).json({
       success: false,
@@ -172,7 +173,7 @@ router.delete('/:filename', (req, res) => {
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({
         success: false,
-        message: 'Arquivo não encontrado'
+        message: 'Arquivo nÃ£o encontrado'
       });
     }
 
@@ -184,7 +185,7 @@ router.delete('/:filename', (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao deletar arquivo:', error);
+      logger.error('Erro ao deletar arquivo:', error);
     }
     res.status(500).json({
       success: false,
@@ -194,7 +195,7 @@ router.delete('/:filename', (req, res) => {
   }
 });
 
-// Servir arquivos estáticos
+// Servir arquivos estÃ¡ticos
 router.use('/files', express.static(uploadsDir));
 
 export default router;

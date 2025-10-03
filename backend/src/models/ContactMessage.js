@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 const contactMessageSchema = new mongoose.Schema({
   name: {
@@ -79,7 +79,7 @@ contactMessageSchema.pre('save', function (next) {
   next();
 });
 
-// Método para marcar como lido
+// MÃ©todo para marcar como lido
 contactMessageSchema.methods.markAsRead = function () {
   this.isRead = true;
   this.readAt = new Date();
@@ -87,14 +87,14 @@ contactMessageSchema.methods.markAsRead = function () {
   return this.save();
 };
 
-// Método para marcar como respondido
+// MÃ©todo para marcar como respondido
 contactMessageSchema.methods.markAsReplied = function () {
   this.status = 'replied';
   this.repliedAt = new Date();
   return this.save();
 };
 
-// Método para fechar ticket
+// MÃ©todo para fechar ticket
 contactMessageSchema.methods.close = function () {
   this.status = 'closed';
   return this.save();

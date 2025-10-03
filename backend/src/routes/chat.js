@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const { body, validationResult } = require('express-validator');
 const multer = require('multer');
 const path = require('path');
@@ -14,7 +14,7 @@ const cloudflareService = require('../services/cloudflareService');
 
 const router = express.Router();
 
-// Configuração do multer para upload de arquivos
+// ConfiguraÃ§Ã£o do multer para upload de arquivos
 const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
     const userId = req.user?.id || 'anonymous';
@@ -53,7 +53,7 @@ const upload = multer({
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('Tipo de arquivo não permitido'), false);
+      cb(new Error('Tipo de arquivo nÃ£o permitido'), false);
     }
   }
 });
@@ -88,14 +88,14 @@ const upload = multer({
  *       200:
  *         description: Mensagem enviada com sucesso
  *       400:
- *         description: Dados inválidos
+ *         description: Dados invÃ¡lidos
  */
 router.post(
   '/send',
   auth,
   upload.array('attachments', 5),
   [
-    body('message').notEmpty().withMessage('Mensagem é obrigatória'),
+    body('message').notEmpty().withMessage('Mensagem Ã© obrigatÃ³ria'),
     body('conversationId').optional().isString()
   ],
   async (req, res) => {
@@ -104,7 +104,7 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
@@ -120,7 +120,7 @@ router.post(
         if (!chat || (chat.userId && chat.userId.toString() !== userId)) {
           return res.status(404).json({
             success: false,
-            message: 'Conversa não encontrada'
+            message: 'Conversa nÃ£o encontrada'
           });
         }
       } else {
@@ -147,20 +147,20 @@ router.post(
           } catch (error) {
             logger.error('Erro ao gerar caption da imagem:', error);
             attachment.caption = 'Imagem enviada';
-            attachment.altText = 'Imagem enviada pelo usuário';
+            attachment.altText = 'Imagem enviada pelo usuÃ¡rio';
           }
         }
 
         processedAttachments.push(attachment);
       }
 
-      // Adicionar mensagem do usuário
+      // Adicionar mensagem do usuÃ¡rio
       await chat.addMessage('user', message, {
         attachments: processedAttachments,
         status: 'delivered'
       });
 
-      // Verificar se é comando especial (logística)
+      // Verificar se Ã© comando especial (logÃ­stica)
       const isLogisticsCommand = await handleLogisticsCommand(message, userId, chat);
 
       let aiResponse = '';
@@ -176,7 +176,7 @@ router.post(
         status: 'delivered'
       });
 
-      logger.info(`Mensagem enviada na conversa ${chat.conversationId} por usuário ${userId}`);
+      logger.info(`Mensagem enviada na conversa ${chat.conversationId} por usuÃ¡rio ${userId}`);
 
       res.status(200).json({
         success: true,
@@ -210,7 +210,7 @@ router.post(
  * @swagger
  * /api/chat/{conversationId}:
  *   get:
- *     summary: Obter histórico da conversa
+ *     summary: Obter histÃ³rico da conversa
  *     tags: [Chat]
  *     security:
  *       - bearerAuth: []
@@ -222,9 +222,9 @@ router.post(
  *           type: string
  *     responses:
  *       200:
- *         description: Histórico da conversa
+ *         description: HistÃ³rico da conversa
  *       404:
- *         description: Conversa não encontrada
+ *         description: Conversa nÃ£o encontrada
  */
 router.get('/:conversationId', auth, async (req, res) => {
   try {
@@ -236,7 +236,7 @@ router.get('/:conversationId', auth, async (req, res) => {
     if (!chat || (chat.userId && chat.userId.toString() !== userId)) {
       return res.status(404).json({
         success: false,
-        message: 'Conversa não encontrada'
+        message: 'Conversa nÃ£o encontrada'
       });
     }
 
@@ -264,7 +264,7 @@ router.get('/:conversationId', auth, async (req, res) => {
  * @swagger
  * /api/chat/conversations:
  *   get:
- *     summary: Listar conversas do usuário
+ *     summary: Listar conversas do usuÃ¡rio
  *     tags: [Chat]
  *     security:
  *       - bearerAuth: []
@@ -366,7 +366,7 @@ router.post('/upload', auth, upload.single('file'), async (req, res) => {
  * @swagger
  * /api/chat/voice:
  *   post:
- *     summary: Processar áudio de voz
+ *     summary: Processar Ã¡udio de voz
  *     tags: [Chat]
  *     security:
  *       - bearerAuth: []
@@ -382,18 +382,18 @@ router.post('/upload', auth, upload.single('file'), async (req, res) => {
  *                 format: binary
  *     responses:
  *       200:
- *         description: Áudio processado com sucesso
+ *         description: Ãudio processado com sucesso
  */
 router.post('/voice', auth, upload.single('audio'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({
         success: false,
-        message: 'Nenhum arquivo de áudio enviado'
+        message: 'Nenhum arquivo de Ã¡udio enviado'
       });
     }
 
-    // Transcrever áudio usando OpenAI Whisper
+    // Transcrever Ã¡udio usando OpenAI Whisper
     const transcription = await openaiService.transcribeAudio(req.file.path);
 
     res.status(200).json({
@@ -404,7 +404,7 @@ router.post('/voice', auth, upload.single('audio'), async (req, res) => {
       }
     });
   } catch (error) {
-    logger.error('Erro ao processar áudio:', error);
+    logger.error('Erro ao processar Ã¡udio:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -412,21 +412,21 @@ router.post('/voice', auth, upload.single('audio'), async (req, res) => {
   }
 });
 
-// Função auxiliar para lidar com comandos de logística
+// FunÃ§Ã£o auxiliar para lidar com comandos de logÃ­stica
 async function handleLogisticsCommand(message, userId, chat) {
   const lowerMessage = message.toLowerCase();
 
-  // Verificar se é comando de criação de frete
+  // Verificar se Ã© comando de criaÃ§Ã£o de frete
   if (lowerMessage.includes('criar frete') || lowerMessage.includes('criar pedido de frete')) {
     try {
-      // Extrair informações do comando usando IA
+      // Extrair informaÃ§Ãµes do comando usando IA
       const freightInfo = await openaiService.extractFreightInfo(message);
 
       if (freightInfo) {
         // Criar pedido de frete
         const freightOrder = new FreightOrder({
           buyerId: userId,
-          sellerId: freightInfo.sellerId || userId, // Por enquanto, mesmo usuário
+          sellerId: freightInfo.sellerId || userId, // Por enquanto, mesmo usuÃ¡rio
           origin: freightInfo.origin,
           destination: freightInfo.destination,
           pickupDate: freightInfo.pickupDate,
@@ -437,18 +437,18 @@ async function handleLogisticsCommand(message, userId, chat) {
 
         await freightOrder.save();
 
-        return `✅ Pedido de frete criado com sucesso!\n\n📋 **Detalhes do Pedido:**\n- Número: ${freightOrder.orderNumber}\n- Origem: ${freightOrder.origin.city}, ${freightOrder.origin.state}\n- Destino: ${freightOrder.destination.city}, ${freightOrder.destination.state}\n- Data de coleta: ${freightOrder.pickupDate.toLocaleDateString('pt-BR')}\n- Preço total: R$ ${freightOrder.pricing.totalPrice.toFixed(2)}\n\n🚛 O pedido está aguardando aceitação de transportadores.`;
+        return `âœ… Pedido de frete criado com sucesso!\n\nðŸ“‹ **Detalhes do Pedido:**\n- NÃºmero: ${freightOrder.orderNumber}\n- Origem: ${freightOrder.origin.city}, ${freightOrder.origin.state}\n- Destino: ${freightOrder.destination.city}, ${freightOrder.destination.state}\n- Data de coleta: ${freightOrder.pickupDate.toLocaleDateString('pt-BR')}\n- PreÃ§o total: R$ ${freightOrder.pricing.totalPrice.toFixed(2)}\n\nðŸš› O pedido estÃ¡ aguardando aceitaÃ§Ã£o de transportadores.`;
       }
     } catch (error) {
       logger.error('Erro ao criar pedido de frete:', error);
-      return '❌ Erro ao criar pedido de frete. Tente novamente ou use o formulário da plataforma.';
+      return 'âŒ Erro ao criar pedido de frete. Tente novamente ou use o formulÃ¡rio da plataforma.';
     }
   }
 
-  // Verificar se é comando de rastreamento
+  // Verificar se Ã© comando de rastreamento
   if (lowerMessage.includes('rastrear') || lowerMessage.includes('status do frete')) {
     try {
-      // Extrair número do pedido da mensagem
+      // Extrair nÃºmero do pedido da mensagem
       const orderNumber = message.match(/FR-\d+-\w+/)?.[0];
 
       if (orderNumber) {
@@ -456,18 +456,18 @@ async function handleLogisticsCommand(message, userId, chat) {
 
         if (freightOrder) {
           const lastEvent = freightOrder.trackingEvents[freightOrder.trackingEvents.length - 1];
-          return `📦 **Status do Frete ${orderNumber}:**\n\n🚛 Status atual: ${freightOrder.status}\n📍 Última localização: ${lastEvent?.location?.city || 'Não informada'}\n📅 Última atualização: ${lastEvent?.timestamp?.toLocaleString('pt-BR') || 'Não disponível'}\n\n💡 Para mais detalhes, acesse a página do pedido na plataforma.`;
+          return `ðŸ“¦ **Status do Frete ${orderNumber}:**\n\nðŸš› Status atual: ${freightOrder.status}\nðŸ“ Ãšltima localizaÃ§Ã£o: ${lastEvent?.location?.city || 'NÃ£o informada'}\nðŸ“… Ãšltima atualizaÃ§Ã£o: ${lastEvent?.timestamp?.toLocaleString('pt-BR') || 'NÃ£o disponÃ­vel'}\n\nðŸ’¡ Para mais detalhes, acesse a pÃ¡gina do pedido na plataforma.`;
         } else {
-          return '❌ Pedido de frete não encontrado. Verifique o número do pedido.';
+          return 'âŒ Pedido de frete nÃ£o encontrado. Verifique o nÃºmero do pedido.';
         }
       }
     } catch (error) {
       logger.error('Erro ao rastrear frete:', error);
-      return '❌ Erro ao consultar status do frete. Tente novamente.';
+      return 'âŒ Erro ao consultar status do frete. Tente novamente.';
     }
   }
 
-  return null; // Não é comando especial
+  return null; // NÃ£o Ã© comando especial
 }
 
 module.exports = router;

@@ -1,18 +1,19 @@
-import express from 'express';
+﻿import express from 'express';
 import auth from '../middleware/auth.js';
 import adminAuth from '../middleware/adminAuth.js';
 import auditService from '../services/auditService.js';
 import { captureSessionInfo, captureRequestMetadata } from '../middleware/sessionCapture.js';
 
+import logger from '../utils/logger.js';
 const router = express.Router();
 
-// Middleware para capturar informações de sessão
+// Middleware para capturar informaÃ§Ãµes de sessÃ£o
 router.use(captureSessionInfo);
 router.use(captureRequestMetadata);
 
 /**
  * @route GET /api/audit-logs
- * @desc Obter logs de auditoria do usuário
+ * @desc Obter logs de auditoria do usuÃ¡rio
  * @access Private
  */
 router.get('/', auth, async (req, res) => {
@@ -20,20 +21,20 @@ router.get('/', auth, async (req, res) => {
     const { limit = 100, page = 1 } = req.query;
     const offset = (page - 1) * limit;
 
-    const logs = await auditService.getUserAuditLogs(req.user.id, parseInt(limit, 10));
+    const logs = await auditService.getUserAuditLogs(req.user.id, parseInt(limit, 10, 10));
 
     res.json({
       success: true,
       data: logs,
       pagination: {
-        page: parseInt(page, 10),
-        limit: parseInt(limit, 10),
+        page: parseInt(page, 10, 10),
+        limit: parseInt(limit, 10, 10),
         total: logs.length
       }
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter logs de auditoria:', error);
+      logger.error('Erro ao obter logs de auditoria:', error);
     }
     res.status(500).json({
       success: false,
@@ -51,7 +52,7 @@ router.get('/pii-access', adminAuth, async (req, res) => {
   try {
     const { userId, limit = 100 } = req.query;
 
-    const logs = await auditService.getPIIAccessLogs(userId || null, parseInt(limit, 10));
+    const logs = await auditService.getPIIAccessLogs(userId || null, parseInt(limit, 10, 10));
 
     res.json({
       success: true,
@@ -59,7 +60,7 @@ router.get('/pii-access', adminAuth, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter logs de acesso PII:', error);
+      logger.error('Erro ao obter logs de acesso PII:', error);
     }
     res.status(500).json({
       success: false,
@@ -70,7 +71,7 @@ router.get('/pii-access', adminAuth, async (req, res) => {
 
 /**
  * @route GET /api/audit-logs/stats
- * @desc Obter estatísticas de auditoria
+ * @desc Obter estatÃ­sticas de auditoria
  * @access Private (Admin)
  */
 router.get('/stats', adminAuth, async (req, res) => {
@@ -80,7 +81,7 @@ router.get('/stats', adminAuth, async (req, res) => {
     if (!startDate || !endDate) {
       return res.status(400).json({
         success: false,
-        message: 'Data de início e fim são obrigatórias'
+        message: 'Data de inÃ­cio e fim sÃ£o obrigatÃ³rias'
       });
     }
 
@@ -92,7 +93,7 @@ router.get('/stats', adminAuth, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter estatísticas de auditoria:', error);
+      logger.error('Erro ao obter estatÃ­sticas de auditoria:', error);
     }
     res.status(500).json({
       success: false,
@@ -103,7 +104,7 @@ router.get('/stats', adminAuth, async (req, res) => {
 
 /**
  * @route GET /api/audit-logs/expiring
- * @desc Obter logs próximos do vencimento
+ * @desc Obter logs prÃ³ximos do vencimento
  * @access Private (Admin)
  */
 router.get('/expiring', adminAuth, async (req, res) => {
@@ -116,7 +117,7 @@ router.get('/expiring', adminAuth, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter logs próximos do vencimento:', error);
+      logger.error('Erro ao obter logs prÃ³ximos do vencimento:', error);
     }
     res.status(500).json({
       success: false,
@@ -137,7 +138,7 @@ router.post('/export', adminAuth, async (req, res) => {
     if (!startDate || !endDate) {
       return res.status(400).json({
         success: false,
-        message: 'Data de início e fim são obrigatórias'
+        message: 'Data de inÃ­cio e fim sÃ£o obrigatÃ³rias'
       });
     }
 
@@ -158,7 +159,7 @@ router.post('/export', adminAuth, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao exportar logs de auditoria:', error);
+      logger.error('Erro ao exportar logs de auditoria:', error);
     }
     res.status(500).json({
       success: false,
@@ -183,7 +184,7 @@ router.delete('/cleanup', adminAuth, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao limpar logs expirados:', error);
+      logger.error('Erro ao limpar logs expirados:', error);
     }
     res.status(500).json({
       success: false,
@@ -194,7 +195,7 @@ router.delete('/cleanup', adminAuth, async (req, res) => {
 
 /**
  * @route GET /api/audit-logs/:id/verify
- * @desc Verificar integridade de um log específico
+ * @desc Verificar integridade de um log especÃ­fico
  * @access Private (Admin)
  */
 router.get('/:id/verify', adminAuth, async (req, res) => {
@@ -211,7 +212,7 @@ router.get('/:id/verify', adminAuth, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao verificar integridade do log:', error);
+      logger.error('Erro ao verificar integridade do log:', error);
     }
     res.status(500).json({
       success: false,
@@ -222,7 +223,7 @@ router.get('/:id/verify', adminAuth, async (req, res) => {
 
 /**
  * @route GET /api/audit-logs/:id
- * @desc Obter detalhes de um log específico
+ * @desc Obter detalhes de um log especÃ­fico
  * @access Private (Admin)
  */
 router.get('/:id', adminAuth, async (req, res) => {
@@ -236,7 +237,7 @@ router.get('/:id', adminAuth, async (req, res) => {
     if (!log) {
       return res.status(404).json({
         success: false,
-        message: 'Log não encontrado'
+        message: 'Log nÃ£o encontrado'
       });
     }
 
@@ -246,7 +247,7 @@ router.get('/:id', adminAuth, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter log específico:', error);
+      logger.error('Erro ao obter log especÃ­fico:', error);
     }
     res.status(500).json({
       success: false,

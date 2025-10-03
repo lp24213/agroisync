@@ -1,15 +1,15 @@
-import { LoggingService } from '../services/loggingService.js';
+﻿import { LoggingService } from '../services/loggingService.js';
 
-// Middleware para logging de requisições HTTP
+// Middleware para logging de requisiÃ§Ãµes HTTP
 export const requestLogging = (req, res, next) => {
   const startTime = Date.now();
 
-  // Interceptar o método end da resposta
+  // Interceptar o mÃ©todo end da resposta
   const originalEnd = res.end;
   res.end = function (chunk, encoding) {
     const responseTime = Date.now() - startTime;
 
-    // Log da requisição
+    // Log da requisiÃ§Ã£o
     LoggingService.logRequest(req, res, responseTime);
 
     // Log de performance se a resposta for lenta
@@ -47,7 +47,7 @@ export const requestLogging = (req, res, next) => {
       );
     }
 
-    // Chamar o método original
+    // Chamar o mÃ©todo original
     originalEnd.call(this, chunk, encoding);
   };
 
@@ -67,7 +67,7 @@ export const errorLogging = (error, req, res, next) => {
     body: req.method !== 'GET' ? req.body : undefined
   });
 
-  // Log de segurança para erros críticos
+  // Log de seguranÃ§a para erros crÃ­ticos
   if (error.status >= 500) {
     LoggingService.logSecurity(
       'CRITICAL_ERROR',
@@ -87,12 +87,12 @@ export const errorLogging = (error, req, res, next) => {
   next(error);
 };
 
-// Middleware para logging de autenticação
+// Middleware para logging de autenticaÃ§Ã£o
 export const authLogging = (req, res, next) => {
   const originalJson = res.json;
 
   res.json = function (data) {
-    // Log de tentativas de autenticação
+    // Log de tentativas de autenticaÃ§Ã£o
     if (req.originalUrl.includes('/auth/')) {
       const isLogin = req.originalUrl.includes('/login');
       const isRegister = req.originalUrl.includes('/register');
@@ -131,7 +131,7 @@ export const paymentLogging = (req, res, next) => {
   const originalJson = res.json;
 
   res.json = function (data) {
-    // Log de transações de pagamento
+    // Log de transaÃ§Ãµes de pagamento
     if (req.originalUrl.includes('/payments/') || req.originalUrl.includes('/stripe/')) {
       const isPayment =
         req.originalUrl.includes('/create-payment') ||
@@ -174,7 +174,7 @@ export const escrowLogging = (req, res, next) => {
   const originalJson = res.json;
 
   res.json = function (data) {
-    // Log de transações de escrow
+    // Log de transaÃ§Ãµes de escrow
     if (req.originalUrl.includes('/escrow/')) {
       const success = res.statusCode < 400 && data?.success;
       const amount = req.body?.amount || data?.data?.amount;
@@ -241,7 +241,7 @@ export const systemLogging = (req, res, next) => {
   const originalJson = res.json;
 
   res.json = function (data) {
-    // Log de operações do sistema
+    // Log de operaÃ§Ãµes do sistema
     if (req.originalUrl.includes('/admin/') || req.originalUrl.includes('/system/')) {
       const success = res.statusCode < 400 && data?.success;
       const component = req.originalUrl.split('/')[2] || 'unknown';
@@ -268,10 +268,10 @@ export const databaseLogging = Model => {
     const originalJson = res.json;
 
     res.json = function (data) {
-      // Interceptar operações de banco de dados
+      // Interceptar operaÃ§Ãµes de banco de dados
       const startTime = Date.now();
 
-      // Simular logging de operações de banco (em produção, isso seria feito no nível do modelo)
+      // Simular logging de operaÃ§Ãµes de banco (em produÃ§Ã£o, isso seria feito no nÃ­vel do modelo)
       setTimeout(() => {
         const duration = Date.now() - startTime;
         const operation = req.method.toLowerCase();

@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 const transactionSchema = new mongoose.Schema(
   {
-    // Identificação da transação
+    // IdentificaÃ§Ã£o da transaÃ§Ã£o
     id: {
       type: String,
       required: true,
@@ -10,7 +10,7 @@ const transactionSchema = new mongoose.Schema(
       default: () => `TXN_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     },
 
-    // Tipo de transação (PRODUCT, FREIGHT, SERVICE)
+    // Tipo de transaÃ§Ã£o (PRODUCT, FREIGHT, SERVICE)
     type: {
       type: String,
       required: true,
@@ -18,7 +18,7 @@ const transactionSchema = new mongoose.Schema(
       index: true
     },
 
-    // Status da transação
+    // Status da transaÃ§Ã£o
     status: {
       type: String,
       required: true,
@@ -36,21 +36,21 @@ const transactionSchema = new mongoose.Schema(
       index: true
     },
 
-    // Flag para indicar se a transação usa escrow
+    // Flag para indicar se a transaÃ§Ã£o usa escrow
     usesEscrow: {
       type: Boolean,
       default: false,
       index: true
     },
 
-    // ID da transação de escrow relacionada (se aplicável)
+    // ID da transaÃ§Ã£o de escrow relacionada (se aplicÃ¡vel)
     escrowTransactionId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'EscrowTransaction',
       index: true
     },
 
-    // Status do escrow (se aplicável)
+    // Status do escrow (se aplicÃ¡vel)
     escrowStatus: {
       type: String,
       enum: [
@@ -70,7 +70,7 @@ const transactionSchema = new mongoose.Schema(
       index: true
     },
 
-    // IDs dos usuários envolvidos
+    // IDs dos usuÃ¡rios envolvidos
     buyerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -85,7 +85,7 @@ const transactionSchema = new mongoose.Schema(
       index: true
     },
 
-    // Item relacionado (produto, frete, serviço)
+    // Item relacionado (produto, frete, serviÃ§o)
     itemId: {
       type: mongoose.Schema.Types.ObjectId,
       refPath: 'itemModel',
@@ -110,14 +110,14 @@ const transactionSchema = new mongoose.Schema(
       location: String
     },
 
-    // Valores da transação
+    // Valores da transaÃ§Ã£o
     total: {
       type: Number,
       required: true,
       min: 0
     },
 
-    // Opções de entrega
+    // OpÃ§Ãµes de entrega
     deliveryOptions: [
       {
         type: String,
@@ -176,16 +176,16 @@ const transactionSchema = new mongoose.Schema(
       ]
     },
 
-    // Métodos de pagamento aceitos
+    // MÃ©todos de pagamento aceitos
     paymentMethods: [
       {
         type: String,
         enum: [
           'PIX',
           'Boleto',
-          'Cartão de Crédito',
-          'Cartão de Débito',
-          'Transferência',
+          'CartÃ£o de CrÃ©dito',
+          'CartÃ£o de DÃ©bito',
+          'TransferÃªncia',
           'Dinheiro',
           'Escrow'
         ]
@@ -200,7 +200,7 @@ const transactionSchema = new mongoose.Schema(
       index: true
     },
 
-    // Histórico de pagamentos
+    // HistÃ³rico de pagamentos
     paymentHistory: [
       {
         amount: {
@@ -233,7 +233,7 @@ const transactionSchema = new mongoose.Schema(
       index: true
     },
 
-    // Notas e observações
+    // Notas e observaÃ§Ãµes
     notes: {
       buyer: String,
       seller: String,
@@ -252,7 +252,7 @@ const transactionSchema = new mongoose.Schema(
       default: Date.now
     },
 
-    // Histórico de mudanças de status
+    // HistÃ³rico de mudanÃ§as de status
     statusHistory: [
       {
         status: {
@@ -283,13 +283,13 @@ const transactionSchema = new mongoose.Schema(
     escrowFundedAt: Date,
     escrowReleasedAt: Date,
 
-    // Configurações de prazo
+    // ConfiguraÃ§Ãµes de prazo
     deadline: {
       type: Date,
       required: true
     },
 
-    // Configurações de escrow
+    // ConfiguraÃ§Ãµes de escrow
     escrowSettings: {
       enabled: {
         type: Boolean,
@@ -317,7 +317,7 @@ const transactionSchema = new mongoose.Schema(
       }
     },
 
-    // Configurações de segurança
+    // ConfiguraÃ§Ãµes de seguranÃ§a
     securitySettings: {
       requireVerification: {
         type: Boolean,
@@ -359,13 +359,13 @@ const transactionSchema = new mongoose.Schema(
       required: true
     },
 
-    // Usuário que fez a última atualização
+    // UsuÃ¡rio que fez a Ãºltima atualizaÃ§Ã£o
     updatedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User'
     },
 
-    // Disputas e resoluções
+    // Disputas e resoluÃ§Ãµes
     disputes: [
       {
         raisedBy: {
@@ -421,7 +421,7 @@ const transactionSchema = new mongoose.Schema(
       }
     ],
 
-    // Avaliações e feedback
+    // AvaliaÃ§Ãµes e feedback
     ratings: {
       buyerRating: {
         rating: {
@@ -450,10 +450,10 @@ const transactionSchema = new mongoose.Schema(
   }
 );
 
-// Índices compostos para consultas eficientes
+// Ãndices compostos para consultas eficientes
 transactionSchema.index(
   {
-    // Índices para consultas por usuário e status
+    // Ãndices para consultas por usuÃ¡rio e status
     buyerId: 1,
     status: 1
   },
@@ -487,13 +487,13 @@ transactionSchema.pre('save', function (next) {
   next();
 });
 
-// Middleware para atualizar updatedAt em operações de update
+// Middleware para atualizar updatedAt em operaÃ§Ãµes de update
 transactionSchema.pre(['updateOne', 'updateMany', 'findOneAndUpdate'], function (next) {
   this.set({ updatedAt: new Date() });
   next();
 });
 
-// Método para adicionar entrada no histórico de status
+// MÃ©todo para adicionar entrada no histÃ³rico de status
 transactionSchema.methods.addStatusHistory = function (status, changedBy, reason = '', notes = '') {
   this.statusHistory.push({
     status,
@@ -503,7 +503,7 @@ transactionSchema.methods.addStatusHistory = function (status, changedBy, reason
     changedAt: new Date()
   });
 
-  // Atualizar data específica do status
+  // Atualizar data especÃ­fica do status
   const statusDateField = `${status.toLowerCase()}At`;
   if (this.schema.paths[statusDateField]) {
     this[statusDateField] = new Date();
@@ -512,7 +512,7 @@ transactionSchema.methods.addStatusHistory = function (status, changedBy, reason
   return this.save();
 };
 
-// Método para verificar se pode mudar para um status específico
+// MÃ©todo para verificar se pode mudar para um status especÃ­fico
 transactionSchema.methods.canChangeToStatus = function (newStatus) {
   const validTransitions = {
     PENDING: ['NEGOTIATING', 'CANCELLED', 'ESCROW_PENDING'],
@@ -528,7 +528,7 @@ transactionSchema.methods.canChangeToStatus = function (newStatus) {
   return validTransitions[this.status]?.includes(newStatus) || false;
 };
 
-// Método para calcular tempo restante para deadline
+// MÃ©todo para calcular tempo restante para deadline
 transactionSchema.methods.getTimeRemaining = function () {
   const now = new Date();
   const deadline = new Date(this.deadline);
@@ -545,18 +545,18 @@ transactionSchema.methods.getTimeRemaining = function () {
   return { expired: false, days, hours, minutes };
 };
 
-// Método para verificar se a transação está atrasada
+// MÃ©todo para verificar se a transaÃ§Ã£o estÃ¡ atrasada
 transactionSchema.methods.isOverdue = function () {
   return new Date() > new Date(this.deadline);
 };
 
-// Método para obter status de escrow legível
+// MÃ©todo para obter status de escrow legÃ­vel
 transactionSchema.methods.getEscrowStatusText = function () {
   const statusTexts = {
-    NONE: 'Não aplicável',
-    PENDING: 'Aguardando depósito',
+    NONE: 'NÃ£o aplicÃ¡vel',
+    PENDING: 'Aguardando depÃ³sito',
     FUNDED: 'Valor depositado',
-    IN_TRANSIT: 'Em trânsito',
+    IN_TRANSIT: 'Em trÃ¢nsito',
     DELIVERED: 'Entregue',
     CONFIRMED: 'Confirmado',
     DISPUTED: 'Em disputa',
@@ -569,7 +569,7 @@ transactionSchema.methods.getEscrowStatusText = function () {
   return statusTexts[this.escrowStatus] || 'Desconhecido';
 };
 
-// Método para obter badge de escrow
+// MÃ©todo para obter badge de escrow
 transactionSchema.methods.getEscrowBadge = function () {
   if (!this.usesEscrow) {
     return null;
@@ -578,7 +578,7 @@ transactionSchema.methods.getEscrowBadge = function () {
   const badges = {
     PENDING: { text: 'Escrow Pendente', color: 'warning' },
     FUNDED: { text: 'Escrow Fundado', color: 'info' },
-    IN_TRANSIT: { text: 'Escrow Em Trânsito', color: 'primary' },
+    IN_TRANSIT: { text: 'Escrow Em TrÃ¢nsito', color: 'primary' },
     DELIVERED: { text: 'Escrow Entregue', color: 'success' },
     CONFIRMED: { text: 'Escrow Confirmado', color: 'success' },
     DISPUTED: { text: 'Escrow Em Disputa', color: 'danger' },
@@ -591,7 +591,7 @@ transactionSchema.methods.getEscrowBadge = function () {
   return badges[this.escrowStatus] || { text: 'Escrow (em breve)', color: 'secondary' };
 };
 
-// Virtual para verificar se a transação expirou
+// Virtual para verificar se a transaÃ§Ã£o expirou
 transactionSchema.virtual('isExpired').get(function () {
   return this.status === 'PENDING' && new Date() > this.negotiationDeadline;
 });
@@ -605,19 +605,19 @@ transactionSchema.virtual('daysRemaining').get(function () {
   return Math.ceil(remaining / (1000 * 60 * 60 * 24));
 });
 
-// Virtual para status legível
+// Virtual para status legÃ­vel
 transactionSchema.virtual('statusText').get(function () {
   const statusMap = {
-    PENDING: 'Aguardando Negociação',
-    NEGOTIATING: 'Em Negociação',
-    AGREED: 'Acordo Alcançado',
+    PENDING: 'Aguardando NegociaÃ§Ã£o',
+    NEGOTIATING: 'Em NegociaÃ§Ã£o',
+    AGREED: 'Acordo AlcanÃ§ado',
     CANCELLED: 'Cancelada',
-    COMPLETED: 'Concluída'
+    COMPLETED: 'ConcluÃ­da'
   };
   return statusMap[this.status] || this.status;
 });
 
-// Método estático para buscar transações expiradas
+// MÃ©todo estÃ¡tico para buscar transaÃ§Ãµes expiradas
 transactionSchema.statics.findExpired = function () {
   return this.find({
     status: 'PENDING',
@@ -625,18 +625,18 @@ transactionSchema.statics.findExpired = function () {
   });
 };
 
-// Método para cancelar transação expirada
-transactionSchema.methods.cancelExpired = function (reason = 'Prazo de negociação expirou') {
+// MÃ©todo para cancelar transaÃ§Ã£o expirada
+transactionSchema.methods.cancelExpired = function (reason = 'Prazo de negociaÃ§Ã£o expirou') {
   this.status = 'CANCELLED';
   this.notes = { ...this.notes, admin: reason };
-  this.updatedBy = this.createdBy; // Ou admin ID se disponível
+  this.updatedBy = this.createdBy; // Ou admin ID se disponÃ­vel
   return this.save();
 };
 
-// Método para iniciar negociação
+// MÃ©todo para iniciar negociaÃ§Ã£o
 transactionSchema.methods.startNegotiation = function (userId, notes = '') {
   if (this.status !== 'PENDING') {
-    throw new Error('Apenas transações pendentes podem iniciar negociação');
+    throw new Error('Apenas transaÃ§Ãµes pendentes podem iniciar negociaÃ§Ã£o');
   }
 
   this.status = 'NEGOTIATING';
@@ -645,10 +645,10 @@ transactionSchema.methods.startNegotiation = function (userId, notes = '') {
   return this.save();
 };
 
-// Método para finalizar acordo
+// MÃ©todo para finalizar acordo
 transactionSchema.methods.reachAgreement = function (userId, notes = '') {
   if (this.status !== 'NEGOTIATING') {
-    throw new Error('Apenas transações em negociação podem chegar a acordo');
+    throw new Error('Apenas transaÃ§Ãµes em negociaÃ§Ã£o podem chegar a acordo');
   }
 
   this.status = 'AGREED';
@@ -657,10 +657,10 @@ transactionSchema.methods.reachAgreement = function (userId, notes = '') {
   return this.save();
 };
 
-// Método para completar transação
+// MÃ©todo para completar transaÃ§Ã£o
 transactionSchema.methods.complete = function (userId, notes = '') {
   if (this.status !== 'AGREED') {
-    throw new Error('Apenas transações com acordo podem ser completadas');
+    throw new Error('Apenas transaÃ§Ãµes com acordo podem ser completadas');
   }
 
   this.status = 'COMPLETED';

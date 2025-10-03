@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 const messageSchema = new mongoose.Schema(
   {
-    // Conversa à qual a mensagem pertence
+    // Conversa Ã  qual a mensagem pertence
     conversation: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Conversation',
@@ -18,12 +18,12 @@ const messageSchema = new mongoose.Schema(
       index: true
     },
 
-    // Conteúdo da mensagem
+    // ConteÃºdo da mensagem
     content: {
       type: String,
       required: true,
       trim: true,
-      maxlength: [5000, 'Mensagem não pode ter mais de 5000 caracteres']
+      maxlength: [5000, 'Mensagem nÃ£o pode ter mais de 5000 caracteres']
     },
 
     // Tipo de mensagem
@@ -33,7 +33,7 @@ const messageSchema = new mongoose.Schema(
       default: 'text'
     },
 
-    // Arquivo anexado (se aplicável)
+    // Arquivo anexado (se aplicÃ¡vel)
     file: {
       name: String,
       size: Number,
@@ -59,7 +59,7 @@ const messageSchema = new mongoose.Schema(
       default: 'sent'
     },
 
-    // Usuários que leram a mensagem
+    // UsuÃ¡rios que leram a mensagem
     readBy: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -80,7 +80,7 @@ const messageSchema = new mongoose.Schema(
   }
 );
 
-// Índices para performance
+// Ãndices para performance
 messageSchema.index({ conversation: 1, createdAt: -1 });
 messageSchema.index({ sender: 1, createdAt: -1 });
 messageSchema.index({ type: 1, createdAt: -1 });
@@ -112,7 +112,7 @@ messageSchema.virtual('hasImage').get(function () {
   return this.type === 'image' && this.file && this.file.url;
 });
 
-// Virtual para verificar se mensagem é do sistema
+// Virtual para verificar se mensagem Ã© do sistema
 messageSchema.virtual('isSystem').get(function () {
   return this.type === 'system';
 });
@@ -137,14 +137,14 @@ messageSchema.pre('save', function (next) {
   next();
 });
 
-// Método para marcar como entregue
+// MÃ©todo para marcar como entregue
 messageSchema.methods.markAsDelivered = function () {
   this.status = 'delivered';
   this.deliveredAt = new Date();
   return this.save();
 };
 
-// Método para marcar como lida por um usuário
+// MÃ©todo para marcar como lida por um usuÃ¡rio
 messageSchema.methods.markAsRead = function (userId) {
   if (!this.readBy.includes(userId)) {
     this.readBy.push(userId);
@@ -154,7 +154,7 @@ messageSchema.methods.markAsRead = function (userId) {
   return this.save();
 };
 
-// Método para marcar como falhou
+// MÃ©todo para marcar como falhou
 messageSchema.methods.markAsFailed = function (reason) {
   this.status = 'failed';
   this.failedAt = new Date();
@@ -164,12 +164,12 @@ messageSchema.methods.markAsFailed = function (reason) {
   return this.save();
 };
 
-// Método para verificar se usuário leu a mensagem
+// MÃ©todo para verificar se usuÃ¡rio leu a mensagem
 messageSchema.methods.isReadBy = function (userId) {
   return this.readBy.some(id => id.toString() === userId.toString());
 };
 
-// Método para obter dados públicos da mensagem
+// MÃ©todo para obter dados pÃºblicos da mensagem
 messageSchema.methods.getPublicData = function () {
   return {
     id: this._id,
@@ -181,7 +181,7 @@ messageSchema.methods.getPublicData = function () {
   };
 };
 
-// Método para obter dados completos da mensagem
+// MÃ©todo para obter dados completos da mensagem
 messageSchema.methods.getFullData = function (userId) {
   const data = {
     ...this.getPublicData(),
@@ -195,13 +195,13 @@ messageSchema.methods.getFullData = function (userId) {
     failedAt: this.failedAt
   };
 
-  // Adicionar informações de leitura específicas do usuário
+  // Adicionar informaÃ§Ãµes de leitura especÃ­ficas do usuÃ¡rio
   data.isReadByUser = this.isReadBy(userId);
 
   return data;
 };
 
-// Método para obter dados da mensagem para exibição
+// MÃ©todo para obter dados da mensagem para exibiÃ§Ã£o
 messageSchema.methods.getDisplayData = function (currentUserId) {
   const data = {
     id: this._id,
@@ -217,13 +217,13 @@ messageSchema.methods.getDisplayData = function (currentUserId) {
     isSystem: this.isSystem
   };
 
-  // Adicionar informações específicas do usuário
+  // Adicionar informaÃ§Ãµes especÃ­ficas do usuÃ¡rio
   if (currentUserId) {
     data.isReadByUser = this.isReadBy(currentUserId);
     data.isOwnMessage = this.sender.toString() === currentUserId.toString();
   }
 
-  // Adicionar informações do arquivo se existir
+  // Adicionar informaÃ§Ãµes do arquivo se existir
   if (this.file) {
     data.file = {
       name: this.file.name,
@@ -237,7 +237,7 @@ messageSchema.methods.getDisplayData = function (currentUserId) {
   return data;
 };
 
-// Método estático para buscar mensagens de uma conversa
+// MÃ©todo estÃ¡tico para buscar mensagens de uma conversa
 messageSchema.statics.findByConversation = function (conversationId, options = {}) {
   const query = { conversation: conversationId };
 
@@ -253,7 +253,7 @@ messageSchema.statics.findByConversation = function (conversationId, options = {
     query.status = options.status;
   }
 
-  const sort = options.sort || { createdAt: 1 }; // Ordem cronológica
+  const sort = options.sort || { createdAt: 1 }; // Ordem cronolÃ³gica
   const limit = options.limit || 50;
   const skip = options.skip || 0;
 
@@ -265,11 +265,11 @@ messageSchema.statics.findByConversation = function (conversationId, options = {
     .skip(skip);
 };
 
-// Método estático para buscar mensagens não lidas de um usuário
+// MÃ©todo estÃ¡tico para buscar mensagens nÃ£o lidas de um usuÃ¡rio
 messageSchema.statics.findUnreadByUser = function (userId, conversationId = null) {
   const query = {
     readBy: { $ne: userId },
-    sender: { $ne: userId } // Não incluir mensagens próprias
+    sender: { $ne: userId } // NÃ£o incluir mensagens prÃ³prias
   };
 
   if (conversationId) {
@@ -282,7 +282,7 @@ messageSchema.statics.findUnreadByUser = function (userId, conversationId = null
     .sort({ createdAt: -1 });
 };
 
-// Método estático para buscar mensagens de um usuário
+// MÃ©todo estÃ¡tico para buscar mensagens de um usuÃ¡rio
 messageSchema.statics.findByUser = function (userId, options = {}) {
   const query = { sender: userId };
 
@@ -310,7 +310,7 @@ messageSchema.statics.findByUser = function (userId, options = {}) {
     .skip(skip);
 };
 
-// Método estático para estatísticas de mensagens
+// MÃ©todo estÃ¡tico para estatÃ­sticas de mensagens
 messageSchema.statics.getStats = async function (userId = null) {
   const match = {};
   if (userId) {
@@ -366,7 +366,7 @@ messageSchema.statics.getStats = async function (userId = null) {
   );
 };
 
-// Método estático para buscar mensagens por período
+// MÃ©todo estÃ¡tico para buscar mensagens por perÃ­odo
 messageSchema.statics.findByPeriod = function (startDate, endDate, userId = null) {
   const query = {
     createdAt: {
@@ -385,11 +385,11 @@ messageSchema.statics.findByPeriod = function (startDate, endDate, userId = null
     .sort({ createdAt: -1 });
 };
 
-// Método estático para criar mensagem do sistema
+// MÃ©todo estÃ¡tico para criar mensagem do sistema
 messageSchema.statics.createSystemMessage = function (conversationId, content, metadata = {}) {
   return this.create({
     conversation: conversationId,
-    sender: null, // Mensagem do sistema não tem remetente
+    sender: null, // Mensagem do sistema nÃ£o tem remetente
     content,
     type: 'system',
     status: 'delivered',

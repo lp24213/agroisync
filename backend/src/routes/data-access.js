@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
 const { Payment } = require('../models/Payment');
@@ -7,13 +7,14 @@ const { Product } = require('../models/Product');
 const { AuditLog } = require('../models/AuditLog');
 const { SecurityLog } = require('../models/SecurityLog');
 
-// Verificar se usuário tem acesso aos dados de um anúncio
+const logger = require('../utils/logger.js');
+// Verificar se usuÃ¡rio tem acesso aos dados de um anÃºncio
 router.get('/check-access/:adId', auth, async (req, res) => {
   try {
     const { adId } = req.params;
     const userId = req.user.id;
 
-    // Verificar se existe pagamento aprovado para este anúncio
+    // Verificar se existe pagamento aprovado para este anÃºncio
     const payment = await Payment.findOne({
       userId,
       adId,
@@ -36,19 +37,19 @@ router.get('/check-access/:adId', auth, async (req, res) => {
     res.json({ hasAccess, adId });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao verificar acesso:', error);
+      logger.error('Erro ao verificar acesso:', error);
     }
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
 
-// Liberar dados após pagamento confirmado
+// Liberar dados apÃ³s pagamento confirmado
 router.post('/unlock-data', auth, async (req, res) => {
   try {
     const { userId, adId } = req.body;
     const currentUserId = req.user.id;
 
-    // Verificar se o usuário tem permissão
+    // Verificar se o usuÃ¡rio tem permissÃ£o
     if (userId !== currentUserId) {
       return res.status(403).json({ error: 'Acesso negado' });
     }
@@ -62,7 +63,7 @@ router.post('/unlock-data', auth, async (req, res) => {
     });
 
     if (!payment) {
-      return res.status(400).json({ error: 'Pagamento não encontrado ou não aprovado' });
+      return res.status(400).json({ error: 'Pagamento nÃ£o encontrado ou nÃ£o aprovado' });
     }
 
     // Marcar dados como liberados
@@ -70,10 +71,10 @@ router.post('/unlock-data', auth, async (req, res) => {
     payment.unlockedAt = new Date();
     await payment.save();
 
-    // Buscar dados do anúncio
+    // Buscar dados do anÃºncio
     const product = await Product.findById(adId);
     if (!product) {
-      return res.status(404).json({ error: 'Anúncio não encontrado' });
+      return res.status(404).json({ error: 'AnÃºncio nÃ£o encontrado' });
     }
 
     // Log de auditoria
@@ -86,7 +87,7 @@ router.post('/unlock-data', auth, async (req, res) => {
       userAgent: req.get('User-Agent')
     });
 
-    // Log de segurança
+    // Log de seguranÃ§a
     await SecurityLog.create({
       userId,
       action: 'data_unlock',
@@ -112,19 +113,19 @@ router.post('/unlock-data', auth, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao liberar dados:', error);
+      logger.error('Erro ao liberar dados:', error);
     }
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
 
-// Obter dados liberados de um anúncio
+// Obter dados liberados de um anÃºncio
 router.get('/unlocked-data/:adId', auth, async (req, res) => {
   try {
     const { adId } = req.params;
     const userId = req.user.id;
 
-    // Verificar se usuário tem acesso
+    // Verificar se usuÃ¡rio tem acesso
     const payment = await Payment.findOne({
       userId,
       adId,
@@ -137,10 +138,10 @@ router.get('/unlocked-data/:adId', auth, async (req, res) => {
       return res.status(403).json({ error: 'Acesso negado aos dados' });
     }
 
-    // Buscar dados do anúncio
+    // Buscar dados do anÃºncio
     const product = await Product.findById(adId);
     if (!product) {
-      return res.status(404).json({ error: 'Anúncio não encontrado' });
+      return res.status(404).json({ error: 'AnÃºncio nÃ£o encontrado' });
     }
 
     // Log de auditoria
@@ -170,13 +171,13 @@ router.get('/unlocked-data/:adId', auth, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter dados liberados:', error);
+      logger.error('Erro ao obter dados liberados:', error);
     }
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
 
-// Configurar opções de liberação para anunciante
+// Configurar opÃ§Ãµes de liberaÃ§Ã£o para anunciante
 router.post('/configure-release/:adId', auth, async (req, res) => {
   try {
     const { adId } = req.params;
@@ -188,17 +189,17 @@ router.post('/configure-release/:adId', auth, async (req, res) => {
       customMessage = ''
     } = req.body;
 
-    // Verificar se o usuário é o dono do anúncio
+    // Verificar se o usuÃ¡rio Ã© o dono do anÃºncio
     const product = await Product.findById(adId);
     if (!product) {
-      return res.status(404).json({ error: 'Anúncio não encontrado' });
+      return res.status(404).json({ error: 'AnÃºncio nÃ£o encontrado' });
     }
 
     if (product.userId.toString() !== userId) {
       return res.status(403).json({ error: 'Acesso negado' });
     }
 
-    // Atualizar configurações de liberação
+    // Atualizar configuraÃ§Ãµes de liberaÃ§Ã£o
     product.releaseSettings = {
       autoRelease,
       releaseDelay,
@@ -226,23 +227,23 @@ router.post('/configure-release/:adId', auth, async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Configurações de liberação atualizadas',
+      message: 'ConfiguraÃ§Ãµes de liberaÃ§Ã£o atualizadas',
       releaseSettings: product.releaseSettings
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao configurar liberação:', error);
+      logger.error('Erro ao configurar liberaÃ§Ã£o:', error);
     }
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
 
-// Obter estatísticas de liberação de dados
+// Obter estatÃ­sticas de liberaÃ§Ã£o de dados
 router.get('/release-stats', auth, async (req, res) => {
   try {
     const userId = req.user.id;
 
-    // Estatísticas do usuário
+    // EstatÃ­sticas do usuÃ¡rio
     const totalPayments = await Payment.countDocuments({
       userId,
       status: 'succeeded',
@@ -272,7 +273,7 @@ router.get('/release-stats', auth, async (req, res) => {
       }
     ]);
 
-    // Estatísticas dos anúncios do usuário
+    // EstatÃ­sticas dos anÃºncios do usuÃ¡rio
     const userProducts = await Product.find({ userId });
     const productIds = userProducts.map(p => p._id);
 
@@ -312,7 +313,7 @@ router.get('/release-stats', auth, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter estatísticas:', error);
+      logger.error('Erro ao obter estatÃ­sticas:', error);
     }
     res.status(500).json({ error: 'Erro interno do servidor' });
   }

@@ -1,12 +1,12 @@
-// ===== D1 DATABASE HELPER =====
-// Utilitários para trabalhar com Cloudflare D1 Database
+﻿// ===== D1 DATABASE HELPER =====
+// UtilitÃ¡rios para trabalhar com Cloudflare D1 Database
 // Substitui MongoDB com queries SQL otimizadas
 
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcryptjs';
 
 /**
- * Gerar ID único para registros
+ * Gerar ID Ãºnico para registros
  */
 export const generateId = (prefix = '') => {
   const id = uuidv4();
@@ -33,9 +33,8 @@ export const executeD1Query = async (db, query, params = []) => {
       meta: result.meta || {}
     };
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('D1 Query Error:', error);
-    }
+    const logger = require('./logger');
+    logger.error('D1 Query Error:', error);
     return {
       success: false,
       error: error.message,
@@ -58,9 +57,8 @@ export const executeD1QueryFirst = async (db, query, params = []) => {
       result: result || null
     };
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('D1 Query Error:', error);
-    }
+    const logger = require('./logger');
+    logger.error('D1 Query Error:', error);
     return {
       success: false,
       error: error.message,
@@ -84,9 +82,8 @@ export const executeD1Write = async (db, query, params = []) => {
       changes: result.meta?.changes || 0
     };
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('D1 Write Error:', error);
-    }
+    const logger = require('./logger');
+    logger.error('D1 Write Error:', error);
     return {
       success: false,
       error: error.message,
@@ -96,9 +93,9 @@ export const executeD1Write = async (db, query, params = []) => {
 };
 
 /**
- * Criar usuário no D1
+ * Criar usuÃ¡rio no D1
  */
-export const createUser = async (db, userData) => {
+export const createUser = (db, userData) => {
   const { email, name, password, phone = null, businessType = 'user', role = 'user' } = userData;
 
   const id = generateId('user');
@@ -139,25 +136,25 @@ export const createUser = async (db, userData) => {
 };
 
 /**
- * Buscar usuário por email
+ * Buscar usuÃ¡rio por email
  */
-export const findUserByEmail = async (db, email) => {
+export const findUserByEmail = (db, email) => {
   const query = 'SELECT * FROM users WHERE email = ? LIMIT 1';
   return executeD1QueryFirst(db, query, [email.toLowerCase()]);
 };
 
 /**
- * Buscar usuário por ID
+ * Buscar usuÃ¡rio por ID
  */
-export const findUserById = async (db, userId) => {
+export const findUserById = (db, userId) => {
   const query = 'SELECT * FROM users WHERE id = ? LIMIT 1';
   return executeD1QueryFirst(db, query, [userId]);
 };
 
 /**
- * Atualizar usuário
+ * Atualizar usuÃ¡rio
  */
-export const updateUser = async (db, userId, updates) => {
+export const updateUser = (db, userId, updates) => {
   const fields = [];
   const values = [];
 
@@ -182,14 +179,14 @@ export const updateUser = async (db, userId, updates) => {
 /**
  * Verificar senha
  */
-export const verifyPassword = async (plainPassword, hashedPassword) => {
+export const verifyPassword = (plainPassword, hashedPassword) => {
   return bcrypt.compare(plainPassword, hashedPassword);
 };
 
 /**
  * Criar produto
  */
-export const createProduct = async (db, userId, productData) => {
+export const createProduct = (db, userId, productData) => {
   const {
     title,
     description = '',
@@ -244,7 +241,7 @@ export const createProduct = async (db, userId, productData) => {
 /**
  * Buscar produtos com filtros
  */
-export const findProducts = async (db, filters = {}) => {
+export const findProducts = (db, filters = {}) => {
   let query = "SELECT * FROM products WHERE status = 'active'";
   const params = [];
 
@@ -268,7 +265,7 @@ export const findProducts = async (db, filters = {}) => {
 
   if (filters.limit) {
     query += ' LIMIT ?';
-    params.push(parseInt(filters.limit));
+    params.push(parseInt(filters.limit, 10, 10));
   }
 
   return executeD1Query(db, query, params);
@@ -277,7 +274,7 @@ export const findProducts = async (db, filters = {}) => {
 /**
  * Criar frete
  */
-export const createFreight = async (db, userId, freightData) => {
+export const createFreight = (db, userId, freightData) => {
   const { originCity, originState, destinationCity, destinationState, loadType, price } =
     freightData;
 
@@ -320,7 +317,7 @@ export const createFreight = async (db, userId, freightData) => {
 /**
  * Buscar fretes
  */
-export const findFreights = async (db, filters = {}) => {
+export const findFreights = (db, filters = {}) => {
   let query = "SELECT * FROM freights WHERE status = 'available'";
   const params = [];
 
@@ -338,7 +335,7 @@ export const findFreights = async (db, filters = {}) => {
 
   if (filters.limit) {
     query += ' LIMIT ?';
-    params.push(parseInt(filters.limit));
+    params.push(parseInt(filters.limit, 10, 10));
   }
 
   return executeD1Query(db, query, params);
@@ -347,7 +344,7 @@ export const findFreights = async (db, filters = {}) => {
 /**
  * Criar mensagem
  */
-export const createMessage = async (db, messageData) => {
+export const createMessage = (db, messageData) => {
   const { conversationId, senderId, receiverId, content, type = 'text' } = messageData;
 
   const id = generateId('msg');
@@ -372,7 +369,7 @@ export const createMessage = async (db, messageData) => {
 /**
  * Buscar mensagens de uma conversa
  */
-export const findMessages = async (db, conversationId, limit = 50) => {
+export const findMessages = (db, conversationId, limit = 50) => {
   const query = `
     SELECT * FROM messages 
     WHERE conversationId = ? AND isDeleted = 0
@@ -384,9 +381,9 @@ export const findMessages = async (db, conversationId, limit = 50) => {
 };
 
 /**
- * Criar transação
+ * Criar transaÃ§Ã£o
  */
-export const createTransaction = async (db, transactionData) => {
+export const createTransaction = (db, transactionData) => {
   const { userId, type, amount, paymentMethod, description } = transactionData;
 
   const id = generateId('txn');
@@ -412,7 +409,7 @@ export const createTransaction = async (db, transactionData) => {
 /**
  * Criar log de auditoria
  */
-export const createAuditLog = async (db, logData) => {
+export const createAuditLog = (db, logData) => {
   const { userId, action, entity, entityId, ipAddress, userAgent } = logData;
 
   const id = generateId('log');
@@ -460,7 +457,7 @@ export const sanitizeForJSON = data => {
       try {
         sanitized[field] = JSON.parse(sanitized[field]);
       } catch (e) {
-        // Manter como string se não for JSON válido
+        // Manter como string se nÃ£o for JSON vÃ¡lido
       }
     }
   });

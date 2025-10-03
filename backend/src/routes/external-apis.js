@@ -1,14 +1,15 @@
-import express from 'express';
+﻿import express from 'express';
 import { externalAPIService } from '../services/externalAPIs.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
 import { getClientIP } from '../utils/ipUtils.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
 // Aplicar rate limiting
 router.use(apiLimiter);
 
-// ===== ROTAS DE CEP E ENDEREÇO =====
+// ===== ROTAS DE CEP E ENDEREÃ‡O =====
 
 // GET /api/external/cep/:cep - Consultar CEP
 router.get('/cep/:cep', async (req, res) => {
@@ -22,9 +23,7 @@ router.get('/cep/:cep', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao consultar CEP:', error);
-    }
+    logger.error('Erro ao consultar CEP:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -38,9 +37,7 @@ router.get('/estados', async (req, res) => {
     const result = await externalAPIService.buscarEstados();
     res.json(result);
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar estados:', error);
-    }
+    logger.error('Erro ao buscar estados:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -48,16 +45,14 @@ router.get('/estados', async (req, res) => {
   }
 });
 
-// GET /api/external/estados/:uf/municipios - Listar municípios por estado
+// GET /api/external/estados/:uf/municipios - Listar municÃ­pios por estado
 router.get('/estados/:uf/municipios', async (req, res) => {
   try {
     const { uf } = req.params;
     const result = await externalAPIService.buscarMunicipiosPorEstado(uf);
     res.json(result);
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar municípios:', error);
-    }
+    logger.error('Erro ao buscar municÃ­pios:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -65,15 +60,13 @@ router.get('/estados/:uf/municipios', async (req, res) => {
   }
 });
 
-// GET /api/external/regioes - Listar regiões
+// GET /api/external/regioes - Listar regiÃµes
 router.get('/regioes', async (req, res) => {
   try {
     const result = await externalAPIService.buscarRegioes();
     res.json(result);
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar regiões:', error);
-    }
+    logger.error('Erro ao buscar regiÃµes:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -91,7 +84,7 @@ router.get('/clima/coordenadas', async (req, res) => {
     if (!lat || !lon) {
       return res.status(400).json({
         success: false,
-        message: 'Latitude e longitude são obrigatórios'
+        message: 'Latitude e longitude sÃ£o obrigatÃ³rios'
       });
     }
 
@@ -108,9 +101,7 @@ router.get('/clima/coordenadas', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter clima por coordenadas:', error);
-    }
+    logger.error('Erro ao obter clima por coordenadas:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -132,9 +123,7 @@ router.get('/clima/ip', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter clima por IP:', error);
-    }
+    logger.error('Erro ao obter clima por IP:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -142,7 +131,7 @@ router.get('/clima/ip', async (req, res) => {
   }
 });
 
-// GET /api/external/clima/ip/:ip - Obter clima por IP específico
+// GET /api/external/clima/ip/:ip - Obter clima por IP especÃ­fico
 router.get('/clima/ip/:ip', async (req, res) => {
   try {
     const { ip } = req.params;
@@ -156,9 +145,7 @@ router.get('/clima/ip/:ip', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter clima por IP:', error);
-    }
+    logger.error('Erro ao obter clima por IP:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -168,7 +155,7 @@ router.get('/clima/ip/:ip', async (req, res) => {
 
 // ===== ROTAS DO BAIDU MAPS =====
 
-// GET /api/external/baidu/geocode - Geocoding de endereço
+// GET /api/external/baidu/geocode - Geocoding de endereÃ§o
 router.get('/baidu/geocode', async (req, res) => {
   try {
     const { address, city, region } = req.query;
@@ -176,7 +163,7 @@ router.get('/baidu/geocode', async (req, res) => {
     if (!address) {
       return res.status(400).json({
         success: false,
-        message: 'Endereço é obrigatório'
+        message: 'EndereÃ§o Ã© obrigatÃ³rio'
       });
     }
 
@@ -184,7 +171,7 @@ router.get('/baidu/geocode', async (req, res) => {
     res.json(result);
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro no geocoding:', error);
+      logger.error('Erro no geocoding:', error);
     }
     res.status(500).json({
       success: false,
@@ -201,7 +188,7 @@ router.get('/baidu/reverse-geocode', async (req, res) => {
     if (!lat || !lng) {
       return res.status(400).json({
         success: false,
-        message: 'Latitude e longitude são obrigatórios'
+        message: 'Latitude e longitude sÃ£o obrigatÃ³rios'
       });
     }
 
@@ -209,7 +196,7 @@ router.get('/baidu/reverse-geocode', async (req, res) => {
     res.json(result);
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro no reverse geocoding:', error);
+      logger.error('Erro no reverse geocoding:', error);
     }
     res.status(500).json({
       success: false,
@@ -226,7 +213,7 @@ router.get('/baidu/route', async (req, res) => {
     if (!originLat || !originLng || !destLat || !destLng) {
       return res.status(400).json({
         success: false,
-        message: 'Coordenadas de origem e destino são obrigatórias'
+        message: 'Coordenadas de origem e destino sÃ£o obrigatÃ³rias'
       });
     }
 
@@ -237,7 +224,7 @@ router.get('/baidu/route', async (req, res) => {
     res.json(result);
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao calcular rota:', error);
+      logger.error('Erro ao calcular rota:', error);
     }
     res.status(500).json({
       success: false,
@@ -261,7 +248,7 @@ router.get('/receita/cnpj/:cnpj', async (req, res) => {
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao consultar CNPJ:', error);
+      logger.error('Erro ao consultar CNPJ:', error);
     }
     res.status(500).json({
       success: false,
@@ -283,7 +270,7 @@ router.get('/receita/cpf/:cpf', async (req, res) => {
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao consultar CPF:', error);
+      logger.error('Erro ao consultar CPF:', error);
     }
     res.status(500).json({
       success: false,
@@ -292,9 +279,9 @@ router.get('/receita/cpf/:cpf', async (req, res) => {
   }
 });
 
-// ===== ROTAS DE VALIDAÇÃO =====
+// ===== ROTAS DE VALIDAÃ‡ÃƒO =====
 
-// POST /api/external/validar/endereco - Validar endereço
+// POST /api/external/validar/endereco - Validar endereÃ§o
 router.post('/validar/endereco', async (req, res) => {
   try {
     const { endereco } = req.body;
@@ -302,7 +289,7 @@ router.post('/validar/endereco', async (req, res) => {
     if (!endereco) {
       return res.status(400).json({
         success: false,
-        message: 'Dados do endereço são obrigatórios'
+        message: 'Dados do endereÃ§o sÃ£o obrigatÃ³rios'
       });
     }
 
@@ -310,7 +297,7 @@ router.post('/validar/endereco', async (req, res) => {
     res.json(result);
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao validar endereço:', error);
+      logger.error('Erro ao validar endereÃ§o:', error);
     }
     res.status(500).json({
       success: false,
@@ -319,7 +306,7 @@ router.post('/validar/endereco', async (req, res) => {
   }
 });
 
-// ===== ROTAS DE GEOLOCALIZAÇÃO =====
+// ===== ROTAS DE GEOLOCALIZAÃ‡ÃƒO =====
 
 // GET /api/external/geo/ip/:ip - Obter coordenadas por IP
 router.get('/geo/ip/:ip', async (req, res) => {
@@ -334,7 +321,7 @@ router.get('/geo/ip/:ip', async (req, res) => {
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter coordenadas por IP:', error);
+      logger.error('Erro ao obter coordenadas por IP:', error);
     }
     res.status(500).json({
       success: false,
@@ -356,7 +343,7 @@ router.get('/geo/ip', async (req, res) => {
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter coordenadas do IP do cliente:', error);
+      logger.error('Erro ao obter coordenadas do IP do cliente:', error);
     }
     res.status(500).json({
       success: false,
@@ -368,7 +355,7 @@ router.get('/geo/ip', async (req, res) => {
 // ===== ROTA DE STATUS DAS APIS =====
 
 // GET /api/external/status - Status das APIs externas
-router.get('/status', async (req, res) => {
+router.get('/status', (req, res) => {
   try {
     const status = {
       success: true,
@@ -383,17 +370,17 @@ router.get('/status', async (req, res) => {
           ibge: {
             name: 'IBGE',
             status: 'online',
-            description: 'Dados geográficos'
+            description: 'Dados geogrÃ¡ficos'
           },
           openweather: {
             name: 'OpenWeather',
             status: process.env.OPENWEATHER_API_KEY ? 'online' : 'offline',
-            description: 'Dados meteorológicos'
+            description: 'Dados meteorolÃ³gicos'
           },
           receitaFederal: {
             name: 'Receita Federal',
             status: process.env.RECEITA_FEDERAL_API_KEY ? 'online' : 'offline',
-            description: 'Validação de documentos'
+            description: 'ValidaÃ§Ã£o de documentos'
           },
           baiduMaps: {
             name: 'Baidu Maps',
@@ -407,7 +394,7 @@ router.get('/status', async (req, res) => {
     res.json(status);
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao verificar status das APIs:', error);
+      logger.error('Erro ao verificar status das APIs:', error);
     }
     res.status(500).json({
       success: false,

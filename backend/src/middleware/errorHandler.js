@@ -1,4 +1,4 @@
-const logger = require('../utils/logger');
+﻿const logger = require('../utils/logger');
 
 const errorHandler = (err, req, res, next) => {
   let error = { ...err };
@@ -14,7 +14,7 @@ const errorHandler = (err, req, res, next) => {
     userAgent: req.get('User-Agent')
   });
 
-  // Erro de validação do Mongoose
+  // Erro de validaÃ§Ã£o do Mongoose
   if (err.name === 'ValidationError') {
     const message = Object.values(err.errors)
       .map(val => val.message)
@@ -25,19 +25,19 @@ const errorHandler = (err, req, res, next) => {
     };
   }
 
-  // Erro de cast do Mongoose (ID inválido)
+  // Erro de cast do Mongoose (ID invÃ¡lido)
   if (err.name === 'CastError') {
-    const message = 'Recurso não encontrado';
+    const message = 'Recurso nÃ£o encontrado';
     error = {
       message,
       statusCode: 404
     };
   }
 
-  // Erro de duplicação do Mongoose
+  // Erro de duplicaÃ§Ã£o do Mongoose
   if (err.code === 11000) {
     const field = Object.keys(err.keyValue)[0];
-    const message = `${field} já existe`;
+    const message = `${field} jÃ¡ existe`;
     error = {
       message,
       statusCode: 400
@@ -46,7 +46,7 @@ const errorHandler = (err, req, res, next) => {
 
   // Erro JWT
   if (err.name === 'JsonWebTokenError') {
-    const message = 'Token inválido';
+    const message = 'Token invÃ¡lido';
     error = {
       message,
       statusCode: 401
@@ -82,16 +82,16 @@ const errorHandler = (err, req, res, next) => {
 
   // Erro de tipo de arquivo
   if (err.code === 'LIMIT_UNEXPECTED_FILE') {
-    const message = 'Tipo de arquivo não permitido';
+    const message = 'Tipo de arquivo nÃ£o permitido';
     error = {
       message,
       statusCode: 400
     };
   }
 
-  // Erro de conexão com banco de dados
+  // Erro de conexÃ£o com banco de dados
   if (err.name === 'MongoNetworkError') {
-    const message = 'Erro de conexão com o banco de dados';
+    const message = 'Erro de conexÃ£o com o banco de dados';
     error = {
       message,
       statusCode: 503
@@ -100,7 +100,7 @@ const errorHandler = (err, req, res, next) => {
 
   // Erro de timeout
   if (err.name === 'MongoTimeoutError') {
-    const message = 'Timeout na operação do banco de dados';
+    const message = 'Timeout na operaÃ§Ã£o do banco de dados';
     error = {
       message,
       statusCode: 504
@@ -118,14 +118,14 @@ const errorHandler = (err, req, res, next) => {
 
   // Erro de Web3/Ethereum
   if (err.code && err.code.startsWith('UNPREDICTABLE_GAS_LIMIT')) {
-    const message = 'Erro na transação blockchain';
+    const message = 'Erro na transaÃ§Ã£o blockchain';
     error = {
       message,
       statusCode: 400
     };
   }
 
-  // Status code padrão
+  // Status code padrÃ£o
   const statusCode = error.statusCode || 500;
 
   // Resposta de erro

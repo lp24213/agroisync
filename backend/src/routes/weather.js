@@ -1,10 +1,11 @@
-const express = require('express');
+﻿const express = require('express');
 const axios = require('axios');
 const { rateLimit } = require('../middleware/rateLimit');
 
+const logger = require('../utils/logger.js');
 const router = express.Router();
 
-// Configurações
+// ConfiguraÃ§Ãµes
 const { OPENWEATHER_API_KEY } = process.env;
 const IP_API_URL = 'https://ipapi.co/json/';
 const IPINFO_URL = 'https://ipinfo.io/json';
@@ -12,10 +13,10 @@ const IPINFO_URL = 'https://ipinfo.io/json';
 // Rate limiting para evitar abuso da API
 router.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 })); // 100 requests por 15 min
 
-// GET /api/weather - Obter clima baseado no IP do usuário
+// GET /api/weather - Obter clima baseado no IP do usuÃ¡rio
 router.get('/', async (req, res) => {
   try {
-    // Obter IP do usuário
+    // Obter IP do usuÃ¡rio
     const clientIP =
       req.ip ||
       req.connection.remoteAddress ||
@@ -27,7 +28,7 @@ router.get('/', async (req, res) => {
     let weatherData;
 
     try {
-      // Tentar obter localização via IP
+      // Tentar obter localizaÃ§Ã£o via IP
       if (clientIP && clientIP !== '127.0.0.1' && clientIP !== '::1') {
         // Usar IP-API (gratuito, limite de 1000 requests/dia)
         const ipResponse = await axios.get(`${IP_API_URL}?ip=${clientIP}`, {
@@ -65,10 +66,10 @@ router.get('/', async (req, res) => {
         }
       }
 
-      // Se não conseguir localização por IP, usar coordenadas padrão (São Paulo)
+      // Se nÃ£o conseguir localizaÃ§Ã£o por IP, usar coordenadas padrÃ£o (SÃ£o Paulo)
       if (!locationData) {
         locationData = {
-          city: 'São Paulo',
+          city: 'SÃ£o Paulo',
           state: 'SP',
           country: 'Brasil',
           lat: -23.5505,
@@ -97,7 +98,7 @@ router.get('/', async (req, res) => {
           weather: [
             {
               main: 'Clear',
-              description: 'céu limpo',
+              description: 'cÃ©u limpo',
               icon: '01d'
             }
           ],
@@ -109,7 +110,7 @@ router.get('/', async (req, res) => {
             all: 20
           },
           sys: {
-            sunrise: Date.now() + 6 * 60 * 60 * 1000, // 6h da manhã
+            sunrise: Date.now() + 6 * 60 * 60 * 1000, // 6h da manhÃ£
             sunset: Date.now() + 18 * 60 * 60 * 1000 // 6h da tarde
           }
         };
@@ -128,7 +129,7 @@ router.get('/', async (req, res) => {
           temperature: {
             current: Math.round(weatherData.main.temp),
             feels_like: Math.round(weatherData.main.feels_like),
-            unit: '°C'
+            unit: 'Â°C'
           },
           condition: {
             main: weatherData.weather[0].main,
@@ -162,13 +163,13 @@ router.get('/', async (req, res) => {
       res.json(response);
     } catch (locationError) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao obter localização:', locationError);
+        logger.error('Erro ao obter localizaÃ§Ã£o:', locationError);
       }
-      // Fallback com dados padrão
+      // Fallback com dados padrÃ£o
       const fallbackResponse = {
         success: true,
         location: {
-          city: 'São Paulo',
+          city: 'SÃ£o Paulo',
           state: 'SP',
           country: 'Brasil',
           timezone: 'America/Sao_Paulo'
@@ -177,11 +178,11 @@ router.get('/', async (req, res) => {
           temperature: {
             current: 22,
             feels_like: 24,
-            unit: '°C'
+            unit: 'Â°C'
           },
           condition: {
             main: 'Clear',
-            description: 'céu limpo',
+            description: 'cÃ©u limpo',
             icon: '01d'
           },
           details: {
@@ -198,14 +199,14 @@ router.get('/', async (req, res) => {
         },
         timestamp: new Date().toISOString(),
         source: 'Fallback Data',
-        note: 'Dados aproximados devido a erro na localização'
+        note: 'Dados aproximados devido a erro na localizaÃ§Ã£o'
       };
 
       res.json(fallbackResponse);
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro no endpoint de clima:', error);
+      logger.error('Erro no endpoint de clima:', error);
     }
     res.status(500).json({
       success: false,
@@ -215,7 +216,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/weather/forecast - Previsão para 5 dias
+// GET /api/weather/forecast - PrevisÃ£o para 5 dias
 router.get('/forecast', async (req, res) => {
   try {
     const { lat, lon, city } = req.query;
@@ -223,18 +224,18 @@ router.get('/forecast', async (req, res) => {
     if (!OPENWEATHER_API_KEY) {
       return res.status(400).json({
         success: false,
-        message: 'API de clima não configurada'
+        message: 'API de clima nÃ£o configurada'
       });
     }
 
     let coordinates = { lat, lon };
 
-    // Se não forneceu coordenadas, buscar por cidade
+    // Se nÃ£o forneceu coordenadas, buscar por cidade
     if (!lat || !lon) {
       if (!city) {
         return res.status(400).json({
           success: false,
-          message: 'Forneça coordenadas (lat, lon) ou nome da cidade'
+          message: 'ForneÃ§a coordenadas (lat, lon) ou nome da cidade'
         });
       }
 
@@ -246,7 +247,7 @@ router.get('/forecast', async (req, res) => {
       if (!geocodeResponse.data || geocodeResponse.data.length === 0) {
         return res.status(404).json({
           success: false,
-          message: 'Cidade não encontrada'
+          message: 'Cidade nÃ£o encontrada'
         });
       }
 
@@ -256,7 +257,7 @@ router.get('/forecast', async (req, res) => {
       };
     }
 
-    // Obter previsão de 5 dias
+    // Obter previsÃ£o de 5 dias
     const forecastResponse = await axios.get(
       `https://api.openweathermap.org/data/2.5/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=pt_br`,
       { timeout: 10000 }
@@ -285,7 +286,7 @@ router.get('/forecast', async (req, res) => {
       dailyForecast[date].wind_speed.push(item.wind.speed * 3.6); // m/s para km/h
     });
 
-    // Calcular médias e extremos
+    // Calcular mÃ©dias e extremos
     const formattedForecast = Object.values(dailyForecast).map(day => {
       const avgTemp = Math.round(
         day.temperatures.reduce((a, b) => a + b, 0) / day.temperatures.length
@@ -297,7 +298,7 @@ router.get('/forecast', async (req, res) => {
         day.wind_speed.reduce((a, b) => a + b, 0) / day.wind_speed.length
       );
 
-      // Condição mais frequente
+      // CondiÃ§Ã£o mais frequente
       const conditionCounts = {};
       day.conditions.forEach(condition => {
         conditionCounts[condition] = (conditionCounts[condition] || 0) + 1;
@@ -312,7 +313,7 @@ router.get('/forecast', async (req, res) => {
           average: avgTemp,
           min: minTemp,
           max: maxTemp,
-          unit: '°C'
+          unit: 'Â°C'
         },
         condition: {
           main: mostFrequentCondition,
@@ -340,7 +341,7 @@ router.get('/forecast', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter previsão:', error);
+      logger.error('Erro ao obter previsÃ£o:', error);
     }
     res.status(500).json({
       success: false,
@@ -350,20 +351,20 @@ router.get('/forecast', async (req, res) => {
   }
 });
 
-// Função auxiliar para descrições em português
+// FunÃ§Ã£o auxiliar para descriÃ§Ãµes em portuguÃªs
 function getConditionDescription(condition) {
   const descriptions = {
-    Clear: 'céu limpo',
+    Clear: 'cÃ©u limpo',
     Clouds: 'nublado',
     Rain: 'chuva',
     Drizzle: 'chuvisco',
     Thunderstorm: 'tempestade',
     Snow: 'neve',
-    Mist: 'névoa',
-    Smoke: 'fumaça',
-    Haze: 'névoa seca',
+    Mist: 'nÃ©voa',
+    Smoke: 'fumaÃ§a',
+    Haze: 'nÃ©voa seca',
     Dust: 'poeira',
-    Fog: 'névoa',
+    Fog: 'nÃ©voa',
     Sand: 'areia',
     Ash: 'cinzas',
     Squall: 'rajada',

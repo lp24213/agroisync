@@ -1,56 +1,57 @@
-import axios from 'axios';
+﻿import axios from 'axios';
+import logger from '../utils/logger.js';
 
-// Função para validar CPF
+// FunÃ§Ã£o para validar CPF
 export const validateCPF = cpf => {
-  // Remove caracteres não numéricos
+  // Remove caracteres nÃ£o numÃ©ricos
   cpf = cpf.replace(/[^\d]/g, '');
 
-  // Verifica se tem 11 dígitos
+  // Verifica se tem 11 dÃ­gitos
   if (cpf.length !== 11) {
     return false;
   }
 
-  // Verifica se todos os dígitos são iguais
+  // Verifica se todos os dÃ­gitos sÃ£o iguais
   if (/^(\d)\1+$/.test(cpf)) {
     return false;
   }
 
-  // Validação do primeiro dígito verificador
+  // ValidaÃ§Ã£o do primeiro dÃ­gito verificador
   let sum = 0;
   for (let i = 0; i < 9; i++) {
-    sum += parseInt(cpf.charAt(i, 10)) * (10 - i);
+    sum += parseInt(cpf.charAt(i, 10), 10) * (10 - i);
   }
   let remainder = 11 - (sum % 11);
   const digit1 = remainder < 2 ? 0 : remainder;
 
-  // Validação do segundo dígito verificador
+  // ValidaÃ§Ã£o do segundo dÃ­gito verificador
   sum = 0;
   for (let i = 0; i < 10; i++) {
-    sum += parseInt(cpf.charAt(i, 10)) * (11 - i);
+    sum += parseInt(cpf.charAt(i, 10), 10) * (11 - i);
   }
   remainder = 11 - (sum % 11);
   const digit2 = remainder < 2 ? 0 : remainder;
 
-  // Verifica se os dígitos verificadores estão corretos
-  return parseInt(cpf.charAt(9, 10)) === digit1 && parseInt(cpf.charAt(10, 10)) === digit2;
+  // Verifica se os dÃ­gitos verificadores estÃ£o corretos
+  return parseInt(cpf.charAt(9, 10), 10) === digit1 && parseInt(cpf.charAt(10, 10), 10) === digit2;
 };
 
-// Função para validar CNPJ
+// FunÃ§Ã£o para validar CNPJ
 export const validateCNPJ = cnpj => {
-  // Remove caracteres não numéricos
+  // Remove caracteres nÃ£o numÃ©ricos
   cnpj = cnpj.replace(/[^\d]/g, '');
 
-  // Verifica se tem 14 dígitos
+  // Verifica se tem 14 dÃ­gitos
   if (cnpj.length !== 14) {
     return false;
   }
 
-  // Verifica se todos os dígitos são iguais
+  // Verifica se todos os dÃ­gitos sÃ£o iguais
   if (/^(\d)\1+$/.test(cnpj)) {
     return false;
   }
 
-  // Validação do primeiro dígito verificador
+  // ValidaÃ§Ã£o do primeiro dÃ­gito verificador
   let size = cnpj.length - 2;
   let numbers = cnpj.substring(0, size);
   const digits = cnpj.substring(size);
@@ -58,39 +59,39 @@ export const validateCNPJ = cnpj => {
   let pos = size - 7;
 
   for (let i = size; i >= 1; i--) {
-    sum += parseInt(numbers.charAt(size - i, 10)) * pos--;
+    sum += parseInt(numbers.charAt(size - i, 10), 10) * pos--;
     if (pos < 2) {
       pos = 9;
     }
   }
 
   let result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
-  if (result !== parseInt(digits.charAt(0, 10))) {
+  if (result !== parseInt(digits.charAt(0, 10), 10)) {
     return false;
   }
 
-  // Validação do segundo dígito verificador
+  // ValidaÃ§Ã£o do segundo dÃ­gito verificador
   size = size + 1;
   numbers = cnpj.substring(0, size);
   sum = 0;
   pos = size - 7;
 
   for (let i = size; i >= 1; i--) {
-    sum += parseInt(numbers.charAt(size - i, 10)) * pos--;
+    sum += parseInt(numbers.charAt(size - i, 10), 10) * pos--;
     if (pos < 2) {
       pos = 9;
     }
   }
 
   result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
-  if (result !== parseInt(digits.charAt(1, 10))) {
+  if (result !== parseInt(digits.charAt(1, 10), 10)) {
     return false;
   }
 
   return true;
 };
 
-// Função para validar documento (CPF ou CNPJ)
+// FunÃ§Ã£o para validar documento (CPF ou CNPJ)
 export const validateDocument = document => {
   const cleanDoc = document.replace(/[^\d]/g, '');
 
@@ -111,7 +112,7 @@ export const validateReceitaFederal = async (req, res, next) => {
     if (!cpfCnpj) {
       return res.status(400).json({
         success: false,
-        message: 'CPF/CNPJ é obrigatório'
+        message: 'CPF/CNPJ Ã© obrigatÃ³rio'
       });
     }
 
@@ -119,37 +120,32 @@ export const validateReceitaFederal = async (req, res, next) => {
     if (!validateDocument(cpfCnpj)) {
       return res.status(400).json({
         success: false,
-        message: 'CPF/CNPJ inválido'
+        message: 'CPF/CNPJ invÃ¡lido'
       });
     }
 
-    // Se estiver em ambiente de produção, validar na Receita Federal
+    // Se estiver em ambiente de produÃ§Ã£o, validar na Receita Federal
     if (process.env.NODE_ENV === 'production') {
       try {
-        // Aqui você pode integrar com a API da Receita Federal
-        // Por enquanto, vamos simular uma validação
+        // Aqui vocÃª pode integrar com a API da Receita Federal
+        // Por enquanto, vamos simular uma validaÃ§Ã£o
         const isValid = await validateWithReceitaFederal(cpfCnpj);
 
         if (!isValid) {
           return res.status(400).json({
             success: false,
-            message: 'CPF/CNPJ não encontrado na Receita Federal'
+            message: 'CPF/CNPJ nÃ£o encontrado na Receita Federal'
           });
         }
       } catch (error) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.warn('Erro ao validar na Receita Federal:', error.message);
-        }
-        // Em caso de erro na API, continuar com validação local
+        logger.warn('Erro ao validar na Receita Federal:', error.message);
       }
     }
 
-    next();
+    return next();
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro na validação da Receita Federal:', error);
-    }
-    res.status(500).json({
+    logger.error('Erro na validação da Receita Federal:', error);
+    return res.status(500).json({
       success: false,
       message: 'Erro na validação do documento'
     });
@@ -157,25 +153,15 @@ export const validateReceitaFederal = async (req, res, next) => {
 };
 
 // Função para validar com a Receita Federal (implementar conforme API disponível)
-async function validateWithReceitaFederal(document) {
-  try {
-    // Aqui você implementaria a integração real com a API da Receita Federal
-    // Por exemplo:
-    // const response = await axios.get(`https://api.receita.fazenda.gov.br/consulta/${document}`);
-    // return response.data.situacao === 'ATIVA';
-
-    // Por enquanto, retorna true para simular validação bem-sucedida
-    return true;
-  } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro na API da Receita Federal:', error);
-    }
-    throw new Error('Erro na validação com a Receita Federal');
-  }
+// eslint-disable-next-line require-await
+function validateWithReceitaFederal(_document) {
+  // Stub: implementar integração real quando a API estiver disponível.
+  // Mantemos função para permitir await no chamador.
+  return true;
 }
 
-// Middleware para validar endereço via API IBGE
-export const validateAddressIBGE = async (req, res, next) => {
+// Middleware para validar endereÃ§o via API IBGE
+export const validateAddressIBGE = (req, res, next) => {
   try {
     const { address } = req.body;
 
@@ -188,7 +174,7 @@ export const validateAddressIBGE = async (req, res, next) => {
     if (cep.length !== 8) {
       return res.status(400).json({
         success: false,
-        message: 'CEP inválido'
+        message: 'CEP invÃ¡lido'
       });
     }
 
@@ -199,11 +185,11 @@ export const validateAddressIBGE = async (req, res, next) => {
       if (response.data.erro) {
         return res.status(400).json({
           success: false,
-          message: 'CEP não encontrado'
+          message: 'CEP nÃ£o encontrado'
         });
       }
 
-      // Atualizar endereço com dados da API
+      // Atualizar endereÃ§o com dados da API
       req.body.address = {
         ...address,
         street: response.data.logradouro || address.street,
@@ -213,25 +199,21 @@ export const validateAddressIBGE = async (req, res, next) => {
         zipCode: cep
       };
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.warn('Erro ao consultar CEP:', error.message);
-      }
+      logger.warn('Erro ao consultar CEP:', error.message);
       // Em caso de erro na API, continuar com dados fornecidos
     }
 
-    next();
+    return next();
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro na validação de endereço:', error);
-    }
-    res.status(500).json({
+    logger.error('Erro na validação de endereço:', error);
+    return res.status(500).json({
       success: false,
       message: 'Erro na validação de endereço'
     });
   }
 };
 
-// Middleware para validar documentos obrigatórios
+// Middleware para validar documentos obrigatÃ³rios
 export const validateRequiredDocuments = (req, res, next) => {
   try {
     const { documents } = req.body;
@@ -239,11 +221,11 @@ export const validateRequiredDocuments = (req, res, next) => {
     if (!documents || !Array.isArray(documents) || documents.length === 0) {
       return res.status(400).json({
         success: false,
-        message: 'Pelo menos um documento é obrigatório'
+        message: 'Pelo menos um documento Ã© obrigatÃ³rio'
       });
     }
 
-    // Validar se cada documento tem os campos obrigatórios
+    // Validar se cada documento tem os campos obrigatÃ³rios
     for (const doc of documents) {
       if (!doc.type || !doc.filename || !doc.url) {
         return res.status(400).json({
@@ -257,17 +239,15 @@ export const validateRequiredDocuments = (req, res, next) => {
       if (!validTypes.includes(doc.type)) {
         return res.status(400).json({
           success: false,
-          message: 'Tipo de documento inválido'
+          message: 'Tipo de documento invÃ¡lido'
         });
       }
     }
 
-    next();
+    return next();
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro na validação de documentos:', error);
-    }
-    res.status(500).json({
+    logger.error('Erro na validação de documentos:', error);
+    return res.status(500).json({
       success: false,
       message: 'Erro na validação de documentos'
     });

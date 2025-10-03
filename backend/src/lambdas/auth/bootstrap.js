@@ -1,7 +1,8 @@
-const { DynamoDB } = require('aws-sdk');
+﻿const { DynamoDB } = require('aws-sdk');
 const { MongoClient } = require('mongodb');
 const jwt = require('jsonwebtoken');
 
+const logger = require('../../utils/logger.js');
 const dynamodb = new DynamoDB.DocumentClient();
 const mongoClient = new MongoClient(process.env.MONGODB_URI);
 
@@ -9,9 +10,9 @@ const ADMIN_EMAIL = 'luispaulodeoliveira@agrotm.com.br';
 
 exports.handler = async event => {
   try {
-    // Verificar se é uma requisição HTTP
+    // Verificar se Ã© uma requisiÃ§Ã£o HTTP
     if (!event.httpMethod) {
-      throw new Error('Método HTTP não especificado');
+      throw new Error('MÃ©todo HTTP nÃ£o especificado');
     }
 
     // Configurar CORS
@@ -38,13 +39,13 @@ exports.handler = async event => {
         body: JSON.stringify({
           error: {
             code: 'METHOD_NOT_ALLOWED',
-            message: 'Método não permitido'
+            message: 'MÃ©todo nÃ£o permitido'
           }
         })
       };
     }
 
-    // Verificar autorização
+    // Verificar autorizaÃ§Ã£o
     const authHeader = event.headers.Authorization || event.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return {
@@ -53,7 +54,7 @@ exports.handler = async event => {
         body: JSON.stringify({
           error: {
             code: 'UNAUTHORIZED',
-            message: 'Token de autorização não fornecido'
+            message: 'Token de autorizaÃ§Ã£o nÃ£o fornecido'
           }
         })
       };
@@ -66,7 +67,7 @@ exports.handler = async event => {
     try {
       decodedToken = jwt.decode(token);
       if (!decodedToken) {
-        throw new Error('Token inválido');
+        throw new Error('Token invÃ¡lido');
       }
     } catch (error) {
       return {
@@ -75,7 +76,7 @@ exports.handler = async event => {
         body: JSON.stringify({
           error: {
             code: 'INVALID_TOKEN',
-            message: 'Token inválido'
+            message: 'Token invÃ¡lido'
           }
         })
       };
@@ -91,7 +92,7 @@ exports.handler = async event => {
         body: JSON.stringify({
           error: {
             code: 'INVALID_TOKEN_DATA',
-            message: 'Dados do token inválidos'
+            message: 'Dados do token invÃ¡lidos'
           }
         })
       };
@@ -101,7 +102,7 @@ exports.handler = async event => {
     await mongoClient.connect();
     const db = mongoClient.db();
 
-    // Verificar se usuário já existe
+    // Verificar se usuÃ¡rio jÃ¡ existe
     const existingUser = await db.collection('users').findOne({
       $or: [{ cognitoSub }, { email: email.toLowerCase() }]
     });
@@ -113,7 +114,7 @@ exports.handler = async event => {
         body: JSON.stringify({
           error: {
             code: 'USER_ALREADY_EXISTS',
-            message: 'Usuário já existe'
+            message: 'UsuÃ¡rio jÃ¡ existe'
           }
         })
       };
@@ -122,7 +123,7 @@ exports.handler = async event => {
     // Determinar role baseado no email
     const role = email.toLowerCase() === ADMIN_EMAIL.toLowerCase() ? 'admin' : 'user';
 
-    // Criar usuário
+    // Criar usuÃ¡rio
     const newUser = {
       cognitoSub,
       email: email.toLowerCase(),
@@ -144,10 +145,10 @@ exports.handler = async event => {
       updatedAt: new Date()
     };
 
-    // Inserir usuário
+    // Inserir usuÃ¡rio
     const result = await db.collection('users').insertOne(newUser);
 
-    // Criar índices se não existirem
+    // Criar Ã­ndices se nÃ£o existirem
     await db.collection('users').createIndex({ email: 1 }, { unique: true });
     await db.collection('users').createIndex({ cognitoSub: 1 }, { unique: true });
 
@@ -155,7 +156,7 @@ exports.handler = async event => {
       statusCode: 201,
       headers: corsHeaders,
       body: JSON.stringify({
-        message: 'Usuário criado com sucesso',
+        message: 'UsuÃ¡rio criado com sucesso',
         user: {
           id: result.insertedId,
           email: newUser.email,
@@ -166,7 +167,7 @@ exports.handler = async event => {
     };
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro no bootstrap:', error);
+      logger.error('Erro no bootstrap:', error);
     }
     return {
       statusCode: 500,

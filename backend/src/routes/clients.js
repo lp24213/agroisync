@@ -1,41 +1,43 @@
-import express from 'express';
+﻿import express from 'express';
 import { body, validationResult } from 'express-validator';
 import Client from '../models/Client.js';
 import User from '../models/User.js';
-import { authenticateToken } from '../middleware/auth.js';
+import { authenticateToken, adminAuth } from '../middleware/auth.js';
 import { requireAdmin } from '../middleware/adminAuth.js';
 import { getClientIP } from '../utils/ipUtils.js';
 import { createSecurityLog } from '../utils/securityLogger.js';
+import { logSecurityEvent } from '../services/auditService.js';
 import {
   validateReceitaFederal,
   validateAddressIBGE,
   validateRequiredDocuments
 } from '../middleware/documentValidation.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
-// Middleware de validação para criação/atualização de cliente
+// Middleware de validaÃ§Ã£o para criaÃ§Ã£o/atualizaÃ§Ã£o de cliente
 const validateClientData = [
   body('name')
     .trim()
     .isLength({ min: 2, max: 100 })
     .withMessage('Nome deve ter entre 2 e 100 caracteres'),
-  body('email').isEmail().normalizeEmail().withMessage('Email inválido'),
-  body('cpfCnpj').trim().isLength({ min: 11, max: 18 }).withMessage('CPF/CNPJ inválido'),
-  body('phone').trim().isLength({ min: 10, max: 15 }).withMessage('Telefone inválido'),
-  body('address.street').trim().isLength({ min: 5, max: 200 }).withMessage('Endereço inválido'),
-  body('address.city').trim().isLength({ min: 2, max: 100 }).withMessage('Cidade inválida'),
-  body('address.state').trim().isLength({ min: 2, max: 2 }).withMessage('Estado inválido'),
-  body('address.zipCode').trim().isLength({ min: 8, max: 9 }).withMessage('CEP inválido'),
-  body('documents').isArray({ min: 1 }).withMessage('Pelo menos um documento é obrigatório')
+  body('email').isEmail().normalizeEmail().withMessage('Email invÃ¡lido'),
+  body('cpfCnpj').trim().isLength({ min: 11, max: 18 }).withMessage('CPF/CNPJ invÃ¡lido'),
+  body('phone').trim().isLength({ min: 10, max: 15 }).withMessage('Telefone invÃ¡lido'),
+  body('address.street').trim().isLength({ min: 5, max: 200 }).withMessage('EndereÃ§o invÃ¡lido'),
+  body('address.city').trim().isLength({ min: 2, max: 100 }).withMessage('Cidade invÃ¡lida'),
+  body('address.state').trim().isLength({ min: 2, max: 2 }).withMessage('Estado invÃ¡lido'),
+  body('address.zipCode').trim().isLength({ min: 8, max: 9 }).withMessage('CEP invÃ¡lido'),
+  body('documents').isArray({ min: 1 }).withMessage('Pelo menos um documento Ã© obrigatÃ³rio')
 ];
 
-// GET /api/clients - Listar clientes (admin vê todos, usuário vê apenas os seus)
+// GET /api/clients - Listar clientes (admin vÃª todos, usuÃ¡rio vÃª apenas os seus)
 router.get('/', authenticateToken, async (req, res) => {
   try {
     const query = {};
 
-    // Se não for admin, só mostra os clientes do usuário
+    // Se nÃ£o for admin, sÃ³ mostra os clientes do usuÃ¡rio
     if (!req.user.isAdmin) {
       query.userId = req.user._id;
     }
@@ -50,9 +52,7 @@ router.get('/', authenticateToken, async (req, res) => {
       count: clients.length
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao listar clientes:', error);
-    }
+    logger.error('Erro ao listar clientes:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -60,7 +60,7 @@ router.get('/', authenticateToken, async (req, res) => {
   }
 });
 
-// GET /api/clients/:id - Obter cliente específico
+// GET /api/clients/:id - Obter cliente especÃ­fico
 router.get('/:id', authenticateToken, async (req, res) => {
   try {
     const client = await Client.findById(req.params.id).populate('userId', 'name email');
@@ -68,11 +68,11 @@ router.get('/:id', authenticateToken, async (req, res) => {
     if (!client) {
       return res.status(404).json({
         success: false,
-        message: 'Cliente não encontrado'
+        message: 'Cliente nÃ£o encontrado'
       });
     }
 
-    // Verificar se usuário tem permissão para ver este cliente
+    // Verificar se usuÃ¡rio tem permissÃ£o para ver este cliente
     if (!req.user.isAdmin && client.userId._id.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,
@@ -85,9 +85,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
       data: client
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter cliente:', error);
-    }
+    logger.error('Erro ao obter cliente:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -105,31 +103,31 @@ router.post(
   validateRequiredDocuments,
   async (req, res) => {
     try {
-      // Verificar erros de validação
+      // Verificar erros de validaÃ§Ã£o
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
 
-      // Verificar se CPF/CNPJ já existe
+      // Verificar se CPF/CNPJ jÃ¡ existe
       const existingClient = await Client.findOne({ cpfCnpj: req.body.cpfCnpj });
       if (existingClient) {
         return res.status(400).json({
           success: false,
-          message: 'CPF/CNPJ já cadastrado'
+          message: 'CPF/CNPJ jÃ¡ cadastrado'
         });
       }
 
-      // Verificar se email já existe
+      // Verificar se email jÃ¡ existe
       const existingEmail = await Client.findOne({ email: req.body.email });
       if (existingEmail) {
         return res.status(400).json({
           success: false,
-          message: 'Email já cadastrado'
+          message: 'Email jÃ¡ cadastrado'
         });
       }
 
@@ -142,7 +140,7 @@ router.post(
       const client = new Client(clientData);
       await client.save();
 
-      // Log de segurança
+      // Log de seguranÃ§a
       await logSecurityEvent(
         'client_created',
         req.user._id,
@@ -157,9 +155,7 @@ router.post(
         data: client
       });
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao criar cliente:', error);
-      }
+      logger.error('Erro ao criar cliente:', error);
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -178,12 +174,12 @@ router.put(
   validateRequiredDocuments,
   async (req, res) => {
     try {
-      // Verificar erros de validação
+      // Verificar erros de validaÃ§Ã£o
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
@@ -192,11 +188,11 @@ router.put(
       if (!client) {
         return res.status(404).json({
           success: false,
-          message: 'Cliente não encontrado'
+          message: 'Cliente nÃ£o encontrado'
         });
       }
 
-      // Verificar se usuário tem permissão para editar este cliente
+      // Verificar se usuÃ¡rio tem permissÃ£o para editar este cliente
       if (!req.user.isAdmin && client.userId.toString() !== req.user._id.toString()) {
         return res.status(403).json({
           success: false,
@@ -204,24 +200,24 @@ router.put(
         });
       }
 
-      // Verificar se CPF/CNPJ já existe em outro cliente
+      // Verificar se CPF/CNPJ jÃ¡ existe em outro cliente
       if (req.body.cpfCnpj && req.body.cpfCnpj !== client.cpfCnpj) {
         const existingClient = await Client.findOne({ cpfCnpj: req.body.cpfCnpj });
         if (existingClient) {
           return res.status(400).json({
             success: false,
-            message: 'CPF/CNPJ já cadastrado'
+            message: 'CPF/CNPJ jÃ¡ cadastrado'
           });
         }
       }
 
-      // Verificar se email já existe em outro cliente
+      // Verificar se email jÃ¡ existe em outro cliente
       if (req.body.email && req.body.email !== client.email) {
         const existingEmail = await Client.findOne({ email: req.body.email });
         if (existingEmail) {
           return res.status(400).json({
             success: false,
-            message: 'Email já cadastrado'
+            message: 'Email jÃ¡ cadastrado'
           });
         }
       }
@@ -232,7 +228,7 @@ router.put(
         runValidators: true
       });
 
-      // Log de segurança
+      // Log de seguranÃ§a
       await logSecurityEvent(
         'client_updated',
         req.user._id,
@@ -247,9 +243,7 @@ router.put(
         data: updatedClient
       });
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao atualizar cliente:', error);
-      }
+      logger.error('Erro ao atualizar cliente:', error);
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -265,11 +259,11 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     if (!client) {
       return res.status(404).json({
         success: false,
-        message: 'Cliente não encontrado'
+        message: 'Cliente nÃ£o encontrado'
       });
     }
 
-    // Verificar se usuário tem permissão para deletar este cliente
+    // Verificar se usuÃ¡rio tem permissÃ£o para deletar este cliente
     if (!req.user.isAdmin && client.userId.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,
@@ -279,7 +273,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 
     await Client.findByIdAndDelete(req.params.id);
 
-    // Log de segurança
+    // Log de seguranÃ§a
     await logSecurityEvent(
       'client_deleted',
       req.user._id,
@@ -293,9 +287,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
       message: 'Cliente deletado com sucesso'
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao deletar cliente:', error);
-    }
+    logger.error('Erro ao deletar cliente:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -310,14 +302,14 @@ router.patch('/:id/validate-documents', adminAuth, async (req, res) => {
     if (!client) {
       return res.status(404).json({
         success: false,
-        message: 'Cliente não encontrado'
+        message: 'Cliente nÃ£o encontrado'
       });
     }
 
     client.isDocumentValidated = true;
     await client.save();
 
-    // Log de segurança
+    // Log de seguranÃ§a
     await logSecurityEvent(
       'client_documents_validated',
       req.user._id,
@@ -332,9 +324,7 @@ router.patch('/:id/validate-documents', adminAuth, async (req, res) => {
       data: client
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao validar documentos:', error);
-    }
+    logger.error('Erro ao validar documentos:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -353,7 +343,7 @@ router.patch('/:id/verify-payment', adminAuth, async (req, res) => {
     ) {
       return res.status(400).json({
         success: false,
-        message: 'Status de pagamento inválido'
+        message: 'Status de pagamento invÃ¡lido'
       });
     }
 
@@ -361,7 +351,7 @@ router.patch('/:id/verify-payment', adminAuth, async (req, res) => {
     if (!client) {
       return res.status(404).json({
         success: false,
-        message: 'Cliente não encontrado'
+        message: 'Cliente nÃ£o encontrado'
       });
     }
 
@@ -376,7 +366,7 @@ router.patch('/:id/verify-payment', adminAuth, async (req, res) => {
 
     await client.save();
 
-    // Log de segurança
+    // Log de seguranÃ§a
     await logSecurityEvent(
       'client_payment_verified',
       req.user._id,
@@ -391,9 +381,7 @@ router.patch('/:id/verify-payment', adminAuth, async (req, res) => {
       data: client
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao verificar pagamento:', error);
-    }
+    logger.error('Erro ao verificar pagamento:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -401,7 +389,7 @@ router.patch('/:id/verify-payment', adminAuth, async (req, res) => {
   }
 });
 
-// GET /api/clients/stats/overview - Estatísticas gerais (admin)
+// GET /api/clients/stats/overview - EstatÃ­sticas gerais (admin)
 router.get('/stats/overview', adminAuth, async (req, res) => {
   try {
     const stats = await Client.aggregate([
@@ -448,9 +436,7 @@ router.get('/stats/overview', adminAuth, async (req, res) => {
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter estatísticas:', error);
-    }
+    logger.error('Erro ao obter estatÃ­sticas:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

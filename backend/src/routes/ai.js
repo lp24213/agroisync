@@ -1,13 +1,13 @@
-const express = require('express');
+﻿const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
 // Reconhecimento de imagem (stub)
-router.post('/recognize', upload.single('image'), async (req, res) => {
+router.post('/recognize', upload.single('image'), (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ error: 'Imagem não enviada' });
+      return res.status(400).json({ error: 'Imagem nÃ£o enviada' });
     }
 
     // Placeholder simples: tenta inferir pelo nome do arquivo

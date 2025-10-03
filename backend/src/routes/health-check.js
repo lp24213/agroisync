@@ -1,12 +1,12 @@
-/**
- * Health Check Routes - Monitoramento automático do sistema
+﻿/**
+ * Health Check Routes - Monitoramento automÃ¡tico do sistema
  */
 
 import express from 'express';
 
 const router = express.Router();
 
-// Status da aplicação
+// Status da aplicaÃ§Ã£o
 const appStatus = {
   startTime: Date.now(),
   lastCheck: null,
@@ -18,7 +18,7 @@ const appStatus = {
 };
 
 /**
- * GET /health - Health check básico
+ * GET /health - Health check bÃ¡sico
  */
 router.get('/', (req, res) => {
   const uptime = Date.now() - appStatus.startTime;
@@ -35,7 +35,7 @@ router.get('/', (req, res) => {
 /**
  * GET /health/detailed - Health check detalhado
  */
-router.get('/detailed', async (req, res) => {
+router.get('/detailed', (req, res) => {
   const uptime = Date.now() - appStatus.startTime;
 
   // Verificar API
@@ -46,7 +46,7 @@ router.get('/detailed', async (req, res) => {
 
   // Verificar Database (Cloudflare D1)
   try {
-    // Aqui você adicionaria verificação real do D1
+    // Aqui vocÃª adicionaria verificaÃ§Ã£o real do D1
     appStatus.checks.database = {
       status: process.env.CLOUDFLARE_D1_DATABASE_ID ? 'ok' : 'not_configured',
       lastCheck: new Date().toISOString()
@@ -117,7 +117,7 @@ router.get('/live', (req, res) => {
 });
 
 /**
- * GET /health/metrics - Métricas básicas
+ * GET /health/metrics - MÃ©tricas bÃ¡sicas
  */
 router.get('/metrics', (req, res) => {
   const uptime = Date.now() - appStatus.startTime;

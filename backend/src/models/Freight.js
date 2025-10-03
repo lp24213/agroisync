@@ -1,29 +1,29 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 const freightSchema = new mongoose.Schema(
   {
-    // Dados Públicos (visíveis para todos)
+    // Dados PÃºblicos (visÃ­veis para todos)
     publicData: {
       title: {
         type: String,
-        required: [true, 'Título é obrigatório'],
+        required: [true, 'TÃ­tulo Ã© obrigatÃ³rio'],
         trim: true,
-        maxlength: [200, 'Título não pode ter mais de 200 caracteres']
+        maxlength: [200, 'TÃ­tulo nÃ£o pode ter mais de 200 caracteres']
       },
       shortDescription: {
         type: String,
-        required: [true, 'Descrição curta é obrigatória'],
+        required: [true, 'DescriÃ§Ã£o curta Ã© obrigatÃ³ria'],
         trim: true,
-        maxlength: [500, 'Descrição não pode ter mais de 500 caracteres']
+        maxlength: [500, 'DescriÃ§Ã£o nÃ£o pode ter mais de 500 caracteres']
       },
       originCity: {
         type: String,
-        required: [true, 'Cidade de origem é obrigatória'],
+        required: [true, 'Cidade de origem Ã© obrigatÃ³ria'],
         trim: true
       },
       originState: {
         type: String,
-        required: [true, 'Estado de origem é obrigatório'],
+        required: [true, 'Estado de origem Ã© obrigatÃ³rio'],
         trim: true,
         uppercase: true,
         minlength: 2,
@@ -31,12 +31,12 @@ const freightSchema = new mongoose.Schema(
       },
       destinationCity: {
         type: String,
-        required: [true, 'Cidade de destino é obrigatória'],
+        required: [true, 'Cidade de destino Ã© obrigatÃ³ria'],
         trim: true
       },
       destinationState: {
         type: String,
-        required: [true, 'Estado de destino é obrigatório'],
+        required: [true, 'Estado de destino Ã© obrigatÃ³rio'],
         trim: true,
         uppercase: true,
         minlength: 2,
@@ -44,8 +44,8 @@ const freightSchema = new mongoose.Schema(
       },
       freightValue: {
         type: Number,
-        required: [true, 'Valor do frete é obrigatório'],
-        min: [0, 'Valor não pode ser negativo']
+        required: [true, 'Valor do frete Ã© obrigatÃ³rio'],
+        min: [0, 'Valor nÃ£o pode ser negativo']
       },
       currency: {
         type: String,
@@ -54,13 +54,13 @@ const freightSchema = new mongoose.Schema(
       },
       freightType: {
         type: String,
-        required: [true, 'Tipo de frete é obrigatório'],
+        required: [true, 'Tipo de frete Ã© obrigatÃ³rio'],
         enum: ['carga_completa', 'carga_fracionada', 'expresso', 'agendado']
       },
       weight: {
         type: Number,
-        required: [true, 'Peso é obrigatório'],
-        min: [0, 'Peso não pode ser negativo']
+        required: [true, 'Peso Ã© obrigatÃ³rio'],
+        min: [0, 'Peso nÃ£o pode ser negativo']
       },
       weightUnit: {
         type: String,
@@ -69,12 +69,12 @@ const freightSchema = new mongoose.Schema(
       },
       volume: {
         type: Number,
-        min: [0, 'Volume não pode ser negativo']
+        min: [0, 'Volume nÃ£o pode ser negativo']
       },
       volumeUnit: {
         type: String,
-        default: 'm³',
-        enum: ['m³', 'm²', 'l']
+        default: 'mÂ³',
+        enum: ['mÂ³', 'mÂ²', 'l']
       },
       isActive: {
         type: Boolean,
@@ -86,12 +86,12 @@ const freightSchema = new mongoose.Schema(
       }
     },
 
-    // Dados Privados (visíveis apenas após pagamento)
+    // Dados Privados (visÃ­veis apenas apÃ³s pagamento)
     privateData: {
       fullDescription: {
         type: String,
         trim: true,
-        maxlength: [2000, 'Descrição completa não pode ter mais de 2000 caracteres']
+        maxlength: [2000, 'DescriÃ§Ã£o completa nÃ£o pode ter mais de 2000 caracteres']
       },
       detailedRoute: {
         waypoints: [
@@ -152,8 +152,8 @@ const freightSchema = new mongoose.Schema(
         axles: {
           type: Number,
           required: true,
-          min: [2, 'Mínimo de 2 eixos'],
-          max: [9, 'Máximo de 9 eixos']
+          min: [2, 'MÃ­nimo de 2 eixos'],
+          max: [9, 'MÃ¡ximo de 9 eixos']
         },
         capacity: {
           weight: Number,
@@ -191,7 +191,7 @@ const freightSchema = new mongoose.Schema(
       },
       paymentTerms: {
         type: String,
-        enum: ['à vista', '30 dias', '60 dias', '90 dias', 'negociável']
+        enum: ['Ã  vista', '30 dias', '60 dias', '90 dias', 'negociÃ¡vel']
       },
       specialRequirements: [String]
     },
@@ -200,7 +200,7 @@ const freightSchema = new mongoose.Schema(
     carrier: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: [true, 'Transportador é obrigatório']
+      required: [true, 'Transportador Ã© obrigatÃ³rio']
     },
 
     // Status e controle
@@ -210,7 +210,7 @@ const freightSchema = new mongoose.Schema(
       default: 'active'
     },
 
-    // Métricas
+    // MÃ©tricas
     views: {
       type: Number,
       default: 0
@@ -226,7 +226,7 @@ const freightSchema = new mongoose.Schema(
     expiresAt: {
       type: Date,
       default() {
-        // Frete expira em 30 dias por padrão
+        // Frete expira em 30 dias por padrÃ£o
         const date = new Date();
         date.setDate(date.getDate() + 30);
         return date;
@@ -238,7 +238,7 @@ const freightSchema = new mongoose.Schema(
   }
 );
 
-// Índices para performance
+// Ãndices para performance
 freightSchema.index({ 'publicData.originCity': 1, 'publicData.originState': 1 });
 freightSchema.index({ 'publicData.destinationCity': 1, 'publicData.destinationState': 1 });
 freightSchema.index({ 'publicData.freightValue': 1 });
@@ -249,30 +249,30 @@ freightSchema.index({ 'publicData.isActive': 1 });
 freightSchema.index({ expiresAt: 1 });
 freightSchema.index({ createdAt: -1 });
 
-// Middleware para verificar expiração
+// Middleware para verificar expiraÃ§Ã£o
 freightSchema.pre('find', function () {
   this.where('expiresAt').gt(new Date());
 });
 
-// Método para obter dados públicos
+// MÃ©todo para obter dados pÃºblicos
 freightSchema.methods.getPublicData = function () {
   return {
     _id: this._id,
     ...this.publicData,
     carrier: {
       name: this.privateData.carrierInfo.name,
-      city: this.privateData.carrierInfo.address?.city || 'Não informado',
-      state: this.privateData.carrierInfo.address?.state || 'Não informado'
+      city: this.privateData.carrierInfo.address?.city || 'NÃ£o informado',
+      state: this.privateData.carrierInfo.address?.state || 'NÃ£o informado'
     },
     createdAt: this.createdAt,
     expiresAt: this.expiresAt
   };
 };
 
-// Método para obter dados privados (apenas se usuário pagou)
+// MÃ©todo para obter dados privados (apenas se usuÃ¡rio pagou)
 freightSchema.methods.getPrivateData = function (userId, userIsPaid) {
   if (!userIsPaid) {
-    throw new Error('Acesso negado: usuário não possui plano ativo');
+    throw new Error('Acesso negado: usuÃ¡rio nÃ£o possui plano ativo');
   }
 
   return {
@@ -287,13 +287,13 @@ freightSchema.methods.getPrivateData = function (userId, userIsPaid) {
   };
 };
 
-// Método para incrementar visualizações
+// MÃ©todo para incrementar visualizaÃ§Ãµes
 freightSchema.methods.incrementViews = function () {
   this.views += 1;
   return this.save();
 };
 
-// Método para adicionar/remover favoritos
+// MÃ©todo para adicionar/remover favoritos
 freightSchema.methods.toggleFavorite = function (userId) {
   const index = this.favorites.indexOf(userId);
   if (index === -1) {
@@ -304,14 +304,14 @@ freightSchema.methods.toggleFavorite = function (userId) {
   return this.save();
 };
 
-// Método para verificar se frete está ativo
+// MÃ©todo para verificar se frete estÃ¡ ativo
 freightSchema.methods.isActive = function () {
   return this.status === 'active' && this.publicData.isActive && new Date() < this.expiresAt;
 };
 
-// Método para calcular distância estimada (simplificado)
+// MÃ©todo para calcular distÃ¢ncia estimada (simplificado)
 freightSchema.methods.getEstimatedDistance = function () {
-  // Implementar cálculo real de distância via API de geocoding
+  // Implementar cÃ¡lculo real de distÃ¢ncia via API de geocoding
   // Por enquanto retorna valor estimado baseado nos estados
   const { originState } = this.publicData;
   const destState = this.publicData.destinationState;
@@ -323,28 +323,28 @@ freightSchema.methods.getEstimatedDistance = function () {
     ['SP', 'RJ', 'MG', 'ES'].includes(originState) &&
     ['SP', 'RJ', 'MG', 'ES'].includes(destState)
   ) {
-    return 'Região Sudeste';
+    return 'RegiÃ£o Sudeste';
   }
   if (['RS', 'SC', 'PR'].includes(originState) && ['RS', 'SC', 'PR'].includes(destState)) {
-    return 'Região Sul';
+    return 'RegiÃ£o Sul';
   }
   if (
     ['GO', 'MT', 'MS', 'DF'].includes(originState) &&
     ['GO', 'MT', 'MS', 'DF'].includes(destState)
   ) {
-    return 'Região Centro-Oeste';
+    return 'RegiÃ£o Centro-Oeste';
   }
   if (
     ['BA', 'SE', 'AL', 'PE', 'PB', 'RN', 'CE', 'PI', 'MA'].includes(originState) &&
     ['BA', 'SE', 'AL', 'PE', 'PB', 'RN', 'CE', 'PI', 'MA'].includes(destState)
   ) {
-    return 'Região Nordeste';
+    return 'RegiÃ£o Nordeste';
   }
   if (
     ['AM', 'PA', 'AP', 'TO', 'RO', 'AC', 'RR'].includes(originState) &&
     ['AM', 'PA', 'AP', 'TO', 'RO', 'AC', 'RR'].includes(destState)
   ) {
-    return 'Região Norte';
+    return 'RegiÃ£o Norte';
   }
 
   return 'Interestadual';

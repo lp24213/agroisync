@@ -1,612 +1,202 @@
+﻿// AUTO-GENERATED CLEAN PLANS ROUTER - single implementation
 const express = require('express');
 const router = express.Router();
-const Stripe = require('stripe');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const logger = require('../utils/logger');
+
+// Models
 const { AgroConecta, Loja, Marketplace, Fazenda } = require('../models/Registration');
+
+// Middleware
 const auth = require('../middleware/auth');
 
-// Configurar Stripe
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
-
-// Planos disponíveis
+// Plan definitions (Stripe price IDs are loaded from env vars)
 const PLANS = {
-  basic: {
-    id: 'basic',
-    name: 'Básico',
-    price: 29.9,
-    products: 1,
-    description: '1 produto ou 1 frete',
-    features: ['1 produto/frete', 'Visibilidade básica', 'Suporte por email', 'Dashboard básico'],
-    stripePriceId: process.env.STRIPE_BASIC_PRICE_ID || 'price_basic_monthly'
+  free: { id: 'free', name: 'Gratuito', price: 0 },
+  monthly_basic: {
+    id: 'monthly_basic',
+    name: 'Básico Mensal',
+    price: 1999,
+    stripePriceId: process.env.STRIPE_PRICE_MONTHLY_BASIC
   },
-  standard: {
-    id: 'standard',
-    name: 'Padrão',
-    price: 99.9,
-    products: 5,
-    description: '5 produtos ou 5 fretes',
-    features: [
-      '5 produtos/fretes',
-      'Visibilidade premium',
-      'Suporte prioritário',
-      'Analytics básico',
-      'Chat em tempo real'
-    ],
-    stripePriceId: process.env.STRIPE_STANDARD_PRICE_ID || 'price_standard_monthly'
-  },
-  premium: {
-    id: 'premium',
-    name: 'Premium',
-    price: 499.9,
-    products: 25,
-    description: '25 produtos ou 25 fretes',
-    features: [
-      '25 produtos/fretes',
-      'Visibilidade máxima',
-      'Suporte 24/7',
-      'Analytics avançado',
-      'API access',
-      'Integração personalizada'
-    ],
-    stripePriceId: process.env.STRIPE_PREMIUM_PRICE_ID || 'price_premium_monthly'
+  yearly_basic: {
+    id: 'yearly_basic',
+    name: 'Básico Anual',
+    price: 19900,
+    stripePriceId: process.env.STRIPE_PRICE_YEARLY_BASIC
   }
 };
 
-// GET /api/plans - Listar todos os planos
+// Helper: find registration by type
+function findRegistrationByType(type, id) {
+  switch (type) {
+    case 'agroconecta':
+      return AgroConecta.findById(id);
+    case 'loja':
+      return Loja.findById(id);
+    case 'marketplace':
+      return Marketplace.findById(id);
+    case 'fazenda':
+      return Fazenda.findById(id);
+    default:
+      return null;
+  }
+}
+
+// GET /api/plans - retorna planos públicos
 router.get('/', (req, res) => {
   try {
-    const plans = Object.values(PLANS);
-
-    res.json({
-      success: true,
-      data: plans,
-      annualDiscount: 0.15 // 15% de desconto anual
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Erro ao buscar planos',
-      error: error.message
-    });
+    const plans = Object.values(PLANS).map(p => ({ id: p.id, name: p.name, price: p.price }));
+    return res.json({ success: true, data: plans });
+  } catch (err) {
+    logger.error('GET /api/plans failed', err);
+    return res
+      .status(500)
+      .json({ success: false, message: 'Erro ao listar planos', error: err.message });
   }
 });
 
-// GET /api/plans/:type - Listar planos por tipo
-router.get('/:type', (req, res) => {
+// GET /api/plans/:planId - retorna detalhes do plano
+router.get('/:planId', (req, res) => {
   try {
-    const { type } = req.params;
-    const { frequency = 'monthly' } = req.query;
+    const { planId } = req.params;
+    const plan = PLANS[planId];
 
-    let plans = Object.values(PLANS);
-
-    // Aplicar desconto anual
-    if (frequency === 'annual') {
-      plans = plans.map(plan => ({
-        ...plan,
-        originalPrice: plan.price,
-        price: plan.price * 12 * (1 - 0.15), // 15% de desconto
-        savings: plan.price * 12 * 0.15,
-        frequency: 'annual'
-      }));
-    } else {
-      plans = plans.map(plan => ({
-        ...plan,
-        frequency: 'monthly'
-      }));
+    if (!plan) {
+      return res.status(404).json({ success: false, message: 'Plano não encontrado' });
     }
 
-    res.json({
-      success: true,
-      data: plans,
-      frequency,
-      annualDiscount: frequency === 'annual' ? 0.15 : 0
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Erro ao buscar planos',
-      error: error.message
-    });
+    return res.json({ success: true, data: plan });
+  } catch (err) {
+    logger.error('GET /api/plans/:planId failed', err);
+    return res
+      .status(500)
+      .json({ success: false, message: 'Erro ao obter plano', error: err.message });
   }
 });
 
-// POST /api/plans/subscribe - Criar assinatura
+// POST /api/plans/subscribe - cria sessão de checkout para assinatura
+// body: { planId, registrationId, type, successUrl?, cancelUrl? }
 router.post('/subscribe', auth, async (req, res) => {
   try {
-    const { planId, frequency = 'monthly', type, registrationId } = req.body;
-    const userId = req.user.id;
+    const { planId, registrationId, type, successUrl, cancelUrl } = req.body;
 
-    // Validar plano
     const plan = PLANS[planId];
-    if (!plan) {
-      return res.status(400).json({
-        success: false,
-        message: 'Plano inválido'
-      });
+    if (!plan || !plan.stripePriceId) {
+      return res.status(400).json({ success: false, message: 'Plano inválido' });
     }
 
-    // Calcular preço
-    let { price } = plan;
-    if (frequency === 'annual') {
-      price = plan.price * 12 * (1 - 0.15); // 15% de desconto
-    }
-
-    // Buscar dados do usuário
-    let registration;
-    switch (type) {
-      case 'agroconecta':
-        registration = await AgroConecta.findById(registrationId);
-        break;
-      case 'loja':
-        registration = await Loja.findById(registrationId);
-        break;
-      case 'marketplace':
-        registration = await Marketplace.findById(registrationId);
-        break;
-      case 'fazenda':
-        registration = await Fazenda.findById(registrationId);
-        break;
-      default:
-        return res.status(400).json({
-          success: false,
-          message: 'Tipo de cadastro inválido'
-        });
-    }
-
+    const registration = await findRegistrationByType(type, registrationId);
     if (!registration) {
-      return res.status(404).json({
-        success: false,
-        message: 'Cadastro não encontrado'
-      });
+      return res.status(404).json({ success: false, message: 'Cadastro não encontrado' });
     }
 
-    // Criar ou buscar customer no Stripe
-    let customer;
-    if (registration.payment?.stripeCustomerId) {
-      customer = await stripe.customers.retrieve(registration.payment.stripeCustomerId);
-    } else {
-      customer = await stripe.customers.create({
+    // Ensure Stripe customer
+    let customerId = registration.payment?.stripeCustomerId;
+    if (!customerId) {
+      const customer = await stripe.customers.create({
         email: registration.email,
-        name: registration.name,
-        metadata: {
-          registrationId,
-          type,
-          userId
-        }
+        metadata: { registrationId: registration._id.toString(), type }
       });
-
-      // Atualizar customer ID no banco
-      registration.payment.stripeCustomerId = customer.id;
+      customerId = customer.id;
+      registration.payment = registration.payment || {};
+      registration.payment.stripeCustomerId = customerId;
       await registration.save();
     }
 
-    // Criar sessão de checkout
     const session = await stripe.checkout.sessions.create({
-      customer: customer.id,
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'brl',
-            product_data: {
-              name: `${plan.name} - ${type.charAt(0).toUpperCase() + type.slice(1)}`,
-              description: plan.description,
-              metadata: {
-                planId,
-                frequency,
-                type
-              }
-            },
-            unit_amount: Math.round(price * 100), // Converter para centavos
-            recurring:
-              frequency === 'monthly'
-                ? {
-                    interval: 'month'
-                  }
-                : {
-                    interval: 'year'
-                  }
-          },
-          quantity: 1
-        }
-      ],
       mode: 'subscription',
-      success_url: `${process.env.FRONTEND_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL}/payment/cancel`,
-      metadata: {
-        registrationId,
-        type,
-        planId,
-        frequency
-      }
+      payment_method_types: ['card'],
+      line_items: [{ price: plan.stripePriceId, quantity: 1 }],
+      customer: customerId,
+      success_url: successUrl || `${process.env.FRONTEND_URL}/subscription/success`,
+      cancel_url: cancelUrl || `${process.env.FRONTEND_URL}/subscription/cancel`
     });
 
-    res.json({
-      success: true,
-      data: {
-        sessionId: session.id,
-        url: session.url
-      }
-    });
-  } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao criar assinatura:', error);
-    }
-    res.status(500).json({
-      success: false,
-      message: 'Erro ao processar pagamento',
-      error: error.message
-    });
+    return res.json({ success: true, data: { sessionId: session.id, url: session.url } });
+  } catch (err) {
+    logger.error('POST /api/plans/subscribe failed', err);
+    return res
+      .status(500)
+      .json({ success: false, message: 'Erro ao criar sessão de checkout', error: err.message });
   }
 });
 
-// NOTA: Webhook movido para /api/payments/stripe/webhook para evitar duplicação
-
-// Handlers para eventos do Stripe
-async function handleCheckoutSessionCompleted(session) {
-  try {
-    const { registrationId, type, planId, frequency } = session.metadata;
-
-    // Buscar cadastro
-    let registration;
-    switch (type) {
-      case 'agroconecta':
-        registration = await AgroConecta.findById(registrationId);
-        break;
-      case 'loja':
-        registration = await Loja.findById(registrationId);
-        break;
-      case 'marketplace':
-        registration = await Marketplace.findById(registrationId);
-        break;
-      case 'fazenda':
-        registration = await Fazenda.findById(registrationId);
-        break;
-    }
-
-    if (!registration) {
-      throw new Error('Cadastro não encontrado');
-    }
-
-    // Atualizar dados de pagamento
-    registration.payment.subscriptionId = session.subscription;
-    registration.payment.lastPayment = new Date();
-    registration.plan = planId;
-    registration.isPublic = true; // Tornar público após pagamento
-
-    // Calcular próxima cobrança
-    const nextPayment = new Date();
-    if (frequency === 'monthly') {
-      nextPayment.setMonth(nextPayment.getMonth() + 1);
-    } else {
-      nextPayment.setFullYear(nextPayment.getFullYear() + 1);
-    }
-    registration.payment.nextPayment = nextPayment;
-
-    await registration.save();
-
-    if (process.env.NODE_ENV !== 'production') {
-      console.log(`Pagamento processado para ${type} ID: ${registrationId}`);
-    }
-  } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao processar checkout session:', error);
-    }
-  }
-}
-
-async function handleInvoicePaymentSucceeded(invoice) {
-  try {
-    const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
-    const customer = await stripe.customers.retrieve(subscription.customer);
-
-    if (!customer.metadata.registrationId || !customer.metadata.type) {
-      return;
-    }
-
-    const { registrationId, type } = customer.metadata;
-
-    // Buscar cadastro
-    let registration;
-    switch (type) {
-      case 'agroconecta':
-        registration = await AgroConecta.findById(registrationId);
-        break;
-      case 'loja':
-        registration = await Loja.findById(registrationId);
-        break;
-      case 'marketplace':
-        registration = await Marketplace.findById(registrationId);
-        break;
-      case 'fazenda':
-        registration = await Fazenda.findById(registrationId);
-        break;
-    }
-
-    if (registration) {
-      registration.payment.lastPayment = new Date();
-      await registration.save();
-    }
-  } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao processar pagamento bem-sucedido:', error);
-    }
-  }
-}
-
-async function handleInvoicePaymentFailed(invoice) {
-  try {
-    const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
-    const customer = await stripe.customers.retrieve(subscription.customer);
-
-    if (!customer.metadata.registrationId || !customer.metadata.type) {
-      return;
-    }
-
-    const { registrationId, type } = customer.metadata;
-
-    // Buscar cadastro
-    let registration;
-    switch (type) {
-      case 'agroconecta':
-        registration = await AgroConecta.findById(registrationId);
-        break;
-      case 'loja':
-        registration = await Loja.findById(registrationId);
-        break;
-      case 'marketplace':
-        registration = await Marketplace.findById(registrationId);
-        break;
-      case 'fazenda':
-        registration = await Fazenda.findById(registrationId);
-        break;
-    }
-
-    if (registration) {
-      // Opcional: desativar conta após falha no pagamento
-      // registration.isActive = false;
-      await registration.save();
-    }
-  } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao processar falha no pagamento:', error);
-    }
-  }
-}
-
-async function handleSubscriptionUpdated(subscription) {
-  try {
-    const customer = await stripe.customers.retrieve(subscription.customer);
-
-    if (!customer.metadata.registrationId || !customer.metadata.type) {
-      return;
-    }
-
-    const { registrationId, type } = customer.metadata;
-
-    // Buscar cadastro
-    let registration;
-    switch (type) {
-      case 'agroconecta':
-        registration = await AgroConecta.findById(registrationId);
-        break;
-      case 'loja':
-        registration = await Loja.findById(registrationId);
-        break;
-      case 'marketplace':
-        registration = await Marketplace.findById(registrationId);
-        break;
-      case 'fazenda':
-        registration = await Fazenda.findById(registrationId);
-        break;
-    }
-
-    if (registration) {
-      registration.payment.subscriptionId = subscription.id;
-      registration.isActive = subscription.status === 'active';
-
-      // Calcular próxima cobrança
-      const nextPayment = new Date(subscription.current_period_end * 1000);
-      registration.payment.nextPayment = nextPayment;
-
-      await registration.save();
-    }
-  } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao atualizar assinatura:', error);
-    }
-  }
-}
-
-async function handleSubscriptionDeleted(subscription) {
-  try {
-    const customer = await stripe.customers.retrieve(subscription.customer);
-
-    if (!customer.metadata.registrationId || !customer.metadata.type) {
-      return;
-    }
-
-    const { registrationId, type } = customer.metadata;
-
-    // Buscar cadastro
-    let registration;
-    switch (type) {
-      case 'agroconecta':
-        registration = await AgroConecta.findById(registrationId);
-        break;
-      case 'loja':
-        registration = await Loja.findById(registrationId);
-        break;
-      case 'marketplace':
-        registration = await Marketplace.findById(registrationId);
-        break;
-      case 'fazenda':
-        registration = await Fazenda.findById(registrationId);
-        break;
-    }
-
-    if (registration) {
-      registration.payment.subscriptionId = null;
-      registration.isActive = false;
-      registration.plan = 'free';
-      await registration.save();
-    }
-  } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao cancelar assinatura:', error);
-    }
-  }
-}
-
-// GET /api/plans/subscription/:id - Obter detalhes da assinatura
+// GET /api/plans/subscription/:id - retorna status da assinatura associado ao cadastro
+// query: ?type=agroconecta|loja|marketplace|fazenda
 router.get('/subscription/:id', auth, async (req, res) => {
   try {
     const { id } = req.params;
     const { type } = req.query;
 
-    // Buscar cadastro
-    let registration;
-    switch (type) {
-      case 'agroconecta':
-        registration = await AgroConecta.findById(id);
-        break;
-      case 'loja':
-        registration = await Loja.findById(id);
-        break;
-      case 'marketplace':
-        registration = await Marketplace.findById(id);
-        break;
-      case 'fazenda':
-        registration = await Fazenda.findById(id);
-        break;
-      default:
-        return res.status(400).json({
-          success: false,
-          message: 'Tipo de cadastro inválido'
-        });
-    }
-
+    const registration = await findRegistrationByType(type, id);
     if (!registration) {
-      return res.status(404).json({
-        success: false,
-        message: 'Cadastro não encontrado'
-      });
+      return res.status(404).json({ success: false, message: 'Cadastro não encontrado' });
     }
 
     if (!registration.payment?.stripeCustomerId) {
-      return res.json({
-        success: true,
-        data: {
-          hasSubscription: false,
-          plan: 'free'
-        }
-      });
+      return res.json({ success: true, data: { hasSubscription: false, plan: 'free' } });
     }
 
-    // Buscar assinatura no Stripe
     const subscriptions = await stripe.subscriptions.list({
       customer: registration.payment.stripeCustomerId,
       status: 'all'
     });
-
-    const activeSubscription = subscriptions.data.find(sub => sub.status === 'active');
+    const activeSubscription = subscriptions.data.find(s => s.status === 'active');
 
     if (!activeSubscription) {
-      return res.json({
-        success: true,
-        data: {
-          hasSubscription: false,
-          plan: 'free'
-        }
-      });
+      return res.json({ success: true, data: { hasSubscription: false, plan: 'free' } });
     }
 
-    const plan = PLANS[registration.plan];
-
-    res.json({
+    return res.json({
       success: true,
       data: {
         hasSubscription: true,
-        plan: registration.plan,
-        planDetails: plan,
+        plan: registration.plan || 'unknown',
         status: activeSubscription.status,
         currentPeriodStart: new Date(activeSubscription.current_period_start * 1000),
         currentPeriodEnd: new Date(activeSubscription.current_period_end * 1000),
-        cancelAtPeriodEnd: activeSubscription.cancel_at_period_end,
-        lastPayment: registration.payment.lastPayment,
-        nextPayment: registration.payment.nextPayment
+        cancelAtPeriodEnd: activeSubscription.cancel_at_period_end
       }
     });
-  } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar assinatura:', error);
-    }
-    res.status(500).json({
-      success: false,
-      message: 'Erro ao buscar assinatura',
-      error: error.message
-    });
+  } catch (err) {
+    logger.error('GET /api/plans/subscription/:id failed', err);
+    return res
+      .status(500)
+      .json({ success: false, message: 'Erro ao buscar assinatura', error: err.message });
   }
 });
 
-// POST /api/plans/cancel - Cancelar assinatura
+// POST /api/plans/cancel - cancela assinatura (marca para terminar ao final do período)
+// body: { registrationId, type }
 router.post('/cancel', auth, async (req, res) => {
   try {
     const { registrationId, type } = req.body;
-
-    // Buscar cadastro
-    let registration;
-    switch (type) {
-      case 'agroconecta':
-        registration = await AgroConecta.findById(registrationId);
-        break;
-      case 'loja':
-        registration = await Loja.findById(registrationId);
-        break;
-      case 'marketplace':
-        registration = await Marketplace.findById(registrationId);
-        break;
-      case 'fazenda':
-        registration = await Fazenda.findById(registrationId);
-        break;
-      default:
-        return res.status(400).json({
-          success: false,
-          message: 'Tipo de cadastro inválido'
-        });
-    }
-
+    const registration = await findRegistrationByType(type, registrationId);
     if (!registration) {
-      return res.status(404).json({
-        success: false,
-        message: 'Cadastro não encontrado'
-      });
+      return res.status(404).json({ success: false, message: 'Cadastro não encontrado' });
     }
 
     if (!registration.payment?.subscriptionId) {
-      return res.status(400).json({
-        success: false,
-        message: 'Nenhuma assinatura ativa encontrada'
-      });
+      return res
+        .status(400)
+        .json({ success: false, message: 'Nenhuma assinatura ativa encontrada' });
     }
 
-    // Cancelar assinatura no Stripe
     await stripe.subscriptions.update(registration.payment.subscriptionId, {
       cancel_at_period_end: true
     });
 
-    res.json({
+    return res.json({
       success: true,
-      message: 'Assinatura cancelada com sucesso. Você manterá acesso até o final do período atual.'
+      message:
+        'Assinatura cancelada com sucesso. A cobrança será interrompida ao final do período atual.'
     });
-  } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao cancelar assinatura:', error);
-    }
-    res.status(500).json({
-      success: false,
-      message: 'Erro ao cancelar assinatura',
-      error: error.message
-    });
+  } catch (err) {
+    logger.error('POST /api/plans/cancel failed', err);
+    return res
+      .status(500)
+      .json({ success: false, message: 'Erro ao cancelar assinatura', error: err.message });
   }
 });
 

@@ -1,10 +1,10 @@
-/**
+﻿/**
  * Content Security Policy (CSP) Headers
  * Protege contra XSS, clickjacking e outros ataques
  */
 
 /**
- * Configuração CSP para desenvolvimento
+ * ConfiguraÃ§Ã£o CSP para desenvolvimento
  */
 const developmentCSP = {
   'default-src': ["'self'"],
@@ -17,7 +17,7 @@ const developmentCSP = {
   ],
   'style-src': [
     "'self'",
-    "'unsafe-inline'", // Necessário para styled-components
+    "'unsafe-inline'", // NecessÃ¡rio para styled-components
     'https://fonts.googleapis.com'
   ],
   'font-src': ["'self'", 'https://fonts.gstatic.com', 'data:'],
@@ -35,11 +35,11 @@ const developmentCSP = {
   'base-uri': ["'self'"],
   'form-action': ["'self'"],
   'frame-ancestors': ["'none'"], // Protege contra clickjacking
-  'upgrade-insecure-requests': [] // Force HTTPS em produção
+  'upgrade-insecure-requests': [] // Force HTTPS em produÃ§Ã£o
 };
 
 /**
- * Configuração CSP para produção (mais restritiva)
+ * ConfiguraÃ§Ã£o CSP para produÃ§Ã£o (mais restritiva)
  */
 const productionCSP = {
   'default-src': ["'self'"],
@@ -51,7 +51,7 @@ const productionCSP = {
   ],
   'style-src': [
     "'self'",
-    "'unsafe-inline'", // Necessário para styled-components/Tailwind
+    "'unsafe-inline'", // NecessÃ¡rio para styled-components/Tailwind
     'https://fonts.googleapis.com'
   ],
   'font-src': ["'self'", 'https://fonts.gstatic.com', 'data:'],
@@ -110,7 +110,7 @@ export const cspMiddleware = (req, res, next) => {
   const cspHeader = buildCSPHeader(cspConfig);
   res.setHeader('Content-Security-Policy', cspHeader);
 
-  // Headers adicionais de segurança
+  // Headers adicionais de seguranÃ§a
 
   // X-Content-Type-Options: Previne MIME sniffing
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -118,10 +118,10 @@ export const cspMiddleware = (req, res, next) => {
   // X-Frame-Options: Protege contra clickjacking (redundante com CSP, mas mantido para compatibilidade)
   res.setHeader('X-Frame-Options', 'DENY');
 
-  // X-XSS-Protection: Ativa proteção XSS do browser (legado, mas ainda útil)
+  // X-XSS-Protection: Ativa proteÃ§Ã£o XSS do browser (legado, mas ainda Ãºtil)
   res.setHeader('X-XSS-Protection', '1; mode=block');
 
-  // Referrer-Policy: Controla informações enviadas no header Referer
+  // Referrer-Policy: Controla informaÃ§Ãµes enviadas no header Referer
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
 
   // Permissions-Policy: Controla features do navegador
@@ -137,7 +137,7 @@ export const cspMiddleware = (req, res, next) => {
     ].join(', ')
   );
 
-  // Strict-Transport-Security: Force HTTPS (apenas em produção)
+  // Strict-Transport-Security: Force HTTPS (apenas em produÃ§Ã£o)
   if (isProduction) {
     res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   }
@@ -146,7 +146,7 @@ export const cspMiddleware = (req, res, next) => {
 };
 
 /**
- * Middleware CSP condicional (apenas em produção)
+ * Middleware CSP condicional (apenas em produÃ§Ã£o)
  */
 export const cspMiddlewareConditional = (req, res, next) => {
   if (process.env.NODE_ENV === 'production') {

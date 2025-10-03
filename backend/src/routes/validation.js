@@ -1,85 +1,86 @@
-import express from 'express';
+﻿import express from 'express';
 import axios from 'axios';
 import { apiLimiter } from '../middleware/rateLimiter.js';
 
+import logger from '../utils/logger.js';
 const router = express.Router();
 
 // Apply rate limiting
 router.use(apiLimiter);
 
 // POST /api/validation/cpf - Validar CPF
-router.post('/cpf', async (req, res) => {
+router.post('/cpf', (req, res) => {
   try {
     const { cpf } = req.body;
 
     if (!cpf) {
       return res.status(400).json({
         success: false,
-        error: 'CPF é obrigatório'
+        error: 'CPF Ã© obrigatÃ³rio'
       });
     }
 
-    // Remove caracteres não numéricos
+    // Remove caracteres nÃ£o numÃ©ricos
     const cleanCpf = cpf.replace(/[^\d]/g, '');
 
-    // Verifica se tem 11 dígitos
+    // Verifica se tem 11 dÃ­gitos
     if (cleanCpf.length !== 11) {
       return res.json({
         success: false,
         valid: false,
-        error: 'CPF deve ter 11 dígitos'
+        error: 'CPF deve ter 11 dÃ­gitos'
       });
     }
 
-    // Verifica se todos os dígitos são iguais
+    // Verifica se todos os dÃ­gitos sÃ£o iguais
     if (/^(\d)\1{10}$/.test(cleanCpf)) {
       return res.json({
         success: false,
         valid: false,
-        error: 'CPF inválido'
+        error: 'CPF invÃ¡lido'
       });
     }
 
-    // Validação do primeiro dígito verificador
+    // ValidaÃ§Ã£o do primeiro dÃ­gito verificador
     let sum = 0;
     for (let i = 0; i < 9; i++) {
-      sum += parseInt(cleanCpf.charAt(i, 10)) * (10 - i);
+      sum += parseInt(cleanCpf.charAt(i, 10, 10)) * (10 - i);
     }
     let remainder = 11 - (sum % 11);
     const digit1 = remainder < 2 ? 0 : remainder;
 
-    if (parseInt(cleanCpf.charAt(9, 10)) !== digit1) {
+    if (parseInt(cleanCpf.charAt(9, 10, 10)) !== digit1) {
       return res.json({
         success: false,
         valid: false,
-        error: 'CPF inválido'
+        error: 'CPF invÃ¡lido'
       });
     }
 
-    // Validação do segundo dígito verificador
+    // ValidaÃ§Ã£o do segundo dÃ­gito verificador
     sum = 0;
     for (let i = 0; i < 10; i++) {
-      sum += parseInt(cleanCpf.charAt(i, 10)) * (11 - i);
+      sum += parseInt(cleanCpf.charAt(i, 10, 10)) * (11 - i);
     }
     remainder = 11 - (sum % 11);
     const digit2 = remainder < 2 ? 0 : remainder;
 
-    if (parseInt(cleanCpf.charAt(10, 10)) !== digit2) {
+    if (parseInt(cleanCpf.charAt(10, 10, 10)) !== digit2) {
       return res.json({
         success: false,
         valid: false,
-        error: 'CPF inválido'
+        error: 'CPF invÃ¡lido'
       });
     }
 
     res.json({
       success: true,
       valid: true,
-      message: 'CPF válido'
+      message: 'CPF vÃ¡lido'
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao validar CPF:', error);
+      logger.error('Erro ao validar CPF:', error);
     }
     res.status(500).json({
       success: false,
@@ -96,64 +97,64 @@ router.post('/cnpj', async (req, res) => {
     if (!cnpj) {
       return res.status(400).json({
         success: false,
-        error: 'CNPJ é obrigatório'
+        error: 'CNPJ Ã© obrigatÃ³rio'
       });
     }
 
-    // Remove caracteres não numéricos
+    // Remove caracteres nÃ£o numÃ©ricos
     const cleanCnpj = cnpj.replace(/[^\d]/g, '');
 
-    // Verifica se tem 14 dígitos
+    // Verifica se tem 14 dÃ­gitos
     if (cleanCnpj.length !== 14) {
       return res.json({
         success: false,
         valid: false,
-        error: 'CNPJ deve ter 14 dígitos'
+        error: 'CNPJ deve ter 14 dÃ­gitos'
       });
     }
 
-    // Verifica se todos os dígitos são iguais
+    // Verifica se todos os dÃ­gitos sÃ£o iguais
     if (/^(\d)\1{13}$/.test(cleanCnpj)) {
       return res.json({
         success: false,
         valid: false,
-        error: 'CNPJ inválido'
+        error: 'CNPJ invÃ¡lido'
       });
     }
 
-    // Validação do primeiro dígito verificador
+    // ValidaÃ§Ã£o do primeiro dÃ­gito verificador
     let sum = 0;
     let weight = 5;
     for (let i = 0; i < 12; i++) {
-      sum += parseInt(cleanCnpj.charAt(i, 10)) * weight;
+      sum += parseInt(cleanCnpj.charAt(i, 10, 10)) * weight;
       weight = weight === 2 ? 9 : weight - 1;
     }
     let remainder = sum % 11;
     const digit1 = remainder < 2 ? 0 : 11 - remainder;
 
-    if (parseInt(cleanCnpj.charAt(12, 10)) !== digit1) {
+    if (parseInt(cleanCnpj.charAt(12, 10, 10)) !== digit1) {
       return res.json({
         success: false,
         valid: false,
-        error: 'CNPJ inválido'
+        error: 'CNPJ invÃ¡lido'
       });
     }
 
-    // Validação do segundo dígito verificador
+    // ValidaÃ§Ã£o do segundo dÃ­gito verificador
     sum = 0;
     weight = 6;
     for (let i = 0; i < 13; i++) {
-      sum += parseInt(cleanCnpj.charAt(i, 10)) * weight;
+      sum += parseInt(cleanCnpj.charAt(i, 10, 10)) * weight;
       weight = weight === 2 ? 9 : weight - 1;
     }
     remainder = sum % 11;
     const digit2 = remainder < 2 ? 0 : 11 - remainder;
 
-    if (parseInt(cleanCnpj.charAt(13, 10)) !== digit2) {
+    if (parseInt(cleanCnpj.charAt(13, 10, 10)) !== digit2) {
       return res.json({
         success: false,
         valid: false,
-        error: 'CNPJ inválido'
+        error: 'CNPJ invÃ¡lido'
       });
     }
 
@@ -165,7 +166,7 @@ router.post('/cnpj', async (req, res) => {
       res.json({
         success: true,
         valid: true,
-        message: 'CNPJ válido',
+        message: 'CNPJ vÃ¡lido',
         data: {
           company: data.nome,
           fantasy: data.fantasia,
@@ -179,16 +180,16 @@ router.post('/cnpj', async (req, res) => {
         }
       });
     } catch (apiError) {
-      // Se a API da Receita falhar, retorna apenas validação básica
+      // Se a API da Receita falhar, retorna apenas validaÃ§Ã£o bÃ¡sica
       res.json({
         success: true,
         valid: true,
-        message: 'CNPJ válido (dados não disponíveis)'
+        message: 'CNPJ vÃ¡lido (dados nÃ£o disponÃ­veis)'
       });
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao validar CNPJ:', error);
+      logger.error('Erro ao validar CNPJ:', error);
     }
     res.status(500).json({
       success: false,
@@ -205,7 +206,7 @@ router.post('/cep', async (req, res) => {
     if (!cep) {
       return res.status(400).json({
         success: false,
-        error: 'CEP é obrigatório'
+        error: 'CEP Ã© obrigatÃ³rio'
       });
     }
 
@@ -215,7 +216,7 @@ router.post('/cep', async (req, res) => {
       return res.json({
         success: false,
         valid: false,
-        error: 'CEP deve ter 8 dígitos'
+        error: 'CEP deve ter 8 dÃ­gitos'
       });
     }
 
@@ -227,7 +228,7 @@ router.post('/cep', async (req, res) => {
         return res.json({
           success: false,
           valid: false,
-          error: 'CEP não encontrado'
+          error: 'CEP nÃ£o encontrado'
         });
       }
 
@@ -255,7 +256,7 @@ router.post('/cep', async (req, res) => {
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar CEP:', error);
+      logger.error('Erro ao buscar CEP:', error);
     }
     res.status(500).json({
       success: false,
@@ -264,15 +265,15 @@ router.post('/cep', async (req, res) => {
   }
 });
 
-// POST /api/validation/plate - Validar placa de veículo
-router.post('/plate', async (req, res) => {
+// POST /api/validation/plate - Validar placa de veÃ­culo
+router.post('/plate', (req, res) => {
   try {
     const { plate } = req.body;
 
     if (!plate) {
       return res.status(400).json({
         success: false,
-        error: 'Placa é obrigatória'
+        error: 'Placa Ã© obrigatÃ³ria'
       });
     }
 
@@ -286,14 +287,14 @@ router.post('/plate', async (req, res) => {
       return res.json({
         success: false,
         valid: false,
-        error: 'Formato de placa inválido'
+        error: 'Formato de placa invÃ¡lido'
       });
     }
 
     res.json({
       success: true,
       valid: true,
-      message: 'Placa válida',
+      message: 'Placa vÃ¡lida',
       data: {
         plate: cleanPlate,
         format: oldFormat.test(cleanPlate) ? 'antigo' : 'novo'
@@ -301,7 +302,7 @@ router.post('/plate', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao validar placa:', error);
+      logger.error('Erro ao validar placa:', error);
     }
     res.status(500).json({
       success: false,
@@ -311,29 +312,29 @@ router.post('/plate', async (req, res) => {
 });
 
 // POST /api/validation/phone - Validar telefone
-router.post('/phone', async (req, res) => {
+router.post('/phone', (req, res) => {
   try {
     const { phone } = req.body;
 
     if (!phone) {
       return res.status(400).json({
         success: false,
-        error: 'Telefone é obrigatório'
+        error: 'Telefone Ã© obrigatÃ³rio'
       });
     }
 
     const cleanPhone = phone.replace(/[^\d]/g, '');
 
-    // Validar formato brasileiro (10 ou 11 dígitos)
+    // Validar formato brasileiro (10 ou 11 dÃ­gitos)
     if (cleanPhone.length < 10 || cleanPhone.length > 11) {
       return res.json({
         success: false,
         valid: false,
-        error: 'Telefone deve ter 10 ou 11 dígitos'
+        error: 'Telefone deve ter 10 ou 11 dÃ­gitos'
       });
     }
 
-    // Verificar se começa com DDD válido
+    // Verificar se comeÃ§a com DDD vÃ¡lido
     const ddd = cleanPhone.substring(0, 2);
     const validDdds = [
       '11',
@@ -409,14 +410,14 @@ router.post('/phone', async (req, res) => {
       return res.json({
         success: false,
         valid: false,
-        error: 'DDD inválido'
+        error: 'DDD invÃ¡lido'
       });
     }
 
     res.json({
       success: true,
       valid: true,
-      message: 'Telefone válido',
+      message: 'Telefone vÃ¡lido',
       data: {
         phone: cleanPhone,
         ddd,
@@ -425,7 +426,7 @@ router.post('/phone', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao validar telefone:', error);
+      logger.error('Erro ao validar telefone:', error);
     }
     res.status(500).json({
       success: false,

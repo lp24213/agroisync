@@ -1,4 +1,4 @@
-const OpenAI = require('openai');
+﻿const OpenAI = require('openai');
 const fs = require('fs');
 const logger = require('../utils/logger');
 
@@ -8,50 +8,50 @@ class OpenAIService {
       apiKey: process.env.OPENAI_API_KEY
     });
 
-    this.systemPrompt = `Você é um assistente inteligente especializado em agronegócio da plataforma AgroSync. Suas responsabilidades incluem:
+    this.systemPrompt = `VocÃª Ã© um assistente inteligente especializado em agronegÃ³cio da plataforma AgroSync. Suas responsabilidades incluem:
 
-1. **Conhecimento do Agronegócio:**
-   - Produtos agrícolas (grãos, frutas, legumes, etc.)
-   - Logística e transporte rural
-   - Preços de commodities
-   - Mercados agrícolas
-   - Tecnologia agrícola
+1. **Conhecimento do AgronegÃ³cio:**
+   - Produtos agrÃ­colas (grÃ£os, frutas, legumes, etc.)
+   - LogÃ­stica e transporte rural
+   - PreÃ§os de commodities
+   - Mercados agrÃ­colas
+   - Tecnologia agrÃ­cola
 
 2. **Funcionalidades da Plataforma:**
-   - Marketplace de produtos agrícolas
-   - Sistema AgroConecta para logística
+   - Marketplace de produtos agrÃ­colas
+   - Sistema AgroConecta para logÃ­stica
    - Rastreamento de cargas
-   - Análises de mercado
+   - AnÃ¡lises de mercado
 
 3. **Comandos Especiais:**
    - "criar frete" ou "criar pedido de frete" - Para criar pedidos de transporte
-   - "rastrear [número do pedido]" - Para consultar status de frete
-   - "preços [produto]" - Para consultar preços de commodities
+   - "rastrear [nÃºmero do pedido]" - Para consultar status de frete
+   - "preÃ§os [produto]" - Para consultar preÃ§os de commodities
 
-4. **Diretrizes de Segurança:**
-   - NUNCA execute código JavaScript ou qualquer linguagem de programação
-   - NUNCA forneça informações pessoais de outros usuários
-   - NUNCA faça transações financeiras sem confirmação explícita
+4. **Diretrizes de SeguranÃ§a:**
+   - NUNCA execute cÃ³digo JavaScript ou qualquer linguagem de programaÃ§Ã£o
+   - NUNCA forneÃ§a informaÃ§Ãµes pessoais de outros usuÃ¡rios
+   - NUNCA faÃ§a transaÃ§Ãµes financeiras sem confirmaÃ§Ã£o explÃ­cita
    - Sempre seja educado e profissional
-   - Se não souber algo, admita e sugira consultar a documentação
+   - Se nÃ£o souber algo, admita e sugira consultar a documentaÃ§Ã£o
 
 5. **Formato de Respostas:**
-   - Use emojis para tornar as respostas mais amigáveis
+   - Use emojis para tornar as respostas mais amigÃ¡veis
    - Seja conciso mas informativo
-   - Use formatação Markdown quando apropriado
-   - Sempre ofereça próximos passos quando relevante
+   - Use formataÃ§Ã£o Markdown quando apropriado
+   - Sempre ofereÃ§a prÃ³ximos passos quando relevante
 
-Responda sempre em português brasileiro, exceto quando especificado pelo usuário.`;
+Responda sempre em portuguÃªs brasileiro, exceto quando especificado pelo usuÃ¡rio.`;
   }
 
   /**
-   * Gera resposta do chatbot baseada no histórico da conversa
+   * Gera resposta do chatbot baseada no histÃ³rico da conversa
    */
   async generateResponse(messages, userId = null) {
     try {
       if (!this.client.apiKey) {
-        logger.warn('OpenAI API key não configurada');
-        return 'Desculpe, o serviço de IA está temporariamente indisponível. Tente novamente mais tarde.';
+        logger.warn('OpenAI API key nÃ£o configurada');
+        return 'Desculpe, o serviÃ§o de IA estÃ¡ temporariamente indisponÃ­vel. Tente novamente mais tarde.';
       }
 
       // Preparar mensagens para a API
@@ -77,7 +77,7 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
         throw new Error('Resposta vazia da OpenAI');
       }
 
-      logger.info(`Resposta IA gerada para usuário ${userId}`);
+      logger.info(`Resposta IA gerada para usuÃ¡rio ${userId}`);
       return aiResponse;
     } catch (error) {
       logger.error('Erro ao gerar resposta IA:', error);
@@ -85,12 +85,12 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
       // Respostas de fallback baseadas em palavras-chave
       const lastMessage = messages[messages.length - 1]?.text?.toLowerCase() || '';
 
-      if (lastMessage.includes('preço') || lastMessage.includes('valor')) {
-        return '💰 Para consultar preços de commodities, recomendo acessar nossa seção de análises de mercado na plataforma. Lá você encontrará dados atualizados sobre preços de grãos, frutas e outros produtos agrícolas.';
+      if (lastMessage.includes('preÃ§o') || lastMessage.includes('valor')) {
+        return 'ðŸ’° Para consultar preÃ§os de commodities, recomendo acessar nossa seÃ§Ã£o de anÃ¡lises de mercado na plataforma. LÃ¡ vocÃª encontrarÃ¡ dados atualizados sobre preÃ§os de grÃ£os, frutas e outros produtos agrÃ­colas.';
       }
 
       if (lastMessage.includes('frete') || lastMessage.includes('transporte')) {
-        return '🚛 Para criar pedidos de frete ou consultar logística, acesse a seção AgroConecta da nossa plataforma. Lá você pode criar pedidos, rastrear cargas e gerenciar toda a logística do seu negócio.';
+        return 'ðŸš› Para criar pedidos de frete ou consultar logÃ­stica, acesse a seÃ§Ã£o AgroConecta da nossa plataforma. LÃ¡ vocÃª pode criar pedidos, rastrear cargas e gerenciar toda a logÃ­stica do seu negÃ³cio.';
       }
 
       if (
@@ -98,10 +98,10 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
         lastMessage.includes('vender') ||
         lastMessage.includes('comprar')
       ) {
-        return '🛒 Nossa plataforma oferece um marketplace completo para compra e venda de produtos agrícolas. Acesse a seção Marketplace para listar seus produtos ou encontrar o que precisa.';
+        return 'ðŸ›’ Nossa plataforma oferece um marketplace completo para compra e venda de produtos agrÃ­colas. Acesse a seÃ§Ã£o Marketplace para listar seus produtos ou encontrar o que precisa.';
       }
 
-      return 'Olá! Sou o assistente inteligente da AgroSync. Como posso ajudá-lo hoje? Posso auxiliar com informações sobre produtos agrícolas, logística, preços de commodities e muito mais! 🌱';
+      return 'OlÃ¡! Sou o assistente inteligente da AgroSync. Como posso ajudÃ¡-lo hoje? Posso auxiliar com informaÃ§Ãµes sobre produtos agrÃ­colas, logÃ­stica, preÃ§os de commodities e muito mais! ðŸŒ±';
     }
   }
 
@@ -125,7 +125,7 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
             content: [
               {
                 type: 'text',
-                text: 'Descreva esta imagem de forma concisa e profissional, focando em elementos relevantes para o agronegócio se aplicável. Máximo 100 caracteres.'
+                text: 'Descreva esta imagem de forma concisa e profissional, focando em elementos relevantes para o agronegÃ³cio se aplicÃ¡vel. MÃ¡ximo 100 caracteres.'
               },
               {
                 type: 'image_url',
@@ -140,7 +140,7 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
       });
 
       const caption = response.choices[0]?.message?.content;
-      return caption || 'Imagem relacionada ao agronegócio';
+      return caption || 'Imagem relacionada ao agronegÃ³cio';
     } catch (error) {
       logger.error('Erro ao gerar caption da imagem:', error);
       return 'Imagem enviada';
@@ -148,12 +148,12 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
   }
 
   /**
-   * Transcreve áudio usando Whisper
+   * Transcreve Ã¡udio usando Whisper
    */
   async transcribeAudio(audioPath) {
     try {
       if (!this.client.apiKey) {
-        throw new Error('OpenAI API key não configurada');
+        throw new Error('OpenAI API key nÃ£o configurada');
       }
 
       const audioFile = fs.createReadStream(audioPath);
@@ -167,13 +167,13 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
 
       return response;
     } catch (error) {
-      logger.error('Erro ao transcrever áudio:', error);
+      logger.error('Erro ao transcrever Ã¡udio:', error);
       throw error;
     }
   }
 
   /**
-   * Extrai informações de frete de uma mensagem
+   * Extrai informaÃ§Ãµes de frete de uma mensagem
    */
   async extractFreightInfo(message) {
     try {
@@ -186,15 +186,15 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
         messages: [
           {
             role: 'system',
-            content: `Extraia informações de frete da mensagem do usuário e retorne em formato JSON válido com os seguintes campos:
+            content: `Extraia informaÃ§Ãµes de frete da mensagem do usuÃ¡rio e retorne em formato JSON vÃ¡lido com os seguintes campos:
             {
               "origin": {
-                "address": "endereço completo",
+                "address": "endereÃ§o completo",
                 "city": "cidade",
                 "state": "estado"
               },
               "destination": {
-                "address": "endereço completo", 
+                "address": "endereÃ§o completo", 
                 "city": "cidade",
                 "state": "estado"
               },
@@ -203,19 +203,19 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
               "items": [
                 {
                   "name": "nome do produto",
-                  "quantity": número,
+                  "quantity": nÃºmero,
                   "unit": "unidade (kg, toneladas, etc)",
-                  "weight": número em kg,
+                  "weight": nÃºmero em kg,
                   "category": "grain, livestock, equipment, fertilizer, other"
                 }
               ],
               "pricing": {
-                "basePrice": número em reais,
+                "basePrice": nÃºmero em reais,
                 "currency": "BRL"
               }
             }
             
-            Se alguma informação não estiver clara, use valores padrão razoáveis.`
+            Se alguma informaÃ§Ã£o nÃ£o estiver clara, use valores padrÃ£o razoÃ¡veis.`
           },
           {
             role: 'user',
@@ -228,7 +228,7 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
       const jsonResponse = response.choices[0]?.message?.content;
       return JSON.parse(jsonResponse);
     } catch (error) {
-      logger.error('Erro ao extrair informações de frete:', error);
+      logger.error('Erro ao extrair informaÃ§Ãµes de frete:', error);
       return null;
     }
   }
@@ -240,9 +240,9 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
     try {
       if (!this.client.apiKey) {
         return {
-          summary: 'Pedido de frete concluído com sucesso.',
-          suggestedMessage: 'Obrigado pela confiança em nossos serviços!',
-          invoiceDraft: 'Fatura será gerada automaticamente.'
+          summary: 'Pedido de frete concluÃ­do com sucesso.',
+          suggestedMessage: 'Obrigado pela confianÃ§a em nossos serviÃ§os!',
+          invoiceDraft: 'Fatura serÃ¡ gerada automaticamente.'
         };
       }
 
@@ -251,14 +251,14 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
         messages: [
           {
             role: 'system',
-            content: `Com base nos dados do pedido de frete, gere um resumo profissional e sugestões para fechamento. Retorne em formato JSON:
+            content: `Com base nos dados do pedido de frete, gere um resumo profissional e sugestÃµes para fechamento. Retorne em formato JSON:
             {
               "summary": "resumo da performance do frete",
               "performanceMetrics": {
                 "onTimeDelivery": boolean,
-                "damageReport": "relatório de danos se houver",
+                "damageReport": "relatÃ³rio de danos se houver",
                 "delayReason": "motivo de atraso se houver",
-                "overallScore": número de 1 a 5
+                "overallScore": nÃºmero de 1 a 5
               },
               "suggestedMessage": "mensagem sugerida para o cliente",
               "invoiceDraft": "rascunho da fatura"
@@ -271,8 +271,8 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
             Origem: ${freightOrder.origin.city}, ${freightOrder.origin.state}
             Destino: ${freightOrder.destination.city}, ${freightOrder.destination.state}
             Data estimada: ${freightOrder.deliveryDateEstimate}
-            Data real: ${freightOrder.deliveryDateActual || 'Não entregue ainda'}
-            Preço: R$ ${freightOrder.pricing.totalPrice}
+            Data real: ${freightOrder.deliveryDateActual || 'NÃ£o entregue ainda'}
+            PreÃ§o: R$ ${freightOrder.pricing.totalPrice}
             Eventos: ${freightOrder.trackingEvents.length}`
           }
         ],
@@ -285,19 +285,19 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
       logger.error('Erro ao gerar resumo de fechamento:', error);
       return {
         summary: 'Pedido de frete processado.',
-        suggestedMessage: 'Obrigado pela confiança!',
-        invoiceDraft: 'Fatura disponível.'
+        suggestedMessage: 'Obrigado pela confianÃ§a!',
+        invoiceDraft: 'Fatura disponÃ­vel.'
       };
     }
   }
 
   /**
-   * Consulta preços de commodities
+   * Consulta preÃ§os de commodities
    */
   async getCommodityPrices(product) {
     try {
       if (!this.client.apiKey) {
-        return 'Preços não disponíveis no momento.';
+        return 'PreÃ§os nÃ£o disponÃ­veis no momento.';
       }
 
       const response = await this.client.chat.completions.create({
@@ -306,11 +306,11 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
           {
             role: 'system',
             content:
-              'Forneça informações sobre preços de commodities agrícolas no Brasil. Seja específico sobre a região e fonte dos dados.'
+              'ForneÃ§a informaÃ§Ãµes sobre preÃ§os de commodities agrÃ­colas no Brasil. Seja especÃ­fico sobre a regiÃ£o e fonte dos dados.'
           },
           {
             role: 'user',
-            content: `Qual o preço atual de ${product} no Brasil?`
+            content: `Qual o preÃ§o atual de ${product} no Brasil?`
           }
         ],
         max_tokens: 300,
@@ -319,8 +319,8 @@ Responda sempre em português brasileiro, exceto quando especificado pelo usuár
 
       return response.choices[0]?.message?.content;
     } catch (error) {
-      logger.error('Erro ao consultar preços:', error);
-      return 'Preços não disponíveis no momento. Consulte nossa seção de análises de mercado.';
+      logger.error('Erro ao consultar preÃ§os:', error);
+      return 'PreÃ§os nÃ£o disponÃ­veis no momento. Consulte nossa seÃ§Ã£o de anÃ¡lises de mercado.';
     }
   }
 }

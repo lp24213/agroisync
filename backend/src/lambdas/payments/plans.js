@@ -1,79 +1,85 @@
-const { MongoClient } = require('mongodb');
+﻿const { MongoClient } = require('mongodb');
 const jwt = require('jsonwebtoken');
 const Stripe = require('stripe');
 const { ethers } = require('ethers');
 
+const logger = require('../../utils/logger.js');
 const mongoClient = new MongoClient(process.env.MONGODB_URI);
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const ADMIN_EMAIL = 'luispaulodeoliveira@agrotm.com.br';
 
-// Configurações dos planos
+// ConfiguraÃ§Ãµes dos planos
 const PLANS = {
   loja: {
     name: 'Loja',
-    price: 25.00,
+    price: 25.0,
     limitAds: 3,
     limitShipments: null,
-    features: ['Até 3 anúncios', 'Suporte básico']
+    features: ['AtÃ© 3 anÃºncios', 'Suporte bÃ¡sico']
   },
   agroconecta_basico: {
-    name: 'AgroConecta Básico',
-    price: 50.00,
+    name: 'AgroConecta BÃ¡sico',
+    price: 50.0,
     limitAds: null, // ilimitado
     limitShipments: null, // ilimitado
-    features: ['Anúncios ilimitados', 'Fretes ilimitados', 'Chat privado (GPT completo)']
+    features: ['AnÃºncios ilimitados', 'Fretes ilimitados', 'Chat privado (GPT completo)']
   },
   fretes_avancado: {
-    name: 'Fretes Avançado',
-    price: 149.00,
+    name: 'Fretes AvanÃ§ado',
+    price: 149.0,
     limitAds: null, // ilimitado
-    limitShipments: 30, // máximo 30/mês
-    features: ['Anúncios ilimitados', 'Até 30 fretes/mês', 'Chat privado (GPT completo)', 'Analytics avançados']
+    limitShipments: 30, // mÃ¡ximo 30/mÃªs
+    features: [
+      'AnÃºncios ilimitados',
+      'AtÃ© 30 fretes/mÃªs',
+      'Chat privado (GPT completo)',
+      'Analytics avanÃ§ados'
+    ]
   }
 };
 
-// Função auxiliar para verificar autorização
-const verifyAuth = (event) => {
+// FunÃ§Ã£o auxiliar para verificar autorizaÃ§Ã£o
+const verifyAuth = event => {
   const authHeader = event.headers.Authorization || event.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return { error: 'UNAUTHORIZED', message: 'Token de autorização não fornecido' };
+    return { error: 'UNAUTHORIZED', message: 'Token de autorizaÃ§Ã£o nÃ£o fornecido' };
   }
 
   const token = authHeader.substring(7);
   let decodedToken;
-  
+
   try {
     decodedToken = jwt.decode(token);
     if (!decodedToken) {
-      return { error: 'INVALID_TOKEN', message: 'Token inválido' };
+      return { error: 'INVALID_TOKEN', message: 'Token invÃ¡lido' };
     }
   } catch (error) {
-    return { error: 'INVALID_TOKEN', message: 'Token inválido' };
+    return { error: 'INVALID_TOKEN', message: 'Token invÃ¡lido' };
   }
 
   const cognitoSub = decodedToken.sub;
   const email = decodedToken.email;
 
   if (!cognitoSub || !email) {
-    return { error: 'INVALID_TOKEN_DATA', message: 'Dados do token inválidos' };
+    return { error: 'INVALID_TOKEN_DATA', message: 'Dados do token invÃ¡lidos' };
   }
 
   return { cognitoSub, email };
 };
 
-// Função para verificar se é admin
-const verifyAdmin = (email) => {
+// FunÃ§Ã£o para verificar se Ã© admin
+const verifyAdmin = email => {
   return email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 };
 
-exports.handler = async (event) => {
+exports.handler = async event => {
   try {
     // Configurar CORS
     const corsHeaders = {
       'Access-Control-Allow-Origin': process.env.AMPLIFY_DOMAIN || '*',
       'Access-Control-Allow-Headers': 'Content-Type,Authorization',
       'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
-      'Access-Control-Allow-Credentials': true,
+      'Access-Control-Allow-Credentials': true
     };
 
     // Handle preflight OPTIONS request
@@ -81,7 +87,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ message: 'OK' }),
+        body: JSON.stringify({ message: 'OK' })
       };
     }
 
@@ -89,7 +95,7 @@ exports.handler = async (event) => {
     await mongoClient.connect();
     const db = mongoClient.db();
 
-    // GET /plans - Lista de planos disponíveis (pública)
+    // GET /plans - Lista de planos disponÃ­veis (pÃºblica)
     if (event.httpMethod === 'GET') {
       const plansList = Object.entries(PLANS).map(([key, plan]) => ({
         id: key,
@@ -102,20 +108,20 @@ exports.handler = async (event) => {
         headers: corsHeaders,
         body: JSON.stringify({
           plans: plansList
-        }),
+        })
       };
     }
 
-    // POST /payments/stripe/checkout - Criar sessão de checkout do Stripe
+    // POST /payments/stripe/checkout - Criar sessÃ£o de checkout do Stripe
     if (event.httpMethod === 'POST' && event.path.includes('/stripe/checkout')) {
       const auth = verifyAuth(event);
       if (auth.error) {
         return {
           statusCode: 401,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: auth.error, message: auth.message } 
-          }),
+          body: JSON.stringify({
+            error: { code: auth.error, message: auth.message }
+          })
         };
       }
 
@@ -127,21 +133,21 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_JSON', message: 'JSON inválido' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_JSON', message: 'JSON invÃ¡lido' }
+          })
         };
       }
 
       const { planType } = requestBody;
-      
+
       if (!planType || !PLANS[planType]) {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_PLAN', message: 'Tipo de plano inválido' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_PLAN', message: 'Tipo de plano invÃ¡lido' }
+          })
         };
       }
 
@@ -149,7 +155,7 @@ exports.handler = async (event) => {
       const siteUrl = process.env.SITE_URL || 'https://main.d3nvjszcpksd6p.amplifyapp.com';
 
       try {
-        // Criar sessão de checkout do Stripe
+        // Criar sessÃ£o de checkout do Stripe
         const session = await stripe.checkout.sessions.create({
           payment_method_types: ['card'],
           line_items: [
@@ -200,19 +206,18 @@ exports.handler = async (event) => {
           body: JSON.stringify({
             sessionUrl: session.url,
             sessionId: session.id
-          }),
+          })
         };
-
       } catch (stripeError) {
         if (process.env.NODE_ENV !== 'production') {
-          console.error('Erro do Stripe:', stripeError);
+          logger.error('Erro do Stripe:', stripeError);
         }
         return {
           statusCode: 500,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'STRIPE_ERROR', message: 'Erro ao criar sessão de pagamento' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'STRIPE_ERROR', message: 'Erro ao criar sessÃ£o de pagamento' }
+          })
         };
       }
     }
@@ -224,9 +229,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 401,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: auth.error, message: auth.message } 
-          }),
+          body: JSON.stringify({
+            error: { code: auth.error, message: auth.message }
+          })
         };
       }
 
@@ -238,25 +243,28 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_JSON', message: 'JSON inválido' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_JSON', message: 'JSON invÃ¡lido' }
+          })
         };
       }
 
       const { txHash, planType } = requestBody;
-      
+
       if (!txHash || !planType || !PLANS[planType]) {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_DATA', message: 'Hash da transação e tipo de plano são obrigatórios' } 
-          }),
+          body: JSON.stringify({
+            error: {
+              code: 'INVALID_DATA',
+              message: 'Hash da transaÃ§Ã£o e tipo de plano sÃ£o obrigatÃ³rios'
+            }
+          })
         };
       }
 
-      // Verificar se já existe pagamento com este hash
+      // Verificar se jÃ¡ existe pagamento com este hash
       const existingPayment = await db.collection('payments').findOne({
         'providerRef.txHash': txHash
       });
@@ -265,14 +273,14 @@ exports.handler = async (event) => {
         return {
           statusCode: 409,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'DUPLICATE_TRANSACTION', message: 'Transação já processada' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'DUPLICATE_TRANSACTION', message: 'TransaÃ§Ã£o jÃ¡ processada' }
+          })
         };
       }
 
       try {
-        // Validar transação on-chain
+        // Validar transaÃ§Ã£o on-chain
         const provider = new ethers.JsonRpcProvider(process.env.CHAIN_RPC_URL);
         const tx = await provider.getTransaction(txHash);
         const receipt = await provider.getTransactionReceipt(txHash);
@@ -281,20 +289,23 @@ exports.handler = async (event) => {
           return {
             statusCode: 400,
             headers: corsHeaders,
-            body: JSON.stringify({ 
-              error: { code: 'TRANSACTION_NOT_FOUND', message: 'Transação não encontrada na blockchain' } 
-            }),
+            body: JSON.stringify({
+              error: {
+                code: 'TRANSACTION_NOT_FOUND',
+                message: 'TransaÃ§Ã£o nÃ£o encontrada na blockchain'
+              }
+            })
           };
         }
 
-        // Verificar se a transação foi confirmada
+        // Verificar se a transaÃ§Ã£o foi confirmada
         if (receipt.status !== 1) {
           return {
             statusCode: 400,
             headers: corsHeaders,
-            body: JSON.stringify({ 
-              error: { code: 'TRANSACTION_FAILED', message: 'Transação falhou na blockchain' } 
-            }),
+            body: JSON.stringify({
+              error: { code: 'TRANSACTION_FAILED', message: 'TransaÃ§Ã£o falhou na blockchain' }
+            })
           };
         }
 
@@ -304,43 +315,59 @@ exports.handler = async (event) => {
           return {
             statusCode: 400,
             headers: corsHeaders,
-            body: JSON.stringify({ 
-              error: { code: 'INVALID_RECIPIENT', message: 'Transação enviada para carteira incorreta' } 
-            }),
+            body: JSON.stringify({
+              error: {
+                code: 'INVALID_RECIPIENT',
+                message: 'TransaÃ§Ã£o enviada para carteira incorreta'
+              }
+            })
           };
         }
 
-        // Verificar valor da transação (em ETH)
+        // Verificar valor da transaÃ§Ã£o (em ETH)
         const plan = PLANS[planType];
         const expectedValue = ethers.parseEther(plan.price.toString()); // Converter para wei
-        
+
         // Permitir margem de erro de 10%
-        const tolerance = expectedValue * 0.1n;
-        if (Math.abs(Number(tx.value - expectedValue)) > Number(tolerance)) {
+        // create a tolerance of 10% using BigNumber arithmetic
+        const expectedBN = expectedValue;
+        const toleranceBN = expectedBN.mul(10).div(100); // 10%
+
+        const txValueBN = ethers.BigNumber.from(tx.value.toString());
+        const diff = txValueBN.gte(expectedBN)
+          ? txValueBN.sub(expectedBN)
+          : expectedBN.sub(txValueBN);
+        if (diff.gt(toleranceBN)) {
           return {
             statusCode: 400,
             headers: corsHeaders,
-            body: JSON.stringify({ 
-              error: { code: 'INVALID_AMOUNT', message: 'Valor da transação não corresponde ao plano' } 
-            }),
+            body: JSON.stringify({
+              error: {
+                code: 'INVALID_AMOUNT',
+                message: 'Valor da transaÃ§Ã£o nÃ£o corresponde ao plano'
+              }
+            })
           };
         }
 
-        // Verificar confirmações (mínimo 1)
+        // Verificar confirmaÃ§Ãµes (mÃ­nimo 1)
         const currentBlock = await provider.getBlockNumber();
         const confirmations = currentBlock - receipt.blockNumber;
-        
+
         if (confirmations < 1) {
           return {
             statusCode: 400,
             headers: corsHeaders,
-            body: JSON.stringify({ 
-              error: { code: 'INSUFFICIENT_CONFIRMATIONS', message: 'Transação precisa de pelo menos 1 confirmação' } 
-            }),
+            body: JSON.stringify({
+              error: {
+                code: 'INSUFFICIENT_CONFIRMATIONS',
+                message: 'TransaÃ§Ã£o precisa de pelo menos 1 confirmaÃ§Ã£o'
+              }
+            })
           };
         }
 
-        // Ativar plano do usuário
+        // Ativar plano do usuÃ¡rio
         const expiresAt = new Date();
         expiresAt.setMonth(expiresAt.getMonth() + 1);
 
@@ -384,35 +411,36 @@ exports.handler = async (event) => {
               status: 'active',
               expiresAt: expiresAt
             }
-          }),
+          })
         };
-
       } catch (blockchainError) {
         if (process.env.NODE_ENV !== 'production') {
-          console.error('Erro na validação blockchain:', blockchainError);
+          logger.error('Erro na validaÃ§Ã£o blockchain:', blockchainError);
         }
         return {
           statusCode: 500,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'BLOCKCHAIN_ERROR', message: 'Erro ao validar transação na blockchain' } 
-          }),
+          body: JSON.stringify({
+            error: {
+              code: 'BLOCKCHAIN_ERROR',
+              message: 'Erro ao validar transaÃ§Ã£o na blockchain'
+            }
+          })
         };
       }
     }
 
-    // Método não suportado
+    // MÃ©todo nÃ£o suportado
     return {
       statusCode: 405,
       headers: corsHeaders,
-      body: JSON.stringify({ 
-        error: { code: 'METHOD_NOT_ALLOWED', message: 'Método não permitido' } 
-      }),
+      body: JSON.stringify({
+        error: { code: 'METHOD_NOT_ALLOWED', message: 'MÃ©todo nÃ£o permitido' }
+      })
     };
-
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro no gerenciamento de planos e pagamentos:', error);
+      logger.error('Erro no gerenciamento de planos e pagamentos:', error);
     }
     return {
       statusCode: 500,
@@ -420,11 +448,11 @@ exports.handler = async (event) => {
         'Access-Control-Allow-Origin': process.env.AMPLIFY_DOMAIN || '*',
         'Access-Control-Allow-Headers': 'Content-Type,Authorization',
         'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
-        'Access-Control-Allow-Credentials': true,
+        'Access-Control-Allow-Credentials': true
       },
-      body: JSON.stringify({ 
-        error: { code: 'INTERNAL_ERROR', message: 'Erro interno do servidor' } 
-      }),
+      body: JSON.stringify({
+        error: { code: 'INTERNAL_ERROR', message: 'Erro interno do servidor' }
+      })
     };
   } finally {
     if (mongoClient) {

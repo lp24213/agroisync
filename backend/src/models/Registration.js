@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 // Schema para cadastros de AgroConecta
 const agroConectaSchema = new mongoose.Schema(
   {
-    // Dados básicos
+    // Dados bÃ¡sicos
     name: {
       type: String,
       required: true,
@@ -46,7 +46,7 @@ const agroConectaSchema = new mongoose.Schema(
       trim: true
     },
 
-    // Endereço
+    // EndereÃ§o
     address: {
       cep: {
         type: String,
@@ -92,7 +92,7 @@ const agroConectaSchema = new mongoose.Schema(
       }
     },
 
-    // Dados do veículo
+    // Dados do veÃ­culo
     vehicle: {
       plate: {
         type: String,
@@ -130,7 +130,7 @@ const agroConectaSchema = new mongoose.Schema(
       }
     },
 
-    // Serviços oferecidos
+    // ServiÃ§os oferecidos
     services: [
       {
         id: {
@@ -163,7 +163,7 @@ const agroConectaSchema = new mongoose.Schema(
       }
     ],
 
-    // Plano e configurações
+    // Plano e configuraÃ§Ãµes
     plan: {
       type: String,
       required: true,
@@ -197,7 +197,7 @@ const agroConectaSchema = new mongoose.Schema(
       }
     },
 
-    // Estatísticas
+    // EstatÃ­sticas
     stats: {
       totalJobs: {
         type: Number,
@@ -245,7 +245,7 @@ const agroConectaSchema = new mongoose.Schema(
 // Schema para cadastros de Loja
 const lojaSchema = new mongoose.Schema(
   {
-    // Dados básicos
+    // Dados bÃ¡sicos
     name: {
       type: String,
       required: true,
@@ -287,7 +287,7 @@ const lojaSchema = new mongoose.Schema(
       trim: true
     },
 
-    // Endereço
+    // EndereÃ§o
     address: {
       cep: {
         type: String,
@@ -384,7 +384,7 @@ const lojaSchema = new mongoose.Schema(
       }
     ],
 
-    // Plano e configurações
+    // Plano e configuraÃ§Ãµes
     plan: {
       type: String,
       required: true,
@@ -418,7 +418,7 @@ const lojaSchema = new mongoose.Schema(
       }
     },
 
-    // Estatísticas
+    // EstatÃ­sticas
     stats: {
       totalSales: {
         type: Number,
@@ -466,7 +466,7 @@ const lojaSchema = new mongoose.Schema(
 // Schema para cadastros de Marketplace
 const marketplaceSchema = new mongoose.Schema(
   {
-    // Dados básicos
+    // Dados bÃ¡sicos
     name: {
       type: String,
       required: true,
@@ -508,7 +508,7 @@ const marketplaceSchema = new mongoose.Schema(
       trim: true
     },
 
-    // Endereço
+    // EndereÃ§o
     address: {
       cep: {
         type: String,
@@ -554,7 +554,7 @@ const marketplaceSchema = new mongoose.Schema(
       }
     },
 
-    // Produtos/Serviços
+    // Produtos/ServiÃ§os
     offerings: [
       {
         type: {
@@ -610,7 +610,7 @@ const marketplaceSchema = new mongoose.Schema(
       }
     ],
 
-    // Plano e configurações
+    // Plano e configuraÃ§Ãµes
     plan: {
       type: String,
       required: true,
@@ -644,7 +644,7 @@ const marketplaceSchema = new mongoose.Schema(
       }
     },
 
-    // Estatísticas
+    // EstatÃ­sticas
     stats: {
       totalTransactions: {
         type: Number,
@@ -692,7 +692,7 @@ const marketplaceSchema = new mongoose.Schema(
 // Schema para cadastros de Fazenda
 const fazendaSchema = new mongoose.Schema(
   {
-    // Dados básicos
+    // Dados bÃ¡sicos
     name: {
       type: String,
       required: true,
@@ -734,7 +734,7 @@ const fazendaSchema = new mongoose.Schema(
       default: 'agriculture'
     },
 
-    // Endereço
+    // EndereÃ§o
     address: {
       cep: {
         type: String,
@@ -834,7 +834,7 @@ const fazendaSchema = new mongoose.Schema(
       }
     ],
 
-    // Plano e configurações
+    // Plano e configuraÃ§Ãµes
     plan: {
       type: String,
       required: true,
@@ -868,7 +868,7 @@ const fazendaSchema = new mongoose.Schema(
       }
     },
 
-    // Estatísticas
+    // EstatÃ­sticas
     stats: {
       totalHarvests: {
         type: Number,
@@ -909,16 +909,16 @@ const fazendaSchema = new mongoose.Schema(
   }
 );
 
-// Middleware para validação de dados
+// Middleware para validaÃ§Ã£o de dados
 agroConectaSchema.pre('save', function (next) {
   // Validar CPF
   if (this.cpf && !this.isValidCPF(this.cpf)) {
-    return next(new Error('CPF inválido'));
+    return next(new Error('CPF invÃ¡lido'));
   }
 
   // Validar CNPJ
   if (this.cnpj && !this.isValidCNPJ(this.cnpj)) {
-    return next(new Error('CNPJ inválido'));
+    return next(new Error('CNPJ invÃ¡lido'));
   }
 
   next();
@@ -926,11 +926,11 @@ agroConectaSchema.pre('save', function (next) {
 
 lojaSchema.pre('save', function (next) {
   if (this.cpf && !this.isValidCPF(this.cpf)) {
-    return next(new Error('CPF inválido'));
+    return next(new Error('CPF invÃ¡lido'));
   }
 
   if (this.cnpj && !this.isValidCNPJ(this.cnpj)) {
-    return next(new Error('CNPJ inválido'));
+    return next(new Error('CNPJ invÃ¡lido'));
   }
 
   next();
@@ -938,11 +938,11 @@ lojaSchema.pre('save', function (next) {
 
 marketplaceSchema.pre('save', function (next) {
   if (this.cpf && !this.isValidCPF(this.cpf)) {
-    return next(new Error('CPF inválido'));
+    return next(new Error('CPF invÃ¡lido'));
   }
 
   if (this.cnpj && !this.isValidCNPJ(this.cnpj)) {
-    return next(new Error('CNPJ inválido'));
+    return next(new Error('CNPJ invÃ¡lido'));
   }
 
   next();
@@ -950,13 +950,13 @@ marketplaceSchema.pre('save', function (next) {
 
 fazendaSchema.pre('save', function (next) {
   if (this.cpf && !this.isValidCPF(this.cpf)) {
-    return next(new Error('CPF inválido'));
+    return next(new Error('CPF invÃ¡lido'));
   }
 
   next();
 });
 
-// Métodos de validação
+// MÃ©todos de validaÃ§Ã£o
 agroConectaSchema.methods.isValidCPF = function (cpf) {
   cpf = cpf.replace(/[^\d]/g, '');
 
@@ -966,25 +966,25 @@ agroConectaSchema.methods.isValidCPF = function (cpf) {
 
   let sum = 0;
   for (let i = 0; i < 9; i++) {
-    sum += parseInt(cpf.charAt(i, 10)) * (10 - i);
+    sum += parseInt(cpf.charAt(i, 10, 10)) * (10 - i);
   }
   let remainder = (sum * 10) % 11;
   if (remainder === 10 || remainder === 11) {
     remainder = 0;
   }
-  if (remainder !== parseInt(cpf.charAt(9, 10))) {
+  if (remainder !== parseInt(cpf.charAt(9, 10, 10))) {
     return false;
   }
 
   sum = 0;
   for (let i = 0; i < 10; i++) {
-    sum += parseInt(cpf.charAt(i, 10)) * (11 - i);
+    sum += parseInt(cpf.charAt(i, 10, 10)) * (11 - i);
   }
   remainder = (sum * 10) % 11;
   if (remainder === 10 || remainder === 11) {
     remainder = 0;
   }
-  if (remainder !== parseInt(cpf.charAt(10, 10))) {
+  if (remainder !== parseInt(cpf.charAt(10, 10, 10))) {
     return false;
   }
 
@@ -1002,14 +1002,14 @@ agroConectaSchema.methods.isValidCNPJ = function (cnpj) {
   let weight = 2;
 
   for (let i = 11; i >= 0; i--) {
-    sum += parseInt(cnpj.charAt(i, 10)) * weight;
+    sum += parseInt(cnpj.charAt(i, 10, 10)) * weight;
     weight = weight === 9 ? 2 : weight + 1;
   }
 
   let remainder = sum % 11;
   const digit1 = remainder < 2 ? 0 : 11 - remainder;
 
-  if (digit1 !== parseInt(cnpj.charAt(12, 10))) {
+  if (digit1 !== parseInt(cnpj.charAt(12, 10, 10))) {
     return false;
   }
 
@@ -1017,24 +1017,24 @@ agroConectaSchema.methods.isValidCNPJ = function (cnpj) {
   weight = 2;
 
   for (let i = 12; i >= 0; i--) {
-    sum += parseInt(cnpj.charAt(i, 10)) * weight;
+    sum += parseInt(cnpj.charAt(i, 10, 10)) * weight;
     weight = weight === 9 ? 2 : weight + 1;
   }
 
   remainder = sum % 11;
   const digit2 = remainder < 2 ? 0 : 11 - remainder;
 
-  return digit2 === parseInt(cnpj.charAt(13, 10));
+  return digit2 === parseInt(cnpj.charAt(13, 10, 10));
 };
 
-// Aplicar os mesmos métodos para os outros schemas
+// Aplicar os mesmos mÃ©todos para os outros schemas
 lojaSchema.methods.isValidCPF = agroConectaSchema.methods.isValidCPF;
 lojaSchema.methods.isValidCNPJ = agroConectaSchema.methods.isValidCNPJ;
 marketplaceSchema.methods.isValidCPF = agroConectaSchema.methods.isValidCPF;
 marketplaceSchema.methods.isValidCNPJ = agroConectaSchema.methods.isValidCNPJ;
 fazendaSchema.methods.isValidCPF = agroConectaSchema.methods.isValidCPF;
 
-// Índices para otimização
+// Ãndices para otimizaÃ§Ã£o
 agroConectaSchema.index({ email: 1 });
 agroConectaSchema.index({ cpf: 1 });
 agroConectaSchema.index({ cnpj: 1 });

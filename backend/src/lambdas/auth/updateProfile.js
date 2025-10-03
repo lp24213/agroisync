@@ -1,6 +1,7 @@
-const { MongoClient } = require('mongodb');
+﻿const { MongoClient } = require('mongodb');
 const jwt = require('jsonwebtoken');
 
+const logger = require('../../utils/logger.js');
 const mongoClient = new MongoClient(process.env.MONGODB_URI);
 
 exports.handler = async event => {
@@ -29,13 +30,13 @@ exports.handler = async event => {
         body: JSON.stringify({
           error: {
             code: 'METHOD_NOT_ALLOWED',
-            message: 'Método não permitido'
+            message: 'MÃ©todo nÃ£o permitido'
           }
         })
       };
     }
 
-    // Verificar autorização
+    // Verificar autorizaÃ§Ã£o
     const authHeader = event.headers.Authorization || event.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return {
@@ -44,7 +45,7 @@ exports.handler = async event => {
         body: JSON.stringify({
           error: {
             code: 'UNAUTHORIZED',
-            message: 'Token de autorização não fornecido'
+            message: 'Token de autorizaÃ§Ã£o nÃ£o fornecido'
           }
         })
       };
@@ -57,7 +58,7 @@ exports.handler = async event => {
     try {
       decodedToken = jwt.decode(token);
       if (!decodedToken) {
-        throw new Error('Token inválido');
+        throw new Error('Token invÃ¡lido');
       }
     } catch (error) {
       return {
@@ -66,7 +67,7 @@ exports.handler = async event => {
         body: JSON.stringify({
           error: {
             code: 'INVALID_TOKEN',
-            message: 'Token inválido'
+            message: 'Token invÃ¡lido'
           }
         })
       };
@@ -82,7 +83,7 @@ exports.handler = async event => {
         body: JSON.stringify({
           error: {
             code: 'INVALID_TOKEN_DATA',
-            message: 'Dados do token inválidos'
+            message: 'Dados do token invÃ¡lidos'
           }
         })
       };
@@ -92,7 +93,7 @@ exports.handler = async event => {
     await mongoClient.connect();
     const db = mongoClient.db();
 
-    // Verificar se usuário existe
+    // Verificar se usuÃ¡rio existe
     const existingUser = await db.collection('users').findOne({ cognitoSub });
     if (!existingUser) {
       return {
@@ -101,13 +102,13 @@ exports.handler = async event => {
         body: JSON.stringify({
           error: {
             code: 'USER_NOT_FOUND',
-            message: 'Usuário não encontrado'
+            message: 'UsuÃ¡rio nÃ£o encontrado'
           }
         })
       };
     }
 
-    // Parse do body da requisição
+    // Parse do body da requisiÃ§Ã£o
     let requestBody;
     try {
       requestBody = JSON.parse(event.body);
@@ -118,7 +119,7 @@ exports.handler = async event => {
         body: JSON.stringify({
           error: {
             code: 'INVALID_JSON',
-            message: 'JSON inválido no body da requisição'
+            message: 'JSON invÃ¡lido no body da requisiÃ§Ã£o'
           }
         })
       };
@@ -140,7 +141,7 @@ exports.handler = async event => {
       };
     }
 
-    // Preparar dados para atualização
+    // Preparar dados para atualizaÃ§Ã£o
     const updateData = {
       updatedAt: new Date()
     };
@@ -159,9 +160,9 @@ exports.handler = async event => {
     }
 
     if (wallets) {
-      // Validar endereço EVM
+      // Validar endereÃ§o EVM
       if (wallets.evmAddress && typeof wallets.evmAddress === 'string') {
-        // Validar formato de endereço Ethereum
+        // Validar formato de endereÃ§o Ethereum
         const ethAddressRegex = /^0x[a-fA-F0-9]{40}$/;
         if (!ethAddressRegex.test(wallets.evmAddress)) {
           return {
@@ -170,7 +171,7 @@ exports.handler = async event => {
             body: JSON.stringify({
               error: {
                 code: 'INVALID_ADDRESS',
-                message: 'Endereço Ethereum inválido'
+                message: 'EndereÃ§o Ethereum invÃ¡lido'
               }
             })
           };
@@ -179,7 +180,7 @@ exports.handler = async event => {
       }
     }
 
-    // Atualizar usuário
+    // Atualizar usuÃ¡rio
     const result = await db.collection('users').updateOne({ cognitoSub }, { $set: updateData });
 
     if (result.matchedCount === 0) {
@@ -189,13 +190,13 @@ exports.handler = async event => {
         body: JSON.stringify({
           error: {
             code: 'USER_NOT_FOUND',
-            message: 'Usuário não encontrado'
+            message: 'UsuÃ¡rio nÃ£o encontrado'
           }
         })
       };
     }
 
-    // Buscar usuário atualizado
+    // Buscar usuÃ¡rio atualizado
     const updatedUser = await db.collection('users').findOne({ cognitoSub });
 
     return {
@@ -215,7 +216,7 @@ exports.handler = async event => {
     };
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro na atualização de perfil:', error);
+      logger.error('Erro na atualizaÃ§Ã£o de perfil:', error);
     }
     return {
       statusCode: 500,

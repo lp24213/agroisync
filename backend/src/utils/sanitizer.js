@@ -1,4 +1,4 @@
-// Utility functions for input sanitization
+﻿// Utility functions for input sanitization
 
 /**
  * Sanitize input string by removing potentially dangerous characters

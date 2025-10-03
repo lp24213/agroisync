@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import User from '../models/User.js';
 import SecurityLog from '../models/SecurityLog.js';
 import { authenticateToken } from '../middleware/auth.js';
@@ -38,8 +38,8 @@ const createSecurityLog = async (
       cloudflare: {
         rayId: req.headers['cf-ray'] || null,
         country: req.headers['cf-ipcountry'] || null,
-        threatScore: parseInt(req.headers['cf-threat-score'], 10) || 0,
-        botScore: parseInt(req.headers['cf-bot-score'], 10) || 0
+        threatScore: parseInt(req.headers['cf-threat-score'], 10, 10) || 0,
+        botScore: parseInt(req.headers['cf-bot-score'], 10, 10) || 0
       },
       details: additionalData
     });
@@ -58,7 +58,7 @@ router.get('/profile', authenticateToken, async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Usuário não encontrado'
+        message: 'UsuÃ¡rio nÃ£o encontrado'
       });
     }
 
@@ -119,7 +119,7 @@ router.put('/profile', authenticateToken, async (req, res) => {
     if (phone && !/^[+]?[1-9][\d]{0,15}$/.test(phone)) {
       return res.status(400).json({
         success: false,
-        message: 'Telefone inválido'
+        message: 'Telefone invÃ¡lido'
       });
     }
 
@@ -165,7 +165,7 @@ router.put('/profile', authenticateToken, async (req, res) => {
     if (Object.keys(updateData).length === 0) {
       return res.status(400).json({
         success: false,
-        message: 'Nenhum dado válido para atualizar'
+        message: 'Nenhum dado vÃ¡lido para atualizar'
       });
     }
 
@@ -178,7 +178,7 @@ router.put('/profile', authenticateToken, async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Usuário não encontrado'
+        message: 'UsuÃ¡rio nÃ£o encontrado'
       });
     }
 
@@ -235,7 +235,7 @@ router.get('/subscriptions', authenticateToken, async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Usuário não encontrado'
+        message: 'UsuÃ¡rio nÃ£o encontrado'
       });
     }
 
@@ -257,9 +257,11 @@ router.get('/subscriptions', authenticateToken, async (req, res) => {
               user.subscriptions.store.maxAds - user.subscriptions.store.currentAds
             ),
             /* eslint-disable prettier/prettier */
-            daysRemaining: user.subscriptions.store.endDate ? Math.ceil(
-              (new Date(user.subscriptions.store.endDate) - new Date()) / (1000 * 60 * 60 * 24)
-            ) : 0
+            daysRemaining: user.subscriptions.store.endDate
+              ? Math.ceil(
+                  (new Date(user.subscriptions.store.endDate) - new Date()) / (1000 * 60 * 60 * 24)
+                )
+              : 0
             /* eslint-enable prettier/prettier */
           },
           freight: {
@@ -272,9 +274,12 @@ router.get('/subscriptions', authenticateToken, async (req, res) => {
               user.subscriptions.freight.maxFreights - user.subscriptions.freight.currentFreights
             ),
             /* eslint-disable prettier/prettier */
-            daysRemaining: user.subscriptions.freight.endDate ? Math.ceil(
-              (new Date(user.subscriptions.freight.endDate) - new Date()) / (1000 * 60 * 60 * 24)
-            ) : 0
+            daysRemaining: user.subscriptions.freight.endDate
+              ? Math.ceil(
+                  (new Date(user.subscriptions.freight.endDate) - new Date()) /
+                    (1000 * 60 * 60 * 24)
+                )
+              : 0
             /* eslint-enable prettier/prettier */
           }
         }
@@ -329,7 +334,7 @@ router.put('/subscriptions', authenticateToken, async (req, res) => {
     if (Object.keys(updateData).length === 0) {
       return res.status(400).json({
         success: false,
-        message: 'Nenhuma preferência válida para atualizar'
+        message: 'Nenhuma preferÃªncia vÃ¡lida para atualizar'
       });
     }
 
@@ -342,7 +347,7 @@ router.put('/subscriptions', authenticateToken, async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Usuário não encontrado'
+        message: 'UsuÃ¡rio nÃ£o encontrado'
       });
     }
 
@@ -358,7 +363,7 @@ router.put('/subscriptions', authenticateToken, async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Preferências de assinatura atualizadas com sucesso',
+      message: 'PreferÃªncias de assinatura atualizadas com sucesso',
       data: {
         subscriptions: user.subscriptions
       }
@@ -376,7 +381,7 @@ router.put('/subscriptions', authenticateToken, async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: 'Erro ao atualizar preferências de assinatura'
+      message: 'Erro ao atualizar preferÃªncias de assinatura'
     });
   }
 });
@@ -390,7 +395,7 @@ router.delete('/account', authenticateToken, async (req, res) => {
     if (!password) {
       return res.status(400).json({
         success: false,
-        message: 'Senha é obrigatória para deletar a conta'
+        message: 'Senha Ã© obrigatÃ³ria para deletar a conta'
       });
     }
 
@@ -399,7 +404,7 @@ router.delete('/account', authenticateToken, async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Usuário não encontrado'
+        message: 'UsuÃ¡rio nÃ£o encontrado'
       });
     }
 
@@ -433,7 +438,7 @@ router.delete('/account', authenticateToken, async (req, res) => {
     res.json({
       success: true,
       message:
-        'Conta desativada com sucesso. Você pode reativá-la entrando em contato com o suporte.',
+        'Conta desativada com sucesso. VocÃª pode reativÃ¡-la entrando em contato com o suporte.',
       data: {
         deactivatedAt: user.deletedAt,
         reason: user.deletionReason

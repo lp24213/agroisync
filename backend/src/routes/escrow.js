@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import Escrow from '../models/Escrow.js';
 import Payment from '../models/Payment.js';
 import User from '../models/User.js';
@@ -7,6 +7,7 @@ import Freight from '../models/Freight.js';
 import { authenticateToken } from '../middleware/auth.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
 import { body, validationResult } from 'express-validator';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -18,10 +19,10 @@ router.post(
   '/create',
   authenticateToken,
   [
-    body('itemId').isMongoId().withMessage('ID do item inválido'),
-    body('itemType').isIn(['product', 'freight']).withMessage('Tipo de item inválido'),
+    body('itemId').isMongoId().withMessage('ID do item invÃ¡lido'),
+    body('itemType').isIn(['product', 'freight']).withMessage('Tipo de item invÃ¡lido'),
     body('amount').isFloat({ min: 0.01 }).withMessage('Valor deve ser maior que zero'),
-    body('description').notEmpty().withMessage('Descrição é obrigatória')
+    body('description').notEmpty().withMessage('DescriÃ§Ã£o Ã© obrigatÃ³ria')
   ],
   async (req, res) => {
     try {
@@ -29,7 +30,7 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
@@ -48,19 +49,19 @@ router.post(
       if (!item) {
         return res.status(404).json({
           success: false,
-          message: 'Item não encontrado'
+          message: 'Item nÃ£o encontrado'
         });
       }
 
-      // Verificar se o comprador não é o próprio vendedor
+      // Verificar se o comprador nÃ£o Ã© o prÃ³prio vendedor
       if (item.owner.toString() === buyerId) {
         return res.status(400).json({
           success: false,
-          message: 'Você não pode comprar seu próprio item'
+          message: 'VocÃª nÃ£o pode comprar seu prÃ³prio item'
         });
       }
 
-      // Verificar se já existe escrow ativo para este item
+      // Verificar se jÃ¡ existe escrow ativo para este item
       const existingEscrow = await Escrow.findOne({
         itemId,
         itemType,
@@ -71,7 +72,7 @@ router.post(
       if (existingEscrow) {
         return res.status(400).json({
           success: false,
-          message: 'Já existe uma transação em andamento para este item'
+          message: 'JÃ¡ existe uma transaÃ§Ã£o em andamento para este item'
         });
       }
 
@@ -100,7 +101,7 @@ router.post(
           escrowId: escrow._id,
           item: {
             id: item._id,
-            name: item.name || `${item.origin} → ${item.destination}`,
+            name: item.name || `${item.origin} â†’ ${item.destination}`,
             type: itemType
           },
           seller: {
@@ -114,9 +115,7 @@ router.post(
         }
       });
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao criar escrow:', error);
-      }
+      logger.error('Erro ao criar escrow:', error);
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -130,9 +129,11 @@ router.post(
   '/fund',
   authenticateToken,
   [
-    body('escrowId').isMongoId().withMessage('ID do escrow inválido'),
-    body('paymentMethod').isIn(['stripe', 'metamask']).withMessage('Método de pagamento inválido'),
-    body('paymentData').isObject().withMessage('Dados de pagamento são obrigatórios')
+    body('escrowId').isMongoId().withMessage('ID do escrow invÃ¡lido'),
+    body('paymentMethod')
+      .isIn(['stripe', 'metamask'])
+      .withMessage('MÃ©todo de pagamento invÃ¡lido'),
+    body('paymentData').isObject().withMessage('Dados de pagamento sÃ£o obrigatÃ³rios')
   ],
   async (req, res) => {
     try {
@@ -140,7 +141,7 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
@@ -153,11 +154,11 @@ router.post(
       if (!escrow) {
         return res.status(404).json({
           success: false,
-          message: 'Escrow não encontrado'
+          message: 'Escrow nÃ£o encontrado'
         });
       }
 
-      // Verificar se o usuário é o comprador
+      // Verificar se o usuÃ¡rio Ã© o comprador
       if (escrow.buyerId.toString() !== userId) {
         return res.status(403).json({
           success: false,
@@ -165,15 +166,15 @@ router.post(
         });
       }
 
-      // Verificar se escrow ainda está pendente
+      // Verificar se escrow ainda estÃ¡ pendente
       if (escrow.status !== 'pending') {
         return res.status(400).json({
           success: false,
-          message: 'Escrow não está mais pendente'
+          message: 'Escrow nÃ£o estÃ¡ mais pendente'
         });
       }
 
-      // Verificar se não expirou
+      // Verificar se nÃ£o expirou
       if (escrow.expiresAt < new Date()) {
         return res.status(400).json({
           success: false,
@@ -181,7 +182,7 @@ router.post(
         });
       }
 
-      // Processar pagamento baseado no método
+      // Processar pagamento baseado no mÃ©todo
       let paymentResult;
       if (paymentMethod === 'stripe') {
         paymentResult = await processStripePayment(escrow, paymentData);
@@ -231,7 +232,7 @@ router.post(
       });
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao financiar escrow:', error);
+        logger.error('Erro ao financiar escrow:', error);
       }
       res.status(500).json({
         success: false,
@@ -246,8 +247,8 @@ router.post(
   '/release',
   authenticateToken,
   [
-    body('escrowId').isMongoId().withMessage('ID do escrow inválido'),
-    body('action').isIn(['release', 'dispute']).withMessage('Ação inválida'),
+    body('escrowId').isMongoId().withMessage('ID do escrow invÃ¡lido'),
+    body('action').isIn(['release', 'dispute']).withMessage('AÃ§Ã£o invÃ¡lida'),
     body('reason').optional().isString().withMessage('Motivo deve ser texto')
   ],
   async (req, res) => {
@@ -256,7 +257,7 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
@@ -269,11 +270,11 @@ router.post(
       if (!escrow) {
         return res.status(404).json({
           success: false,
-          message: 'Escrow não encontrado'
+          message: 'Escrow nÃ£o encontrado'
         });
       }
 
-      // Verificar se o usuário é o comprador ou vendedor
+      // Verificar se o usuÃ¡rio Ã© o comprador ou vendedor
       if (escrow.buyerId.toString() !== userId && escrow.sellerId.toString() !== userId) {
         return res.status(403).json({
           success: false,
@@ -281,11 +282,11 @@ router.post(
         });
       }
 
-      // Verificar se escrow está financiado
+      // Verificar se escrow estÃ¡ financiado
       if (escrow.status !== 'funded') {
         return res.status(400).json({
           success: false,
-          message: 'Escrow não está financiado'
+          message: 'Escrow nÃ£o estÃ¡ financiado'
         });
       }
 
@@ -299,7 +300,7 @@ router.post(
         // Buscar vendedor
         const seller = await User.findById(escrow.sellerId);
         if (seller) {
-          // Aqui você implementaria a lógica de transferência real
+          // Aqui vocÃª implementaria a lÃ³gica de transferÃªncia real
           // Por enquanto, apenas marcar como liberado
           seller.balance = (seller.balance || 0) + escrow.amount;
           await seller.save();
@@ -337,7 +338,7 @@ router.post(
       }
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao processar escrow:', error);
+        logger.error('Erro ao processar escrow:', error);
       }
       res.status(500).json({
         success: false,
@@ -360,11 +361,11 @@ router.get('/:id', authenticateToken, async (req, res) => {
     if (!escrow) {
       return res.status(404).json({
         success: false,
-        message: 'Escrow não encontrado'
+        message: 'Escrow nÃ£o encontrado'
       });
     }
 
-    // Verificar se o usuário tem acesso
+    // Verificar se o usuÃ¡rio tem acesso
     if (
       escrow.buyerId._id.toString() !== userId &&
       escrow.sellerId._id.toString() !== userId &&
@@ -400,7 +401,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
         },
         item: {
           id: item._id,
-          name: item.name || `${item.origin} → ${item.destination}`,
+          name: item.name || `${item.origin} â†’ ${item.destination}`,
           type: escrow.itemType
         },
         seller: escrow.sellerId,
@@ -409,7 +410,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar escrow:', error);
+      logger.error('Erro ao buscar escrow:', error);
     }
     res.status(500).json({
       success: false,
@@ -418,13 +419,13 @@ router.get('/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// GET /api/escrow/user/:userId - Listar escrows do usuário
+// GET /api/escrow/user/:userId - Listar escrows do usuÃ¡rio
 router.get('/user/:userId', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.params;
     const currentUserId = req.user.id;
 
-    // Verificar se o usuário pode acessar
+    // Verificar se o usuÃ¡rio pode acessar
     if (userId !== currentUserId && !req.user.isAdmin) {
       return res.status(403).json({
         success: false,
@@ -445,7 +446,7 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao listar escrows:', error);
+      logger.error('Erro ao listar escrows:', error);
     }
     res.status(500).json({
       success: false,
@@ -454,10 +455,10 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
   }
 });
 
-// Funções auxiliares para processamento de pagamento
-async function processStripePayment(escrow, paymentData) {
+// FunÃ§Ãµes auxiliares para processamento de pagamento
+function processStripePayment(escrow, paymentData) {
   try {
-    // Implementar lógica real do Stripe
+    // Implementar lÃ³gica real do Stripe
     // Por enquanto, simular sucesso
     return {
       success: true,
@@ -471,9 +472,9 @@ async function processStripePayment(escrow, paymentData) {
   }
 }
 
-async function processMetaMaskPayment(escrow, paymentData) {
+function processMetaMaskPayment(escrow, paymentData) {
   try {
-    // Implementar verificação real da blockchain
+    // Implementar verificaÃ§Ã£o real da blockchain
     // Por enquanto, simular sucesso
     return {
       success: true,

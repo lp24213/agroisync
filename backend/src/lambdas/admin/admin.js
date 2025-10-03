@@ -1,14 +1,15 @@
-const { MongoClient, ObjectId } = require('mongodb');
+﻿const { MongoClient, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
 
+const logger = require('../../utils/logger.js');
 const mongoClient = new MongoClient(process.env.MONGODB_URI);
 const ADMIN_EMAIL = 'luispaulodeoliveira@agrotm.com.br';
 
-// Função auxiliar para verificar autorização
+// FunÃ§Ã£o auxiliar para verificar autorizaÃ§Ã£o
 const verifyAuth = event => {
   const authHeader = event.headers.Authorization || event.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return { error: 'UNAUTHORIZED', message: 'Token de autorização não fornecido' };
+    return { error: 'UNAUTHORIZED', message: 'Token de autorizaÃ§Ã£o nÃ£o fornecido' };
   }
 
   const token = authHeader.substring(7);
@@ -17,23 +18,23 @@ const verifyAuth = event => {
   try {
     decodedToken = jwt.decode(token);
     if (!decodedToken) {
-      return { error: 'INVALID_TOKEN', message: 'Token inválido' };
+      return { error: 'INVALID_TOKEN', message: 'Token invÃ¡lido' };
     }
   } catch (error) {
-    return { error: 'INVALID_TOKEN', message: 'Token inválido' };
+    return { error: 'INVALID_TOKEN', message: 'Token invÃ¡lido' };
   }
 
   const cognitoSub = decodedToken.sub;
   const { email } = decodedToken;
 
   if (!cognitoSub || !email) {
-    return { error: 'INVALID_TOKEN_DATA', message: 'Dados do token inválidos' };
+    return { error: 'INVALID_TOKEN_DATA', message: 'Dados do token invÃ¡lidos' };
   }
 
   return { cognitoSub, email };
 };
 
-// Função para verificar se é admin
+// FunÃ§Ã£o para verificar se Ã© admin
 const verifyAdmin = email => {
   return email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 };
@@ -57,7 +58,7 @@ exports.handler = async event => {
       };
     }
 
-    // Verificar autorização para todas as rotas admin
+    // Verificar autorizaÃ§Ã£o para todas as rotas admin
     const auth = verifyAuth(event);
     if (auth.error) {
       return {
@@ -69,7 +70,7 @@ exports.handler = async event => {
       };
     }
 
-    // Verificar se é admin
+    // Verificar se Ã© admin
     if (!verifyAdmin(auth.email)) {
       return {
         statusCode: 403,
@@ -87,7 +88,7 @@ exports.handler = async event => {
     // GET /admin/dashboard - Dashboard com KPIs
     if (event.httpMethod === 'GET' && event.path.includes('/dashboard')) {
       try {
-        // Contar usuários
+        // Contar usuÃ¡rios
         const totalUsers = await db.collection('users').countDocuments();
         const activeUsers = await db
           .collection('users')
@@ -121,7 +122,7 @@ exports.handler = async event => {
           .collection('contactMessages')
           .countDocuments({ status: 'new' });
 
-        // Estatísticas de planos
+        // EstatÃ­sticas de planos
         const planStats = await db
           .collection('users')
           .aggregate([
@@ -194,7 +195,7 @@ exports.handler = async event => {
         };
       } catch (error) {
         if (process.env.NODE_ENV !== 'production') {
-          console.error('Erro ao gerar dashboard:', error);
+          logger.error('Erro ao gerar dashboard:', error);
         }
         return {
           statusCode: 500,
@@ -206,11 +207,11 @@ exports.handler = async event => {
       }
     }
 
-    // GET /admin/users - Listar usuários
+    // GET /admin/users - Listar usuÃ¡rios
     if (event.httpMethod === 'GET' && event.path.includes('/users')) {
       const { queryStringParameters } = event;
-      const page = parseInt(queryStringParameters?.page, 10) || 1;
-      const limit = parseInt(queryStringParameters?.limit, 10) || 20;
+      const page = parseInt(queryStringParameters?.page, 10, 10) || 1;
+      const limit = parseInt(queryStringParameters?.limit, 10, 10) || 20;
       const search = queryStringParameters?.search || '';
       const role = queryStringParameters?.role;
       const planStatus = queryStringParameters?.planStatus;
@@ -260,7 +261,7 @@ exports.handler = async event => {
       };
     }
 
-    // PUT /admin/users/:id/plan - Atualizar plano do usuário
+    // PUT /admin/users/:id/plan - Atualizar plano do usuÃ¡rio
     if (
       event.httpMethod === 'PUT' &&
       event.path.includes('/users/') &&
@@ -275,7 +276,7 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_ID', message: 'ID inválido' }
+            error: { code: 'INVALID_ID', message: 'ID invÃ¡lido' }
           })
         };
       }
@@ -289,7 +290,7 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_JSON', message: 'JSON inválido' }
+            error: { code: 'INVALID_JSON', message: 'JSON invÃ¡lido' }
           })
         };
       }
@@ -301,12 +302,12 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'MISSING_FIELDS', message: 'Tipo de plano e status são obrigatórios' }
+            error: { code: 'MISSING_FIELDS', message: 'Tipo de plano e status sÃ£o obrigatÃ³rios' }
           })
         };
       }
 
-      // Configurações dos planos
+      // ConfiguraÃ§Ãµes dos planos
       const PLANS = {
         loja: {
           limitAds: 3,
@@ -328,12 +329,12 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_PLAN', message: 'Tipo de plano inválido' }
+            error: { code: 'INVALID_PLAN', message: 'Tipo de plano invÃ¡lido' }
           })
         };
       }
 
-      // Preparar dados para atualização
+      // Preparar dados para atualizaÃ§Ã£o
       const updateData = {
         'plan.type': planType,
         'plan.status': status,
@@ -345,13 +346,13 @@ exports.handler = async event => {
       if (expiresAt) {
         updateData['plan.expiresAt'] = new Date(expiresAt);
       } else if (status === 'active') {
-        // Se ativando sem data específica, definir para +30 dias
+        // Se ativando sem data especÃ­fica, definir para +30 dias
         const defaultExpiry = new Date();
         defaultExpiry.setMonth(defaultExpiry.getMonth() + 1);
         updateData['plan.expiresAt'] = defaultExpiry;
       }
 
-      // Atualizar usuário
+      // Atualizar usuÃ¡rio
       const result = await db
         .collection('users')
         .updateOne({ _id: new ObjectId(id) }, { $set: updateData });
@@ -361,7 +362,7 @@ exports.handler = async event => {
           statusCode: 404,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'USER_NOT_FOUND', message: 'Usuário não encontrado' }
+            error: { code: 'USER_NOT_FOUND', message: 'UsuÃ¡rio nÃ£o encontrado' }
           })
         };
       }
@@ -370,7 +371,7 @@ exports.handler = async event => {
         statusCode: 200,
         headers: corsHeaders,
         body: JSON.stringify({
-          message: 'Plano do usuário atualizado com sucesso'
+          message: 'Plano do usuÃ¡rio atualizado com sucesso'
         })
       };
     }
@@ -378,8 +379,8 @@ exports.handler = async event => {
     // GET /admin/payments - Listar pagamentos
     if (event.httpMethod === 'GET' && event.path.includes('/payments')) {
       const { queryStringParameters } = event;
-      const page = parseInt(queryStringParameters?.page, 10) || 1;
-      const limit = parseInt(queryStringParameters?.limit, 10) || 20;
+      const page = parseInt(queryStringParameters?.page, 10, 10) || 1;
+      const limit = parseInt(queryStringParameters?.limit, 10, 10) || 20;
       const status = queryStringParameters?.status;
       const method = queryStringParameters?.method;
 
@@ -423,8 +424,8 @@ exports.handler = async event => {
     // GET /admin/products - Listar produtos
     if (event.httpMethod === 'GET' && event.path.includes('/products')) {
       const { queryStringParameters } = event;
-      const page = parseInt(queryStringParameters?.page, 10) || 1;
-      const limit = parseInt(queryStringParameters?.limit, 10) || 20;
+      const page = parseInt(queryStringParameters?.page, 10, 10) || 1;
+      const limit = parseInt(queryStringParameters?.limit, 10, 10) || 20;
       const status = queryStringParameters?.status;
       const search = queryStringParameters?.search || '';
 
@@ -479,7 +480,7 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_ID', message: 'ID inválido' }
+            error: { code: 'INVALID_ID', message: 'ID invÃ¡lido' }
           })
         };
       }
@@ -494,7 +495,7 @@ exports.handler = async event => {
           statusCode: 404,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto não encontrado' }
+            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto nÃ£o encontrado' }
           })
         };
       }
@@ -511,8 +512,8 @@ exports.handler = async event => {
     // GET /admin/shipments - Listar fretes
     if (event.httpMethod === 'GET' && event.path.includes('/shipments')) {
       const { queryStringParameters } = event;
-      const page = parseInt(queryStringParameters?.page, 10) || 1;
-      const limit = parseInt(queryStringParameters?.limit, 10) || 20;
+      const page = parseInt(queryStringParameters?.page, 10, 10) || 1;
+      const limit = parseInt(queryStringParameters?.limit, 10, 10) || 20;
       const search = queryStringParameters?.search || '';
 
       const filter = {};
@@ -551,17 +552,17 @@ exports.handler = async event => {
       };
     }
 
-    // Método não suportado
+    // MÃ©todo nÃ£o suportado
     return {
       statusCode: 405,
       headers: corsHeaders,
       body: JSON.stringify({
-        error: { code: 'METHOD_NOT_ALLOWED', message: 'Método não permitido' }
+        error: { code: 'METHOD_NOT_ALLOWED', message: 'MÃ©todo nÃ£o permitido' }
       })
     };
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro no painel administrativo:', error);
+      logger.error('Erro no painel administrativo:', error);
     }
     return {
       statusCode: 500,

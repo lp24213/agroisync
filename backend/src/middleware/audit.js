@@ -1,4 +1,4 @@
-import { logger } from '../utils/logger';
+﻿import { logger } from '../utils/logger';
 
 // Audit log structure (JavaScript - not TypeScript)
 // AuditLog = {
@@ -73,25 +73,25 @@ export const auditLog = (action, resource) => {
     };
 
     // Add user info if available
-    if ((req as any).user) {
-      auditData.userId = (req as any).user.userId;
-      auditData.email = (req as any).user.email;
+    if (req && req.user) {
+      auditData.userId = req.user.userId;
+      auditData.email = req.user.email;
     }
 
     // Override res.send to capture response
-    res.send = function (body: any) {
+    res.send = function (body) {
       const duration = Date.now() - startTime;
       const { statusCode } = res;
       const success = statusCode >= 200 && statusCode < 300;
 
-      const completeAuditLog: AuditLog = {
+      const completeAuditLog = {
         ...auditData,
         statusCode,
         responseBody: SENSITIVE_ACTIONS.includes(action) ? body : undefined,
         duration,
         success,
         error: !success ? body : undefined
-      } as AuditLog;
+      };
 
       // Log based on action type
       if (ADMIN_ACTIONS.includes(action)) {
@@ -111,7 +111,7 @@ export const auditLog = (action, resource) => {
 };
 
 // Security event logging
-export const securityEventLog = (event: string, details: any) => {
+export const securityEventLog = (event, details) => {
   logger.error('SECURITY EVENT:', {
     event,
     timestamp: new Date().toISOString(),
@@ -121,7 +121,7 @@ export const securityEventLog = (event: string, details: any) => {
 };
 
 // Failed authentication logging
-export const failedAuthLog = (req: Request, reason: string) => {
+export const failedAuthLog = (req, reason) => {
   logger.warn('FAILED AUTHENTICATION:', {
     timestamp: new Date().toISOString(),
     ip: req.ip || req.connection.remoteAddress,
@@ -134,11 +134,7 @@ export const failedAuthLog = (req: Request, reason: string) => {
 };
 
 // Suspicious activity logging
-export const suspiciousActivityLog = (
-  req: Request,
-  activity: string,
-  details: any
-) => {
+export const suspiciousActivityLog = (req, activity, details) => {
   logger.error('SUSPICIOUS ACTIVITY:', {
     timestamp: new Date().toISOString(),
     ip: req.ip || req.connection.remoteAddress,
@@ -152,11 +148,7 @@ export const suspiciousActivityLog = (
 };
 
 // Performance monitoring
-export const performanceLog = (
-  req: Request,
-  duration: number,
-  statusCode: number
-) => {
+export const performanceLog = (req, duration, statusCode) => {
   if (duration > 5000) {
     // Log slow requests (>5s)
     logger.warn('SLOW REQUEST:', {
@@ -172,13 +164,7 @@ export const performanceLog = (
 };
 
 // Database operation logging
-export const dbOperationLog = (
-  operation: string,
-  collection: string,
-  duration: number,
-  success: boolean,
-  error?: any
-) => {
+export const dbOperationLog = (operation, collection, duration, success, error) => {
   const logData = {
     timestamp: new Date().toISOString(),
     operation,
@@ -199,13 +185,7 @@ export const dbOperationLog = (
 };
 
 // Web3 transaction logging
-export const web3TransactionLog = (
-  txHash: string,
-  operation: string,
-  walletAddress: string,
-  success: boolean,
-  error?: any
-) => {
+export const web3TransactionLog = (txHash, operation, walletAddress, success, error) => {
   const logData = {
     timestamp: new Date().toISOString(),
     txHash,

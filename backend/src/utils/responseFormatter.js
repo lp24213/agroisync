@@ -1,10 +1,10 @@
-/**
+﻿/**
  * AGROISYNC - Response Formatter
  *
- * Padroniza todas as respostas da API para manter consistência
+ * Padroniza todas as respostas da API para manter consistÃªncia
  * entre frontend e backend.
  *
- * Formato padrão:
+ * Formato padrÃ£o:
  * {
  *   success: boolean,
  *   message: string,
@@ -17,12 +17,13 @@
 
 import { v4 as uuidv4 } from 'uuid';
 
+import logger from './logger.js';
 /**
  * Cria uma resposta de sucesso padronizada
  *
  * @param {*} data - Dados a serem retornados
  * @param {string} message - Mensagem de sucesso (opcional)
- * @param {number} statusCode - Código HTTP (opcional)
+ * @param {number} statusCode - CÃ³digo HTTP (opcional)
  * @returns {object} Resposta formatada
  */
 export const successResponse = (data = null, message = 'Success', statusCode = 200) => {
@@ -41,11 +42,11 @@ export const successResponse = (data = null, message = 'Success', statusCode = 2
  *
  * @param {string} message - Mensagem de erro
  * @param {*} error - Objeto de erro detalhado (opcional)
- * @param {number} statusCode - Código HTTP (opcional)
+ * @param {number} statusCode - CÃ³digo HTTP (opcional)
  * @returns {object} Resposta formatada
  */
 export const errorResponse = (message = 'Error', error = null, statusCode = 400) => {
-  // Em produção, não expor detalhes do erro
+  // Em produÃ§Ã£o, nÃ£o expor detalhes do erro
   const errorDetails = process.env.NODE_ENV === 'production' ? null : error?.message || error;
 
   return {
@@ -59,9 +60,9 @@ export const errorResponse = (message = 'Error', error = null, statusCode = 400)
 };
 
 /**
- * Cria uma resposta de validação com erros detalhados
+ * Cria uma resposta de validaÃ§Ã£o com erros detalhados
  *
- * @param {array} errors - Array de erros de validação
+ * @param {array} errors - Array de erros de validaÃ§Ã£o
  * @param {string} message - Mensagem geral (opcional)
  * @returns {object} Resposta formatada
  */
@@ -80,7 +81,7 @@ export const validationErrorResponse = (errors = [], message = 'Validation faile
 };
 
 /**
- * Cria uma resposta de erro de autenticação
+ * Cria uma resposta de erro de autenticaÃ§Ã£o
  *
  * @param {string} message - Mensagem de erro
  * @returns {object} Resposta formatada
@@ -100,7 +101,7 @@ export const authErrorResponse = (message = 'Authentication failed') => {
 };
 
 /**
- * Cria uma resposta de erro de autorização
+ * Cria uma resposta de erro de autorizaÃ§Ã£o
  *
  * @param {string} message - Mensagem de erro
  * @returns {object} Resposta formatada
@@ -120,7 +121,7 @@ export const forbiddenResponse = (message = 'Access forbidden') => {
 };
 
 /**
- * Cria uma resposta de recurso não encontrado
+ * Cria uma resposta de recurso nÃ£o encontrado
  *
  * @param {string} resource - Nome do recurso
  * @returns {object} Resposta formatada
@@ -150,7 +151,7 @@ export const serverErrorResponse = (message = 'Internal server error', error = n
   // Log do erro para monitoramento
   if (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Server Error:', error);
+      logger.error('Server Error:', error);
     }
   }
 
@@ -168,8 +169,8 @@ export const serverErrorResponse = (message = 'Internal server error', error = n
  * Cria uma resposta de lista paginada
  *
  * @param {array} items - Array de itens
- * @param {number} page - Página atual
- * @param {number} limit - Itens por página
+ * @param {number} page - PÃ¡gina atual
+ * @param {number} limit - Itens por pÃ¡gina
  * @param {number} total - Total de itens
  * @param {string} message - Mensagem (opcional)
  * @returns {object} Resposta formatada
@@ -228,8 +229,8 @@ export const responseWithMeta = (data = null, meta = {}, message = 'Success') =>
 };
 
 /**
- * Middleware para adicionar requestId a todas as requisições
- * Útil para rastreamento e debugging
+ * Middleware para adicionar requestId a todas as requisiÃ§Ãµes
+ * Ãštil para rastreamento e debugging
  */
 export const requestIdMiddleware = (req, res, next) => {
   req.id = uuidv4();
@@ -266,11 +267,11 @@ export const formatValidationErrors = validationErrors => {
 
 /**
  * Middleware global de tratamento de erros
- * Deve ser o último middleware da aplicação
+ * Deve ser o Ãºltimo middleware da aplicaÃ§Ã£o
  */
 export const globalErrorHandler = (err, req, res, next) => {
   // Log do erro
-  console.error('Global Error Handler:', {
+  logger.error('Global Error Handler:', {
     requestId: req.id,
     error: err.message,
     stack: process.env.NODE_ENV !== 'production' ? err.stack : undefined,
@@ -282,26 +283,26 @@ export const globalErrorHandler = (err, req, res, next) => {
   let response;
 
   if (err.name === 'ValidationError') {
-    // Erro de validação do Mongoose
+    // Erro de validaÃ§Ã£o do Mongoose
     response = validationErrorResponse(
       Object.values(err.errors).map(e => e.message),
       'Validation failed'
     );
   } else if (err.name === 'UnauthorizedError' || err.name === 'JsonWebTokenError') {
-    // Erro de autenticação JWT
+    // Erro de autenticaÃ§Ã£o JWT
     response = authErrorResponse('Invalid or expired token');
   } else if (err.name === 'CastError') {
-    // Erro de cast do Mongoose (ID inválido, etc)
+    // Erro de cast do Mongoose (ID invÃ¡lido, etc)
     response = errorResponse('Invalid data format', err.message, 400);
   } else if (err.statusCode) {
     // Erro customizado com statusCode
     response = errorResponse(err.message, err, err.statusCode);
   } else {
-    // Erro genérico do servidor
+    // Erro genÃ©rico do servidor
     response = serverErrorResponse('Internal server error', err);
   }
 
-  // Adicionar requestId se disponível
+  // Adicionar requestId se disponÃ­vel
   if (req.id) {
     response.requestId = req.id;
   }
@@ -309,7 +310,7 @@ export const globalErrorHandler = (err, req, res, next) => {
   return sendResponse(res, response);
 };
 
-// Exportar tudo como default também
+// Exportar tudo como default tambÃ©m
 export default {
   successResponse,
   errorResponse,

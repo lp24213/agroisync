@@ -1,11 +1,11 @@
-/**
- * AGROISYNC BACKEND - Configurações Centralizadas
+﻿/**
+ * AGROISYNC BACKEND - ConfiguraÃ§Ãµes Centralizadas
  *
- * Este arquivo centraliza todas as configurações do backend
- * para facilitar manutenção e evitar valores hardcoded.
+ * Este arquivo centraliza todas as configuraÃ§Ãµes do backend
+ * para facilitar manutenÃ§Ã£o e evitar valores hardcoded.
  */
 
-// ===== CONFIGURAÇÃO DE URLs =====
+// ===== CONFIGURAÃ‡ÃƒO DE URLs =====
 export const URL_CONFIG = {
   // URL do frontend
   frontendURL:
@@ -30,19 +30,19 @@ export const URL_CONFIG = {
       : 'http://localhost:5000/api')
 };
 
-// ===== CONFIGURAÇÃO DE BANCO DE DADOS =====
+// ===== CONFIGURAÃ‡ÃƒO DE BANCO DE DADOS =====
 export const DATABASE_CONFIG = {
   // Cloudflare D1
   d1DatabaseId: process.env.CLOUDFLARE_D1_DATABASE_ID || '',
 
-  // Configurações de conexão
+  // ConfiguraÃ§Ãµes de conexÃ£o
   connectionTimeout: 30000, // 30 segundos
   queryTimeout: 10000, // 10 segundos
   retryAttempts: 3,
   retryDelay: 1000 // 1 segundo
 };
 
-// ===== AUTENTICAÇÃO JWT =====
+// ===== AUTENTICAÃ‡ÃƒO JWT =====
 export const JWT_CONFIG = {
   secret: process.env.JWT_SECRET || 'dev-insecure-jwt-secret-change-in-production',
   expiresIn: process.env.JWT_EXPIRES_IN || '24h',
@@ -52,7 +52,7 @@ export const JWT_CONFIG = {
   audience: process.env.JWT_AUDIENCE || 'agroisync-users'
 };
 
-// ===== CONFIGURAÇÃO DE E-MAIL =====
+// ===== CONFIGURAÃ‡ÃƒO DE E-MAIL =====
 export const EMAIL_CONFIG = {
   // Resend API
   resendApiKey: process.env.RESEND_API_KEY || '',
@@ -114,7 +114,8 @@ export const UPLOAD_CONFIG = {
   },
 
   // Limites
-  maxFileSize: parseInt(process.env.MAX_FILE_SIZE || process.env.UPLOAD_MAX_SIZE, 10) || 10485760, // 10MB
+  maxFileSize:
+    parseInt(process.env.MAX_FILE_SIZE || process.env.UPLOAD_MAX_SIZE, 10, 10) || 10485760, // 10MB
   allowedTypes: process.env.UPLOAD_ALLOWED_TYPES?.split(',') || [
     'image/jpeg',
     'image/png',
@@ -133,13 +134,13 @@ export const EXTERNAL_APIS = {
     timeout: 10000
   },
 
-  // IBGE (API Pública)
+  // IBGE (API PÃºblica)
   ibge: {
     baseUrl: process.env.IBGE_API_URL || 'https://servicodados.ibge.gov.br/api/v1',
     timeout: 15000
   },
 
-  // ViaCEP (API Pública)
+  // ViaCEP (API PÃºblica)
   viaCep: {
     baseUrl: process.env.VIACEP_API_URL || 'https://viacep.com.br/ws',
     timeout: 10000
@@ -171,28 +172,28 @@ export const EXTERNAL_APIS = {
   }
 };
 
-// ===== SEGURANÇA =====
+// ===== SEGURANÃ‡A =====
 export const SECURITY_CONFIG = {
   // CORS
   corsOrigin:
     process.env.CORS_ORIGIN?.split(',').map(origin => origin.trim()) || URL_CONFIG.allowedOrigins,
 
   // Bcrypt
-  bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || process.env.BCRYPT_SALT_ROUNDS, 10) || 12,
+  bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || process.env.BCRYPT_SALT_ROUNDS, 10, 10) || 12,
 
   // Rate Limiting
   rateLimit: {
-    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10) || 900000, // 15 minutos
-    maxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS, 10) || 100
+    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10, 10) || 900000, // 15 minutos
+    maxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS, 10, 10) || 100
   },
 
   // Session
   sessionSecret: process.env.SESSION_SECRET || 'dev-insecure-session-secret',
-  sessionMaxAge: parseInt(process.env.SESSION_MAX_AGE, 10) || 86400000, // 24 horas
+  sessionMaxAge: parseInt(process.env.SESSION_MAX_AGE, 10, 10) || 86400000, // 24 horas
 
   // Password Validation
-  passwordMinLength: parseInt(process.env.PASSWORD_MIN_LENGTH, 10) || 8,
-  usernameMinLength: parseInt(process.env.USERNAME_MIN_LENGTH, 10) || 3
+  passwordMinLength: parseInt(process.env.PASSWORD_MIN_LENGTH, 10, 10) || 8,
+  usernameMinLength: parseInt(process.env.USERNAME_MIN_LENGTH, 10, 10) || 3
 };
 
 // ===== LOGS =====
@@ -201,14 +202,14 @@ export const LOG_CONFIG = {
   file: process.env.LOG_FILE || 'logs/app.log',
   filePath: process.env.LOG_FILE_PATH || './logs',
   maxSize: process.env.LOG_MAX_SIZE || '10m',
-  maxFiles: parseInt(process.env.LOG_MAX_FILES, 10) || 5
+  maxFiles: parseInt(process.env.LOG_MAX_FILES, 10, 10) || 5
 };
 
 // ===== CACHE =====
 export const CACHE_CONFIG = {
-  ttl: parseInt(process.env.CACHE_TTL, 10) || 3600, // 1 hora
-  checkPeriod: parseInt(process.env.CACHE_CHECK_PERIOD, 10) || 600, // 10 minutos
-  duration: parseInt(process.env.CACHE_DURATION, 10) || 300000 // 5 minutos
+  ttl: parseInt(process.env.CACHE_TTL, 10, 10) || 3600, // 1 hora
+  checkPeriod: parseInt(process.env.CACHE_CHECK_PERIOD, 10, 10) || 600, // 10 minutos
+  duration: parseInt(process.env.CACHE_DURATION, 10, 10) || 300000 // 5 minutos
 };
 
 // ===== FEATURE FLAGS =====
@@ -238,41 +239,41 @@ export const MONITORING_CONFIG = {
 
 // ===== CLEANUP =====
 export const CLEANUP_CONFIG = {
-  cleanupInterval: parseInt(process.env.CLEANUP_INTERVAL, 10) || 3600000, // 1 hora
-  tokenCleanupAge: parseInt(process.env.TOKEN_CLEANUP_AGE, 10) || 86400000 // 24 horas
+  cleanupInterval: parseInt(process.env.CLEANUP_INTERVAL, 10, 10) || 3600000, // 1 hora
+  tokenCleanupAge: parseInt(process.env.TOKEN_CLEANUP_AGE, 10, 10) || 86400000 // 24 horas
 };
 
 // ===== TIMEOUT E RETRY =====
 export const API_TIMEOUT_CONFIG = {
-  timeout: parseInt(process.env.API_TIMEOUT, 10) || 30000, // 30 segundos
-  retryAttempts: parseInt(process.env.API_RETRY_ATTEMPTS, 10) || 3
+  timeout: parseInt(process.env.API_TIMEOUT, 10, 10) || 30000, // 30 segundos
+  retryAttempts: parseInt(process.env.API_RETRY_ATTEMPTS, 10, 10) || 3
 };
 
 // ===== HELPERS =====
 
 /**
- * Verifica se está em ambiente de produção
+ * Verifica se estÃ¡ em ambiente de produÃ§Ã£o
  */
 export const isProduction = () => {
   return process.env.NODE_ENV === 'production';
 };
 
 /**
- * Verifica se está em ambiente de desenvolvimento
+ * Verifica se estÃ¡ em ambiente de desenvolvimento
  */
 export const isDevelopment = () => {
   return process.env.NODE_ENV === 'development';
 };
 
 /**
- * Valida se uma API externa está configurada
+ * Valida se uma API externa estÃ¡ configurada
  */
 export const isApiConfigured = apiName => {
   const api = EXTERNAL_APIS[apiName];
   return api && api.apiKey && api.apiKey !== '';
 };
 
-// Exportar tudo como default também
+// Exportar tudo como default tambÃ©m
 export default {
   URL_CONFIG,
   DATABASE_CONFIG,

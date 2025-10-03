@@ -1,5 +1,5 @@
-// =============================================================
-// AGROISYNC • Serviço de Fallback para APIs Externas
+﻿// =============================================================
+// AGROISYNC â€¢ ServiÃ§o de Fallback para APIs Externas
 // =============================================================
 
 import logger from '../utils/logger.js';
@@ -8,7 +8,7 @@ import logger from '../utils/logger.js';
 const fallbackCache = new Map();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
 
-// Configurações de APIs externas com fallbacks
+// ConfiguraÃ§Ãµes de APIs externas com fallbacks
 const API_CONFIGS = {
   weather: {
     primary: 'https://api.openweathermap.org/data/2.5',
@@ -33,10 +33,10 @@ const API_CONFIGS = {
 };
 
 /**
- * Executa requisição com fallback automático
- * @param {string} service - Nome do serviço (weather, cep, ibge, cnpj)
- * @param {string} endpoint - Endpoint específico
- * @param {object} options - Opções da requisição
+ * Executa requisiÃ§Ã£o com fallback automÃ¡tico
+ * @param {string} service - Nome do serviÃ§o (weather, cep, ibge, cnpj)
+ * @param {string} endpoint - Endpoint especÃ­fico
+ * @param {object} options - OpÃ§Ãµes da requisiÃ§Ã£o
  * @returns {Promise<object>} Dados da API ou fallback
  */
 export const fetchWithFallback = async (service, endpoint, options = {}) => {
@@ -51,7 +51,7 @@ export const fetchWithFallback = async (service, endpoint, options = {}) => {
 
   const config = API_CONFIGS[service];
   if (!config) {
-    throw new Error(`Serviço ${service} não configurado`);
+    throw new Error(`ServiÃ§o ${service} nÃ£o configurado`);
   }
 
   // Tentar APIs em ordem de prioridade
@@ -89,7 +89,7 @@ export const fetchWithFallback = async (service, endpoint, options = {}) => {
     } catch (error) {
       logger.warn(`Falha ${service} via ${apiUrl}: ${error.message}`);
 
-      // Se for a última tentativa, retornar erro
+      // Se for a Ãºltima tentativa, retornar erro
       if (i === apis.length - 1) {
         logger.error(`Todas as APIs falharam para ${service}:${endpoint}`);
         return {
@@ -144,7 +144,7 @@ export const clearFallbackCache = () => {
 };
 
 /**
- * Obter estatísticas do cache
+ * Obter estatÃ­sticas do cache
  */
 export const getFallbackStats = () => {
   const now = Date.now();

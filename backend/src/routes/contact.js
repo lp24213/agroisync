@@ -1,25 +1,26 @@
-import express from 'express';
+﻿import express from 'express';
 import ContactMessage from '../models/ContactMessage.js';
 import PartnershipMessage from '../models/PartnershipMessage.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
 import { createSecurityLog } from '../utils/securityLogger.js';
 import { sanitizeInput } from '../utils/sanitizer.js';
 
+import logger from '../utils/logger.js';
 const router = express.Router();
 
 // Apply rate limiting
 router.use(apiLimiter);
 
-// ===== MIDDLEWARE DE VALIDAÇÃO =====
+// ===== MIDDLEWARE DE VALIDAÃ‡ÃƒO =====
 
-// Validação para mensagens de contato
+// ValidaÃ§Ã£o para mensagens de contato
 const validateContactMessage = (req, res, next) => {
   const { name, email, subject, message, phone, company, category } = req.body;
 
   if (!name || !email || !subject || !message) {
     return res.status(400).json({
       success: false,
-      message: 'Nome, email, assunto e mensagem são obrigatórios'
+      message: 'Nome, email, assunto e mensagem sÃ£o obrigatÃ³rios'
     });
   }
 
@@ -28,7 +29,7 @@ const validateContactMessage = (req, res, next) => {
   if (!emailRegex.test(email)) {
     return res.status(400).json({
       success: false,
-      message: 'Formato de email inválido'
+      message: 'Formato de email invÃ¡lido'
     });
   }
 
@@ -59,14 +60,14 @@ const validateContactMessage = (req, res, next) => {
   if (category && !validCategories.includes(category)) {
     return res.status(400).json({
       success: false,
-      message: 'Categoria inválida'
+      message: 'Categoria invÃ¡lida'
     });
   }
 
   next();
 };
 
-// Validação para mensagens de parceria
+// ValidaÃ§Ã£o para mensagens de parceria
 const validatePartnershipMessage = (req, res, next) => {
   const {
     company,
@@ -83,7 +84,8 @@ const validatePartnershipMessage = (req, res, next) => {
   if (!company || !contactPerson || !email || !partnershipType || !description) {
     return res.status(400).json({
       success: false,
-      message: 'Empresa, pessoa de contato, email, tipo de parceria e descrição são obrigatórios'
+      message:
+        'Empresa, pessoa de contato, email, tipo de parceria e descriÃ§Ã£o sÃ£o obrigatÃ³rios'
     });
   }
 
@@ -92,7 +94,7 @@ const validatePartnershipMessage = (req, res, next) => {
   if (!emailRegex.test(email)) {
     return res.status(400).json({
       success: false,
-      message: 'Formato de email inválido'
+      message: 'Formato de email invÃ¡lido'
     });
   }
 
@@ -114,7 +116,7 @@ const validatePartnershipMessage = (req, res, next) => {
   if (description.trim().length < 20 || description.trim().length > 2000) {
     return res.status(400).json({
       success: false,
-      message: 'Descrição deve ter entre 20 e 2000 caracteres'
+      message: 'DescriÃ§Ã£o deve ter entre 20 e 2000 caracteres'
     });
   }
 
@@ -130,11 +132,11 @@ const validatePartnershipMessage = (req, res, next) => {
   if (!validPartnershipTypes.includes(partnershipType)) {
     return res.status(400).json({
       success: false,
-      message: 'Tipo de parceria inválido'
+      message: 'Tipo de parceria invÃ¡lido'
     });
   }
 
-  // Validar orçamento se fornecido
+  // Validar orÃ§amento se fornecido
   if (budget) {
     const validBudgets = [
       'under_10k',
@@ -147,7 +149,7 @@ const validatePartnershipMessage = (req, res, next) => {
     if (!validBudgets.includes(budget)) {
       return res.status(400).json({
         success: false,
-        message: 'Orçamento inválido'
+        message: 'OrÃ§amento invÃ¡lido'
       });
     }
   }
@@ -158,7 +160,7 @@ const validatePartnershipMessage = (req, res, next) => {
     if (!validTimelines.includes(timeline)) {
       return res.status(400).json({
         success: false,
-        message: 'Timeline inválido'
+        message: 'Timeline invÃ¡lido'
       });
     }
   }
@@ -166,7 +168,7 @@ const validatePartnershipMessage = (req, res, next) => {
   next();
 };
 
-// ===== ROTAS PÚBLICAS =====
+// ===== ROTAS PÃšBLICAS =====
 
 // POST /api/contact - Enviar mensagem de contato
 router.post('/', validateContactMessage, async (req, res) => {
@@ -188,7 +190,7 @@ router.post('/', validateContactMessage, async (req, res) => {
     const contactMessage = new ContactMessage(sanitizedData);
     await contactMessage.save();
 
-    // Log de segurança
+    // Log de seguranÃ§a
     await createSecurityLog('data_modification', 'low', 'Contact message sent', req, null, {
       email: sanitizedData.email,
       category: sanitizedData.category
@@ -204,7 +206,7 @@ router.post('/', validateContactMessage, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error sending contact message:', error);
+      logger.error('Error sending contact message:', error);
     }
     await createSecurityLog(
       'system_error',
@@ -220,7 +222,7 @@ router.post('/', validateContactMessage, async (req, res) => {
   }
 });
 
-// POST /api/contact/partnership - Enviar solicitação de parceria
+// POST /api/contact/partnership - Enviar solicitaÃ§Ã£o de parceria
 router.post('/partnership', validatePartnershipMessage, async (req, res) => {
   try {
     const {
@@ -254,7 +256,7 @@ router.post('/partnership', validatePartnershipMessage, async (req, res) => {
     const partnershipMessage = new PartnershipMessage(sanitizedData);
     await partnershipMessage.save();
 
-    // Log de segurança
+    // Log de seguranÃ§a
     await createSecurityLog('data_modification', 'low', 'Partnership inquiry sent', req, null, {
       email: sanitizedData.email,
       company: sanitizedData.company,
@@ -263,7 +265,7 @@ router.post('/partnership', validatePartnershipMessage, async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: 'Solicitação de parceria enviada com sucesso',
+      message: 'SolicitaÃ§Ã£o de parceria enviada com sucesso',
       data: {
         id: partnershipMessage._id,
         submittedAt: partnershipMessage.createdAt
@@ -271,7 +273,7 @@ router.post('/partnership', validatePartnershipMessage, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error sending partnership inquiry:', error);
+      logger.error('Error sending partnership inquiry:', error);
     }
     await createSecurityLog(
       'system_error',
@@ -292,9 +294,9 @@ router.post('/partnership', validatePartnershipMessage, async (req, res) => {
 // GET /api/contact/admin/messages - Listar mensagens de contato (admin only)
 router.get('/admin/messages', async (req, res) => {
   try {
-    // Verificar se é admin (será feito pelo middleware de autenticação)
+    // Verificar se Ã© admin (serÃ¡ feito pelo middleware de autenticaÃ§Ã£o)
     const { page = 1, limit = 20, status, category, priority } = req.query;
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const skip = (parseInt(page, 10, 10) - 1) * parseInt(limit, 10, 10);
 
     const query = {};
     if (status) {
@@ -310,7 +312,7 @@ router.get('/admin/messages', async (req, res) => {
     const messages = await ContactMessage.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit, 10))
+      .limit(parseInt(limit, 10, 10))
       .lean();
 
     const total = await ContactMessage.countDocuments(query);
@@ -320,16 +322,16 @@ router.get('/admin/messages', async (req, res) => {
       data: {
         messages,
         pagination: {
-          currentPage: parseInt(page, 10),
-          totalPages: Math.ceil(total / parseInt(limit, 10)),
+          currentPage: parseInt(page, 10, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit, 10)
+          itemsPerPage: parseInt(limit, 10, 10)
         }
       }
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching contact messages:', error);
+      logger.error('Error fetching contact messages:', error);
     }
     res.status(500).json({
       success: false,
@@ -342,7 +344,7 @@ router.get('/admin/messages', async (req, res) => {
 router.get('/admin/partnerships', async (req, res) => {
   try {
     const { page = 1, limit = 20, status, partnershipType, budget } = req.query;
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const skip = (parseInt(page, 10, 10) - 1) * parseInt(limit, 10, 10);
 
     const query = {};
     if (status) {
@@ -358,7 +360,7 @@ router.get('/admin/partnerships', async (req, res) => {
     const messages = await PartnershipMessage.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit, 10))
+      .limit(parseInt(limit, 10, 10))
       .lean();
 
     const total = await PartnershipMessage.countDocuments(query);
@@ -368,16 +370,16 @@ router.get('/admin/partnerships', async (req, res) => {
       data: {
         messages,
         pagination: {
-          currentPage: parseInt(page, 10),
-          totalPages: Math.ceil(total / parseInt(limit, 10)),
+          currentPage: parseInt(page, 10, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit, 10)
+          itemsPerPage: parseInt(limit, 10, 10)
         }
       }
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching partnership messages:', error);
+      logger.error('Error fetching partnership messages:', error);
     }
     res.status(500).json({
       success: false,
@@ -386,7 +388,7 @@ router.get('/admin/partnerships', async (req, res) => {
   }
 });
 
-// GET /api/contact/admin/messages/:id - Obter mensagem de contato específica
+// GET /api/contact/admin/messages/:id - Obter mensagem de contato especÃ­fica
 router.get('/admin/messages/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -395,7 +397,7 @@ router.get('/admin/messages/:id', async (req, res) => {
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: 'Mensagem não encontrada'
+        message: 'Mensagem nÃ£o encontrada'
       });
     }
 
@@ -405,7 +407,7 @@ router.get('/admin/messages/:id', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching contact message:', error);
+      logger.error('Error fetching contact message:', error);
     }
     res.status(500).json({
       success: false,
@@ -414,7 +416,7 @@ router.get('/admin/messages/:id', async (req, res) => {
   }
 });
 
-// GET /api/contact/admin/partnerships/:id - Obter mensagem de parceria específica
+// GET /api/contact/admin/partnerships/:id - Obter mensagem de parceria especÃ­fica
 router.get('/admin/partnerships/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -423,7 +425,7 @@ router.get('/admin/partnerships/:id', async (req, res) => {
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: 'Mensagem de parceria não encontrada'
+        message: 'Mensagem de parceria nÃ£o encontrada'
       });
     }
 
@@ -433,7 +435,7 @@ router.get('/admin/partnerships/:id', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching partnership message:', error);
+      logger.error('Error fetching partnership message:', error);
     }
     res.status(500).json({
       success: false,
@@ -452,7 +454,7 @@ router.put('/admin/messages/:id/status', async (req, res) => {
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: 'Mensagem não encontrada'
+        message: 'Mensagem nÃ£o encontrada'
       });
     }
 
@@ -467,7 +469,7 @@ router.put('/admin/messages/:id/status', async (req, res) => {
       message.assignedTo = assignedTo;
     }
 
-    // Atualizar timestamps específicos
+    // Atualizar timestamps especÃ­ficos
     if (status === 'read' && !message.isRead) {
       message.isRead = true;
       message.readAt = new Date();
@@ -486,7 +488,7 @@ router.put('/admin/messages/:id/status', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error updating contact message status:', error);
+      logger.error('Error updating contact message status:', error);
     }
     res.status(500).json({
       success: false,
@@ -505,7 +507,7 @@ router.put('/admin/partnerships/:id/status', async (req, res) => {
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: 'Mensagem de parceria não encontrada'
+        message: 'Mensagem de parceria nÃ£o encontrada'
       });
     }
 
@@ -520,7 +522,7 @@ router.put('/admin/partnerships/:id/status', async (req, res) => {
       message.assignedTo = assignedTo;
     }
 
-    // Atualizar timestamps específicos
+    // Atualizar timestamps especÃ­ficos
     if (status === 'read' && !message.isRead) {
       message.isRead = true;
       message.readAt = new Date();
@@ -539,7 +541,7 @@ router.put('/admin/partnerships/:id/status', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error updating partnership message status:', error);
+      logger.error('Error updating partnership message status:', error);
     }
     res.status(500).json({
       success: false,
@@ -557,17 +559,17 @@ router.delete('/admin/messages/:id', async (req, res) => {
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: 'Mensagem não encontrada'
+        message: 'Mensagem nÃ£o encontrada'
       });
     }
 
     res.json({
       success: true,
-      message: 'Mensagem excluída com sucesso'
+      message: 'Mensagem excluÃ­da com sucesso'
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error deleting contact message:', error);
+      logger.error('Error deleting contact message:', error);
     }
     res.status(500).json({
       success: false,
@@ -585,17 +587,17 @@ router.delete('/admin/partnerships/:id', async (req, res) => {
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: 'Mensagem de parceria não encontrada'
+        message: 'Mensagem de parceria nÃ£o encontrada'
       });
     }
 
     res.json({
       success: true,
-      message: 'Mensagem de parceria excluída com sucesso'
+      message: 'Mensagem de parceria excluÃ­da com sucesso'
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error deleting partnership message:', error);
+      logger.error('Error deleting partnership message:', error);
     }
     res.status(500).json({
       success: false,
@@ -604,9 +606,9 @@ router.delete('/admin/partnerships/:id', async (req, res) => {
   }
 });
 
-// ===== ROTAS DE ESTATÍSTICAS =====
+// ===== ROTAS DE ESTATÃSTICAS =====
 
-// GET /api/contact/admin/stats - Estatísticas das mensagens (admin only)
+// GET /api/contact/admin/stats - EstatÃ­sticas das mensagens (admin only)
 router.get('/admin/stats', async (req, res) => {
   try {
     const [contactStats, partnershipStats] = await Promise.all([
@@ -656,7 +658,7 @@ router.get('/admin/stats', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching contact stats:', error);
+      logger.error('Error fetching contact stats:', error);
     }
     res.status(500).json({
       success: false,

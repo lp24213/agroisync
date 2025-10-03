@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 const escrowSchema = new mongoose.Schema(
   {
@@ -107,14 +107,14 @@ const escrowSchema = new mongoose.Schema(
   }
 );
 
-// Índices para performance
+// Ãndices para performance
 escrowSchema.index({ buyerId: 1, status: 1 });
 escrowSchema.index({ sellerId: 1, status: 1 });
 escrowSchema.index({ itemId: 1, itemType: 1 });
 escrowSchema.index({ expiresAt: 1 });
 escrowSchema.index({ createdAt: -1 });
 
-// Middleware para verificar expiração
+// Middleware para verificar expiraÃ§Ã£o
 escrowSchema.pre('save', function (next) {
   if (this.isModified('expiresAt') && this.expiresAt < new Date() && this.status === 'pending') {
     this.status = 'expired';
@@ -122,7 +122,7 @@ escrowSchema.pre('save', function (next) {
   next();
 });
 
-// Métodos de instância
+// MÃ©todos de instÃ¢ncia
 escrowSchema.methods.canBeReleasedBy = function (userId) {
   return this.buyerId.toString() === userId && this.status === 'funded';
 };
@@ -138,7 +138,7 @@ escrowSchema.methods.isExpired = function () {
   return this.expiresAt < new Date();
 };
 
-// Métodos estáticos
+// MÃ©todos estÃ¡ticos
 escrowSchema.statics.findByUser = function (userId, status = null) {
   const query = {
     $or: [{ buyerId: userId }, { sellerId: userId }]

@@ -1,16 +1,17 @@
-import express from 'express';
+﻿import express from 'express';
 import { externalAPIService } from '../services/externalAPIs.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
 import { getClientIP } from '../utils/ipUtils.js';
 
+import logger from '../utils/logger.js';
 const router = express.Router();
 
-// Aplicar rate limiting específico para mirrors
+// Aplicar rate limiting especÃ­fico para mirrors
 router.use(apiLimiter);
 
 // ===== MIRROR API - BAIDU MAPS =====
 
-// GET /api/mirror/baidu?query=... - Geocoding e busca de endereços
+// GET /api/mirror/baidu?query=... - Geocoding e busca de endereÃ§os
 router.get('/baidu', async (req, res) => {
   try {
     const { query, lat, lng, type = 'geocoding' } = req.query;
@@ -18,16 +19,16 @@ router.get('/baidu', async (req, res) => {
     if (!query && !lat && !lng) {
       return res.status(400).json({
         success: false,
-        message: 'Query de busca ou coordenadas (lat/lng) são obrigatórios'
+        message: 'Query de busca ou coordenadas (lat/lng) sÃ£o obrigatÃ³rios'
       });
     }
 
     let result;
     if (type === 'geocoding' && query) {
-      // Buscar coordenadas por endereço
+      // Buscar coordenadas por endereÃ§o
       result = await externalAPIService.buscarCoordenadasBaidu(query);
     } else if (type === 'reverse' && lat && lng) {
-      // Buscar endereço por coordenadas
+      // Buscar endereÃ§o por coordenadas
       result = await externalAPIService.buscarEnderecoBaidu(lat, lng);
     } else if (type === 'search' && query) {
       // Busca geral de lugares
@@ -35,7 +36,7 @@ router.get('/baidu', async (req, res) => {
     } else {
       return res.status(400).json({
         success: false,
-        message: 'Tipo de busca inválido ou parâmetros insuficientes'
+        message: 'Tipo de busca invÃ¡lido ou parÃ¢metros insuficientes'
       });
     }
 
@@ -52,7 +53,7 @@ router.get('/baidu', async (req, res) => {
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro no mirror Baidu Maps:', error);
+      logger.error('Erro no mirror Baidu Maps:', error);
     }
     res.status(500).json({
       success: false,
@@ -98,7 +99,7 @@ router.get('/receita/validate', async (req, res) => {
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro no mirror Receita Federal:', error);
+      logger.error('Erro no mirror Receita Federal:', error);
     }
     res.status(500).json({
       success: false,
@@ -116,7 +117,7 @@ router.get('/receita/company/:cnpj', async (req, res) => {
     if (!cnpj) {
       return res.status(400).json({
         success: false,
-        message: 'CNPJ é obrigatório'
+        message: 'CNPJ Ã© obrigatÃ³rio'
       });
     }
 
@@ -135,7 +136,7 @@ router.get('/receita/company/:cnpj', async (req, res) => {
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter dados da empresa:', error);
+      logger.error('Erro ao obter dados da empresa:', error);
     }
     res.status(500).json({
       success: false,
@@ -155,7 +156,7 @@ router.get('/ibge', async (req, res) => {
     if (!cep && !uf && !municipio) {
       return res.status(400).json({
         success: false,
-        message: 'CEP, UF ou município deve ser fornecido'
+        message: 'CEP, UF ou municÃ­pio deve ser fornecido'
       });
     }
 
@@ -169,7 +170,7 @@ router.get('/ibge', async (req, res) => {
     } else {
       return res.status(400).json({
         success: false,
-        message: 'Parâmetros insuficientes para busca'
+        message: 'ParÃ¢metros insuficientes para busca'
       });
     }
 
@@ -186,7 +187,7 @@ router.get('/ibge', async (req, res) => {
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro no mirror IBGE:', error);
+      logger.error('Erro no mirror IBGE:', error);
     }
     res.status(500).json({
       success: false,
@@ -214,7 +215,7 @@ router.get('/ibge/estados', async (req, res) => {
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar estados:', error);
+      logger.error('Erro ao buscar estados:', error);
     }
     res.status(500).json({
       success: false,
@@ -224,7 +225,7 @@ router.get('/ibge/estados', async (req, res) => {
   }
 });
 
-// GET /api/mirror/ibge/estados/:uf/municipios - Listar municípios por estado
+// GET /api/mirror/ibge/estados/:uf/municipios - Listar municÃ­pios por estado
 router.get('/ibge/estados/:uf/municipios', async (req, res) => {
   try {
     const { uf } = req.params;
@@ -232,7 +233,7 @@ router.get('/ibge/estados/:uf/municipios', async (req, res) => {
     if (!uf) {
       return res.status(400).json({
         success: false,
-        message: 'UF é obrigatória'
+        message: 'UF Ã© obrigatÃ³ria'
       });
     }
 
@@ -251,7 +252,7 @@ router.get('/ibge/estados/:uf/municipios', async (req, res) => {
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar municípios:', error);
+      logger.error('Erro ao buscar municÃ­pios:', error);
     }
     res.status(500).json({
       success: false,
@@ -261,10 +262,10 @@ router.get('/ibge/estados/:uf/municipios', async (req, res) => {
   }
 });
 
-// ===== MIRROR API - STATUS E SAÚDE =====
+// ===== MIRROR API - STATUS E SAÃšDE =====
 
 // GET /api/mirror/status - Status das APIs mirror
-router.get('/status', async (req, res) => {
+router.get('/status', (req, res) => {
   try {
     const status = {
       baidu: {
@@ -295,7 +296,7 @@ router.get('/status', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao verificar status dos mirrors:', error);
+      logger.error('Erro ao verificar status dos mirrors:', error);
     }
     res.status(500).json({
       success: false,

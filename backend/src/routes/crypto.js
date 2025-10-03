@@ -1,31 +1,31 @@
-import express from 'express';
+﻿import express from 'express';
 import crypto from 'crypto';
 import logger from '../utils/logger.js';
 
 const router = express.Router();
 
-// Middleware de autenticação para rotas criptografadas
+// Middleware de autenticaÃ§Ã£o para rotas criptografadas
 const requireAuth = (req, res, next) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
   if (!token) {
     return res.status(401).json({
       success: false,
-      message: 'Token de autenticação necessário'
+      message: 'Token de autenticaÃ§Ã£o necessÃ¡rio'
     });
   }
-  // Aqui você validaria o JWT token
+  // Aqui vocÃª validaria o JWT token
   next();
 };
 
 // Gerar chaves de criptografia
-router.post('/generate-keys', requireAuth, async (req, res) => {
+router.post('/generate-keys', requireAuth, (req, res) => {
   try {
     const { algorithm = 'aes-256-gcm' } = req.body;
 
-    // Gerar chave simétrica
+    // Gerar chave simÃ©trica
     const symmetricKey = crypto.randomBytes(32);
 
-    // Gerar par de chaves assimétricas
+    // Gerar par de chaves assimÃ©tricas
     const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
       modulusLength: 2048,
       publicKeyEncoding: {
@@ -63,14 +63,14 @@ router.post('/generate-keys', requireAuth, async (req, res) => {
 });
 
 // Criptografar dados
-router.post('/encrypt', requireAuth, async (req, res) => {
+router.post('/encrypt', requireAuth, (req, res) => {
   try {
     const { data, key, algorithm = 'aes-256-gcm' } = req.body;
 
     if (!data || !key) {
       return res.status(400).json({
         success: false,
-        message: 'Dados e chave são obrigatórios'
+        message: 'Dados e chave sÃ£o obrigatÃ³rios'
       });
     }
 
@@ -108,14 +108,14 @@ router.post('/encrypt', requireAuth, async (req, res) => {
 });
 
 // Descriptografar dados
-router.post('/decrypt', requireAuth, async (req, res) => {
+router.post('/decrypt', requireAuth, (req, res) => {
   try {
     const { encryptedData, key } = req.body;
 
     if (!encryptedData || !key) {
       return res.status(400).json({
         success: false,
-        message: 'Dados criptografados e chave são obrigatórios'
+        message: 'Dados criptografados e chave sÃ£o obrigatÃ³rios'
       });
     }
 
@@ -149,14 +149,14 @@ router.post('/decrypt', requireAuth, async (req, res) => {
 });
 
 // Hash de dados
-router.post('/hash', requireAuth, async (req, res) => {
+router.post('/hash', requireAuth, (req, res) => {
   try {
     const { data, algorithm = 'sha256' } = req.body;
 
     if (!data) {
       return res.status(400).json({
         success: false,
-        message: 'Dados são obrigatórios'
+        message: 'Dados sÃ£o obrigatÃ³rios'
       });
     }
 
@@ -185,14 +185,14 @@ router.post('/hash', requireAuth, async (req, res) => {
 });
 
 // Verificar integridade
-router.post('/verify-integrity', requireAuth, async (req, res) => {
+router.post('/verify-integrity', requireAuth, (req, res) => {
   try {
     const { data, hash, algorithm = 'sha256' } = req.body;
 
     if (!data || !hash) {
       return res.status(400).json({
         success: false,
-        message: 'Dados e hash são obrigatórios'
+        message: 'Dados e hash sÃ£o obrigatÃ³rios'
       });
     }
 
@@ -202,11 +202,11 @@ router.post('/verify-integrity', requireAuth, async (req, res) => {
 
     const isValid = calculatedHash === hash;
 
-    logger.info(`Verificação de integridade: ${isValid ? 'válida' : 'inválida'}`);
+    logger.info(`VerificaÃ§Ã£o de integridade: ${isValid ? 'vÃ¡lida' : 'invÃ¡lida'}`);
 
     res.json({
       success: true,
-      message: 'Verificação de integridade concluída',
+      message: 'VerificaÃ§Ã£o de integridade concluÃ­da',
       data: {
         isValid,
         originalHash: hash,
@@ -225,14 +225,14 @@ router.post('/verify-integrity', requireAuth, async (req, res) => {
 });
 
 // Assinar dados digitalmente
-router.post('/sign', requireAuth, async (req, res) => {
+router.post('/sign', requireAuth, (req, res) => {
   try {
     const { data, privateKey } = req.body;
 
     if (!data || !privateKey) {
       return res.status(400).json({
         success: false,
-        message: 'Dados e chave privada são obrigatórios'
+        message: 'Dados e chave privada sÃ£o obrigatÃ³rios'
       });
     }
 
@@ -263,14 +263,14 @@ router.post('/sign', requireAuth, async (req, res) => {
 });
 
 // Verificar assinatura digital
-router.post('/verify-signature', requireAuth, async (req, res) => {
+router.post('/verify-signature', requireAuth, (req, res) => {
   try {
     const { data, signature, publicKey } = req.body;
 
     if (!data || !signature || !publicKey) {
       return res.status(400).json({
         success: false,
-        message: 'Dados, assinatura e chave pública são obrigatórios'
+        message: 'Dados, assinatura e chave pÃºblica sÃ£o obrigatÃ³rios'
       });
     }
 
@@ -280,11 +280,11 @@ router.post('/verify-signature', requireAuth, async (req, res) => {
 
     const isValid = verify.verify(publicKey, signature, 'base64');
 
-    logger.info(`Verificação de assinatura: ${isValid ? 'válida' : 'inválida'}`);
+    logger.info(`VerificaÃ§Ã£o de assinatura: ${isValid ? 'vÃ¡lida' : 'invÃ¡lida'}`);
 
     res.json({
       success: true,
-      message: 'Verificação de assinatura concluída',
+      message: 'VerificaÃ§Ã£o de assinatura concluÃ­da',
       data: {
         isValid,
         algorithm: 'SHA256',
@@ -301,7 +301,7 @@ router.post('/verify-signature', requireAuth, async (req, res) => {
 });
 
 // Gerar nonce
-router.post('/generate-nonce', requireAuth, async (req, res) => {
+router.post('/generate-nonce', requireAuth, (req, res) => {
   try {
     const { length = 32 } = req.body;
 

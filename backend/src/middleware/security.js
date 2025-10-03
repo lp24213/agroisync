@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import xss from 'xss-clean';
@@ -9,7 +9,8 @@ import { body, validationResult } from 'express-validator';
 import { AuditLog } from '../models/AuditLog.js';
 import { SecurityLog } from '../models/SecurityLog.js';
 
-// ===== CONFIGURAÇÕES DE SEGURANÇA =====
+import logger from '../utils/logger.js';
+// ===== CONFIGURAÃ‡Ã•ES DE SEGURANÃ‡A =====
 
 const securityConfig = {
   // Rate Limiting
@@ -105,46 +106,46 @@ export const createRateLimiter = (max = 100, windowMs = 15 * 60 * 1000) => {
   });
 };
 
-// Rate limiters específicos
+// Rate limiters especÃ­ficos
 export const publicRateLimit = createRateLimiter(securityConfig.rateLimit.max.public);
 export const authenticatedRateLimit = createRateLimiter(securityConfig.rateLimit.max.authenticated);
 export const adminRateLimit = createRateLimiter(securityConfig.rateLimit.max.admin);
 export const criticalRateLimit = createRateLimiter(securityConfig.rateLimit.max.critical);
 
-// ===== MIDDLEWARE DE SEGURANÇA PRINCIPAL =====
+// ===== MIDDLEWARE DE SEGURANÃ‡A PRINCIPAL =====
 
 export const securityMiddleware = [
   // CORS
   cors(securityConfig.cors),
 
-  // Helmet para headers de segurança
+  // Helmet para headers de seguranÃ§a
   helmet(securityConfig.helmet),
 
-  // Proteção contra XSS
+  // ProteÃ§Ã£o contra XSS
   xss(),
 
-  // Proteção contra HTTP Parameter Pollution
+  // ProteÃ§Ã£o contra HTTP Parameter Pollution
   hpp(),
 
-  // Proteção contra NoSQL Injection
+  // ProteÃ§Ã£o contra NoSQL Injection
   mongoSanitize(),
 
-  // Middleware de detecção de ataques
+  // Middleware de detecÃ§Ã£o de ataques
   detectAttackPatterns,
 
-  // Middleware de validação de entrada
+  // Middleware de validaÃ§Ã£o de entrada
   validateInput,
 
-  // Middleware de sanitização
+  // Middleware de sanitizaÃ§Ã£o
   sanitizeData,
 
-  // Middleware de logging de segurança
+  // Middleware de logging de seguranÃ§a
   securityLogging
 ];
 
-// ===== DETECÇÃO DE PADRÕES DE ATAQUE =====
+// ===== DETECÃ‡ÃƒO DE PADRÃ•ES DE ATAQUE =====
 
-export const detectAttackPatterns = async (req, res, next) => {
+export const detectAttackPatterns = (req, res, next) => {
   try {
     const attackPatterns = [
       // SQL Injection
@@ -220,10 +221,10 @@ export const detectAttackPatterns = async (req, res, next) => {
         }
       });
 
-      // Bloquear requisição
+      // Bloquear requisiÃ§Ã£o
       return res.status(403).json({
         success: false,
-        message: 'Acesso negado: padrão suspeito detectado',
+        message: 'Acesso negado: padrÃ£o suspeito detectado',
         code: 'ATTACK_DETECTED'
       });
     }
@@ -231,18 +232,18 @@ export const detectAttackPatterns = async (req, res, next) => {
     next();
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro na detecção de ataques:', error);
+      logger.error('Erro na detecÃ§Ã£o de ataques:', error);
     }
     next();
   }
 };
 
-// ===== VALIDAÇÃO DE ENTRADA =====
+// ===== VALIDAÃ‡ÃƒO DE ENTRADA =====
 
 export const validateInput = (req, res, next) => {
   try {
     // Validar tamanho do body
-    const contentLength = parseInt(req.get('content-length', 10) || '0');
+    const contentLength = parseInt(req.get('content-length', 10, 10) || '0');
     const maxSize = 10 * 1024 * 1024; // 10MB
 
     if (contentLength > maxSize) {
@@ -282,17 +283,17 @@ export const validateInput = (req, res, next) => {
     next();
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro na validação de entrada:', error);
+      logger.error('Erro na validaÃ§Ã£o de entrada:', error);
     }
     res.status(400).json({
       success: false,
-      message: 'Erro na validação de entrada',
+      message: 'Erro na validaÃ§Ã£o de entrada',
       code: 'VALIDATION_ERROR'
     });
   }
 };
 
-// ===== SANITIZAÇÃO DE DADOS =====
+// ===== SANITIZAÃ‡ÃƒO DE DADOS =====
 
 export const sanitizeData = (req, res, next) => {
   try {
@@ -313,17 +314,17 @@ export const sanitizeData = (req, res, next) => {
     next();
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro na sanitização:', error);
+      logger.error('Erro na sanitizaÃ§Ã£o:', error);
     }
     next();
   }
 };
 
-// ===== LOGGING DE SEGURANÇA =====
+// ===== LOGGING DE SEGURANÃ‡A =====
 
-export const securityLogging = async (req, res, next) => {
+export const securityLogging = (req, res, next) => {
   try {
-    // Log de requisição
+    // Log de requisiÃ§Ã£o
     const logEntry = {
       eventType: 'api_request',
       severity: 'low',
@@ -340,7 +341,7 @@ export const securityLogging = async (req, res, next) => {
       }
     };
 
-    // Adicionar informações do usuário se autenticado
+    // Adicionar informaÃ§Ãµes do usuÃ¡rio se autenticado
     if (req.user) {
       logEntry.userId = req.user.id;
       logEntry.details.userEmail = req.user.email;
@@ -350,25 +351,28 @@ export const securityLogging = async (req, res, next) => {
     next();
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro no logging de segurança:', error);
+      logger.error('Erro no logging de seguranÃ§a:', error);
     }
     next();
   }
 };
 
-// ===== FUNÇÕES AUXILIARES =====
+// ===== FUNÃ‡Ã•ES AUXILIARES =====
 
 function sanitizeString(str) {
   if (typeof str !== 'string') {
     return str;
   }
 
-  return str
-    .replace(/[<>]/g, '') // Remover < e >
-    .replace(/javascript:/gi, '') // Remover javascript:
-    .replace(/on\w+=/gi, '') // Remover event handlers
-    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '') // Remover caracteres de controle
-    .trim();
+  return (
+    str
+      .replace(/[<>]/g, '') // Remover < e >
+      .replace(/javascript:/gi, '') // Remover javascript:
+      .replace(/on\w+=/gi, '') // Remover event handlers
+      // Remover caracteres de controle, usando a classe POSIX-equivalente para maior compatibilidade
+      .replace(/[^\x20-\x7E\n\r\t]/g, '')
+      .trim()
+  );
 }
 
 function sanitizeObject(obj) {
@@ -389,7 +393,7 @@ function sanitizeObject(obj) {
   return sanitized;
 }
 
-// ===== MIDDLEWARE DE VALIDAÇÃO DE WEBHOOK =====
+// ===== MIDDLEWARE DE VALIDAÃ‡ÃƒO DE WEBHOOK =====
 
 export const validateStripeWebhook = (req, res, next) => {
   try {
@@ -404,27 +408,27 @@ export const validateStripeWebhook = (req, res, next) => {
       });
     }
 
-    // Aqui você implementaria a verificação real da assinatura do Stripe
+    // Aqui vocÃª implementaria a verificaÃ§Ã£o real da assinatura do Stripe
     // Por enquanto, apenas validar se existe
 
     next();
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro na validação do webhook Stripe:', error);
+      logger.error('Erro na validaÃ§Ã£o do webhook Stripe:', error);
     }
     res.status(400).json({
       success: false,
-      message: 'Webhook inválido',
+      message: 'Webhook invÃ¡lido',
       code: 'INVALID_WEBHOOK'
     });
   }
 };
 
-// ===== MIDDLEWARE DE VALIDAÇÃO DE CSRF =====
+// ===== MIDDLEWARE DE VALIDAÃ‡ÃƒO DE CSRF =====
 
 export const validateCSRF = (req, res, next) => {
   try {
-    // Verificar se é uma requisição que precisa de CSRF
+    // Verificar se Ã© uma requisiÃ§Ã£o que precisa de CSRF
     const csrfRequiredMethods = ['POST', 'PUT', 'DELETE', 'PATCH'];
 
     if (!csrfRequiredMethods.includes(req.method)) {
@@ -437,7 +441,7 @@ export const validateCSRF = (req, res, next) => {
     if (!csrfToken || !sessionToken || csrfToken !== sessionToken) {
       return res.status(403).json({
         success: false,
-        message: 'Token CSRF inválido',
+        message: 'Token CSRF invÃ¡lido',
         code: 'INVALID_CSRF'
       });
     }
@@ -445,17 +449,17 @@ export const validateCSRF = (req, res, next) => {
     next();
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro na validação CSRF:', error);
+      logger.error('Erro na validaÃ§Ã£o CSRF:', error);
     }
     res.status(403).json({
       success: false,
-      message: 'Erro na validação CSRF',
+      message: 'Erro na validaÃ§Ã£o CSRF',
       code: 'CSRF_ERROR'
     });
   }
 };
 
-// ===== MIDDLEWARE DE VALIDAÇÃO DE API KEY =====
+// ===== MIDDLEWARE DE VALIDAÃ‡ÃƒO DE API KEY =====
 
 export const validateAPIKey = (req, res, next) => {
   try {
@@ -464,22 +468,22 @@ export const validateAPIKey = (req, res, next) => {
     if (!apiKey) {
       return res.status(401).json({
         success: false,
-        message: 'API Key obrigatória',
+        message: 'API Key obrigatÃ³ria',
         code: 'MISSING_API_KEY'
       });
     }
 
-    // Aqui você implementaria a validação real da API Key
+    // Aqui vocÃª implementaria a validaÃ§Ã£o real da API Key
     // Por enquanto, apenas verificar se existe
 
     next();
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro na validação da API Key:', error);
+      logger.error('Erro na validaÃ§Ã£o da API Key:', error);
     }
     res.status(401).json({
       success: false,
-      message: 'API Key inválida',
+      message: 'API Key invÃ¡lida',
       code: 'INVALID_API_KEY'
     });
   }

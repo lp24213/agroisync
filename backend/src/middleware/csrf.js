@@ -1,11 +1,11 @@
-/**
+﻿/**
  * CSRF Protection Middleware
  * Protege contra ataques Cross-Site Request Forgery
  */
 
 import crypto from 'crypto';
 
-// Store de tokens CSRF em memória (em produção, usar Redis ou similar)
+// Store de tokens CSRF em memÃ³ria (em produÃ§Ã£o, usar Redis ou similar)
 const csrfTokens = new Map();
 
 // Limpar tokens expirados a cada hora
@@ -28,7 +28,7 @@ export const generateCSRFToken = req => {
   const token = crypto.randomBytes(32).toString('hex');
   const sessionId = req.session?.id || req.ip;
 
-  // Armazenar token com expiração de 1 hora
+  // Armazenar token com expiraÃ§Ã£o de 1 hora
   csrfTokens.set(token, {
     sessionId,
     expires: Date.now() + 60 * 60 * 1000
@@ -57,7 +57,7 @@ export const validateCSRFToken = (req, token) => {
     return false;
   }
 
-  // Verificar se o token pertence à mesma sessão/IP
+  // Verificar se o token pertence Ã  mesma sessÃ£o/IP
   const sessionId = req.session?.id || req.ip;
   if (data.sessionId !== sessionId) {
     return false;
@@ -83,10 +83,10 @@ export const csrfToken = (req, res, next) => {
 };
 
 /**
- * Middleware para validar token CSRF em requisições mutantes
+ * Middleware para validar token CSRF em requisiÃ§Ãµes mutantes
  */
 export const csrfProtection = (req, res, next) => {
-  // Métodos seguros não precisam de proteção
+  // MÃ©todos seguros nÃ£o precisam de proteÃ§Ã£o
   const safeMethods = ['GET', 'HEAD', 'OPTIONS'];
 
   if (safeMethods.includes(req.method)) {
@@ -108,7 +108,7 @@ export const csrfProtection = (req, res, next) => {
   if (!validateCSRFToken(req, token)) {
     return res.status(403).json({
       success: false,
-      error: 'CSRF token inválido ou expirado',
+      error: 'CSRF token invÃ¡lido ou expirado',
       code: 'CSRF_TOKEN_INVALID'
     });
   }
@@ -117,7 +117,7 @@ export const csrfProtection = (req, res, next) => {
 };
 
 /**
- * Middleware CSRF condicional (apenas em produção)
+ * Middleware CSRF condicional (apenas em produÃ§Ã£o)
  */
 export const csrfProtectionConditional = (req, res, next) => {
   if (process.env.NODE_ENV === 'production') {

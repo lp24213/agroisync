@@ -1,4 +1,4 @@
-// Configuração de ambiente para o backend
+﻿// ConfiguraÃ§Ã£o de ambiente para o backend
 export const environment = {
   // Servidor
   server: {
@@ -61,7 +61,7 @@ export const environment = {
     maxFiles: process.env.LOG_MAX_FILES || 5
   },
 
-  // Segurança
+  // SeguranÃ§a
   security: {
     corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:3000',
     rateLimitWindow: process.env.RATE_LIMIT_WINDOW || 15 * 60 * 1000, // 15 minutos

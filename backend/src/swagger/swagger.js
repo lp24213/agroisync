@@ -1,5 +1,5 @@
-// =============================================================
-// AGROISYNC • Documentação Swagger/OpenAPI
+﻿// =============================================================
+// AGROISYNC â€¢ DocumentaÃ§Ã£o Swagger/OpenAPI
 // =============================================================
 
 import swaggerJSDoc from 'swagger-jsdoc';
@@ -11,7 +11,7 @@ const options = {
     info: {
       title: 'AgroSync API',
       version: '1.0.0',
-      description: 'API para plataforma AgroSync - Marketplace agrícola e serviços de frete',
+      description: 'API para plataforma AgroSync - Marketplace agrÃ­cola e serviÃ§os de frete',
       contact: {
         name: 'Equipe AgroSync',
         email: 'contato@agroisync.com',
@@ -25,7 +25,7 @@ const options = {
     servers: [
       {
         url: 'https://agroisync.com/api',
-        description: 'Servidor de Produção'
+        description: 'Servidor de ProduÃ§Ã£o'
       },
       {
         url: 'https://staging.agroisync.com/api',
@@ -42,7 +42,7 @@ const options = {
           type: 'http',
           scheme: 'bearer',
           bearerFormat: 'JWT',
-          description: 'Token JWT para autenticação'
+          description: 'Token JWT para autenticaÃ§Ã£o'
         }
       },
       schemas: {
@@ -52,34 +52,34 @@ const options = {
           properties: {
             id: {
               type: 'string',
-              description: 'ID único do usuário',
+              description: 'ID Ãºnico do usuÃ¡rio',
               example: 'uuid-string'
             },
             email: {
               type: 'string',
               format: 'email',
-              description: 'Email do usuário',
+              description: 'Email do usuÃ¡rio',
               example: 'usuario@exemplo.com'
             },
             name: {
               type: 'string',
-              description: 'Nome completo do usuário',
-              example: 'João Silva'
+              description: 'Nome completo do usuÃ¡rio',
+              example: 'JoÃ£o Silva'
             },
             phone: {
               type: 'string',
-              description: 'Telefone do usuário',
+              description: 'Telefone do usuÃ¡rio',
               example: '11999999999'
             },
             role: {
               type: 'string',
               enum: ['user', 'admin'],
-              description: 'Papel do usuário',
+              description: 'Papel do usuÃ¡rio',
               example: 'user'
             },
             isActive: {
               type: 'boolean',
-              description: 'Se o usuário está ativo',
+              description: 'Se o usuÃ¡rio estÃ¡ ativo',
               example: true
             },
             isEmailVerified: {
@@ -90,7 +90,7 @@ const options = {
             createdAt: {
               type: 'string',
               format: 'date-time',
-              description: 'Data de criação',
+              description: 'Data de criaÃ§Ã£o',
               example: '2024-01-01T00:00:00Z'
             }
           }
@@ -101,7 +101,7 @@ const options = {
           properties: {
             success: {
               type: 'boolean',
-              description: 'Se a operação foi bem-sucedida',
+              description: 'Se a operaÃ§Ã£o foi bem-sucedida',
               example: true
             },
             data: {
@@ -131,17 +131,17 @@ const options = {
           properties: {
             success: {
               type: 'boolean',
-              description: 'Se a operação foi bem-sucedida',
+              description: 'Se a operaÃ§Ã£o foi bem-sucedida',
               example: false
             },
             error: {
               type: 'string',
               description: 'Mensagem de erro',
-              example: 'Credenciais inválidas'
+              example: 'Credenciais invÃ¡lidas'
             },
             code: {
               type: 'string',
-              description: 'Código do erro',
+              description: 'CÃ³digo do erro',
               example: 'INVALID_CREDENTIALS'
             }
           }
@@ -151,9 +151,9 @@ const options = {
     paths: {
       '/auth/login': {
         post: {
-          tags: ['Autenticação'],
+          tags: ['AutenticaÃ§Ã£o'],
           summary: 'Fazer login',
-          description: 'Autentica um usuário e retorna um token JWT',
+          description: 'Autentica um usuÃ¡rio e retorna um token JWT',
           requestBody: {
             required: true,
             content: {
@@ -189,7 +189,7 @@ const options = {
               }
             },
             401: {
-              description: 'Credenciais inválidas',
+              description: 'Credenciais invÃ¡lidas',
               content: {
                 'application/json': {
                   schema: {
@@ -218,7 +218,7 @@ const options = {
 
 const specs = swaggerJSDoc(options);
 
-// Middleware para servir a documentação
+// Middleware para servir a documentaÃ§Ã£o
 export const swaggerUiOptions = {
   customCss: '.swagger-ui .topbar { display: none }',
   customSiteTitle: 'AgroSync API Documentation',
@@ -226,10 +226,10 @@ export const swaggerUiOptions = {
 };
 
 export const setupSwagger = app => {
-  // Servir a documentação Swagger UI
+  // Servir a documentaÃ§Ã£o Swagger UI
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, swaggerUiOptions));
 
-  // Servir o JSON da especificação
+  // Servir o JSON da especificaÃ§Ã£o
   app.get('/api-docs.json', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(specs);

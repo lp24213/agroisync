@@ -1,8 +1,8 @@
-const logger = require('../utils/logger');
+﻿const logger = require('../utils/logger');
 
 /**
- * Middleware para validar a ID da Metamask nas requisições
- * Este middleware verifica se o header 'x-metamask-id' está presente
+ * Middleware para validar a ID da Metamask nas requisiÃ§Ãµes
+ * Este middleware verifica se o header 'x-metamask-id' estÃ¡ presente
  * e se corresponde ao ID autorizado
  */
 const validateMetamaskId = (req, res, next) => {
@@ -10,57 +10,57 @@ const validateMetamaskId = (req, res, next) => {
     // Obter a ID da Metamask do header
     const metamaskId = req.headers['x-metamask-id'];
 
-    // ID da Metamask autorizada (deve ser configurada via variável de ambiente)
+    // ID da Metamask autorizada (deve ser configurada via variÃ¡vel de ambiente)
     const authorizedMetamaskId =
       process.env.METAMASK_ID || '0x5Ea5C5970e8AE23A5336d631707CF31C5916E8b1';
 
-    // Verificar se o header está presente
+    // Verificar se o header estÃ¡ presente
     if (!metamaskId) {
-      logger.warn(`Requisição sem Metamask ID: ${req.method} ${req.originalUrl} - IP: ${req.ip}`);
+      logger.warn(`RequisiÃ§Ã£o sem Metamask ID: ${req.method} ${req.originalUrl} - IP: ${req.ip}`);
 
       return res.status(401).json({
         success: false,
-        error: 'Metamask ID não fornecido',
-        message: 'Header x-metamask-id é obrigatório para autenticação'
+        error: 'Metamask ID nÃ£o fornecido',
+        message: 'Header x-metamask-id Ã© obrigatÃ³rio para autenticaÃ§Ã£o'
       });
     }
 
-    // Verificar se a ID corresponde à autorizada
+    // Verificar se a ID corresponde Ã  autorizada
     if (metamaskId !== authorizedMetamaskId) {
       logger.warn(
-        `Tentativa de acesso com Metamask ID inválido: ${metamaskId} - IP: ${req.ip} - URL: ${req.originalUrl}`
+        `Tentativa de acesso com Metamask ID invÃ¡lido: ${metamaskId} - IP: ${req.ip} - URL: ${req.originalUrl}`
       );
 
       return res.status(403).json({
         success: false,
-        error: 'Metamask ID inválido',
-        message: 'ID da Metamask não autorizado para acessar este recurso'
+        error: 'Metamask ID invÃ¡lido',
+        message: 'ID da Metamask nÃ£o autorizado para acessar este recurso'
       });
     }
 
-    // ID válida, continuar
+    // ID vÃ¡lida, continuar
     logger.info(
-      `Requisição autenticada com Metamask ID: ${metamaskId} - ${req.method} ${req.originalUrl}`
+      `RequisiÃ§Ã£o autenticada com Metamask ID: ${metamaskId} - ${req.method} ${req.originalUrl}`
     );
 
-    // Adicionar informações da Metamask ao request para uso posterior
+    // Adicionar informaÃ§Ãµes da Metamask ao request para uso posterior
     req.metamaskId = metamaskId;
     req.isAuthenticated = true;
 
     next();
   } catch (error) {
-    logger.error('Erro no middleware de validação da Metamask ID:', error);
+    logger.error('Erro no middleware de validaÃ§Ã£o da Metamask ID:', error);
 
     return res.status(500).json({
       success: false,
-      error: 'Erro interno do servidor durante validação da Metamask ID'
+      error: 'Erro interno do servidor durante validaÃ§Ã£o da Metamask ID'
     });
   }
 };
 
 /**
  * Middleware opcional para validar a ID da Metamask
- * Não falha se a ID não estiver presente, mas valida se estiver
+ * NÃ£o falha se a ID nÃ£o estiver presente, mas valida se estiver
  */
 const optionalMetamaskAuth = (req, res, next) => {
   try {
@@ -70,26 +70,28 @@ const optionalMetamaskAuth = (req, res, next) => {
 
     if (metamaskId) {
       if (metamaskId !== authorizedMetamaskId) {
-        logger.warn(`Metamask ID inválido em requisição opcional: ${metamaskId} - IP: ${req.ip}`);
+        logger.warn(
+          `Metamask ID invÃ¡lido em requisiÃ§Ã£o opcional: ${metamaskId} - IP: ${req.ip}`
+        );
 
         return res.status(403).json({
           success: false,
-          error: 'Metamask ID inválido',
-          message: 'ID da Metamask não autorizado'
+          error: 'Metamask ID invÃ¡lido',
+          message: 'ID da Metamask nÃ£o autorizado'
         });
       }
 
       req.metamaskId = metamaskId;
       req.isAuthenticated = true;
-      logger.info(`Requisição opcional autenticada com Metamask ID: ${metamaskId}`);
+      logger.info(`RequisiÃ§Ã£o opcional autenticada com Metamask ID: ${metamaskId}`);
     } else {
       req.isAuthenticated = false;
-      logger.info('Requisição sem autenticação Metamask (opcional)');
+      logger.info('RequisiÃ§Ã£o sem autenticaÃ§Ã£o Metamask (opcional)');
     }
 
     next();
   } catch (error) {
-    logger.error('Erro no middleware opcional de validação da Metamask ID:', error);
+    logger.error('Erro no middleware opcional de validaÃ§Ã£o da Metamask ID:', error);
     next();
   }
 };

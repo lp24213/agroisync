@@ -1,13 +1,14 @@
-const { MongoClient, ObjectId } = require('mongodb');
+﻿const { MongoClient, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
 
+const logger = require('../../utils/logger.js');
 const mongoClient = new MongoClient(process.env.MONGODB_URI);
 
-// Função auxiliar para verificar autorização
+// FunÃ§Ã£o auxiliar para verificar autorizaÃ§Ã£o
 const verifyAuth = event => {
   const authHeader = event.headers.Authorization || event.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return { error: 'UNAUTHORIZED', message: 'Token de autorização não fornecido' };
+    return { error: 'UNAUTHORIZED', message: 'Token de autorizaÃ§Ã£o nÃ£o fornecido' };
   }
 
   const token = authHeader.substring(7);
@@ -16,27 +17,27 @@ const verifyAuth = event => {
   try {
     decodedToken = jwt.decode(token);
     if (!decodedToken) {
-      return { error: 'INVALID_TOKEN', message: 'Token inválido' };
+      return { error: 'INVALID_TOKEN', message: 'Token invÃ¡lido' };
     }
   } catch (error) {
-    return { error: 'INVALID_TOKEN', message: 'Token inválido' };
+    return { error: 'INVALID_TOKEN', message: 'Token invÃ¡lido' };
   }
 
   const cognitoSub = decodedToken.sub;
   const { email } = decodedToken;
 
   if (!cognitoSub || !email) {
-    return { error: 'INVALID_TOKEN_DATA', message: 'Dados do token inválidos' };
+    return { error: 'INVALID_TOKEN_DATA', message: 'Dados do token invÃ¡lidos' };
   }
 
   return { cognitoSub, email };
 };
 
-// Função para verificar limites do plano
+// FunÃ§Ã£o para verificar limites do plano
 const checkPlanLimits = async (db, cognitoSub, operation) => {
   const user = await db.collection('users').findOne({ cognitoSub });
   if (!user) {
-    return { error: 'USER_NOT_FOUND', message: 'Usuário não encontrado' };
+    return { error: 'USER_NOT_FOUND', message: 'UsuÃ¡rio nÃ£o encontrado' };
   }
 
   const { plan } = user;
@@ -51,7 +52,7 @@ const checkPlanLimits = async (db, cognitoSub, operation) => {
     }
 
     if (plan.type === 'loja') {
-      // Plano Loja: máximo 3 anúncios
+      // Plano Loja: mÃ¡ximo 3 anÃºncios
       const currentProducts = await db.collection('products').countDocuments({
         ownerId: cognitoSub,
         status: 'active'
@@ -60,7 +61,7 @@ const checkPlanLimits = async (db, cognitoSub, operation) => {
       if (currentProducts >= 3) {
         return {
           error: 'LIMIT_EXCEEDED',
-          message: 'Limite de 3 anúncios atingido para o plano Loja.'
+          message: 'Limite de 3 anÃºncios atingido para o plano Loja.'
         };
       }
     }
@@ -93,11 +94,11 @@ exports.handler = async event => {
     await mongoClient.connect();
     const db = mongoClient.db();
 
-    // GET /products/public - Lista pública de produtos
+    // GET /products/public - Lista pÃºblica de produtos
     if (event.httpMethod === 'GET' && event.path.includes('/public')) {
       const { queryStringParameters } = event;
-      const page = parseInt(queryStringParameters?.page, 10) || 1;
-      const limit = parseInt(queryStringParameters?.limit, 10) || 20;
+      const page = parseInt(queryStringParameters?.page, 10, 10) || 1;
+      const limit = parseInt(queryStringParameters?.limit, 10, 10) || 20;
       const search = queryStringParameters?.search || '';
       const category = queryStringParameters?.category;
 
@@ -138,7 +139,7 @@ exports.handler = async event => {
       };
     }
 
-    // GET /products - Produtos do usuário ou por ID
+    // GET /products - Produtos do usuÃ¡rio ou por ID
     if (event.httpMethod === 'GET') {
       const auth = verifyAuth(event);
       if (auth.error) {
@@ -155,13 +156,13 @@ exports.handler = async event => {
       const { owner, id } = queryStringParameters || {};
 
       if (id) {
-        // Buscar produto específico por ID
+        // Buscar produto especÃ­fico por ID
         if (!ObjectId.isValid(id)) {
           return {
             statusCode: 400,
             headers: corsHeaders,
             body: JSON.stringify({
-              error: { code: 'INVALID_ID', message: 'ID inválido' }
+              error: { code: 'INVALID_ID', message: 'ID invÃ¡lido' }
             })
           };
         }
@@ -172,7 +173,7 @@ exports.handler = async event => {
             statusCode: 404,
             headers: corsHeaders,
             body: JSON.stringify({
-              error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto não encontrado' }
+              error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto nÃ£o encontrado' }
             })
           };
         }
@@ -184,7 +185,7 @@ exports.handler = async event => {
         };
       }
 
-      // Buscar produtos do usuário
+      // Buscar produtos do usuÃ¡rio
       const filter = owner === 'me' ? { ownerId: auth.cognitoSub } : {};
       const products = await db
         .collection('products')
@@ -233,12 +234,12 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_JSON', message: 'JSON inválido' }
+            error: { code: 'INVALID_JSON', message: 'JSON invÃ¡lido' }
           })
         };
       }
 
-      // Validar dados obrigatórios
+      // Validar dados obrigatÃ³rios
       const { name, specs, images, priceBRL } = requestBody;
 
       if (!name || !specs || !priceBRL) {
@@ -248,7 +249,7 @@ exports.handler = async event => {
           body: JSON.stringify({
             error: {
               code: 'MISSING_FIELDS',
-              message: 'Nome, especificações e preço são obrigatórios'
+              message: 'Nome, especificaÃ§Ãµes e preÃ§o sÃ£o obrigatÃ³rios'
             }
           })
         };
@@ -268,7 +269,7 @@ exports.handler = async event => {
 
       const result = await db.collection('products').insertOne(newProduct);
 
-      // Criar índices se não existirem
+      // Criar Ã­ndices se nÃ£o existirem
       await db.collection('products').createIndex({ ownerId: 1 });
       await db.collection('products').createIndex({ name: 'text', specs: 'text' });
 
@@ -307,12 +308,12 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_ID', message: 'ID inválido' }
+            error: { code: 'INVALID_ID', message: 'ID invÃ¡lido' }
           })
         };
       }
 
-      // Verificar se o produto existe e pertence ao usuário
+      // Verificar se o produto existe e pertence ao usuÃ¡rio
       const existingProduct = await db.collection('products').findOne({
         _id: new ObjectId(id),
         ownerId: auth.cognitoSub
@@ -323,7 +324,7 @@ exports.handler = async event => {
           statusCode: 404,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto não encontrado' }
+            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto nÃ£o encontrado' }
           })
         };
       }
@@ -337,12 +338,12 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_JSON', message: 'JSON inválido' }
+            error: { code: 'INVALID_JSON', message: 'JSON invÃ¡lido' }
           })
         };
       }
 
-      // Preparar dados para atualização
+      // Preparar dados para atualizaÃ§Ã£o
       const updateData = {
         updatedAt: new Date()
       };
@@ -354,7 +355,8 @@ exports.handler = async event => {
         updateData.specs = requestBody.specs.trim();
       }
       if (requestBody.images) {
-      {updateData.images = Array.isArray(requestBody.images) ? requestBody.images : [];}
+        updateData.images = Array.isArray(requestBody.images) ? requestBody.images : [];
+      }
       if (requestBody.priceBRL) {
         updateData.priceBRL = parseFloat(requestBody.priceBRL);
       }
@@ -372,7 +374,7 @@ exports.handler = async event => {
           statusCode: 404,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto não encontrado' }
+            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto nÃ£o encontrado' }
           })
         };
       }
@@ -408,12 +410,12 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_ID', message: 'ID inválido' }
+            error: { code: 'INVALID_ID', message: 'ID invÃ¡lido' }
           })
         };
       }
 
-      // Verificar se o produto existe e pertence ao usuário
+      // Verificar se o produto existe e pertence ao usuÃ¡rio
       const existingProduct = await db.collection('products').findOne({
         _id: new ObjectId(id),
         ownerId: auth.cognitoSub
@@ -424,7 +426,7 @@ exports.handler = async event => {
           statusCode: 404,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto não encontrado' }
+            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto nÃ£o encontrado' }
           })
         };
       }
@@ -439,7 +441,7 @@ exports.handler = async event => {
           statusCode: 404,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto não encontrado' }
+            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto nÃ£o encontrado' }
           })
         };
       }
@@ -453,17 +455,17 @@ exports.handler = async event => {
       };
     }
 
-    // Método não suportado
+    // MÃ©todo nÃ£o suportado
     return {
       statusCode: 405,
       headers: corsHeaders,
       body: JSON.stringify({
-        error: { code: 'METHOD_NOT_ALLOWED', message: 'Método não permitido' }
+        error: { code: 'METHOD_NOT_ALLOWED', message: 'MÃ©todo nÃ£o permitido' }
       })
     };
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro no gerenciamento de produtos:', error);
+      logger.error('Erro no gerenciamento de produtos:', error);
     }
     return {
       statusCode: 500,

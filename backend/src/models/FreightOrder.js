@@ -1,18 +1,18 @@
-// Modelo FreightOrder - arquivo temporário para deploy
+﻿// Modelo FreightOrder - arquivo temporÃ¡rio para deploy
 export default class FreightOrder {
   constructor(data) {
     Object.assign(this, data);
   }
 
-  static async findById(id) {
+  static findById(id) {
     return null;
   }
 
-  static async findByUser(userId) {
+  static findByUser(userId) {
     return [];
   }
 
-  static async create(data) {
+  static create(data) {
     return new FreightOrder(data);
   }
 

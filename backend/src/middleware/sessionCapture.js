@@ -1,8 +1,8 @@
-// Middleware básico para capturar informações de sessão
-// Compatível com Cloudflare Workers
+﻿// Middleware bÃ¡sico para capturar informaÃ§Ãµes de sessÃ£o
+// CompatÃ­vel com Cloudflare Workers
 
 export const captureSessionInfo = req => {
-  // Capturar informações básicas da sessão
+  // Capturar informaÃ§Ãµes bÃ¡sicas da sessÃ£o
   const sessionInfo = {
     ip: req.headers.get('CF-Connecting-IP') || req.headers.get('X-Forwarded-For') || 'unknown',
     userAgent: req.headers.get('User-Agent') || 'unknown',
@@ -11,7 +11,7 @@ export const captureSessionInfo = req => {
     method: req.method
   };
 
-  // Adicionar informações à request para uso posterior
+  // Adicionar informaÃ§Ãµes Ã  request para uso posterior
   req.sessionInfo = sessionInfo;
 
   return sessionInfo;

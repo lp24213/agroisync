@@ -1,5 +1,5 @@
-// Sistema de Logs e Auditoria Completo - AGROISYNC
-// Logging centralizado, auditoria de segurança e monitoramento de atividades
+﻿// Sistema de Logs e Auditoria Completo - AGROISYNC
+// Logging centralizado, auditoria de seguranÃ§a e monitoramento de atividades
 
 import mongoose from 'mongoose';
 import winston from 'winston';
@@ -8,7 +8,8 @@ import { join } from 'path';
 import { AuditLog } from '../models/AuditLog.js';
 import { SecurityLog } from '../models/SecurityLog.js';
 
-// ===== CONFIGURAÇÃO DE LOGS =====
+import logger from '../utils/logger.js';
+// ===== CONFIGURAÃ‡ÃƒO DE LOGS =====
 
 const logConfig = {
   level: process.env.LOG_LEVEL || 'info',
@@ -66,7 +67,7 @@ class AuditSystem {
     });
   }
 
-  // Log de atividade do usuário
+  // Log de atividade do usuÃ¡rio
   async logUserActivity(userId, action, resource, details = {}) {
     try {
       const auditEntry = {
@@ -99,7 +100,7 @@ class AuditSystem {
     }
   }
 
-  // Log de segurança
+  // Log de seguranÃ§a
   async logSecurityEvent(eventType, severity, description, details = {}) {
     try {
       const securityEntry = {
@@ -121,13 +122,13 @@ class AuditSystem {
       // Salvar no banco de dados
       await SecurityLog.create(securityEntry);
 
-      // Log no arquivo de segurança
+      // Log no arquivo de seguranÃ§a
       this.securityLogger.warn('Security Event', securityEntry);
 
-      // Log no console se for crítico
+      // Log no console se for crÃ­tico
       if (severity === 'critical') {
         if (process.env.NODE_ENV !== 'production') {
-          console.error('🚨 CRITICAL SECURITY EVENT:', securityEntry);
+          logger.error('ðŸš¨ CRITICAL SECURITY EVENT:', securityEntry);
         }
       }
 
@@ -189,7 +190,7 @@ class AuditSystem {
       // Log no arquivo de erro
       this.logger.error('Application Error', errorEntry);
 
-      // Salvar no banco se for crítico
+      // Salvar no banco se for crÃ­tico
       if (context.severity === 'critical') {
         await SecurityLog.create({
           eventType: 'system_error',
@@ -203,13 +204,13 @@ class AuditSystem {
       return errorEntry;
     } catch (logError) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Error logging error:', logError);
+        logger.error('Error logging error:', logError);
       }
       throw logError;
     }
   }
 
-  // Log de transação financeira
+  // Log de transaÃ§Ã£o financeira
   async logFinancialTransaction(transactionId, type, amount, details = {}) {
     try {
       const transactionEntry = {
@@ -250,7 +251,7 @@ class AuditSystem {
     }
   }
 
-  // Log de acesso a dados sensíveis
+  // Log de acesso a dados sensÃ­veis
   async logDataAccess(userId, dataType, action, details = {}) {
     try {
       const accessEntry = {
@@ -288,7 +289,7 @@ class AuditSystem {
     }
   }
 
-  // Log de mudança de configuração
+  // Log de mudanÃ§a de configuraÃ§Ã£o
   async logConfigurationChange(userId, configKey, oldValue, newValue, details = {}) {
     try {
       const configEntry = {
@@ -362,7 +363,7 @@ class AuditSystem {
     }
   }
 
-  // Obter logs de segurança
+  // Obter logs de seguranÃ§a
   async getSecurityLogs(filters = {}) {
     try {
       const query = {};
@@ -398,7 +399,7 @@ class AuditSystem {
     }
   }
 
-  // Gerar relatório de auditoria
+  // Gerar relatÃ³rio de auditoria
   async generateAuditReport(startDate, endDate, filters = {}) {
     try {
       const query = {
@@ -416,7 +417,7 @@ class AuditSystem {
         query.action = filters.action;
       }
 
-      // Agregação para estatísticas
+      // AgregaÃ§Ã£o para estatÃ­sticas
       const stats = await AuditLog.aggregate([
         { $match: query },
         {
@@ -462,7 +463,7 @@ class AuditSystem {
         timestamp: { $lt: cutoffDate }
       });
 
-      // Limpar logs de segurança antigos
+      // Limpar logs de seguranÃ§a antigos
       const securityResult = await SecurityLog.deleteMany({
         timestamp: { $lt: cutoffDate }
       });
@@ -504,7 +505,7 @@ class AuditSystem {
       };
 
       if (format === 'csv') {
-        // Implementar exportação CSV
+        // Implementar exportaÃ§Ã£o CSV
         return this.exportToCSV(exportData);
       }
 
@@ -517,14 +518,14 @@ class AuditSystem {
 
   // Exportar para CSV
   exportToCSV(data) {
-    // Implementar exportação CSV
+    // Implementar exportaÃ§Ã£o CSV
     const csv = this.convertToCSV(data);
     return csv;
   }
 
   // Converter para CSV
   convertToCSV(data) {
-    // Implementar conversão para CSV
+    // Implementar conversÃ£o para CSV
     return JSON.stringify(data, null, 2);
   }
 }
@@ -538,7 +539,7 @@ export const loggingMiddleware = (req, res, next) => {
   // Adicionar request ID ao request
   req.requestId = requestId;
 
-  // Log da requisição
+  // Log da requisiÃ§Ã£o
   logger.info('Request started', {
     requestId,
     method: req.method,
@@ -578,7 +579,7 @@ export const auditMiddleware = (action, resource) => {
     try {
       const auditSystem = new AuditSystem();
 
-      // Log da ação
+      // Log da aÃ§Ã£o
       await auditSystem.logUserActivity(req.user?.id, action, resource, {
         userEmail: req.user?.email,
         ip: req.ip,
@@ -599,7 +600,7 @@ export const auditMiddleware = (action, resource) => {
   };
 };
 
-// ===== MIDDLEWARE DE SEGURANÇA =====
+// ===== MIDDLEWARE DE SEGURANÃ‡A =====
 
 export const securityLoggingMiddleware = (req, res, next) => {
   const auditSystem = new AuditSystem();
@@ -643,7 +644,7 @@ export const securityLoggingMiddleware = (req, res, next) => {
   next();
 };
 
-// Instância única do sistema de auditoria
+// InstÃ¢ncia Ãºnica do sistema de auditoria
 const auditSystem = new AuditSystem();
 
 export default auditSystem;

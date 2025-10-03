@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 
 // Import all route modules
 import authRoutes from './auth.js';

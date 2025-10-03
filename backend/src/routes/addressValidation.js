@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import { body, validationResult } from 'express-validator';
 import addressValidationService from '../services/addressValidationService.js';
 import logger from '../utils/logger.js';
@@ -9,7 +9,7 @@ const router = express.Router();
  * @swagger
  * /api/address/validate:
  *   post:
- *     summary: Validar endereço internacional
+ *     summary: Validar endereÃ§o internacional
  *     tags: [Address]
  *     requestBody:
  *       required: true
@@ -22,36 +22,36 @@ const router = express.Router();
  *             properties:
  *               country:
  *                 type: string
- *                 description: Código do país (BR, CN, US, etc.)
+ *                 description: CÃ³digo do paÃ­s (BR, CN, US, etc.)
  *               zipCode:
  *                 type: string
- *                 description: CEP/Código postal
+ *                 description: CEP/CÃ³digo postal
  *               address:
  *                 type: string
- *                 description: Endereço completo
+ *                 description: EndereÃ§o completo
  *               city:
  *                 type: string
  *                 description: Cidade
  *               state:
  *                 type: string
- *                 description: Estado/Província
+ *                 description: Estado/ProvÃ­ncia
  *               province:
  *                 type: string
- *                 description: Província (para China)
+ *                 description: ProvÃ­ncia (para China)
  *     responses:
  *       200:
- *         description: Resultado da validação
+ *         description: Resultado da validaÃ§Ã£o
  *       400:
- *         description: Dados inválidos
+ *         description: Dados invÃ¡lidos
  */
 router.post(
   '/validate',
   [
-    body('country').notEmpty().withMessage('País é obrigatório'),
-    body('zipCode').optional().isLength({ min: 5, max: 10 }).withMessage('CEP inválido'),
-    body('address').optional().isLength({ min: 5 }).withMessage('Endereço muito curto'),
-    body('city').optional().isLength({ min: 2 }).withMessage('Cidade inválida'),
-    body('state').optional().isLength({ min: 2 }).withMessage('Estado inválido')
+    body('country').notEmpty().withMessage('PaÃ­s Ã© obrigatÃ³rio'),
+    body('zipCode').optional().isLength({ min: 5, max: 10 }).withMessage('CEP invÃ¡lido'),
+    body('address').optional().isLength({ min: 5 }).withMessage('EndereÃ§o muito curto'),
+    body('city').optional().isLength({ min: 2 }).withMessage('Cidade invÃ¡lida'),
+    body('state').optional().isLength({ min: 2 }).withMessage('Estado invÃ¡lido')
   ],
   async (req, res) => {
     try {
@@ -59,7 +59,7 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
@@ -75,14 +75,14 @@ router.post(
         province
       });
 
-      logger.info(`Validação de endereço realizada para país: ${country}`);
+      logger.info(`ValidaÃ§Ã£o de endereÃ§o realizada para paÃ­s: ${country}`);
 
       res.status(200).json({
         success: true,
         data: validationResult
       });
     } catch (error) {
-      logger.error('Erro na validação de endereço:', error);
+      logger.error('Erro na validaÃ§Ã£o de endereÃ§o:', error);
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -95,13 +95,13 @@ router.post(
  * @swagger
  * /api/address/countries:
  *   get:
- *     summary: Listar países suportados
+ *     summary: Listar paÃ­ses suportados
  *     tags: [Address]
  *     responses:
  *       200:
- *         description: Lista de países suportados
+ *         description: Lista de paÃ­ses suportados
  */
-router.get('/countries', async (req, res) => {
+router.get('/countries', (req, res) => {
   try {
     const countries = addressValidationService.getSupportedCountries();
 
@@ -112,7 +112,7 @@ router.get('/countries', async (req, res) => {
       }
     });
   } catch (error) {
-    logger.error('Erro ao listar países:', error);
+    logger.error('Erro ao listar paÃ­ses:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -124,7 +124,7 @@ router.get('/countries', async (req, res) => {
  * @swagger
  * /api/address/format/{country}:
  *   get:
- *     summary: Obter formato de endereço por país
+ *     summary: Obter formato de endereÃ§o por paÃ­s
  *     tags: [Address]
  *     parameters:
  *       - in: path
@@ -132,14 +132,14 @@ router.get('/countries', async (req, res) => {
  *         required: true
  *         schema:
  *           type: string
- *           description: Código do país
+ *           description: CÃ³digo do paÃ­s
  *     responses:
  *       200:
- *         description: Formato de endereço
+ *         description: Formato de endereÃ§o
  *       404:
- *         description: País não suportado
+ *         description: PaÃ­s nÃ£o suportado
  */
-router.get('/format/:country', async (req, res) => {
+router.get('/format/:country', (req, res) => {
   try {
     const { country } = req.params;
     const format = addressValidationService.getAddressFormat(country.toUpperCase());
@@ -147,7 +147,7 @@ router.get('/format/:country', async (req, res) => {
     if (!format) {
       return res.status(404).json({
         success: false,
-        message: 'País não suportado'
+        message: 'PaÃ­s nÃ£o suportado'
       });
     }
 
@@ -159,7 +159,7 @@ router.get('/format/:country', async (req, res) => {
       }
     });
   } catch (error) {
-    logger.error('Erro ao obter formato de endereço:', error);
+    logger.error('Erro ao obter formato de endereÃ§o:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -171,7 +171,7 @@ router.get('/format/:country', async (req, res) => {
  * @swagger
  * /api/address/format:
  *   post:
- *     summary: Formatar endereço para exibição
+ *     summary: Formatar endereÃ§o para exibiÃ§Ã£o
  *     tags: [Address]
  *     requestBody:
  *       required: true
@@ -197,18 +197,18 @@ router.get('/format/:country', async (req, res) => {
  *                     type: string
  *     responses:
  *       200:
- *         description: Endereço formatado
+ *         description: EndereÃ§o formatado
  *       400:
- *         description: Dados inválidos
+ *         description: Dados invÃ¡lidos
  */
-router.post('/format', async (req, res) => {
+router.post('/format', (req, res) => {
   try {
     const { addressData } = req.body;
 
     if (!addressData) {
       return res.status(400).json({
         success: false,
-        message: 'Dados do endereço são obrigatórios'
+        message: 'Dados do endereÃ§o sÃ£o obrigatÃ³rios'
       });
     }
 
@@ -221,7 +221,7 @@ router.post('/format', async (req, res) => {
       }
     });
   } catch (error) {
-    logger.error('Erro ao formatar endereço:', error);
+    logger.error('Erro ao formatar endereÃ§o:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

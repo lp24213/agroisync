@@ -1,4 +1,4 @@
-import axios from 'axios';
+﻿import axios from 'axios';
 import logger from '../utils/logger.js';
 
 class AddressValidationService {
@@ -11,12 +11,12 @@ class AddressValidationService {
   }
 
   /**
-   * Validar endereço brasileiro usando API dos Correios
+   * Validar endereÃ§o brasileiro usando API dos Correios
    */
   async validateBrazilianAddress(zipCode) {
     try {
       if (!zipCode || zipCode.length !== 8) {
-        throw new Error('CEP inválido');
+        throw new Error('CEP invÃ¡lido');
       }
 
       // API dos Correios (ViaCEP como fallback)
@@ -25,7 +25,7 @@ class AddressValidationService {
       });
 
       if (response.data.erro) {
-        throw new Error('CEP não encontrado');
+        throw new Error('CEP nÃ£o encontrado');
       }
 
       const address = response.data;
@@ -40,12 +40,12 @@ class AddressValidationService {
           state: address.uf,
           zipCode: address.cep,
           country: 'Brasil',
-          coordinates: null // ViaCEP não fornece coordenadas
+          coordinates: null // ViaCEP nÃ£o fornece coordenadas
         },
         source: 'viacep'
       };
     } catch (error) {
-      logger.error('Erro na validação de endereço brasileiro:', error);
+      logger.error('Erro na validaÃ§Ã£o de endereÃ§o brasileiro:', error);
       return {
         isValid: false,
         error: error.message,
@@ -55,12 +55,12 @@ class AddressValidationService {
   }
 
   /**
-   * Validar endereço chinês usando Baidu Maps API
+   * Validar endereÃ§o chinÃªs usando Baidu Maps API
    */
   async validateChineseAddress(address, city, province) {
     try {
       if (!this.apiKeys.baidu) {
-        logger.warn('Baidu Maps API key não configurada');
+        logger.warn('Baidu Maps API key nÃ£o configurada');
         return this.mockChineseValidation(address, city, province);
       }
 
@@ -76,7 +76,7 @@ class AddressValidationService {
       });
 
       if (response.data.status !== 0) {
-        throw new Error('Endereço não encontrado');
+        throw new Error('EndereÃ§o nÃ£o encontrado');
       }
 
       const { result } = response.data;
@@ -97,7 +97,7 @@ class AddressValidationService {
         source: 'baidu'
       };
     } catch (error) {
-      logger.error('Erro na validação de endereço chinês:', error);
+      logger.error('Erro na validaÃ§Ã£o de endereÃ§o chinÃªs:', error);
       return {
         isValid: false,
         error: error.message,
@@ -107,12 +107,12 @@ class AddressValidationService {
   }
 
   /**
-   * Validar endereço usando Google Places API (fallback internacional)
+   * Validar endereÃ§o usando Google Places API (fallback internacional)
    */
   async validateInternationalAddress(address, country) {
     try {
       if (!this.apiKeys.google) {
-        logger.warn('Google Places API key não configurada');
+        logger.warn('Google Places API key nÃ£o configurada');
         return this.mockInternationalValidation(address, country);
       }
 
@@ -126,13 +126,13 @@ class AddressValidationService {
       });
 
       if (response.data.status !== 'OK' || !response.data.results.length) {
-        throw new Error('Endereço não encontrado');
+        throw new Error('EndereÃ§o nÃ£o encontrado');
       }
 
       const result = response.data.results[0];
       const components = result.address_components;
 
-      // Extrair componentes do endereço
+      // Extrair componentes do endereÃ§o
       const addressComponents = this.extractGoogleAddressComponents(components);
 
       return {
@@ -152,7 +152,7 @@ class AddressValidationService {
         source: 'google'
       };
     } catch (error) {
-      logger.error('Erro na validação de endereço internacional:', error);
+      logger.error('Erro na validaÃ§Ã£o de endereÃ§o internacional:', error);
       return {
         isValid: false,
         error: error.message,
@@ -162,7 +162,7 @@ class AddressValidationService {
   }
 
   /**
-   * Validar endereço baseado no país
+   * Validar endereÃ§o baseado no paÃ­s
    */
   async validateAddress(addressData) {
     const { country, zipCode, address, city, state, province } = addressData;
@@ -183,7 +183,7 @@ class AddressValidationService {
   }
 
   /**
-   * Extrair componentes de endereço do Google Places
+   * Extrair componentes de endereÃ§o do Google Places
    */
   extractGoogleAddressComponents(components) {
     const result = {
@@ -214,7 +214,7 @@ class AddressValidationService {
   }
 
   /**
-   * Mock para validação chinesa quando API não está disponível
+   * Mock para validaÃ§Ã£o chinesa quando API nÃ£o estÃ¡ disponÃ­vel
    */
   mockChineseValidation(address, city, province) {
     return {
@@ -232,7 +232,7 @@ class AddressValidationService {
   }
 
   /**
-   * Mock para validação internacional quando API não está disponível
+   * Mock para validaÃ§Ã£o internacional quando API nÃ£o estÃ¡ disponÃ­vel
    */
   mockInternationalValidation(address, country) {
     return {
@@ -251,7 +251,7 @@ class AddressValidationService {
   }
 
   /**
-   * Formatar endereço para exibição
+   * Formatar endereÃ§o para exibiÃ§Ã£o
    */
   formatAddress(addressData) {
     const { street, city, state, zipCode, country } = addressData;
@@ -267,30 +267,30 @@ class AddressValidationService {
   }
 
   /**
-   * Obter lista de países suportados
+   * Obter lista de paÃ­ses suportados
    */
   getSupportedCountries() {
     return [
-      { code: 'BR', name: 'Brasil', flag: '🇧🇷' },
-      { code: 'CN', name: 'China', flag: '🇨🇳' },
-      { code: 'US', name: 'Estados Unidos', flag: '🇺🇸' },
-      { code: 'AR', name: 'Argentina', flag: '🇦🇷' },
-      { code: 'UY', name: 'Uruguai', flag: '🇺🇾' },
-      { code: 'PY', name: 'Paraguai', flag: '🇵🇾' },
-      { code: 'BO', name: 'Bolívia', flag: '🇧🇴' },
-      { code: 'PE', name: 'Peru', flag: '🇵🇪' },
-      { code: 'CL', name: 'Chile', flag: '🇨🇱' },
-      { code: 'CO', name: 'Colômbia', flag: '🇨🇴' },
-      { code: 'VE', name: 'Venezuela', flag: '🇻🇪' },
-      { code: 'EC', name: 'Equador', flag: '🇪🇨' },
-      { code: 'GY', name: 'Guiana', flag: '🇬🇾' },
-      { code: 'SR', name: 'Suriname', flag: '🇸🇷' },
-      { code: 'GF', name: 'Guiana Francesa', flag: '🇬🇫' }
+      { code: 'BR', name: 'Brasil', flag: 'ðŸ‡§ðŸ‡·' },
+      { code: 'CN', name: 'China', flag: 'ðŸ‡¨ðŸ‡³' },
+      { code: 'US', name: 'Estados Unidos', flag: 'ðŸ‡ºðŸ‡¸' },
+      { code: 'AR', name: 'Argentina', flag: 'ðŸ‡¦ðŸ‡·' },
+      { code: 'UY', name: 'Uruguai', flag: 'ðŸ‡ºðŸ‡¾' },
+      { code: 'PY', name: 'Paraguai', flag: 'ðŸ‡µðŸ‡¾' },
+      { code: 'BO', name: 'BolÃ­via', flag: 'ðŸ‡§ðŸ‡´' },
+      { code: 'PE', name: 'Peru', flag: 'ðŸ‡µðŸ‡ª' },
+      { code: 'CL', name: 'Chile', flag: 'ðŸ‡¨ðŸ‡±' },
+      { code: 'CO', name: 'ColÃ´mbia', flag: 'ðŸ‡¨ðŸ‡´' },
+      { code: 'VE', name: 'Venezuela', flag: 'ðŸ‡»ðŸ‡ª' },
+      { code: 'EC', name: 'Equador', flag: 'ðŸ‡ªðŸ‡¨' },
+      { code: 'GY', name: 'Guiana', flag: 'ðŸ‡¬ðŸ‡¾' },
+      { code: 'SR', name: 'Suriname', flag: 'ðŸ‡¸ðŸ‡·' },
+      { code: 'GF', name: 'Guiana Francesa', flag: 'ðŸ‡¬ðŸ‡«' }
     ];
   }
 
   /**
-   * Obter formato de endereço por país
+   * Obter formato de endereÃ§o por paÃ­s
    */
   getAddressFormat(country) {
     const formats = {
@@ -299,7 +299,7 @@ class AddressValidationService {
         labels: {
           zipCode: 'CEP',
           street: 'Rua/Avenida',
-          number: 'Número',
+          number: 'NÃºmero',
           neighborhood: 'Bairro',
           city: 'Cidade',
           state: 'Estado'
@@ -309,11 +309,11 @@ class AddressValidationService {
       CN: {
         fields: ['province', 'city', 'district', 'street', 'number'],
         labels: {
-          province: 'Província',
+          province: 'ProvÃ­ncia',
           city: 'Cidade',
           district: 'Distrito',
           street: 'Rua',
-          number: 'Número'
+          number: 'NÃºmero'
         },
         required: ['province', 'city', 'street']
       },

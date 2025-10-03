@@ -1,14 +1,15 @@
-import jwt from 'jsonwebtoken';
+﻿import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { config } from './config.js';
 
-// ===== CONFIGURAÇÃO JWT =====
+import logger from '../utils/logger.js';
+// ===== CONFIGURAÃ‡ÃƒO JWT =====
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
 const REFRESH_TOKEN_EXPIRES_IN = process.env.REFRESH_TOKEN_EXPIRES_IN || '7d';
 
-// ===== FUNÇÕES DE AUTENTICAÇÃO =====
+// ===== FUNÃ‡Ã•ES DE AUTENTICAÃ‡ÃƒO =====
 
 // Gerar token JWT
 export const generateToken = payload => {
@@ -33,7 +34,7 @@ export const verifyToken = async token => {
       groups: payload.groups || []
     };
   } catch (error) {
-    // Console log removido (dados sensíveis)
+    // Console log removido (dados sensÃ­veis)
     return {
       valid: false,
       error: error.message
@@ -52,12 +53,12 @@ export const verifyPassword = async (password, hashedPassword) => {
   return await bcrypt.compare(password, hashedPassword);
 };
 
-// Verificar se usuário é admin
+// Verificar se usuÃ¡rio Ã© admin
 export const isAdmin = groups => {
   return groups && groups.includes('admin');
 };
 
-// Verificar se usuário tem plano ativo
+// Verificar se usuÃ¡rio tem plano ativo
 export const hasActivePlan = (user, module) => {
   if (!user || !user.subscriptions) {
     return false;
@@ -75,13 +76,13 @@ export const hasActivePlan = (user, module) => {
   );
 };
 
-// Verificar permissões para mensagens privadas
+// Verificar permissÃµes para mensagens privadas
 export const canAccessPrivateMessages = user => {
-  // Usuários com plano ativo podem acessar mensagens privadas
+  // UsuÃ¡rios com plano ativo podem acessar mensagens privadas
   return hasActivePlan(user, 'store') || hasActivePlan(user, 'freight');
 };
 
-// Verificar permissões para criar anúncios
+// Verificar permissÃµes para criar anÃºncios
 export const canCreateAds = user => {
   return (
     hasActivePlan(user, 'store') &&
@@ -89,7 +90,7 @@ export const canCreateAds = user => {
   );
 };
 
-// Verificar permissões para criar fretes
+// Verificar permissÃµes para criar fretes
 export const canCreateFreights = user => {
   return (
     hasActivePlan(user, 'freight') &&
@@ -97,7 +98,7 @@ export const canCreateFreights = user => {
   );
 };
 
-// ===== MIDDLEWARE DE AUTENTICAÇÃO =====
+// ===== MIDDLEWARE DE AUTENTICAÃ‡ÃƒO =====
 
 export const authenticateToken = async (req, res, next) => {
   try {
@@ -106,7 +107,7 @@ export const authenticateToken = async (req, res, next) => {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({
         success: false,
-        message: 'Token de autenticação não fornecido'
+        message: 'Token de autenticaÃ§Ã£o nÃ£o fornecido'
       });
     }
 
@@ -116,31 +117,31 @@ export const authenticateToken = async (req, res, next) => {
     if (!verification.valid) {
       return res.status(401).json({
         success: false,
-        message: 'Token inválido ou expirado'
+        message: 'Token invÃ¡lido ou expirado'
       });
     }
 
-    // Adicionar informações do usuário ao request
+    // Adicionar informaÃ§Ãµes do usuÃ¡rio ao request
     req.user = verification;
     req.userId = verification.userId;
 
     next();
   } catch (error) {
-    // Console log removido (dados sensíveis)
+    // Console log removido (dados sensÃ­veis)
     return res.status(500).json({
       success: false,
-      message: 'Erro interno de autenticação'
+      message: 'Erro interno de autenticaÃ§Ã£o'
     });
   }
 };
 
-// Middleware para verificar se usuário é admin
-export const requireAdmin = async (req, res, next) => {
+// Middleware para verificar se usuÃ¡rio Ã© admin
+export const requireAdmin = (req, res, next) => {
   try {
     if (!req.user) {
       return res.status(401).json({
         success: false,
-        message: 'Autenticação necessária'
+        message: 'AutenticaÃ§Ã£o necessÃ¡ria'
       });
     }
 
@@ -154,78 +155,78 @@ export const requireAdmin = async (req, res, next) => {
     next();
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error in admin verification:', error);
+      logger.error('Error in admin verification:', error);
     }
     return res.status(500).json({
       success: false,
-      message: 'Erro interno de verificação'
+      message: 'Erro interno de verificaÃ§Ã£o'
     });
   }
 };
 
 // Middleware para verificar plano ativo
 export const requireActivePlan = module => {
-  return async (req, res, next) => {
+  return (req, res, next) => {
     try {
       if (!req.user) {
         return res.status(401).json({
           success: false,
-          message: 'Autenticação necessária'
+          message: 'AutenticaÃ§Ã£o necessÃ¡ria'
         });
       }
 
       if (!hasActivePlan(req.user, module)) {
         return res.status(403).json({
           success: false,
-          message: `Plano ${module} ativo necessário para esta funcionalidade`
+          message: `Plano ${module} ativo necessÃ¡rio para esta funcionalidade`
         });
       }
 
       next();
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Error in plan verification:', error);
+        logger.error('Error in plan verification:', error);
       }
       return res.status(500).json({
         success: false,
-        message: 'Erro interno de verificação'
+        message: 'Erro interno de verificaÃ§Ã£o'
       });
     }
   };
 };
 
 // Middleware para verificar acesso a mensagens privadas
-export const requireMessageAccess = async (req, res, next) => {
+export const requireMessageAccess = (req, res, next) => {
   try {
     if (!req.user) {
       return res.status(401).json({
         success: false,
-        message: 'Autenticação necessária'
+        message: 'AutenticaÃ§Ã£o necessÃ¡ria'
       });
     }
 
     if (!canAccessPrivateMessages(req.user)) {
       return res.status(403).json({
         success: false,
-        message: 'Plano ativo necessário para acessar mensagens privadas'
+        message: 'Plano ativo necessÃ¡rio para acessar mensagens privadas'
       });
     }
 
     next();
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error in message access verification:', error);
+      logger.error('Error in message access verification:', error);
     }
     return res.status(500).json({
       success: false,
-      message: 'Erro interno de verificação'
+      message: 'Erro interno de verificaÃ§Ã£o'
     });
   }
 };
 
-// ===== FUNÇÕES DE UTILIDADE =====
+// ===== FUNÃ‡Ã•ES DE UTILIDADE =====
 
-// Gerar código de verificação
+// Gerar cÃ³digo de verificaÃ§Ã£o
 export const generateVerificationCode = (length = 6) => {
   const digits = '0123456789';
   let result = '';
@@ -265,7 +266,7 @@ export const verifyPasswordResetToken = token => {
   }
 };
 
-// Gerar token de verificação de email
+// Gerar token de verificaÃ§Ã£o de email
 export const generateEmailVerificationToken = (userId, email) => {
   const payload = {
     userId,
@@ -276,7 +277,7 @@ export const generateEmailVerificationToken = (userId, email) => {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: '24h' });
 };
 
-// Verificar token de verificação de email
+// Verificar token de verificaÃ§Ã£o de email
 export const verifyEmailVerificationToken = token => {
   try {
     const payload = jwt.verify(token, JWT_SECRET);

@@ -1,14 +1,15 @@
-const { MongoClient, ObjectId } = require('mongodb');
+﻿const { MongoClient, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
 
+const logger = require('../../utils/logger.js');
 const mongoClient = new MongoClient(process.env.MONGODB_URI);
 const ADMIN_EMAIL = 'luispaulodeoliveira@agrotm.com.br';
 
-// Função auxiliar para verificar autorização
+// FunÃ§Ã£o auxiliar para verificar autorizaÃ§Ã£o
 const verifyAuth = event => {
   const authHeader = event.headers.Authorization || event.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return { error: 'UNAUTHORIZED', message: 'Token de autorização não fornecido' };
+    return { error: 'UNAUTHORIZED', message: 'Token de autorizaÃ§Ã£o nÃ£o fornecido' };
   }
 
   const token = authHeader.substring(7);
@@ -17,23 +18,23 @@ const verifyAuth = event => {
   try {
     decodedToken = jwt.decode(token);
     if (!decodedToken) {
-      return { error: 'INVALID_TOKEN', message: 'Token inválido' };
+      return { error: 'INVALID_TOKEN', message: 'Token invÃ¡lido' };
     }
   } catch (error) {
-    return { error: 'INVALID_TOKEN', message: 'Token inválido' };
+    return { error: 'INVALID_TOKEN', message: 'Token invÃ¡lido' };
   }
 
   const cognitoSub = decodedToken.sub;
   const { email } = decodedToken;
 
   if (!cognitoSub || !email) {
-    return { error: 'INVALID_TOKEN_DATA', message: 'Dados do token inválidos' };
+    return { error: 'INVALID_TOKEN_DATA', message: 'Dados do token invÃ¡lidos' };
   }
 
   return { cognitoSub, email };
 };
 
-// Função para verificar se é admin
+// FunÃ§Ã£o para verificar se Ã© admin
 const verifyAdmin = email => {
   return email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 };
@@ -61,7 +62,7 @@ exports.handler = async event => {
     await mongoClient.connect();
     const db = mongoClient.db();
 
-    // POST /partners/submit - Submissão de parceria (pública)
+    // POST /partners/submit - SubmissÃ£o de parceria (pÃºblica)
     if (event.httpMethod === 'POST' && event.path.includes('/partners/submit')) {
       // Parse do body
       let requestBody;
@@ -72,12 +73,12 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_JSON', message: 'JSON inválido' }
+            error: { code: 'INVALID_JSON', message: 'JSON invÃ¡lido' }
           })
         };
       }
 
-      // Validar dados obrigatórios
+      // Validar dados obrigatÃ³rios
       const { fromName, fromEmail, message, attachments } = requestBody;
 
       if (!fromName || !fromEmail || !message) {
@@ -85,7 +86,7 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'MISSING_FIELDS', message: 'Nome, e-mail e mensagem são obrigatórios' }
+            error: { code: 'MISSING_FIELDS', message: 'Nome, e-mail e mensagem sÃ£o obrigatÃ³rios' }
           })
         };
       }
@@ -97,12 +98,12 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_EMAIL', message: 'Formato de e-mail inválido' }
+            error: { code: 'INVALID_EMAIL', message: 'Formato de e-mail invÃ¡lido' }
           })
         };
       }
 
-      // Criar submissão de parceria
+      // Criar submissÃ£o de parceria
       const partnerSubmission = {
         fromName: fromName.trim(),
         fromEmail: fromEmail.toLowerCase().trim(),
@@ -119,13 +120,13 @@ exports.handler = async event => {
         statusCode: 201,
         headers: corsHeaders,
         body: JSON.stringify({
-          message: 'Submissão de parceria enviada com sucesso',
+          message: 'SubmissÃ£o de parceria enviada com sucesso',
           id: result.insertedId
         })
       };
     }
 
-    // POST /contact/submit - Submissão de contato (pública)
+    // POST /contact/submit - SubmissÃ£o de contato (pÃºblica)
     if (event.httpMethod === 'POST' && event.path.includes('/contact/submit')) {
       // Parse do body
       let requestBody;
@@ -136,12 +137,12 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_JSON', message: 'JSON inválido' }
+            error: { code: 'INVALID_JSON', message: 'JSON invÃ¡lido' }
           })
         };
       }
 
-      // Validar dados obrigatórios
+      // Validar dados obrigatÃ³rios
       const { fromName, fromEmail, subject, message, attachments } = requestBody;
 
       if (!fromName || !fromEmail || !subject || !message) {
@@ -151,7 +152,7 @@ exports.handler = async event => {
           body: JSON.stringify({
             error: {
               code: 'MISSING_FIELDS',
-              message: 'Nome, e-mail, assunto e mensagem são obrigatórios'
+              message: 'Nome, e-mail, assunto e mensagem sÃ£o obrigatÃ³rios'
             }
           })
         };
@@ -164,7 +165,7 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_EMAIL', message: 'Formato de e-mail inválido' }
+            error: { code: 'INVALID_EMAIL', message: 'Formato de e-mail invÃ¡lido' }
           })
         };
       }
@@ -193,7 +194,7 @@ exports.handler = async event => {
       };
     }
 
-    // GET /admin/partners - Listar submissões de parceria (admin)
+    // GET /admin/partners - Listar submissÃµes de parceria (admin)
     if (event.httpMethod === 'GET' && event.path.includes('/admin/partners')) {
       const auth = verifyAuth(event);
       if (auth.error) {
@@ -206,7 +207,7 @@ exports.handler = async event => {
         };
       }
 
-      // Verificar se é admin
+      // Verificar se Ã© admin
       if (!verifyAdmin(auth.email)) {
         return {
           statusCode: 403,
@@ -218,8 +219,8 @@ exports.handler = async event => {
       }
 
       const { queryStringParameters } = event;
-      const page = parseInt(queryStringParameters?.page, 10) || 1;
-      const limit = parseInt(queryStringParameters?.limit, 10) || 20;
+      const page = parseInt(queryStringParameters?.page, 10, 10) || 1;
+      const limit = parseInt(queryStringParameters?.limit, 10, 10) || 20;
       const status = queryStringParameters?.status;
 
       const filter = {};
@@ -267,7 +268,7 @@ exports.handler = async event => {
         };
       }
 
-      // Verificar se é admin
+      // Verificar se Ã© admin
       if (!verifyAdmin(auth.email)) {
         return {
           statusCode: 403,
@@ -279,8 +280,8 @@ exports.handler = async event => {
       }
 
       const { queryStringParameters } = event;
-      const page = parseInt(queryStringParameters?.page, 10) || 1;
-      const limit = parseInt(queryStringParameters?.limit, 10) || 20;
+      const page = parseInt(queryStringParameters?.page, 10, 10) || 1;
+      const limit = parseInt(queryStringParameters?.limit, 10, 10) || 20;
       const status = queryStringParameters?.status;
 
       const filter = {};
@@ -328,7 +329,7 @@ exports.handler = async event => {
         };
       }
 
-      // Verificar se é admin
+      // Verificar se Ã© admin
       if (!verifyAdmin(auth.email)) {
         return {
           statusCode: 403,
@@ -348,7 +349,7 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_ID', message: 'ID inválido' }
+            error: { code: 'INVALID_ID', message: 'ID invÃ¡lido' }
           })
         };
       }
@@ -362,7 +363,7 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_JSON', message: 'JSON inválido' }
+            error: { code: 'INVALID_JSON', message: 'JSON invÃ¡lido' }
           })
         };
       }
@@ -395,7 +396,7 @@ exports.handler = async event => {
           statusCode: 404,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'SUBMISSION_NOT_FOUND', message: 'Submissão não encontrada' }
+            error: { code: 'SUBMISSION_NOT_FOUND', message: 'SubmissÃ£o nÃ£o encontrada' }
           })
         };
       }
@@ -422,7 +423,7 @@ exports.handler = async event => {
         };
       }
 
-      // Verificar se é admin
+      // Verificar se Ã© admin
       if (!verifyAdmin(auth.email)) {
         return {
           statusCode: 403,
@@ -442,7 +443,7 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_ID', message: 'ID inválido' }
+            error: { code: 'INVALID_ID', message: 'ID invÃ¡lido' }
           })
         };
       }
@@ -456,7 +457,7 @@ exports.handler = async event => {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'INVALID_JSON', message: 'JSON inválido' }
+            error: { code: 'INVALID_JSON', message: 'JSON invÃ¡lido' }
           })
         };
       }
@@ -489,7 +490,7 @@ exports.handler = async event => {
           statusCode: 404,
           headers: corsHeaders,
           body: JSON.stringify({
-            error: { code: 'MESSAGE_NOT_FOUND', message: 'Mensagem não encontrada' }
+            error: { code: 'MESSAGE_NOT_FOUND', message: 'Mensagem nÃ£o encontrada' }
           })
         };
       }
@@ -503,17 +504,17 @@ exports.handler = async event => {
       };
     }
 
-    // Método não suportado
+    // MÃ©todo nÃ£o suportado
     return {
       statusCode: 405,
       headers: corsHeaders,
       body: JSON.stringify({
-        error: { code: 'METHOD_NOT_ALLOWED', message: 'Método não permitido' }
+        error: { code: 'METHOD_NOT_ALLOWED', message: 'MÃ©todo nÃ£o permitido' }
       })
     };
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro na mensageria:', error);
+      logger.error('Erro na mensageria:', error);
     }
     return {
       statusCode: 500,

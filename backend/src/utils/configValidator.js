@@ -1,5 +1,5 @@
-// Sistema de Validação de Configuração - AGROISYNC
-// Validação rigorosa de todas as configurações críticas
+﻿// Sistema de ValidaÃ§Ã£o de ConfiguraÃ§Ã£o - AGROISYNC
+// ValidaÃ§Ã£o rigorosa de todas as configuraÃ§Ãµes crÃ­ticas
 
 import crypto from 'crypto';
 
@@ -23,30 +23,30 @@ class ConfigurationValidator {
     ];
   }
 
-  // Validar todas as configurações
+  // Validar todas as configuraÃ§Ãµes
   validateAll() {
     const errors = [];
     const warnings = [];
 
-    // Validar configurações críticas
+    // Validar configuraÃ§Ãµes crÃ­ticas
     this.criticalConfigs.forEach(config => {
       const value = process.env[config];
       if (!value || this.isDefaultValue(value)) {
-        errors.push(`❌ ${config} não configurado ou usando valor padrão`);
+        errors.push(`âŒ ${config} nÃ£o configurado ou usando valor padrÃ£o`);
       } else if (!this.isValidValue(config, value)) {
-        errors.push(`❌ ${config} tem formato inválido`);
+        errors.push(`âŒ ${config} tem formato invÃ¡lido`);
       }
     });
 
-    // Validar configurações de aviso
+    // Validar configuraÃ§Ãµes de aviso
     this.warningConfigs.forEach(config => {
       const value = process.env[config];
       if (!value || this.isDefaultValue(value)) {
-        warnings.push(`⚠️ ${config} não configurado - funcionalidade pode não funcionar`);
+        warnings.push(`âš ï¸ ${config} nÃ£o configurado - funcionalidade pode nÃ£o funcionar`);
       }
     });
 
-    // Validar configurações específicas
+    // Validar configuraÃ§Ãµes especÃ­ficas
     this.validateJWTSecret();
     this.validateMongoURI();
     this.validateStripeKeys();
@@ -56,7 +56,7 @@ class ConfigurationValidator {
     return { errors, warnings };
   }
 
-  // Verificar se é valor padrão
+  // Verificar se Ã© valor padrÃ£o
   isDefaultValue(value) {
     const defaultValues = [
       'your-super-secret-jwt-key-change-in-production',
@@ -72,7 +72,7 @@ class ConfigurationValidator {
     return defaultValues.includes(value);
   }
 
-  // Validar valor específico
+  // Validar valor especÃ­fico
   isValidValue(config, value) {
     switch (config) {
       case 'JWT_SECRET':
@@ -100,15 +100,15 @@ class ConfigurationValidator {
     const secret = process.env.JWT_SECRET;
     if (!secret || this.isDefaultValue(secret)) {
       throw new Error(
-        '❌ JWT_SECRET é obrigatório e deve ser uma string segura de pelo menos 32 caracteres'
+        'âŒ JWT_SECRET Ã© obrigatÃ³rio e deve ser uma string segura de pelo menos 32 caracteres'
       );
     }
 
     if (secret.length < 32) {
-      throw new Error('❌ JWT_SECRET deve ter pelo menos 32 caracteres para segurança');
+      throw new Error('âŒ JWT_SECRET deve ter pelo menos 32 caracteres para seguranÃ§a');
     }
 
-    // Verificar se não é uma string comum
+    // Verificar se nÃ£o Ã© uma string comum
     const commonSecrets = [
       'secret',
       'password',
@@ -119,7 +119,7 @@ class ConfigurationValidator {
     ];
 
     if (commonSecrets.includes(secret.toLowerCase())) {
-      throw new Error('❌ JWT_SECRET não pode ser uma string comum ou padrão');
+      throw new Error('âŒ JWT_SECRET nÃ£o pode ser uma string comum ou padrÃ£o');
     }
   }
 
@@ -127,16 +127,16 @@ class ConfigurationValidator {
   validateMongoURI() {
     const uri = process.env.MONGODB_URI;
     if (!uri || this.isDefaultValue(uri)) {
-      throw new Error('❌ MONGODB_URI é obrigatório');
+      throw new Error('âŒ MONGODB_URI Ã© obrigatÃ³rio');
     }
 
     if (!uri.startsWith('mongodb://') && !uri.startsWith('mongodb+srv://')) {
-      throw new Error('❌ MONGODB_URI deve começar com mongodb:// ou mongodb+srv://');
+      throw new Error('âŒ MONGODB_URI deve comeÃ§ar com mongodb:// ou mongodb+srv://');
     }
 
-    // Verificar se não é localhost em produção
+    // Verificar se nÃ£o Ã© localhost em produÃ§Ã£o
     if (process.env.NODE_ENV === 'production' && uri.includes('localhost')) {
-      throw new Error('❌ MONGODB_URI não pode usar localhost em produção');
+      throw new Error('âŒ MONGODB_URI nÃ£o pode usar localhost em produÃ§Ã£o');
     }
   }
 
@@ -146,66 +146,66 @@ class ConfigurationValidator {
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
     if (!secretKey || this.isDefaultValue(secretKey)) {
-      throw new Error('❌ STRIPE_SECRET_KEY é obrigatório');
+      throw new Error('âŒ STRIPE_SECRET_KEY Ã© obrigatÃ³rio');
     }
 
     if (!webhookSecret || this.isDefaultValue(webhookSecret)) {
-      throw new Error('❌ STRIPE_WEBHOOK_SECRET é obrigatório');
+      throw new Error('âŒ STRIPE_WEBHOOK_SECRET Ã© obrigatÃ³rio');
     }
 
-    // Verificar se as chaves são válidas
+    // Verificar se as chaves sÃ£o vÃ¡lidas
     if (!secretKey.startsWith('sk_')) {
-      throw new Error('❌ STRIPE_SECRET_KEY deve começar com sk_');
+      throw new Error('âŒ STRIPE_SECRET_KEY deve comeÃ§ar com sk_');
     }
 
     if (!webhookSecret.startsWith('whsec_')) {
-      throw new Error('❌ STRIPE_WEBHOOK_SECRET deve começar com whsec_');
+      throw new Error('âŒ STRIPE_WEBHOOK_SECRET deve comeÃ§ar com whsec_');
     }
   }
 
-  // Validar configuração de email
+  // Validar configuraÃ§Ã£o de email
   validateEmailConfig() {
     const smtpUser = process.env.SMTP_USER;
     const smtpPass = process.env.SMTP_PASS;
 
     if (!smtpUser || this.isDefaultValue(smtpUser)) {
-      throw new Error('❌ SMTP_USER é obrigatório');
+      throw new Error('âŒ SMTP_USER Ã© obrigatÃ³rio');
     }
 
     if (!smtpPass || this.isDefaultValue(smtpPass)) {
-      throw new Error('❌ SMTP_PASS é obrigatório');
+      throw new Error('âŒ SMTP_PASS Ã© obrigatÃ³rio');
     }
 
     // Validar formato do email
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(smtpUser)) {
-      throw new Error('❌ SMTP_USER deve ser um email válido');
+      throw new Error('âŒ SMTP_USER deve ser um email vÃ¡lido');
     }
   }
 
-  // Validar configurações de segurança
+  // Validar configuraÃ§Ãµes de seguranÃ§a
   validateSecurityConfig() {
-    // Verificar se está em produção
+    // Verificar se estÃ¡ em produÃ§Ã£o
     if (process.env.NODE_ENV === 'production') {
       // Verificar HTTPS
       if (process.env.FRONTEND_URL && !process.env.FRONTEND_URL.startsWith('https://')) {
         if (process.env.NODE_ENV !== 'production') {
-          console.warn('⚠️ FRONTEND_URL deve usar HTTPS em produção');
+          logger.warn('âš ï¸ FRONTEND_URL deve usar HTTPS em produÃ§Ã£o');
         }
       }
 
       // Verificar CORS
       if (process.env.CORS_ORIGIN && process.env.CORS_ORIGIN === '*') {
-        throw new Error('❌ CORS_ORIGIN não pode ser * em produção');
+        throw new Error('âŒ CORS_ORIGIN nÃ£o pode ser * em produÃ§Ã£o');
       }
 
-      // Verificar se não está usando localhost
+      // Verificar se nÃ£o estÃ¡ usando localhost
       if (process.env.FRONTEND_URL && process.env.FRONTEND_URL.includes('localhost')) {
-        throw new Error('❌ FRONTEND_URL não pode usar localhost em produção');
+        throw new Error('âŒ FRONTEND_URL nÃ£o pode usar localhost em produÃ§Ã£o');
       }
     }
   }
 
-  // Gerar configurações seguras
+  // Gerar configuraÃ§Ãµes seguras
   generateSecureConfig() {
     return {
       JWT_SECRET: crypto.randomBytes(64).toString('hex'),
@@ -218,13 +218,14 @@ class ConfigurationValidator {
   // Validar arquivo .env
   validateEnvFile() {
     const fs = require('fs');
-    const path = require('path');
+    import logger from './logger.js';
+const path = require('path');
 
     const envPath = path.join(process.cwd(), '.env');
 
     if (!fs.existsSync(envPath)) {
       if (process.env.NODE_ENV !== 'production') {
-        console.warn('⚠️ Arquivo .env não encontrado');
+        logger.warn('âš ï¸ Arquivo .env nÃ£o encontrado');
       }
       return false;
     }
@@ -237,19 +238,19 @@ class ConfigurationValidator {
     lines.forEach((line, index) => {
       const lineNum = index + 1;
 
-      // Verificar se há comentários desnecessários
+      // Verificar se hÃ¡ comentÃ¡rios desnecessÃ¡rios
       if (line.includes('# TODO') || line.includes('# FIXME')) {
-        issues.push(`Linha ${lineNum}: Comentário TODO/FIXME encontrado`);
+        issues.push(`Linha ${lineNum}: ComentÃ¡rio TODO/FIXME encontrado`);
       }
 
-      // Verificar se há valores vazios
+      // Verificar se hÃ¡ valores vazios
       if (line.includes('=') && line.split('=')[1].trim() === '') {
         issues.push(`Linha ${lineNum}: Valor vazio encontrado`);
       }
 
-      // Verificar se há espaços em branco desnecessários
+      // Verificar se hÃ¡ espaÃ§os em branco desnecessÃ¡rios
       if (line.trim() !== line && line.trim() !== '') {
-        issues.push(`Linha ${lineNum}: Espaços em branco desnecessários`);
+        issues.push(`Linha ${lineNum}: EspaÃ§os em branco desnecessÃ¡rios`);
       }
     });
 
@@ -260,7 +261,7 @@ class ConfigurationValidator {
   createSecureEnvFile() {
     const secureConfig = this.generateSecureConfig();
 
-    const envContent = `# Configurações Seguras - AgroSync
+    const envContent = `# ConfiguraÃ§Ãµes Seguras - AgroSync
 # Gerado automaticamente em ${new Date().toISOString()}
 
 # Servidor
@@ -307,7 +308,7 @@ AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
 AWS_REGION=us-east-1
 AWS_S3_BUCKET=agroisync-storage
 
-# Segurança
+# SeguranÃ§a
 BCRYPT_ROUNDS=12
 SESSION_SECRET=${secureConfig.SESSION_SECRET}
 CORS_ORIGIN=https://agroisync.com
@@ -332,7 +333,7 @@ ENABLE_EMAIL_VERIFICATION=true
   }
 }
 
-// Instância única
+// InstÃ¢ncia Ãºnica
 const configValidator = new ConfigurationValidator();
 
 export default configValidator;

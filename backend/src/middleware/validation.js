@@ -1,4 +1,4 @@
-import { body, validationResult } from 'express-validator';
+﻿import { body, validationResult } from 'express-validator';
 
 // Validation middleware for registration
 export const validateRegistration = [
@@ -7,12 +7,12 @@ export const validateRegistration = [
     .isLength({ min: 2, max: 100 })
     .withMessage('Nome deve ter entre 2 e 100 caracteres')
     .matches(/^[a-zA-ZÀ-ÿ\s]+$/)
-    .withMessage('Nome deve conter apenas letras e espaços'),
+    .withMessage('Nome deve conter apenas letras e espaÃ§os'),
 
   body('email')
     .isEmail()
     .normalizeEmail()
-    .withMessage('Email inválido')
+    .withMessage('Email invÃ¡lido')
     .isLength({ max: 100 })
     .withMessage('Email muito longo'),
 
@@ -21,13 +21,13 @@ export const validateRegistration = [
     .withMessage('Senha deve ter entre 8 e 128 caracteres')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/)
     .withMessage(
-      'Senha deve conter pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial'
+      'Senha deve conter pelo menos uma letra maiÃºscula, uma minÃºscula, um nÃºmero e um caractere especial'
     ),
 
   body('phone')
     .optional()
     .trim()
-    .matches(/^[\+]?[1-9][\d]{0,15}$/)
+    .matches(/^[+]?\d{6,16}$/)
     .withMessage('Telefone inválido'),
 
   body('company.name')
@@ -40,13 +40,13 @@ export const validateRegistration = [
     .optional()
     .trim()
     .matches(/^\d{14}$/)
-    .withMessage('CNPJ deve ter 14 dígitos'),
+    .withMessage('CNPJ deve ter 14 dÃ­gitos'),
 
   body('company.address.street')
     .optional()
     .trim()
     .isLength({ min: 5, max: 200 })
-    .withMessage('Endereço deve ter entre 5 e 200 caracteres'),
+    .withMessage('EndereÃ§o deve ter entre 5 e 200 caracteres'),
 
   body('company.address.city')
     .optional()
@@ -69,7 +69,7 @@ export const validateRegistration = [
   body('userType')
     .optional()
     .isIn(['buyer', 'seller', 'freight'])
-    .withMessage('Tipo de usuário inválido'),
+    .withMessage('Tipo de usuÃ¡rio invÃ¡lido'),
 
   // Check for validation errors
   (req, res, next) => {
@@ -77,7 +77,7 @@ export const validateRegistration = [
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'Dados de entrada inválidos',
+        message: 'Dados de entrada invÃ¡lidos',
         errors: errors.array().map(error => ({
           field: error.path,
           message: error.msg
@@ -90,9 +90,9 @@ export const validateRegistration = [
 
 // Validation middleware for login
 export const validateLogin = [
-  body('email').isEmail().normalizeEmail().withMessage('Email inválido'),
+  body('email').isEmail().normalizeEmail().withMessage('Email invÃ¡lido'),
 
-  body('password').notEmpty().withMessage('Senha é obrigatória'),
+  body('password').notEmpty().withMessage('Senha Ã© obrigatÃ³ria'),
 
   // Check for validation errors
   (req, res, next) => {
@@ -100,7 +100,7 @@ export const validateLogin = [
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'Dados de entrada inválidos',
+        message: 'Dados de entrada invÃ¡lidos',
         errors: errors.array().map(error => ({
           field: error.path,
           message: error.msg
@@ -113,19 +113,19 @@ export const validateLogin = [
 
 // Validation middleware for password change
 export const validatePasswordChange = [
-  body('currentPassword').notEmpty().withMessage('Senha atual é obrigatória'),
+  body('currentPassword').notEmpty().withMessage('Senha atual Ã© obrigatÃ³ria'),
 
   body('newPassword')
     .isLength({ min: 8, max: 128 })
     .withMessage('Nova senha deve ter entre 8 e 128 caracteres')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/)
     .withMessage(
-      'Nova senha deve conter pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial'
+      'Nova senha deve conter pelo menos uma letra maiÃºscula, uma minÃºscula, um nÃºmero e um caractere especial'
     ),
 
   body('confirmPassword').custom((value, { req }) => {
     if (value !== req.body.newPassword) {
-      throw new Error('Confirmação de senha não confere');
+      throw new Error('ConfirmaÃ§Ã£o de senha nÃ£o confere');
     }
     return true;
   }),
@@ -136,7 +136,7 @@ export const validatePasswordChange = [
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'Dados de entrada inválidos',
+        message: 'Dados de entrada invÃ¡lidos',
         errors: errors.array().map(error => ({
           field: error.path,
           message: error.msg
@@ -157,7 +157,7 @@ export const validateProduct = [
   body('description')
     .trim()
     .isLength({ min: 10, max: 1000 })
-    .withMessage('Descrição deve ter entre 10 e 1000 caracteres'),
+    .withMessage('DescriÃ§Ã£o deve ter entre 10 e 1000 caracteres'),
 
   body('category')
     .isIn([
@@ -171,13 +171,13 @@ export const validateProduct = [
       'tools',
       'other'
     ])
-    .withMessage('Categoria inválida'),
+    .withMessage('Categoria invÃ¡lida'),
 
-  body('price').isFloat({ min: 0 }).withMessage('Preço deve ser um número positivo'),
+  body('price').isFloat({ min: 0 }).withMessage('PreÃ§o deve ser um nÃºmero positivo'),
 
   body('quantity.available')
     .isInt({ min: 1 })
-    .withMessage('Quantidade disponível deve ser um número inteiro positivo'),
+    .withMessage('Quantidade disponÃ­vel deve ser um nÃºmero inteiro positivo'),
 
   body('location.city')
     .trim()
@@ -195,7 +195,7 @@ export const validateProduct = [
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'Dados do produto inválidos',
+        message: 'Dados do produto invÃ¡lidos',
         errors: errors.array().map(error => ({
           field: error.path,
           message: error.msg
@@ -211,12 +211,12 @@ export const validateFreight = [
   body('title')
     .trim()
     .isLength({ min: 5, max: 100 })
-    .withMessage('Título deve ter entre 5 e 100 caracteres'),
+    .withMessage('TÃ­tulo deve ter entre 5 e 100 caracteres'),
 
   body('description')
     .trim()
     .isLength({ min: 10, max: 1000 })
-    .withMessage('Descrição deve ter entre 10 e 1000 caracteres'),
+    .withMessage('DescriÃ§Ã£o deve ter entre 10 e 1000 caracteres'),
 
   body('origin.city')
     .trim()
@@ -240,28 +240,28 @@ export const validateFreight = [
 
   body('cargoType')
     .isIn(['grains', 'vegetables', 'fruits', 'livestock', 'machinery', 'fertilizers', 'general'])
-    .withMessage('Tipo de carga inválido'),
+    .withMessage('Tipo de carga invÃ¡lido'),
 
-  body('weight.min').isFloat({ min: 0 }).withMessage('Peso mínimo deve ser um número positivo'),
+  body('weight.min').isFloat({ min: 0 }).withMessage('Peso mÃ­nimo deve ser um nÃºmero positivo'),
 
   body('weight.max')
     .isFloat({ min: 0 })
     .custom((value, { req }) => {
       if (value <= req.body.weight.min) {
-        throw new Error('Peso máximo deve ser maior que o peso mínimo');
+        throw new Error('Peso mÃ¡ximo deve ser maior que o peso mÃ­nimo');
       }
       return true;
     }),
 
-  body('price').isFloat({ min: 0 }).withMessage('Preço deve ser um número positivo'),
+  body('price').isFloat({ min: 0 }).withMessage('PreÃ§o deve ser um nÃºmero positivo'),
 
-  body('availableFrom').isISO8601().withMessage('Data de disponibilidade inicial inválida'),
+  body('availableFrom').isISO8601().withMessage('Data de disponibilidade inicial invÃ¡lida'),
 
   body('availableUntil')
     .isISO8601()
     .custom((value, { req }) => {
       if (new Date(value) <= new Date(req.body.availableFrom)) {
-        throw new Error('Data de disponibilidade final deve ser posterior à data inicial');
+        throw new Error('Data de disponibilidade final deve ser posterior Ã  data inicial');
       }
       return true;
     }),
@@ -272,7 +272,7 @@ export const validateFreight = [
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'Dados do frete inválidos',
+        message: 'Dados do frete invÃ¡lidos',
         errors: errors.array().map(error => ({
           field: error.path,
           message: error.msg
@@ -295,12 +295,12 @@ export const validateMessage = [
     .isLength({ min: 10, max: 2000 })
     .withMessage('Mensagem deve ter entre 10 e 2000 caracteres'),
 
-  body('receiverId').isMongoId().withMessage('ID do destinatário inválido'),
+  body('receiverId').isMongoId().withMessage('ID do destinatÃ¡rio invÃ¡lido'),
 
   body('messageType')
     .optional()
     .isIn(['inquiry', 'offer', 'negotiation', 'freight_request', 'general'])
-    .withMessage('Tipo de mensagem inválido'),
+    .withMessage('Tipo de mensagem invÃ¡lido'),
 
   // Check for validation errors
   (req, res, next) => {
@@ -308,7 +308,7 @@ export const validateMessage = [
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'Dados da mensagem inválidos',
+        message: 'Dados da mensagem invÃ¡lidos',
         errors: errors.array().map(error => ({
           field: error.path,
           message: error.msg
@@ -325,7 +325,7 @@ export const handleValidationErrors = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
-      message: 'Dados de entrada inválidos',
+      message: 'Dados de entrada invÃ¡lidos',
       errors: errors.array().map(error => ({
         field: error.path,
         message: error.msg

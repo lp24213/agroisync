@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import mongoose from 'mongoose';
 import PartnershipMessage from '../models/PartnershipMessage.js';
 import Partner from '../models/Partner.js';
@@ -8,28 +8,29 @@ import { apiLimiter } from '../middleware/rateLimiter.js';
 import { createSecurityLog } from '../utils/securityLogger.js';
 import { sanitizeInput } from '../utils/sanitizer.js';
 
+import logger from '../utils/logger.js';
 const router = express.Router();
 
 // Apply rate limiting
 router.use(apiLimiter);
 
-// ===== MIDDLEWARE DE VALIDAÇÃO =====
+// ===== MIDDLEWARE DE VALIDAÃ‡ÃƒO =====
 
-// Validação para mensagens de parceiros
+// ValidaÃ§Ã£o para mensagens de parceiros
 const validatePartnershipMessage = (req, res, next) => {
   const { partnerId, subject, content, messageType, category, priority } = req.body;
 
   if (!partnerId || !subject || !content) {
     return res.status(400).json({
       success: false,
-      message: 'ID do parceiro, assunto e conteúdo são obrigatórios'
+      message: 'ID do parceiro, assunto e conteÃºdo sÃ£o obrigatÃ³rios'
     });
   }
 
   if (!mongoose.Types.ObjectId.isValid(partnerId)) {
     return res.status(400).json({
       success: false,
-      message: 'ID do parceiro inválido'
+      message: 'ID do parceiro invÃ¡lido'
     });
   }
 
@@ -43,7 +44,7 @@ const validatePartnershipMessage = (req, res, next) => {
   if (content.trim().length < 10 || content.trim().length > 5000) {
     return res.status(400).json({
       success: false,
-      message: 'Conteúdo deve ter entre 10 e 5000 caracteres'
+      message: 'ConteÃºdo deve ter entre 10 e 5000 caracteres'
     });
   }
 
@@ -59,7 +60,7 @@ const validatePartnershipMessage = (req, res, next) => {
   if (messageType && !validMessageTypes.includes(messageType)) {
     return res.status(400).json({
       success: false,
-      message: 'Tipo de mensagem inválido'
+      message: 'Tipo de mensagem invÃ¡lido'
     });
   }
 
@@ -76,7 +77,7 @@ const validatePartnershipMessage = (req, res, next) => {
   if (category && !validCategories.includes(category)) {
     return res.status(400).json({
       success: false,
-      message: 'Categoria inválida'
+      message: 'Categoria invÃ¡lida'
     });
   }
 
@@ -85,7 +86,7 @@ const validatePartnershipMessage = (req, res, next) => {
   if (priority && !validPriorities.includes(priority)) {
     return res.status(400).json({
       success: false,
-      message: 'Prioridade inválida'
+      message: 'Prioridade invÃ¡lida'
     });
   }
 
@@ -98,7 +99,7 @@ const validatePartnershipMessage = (req, res, next) => {
 router.get('/', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { page = 1, limit = 20, status, priority, category, partnerId, assignedTo } = req.query;
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const skip = (parseInt(page, 10, 10) - 1) * parseInt(limit, 10, 10);
 
     const query = {};
 
@@ -122,7 +123,7 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
     const messages = await PartnershipMessage.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit, 10))
+      .limit(parseInt(limit, 10, 10))
       .populate('partnerId', 'name company category')
       .populate('assignedTo', 'name email')
       .populate('readBy', 'name email')
@@ -144,16 +145,16 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
       data: {
         messages,
         pagination: {
-          currentPage: parseInt(page, 10),
-          totalPages: Math.ceil(total / parseInt(limit, 10)),
+          currentPage: parseInt(page, 10, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit, 10)
+          itemsPerPage: parseInt(limit, 10, 10)
         }
       }
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching partnership messages:', error);
+      logger.error('Error fetching partnership messages:', error);
     }
     await createSecurityLog(
       'system_error',
@@ -182,7 +183,7 @@ router.post('/', authenticateToken, requireAdmin, validatePartnershipMessage, as
     if (!partner) {
       return res.status(404).json({
         success: false,
-        message: 'Parceiro não encontrado'
+        message: 'Parceiro nÃ£o encontrado'
       });
     }
 
@@ -200,13 +201,13 @@ router.post('/', authenticateToken, requireAdmin, validatePartnershipMessage, as
 
     await message.save();
 
-    // Populate informações
+    // Populate informaÃ§Ãµes
     await message.populate([
       { path: 'partnerId', select: 'name company category' },
       { path: 'assignedTo', select: 'name email' }
     ]);
 
-    // Log de criação
+    // Log de criaÃ§Ã£o
     await createSecurityLog(
       'admin_action',
       'medium',
@@ -227,7 +228,7 @@ router.post('/', authenticateToken, requireAdmin, validatePartnershipMessage, as
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error creating partnership message:', error);
+      logger.error('Error creating partnership message:', error);
     }
     await createSecurityLog(
       'system_error',
@@ -244,7 +245,7 @@ router.post('/', authenticateToken, requireAdmin, validatePartnershipMessage, as
   }
 });
 
-// GET /api/partnership-messages/:id - Obter mensagem específica
+// GET /api/partnership-messages/:id - Obter mensagem especÃ­fica
 router.get('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const messageId = req.params.id;
@@ -252,7 +253,7 @@ router.get('/:id', authenticateToken, requireAdmin, async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(messageId)) {
       return res.status(400).json({
         success: false,
-        message: 'ID da mensagem inválido'
+        message: 'ID da mensagem invÃ¡lido'
       });
     }
 
@@ -266,7 +267,7 @@ router.get('/:id', authenticateToken, requireAdmin, async (req, res) => {
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: 'Mensagem não encontrada'
+        message: 'Mensagem nÃ£o encontrada'
       });
     }
 
@@ -288,7 +289,7 @@ router.get('/:id', authenticateToken, requireAdmin, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching partnership message:', error);
+      logger.error('Error fetching partnership message:', error);
     }
     await createSecurityLog(
       'system_error',
@@ -316,7 +317,7 @@ router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(messageId)) {
       return res.status(400).json({
         success: false,
-        message: 'ID da mensagem inválido'
+        message: 'ID da mensagem invÃ¡lido'
       });
     }
 
@@ -324,7 +325,7 @@ router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: 'Mensagem não encontrada'
+        message: 'Mensagem nÃ£o encontrada'
       });
     }
 
@@ -356,7 +357,7 @@ router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
 
     await message.save();
 
-    // Log de atualização
+    // Log de atualizaÃ§Ã£o
     await createSecurityLog(
       'admin_action',
       'medium',
@@ -376,7 +377,7 @@ router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error updating partnership message:', error);
+      logger.error('Error updating partnership message:', error);
     }
     await createSecurityLog(
       'system_error',
@@ -403,7 +404,7 @@ router.put('/:id/status', authenticateToken, requireAdmin, async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(messageId)) {
       return res.status(400).json({
         success: false,
-        message: 'ID da mensagem inválido'
+        message: 'ID da mensagem invÃ¡lido'
       });
     }
 
@@ -411,11 +412,11 @@ router.put('/:id/status', authenticateToken, requireAdmin, async (req, res) => {
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: 'Mensagem não encontrada'
+        message: 'Mensagem nÃ£o encontrada'
       });
     }
 
-    // Executar ação baseada no status
+    // Executar aÃ§Ã£o baseada no status
     switch (action) {
       case 'mark_read':
         await message.markAsRead(adminId);
@@ -427,7 +428,7 @@ router.put('/:id/status', authenticateToken, requireAdmin, async (req, res) => {
         if (!req.body.replyContent) {
           return res.status(400).json({
             success: false,
-            message: 'Conteúdo da resposta é obrigatório'
+            message: 'ConteÃºdo da resposta Ã© obrigatÃ³rio'
           });
         }
         await message.reply(req.body.replyContent, adminId);
@@ -442,7 +443,7 @@ router.put('/:id/status', authenticateToken, requireAdmin, async (req, res) => {
         if (!req.body.flagReason) {
           return res.status(400).json({
             success: false,
-            message: 'Motivo da sinalização é obrigatório'
+            message: 'Motivo da sinalizaÃ§Ã£o Ã© obrigatÃ³rio'
           });
         }
         await message.flag(req.body.flagReason, adminId);
@@ -457,7 +458,7 @@ router.put('/:id/status', authenticateToken, requireAdmin, async (req, res) => {
         }
     }
 
-    // Log de ação
+    // Log de aÃ§Ã£o
     await createSecurityLog(
       'admin_action',
       'medium',
@@ -473,12 +474,12 @@ router.put('/:id/status', authenticateToken, requireAdmin, async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Ação executada com sucesso',
+      message: 'AÃ§Ã£o executada com sucesso',
       data: { message }
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error updating partnership message status:', error);
+      logger.error('Error updating partnership message status:', error);
     }
     await createSecurityLog(
       'system_error',
@@ -504,7 +505,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(messageId)) {
       return res.status(400).json({
         success: false,
-        message: 'ID da mensagem inválido'
+        message: 'ID da mensagem invÃ¡lido'
       });
     }
 
@@ -512,7 +513,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: 'Mensagem não encontrada'
+        message: 'Mensagem nÃ£o encontrada'
       });
     }
 
@@ -522,7 +523,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
     message.assignedAt = new Date();
     await message.save();
 
-    // Log de exclusão
+    // Log de exclusÃ£o
     await createSecurityLog(
       'admin_action',
       'medium',
@@ -540,7 +541,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error archiving partnership message:', error);
+      logger.error('Error archiving partnership message:', error);
     }
     await createSecurityLog(
       'system_error',
@@ -557,7 +558,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
   }
 });
 
-// GET /api/partnership-messages/stats - Estatísticas das mensagens
+// GET /api/partnership-messages/stats - EstatÃ­sticas das mensagens
 router.get('/stats/overview', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const stats = await PartnershipMessage.getMessageStats();
@@ -582,13 +583,13 @@ router.get('/stats/overview', authenticateToken, requireAdmin, async (req, res) 
       }
     ]);
 
-    // Contar mensagens não lidas
+    // Contar mensagens nÃ£o lidas
     const unreadCount = await PartnershipMessage.countDocuments({
       isRead: false,
       status: { $nin: ['closed', 'archived'] }
     });
 
-    // Log de acesso às estatísticas
+    // Log de acesso Ã s estatÃ­sticas
     await createSecurityLog(
       'admin_action',
       'low',
@@ -614,7 +615,7 @@ router.get('/stats/overview', authenticateToken, requireAdmin, async (req, res) 
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching partnership messages stats:', error);
+      logger.error('Error fetching partnership messages stats:', error);
     }
     await createSecurityLog(
       'system_error',
@@ -636,7 +637,7 @@ router.get('/search/:term', authenticateToken, requireAdmin, async (req, res) =>
   try {
     const searchTerm = req.params.term;
     const { page = 1, limit = 20 } = req.query;
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const skip = (parseInt(page, 10, 10) - 1) * parseInt(limit, 10, 10);
 
     if (!searchTerm || searchTerm.trim().length < 2) {
       return res.status(400).json({
@@ -647,7 +648,7 @@ router.get('/search/:term', authenticateToken, requireAdmin, async (req, res) =>
 
     const messages = await PartnershipMessage.searchMessages(
       searchTerm.trim(),
-      parseInt(limit, 10)
+      parseInt(limit, 10, 10)
     );
     const total = messages.length;
 
@@ -666,18 +667,18 @@ router.get('/search/:term', authenticateToken, requireAdmin, async (req, res) =>
     res.json({
       success: true,
       data: {
-        messages: messages.slice(skip, skip + parseInt(limit, 10)),
+        messages: messages.slice(skip, skip + parseInt(limit, 10, 10)),
         pagination: {
-          currentPage: parseInt(page, 10),
-          totalPages: Math.ceil(total / parseInt(limit, 10)),
+          currentPage: parseInt(page, 10, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit, 10)
+          itemsPerPage: parseInt(limit, 10, 10)
         }
       }
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error searching partnership messages:', error);
+      logger.error('Error searching partnership messages:', error);
     }
     await createSecurityLog(
       'system_error',

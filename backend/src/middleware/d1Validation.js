@@ -1,30 +1,30 @@
-// =============================================================
-// AGROISYNC • Middleware de Validação D1 Database
+﻿// =============================================================
+// AGROISYNC â€¢ Middleware de ValidaÃ§Ã£o D1 Database
 // =============================================================
 
 import logger from '../utils/logger.js';
 
 /**
- * Middleware para validar conexão com D1 Database
+ * Middleware para validar conexÃ£o com D1 Database
  */
 export const validateD1Connection = (req, res, next) => {
   try {
-    // Verificar se req.db está disponível
+    // Verificar se req.db estÃ¡ disponÃ­vel
     if (!req.db) {
-      logger.error('D1 Database não disponível no request');
+      logger.error('D1 Database nÃ£o disponÃ­vel no request');
       return res.status(503).json({
         success: false,
-        error: 'Database não disponível',
+        error: 'Database nÃ£o disponÃ­vel',
         code: 'DB_UNAVAILABLE'
       });
     }
 
-    // Verificar se req.db tem métodos necessários
+    // Verificar se req.db tem mÃ©todos necessÃ¡rios
     const requiredMethods = ['prepare', 'batch', 'exec'];
     const missingMethods = requiredMethods.filter(method => typeof req.db[method] !== 'function');
 
     if (missingMethods.length > 0) {
-      logger.error(`Métodos D1 ausentes: ${missingMethods.join(', ')}`);
+      logger.error(`MÃ©todos D1 ausentes: ${missingMethods.join(', ')}`);
       return res.status(503).json({
         success: false,
         error: 'Database interface incompleta',
@@ -38,24 +38,24 @@ export const validateD1Connection = (req, res, next) => {
 
     next();
   } catch (error) {
-    logger.error('Erro na validação D1:', error);
+    logger.error('Erro na validaÃ§Ã£o D1:', error);
     return res.status(500).json({
       success: false,
-      error: 'Erro interno na validação do database',
+      error: 'Erro interno na validaÃ§Ã£o do database',
       code: 'DB_VALIDATION_ERROR'
     });
   }
 };
 
 /**
- * Middleware para testar conexão D1 com query simples
+ * Middleware para testar conexÃ£o D1 com query simples
  */
 export const testD1Connection = async (req, res, next) => {
   try {
     if (!req.db) {
       return res.status(503).json({
         success: false,
-        error: 'Database não disponível',
+        error: 'Database nÃ£o disponÃ­vel',
         code: 'DB_UNAVAILABLE'
       });
     }
@@ -64,15 +64,15 @@ export const testD1Connection = async (req, res, next) => {
     const result = await req.db.prepare('SELECT 1 as test').first();
 
     if (!result || result.test !== 1) {
-      logger.error('Teste D1 falhou - resultado inválido');
+      logger.error('Teste D1 falhou - resultado invÃ¡lido');
       return res.status(503).json({
         success: false,
-        error: 'Database não responde corretamente',
+        error: 'Database nÃ£o responde corretamente',
         code: 'DB_TEST_FAILED'
       });
     }
 
-    // Adicionar informações de performance
+    // Adicionar informaÃ§Ãµes de performance
     req.dbInfo = {
       connected: true,
       timestamp: Date.now()
@@ -84,7 +84,7 @@ export const testD1Connection = async (req, res, next) => {
     logger.error('Erro no teste D1:', error);
     return res.status(503).json({
       success: false,
-      error: 'Database não acessível',
+      error: 'Database nÃ£o acessÃ­vel',
       code: 'DB_CONNECTION_ERROR',
       details: error.message
     });
@@ -92,7 +92,7 @@ export const testD1Connection = async (req, res, next) => {
 };
 
 /**
- * Health check específico para D1
+ * Health check especÃ­fico para D1
  */
 export const d1HealthCheck = async (req, res) => {
   try {
@@ -100,15 +100,15 @@ export const d1HealthCheck = async (req, res) => {
       return res.status(503).json({
         success: false,
         status: 'unhealthy',
-        error: 'Database não disponível',
+        error: 'Database nÃ£o disponÃ­vel',
         timestamp: Date.now()
       });
     }
 
-    // Teste básico de conectividade
+    // Teste bÃ¡sico de conectividade
     await req.db.prepare('SELECT 1').first();
 
-    // Teste de tabelas críticas
+    // Teste de tabelas crÃ­ticas
     const tables = await req.db
       .prepare(
         `

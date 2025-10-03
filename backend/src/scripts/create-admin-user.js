@@ -1,8 +1,9 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
 import dotenv from 'dotenv';
 
+import logger from '../utils/logger.js';
 dotenv.config();
 
 const createAdminUser = async () => {
@@ -10,13 +11,13 @@ const createAdminUser = async () => {
     // Conectar ao MongoDB
     await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/agroisync');
     if (process.env.NODE_ENV !== 'production') {
-      console.log('Conectado ao MongoDB');
+      logger.info('Conectado ao MongoDB');
     }
-    // Verificar se já existe um admin
+    // Verificar se jÃ¡ existe um admin
     const existingAdmin = await User.findOne({ isAdmin: true });
     if (existingAdmin) {
       if (process.env.NODE_ENV !== 'production') {
-        console.log('Usuário administrador já existe:', existingAdmin.email);
+        logger.info('UsuÃ¡rio administrador jÃ¡ existe:', existingAdmin.email);
       }
       return;
     }
@@ -25,7 +26,7 @@ const createAdminUser = async () => {
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash('admin123456', saltRounds);
 
-    // Criar usuário admin
+    // Criar usuÃ¡rio admin
     const adminUser = new User({
       name: 'Administrador do Sistema',
       email: 'admin@agroisync.com',
@@ -49,25 +50,25 @@ const createAdminUser = async () => {
 
     await adminUser.save();
     if (process.env.NODE_ENV !== 'production') {
-      console.log('Usuário administrador criado com sucesso!');
+      logger.info('UsuÃ¡rio administrador criado com sucesso!');
     }
     if (process.env.NODE_ENV !== 'production') {
-      console.log('Email: admin@agroisync.com');
+      logger.info('Email: admin@agroisync.com');
     }
     if (process.env.NODE_ENV !== 'production') {
-      console.log('Senha: admin123456');
+      logger.info('Senha: admin123456');
     }
     if (process.env.NODE_ENV !== 'production') {
-      console.log('IMPORTANTE: Altere a senha após o primeiro login!');
+      logger.info('IMPORTANTE: Altere a senha apÃ³s o primeiro login!');
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao criar usuário admin:', error);
+      logger.error('Erro ao criar usuÃ¡rio admin:', error);
     }
   } finally {
     await mongoose.disconnect();
     if (process.env.NODE_ENV !== 'production') {
-      console.log('Desconectado do MongoDB');
+      logger.info('Desconectado do MongoDB');
     }
   }
 };

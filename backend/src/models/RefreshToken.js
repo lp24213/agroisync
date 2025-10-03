@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 const refreshTokenSchema = new mongoose.Schema(
   {
@@ -54,24 +54,24 @@ const refreshTokenSchema = new mongoose.Schema(
   }
 );
 
-// Índices compostos para performance
+// Ãndices compostos para performance
 refreshTokenSchema.index({ userId: 1, isActive: 1 });
 refreshTokenSchema.index({ token: 1, isActive: 1 });
 refreshTokenSchema.index({ expiresAt: 1, isActive: 1 });
 
-// Método para verificar se o token está válido
+// MÃ©todo para verificar se o token estÃ¡ vÃ¡lido
 refreshTokenSchema.methods.isValid = function () {
   return this.isActive && this.expiresAt > new Date();
 };
 
-// Método para revogar o token
+// MÃ©todo para revogar o token
 refreshTokenSchema.methods.revoke = function () {
   this.isActive = false;
   this.revokedAt = new Date();
   return this.save();
 };
 
-// Método estático para limpar tokens expirados
+// MÃ©todo estÃ¡tico para limpar tokens expirados
 refreshTokenSchema.statics.cleanupExpired = async function () {
   const result = await this.deleteMany({
     $or: [
@@ -82,7 +82,7 @@ refreshTokenSchema.statics.cleanupExpired = async function () {
   return result.deletedCount;
 };
 
-// Método estático para revogar todos os tokens de um usuário
+// MÃ©todo estÃ¡tico para revogar todos os tokens de um usuÃ¡rio
 refreshTokenSchema.statics.revokeUserTokens = async function (userId) {
   const result = await this.updateMany(
     { userId, isActive: true },
@@ -91,7 +91,7 @@ refreshTokenSchema.statics.revokeUserTokens = async function (userId) {
   return result.modifiedCount;
 };
 
-// Método estático para obter tokens ativos de um usuário
+// MÃ©todo estÃ¡tico para obter tokens ativos de um usuÃ¡rio
 refreshTokenSchema.statics.getActiveUserTokens = async function (userId) {
   return this.find({
     userId,

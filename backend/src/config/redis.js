@@ -1,4 +1,4 @@
-const redis = require('redis');
+﻿const redis = require('redis');
 const logger = require('../utils/logger');
 
 const redisClient = redis.createClient({
@@ -16,7 +16,7 @@ const redisClient = redis.createClient({
       logger.error('Redis max retry attempts reached');
       return undefined;
     }
-    // Reconectar após
+    // Reconectar apÃ³s
     return Math.min(options.attempt * 100, 3000);
   }
 });
@@ -34,10 +34,10 @@ redisClient.on('ready', () => {
 });
 
 redisClient.on('end', () => {
-  logger.warn('Conexão Redis encerrada');
+  logger.warn('ConexÃ£o Redis encerrada');
 });
 
-// Funções utilitárias para Redis
+// FunÃ§Ãµes utilitÃ¡rias para Redis
 const redisUtils = {
   // Cache com TTL
   async setCache(key, value, ttl = 3600) {
@@ -68,7 +68,7 @@ const redisUtils = {
     }
   },
 
-  // Cache de sessão
+  // Cache de sessÃ£o
   async setSession(sessionId, data, ttl = 86400) {
     await this.setCache(`session:${sessionId}`, data, ttl);
   },
@@ -104,7 +104,7 @@ const redisUtils = {
     return await this.getCache(`products:${category}`);
   },
 
-  // Cache de cotações
+  // Cache de cotaÃ§Ãµes
   async cacheQuotes(quotes, ttl = 300) {
     await this.setCache('quotes:latest', quotes, ttl);
   },

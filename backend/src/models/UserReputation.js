@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 const userReputationSchema = new mongoose.Schema({
-  // Usuário
+  // UsuÃ¡rio
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -10,7 +10,7 @@ const userReputationSchema = new mongoose.Schema({
     index: true
   },
 
-  // Pontuação geral
+  // PontuaÃ§Ã£o geral
   totalScore: {
     type: Number,
     default: 0,
@@ -18,7 +18,7 @@ const userReputationSchema = new mongoose.Schema({
     index: true
   },
 
-  // Nível do usuário
+  // NÃ­vel do usuÃ¡rio
   level: {
     type: Number,
     default: 1,
@@ -27,20 +27,20 @@ const userReputationSchema = new mongoose.Schema({
     index: true
   },
 
-  // Experiência (XP)
+  // ExperiÃªncia (XP)
   experience: {
     type: Number,
     default: 0,
     min: 0
   },
 
-  // XP necessário para o próximo nível
+  // XP necessÃ¡rio para o prÃ³ximo nÃ­vel
   experienceToNextLevel: {
     type: Number,
     default: 100
   },
 
-  // Estatísticas de transações
+  // EstatÃ­sticas de transaÃ§Ãµes
   transactionStats: {
     totalTransactions: { type: Number, default: 0 },
     successfulTransactions: { type: Number, default: 0 },
@@ -49,7 +49,7 @@ const userReputationSchema = new mongoose.Schema({
     averageRating: { type: Number, default: 0, min: 0, max: 5 }
   },
 
-  // Estatísticas de produtos
+  // EstatÃ­sticas de produtos
   productStats: {
     totalProducts: { type: Number, default: 0 },
     activeProducts: { type: Number, default: 0 },
@@ -57,7 +57,7 @@ const userReputationSchema = new mongoose.Schema({
     totalContacts: { type: Number, default: 0 }
   },
 
-  // Estatísticas de fretes
+  // EstatÃ­sticas de fretes
   freightStats: {
     totalFreights: { type: Number, default: 0 },
     activeFreights: { type: Number, default: 0 },
@@ -94,7 +94,7 @@ const userReputationSchema = new mongoose.Schema({
     }
   ],
 
-  // Histórico de pontuação
+  // HistÃ³rico de pontuaÃ§Ã£o
   scoreHistory: [
     {
       action: {
@@ -133,7 +133,7 @@ const userReputationSchema = new mongoose.Schema({
     category: { type: Number, default: null }
   },
 
-  // Configurações de notificações
+  // ConfiguraÃ§Ãµes de notificaÃ§Ãµes
   notifications: {
     levelUp: { type: Boolean, default: true },
     badgeEarned: { type: Boolean, default: true },
@@ -164,17 +164,17 @@ userReputationSchema.pre('save', function (next) {
   next();
 });
 
-// Método para calcular XP necessário para o próximo nível
+// MÃ©todo para calcular XP necessÃ¡rio para o prÃ³ximo nÃ­vel
 userReputationSchema.methods.calculateExperienceToNextLevel = function () {
   return Math.floor(100 * Math.pow(1.5, this.level - 1));
 };
 
-// Método para adicionar pontos e verificar level up
+// MÃ©todo para adicionar pontos e verificar level up
 userReputationSchema.methods.addPoints = function (points, action, description, metadata = {}) {
   this.totalScore += points;
   this.experience += points;
 
-  // Adicionar ao histórico
+  // Adicionar ao histÃ³rico
   this.scoreHistory.push({
     action,
     points,
@@ -194,20 +194,20 @@ userReputationSchema.methods.addPoints = function (points, action, description, 
   return this;
 };
 
-// Método para calcular badge baseado em estatísticas
+// MÃ©todo para calcular badge baseado em estatÃ­sticas
 userReputationSchema.methods.calculateBadges = function () {
   const newBadges = [];
 
-  // Badge de Primeira Transação
+  // Badge de Primeira TransaÃ§Ã£o
   if (
     this.transactionStats.totalTransactions >= 1 &&
     !this.badges.find(b => b.id === 'FIRST_TRANSACTION')
   ) {
     newBadges.push({
       id: 'FIRST_TRANSACTION',
-      name: 'Primeira Transação',
-      description: 'Completou sua primeira transação',
-      icon: '🎯',
+      name: 'Primeira TransaÃ§Ã£o',
+      description: 'Completou sua primeira transaÃ§Ã£o',
+      icon: 'ðŸŽ¯',
       category: 'TRANSACTION',
       rarity: 'COMMON'
     });
@@ -219,7 +219,7 @@ userReputationSchema.methods.calculateBadges = function () {
       id: 'ACTIVE_SELLER',
       name: 'Vendedor Ativo',
       description: 'Cadastrou 10 ou mais produtos',
-      icon: '🏪',
+      icon: 'ðŸª',
       category: 'PRODUCT',
       rarity: 'RARE'
     });
@@ -231,13 +231,13 @@ userReputationSchema.methods.calculateBadges = function () {
       id: 'TRANSPORTER',
       name: 'Transportador',
       description: 'Completou 5 ou mais fretes',
-      icon: '🚚',
+      icon: 'ðŸšš',
       category: 'FREIGHT',
       rarity: 'RARE'
     });
   }
 
-  // Badge de Confiável
+  // Badge de ConfiÃ¡vel
   if (
     this.transactionStats.averageRating >= 4.5 &&
     this.transactionStats.successfulTransactions >= 20 &&
@@ -245,9 +245,9 @@ userReputationSchema.methods.calculateBadges = function () {
   ) {
     newBadges.push({
       id: 'TRUSTED_USER',
-      name: 'Usuário Confiável',
-      description: 'Alta avaliação e muitas transações bem-sucedidas',
-      icon: '⭐',
+      name: 'UsuÃ¡rio ConfiÃ¡vel',
+      description: 'Alta avaliaÃ§Ã£o e muitas transaÃ§Ãµes bem-sucedidas',
+      icon: 'â­',
       category: 'SPECIAL',
       rarity: 'EPIC'
     });
@@ -263,7 +263,7 @@ userReputationSchema.methods.calculateBadges = function () {
       id: 'TOP_SELLER',
       name: 'Top Vendedor',
       description: 'Vendeu mais de R$ 10.000 em produtos',
-      icon: '👑',
+      icon: 'ðŸ‘‘',
       category: 'SPECIAL',
       rarity: 'LEGENDARY'
     });
@@ -272,7 +272,7 @@ userReputationSchema.methods.calculateBadges = function () {
   return newBadges;
 };
 
-// Índices para performance
+// Ãndices para performance
 userReputationSchema.index({ totalScore: -1 });
 userReputationSchema.index({ level: -1 });
 userReputationSchema.index({ 'transactionStats.totalVolume': -1 });

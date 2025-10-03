@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 // Security Log schema for tracking security events and attacks
 const securityLogSchema = new mongoose.Schema({
@@ -188,7 +188,7 @@ const securityLogSchema = new mongoose.Schema({
   }
 });
 
-// Índices para melhor performance
+// Ãndices para melhor performance
 securityLogSchema.index({ eventType: 1 });
 securityLogSchema.index({ severity: 1 });
 securityLogSchema.index({ userId: 1 });
@@ -204,7 +204,7 @@ securityLogSchema.pre('save', function (next) {
   next();
 });
 
-// Método para marcar como resolvido
+// MÃ©todo para marcar como resolvido
 securityLogSchema.methods.resolve = function (action, notes, resolvedBy) {
   this.status = 'resolved';
   this.resolution = {
@@ -216,7 +216,7 @@ securityLogSchema.methods.resolve = function (action, notes, resolvedBy) {
   return this.save();
 };
 
-// Método para marcar como falso positivo
+// MÃ©todo para marcar como falso positivo
 securityLogSchema.methods.markAsFalsePositive = function (notes, resolvedBy) {
   this.status = 'false_positive';
   this.resolution = {
@@ -228,7 +228,7 @@ securityLogSchema.methods.markAsFalsePositive = function (notes, resolvedBy) {
   return this.save();
 };
 
-// Método para obter logs por severidade
+// MÃ©todo para obter logs por severidade
 securityLogSchema.statics.findBySeverity = function (severity, limit = 100) {
   return this.find({ severity })
     .sort({ createdAt: -1 })
@@ -237,7 +237,7 @@ securityLogSchema.statics.findBySeverity = function (severity, limit = 100) {
     .populate('assignedTo', 'name email');
 };
 
-// Método para obter logs por tipo de evento
+// MÃ©todo para obter logs por tipo de evento
 securityLogSchema.statics.findByEventType = function (eventType, limit = 100) {
   return this.find({ eventType })
     .sort({ createdAt: -1 })
@@ -246,7 +246,7 @@ securityLogSchema.statics.findByEventType = function (eventType, limit = 100) {
     .populate('assignedTo', 'name email');
 };
 
-// Método para obter logs por IP
+// MÃ©todo para obter logs por IP
 securityLogSchema.statics.findByIP = function (ipAddress, limit = 100) {
   return this.find({ ipAddress })
     .sort({ createdAt: -1 })
@@ -255,7 +255,7 @@ securityLogSchema.statics.findByIP = function (ipAddress, limit = 100) {
     .populate('assignedTo', 'name email');
 };
 
-// Método para obter estatísticas de segurança
+// MÃ©todo para obter estatÃ­sticas de seguranÃ§a
 securityLogSchema.statics.getSecurityStats = async function (timeRange = '24h') {
   const now = new Date();
   let startDate;
@@ -302,7 +302,7 @@ securityLogSchema.statics.getSecurityStats = async function (timeRange = '24h') 
   }, {});
 };
 
-// Método para obter ameaças ativas
+// MÃ©todo para obter ameaÃ§as ativas
 securityLogSchema.statics.getActiveThreats = function (limit = 50) {
   return this.find({
     threatLevel: { $in: ['high', 'critical'] },
@@ -314,7 +314,7 @@ securityLogSchema.statics.getActiveThreats = function (limit = 50) {
     .populate('assignedTo', 'name email');
 };
 
-// Método para obter logs de um usuário específico
+// MÃ©todo para obter logs de um usuÃ¡rio especÃ­fico
 securityLogSchema.statics.getUserLogs = function (userId, limit = 100) {
   return this.find({ userId })
     .sort({ createdAt: -1 })

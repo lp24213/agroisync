@@ -1,4 +1,5 @@
-import express from 'express';
+﻿import express from 'express';
+import { body, validationResult } from 'express-validator';
 import secureURLService from '../services/secureURLService.js';
 import { authenticateToken } from '../middleware/auth.js';
 import logger from '../utils/logger.js';
@@ -30,16 +31,16 @@ const router = express.Router();
  *       200:
  *         description: URL segura gerada com sucesso
  *       401:
- *         description: Não autorizado
+ *         description: NÃ£o autorizado
  */
-router.post('/generate', authenticateToken, async (req, res) => {
+router.post('/generate', authenticateToken, (req, res) => {
   try {
     const { type, metadata = {} } = req.body;
 
     if (!type || !['signup-store', 'signup-freight', 'signup-product'].includes(type)) {
       return res.status(400).json({
         success: false,
-        message: 'Tipo de cadastro inválido'
+        message: 'Tipo de cadastro invÃ¡lido'
       });
     }
 
@@ -91,16 +92,16 @@ router.post('/generate', authenticateToken, async (req, res) => {
  *       200:
  *         description: URL de convite gerada com sucesso
  *       401:
- *         description: Não autorizado
+ *         description: NÃ£o autorizado
  */
-router.post('/invite', authenticateToken, async (req, res) => {
+router.post('/invite', authenticateToken, (req, res) => {
   try {
     const { type } = req.body;
 
     if (!type || !['signup-store', 'signup-freight', 'signup-product'].includes(type)) {
       return res.status(400).json({
         success: false,
-        message: 'Tipo de cadastro inválido'
+        message: 'Tipo de cadastro invÃ¡lido'
       });
     }
 
@@ -141,11 +142,11 @@ router.post('/invite', authenticateToken, async (req, res) => {
  *         description: Token da URL segura
  *     responses:
  *       200:
- *         description: Token válido
+ *         description: Token vÃ¡lido
  *       400:
- *         description: Token inválido ou expirado
+ *         description: Token invÃ¡lido ou expirado
  */
-router.get('/verify/:token', async (req, res) => {
+router.get('/verify/:token', (req, res) => {
   try {
     const { token } = req.params;
 
@@ -153,7 +154,7 @@ router.get('/verify/:token', async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Token válido',
+      message: 'Token vÃ¡lido',
       data: {
         type: decoded.type,
         metadata: decoded.metadata,
@@ -164,7 +165,7 @@ router.get('/verify/:token', async (req, res) => {
     logger.error('Erro ao verificar token:', error);
     res.status(400).json({
       success: false,
-      message: 'Token inválido ou expirado'
+      message: 'Token invÃ¡lido ou expirado'
     });
   }
 });
@@ -173,7 +174,7 @@ router.get('/verify/:token', async (req, res) => {
  * @swagger
  * /api/secure-urls/verify-invite/{inviteCode}:
  *   get:
- *     summary: Verificar código de convite
+ *     summary: Verificar cÃ³digo de convite
  *     tags: [Secure URLs]
  *     parameters:
  *       - in: path
@@ -181,14 +182,14 @@ router.get('/verify/:token', async (req, res) => {
  *         required: true
  *         schema:
  *           type: string
- *         description: Código de convite
+ *         description: CÃ³digo de convite
  *     responses:
  *       200:
- *         description: Código de convite válido
+ *         description: CÃ³digo de convite vÃ¡lido
  *       400:
- *         description: Código de convite inválido ou expirado
+ *         description: CÃ³digo de convite invÃ¡lido ou expirado
  */
-router.get('/verify-invite/:inviteCode', async (req, res) => {
+router.get('/verify-invite/:inviteCode', (req, res) => {
   try {
     const { inviteCode } = req.params;
 
@@ -196,7 +197,7 @@ router.get('/verify-invite/:inviteCode', async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Código de convite válido',
+      message: 'CÃ³digo de convite vÃ¡lido',
       data: {
         referrerId: decoded.referrerId,
         type: decoded.type,
@@ -204,10 +205,10 @@ router.get('/verify-invite/:inviteCode', async (req, res) => {
       }
     });
   } catch (error) {
-    logger.error('Erro ao verificar código de convite:', error);
+    logger.error('Erro ao verificar cÃ³digo de convite:', error);
     res.status(400).json({
       success: false,
-      message: 'Código de convite inválido ou expirado'
+      message: 'CÃ³digo de convite invÃ¡lido ou expirado'
     });
   }
 });
@@ -241,21 +242,21 @@ router.get('/verify-invite/:inviteCode', async (req, res) => {
  *               properties:
  *                 success: { type: boolean, example: true }
  *                 message: { type: string, example: "URL segura validada com sucesso" }
- *                 data: { type: object, description: "Dados extraídos da URL" }
+ *                 data: { type: object, description: "Dados extraÃ­dos da URL" }
  *       400:
- *         description: Token inválido ou expirado
+ *         description: Token invÃ¡lido ou expirado
  *       500:
  *         description: Erro interno do servidor
  */
 router.post(
   '/validate',
-  [body('token').isString().withMessage('Token é obrigatório')],
-  async (req, res) => {
+  [body('token').isString().withMessage('Token Ã© obrigatÃ³rio')],
+  (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res
         .status(400)
-        .json({ success: false, message: 'Token inválido', errors: errors.array() });
+        .json({ success: false, message: 'Token invÃ¡lido', errors: errors.array() });
     }
 
     const { token } = req.body;
@@ -268,7 +269,7 @@ router.post(
       res.status(200).json({ success: true, message: 'URL segura validada com sucesso', data });
     } catch (error) {
       logger.error('Erro ao validar URL segura:', error);
-      res.status(400).json({ success: false, message: 'Token inválido ou expirado.' });
+      res.status(400).json({ success: false, message: 'Token invÃ¡lido ou expirado.' });
     }
   }
 );

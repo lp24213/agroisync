@@ -1,8 +1,9 @@
-import { Server } from 'socket.io';
+﻿import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import { createSecurityLog } from '../utils/securityLogger.js';
 
+import logger from '../utils/logger.js';
 export const configureSocket = server => {
   const io = new Server(server, {
     cors: {
@@ -13,13 +14,13 @@ export const configureSocket = server => {
     transports: ['websocket', 'polling']
   });
 
-  // Middleware de autenticação para WebSocket
+  // Middleware de autenticaÃ§Ã£o para WebSocket
   io.use(async (socket, next) => {
     try {
       const token = socket.handshake.auth.token || socket.handshake.headers.authorization;
 
       if (!token) {
-        return next(new Error('Token de autenticação não fornecido'));
+        return next(new Error('Token de autenticaÃ§Ã£o nÃ£o fornecido'));
       }
 
       // Remover 'Bearer ' se presente
@@ -31,20 +32,20 @@ export const configureSocket = server => {
       );
 
       if (!user) {
-        return next(new Error('Usuário não encontrado'));
+        return next(new Error('UsuÃ¡rio nÃ£o encontrado'));
       }
 
       socket.userId = user._id.toString();
       socket.user = user;
 
-      // Log de conexão
+      // Log de conexÃ£o
       await createSecurityLog({
         eventType: 'websocket_connection',
         severity: 'info',
         userId: user._id,
         ipAddress: socket.handshake.address,
         userAgent: socket.handshake.headers['user-agent'],
-        description: `WebSocket conectado para usuário ${user.email}`,
+        description: `WebSocket conectado para usuÃ¡rio ${user.email}`,
         details: {
           socketId: socket.id,
           transport: socket.conn.transport.name
@@ -54,30 +55,30 @@ export const configureSocket = server => {
       next();
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro na autenticação WebSocket:', error.message);
+        logger.error('Erro na autenticaÃ§Ã£o WebSocket:', error.message);
       }
-      next(new Error('Autenticação falhou'));
+      next(new Error('AutenticaÃ§Ã£o falhou'));
     }
   });
 
-  // Gerenciamento de conexões
+  // Gerenciamento de conexÃµes
   const connectedUsers = new Map();
 
   io.on('connection', socket => {
     if (process.env.NODE_ENV !== 'production') {
       // Console log removido`);
     }
-    // Adicionar usuário à lista de conectados
+    // Adicionar usuÃ¡rio Ã  lista de conectados
     connectedUsers.set(socket.userId, {
       socketId: socket.id,
       user: socket.user,
       connectedAt: new Date()
     });
 
-    // Juntar usuário à sala pessoal
+    // Juntar usuÃ¡rio Ã  sala pessoal
     socket.join(`user_${socket.userId}`);
 
-    // Juntar usuário à sala de notificações se for admin
+    // Juntar usuÃ¡rio Ã  sala de notificaÃ§Ãµes se for admin
     if (socket.user.isAdmin) {
       socket.join('admin_notifications');
     }
@@ -89,14 +90,14 @@ export const configureSocket = server => {
 
         // Validar dados
         if (!receiverId || !content || !subject) {
-          socket.emit('message_error', { message: 'Dados inválidos para mensagem' });
+          socket.emit('message_error', { message: 'Dados invÃ¡lidos para mensagem' });
           return;
         }
 
-        // Verificar se o destinatário está online
+        // Verificar se o destinatÃ¡rio estÃ¡ online
         const receiverSocket = connectedUsers.get(receiverId);
 
-        // Emitir mensagem para o destinatário se estiver online
+        // Emitir mensagem para o destinatÃ¡rio se estiver online
         if (receiverSocket) {
           io.to(receiverSocket.socketId).emit('new_private_message', {
             senderId: socket.userId,
@@ -133,13 +134,13 @@ export const configureSocket = server => {
         });
       } catch (error) {
         if (process.env.NODE_ENV !== 'production') {
-          console.error('Erro ao enviar mensagem via WebSocket:', error);
+          logger.error('Erro ao enviar mensagem via WebSocket:', error);
         }
         socket.emit('message_error', { message: 'Erro interno do servidor' });
       }
     });
 
-    // Evento de digitação
+    // Evento de digitaÃ§Ã£o
     socket.on('typing_start', data => {
       const { receiverId } = data;
       const receiverSocket = connectedUsers.get(receiverId);
@@ -191,12 +192,12 @@ export const configureSocket = server => {
         });
       } catch (error) {
         if (process.env.NODE_ENV !== 'production') {
-          console.error('Erro ao marcar mensagem como lida:', error);
+          logger.error('Erro ao marcar mensagem como lida:', error);
         }
       }
     });
 
-    // Evento de presença online
+    // Evento de presenÃ§a online
     socket.on('update_presence', data => {
       const { status, customStatus } = data;
 
@@ -206,7 +207,7 @@ export const configureSocket = server => {
         userData.customStatus = customStatus;
         userData.lastSeen = new Date();
 
-        // Notificar outros usuários sobre mudança de status
+        // Notificar outros usuÃ¡rios sobre mudanÃ§a de status
         socket.broadcast.emit('user_presence_changed', {
           userId: socket.userId,
           status,
@@ -216,22 +217,22 @@ export const configureSocket = server => {
       }
     });
 
-    // Evento de desconexão
+    // Evento de desconexÃ£o
     socket.on('disconnect', async () => {
       if (process.env.NODE_ENV !== 'production') {
         // Console log removido`);
       }
-      // Remover usuário da lista de conectados
+      // Remover usuÃ¡rio da lista de conectados
       connectedUsers.delete(socket.userId);
 
-      // Notificar outros usuários sobre a desconexão
+      // Notificar outros usuÃ¡rios sobre a desconexÃ£o
       socket.broadcast.emit('user_disconnected', {
         userId: socket.userId,
         userName: socket.user.name,
         disconnectedAt: new Date()
       });
 
-      // Log de desconexão
+      // Log de desconexÃ£o
       await createSecurityLog({
         eventType: 'websocket_disconnection',
         severity: 'info',
@@ -248,7 +249,7 @@ export const configureSocket = server => {
     // Evento de erro
     socket.on('error', async error => {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro no WebSocket:', error);
+        logger.error('Erro no WebSocket:', error);
       }
       await createSecurityLog({
         eventType: 'websocket_error',
@@ -264,9 +265,9 @@ export const configureSocket = server => {
     });
   });
 
-  // Funções auxiliares para uso em outras partes da aplicação
+  // FunÃ§Ãµes auxiliares para uso em outras partes da aplicaÃ§Ã£o
   const socketService = {
-    // Enviar notificação para usuário específico
+    // Enviar notificaÃ§Ã£o para usuÃ¡rio especÃ­fico
     sendToUser: (userId, event, data) => {
       const userSocket = connectedUsers.get(userId);
       if (userSocket) {
@@ -276,27 +277,27 @@ export const configureSocket = server => {
       return false;
     },
 
-    // Enviar notificação para todos os usuários
+    // Enviar notificaÃ§Ã£o para todos os usuÃ¡rios
     sendToAll: (event, data) => {
       io.emit(event, data);
     },
 
-    // Enviar notificação para admins
+    // Enviar notificaÃ§Ã£o para admins
     sendToAdmins: (event, data) => {
       io.to('admin_notifications').emit(event, data);
     },
 
-    // Verificar se usuário está online
+    // Verificar se usuÃ¡rio estÃ¡ online
     isUserOnline: userId => {
       return connectedUsers.has(userId);
     },
 
-    // Obter informações de usuários conectados
+    // Obter informaÃ§Ãµes de usuÃ¡rios conectados
     getConnectedUsers: () => {
       return Array.from(connectedUsers.values());
     },
 
-    // Obter contagem de usuários conectados
+    // Obter contagem de usuÃ¡rios conectados
     getConnectedUsersCount: () => {
       return connectedUsers.size;
     }

@@ -1,7 +1,7 @@
-import winston from 'winston';
+﻿import winston from 'winston';
 import { AuditLog } from '../models/AuditLog.js';
 
-// Configuração do Winston Logger
+// ConfiguraÃ§Ã£o do Winston Logger
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
   format: winston.format.combine(
@@ -33,7 +33,7 @@ const logger = winston.createLogger({
   ]
 });
 
-// Adicionar transport para MongoDB em produção
+// Adicionar transport para MongoDB em produÃ§Ã£o
 if (process.env.NODE_ENV === 'production') {
   const MongoDBTransport = require('winston-mongodb').MongoDB;
 
@@ -50,7 +50,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 export class LoggingService {
-  // Log de informações gerais
+  // Log de informaÃ§Ãµes gerais
   static info(message, meta = {}) {
     logger.info(message, meta);
   }
@@ -80,7 +80,7 @@ export class LoggingService {
     logger.debug(message, meta);
   }
 
-  // Log de requisições HTTP
+  // Log de requisiÃ§Ãµes HTTP
   static logRequest(req, res, responseTime) {
     const logData = {
       method: req.method,
@@ -100,7 +100,7 @@ export class LoggingService {
     }
   }
 
-  // Log de autenticação
+  // Log de autenticaÃ§Ã£o
   static logAuth(action, userId, email, success, details = {}) {
     const logData = {
       action,
@@ -167,7 +167,7 @@ export class LoggingService {
     });
   }
 
-  // Log de transações de escrow
+  // Log de transaÃ§Ãµes de escrow
   static logEscrow(action, transactionId, userId, amount, success, details = {}) {
     const logData = {
       action,
@@ -286,7 +286,7 @@ export class LoggingService {
     }
   }
 
-  // Log de segurança
+  // Log de seguranÃ§a
   static logSecurity(action, userId, ip, userAgent, riskLevel, details = {}) {
     const logData = {
       action,
@@ -388,7 +388,7 @@ export class LoggingService {
     }
   }
 
-  // Método para obter logs por período
+  // MÃ©todo para obter logs por perÃ­odo
   static async getLogsByPeriod(startDate, endDate, level = null, limit = 100) {
     try {
       const query = {
@@ -411,7 +411,7 @@ export class LoggingService {
     }
   }
 
-  // Método para obter estatísticas de logs
+  // MÃ©todo para obter estatÃ­sticas de logs
   static async getLogStatistics(startDate, endDate) {
     try {
       const pipeline = [

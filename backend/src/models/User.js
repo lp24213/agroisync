@@ -1,55 +1,56 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 
+import logger from '../utils/logger.js';
 const userSchema = new mongoose.Schema(
   {
-    // Informações básicas
+    // InformaÃ§Ãµes bÃ¡sicas
     name: {
       type: String,
-      required: [true, 'Nome é obrigatório'],
+      required: [true, 'Nome Ã© obrigatÃ³rio'],
       trim: true,
-      maxlength: [100, 'Nome não pode ter mais de 100 caracteres']
+      maxlength: [100, 'Nome nÃ£o pode ter mais de 100 caracteres']
     },
     email: {
       type: String,
-      required: [true, 'E-mail é obrigatório'],
+      required: [true, 'E-mail Ã© obrigatÃ³rio'],
       unique: true,
       lowercase: true,
       trim: true,
-      match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'E-mail inválido']
+      match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'E-mail invÃ¡lido']
     },
     password: {
       type: String,
-      required: [true, 'Senha é obrigatória'],
+      required: [true, 'Senha Ã© obrigatÃ³ria'],
       minlength: [8, 'Senha deve ter pelo menos 8 caracteres'],
       select: false,
       validate: {
         validator(password) {
-          // Validação de senha forte
+          // ValidaÃ§Ã£o de senha forte
           const strongPasswordRegex =
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
           return strongPasswordRegex.test(password);
         },
         message:
-          'Senha deve conter pelo menos: 8 caracteres, 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial'
+          'Senha deve conter pelo menos: 8 caracteres, 1 letra minÃºscula, 1 maiÃºscula, 1 nÃºmero e 1 caractere especial'
       }
     },
     phone: {
       type: String,
       trim: true,
-      match: [/^\+?[\d\s\-()]+$/, 'Telefone inválido']
+      match: [/^\+?[\d\s\-()]+$/, 'Telefone invÃ¡lido']
     },
 
-    // Informações de perfil
+    // InformaÃ§Ãµes de perfil
     avatar: {
       type: String,
       default: null
     },
     bio: {
       type: String,
-      maxlength: [500, 'Biografia não pode ter mais de 500 caracteres']
+      maxlength: [500, 'Biografia nÃ£o pode ter mais de 500 caracteres']
     },
     location: {
       address: String,
@@ -66,7 +67,7 @@ const userSchema = new mongoose.Schema(
       }
     },
 
-    // Informações de negócio
+    // InformaÃ§Ãµes de negÃ³cio
     businessType: {
       type: String,
       enum: ['producer', 'buyer', 'transporter', 'all'],
@@ -96,7 +97,7 @@ const userSchema = new mongoose.Schema(
         default: null
       },
 
-      // Informações financeiras
+      // InformaÃ§Ãµes financeiras
       bankAccount: {
         type: String,
         default: null
@@ -106,7 +107,7 @@ const userSchema = new mongoose.Schema(
         default: null
       },
 
-      // Informações fiscais
+      // InformaÃ§Ãµes fiscais
       taxId: {
         type: String,
         default: null
@@ -133,7 +134,7 @@ const userSchema = new mongoose.Schema(
       }
     },
 
-    // Configurações de conta
+    // ConfiguraÃ§Ãµes de conta
     isEmailVerified: {
       type: Boolean,
       default: false
@@ -158,7 +159,7 @@ const userSchema = new mongoose.Schema(
     twoFactorSecret: String,
     twoFactorBackupCodes: [String],
 
-    // Permissões de administrador
+    // PermissÃµes de administrador
     isAdmin: {
       type: Boolean,
       default: false
@@ -197,7 +198,7 @@ const userSchema = new mongoose.Schema(
     },
     adminNotes: {
       type: String,
-      maxlength: [1000, 'Notas administrativas não podem ter mais de 1000 caracteres']
+      maxlength: [1000, 'Notas administrativas nÃ£o podem ter mais de 1000 caracteres']
     },
 
     // Plano e pagamentos
@@ -210,7 +211,7 @@ const userSchema = new mongoose.Schema(
     subscriptionId: String,
     paymentMethod: String,
 
-    // Configurações de privacidade
+    // ConfiguraÃ§Ãµes de privacidade
     privacySettings: {
       profileVisibility: {
         type: String,
@@ -239,7 +240,7 @@ const userSchema = new mongoose.Schema(
       }
     },
 
-    // Configurações de notificação
+    // ConfiguraÃ§Ãµes de notificaÃ§Ã£o
     notificationSettings: {
       email: {
         type: Boolean,
@@ -286,7 +287,7 @@ const userSchema = new mongoose.Schema(
       default: false
     },
 
-    // Metadados de segurança
+    // Metadados de seguranÃ§a
     lastLoginAt: Date,
     lastLoginIp: String,
     loginAttempts: {
@@ -298,7 +299,7 @@ const userSchema = new mongoose.Schema(
     passwordResetToken: String,
     passwordResetExpires: Date,
 
-    // Estatísticas
+    // EstatÃ­sticas
     stats: {
       totalProducts: {
         type: Number,
@@ -322,7 +323,7 @@ const userSchema = new mongoose.Schema(
       }
     },
 
-    // Configurações de idioma
+    // ConfiguraÃ§Ãµes de idioma
     language: {
       type: String,
       default: 'pt-BR',
@@ -343,7 +344,7 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
     toJSON: {
       transform(doc, ret) {
-        // Remover campos sensíveis do JSON
+        // Remover campos sensÃ­veis do JSON
         delete ret.password;
         delete ret.twoFactorSecret;
         delete ret.twoFactorBackupCodes;
@@ -359,7 +360,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Índices para performance e segurança
+// Ãndices para performance e seguranÃ§a
 userSchema.index({ email: 1 });
 userSchema.index({ phone: 1 });
 userSchema.index({ isActive: 1 });
@@ -370,13 +371,13 @@ userSchema.index({ lastLoginAt: -1 });
 
 // Middleware para hash da senha antes de salvar
 userSchema.pre('save', async function (next) {
-  // Só hash se a senha foi modificada
+  // SÃ³ hash se a senha foi modificada
   if (!this.isModified('password')) {
     return next();
   }
 
   try {
-    // Hash da senha com salt rounds alto para segurança
+    // Hash da senha com salt rounds alto para seguranÃ§a
     const saltRounds = 12;
     this.password = await bcrypt.hash(this.password, saltRounds);
     this.passwordChangedAt = new Date();
@@ -386,7 +387,7 @@ userSchema.pre('save', async function (next) {
   }
 });
 
-// Middleware para atualizar timestamp de mudança de senha
+// Middleware para atualizar timestamp de mudanÃ§a de senha
 userSchema.pre('save', function (next) {
   if (!this.isModified('password') || this.isNew) {
     return next();
@@ -395,12 +396,12 @@ userSchema.pre('save', function (next) {
   return next();
 });
 
-// Método para verificar senha
+// MÃ©todo para verificar senha
 userSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-// Método para gerar token JWT
+// MÃ©todo para gerar token JWT
 userSchema.methods.generateAuthToken = function () {
   const payload = {
     userId: this._id,
@@ -417,7 +418,7 @@ userSchema.methods.generateAuthToken = function () {
   });
 };
 
-// Método para gerar token de verificação de email
+// MÃ©todo para gerar token de verificaÃ§Ã£o de email
 userSchema.methods.generateEmailVerificationToken = function () {
   const token = jwt.sign({ userId: this._id, type: 'email_verification' }, process.env.JWT_SECRET, {
     expiresIn: '24h'
@@ -429,7 +430,7 @@ userSchema.methods.generateEmailVerificationToken = function () {
   return token;
 };
 
-// Método para gerar código de verificação de telefone
+// MÃ©todo para gerar cÃ³digo de verificaÃ§Ã£o de telefone
 userSchema.methods.generatePhoneVerificationCode = function () {
   const code = Math.floor(100000 + Math.random() * 900000).toString();
   this.phoneVerificationCode = code;
@@ -437,7 +438,7 @@ userSchema.methods.generatePhoneVerificationCode = function () {
   return code;
 };
 
-// Método para gerar token de reset de senha
+// MÃ©todo para gerar token de reset de senha
 userSchema.methods.generatePasswordResetToken = function () {
   const token = jwt.sign({ userId: this._id, type: 'password_reset' }, process.env.JWT_SECRET, {
     expiresIn: '1h'
@@ -449,14 +450,14 @@ userSchema.methods.generatePasswordResetToken = function () {
   return token;
 };
 
-// Método para verificar se a conta está bloqueada
+// MÃ©todo para verificar se a conta estÃ¡ bloqueada
 userSchema.methods.isLocked = function () {
   return !!(this.lockUntil && this.lockUntil > Date.now());
 };
 
-// Método para incrementar tentativas de login
+// MÃ©todo para incrementar tentativas de login
 userSchema.methods.incLoginAttempts = function () {
-  // Se temos tentativas anteriores e não está bloqueado, incrementar
+  // Se temos tentativas anteriores e nÃ£o estÃ¡ bloqueado, incrementar
   if (this.lockUntil && this.lockUntil < Date.now()) {
     return this.updateOne({
       $unset: { lockUntil: 1 },
@@ -466,7 +467,7 @@ userSchema.methods.incLoginAttempts = function () {
 
   const updates = { $inc: { loginAttempts: 1 } };
 
-  // Bloquear conta após 5 tentativas por 2 horas
+  // Bloquear conta apÃ³s 5 tentativas por 2 horas
   if (this.loginAttempts + 1 >= 5 && !this.isLocked()) {
     updates.$set = { lockUntil: Date.now() + 2 * 60 * 60 * 1000 }; // 2 horas
   }
@@ -474,23 +475,23 @@ userSchema.methods.incLoginAttempts = function () {
   return this.updateOne(updates);
 };
 
-// Método para resetar tentativas de login
+// MÃ©todo para resetar tentativas de login
 userSchema.methods.resetLoginAttempts = function () {
   return this.updateOne({
     $unset: { loginAttempts: 1, lockUntil: 1 }
   });
 };
 
-// Método para verificar se mudou senha após o token JWT
+// MÃ©todo para verificar se mudou senha apÃ³s o token JWT
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
-    const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+    const changedTimestamp = parseInt(this.passwordChangedAt.getTime(, 10) / 1000, 10);
     return JWTTimestamp < changedTimestamp;
   }
   return false;
 };
 
-// Métodos para criptografia de dados PII
+// MÃ©todos para criptografia de dados PII
 userSchema.methods.encryptPIIData = function (data) {
   const algorithm = 'aes-256-gcm';
   const key = process.env.PII_ENCRYPTION_KEY || 'default-pii-key-change-in-production';
@@ -515,7 +516,7 @@ userSchema.methods.encryptPIIData = function (data) {
   } catch (error) {
     // eslint-disable-next-line no-console
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao criptografar dados PII:', error);
+      logger.error('Erro ao criptografar dados PII:', error);
     }
     throw error;
   }
@@ -536,7 +537,7 @@ userSchema.methods.decryptPIIData = function (encryptedData) {
   } catch (error) {
     // eslint-disable-next-line no-console
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao descriptografar dados PII:', error);
+      logger.error('Erro ao descriptografar dados PII:', error);
     }
     throw error;
   }
@@ -568,7 +569,7 @@ userSchema.methods.getPIIData = function (field) {
   } catch (error) {
     // eslint-disable-next-line no-console
     if (process.env.NODE_ENV !== 'production') {
-      console.error(`Erro ao descriptografar campo PII ${field}:`, error);
+      logger.error(`Erro ao descriptografar campo PII ${field}:`, error);
     }
     return null;
   }
@@ -578,22 +579,22 @@ userSchema.methods.hasPIIData = function (field) {
   return !!(this.piiData && this.piiData[field]);
 };
 
-// Método estático para buscar usuário por email
+// MÃ©todo estÃ¡tico para buscar usuÃ¡rio por email
 userSchema.statics.findByEmail = function (email) {
   return this.findOne({ email: email.toLowerCase() });
 };
 
-// Método estático para buscar usuários ativos
+// MÃ©todo estÃ¡tico para buscar usuÃ¡rios ativos
 userSchema.statics.findActive = function () {
   return this.find({ isActive: true, isSuspended: false });
 };
 
-// Método estático para buscar administradores
+// MÃ©todo estÃ¡tico para buscar administradores
 userSchema.statics.findAdmins = function () {
   return this.find({ isAdmin: true, isActive: true });
 };
 
-// Método para sanitizar dados antes de retornar
+// MÃ©todo para sanitizar dados antes de retornar
 userSchema.methods.sanitize = function () {
   const user = this.toObject();
   delete user.password;

@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+﻿import fetch from 'node-fetch';
 import logger from './logger.js';
 
 export async function verifyTurnstile(token, remoteip = null) {
@@ -6,7 +6,7 @@ export async function verifyTurnstile(token, remoteip = null) {
     const secret = process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY;
     if (!secret || secret === 'your-turnstile-secret-key') {
       if (process.env.NODE_ENV !== 'production') {
-        logger.warn('CLOUDFLARE_TURNSTILE_SECRET_KEY não configurado, pulando verificação');
+        logger.warn('CLOUDFLARE_TURNSTILE_SECRET_KEY nÃ£o configurado, pulando verificaÃ§Ã£o');
       }
       return { success: true }; // Em desenvolvimento, sempre retorna true
     }
@@ -32,7 +32,7 @@ export async function verifyTurnstile(token, remoteip = null) {
     return result;
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      logger.error('Erro na verificação Turnstile:', error);
+      logger.error('Erro na verificaÃ§Ã£o Turnstile:', error);
     }
     return { success: false, 'error-codes': ['internal-error'] };
   }

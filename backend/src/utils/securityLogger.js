@@ -1,15 +1,16 @@
-import SecurityLog from '../models/SecurityLog.js';
+﻿import SecurityLog from '../models/SecurityLog.js';
 import { getClientIP } from './ipUtils.js';
+import logger from './logger.js';
 
-// ===== LOGGER DE SEGURANÇA =====
+// ===== LOGGER DE SEGURANÃ‡A =====
 
 /**
- * Criar log de segurança
+ * Criar log de seguranÃ§a
  * @param {string} eventType - Tipo do evento
  * @param {string} severity - Severidade (low, medium, high, critical)
- * @param {string} description - Descrição do evento
- * @param {Object} req - Objeto de requisição Express
- * @param {string} userId - ID do usuário (opcional)
+ * @param {string} description - DescriÃ§Ã£o do evento
+ * @param {Object} req - Objeto de requisiÃ§Ã£o Express
+ * @param {string} userId - ID do usuÃ¡rio (opcional)
  * @param {Object} additionalData - Dados adicionais (opcional)
  */
 export const createSecurityLog = async (
@@ -21,10 +22,10 @@ export const createSecurityLog = async (
   additionalData = {}
 ) => {
   try {
-    // Validar parâmetros
+    // Validar parÃ¢metros
     if (!eventType || !severity || !description) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Security log: Parâmetros inválidos', { eventType, severity, description });
+        logger.error('Security log: ParÃ¢metros invÃ¡lidos', { eventType, severity, description });
       }
       return;
     }
@@ -33,12 +34,12 @@ export const createSecurityLog = async (
     const validSeverities = ['low', 'medium', 'high', 'critical'];
     if (!validSeverities.includes(severity)) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Security log: Severidade inválida', { severity });
+        logger.error('Security log: Severidade invÃ¡lida', { severity });
       }
       return;
     }
 
-    // Obter informações da requisição
+    // Obter informaÃ§Ãµes da requisiÃ§Ã£o
     const requestInfo = req
       ? {
           method: req.method,
@@ -50,7 +51,7 @@ export const createSecurityLog = async (
         }
       : null;
 
-    // Criar log de segurança
+    // Criar log de seguranÃ§a
     const securityLog = new SecurityLog({
       eventType,
       severity,
@@ -73,31 +74,26 @@ export const createSecurityLog = async (
 
     // Log no console para desenvolvimento
     if (process.env.NODE_ENV === 'development') {
-      if (process.env.NODE_ENV !== 'production') {
-        // Console log removido}]: ${eventType} - ${description}`);
-      }
+      // eslint-disable-next-line no-console
+      logger.info(`[SecurityLog] ${eventType} - ${description}`);
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error creating security log:', error);
+      logger.error('Error creating security log:', error);
     }
     // Fallback: log no console se não conseguir salvar no banco
-    // Console log removido}]: ${eventType} - ${description}`
-    );
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Additional data:', additionalData);
-    }
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Error:', error.message);
+      logger.error('Additional data:', additionalData);
+      if (error && error.message) logger.error('Error message:', error.message);
     }
   }
 };
 
 /**
- * Criar log de segurança sem requisição (para eventos do sistema)
+ * Criar log de seguranÃ§a sem requisiÃ§Ã£o (para eventos do sistema)
  * @param {string} eventType - Tipo do evento
  * @param {string} severity - Severidade
- * @param {string} description - Descrição do evento
+ * @param {string} description - DescriÃ§Ã£o do evento
  * @param {Object} additionalData - Dados adicionais
  */
 export const createSystemSecurityLog = async (
@@ -128,25 +124,24 @@ export const createSystemSecurityLog = async (
     await securityLog.save();
 
     if (process.env.NODE_ENV === 'development') {
-      // Console log removido}]: ${eventType} - ${description}`
-      );
+      // eslint-disable-next-line no-console
+      logger.info(`[SystemSecurityLog] ${eventType} - ${description}`);
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error creating system security log:', error);
+      logger.error('Error creating system security log:', error);
     }
-    // Console log removido}]: ${eventType} - ${description}`
-    );
+    // fallback handled
   }
 };
 
 /**
  * Criar log de auditoria
- * @param {string} action - Ação realizada
+ * @param {string} action - AÃ§Ã£o realizada
  * @param {string} resource - Recurso afetado
- * @param {Object} req - Objeto de requisição
- * @param {string} userId - ID do usuário
- * @param {Object} changes - Mudanças realizadas
+ * @param {Object} req - Objeto de requisiÃ§Ã£o
+ * @param {string} userId - ID do usuÃ¡rio
+ * @param {Object} changes - MudanÃ§as realizadas
  */
 export const createAuditLog = async (action, resource, req, userId, changes = {}) => {
   try {
@@ -173,13 +168,12 @@ export const createAuditLog = async (action, resource, req, userId, changes = {}
     await auditLog.save();
 
     if (process.env.NODE_ENV === 'development') {
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`📋 Audit Log: ${action} em ${resource} por usuário ${userId}`);
-      }
+      // eslint-disable-next-line no-console
+      logger.info(`Audit Log: ${action} em ${resource} por usuário ${userId}`);
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error creating audit log:', error);
+      logger.error('Error creating audit log:', error);
     }
   }
 };
@@ -187,8 +181,8 @@ export const createAuditLog = async (action, resource, req, userId, changes = {}
 /**
  * Criar log de acesso
  * @param {string} resource - Recurso acessado
- * @param {Object} req - Objeto de requisição
- * @param {string} userId - ID do usuário
+ * @param {Object} req - Objeto de requisiÃ§Ã£o
+ * @param {string} userId - ID do usuÃ¡rio
  * @param {Object} metadata - Metadados adicionais
  */
 export const createAccessLog = async (resource, req, userId, metadata = {}) => {
@@ -215,20 +209,20 @@ export const createAccessLog = async (resource, req, userId, metadata = {}) => {
     await accessLog.save();
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error creating access log:', error);
+      logger.error('Error creating access log:', error);
     }
   }
 };
 
 /**
- * Criar log de modificação de dados
+ * Criar log de modificaÃ§Ã£o de dados
  * @param {string} resource - Recurso modificado
- * @param {string} action - Ação realizada
- * @param {Object} req - Objeto de requisição
- * @param {string} userId - ID do usuário
- * @param {Object} changes - Mudanças realizadas
+ * @param {string} action - AÃ§Ã£o realizada
+ * @param {Object} req - Objeto de requisiÃ§Ã£o
+ * @param {string} userId - ID do usuÃ¡rio
+ * @param {Object} changes - MudanÃ§as realizadas
  */
-export const createDataModificationLog = async (resource, action, req, userId, changes = {}) => {
+export const createDataModificationLog = (resource, action, req, userId, changes = {}) => {
   try {
     const modificationLog = new SecurityLog({
       eventType: 'data_modification',
@@ -254,27 +248,27 @@ export const createDataModificationLog = async (resource, action, req, userId, c
 
     if (process.env.NODE_ENV === 'development') {
       if (process.env.NODE_ENV !== 'production') {
-        console.log(`✏️ Data Modification Log: ${action} em ${resource} por usuário ${userId}`);
+        logger.info(`âœï¸ Data Modification Log: ${action} em ${resource} por usuÃ¡rio ${userId}`);
       }
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error creating data modification log:', error);
+      logger.error('Error creating data modification log:', error);
     }
   }
 };
 
-// ===== FUNÇÕES AUXILIARES =====
+// ===== FUNÃ‡Ã•ES AUXILIARES =====
 
 /**
- * Sanitizar headers da requisição (remover dados sensíveis)
- * @param {Object} headers - Headers da requisição
+ * Sanitizar headers da requisiÃ§Ã£o (remover dados sensÃ­veis)
+ * @param {Object} headers - Headers da requisiÃ§Ã£o
  * @returns {Object} Headers sanitizados
  */
 const sanitizeHeaders = headers => {
   const sanitized = { ...headers };
 
-  // Remover headers sensíveis
+  // Remover headers sensÃ­veis
   const sensitiveHeaders = ['authorization', 'cookie', 'x-api-key', 'x-auth-token', 'x-csrf-token'];
 
   sensitiveHeaders.forEach(header => {
@@ -287,9 +281,9 @@ const sanitizeHeaders = headers => {
 };
 
 /**
- * Obter informações de geolocalização
- * @param {Object} req - Objeto de requisição
- * @returns {Object} Informações de geolocalização
+ * Obter informaÃ§Ãµes de geolocalizaÃ§Ã£o
+ * @param {Object} req - Objeto de requisiÃ§Ã£o
+ * @returns {Object} InformaÃ§Ãµes de geolocalizaÃ§Ã£o
  */
 const getGeolocation = req => {
   return {
@@ -301,25 +295,25 @@ const getGeolocation = req => {
 };
 
 /**
- * Obter informações do Cloudflare
- * @param {Object} req - Objeto de requisição
- * @returns {Object} Informações do Cloudflare
+ * Obter informaÃ§Ãµes do Cloudflare
+ * @param {Object} req - Objeto de requisiÃ§Ã£o
+ * @returns {Object} InformaÃ§Ãµes do Cloudflare
  */
 const getCloudflareInfo = req => {
   return {
     rayId: req.headers['cf-ray'] || null,
     country: req.headers['cf-ipcountry'] || null,
-    threatScore: parseInt(req.headers['cf-threat-score'], 10) || 0,
-    botScore: parseInt(req.headers['cf-bot-score'], 10) || 0,
+    threatScore: parseInt(req.headers['cf-threat-score'], 10, 10) || 0,
+    botScore: parseInt(req.headers['cf-bot-score'], 10, 10) || 0,
     visitor: req.headers['cf-visitor'] || null,
     cacheStatus: req.headers['cf-cache-status'] || null
   };
 };
 
 /**
- * Obter estatísticas de logs de segurança
- * @param {Object} filters - Filtros para as estatísticas
- * @returns {Object} Estatísticas dos logs
+ * Obter estatÃ­sticas de logs de seguranÃ§a
+ * @param {Object} filters - Filtros para as estatÃ­sticas
+ * @returns {Object} EstatÃ­sticas dos logs
  */
 export const getSecurityLogStats = async (filters = {}) => {
   try {
@@ -389,16 +383,16 @@ export const getSecurityLogStats = async (filters = {}) => {
     return stats;
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error getting security log stats:', error);
+      logger.error('Error getting security log stats:', error);
     }
     return [];
   }
 };
 
 /**
- * Limpar logs antigos (manutenção)
- * @param {number} daysToKeep - Número de dias para manter
- * @returns {number} Número de logs removidos
+ * Limpar logs antigos (manutenÃ§Ã£o)
+ * @param {number} daysToKeep - NÃºmero de dias para manter
+ * @returns {number} NÃºmero de logs removidos
  */
 export const cleanupOldLogs = async (daysToKeep = 90) => {
   try {
@@ -407,19 +401,19 @@ export const cleanupOldLogs = async (daysToKeep = 90) => {
 
     const result = await SecurityLog.deleteMany({
       createdAt: { $lt: cutoffDate },
-      severity: { $in: ['low', 'medium'] } // Manter logs críticos e de alta severidade
+      severity: { $in: ['low', 'medium'] } // Manter logs crÃ­ticos e de alta severidade
     });
 
     if (process.env.NODE_ENV === 'development') {
       if (process.env.NODE_ENV !== 'production') {
-        console.log(`🧹 Cleaned up ${result.deletedCount} old security logs`);
+        logger.info(`ðŸ§¹ Cleaned up ${result.deletedCount} old security logs`);
       }
     }
 
     return result.deletedCount;
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error cleaning up old logs:', error);
+      logger.error('Error cleaning up old logs:', error);
     }
     return 0;
   }

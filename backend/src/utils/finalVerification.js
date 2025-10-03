@@ -1,12 +1,13 @@
-/* eslint-disable no-console */
-// Sistema de Verificação Final - AGROISYNC
-// Verificação completa de segurança, funcionalidades e configurações
+﻿/* eslint-disable no-console */
+// Sistema de VerificaÃ§Ã£o Final - AGROISYNC
+// VerificaÃ§Ã£o completa de seguranÃ§a, funcionalidades e configuraÃ§Ãµes
 
 import configValidator from './configValidator.js';
 import criticalDataValidator from './criticalDataValidator.js';
 // import advancedSecuritySystem from '../middleware/advancedSecurity.js'; // Removido - middleware duplicado
 import performanceMonitor from '../services/performanceMonitor.js';
 import auditSystem from '../services/auditService.js';
+import logger from './logger.js';
 
 class FinalVerificationSystem {
   constructor() {
@@ -26,16 +27,16 @@ class FinalVerificationSystem {
     };
   }
 
-  // Executar verificação completa
+  // Executar verificaÃ§Ã£o completa
   async runCompleteVerification() {
     if (process.env.NODE_ENV !== 'production') {
-      console.log('🔍 Iniciando verificação final completa...');
+      logger.info('ðŸ” Iniciando verificaÃ§Ã£o final completa...');
     }
     try {
-      // Verificar configurações
+      // Verificar configuraÃ§Ãµes
       await this.verifyConfigurations();
 
-      // Verificar segurança
+      // Verificar seguranÃ§a
       await this.verifySecurity();
 
       // Verificar funcionalidades
@@ -47,35 +48,35 @@ class FinalVerificationSystem {
       // Verificar conformidade
       await this.verifyCompliance();
 
-      // Gerar relatório
+      // Gerar relatÃ³rio
       const report = this.generateReport();
 
       if (process.env.NODE_ENV !== 'production') {
-        console.log('✅ Verificação final concluída!');
+        logger.info('âœ… VerificaÃ§Ã£o final concluÃ­da!');
       }
       return report;
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('❌ Erro na verificação final:', error);
+        logger.error('âŒ Erro na verificaÃ§Ã£o final:', error);
       }
       throw error;
     }
   }
 
-  // Verificar configurações
+  // Verificar configuraÃ§Ãµes
   verifyConfigurations() {
     if (process.env.NODE_ENV !== 'production') {
-      console.log('📋 Verificando configurações...');
+      logger.info('ðŸ“‹ Verificando configuraÃ§Ãµes...');
     }
     try {
       const configValidation = configValidator.validateAll();
 
-      // Verificar configurações críticas
+      // Verificar configuraÃ§Ãµes crÃ­ticas
       configValidation.errors.forEach(error => {
         this.addCheck('configuration', 'CRITICAL', error, false);
       });
 
-      // Verificar configurações de aviso
+      // Verificar configuraÃ§Ãµes de aviso
       configValidation.warnings.forEach(warning => {
         this.addCheck('configuration', 'WARNING', warning, true);
       });
@@ -89,25 +90,25 @@ class FinalVerificationSystem {
       }
 
       if (process.env.NODE_ENV !== 'production') {
-        console.log('✅ Configurações verificadas');
+        logger.info('âœ… ConfiguraÃ§Ãµes verificadas');
       }
     } catch (error) {
       this.addCheck(
         'configuration',
         'CRITICAL',
-        `Erro na verificação de configurações: ${error.message}`,
+        `Erro na verificaÃ§Ã£o de configuraÃ§Ãµes: ${error.message}`,
         false
       );
     }
   }
 
-  // Verificar segurança
+  // Verificar seguranÃ§a
   async verifySecurity() {
     if (process.env.NODE_ENV !== 'production') {
-      console.log('🔒 Verificando segurança...');
+      logger.info('ðŸ”’ Verificando seguranÃ§a...');
     }
     try {
-      // Verificar sistema de segurança avançado (removido - middleware não existe mais)
+      // Verificar sistema de seguranÃ§a avanÃ§ado (removido - middleware nÃ£o existe mais)
       const securityStats = { blockedIPs: 0, failedLogins: 0 };
 
       if (securityStats.blockedIPs > 0) {
@@ -123,7 +124,7 @@ class FinalVerificationSystem {
         );
       }
 
-      // Verificar validação de dados críticos
+      // Verificar validaÃ§Ã£o de dados crÃ­ticos
       const testData = {
         cpf: '12345678901',
         email: 'test@example.com',
@@ -134,9 +135,9 @@ class FinalVerificationSystem {
       const validationResult = criticalDataValidator.validateCriticalData(testData);
 
       if (!validationResult.valid) {
-        this.addCheck('security', 'CRITICAL', 'Validação de dados críticos falhou', false);
+        this.addCheck('security', 'CRITICAL', 'ValidaÃ§Ã£o de dados crÃ­ticos falhou', false);
       } else {
-        this.addCheck('security', 'PASS', 'Validação de dados críticos funcionando', true);
+        this.addCheck('security', 'PASS', 'ValidaÃ§Ã£o de dados crÃ­ticos funcionando', true);
       }
 
       // Verificar sistema de auditoria
@@ -148,13 +149,13 @@ class FinalVerificationSystem {
       }
 
       if (process.env.NODE_ENV !== 'production') {
-        console.log('✅ Segurança verificada');
+        logger.info('âœ… SeguranÃ§a verificada');
       }
     } catch (error) {
       this.addCheck(
         'security',
         'CRITICAL',
-        `Erro na verificação de segurança: ${error.message}`,
+        `Erro na verificaÃ§Ã£o de seguranÃ§a: ${error.message}`,
         false
       );
     }
@@ -163,7 +164,7 @@ class FinalVerificationSystem {
   // Verificar funcionalidades
   verifyFunctionalities() {
     if (process.env.NODE_ENV !== 'production') {
-      console.log('⚙️ Verificando funcionalidades...');
+      logger.info('âš™ï¸ Verificando funcionalidades...');
     }
     try {
       // Verificar sistema de monitoramento de performance
@@ -180,31 +181,31 @@ class FinalVerificationSystem {
         this.addCheck(
           'functionality',
           'WARNING',
-          'Sistema de monitoramento de performance não ativo',
+          'Sistema de monitoramento de performance nÃ£o ativo',
           true
         );
       }
 
       // Verificar sistema de backup
-      // (Implementar verificação real do sistema de backup)
+      // (Implementar verificaÃ§Ã£o real do sistema de backup)
       this.addCheck('functionality', 'PASS', 'Sistema de backup configurado', true);
 
       // Verificar sistema de logs
-      // (Implementar verificação real do sistema de logs)
+      // (Implementar verificaÃ§Ã£o real do sistema de logs)
       this.addCheck('functionality', 'PASS', 'Sistema de logs funcionando', true);
 
       // Verificar sistema de testes
-      // (Implementar verificação real do sistema de testes)
+      // (Implementar verificaÃ§Ã£o real do sistema de testes)
       this.addCheck('functionality', 'PASS', 'Sistema de testes configurado', true);
 
       if (process.env.NODE_ENV !== 'production') {
-        console.log('✅ Funcionalidades verificadas');
+        logger.info('âœ… Funcionalidades verificadas');
       }
     } catch (error) {
       this.addCheck(
         'functionality',
         'CRITICAL',
-        `Erro na verificação de funcionalidades: ${error.message}`,
+        `Erro na verificaÃ§Ã£o de funcionalidades: ${error.message}`,
         false
       );
     }
@@ -213,7 +214,7 @@ class FinalVerificationSystem {
   // Verificar performance
   verifyPerformance() {
     if (process.env.NODE_ENV !== 'production') {
-      console.log('📊 Verificando performance...');
+      logger.info('ðŸ“Š Verificando performance...');
     }
     try {
       const perfStats = performanceMonitor.getStats();
@@ -270,13 +271,13 @@ class FinalVerificationSystem {
       }
 
       if (process.env.NODE_ENV !== 'production') {
-        console.log('✅ Performance verificada');
+        logger.info('âœ… Performance verificada');
       }
     } catch (error) {
       this.addCheck(
         'performance',
         'CRITICAL',
-        `Erro na verificação de performance: ${error.message}`,
+        `Erro na verificaÃ§Ã£o de performance: ${error.message}`,
         false
       );
     }
@@ -285,7 +286,7 @@ class FinalVerificationSystem {
   // Verificar conformidade
   verifyCompliance() {
     if (process.env.NODE_ENV !== 'production') {
-      console.log('📋 Verificando conformidade...');
+      logger.info('ðŸ“‹ Verificando conformidade...');
     }
     try {
       // Verificar LGPD
@@ -294,26 +295,26 @@ class FinalVerificationSystem {
       // Verificar acessibilidade
       this.addCheck('compliance', 'PASS', 'Acessibilidade WCAG 2.1 AA implementada', true);
 
-      // Verificar segurança de dados
-      this.addCheck('compliance', 'PASS', 'Segurança de dados implementada', true);
+      // Verificar seguranÃ§a de dados
+      this.addCheck('compliance', 'PASS', 'SeguranÃ§a de dados implementada', true);
 
       // Verificar auditoria
       this.addCheck('compliance', 'PASS', 'Sistema de auditoria implementado', true);
 
       if (process.env.NODE_ENV !== 'production') {
-        console.log('✅ Conformidade verificada');
+        logger.info('âœ… Conformidade verificada');
       }
     } catch (error) {
       this.addCheck(
         'compliance',
         'CRITICAL',
-        `Erro na verificação de conformidade: ${error.message}`,
+        `Erro na verificaÃ§Ã£o de conformidade: ${error.message}`,
         false
       );
     }
   }
 
-  // Adicionar verificação
+  // Adicionar verificaÃ§Ã£o
   addCheck(category, level, message, passed) {
     const check = {
       category,
@@ -338,7 +339,7 @@ class FinalVerificationSystem {
     }
   }
 
-  // Gerar relatório
+  // Gerar relatÃ³rio
   generateReport() {
     const report = {
       timestamp: new Date(),
@@ -357,38 +358,38 @@ class FinalVerificationSystem {
       recommendations: this.generateRecommendations()
     };
 
-    // Log do relatório
+    // Log do relatÃ³rio
     if (process.env.NODE_ENV !== 'production') {
-      console.log('\n📊 RELATÓRIO DE VERIFICAÇÃO FINAL:');
+      logger.info('\nðŸ“Š RELATÃ“RIO DE VERIFICAÃ‡ÃƒO FINAL:');
     }
     if (process.env.NODE_ENV !== 'production') {
-      console.log('=====================================');
+      logger.info('=====================================');
     }
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`✅ Passou: ${report.summary.passed}`);
+      logger.info(`âœ… Passou: ${report.summary.passed}`);
     }
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`❌ Falhou: ${report.summary.failed}`);
+      logger.info(`âŒ Falhou: ${report.summary.failed}`);
     }
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`⚠️ Avisos: ${report.summary.warnings}`);
+      logger.info(`âš ï¸ Avisos: ${report.summary.warnings}`);
     }
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`🚨 Críticos: ${report.summary.critical}`);
+      logger.info(`ðŸš¨ CrÃ­ticos: ${report.summary.critical}`);
     }
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`📈 Taxa de sucesso: ${report.summary.successRate}%`);
+      logger.info(`ðŸ“ˆ Taxa de sucesso: ${report.summary.successRate}%`);
     }
     if (report.summary.critical > 0) {
       if (process.env.NODE_ENV !== 'production') {
-        console.log('\n🚨 PROBLEMAS CRÍTICOS ENCONTRADOS:');
+        logger.info('\nðŸš¨ PROBLEMAS CRÃTICOS ENCONTRADOS:');
       }
       Object.values(this.checks)
         .flat()
         .forEach(check => {
           if (check.level === 'CRITICAL' && !check.passed) {
             if (process.env.NODE_ENV !== 'production') {
-              console.log(`❌ ${check.message}`);
+              logger.info(`âŒ ${check.message}`);
             }
           }
         });
@@ -396,14 +397,14 @@ class FinalVerificationSystem {
 
     if (report.summary.warnings > 0) {
       if (process.env.NODE_ENV !== 'production') {
-        console.log('\n⚠️ AVISOS:');
+        logger.info('\nâš ï¸ AVISOS:');
       }
       Object.values(this.checks)
         .flat()
         .forEach(check => {
           if (check.level === 'WARNING' && !check.passed) {
             if (process.env.NODE_ENV !== 'production') {
-              console.log(`⚠️ ${check.message}`);
+              logger.info(`âš ï¸ ${check.message}`);
             }
           }
         });
@@ -412,7 +413,7 @@ class FinalVerificationSystem {
     return report;
   }
 
-  // Gerar recomendações
+  // Gerar recomendaÃ§Ãµes
   generateRecommendations() {
     const recommendations = [];
 
@@ -420,7 +421,7 @@ class FinalVerificationSystem {
       recommendations.push({
         priority: 'HIGH',
         category: 'SECURITY',
-        message: 'Corrigir problemas críticos de segurança antes do deploy'
+        message: 'Corrigir problemas crÃ­ticos de seguranÃ§a antes do deploy'
       });
     }
 
@@ -428,7 +429,7 @@ class FinalVerificationSystem {
       recommendations.push({
         priority: 'MEDIUM',
         category: 'CONFIGURATION',
-        message: 'Revisar configurações com avisos'
+        message: 'Revisar configuraÃ§Ãµes com avisos'
       });
     }
 
@@ -436,14 +437,14 @@ class FinalVerificationSystem {
       recommendations.push({
         priority: 'HIGH',
         category: 'QUALITY',
-        message: 'Taxa de sucesso baixa - revisar implementação'
+        message: 'Taxa de sucesso baixa - revisar implementaÃ§Ã£o'
       });
     }
 
     return recommendations;
   }
 
-  // Verificar se está pronto para produção
+  // Verificar se estÃ¡ pronto para produÃ§Ã£o
   isProductionReady() {
     return this.results.critical === 0 && this.results.failed === 0;
   }
@@ -462,7 +463,7 @@ class FinalVerificationSystem {
   }
 }
 
-// Instância única
+// InstÃ¢ncia Ãºnica
 const finalVerificationSystem = new FinalVerificationSystem();
 
 export default finalVerificationSystem;

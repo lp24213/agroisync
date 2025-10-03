@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import { body, validationResult } from 'express-validator';
 import rateLimit from 'express-rate-limit';
 import logger from '../utils/logger.js';
@@ -8,14 +8,14 @@ const router = express.Router();
 // Rate limiting para APIs externas
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // máximo 100 requests por IP por janela
+  max: 100, // mÃ¡ximo 100 requests por IP por janela
   message: {
     success: false,
     message: 'Muitas tentativas. Tente novamente em 15 minutos.'
   }
 });
 
-// Validação de CPF
+// ValidaÃ§Ã£o de CPF
 const validateCPF = cpf => {
   cpf = cpf.replace(/[^\d]+/g, '');
   if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
@@ -24,32 +24,32 @@ const validateCPF = cpf => {
 
   let sum = 0;
   for (let i = 0; i < 9; i++) {
-    sum += parseInt(cpf.charAt(i), 10) * (10 - i);
+    sum += parseInt(cpf.charAt(i, 10, 10), 10) * (10 - i);
   }
   let remainder = (sum * 10) % 11;
   if (remainder === 10 || remainder === 11) {
     remainder = 0;
   }
-  if (remainder !== parseInt(cpf.charAt(9), 10)) {
+  if (remainder !== parseInt(cpf.charAt(9, 10, 10), 10)) {
     return false;
   }
 
   sum = 0;
   for (let i = 0; i < 10; i++) {
-    sum += parseInt(cpf.charAt(i), 10) * (11 - i);
+    sum += parseInt(cpf.charAt(i, 10, 10), 10) * (11 - i);
   }
   remainder = (sum * 10) % 11;
   if (remainder === 10 || remainder === 11) {
     remainder = 0;
   }
-  if (remainder !== parseInt(cpf.charAt(10), 10)) {
+  if (remainder !== parseInt(cpf.charAt(10, 10, 10), 10)) {
     return false;
   }
 
   return true;
 };
 
-// Validação de CNPJ
+// ValidaÃ§Ã£o de CNPJ
 const validateCNPJ = cnpj => {
   cnpj = cnpj.replace(/[^\d]+/g, '');
   if (cnpj.length !== 14 || /^(\d)\1{13}$/.test(cnpj)) {
@@ -70,7 +70,7 @@ const validateCNPJ = cnpj => {
   }
 
   let result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
-  if (result !== parseInt(digits.charAt(0), 10)) {
+  if (result !== parseInt(digits.charAt(0, 10, 10), 10)) {
     return false;
   }
 
@@ -87,14 +87,14 @@ const validateCNPJ = cnpj => {
   }
 
   result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
-  if (result !== parseInt(digits.charAt(1), 10)) {
+  if (result !== parseInt(digits.charAt(1, 10, 10), 10)) {
     return false;
   }
 
   return true;
 };
 
-// Validação de CEP
+// ValidaÃ§Ã£o de CEP
 const validateCEP = cep => {
   cep = cep.replace(/[^\d]+/g, '');
   return cep.length === 8 && /^\d{8}$/.test(cep);
@@ -104,30 +104,30 @@ const validateCEP = cep => {
 router.post(
   '/validar-cpf',
   apiLimiter,
-  [body('cpf').isLength({ min: 11, max: 14 }).withMessage('CPF inválido')],
+  [body('cpf').isLength({ min: 11, max: 14 }).withMessage('CPF invÃ¡lido')],
   (req, res) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
 
       const { cpf } = req.body;
 
-      // Validação básica do CPF
+      // ValidaÃ§Ã£o bÃ¡sica do CPF
       if (!validateCPF(cpf)) {
         return res.status(400).json({
           success: false,
-          message: 'CPF inválido'
+          message: 'CPF invÃ¡lido'
         });
       }
 
-      // Simular consulta à Receita Federal
-      // Em produção, usar API real da Receita
+      // Simular consulta Ã  Receita Federal
+      // Em produÃ§Ã£o, usar API real da Receita
       const cpfData = {
         cpf: cpf.replace(/[^\d]+/g, ''),
         nome: 'Nome da pessoa',
@@ -138,7 +138,7 @@ router.post(
           logradouro: 'Rua Exemplo',
           numero: '123',
           bairro: 'Centro',
-          cidade: 'Cuiabá',
+          cidade: 'CuiabÃ¡',
           uf: 'MT',
           cep: '78000-000'
         },
@@ -149,7 +149,7 @@ router.post(
 
       res.json({
         success: true,
-        message: 'CPF válido e consultado com sucesso',
+        message: 'CPF vÃ¡lido e consultado com sucesso',
         data: cpfData
       });
     } catch (error) {
@@ -166,30 +166,30 @@ router.post(
 router.post(
   '/validar-cnpj',
   apiLimiter,
-  [body('cnpj').isLength({ min: 14, max: 18 }).withMessage('CNPJ inválido')],
+  [body('cnpj').isLength({ min: 14, max: 18 }).withMessage('CNPJ invÃ¡lido')],
   (req, res) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
 
       const { cnpj } = req.body;
 
-      // Validação básica do CNPJ
+      // ValidaÃ§Ã£o bÃ¡sica do CNPJ
       if (!validateCNPJ(cnpj)) {
         return res.status(400).json({
           success: false,
-          message: 'CNPJ inválido'
+          message: 'CNPJ invÃ¡lido'
         });
       }
 
-      // Simular consulta à Receita Federal
-      // Em produção, usar API real da Receita
+      // Simular consulta Ã  Receita Federal
+      // Em produÃ§Ã£o, usar API real da Receita
       const cnpjData = {
         cnpj: cnpj.replace(/[^\d]+/g, ''),
         razaoSocial: 'Empresa Exemplo LTDA',
@@ -201,13 +201,13 @@ router.post(
           logradouro: 'Rua Comercial',
           numero: '456',
           bairro: 'Centro',
-          cidade: 'Cuiabá',
+          cidade: 'CuiabÃ¡',
           uf: 'MT',
           cep: '78000-000'
         },
         atividade: {
-          principal: 'Comércio de produtos agrícolas',
-          secundarias: ['Consultoria agrícola', 'Venda de insumos']
+          principal: 'ComÃ©rcio de produtos agrÃ­colas',
+          secundarias: ['Consultoria agrÃ­cola', 'Venda de insumos']
         },
         consultadoEm: new Date().toISOString()
       };
@@ -216,7 +216,7 @@ router.post(
 
       res.json({
         success: true,
-        message: 'CNPJ válido e consultado com sucesso',
+        message: 'CNPJ vÃ¡lido e consultado com sucesso',
         data: cnpjData
       });
     } catch (error) {
@@ -233,36 +233,36 @@ router.post(
 router.post(
   '/consultar-cep',
   apiLimiter,
-  [body('cep').isLength({ min: 8, max: 9 }).withMessage('CEP inválido')],
+  [body('cep').isLength({ min: 8, max: 9 }).withMessage('CEP invÃ¡lido')],
   (req, res) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
 
       const { cep } = req.body;
 
-      // Validação básica do CEP
+      // ValidaÃ§Ã£o bÃ¡sica do CEP
       if (!validateCEP(cep)) {
         return res.status(400).json({
           success: false,
-          message: 'CEP inválido'
+          message: 'CEP invÃ¡lido'
         });
       }
 
       // Simular consulta aos Correios
-      // Em produção, usar API real dos Correios
+      // Em produÃ§Ã£o, usar API real dos Correios
       const cepData = {
         cep: cep.replace(/[^\d]+/g, ''),
         logradouro: 'Rua dos Correios',
         complemento: '',
         bairro: 'Centro',
-        cidade: 'Cuiabá',
+        cidade: 'CuiabÃ¡',
         uf: 'MT',
         ibge: '5103403',
         gia: '',
@@ -292,14 +292,14 @@ router.post(
 router.post(
   '/consultar-ibge',
   apiLimiter,
-  [body('codigo').isLength({ min: 7, max: 7 }).withMessage('Código IBGE inválido')],
+  [body('codigo').isLength({ min: 7, max: 7 }).withMessage('CÃ³digo IBGE invÃ¡lido')],
   (req, res) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
@@ -307,10 +307,10 @@ router.post(
       const { codigo } = req.body;
 
       // Simular consulta ao IBGE
-      // Em produção, usar API real do IBGE
+      // Em produÃ§Ã£o, usar API real do IBGE
       const ibgeData = {
         codigo,
-        nome: 'Cuiabá',
+        nome: 'CuiabÃ¡',
         uf: 'MT',
         regiao: 'Centro-Oeste',
         populacao: '650912',
@@ -320,7 +320,7 @@ router.post(
         consultadoEm: new Date().toISOString()
       };
 
-      logger.info(`Código IBGE consultado: ${codigo}`);
+      logger.info(`CÃ³digo IBGE consultado: ${codigo}`);
 
       res.json({
         success: true,
@@ -341,14 +341,14 @@ router.post(
 router.post(
   '/consultar-baidu',
   apiLimiter,
-  [body('query').isLength({ min: 1, max: 100 }).withMessage('Query inválida')],
+  [body('query').isLength({ min: 1, max: 100 }).withMessage('Query invÃ¡lida')],
   (req, res) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
@@ -356,18 +356,18 @@ router.post(
       const { query } = req.body;
 
       // Simular consulta ao Baidu
-      // Em produção, usar API real do Baidu
+      // Em produÃ§Ã£o, usar API real do Baidu
       const baiduData = {
         query,
         results: [
           {
             title: 'Resultado 1 - AgroSync',
-            description: 'Descrição do resultado 1',
+            description: 'DescriÃ§Ã£o do resultado 1',
             url: 'https://agroisync.com/resultado1'
           },
           {
-            title: 'Resultado 2 - Produtos Agrícolas',
-            description: 'Descrição do resultado 2',
+            title: 'Resultado 2 - Produtos AgrÃ­colas',
+            description: 'DescriÃ§Ã£o do resultado 2',
             url: 'https://agroisync.com/resultado2'
           }
         ],
@@ -396,14 +396,14 @@ router.post(
 router.post(
   '/consultar-google',
   apiLimiter,
-  [body('query').isLength({ min: 1, max: 100 }).withMessage('Query inválida')],
+  [body('query').isLength({ min: 1, max: 100 }).withMessage('Query invÃ¡lida')],
   (req, res) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
@@ -411,7 +411,7 @@ router.post(
       const { query } = req.body;
 
       // Simular consulta ao Google
-      // Em produção, usar API real do Google
+      // Em produÃ§Ã£o, usar API real do Google
       const googleData = {
         query,
         results: [

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 // Staking Record schema for user staking activities
 const stakingRecordSchema = new mongoose.Schema({
@@ -60,7 +60,7 @@ const stakingRecordSchema = new mongoose.Schema({
   }
 });
 
-// Índices para melhor performance
+// Ãndices para melhor performance
 stakingRecordSchema.index({ user: 1 });
 stakingRecordSchema.index({ pool: 1 });
 stakingRecordSchema.index({ isActive: 1 });
@@ -73,7 +73,7 @@ stakingRecordSchema.pre('save', function (next) {
   next();
 });
 
-// Método para calcular recompensas
+// MÃ©todo para calcular recompensas
 stakingRecordSchema.methods.calculateRewards = function () {
   if (!this.isActive || this.status !== 'active') {
     return 0;
@@ -87,10 +87,10 @@ stakingRecordSchema.methods.calculateRewards = function () {
   return this.rewards;
 };
 
-// Método para iniciar unstaking
+// MÃ©todo para iniciar unstaking
 stakingRecordSchema.methods.startUnstaking = function () {
   if (this.status !== 'active') {
-    throw new Error('Staking não está ativo');
+    throw new Error('Staking nÃ£o estÃ¡ ativo');
   }
 
   this.status = 'unstaking';
@@ -98,10 +98,10 @@ stakingRecordSchema.methods.startUnstaking = function () {
   return this.save();
 };
 
-// Método para completar unstaking
+// MÃ©todo para completar unstaking
 stakingRecordSchema.methods.completeUnstaking = function () {
   if (this.status !== 'unstaking') {
-    throw new Error('Unstaking não foi iniciado');
+    throw new Error('Unstaking nÃ£o foi iniciado');
   }
 
   this.status = 'completed';
@@ -109,7 +109,7 @@ stakingRecordSchema.methods.completeUnstaking = function () {
   return this.save();
 };
 
-// Método para obter registros de staking de um usuário
+// MÃ©todo para obter registros de staking de um usuÃ¡rio
 stakingRecordSchema.statics.findByUser = function (userId, status = null) {
   const query = { user: userId };
   if (status) {
@@ -119,7 +119,7 @@ stakingRecordSchema.statics.findByUser = function (userId, status = null) {
   return this.find(query).populate('pool', 'name apy token').sort({ stakedAt: -1 });
 };
 
-// Método para obter registros ativos de um pool
+// MÃ©todo para obter registros ativos de um pool
 stakingRecordSchema.statics.findActiveByPool = function (poolId) {
   return this.find({
     pool: poolId,

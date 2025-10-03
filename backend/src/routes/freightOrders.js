@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import { body, validationResult } from 'express-validator';
 import FreightOrder from '../models/FreightOrder.js';
 import User from '../models/User.js';
@@ -140,23 +140,23 @@ const router = express.Router();
  *       201:
  *         description: Pedido de frete criado com sucesso
  *       400:
- *         description: Dados inválidos
+ *         description: Dados invÃ¡lidos
  */
 router.post(
   '/',
   auth,
   [
-    body('sellerId').isMongoId().withMessage('ID do vendedor inválido'),
-    body('origin.address').notEmpty().withMessage('Endereço de origem é obrigatório'),
-    body('origin.city').notEmpty().withMessage('Cidade de origem é obrigatória'),
-    body('origin.state').notEmpty().withMessage('Estado de origem é obrigatório'),
-    body('destination.address').notEmpty().withMessage('Endereço de destino é obrigatório'),
-    body('destination.city').notEmpty().withMessage('Cidade de destino é obrigatória'),
-    body('destination.state').notEmpty().withMessage('Estado de destino é obrigatório'),
-    body('pickupDate').isISO8601().withMessage('Data de coleta inválida'),
-    body('deliveryDateEstimate').isISO8601().withMessage('Data estimada de entrega inválida'),
-    body('items').isArray({ min: 1 }).withMessage('Pelo menos um item é obrigatório'),
-    body('pricing.basePrice').isNumeric().withMessage('Preço base é obrigatório')
+    body('sellerId').isMongoId().withMessage('ID do vendedor invÃ¡lido'),
+    body('origin.address').notEmpty().withMessage('EndereÃ§o de origem Ã© obrigatÃ³rio'),
+    body('origin.city').notEmpty().withMessage('Cidade de origem Ã© obrigatÃ³ria'),
+    body('origin.state').notEmpty().withMessage('Estado de origem Ã© obrigatÃ³rio'),
+    body('destination.address').notEmpty().withMessage('EndereÃ§o de destino Ã© obrigatÃ³rio'),
+    body('destination.city').notEmpty().withMessage('Cidade de destino Ã© obrigatÃ³ria'),
+    body('destination.state').notEmpty().withMessage('Estado de destino Ã© obrigatÃ³rio'),
+    body('pickupDate').isISO8601().withMessage('Data de coleta invÃ¡lida'),
+    body('deliveryDateEstimate').isISO8601().withMessage('Data estimada de entrega invÃ¡lida'),
+    body('items').isArray({ min: 1 }).withMessage('Pelo menos um item Ã© obrigatÃ³rio'),
+    body('pricing.basePrice').isNumeric().withMessage('PreÃ§o base Ã© obrigatÃ³rio')
   ],
   async (req, res) => {
     try {
@@ -164,7 +164,7 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
@@ -178,10 +178,10 @@ router.post(
       const freightOrder = new FreightOrder(freightOrderData);
       await freightOrder.save();
 
-      // Adicionar evento inicial de criação
+      // Adicionar evento inicial de criaÃ§Ã£o
       await freightOrder.addTrackingEvent('created', {}, 'Pedido de frete criado');
 
-      // Enviar notificação para vendedor
+      // Enviar notificaÃ§Ã£o para vendedor
       const seller = await User.findById(freightOrderData.sellerId);
       if (seller) {
         await emailService.sendFreightOrderNotification({
@@ -196,7 +196,9 @@ router.post(
         });
       }
 
-      logger.info(`Novo pedido de frete criado: ${freightOrder.orderNumber} por usuário ${userId}`);
+      logger.info(
+        `Novo pedido de frete criado: ${freightOrder.orderNumber} por usuÃ¡rio ${userId}`
+      );
 
       res.status(201).json({
         success: true,
@@ -292,7 +294,7 @@ router.post(
  *       200:
  *         description: Rastreamento atualizado com sucesso
  *       404:
- *         description: Pedido de frete não encontrado
+ *         description: Pedido de frete nÃ£o encontrado
  */
 router.post(
   '/:id/tracking',
@@ -300,8 +302,8 @@ router.post(
   [
     body('status')
       .isIn(['accepted', 'picked_up', 'in_transit', 'delayed', 'delivered', 'exception'])
-      .withMessage('Status inválido'),
-    body('location').isObject().withMessage('Localização é obrigatória')
+      .withMessage('Status invÃ¡lido'),
+    body('location').isObject().withMessage('LocalizaÃ§Ã£o Ã© obrigatÃ³ria')
   ],
   async (req, res) => {
     try {
@@ -309,7 +311,7 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
@@ -322,11 +324,11 @@ router.post(
       if (!freightOrder) {
         return res.status(404).json({
           success: false,
-          message: 'Pedido de frete não encontrado'
+          message: 'Pedido de frete nÃ£o encontrado'
         });
       }
 
-      // Verificar se o usuário tem permissão para atualizar
+      // Verificar se o usuÃ¡rio tem permissÃ£o para atualizar
       if (
         freightOrder.carrierId?.toString() !== userId &&
         freightOrder.buyerId?.toString() !== userId &&
@@ -334,14 +336,14 @@ router.post(
       ) {
         return res.status(403).json({
           success: false,
-          message: 'Sem permissão para atualizar este pedido'
+          message: 'Sem permissÃ£o para atualizar este pedido'
         });
       }
 
       // Adicionar evento de rastreamento
       await freightOrder.addTrackingEvent(status, location, description, metadata);
 
-      // Enviar notificações para partes envolvidas
+      // Enviar notificaÃ§Ãµes para partes envolvidas
       const parties = [freightOrder.buyerId, freightOrder.sellerId];
       if (freightOrder.carrierId) {
         parties.push(freightOrder.carrierId);
@@ -405,7 +407,7 @@ router.post(
  *       200:
  *         description: Fechamento assistido por IA iniciado
  *       404:
- *         description: Pedido de frete não encontrado
+ *         description: Pedido de frete nÃ£o encontrado
  */
 router.post('/:id/ai-closure', auth, async (req, res) => {
   try {
@@ -416,22 +418,22 @@ router.post('/:id/ai-closure', auth, async (req, res) => {
     if (!freightOrder) {
       return res.status(404).json({
         success: false,
-        message: 'Pedido de frete não encontrado'
+        message: 'Pedido de frete nÃ£o encontrado'
       });
     }
 
-    // Verificar se o usuário tem permissão
+    // Verificar se o usuÃ¡rio tem permissÃ£o
     if (
       freightOrder.buyerId?.toString() !== userId &&
       freightOrder.sellerId?.toString() !== userId
     ) {
       return res.status(403).json({
         success: false,
-        message: 'Sem permissão para fechar este pedido'
+        message: 'Sem permissÃ£o para fechar este pedido'
       });
     }
 
-    // Verificar se o pedido está entregue
+    // Verificar se o pedido estÃ¡ entregue
     if (freightOrder.status !== 'delivered') {
       return res.status(400).json({
         success: false,
@@ -439,10 +441,10 @@ router.post('/:id/ai-closure', auth, async (req, res) => {
       });
     }
 
-    // Gerar análise de IA
+    // Gerar anÃ¡lise de IA
     const aiAnalysis = await openaiService.generateFreightClosureSummary(freightOrder);
 
-    // Atualizar pedido com análise de IA
+    // Atualizar pedido com anÃ¡lise de IA
     freightOrder.aiClosure = {
       ...aiAnalysis,
       isCompleted: false
@@ -506,17 +508,17 @@ router.post('/:id/ai-closure', auth, async (req, res) => {
  *       200:
  *         description: Fechamento completado com sucesso
  *       404:
- *         description: Pedido de frete não encontrado
+ *         description: Pedido de frete nÃ£o encontrado
  */
 router.post(
   '/:id/complete-closure',
   auth,
   [
-    body('confirmClosure').isBoolean().withMessage('Confirmação de fechamento é obrigatória'),
+    body('confirmClosure').isBoolean().withMessage('ConfirmaÃ§Ã£o de fechamento Ã© obrigatÃ³ria'),
     body('rating')
       .optional()
       .isInt({ min: 1, max: 5 })
-      .withMessage('Avaliação deve ser entre 1 e 5')
+      .withMessage('AvaliaÃ§Ã£o deve ser entre 1 e 5')
   ],
   async (req, res) => {
     try {
@@ -524,7 +526,7 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
@@ -537,25 +539,25 @@ router.post(
       if (!freightOrder) {
         return res.status(404).json({
           success: false,
-          message: 'Pedido de frete não encontrado'
+          message: 'Pedido de frete nÃ£o encontrado'
         });
       }
 
-      // Verificar se o usuário tem permissão
+      // Verificar se o usuÃ¡rio tem permissÃ£o
       if (
         freightOrder.buyerId?.toString() !== userId &&
         freightOrder.sellerId?.toString() !== userId
       ) {
         return res.status(403).json({
           success: false,
-          message: 'Sem permissão para fechar este pedido'
+          message: 'Sem permissÃ£o para fechar este pedido'
         });
       }
 
       if (!confirmClosure) {
         return res.status(400).json({
           success: false,
-          message: 'Fechamento não confirmado'
+          message: 'Fechamento nÃ£o confirmado'
         });
       }
 
@@ -568,7 +570,7 @@ router.post(
         freightOrder.aiClosure.invoiceDraft
       );
 
-      // Adicionar avaliação se fornecida
+      // Adicionar avaliaÃ§Ã£o se fornecida
       if (rating && comment) {
         const userType = freightOrder.buyerId?.toString() === userId ? 'buyer' : 'seller';
         await freightOrder.rateUser(userType, rating, comment, userId);
@@ -603,7 +605,7 @@ router.post(
  * @swagger
  * /api/freight-orders:
  *   get:
- *     summary: Listar pedidos de frete do usuário
+ *     summary: Listar pedidos de frete do usuÃ¡rio
  *     tags: [FreightOrders]
  *     security:
  *       - bearerAuth: []
@@ -636,7 +638,7 @@ router.get('/', auth, async (req, res) => {
     } else if (role === 'carrier') {
       query.carrierId = userId;
     } else {
-      // Buscar todos os pedidos onde o usuário está envolvido
+      // Buscar todos os pedidos onde o usuÃ¡rio estÃ¡ envolvido
       query = {
         $or: [{ buyerId: userId }, { sellerId: userId }, { carrierId: userId }]
       };
@@ -704,7 +706,7 @@ router.get('/', auth, async (req, res) => {
  *       200:
  *         description: Detalhes do pedido de frete
  *       404:
- *         description: Pedido de frete não encontrado
+ *         description: Pedido de frete nÃ£o encontrado
  */
 router.get('/:id', auth, async (req, res) => {
   try {
@@ -719,11 +721,11 @@ router.get('/:id', auth, async (req, res) => {
     if (!freightOrder) {
       return res.status(404).json({
         success: false,
-        message: 'Pedido de frete não encontrado'
+        message: 'Pedido de frete nÃ£o encontrado'
       });
     }
 
-    // Verificar se o usuário tem permissão para ver
+    // Verificar se o usuÃ¡rio tem permissÃ£o para ver
     if (
       freightOrder.buyerId?._id.toString() !== userId &&
       freightOrder.sellerId?._id.toString() !== userId &&
@@ -731,7 +733,7 @@ router.get('/:id', auth, async (req, res) => {
     ) {
       return res.status(403).json({
         success: false,
-        message: 'Sem permissão para visualizar este pedido'
+        message: 'Sem permissÃ£o para visualizar este pedido'
       });
     }
 

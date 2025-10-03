@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import { authenticateToken } from '../middleware/auth.js';
 import { requireAdmin } from '../middleware/adminAuth.js';
 import User from '../models/User.js';
@@ -7,13 +7,14 @@ import Payment from '../models/Payment.js';
 import Registration from '../models/Registration.js';
 import AuditLog from '../models/AuditLog.js';
 
+import logger from '../utils/logger.js';
 const router = express.Router();
 
 // Middleware para todas as rotas admin
 router.use(authenticateToken);
 router.use(requireAdmin);
 
-// GET /api/admin/dashboard - Estatísticas gerais do sistema
+// GET /api/admin/dashboard - EstatÃ­sticas gerais do sistema
 router.get('/dashboard', async (req, res) => {
   try {
     const [
@@ -53,7 +54,7 @@ router.get('/dashboard', async (req, res) => {
       uptime: '99.9%'
     };
 
-    // Log da ação
+    // Log da aÃ§Ã£o
     await AuditLog.logAction({
       userId: req.user.userId,
       userEmail: req.user.email,
@@ -70,7 +71,7 @@ router.get('/dashboard', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar estatísticas admin:', error);
+      logger.error('Erro ao buscar estatÃ­sticas admin:', error);
     }
     res.status(500).json({
       success: false,
@@ -79,7 +80,7 @@ router.get('/dashboard', async (req, res) => {
   }
 });
 
-// GET /api/admin/users - Listar todos os usuários
+// GET /api/admin/users - Listar todos os usuÃ¡rios
 router.get('/users', async (req, res) => {
   try {
     const { page = 1, limit = 50, search, status } = req.query;
@@ -101,11 +102,11 @@ router.get('/users', async (req, res) => {
         .select('-password -piiData')
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(parseInt(limit, 10)),
+        .limit(parseInt(limit, 10, 10)),
       User.countDocuments(query)
     ]);
 
-    // Log da ação
+    // Log da aÃ§Ã£o
     await AuditLog.logAction({
       userId: req.user.userId,
       userEmail: req.user.email,
@@ -121,8 +122,8 @@ router.get('/users', async (req, res) => {
       data: {
         users,
         pagination: {
-          page: parseInt(page, 10),
-          limit: parseInt(limit, 10),
+          page: parseInt(page, 10, 10),
+          limit: parseInt(limit, 10, 10),
           total,
           pages: Math.ceil(total / limit)
         }
@@ -130,7 +131,7 @@ router.get('/users', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar usuários:', error);
+      logger.error('Erro ao buscar usuÃ¡rios:', error);
     }
     res.status(500).json({
       success: false,
@@ -158,11 +159,11 @@ router.get('/products', async (req, res) => {
         .populate('sellerId', 'name email')
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(parseInt(limit, 10)),
+        .limit(parseInt(limit, 10, 10)),
       Product.countDocuments(query)
     ]);
 
-    // Log da ação
+    // Log da aÃ§Ã£o
     await AuditLog.logAction({
       userId: req.user.userId,
       userEmail: req.user.email,
@@ -178,8 +179,8 @@ router.get('/products', async (req, res) => {
       data: {
         products,
         pagination: {
-          page: parseInt(page, 10),
-          limit: parseInt(limit, 10),
+          page: parseInt(page, 10, 10),
+          limit: parseInt(limit, 10, 10),
           total,
           pages: Math.ceil(total / limit)
         }
@@ -187,7 +188,7 @@ router.get('/products', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar produtos:', error);
+      logger.error('Erro ao buscar produtos:', error);
     }
     res.status(500).json({
       success: false,
@@ -215,11 +216,11 @@ router.get('/payments', async (req, res) => {
         .populate('userId', 'name email')
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(parseInt(limit, 10)),
+        .limit(parseInt(limit, 10, 10)),
       Payment.countDocuments(query)
     ]);
 
-    // Log da ação
+    // Log da aÃ§Ã£o
     await AuditLog.logAction({
       userId: req.user.userId,
       userEmail: req.user.email,
@@ -235,8 +236,8 @@ router.get('/payments', async (req, res) => {
       data: {
         payments,
         pagination: {
-          page: parseInt(page, 10),
-          limit: parseInt(limit, 10),
+          page: parseInt(page, 10, 10),
+          limit: parseInt(limit, 10, 10),
           total,
           pages: Math.ceil(total / limit)
         }
@@ -244,7 +245,7 @@ router.get('/payments', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar pagamentos:', error);
+      logger.error('Erro ao buscar pagamentos:', error);
     }
     res.status(500).json({
       success: false,
@@ -272,11 +273,11 @@ router.get('/registrations', async (req, res) => {
     }
 
     const [registrations, total] = await Promise.all([
-      Registration.find(query).sort({ createdAt: -1 }).skip(skip).limit(parseInt(limit, 10)),
+      Registration.find(query).sort({ createdAt: -1 }).skip(skip).limit(parseInt(limit, 10, 10)),
       Registration.countDocuments(query)
     ]);
 
-    // Log da ação
+    // Log da aÃ§Ã£o
     await AuditLog.logAction({
       userId: req.user.userId,
       userEmail: req.user.email,
@@ -292,8 +293,8 @@ router.get('/registrations', async (req, res) => {
       data: {
         registrations,
         pagination: {
-          page: parseInt(page, 10),
-          limit: parseInt(limit, 10),
+          page: parseInt(page, 10, 10),
+          limit: parseInt(limit, 10, 10),
           total,
           pages: Math.ceil(total / limit)
         }
@@ -301,7 +302,7 @@ router.get('/registrations', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar cadastros:', error);
+      logger.error('Erro ao buscar cadastros:', error);
     }
     res.status(500).json({
       success: false,
@@ -317,10 +318,10 @@ router.get('/activity', async (req, res) => {
 
     const activities = await AuditLog.find()
       .sort({ createdAt: -1 })
-      .limit(parseInt(limit, 10))
+      .limit(parseInt(limit, 10, 10))
       .populate('userId', 'name email');
 
-    // Log da ação
+    // Log da aÃ§Ã£o
     await AuditLog.logAction({
       userId: req.user.userId,
       userEmail: req.user.email,
@@ -337,7 +338,7 @@ router.get('/activity', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar atividade:', error);
+      logger.error('Erro ao buscar atividade:', error);
     }
     res.status(500).json({
       success: false,
@@ -346,7 +347,7 @@ router.get('/activity', async (req, res) => {
   }
 });
 
-// PUT /api/admin/users/:id/status - Ativar/desativar usuário
+// PUT /api/admin/users/:id/status - Ativar/desativar usuÃ¡rio
 router.put('/users/:id/status', async (req, res) => {
   try {
     const { id } = req.params;
@@ -359,11 +360,11 @@ router.put('/users/:id/status', async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Usuário não encontrado'
+        message: 'UsuÃ¡rio nÃ£o encontrado'
       });
     }
 
-    // Log da ação
+    // Log da aÃ§Ã£o
     await AuditLog.logAction({
       userId: req.user.userId,
       userEmail: req.user.email,
@@ -377,12 +378,12 @@ router.put('/users/:id/status', async (req, res) => {
 
     res.json({
       success: true,
-      message: `Usuário ${isActive ? 'ativado' : 'desativado'} com sucesso`,
+      message: `UsuÃ¡rio ${isActive ? 'ativado' : 'desativado'} com sucesso`,
       data: { user }
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao alterar status do usuário:', error);
+      logger.error('Erro ao alterar status do usuÃ¡rio:', error);
     }
     res.status(500).json({
       success: false,
@@ -401,11 +402,11 @@ router.delete('/products/:id', async (req, res) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Produto não encontrado'
+        message: 'Produto nÃ£o encontrado'
       });
     }
 
-    // Log da ação
+    // Log da aÃ§Ã£o
     await AuditLog.logAction({
       userId: req.user.userId,
       userEmail: req.user.email,
@@ -423,7 +424,7 @@ router.delete('/products/:id', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao deletar produto:', error);
+      logger.error('Erro ao deletar produto:', error);
     }
     res.status(500).json({
       success: false,

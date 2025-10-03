@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 const conversationSchema = new mongoose.Schema(
   {
@@ -20,14 +20,14 @@ const conversationSchema = new mongoose.Schema(
       }
     ],
 
-    // Título da conversa
+    // TÃ­tulo da conversa
     title: {
       type: String,
       trim: true,
-      maxlength: [200, 'Título não pode ter mais de 200 caracteres']
+      maxlength: [200, 'TÃ­tulo nÃ£o pode ter mais de 200 caracteres']
     },
 
-    // Referência ao produto (se for conversa sobre produto)
+    // ReferÃªncia ao produto (se for conversa sobre produto)
     product: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Product',
@@ -36,7 +36,7 @@ const conversationSchema = new mongoose.Schema(
       }
     },
 
-    // Referência ao frete (se for conversa sobre frete)
+    // ReferÃªncia ao frete (se for conversa sobre frete)
     freight: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Freight',
@@ -60,7 +60,7 @@ const conversationSchema = new mongoose.Schema(
       default: 'active'
     },
 
-    // Configurações da conversa
+    // ConfiguraÃ§Ãµes da conversa
     settings: {
       allowFiles: {
         type: Boolean,
@@ -103,7 +103,7 @@ const conversationSchema = new mongoose.Schema(
   }
 );
 
-// Índices para performance
+// Ãndices para performance
 conversationSchema.index({ participants: 1 });
 conversationSchema.index({ type: 1, status: 1 });
 conversationSchema.index({ product: 1 });
@@ -111,12 +111,12 @@ conversationSchema.index({ freight: 1 });
 conversationSchema.index({ lastMessageAt: -1 });
 conversationSchema.index({ status: 1, updatedAt: -1 });
 
-// Virtual para número de mensagens
+// Virtual para nÃºmero de mensagens
 conversationSchema.virtual('messageCount').get(function () {
   return this.messages.length;
 });
 
-// Virtual para última mensagem
+// Virtual para Ãºltima mensagem
 conversationSchema.virtual('lastMessage').get(function () {
   if (this.messages.length === 0) {
     return null;
@@ -124,22 +124,22 @@ conversationSchema.virtual('lastMessage').get(function () {
   return this.messages[this.messages.length - 1];
 });
 
-// Virtual para verificar se conversa está ativa
+// Virtual para verificar se conversa estÃ¡ ativa
 conversationSchema.virtual('isActive').get(function () {
   return this.status === 'active';
 });
 
-// Virtual para verificar se conversa está arquivada
+// Virtual para verificar se conversa estÃ¡ arquivada
 conversationSchema.virtual('isArchived').get(function () {
   return this.status === 'archived';
 });
 
-// Virtual para verificar se conversa está fechada
+// Virtual para verificar se conversa estÃ¡ fechada
 conversationSchema.virtual('isClosed').get(function () {
   return this.status === 'closed';
 });
 
-// Middleware para atualizar lastMessageAt quando mensagem é adicionada
+// Middleware para atualizar lastMessageAt quando mensagem Ã© adicionada
 conversationSchema.pre('save', function (next) {
   if (this.isModified('messages') && this.messages.length > 0) {
     this.lastMessageAt = new Date();
@@ -147,7 +147,7 @@ conversationSchema.pre('save', function (next) {
   next();
 });
 
-// Método para adicionar mensagem
+// MÃ©todo para adicionar mensagem
 conversationSchema.methods.addMessage = function (messageId) {
   this.messages.push(messageId);
   this.lastMessageAt = new Date();
@@ -155,51 +155,51 @@ conversationSchema.methods.addMessage = function (messageId) {
   return this.save();
 };
 
-// Método para remover mensagem
+// MÃ©todo para remover mensagem
 conversationSchema.methods.removeMessage = function (messageId) {
   this.messages = this.messages.filter(id => id.toString() !== messageId.toString());
   return this.save();
 };
 
-// Método para arquivar conversa
+// MÃ©todo para arquivar conversa
 conversationSchema.methods.archive = function () {
   this.status = 'archived';
   this.archivedAt = new Date();
   return this.save();
 };
 
-// Método para reativar conversa arquivada
+// MÃ©todo para reativar conversa arquivada
 conversationSchema.methods.unarchive = function () {
   this.status = 'active';
   this.archivedAt = undefined;
   return this.save();
 };
 
-// Método para fechar conversa
+// MÃ©todo para fechar conversa
 conversationSchema.methods.close = function () {
   this.status = 'closed';
   this.closedAt = new Date();
   return this.save();
 };
 
-// Método para reabrir conversa fechada
+// MÃ©todo para reabrir conversa fechada
 conversationSchema.methods.reopen = function () {
   this.status = 'active';
   this.closedAt = undefined;
   return this.save();
 };
 
-// Método para verificar se usuário é participante
+// MÃ©todo para verificar se usuÃ¡rio Ã© participante
 conversationSchema.methods.isParticipant = function (userId) {
   return this.participants.some(participant => participant.toString() === userId.toString());
 };
 
-// Método para obter outro participante (excluindo o usuário atual)
+// MÃ©todo para obter outro participante (excluindo o usuÃ¡rio atual)
 conversationSchema.methods.getOtherParticipant = function (userId) {
   return this.participants.find(participant => participant.toString() !== userId.toString());
 };
 
-// Método para obter dados públicos da conversa
+// MÃ©todo para obter dados pÃºblicos da conversa
 conversationSchema.methods.getPublicData = function () {
   return {
     id: this._id,
@@ -213,10 +213,10 @@ conversationSchema.methods.getPublicData = function () {
   };
 };
 
-// Método para obter dados completos da conversa
+// MÃ©todo para obter dados completos da conversa
 conversationSchema.methods.getFullData = function (userId) {
   if (!this.isParticipant(userId)) {
-    throw new Error('Acesso negado: usuário não é participante da conversa');
+    throw new Error('Acesso negado: usuÃ¡rio nÃ£o Ã© participante da conversa');
   }
 
   return {
@@ -230,7 +230,7 @@ conversationSchema.methods.getFullData = function (userId) {
   };
 };
 
-// Método estático para buscar conversas de um usuário
+// MÃ©todo estÃ¡tico para buscar conversas de um usuÃ¡rio
 conversationSchema.statics.findByUser = function (userId, options = {}) {
   const query = {
     participants: { $in: [userId] },
@@ -266,7 +266,7 @@ conversationSchema.statics.findByUser = function (userId, options = {}) {
     .skip(skip);
 };
 
-// Método estático para buscar conversa entre dois usuários
+// MÃ©todo estÃ¡tico para buscar conversa entre dois usuÃ¡rios
 conversationSchema.statics.findBetweenUsers = function (userId1, userId2, type = null) {
   const query = {
     participants: { $all: [userId1, userId2] },
@@ -283,7 +283,7 @@ conversationSchema.statics.findBetweenUsers = function (userId1, userId2, type =
     .populate('freight', 'origin destination value vehicle');
 };
 
-// Método estático para criar conversa entre usuários
+// MÃ©todo estÃ¡tico para criar conversa entre usuÃ¡rios
 conversationSchema.statics.createBetweenUsers = function (userId1, userId2, type, options = {}) {
   const conversationData = {
     type,
@@ -304,7 +304,7 @@ conversationSchema.statics.createBetweenUsers = function (userId1, userId2, type
   return this.create(conversationData);
 };
 
-// Método estático para estatísticas de conversas
+// MÃ©todo estÃ¡tico para estatÃ­sticas de conversas
 conversationSchema.statics.getStats = async function (userId = null) {
   const match = { deletedAt: { $exists: false } };
   if (userId) {

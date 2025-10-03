@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('mongoose');
 
 const vehicleSchema = new mongoose.Schema(
   {
-    // Proprietário do veículo
+    // ProprietÃ¡rio do veÃ­culo
     carrierId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -10,7 +10,7 @@ const vehicleSchema = new mongoose.Schema(
       index: true
     },
 
-    // Informações básicas
+    // InformaÃ§Ãµes bÃ¡sicas
     plate: {
       type: String,
       required: true,
@@ -26,7 +26,7 @@ const vehicleSchema = new mongoose.Schema(
       required: true
     },
 
-    // Especificações técnicas
+    // EspecificaÃ§Ãµes tÃ©cnicas
     specifications: {
       brand: String,
       model: String,
@@ -49,7 +49,7 @@ const vehicleSchema = new mongoose.Schema(
       },
       volume: {
         type: Number,
-        required: true // em metros cúbicos
+        required: true // em metros cÃºbicos
       },
       dimensions: {
         length: Number, // em metros
@@ -67,8 +67,8 @@ const vehicleSchema = new mongoose.Schema(
             'registration', // CRLV
             'insurance', // Seguro
             'inspection', // Vistoria
-            'license', // Licença de transporte
-            'permit', // Permissão
+            'license', // LicenÃ§a de transporte
+            'permit', // PermissÃ£o
             'other'
           ],
           required: true
@@ -85,7 +85,7 @@ const vehicleSchema = new mongoose.Schema(
       }
     ],
 
-    // Status do veículo
+    // Status do veÃ­culo
     status: {
       type: String,
       enum: ['active', 'inactive', 'maintenance', 'out_of_service'],
@@ -93,7 +93,7 @@ const vehicleSchema = new mongoose.Schema(
       index: true
     },
 
-    // Localização atual
+    // LocalizaÃ§Ã£o atual
     currentLocation: {
       address: String,
       city: String,
@@ -116,7 +116,7 @@ const vehicleSchema = new mongoose.Schema(
       assignedAt: Date
     },
 
-    // Histórico de viagens
+    // HistÃ³rico de viagens
     trips: [
       {
         freightOrderId: {
@@ -140,7 +140,7 @@ const vehicleSchema = new mongoose.Schema(
       }
     ],
 
-    // Manutenção
+    // ManutenÃ§Ã£o
     maintenance: [
       {
         type: {
@@ -175,7 +175,7 @@ const vehicleSchema = new mongoose.Schema(
       deductible: Number
     },
 
-    // Estatísticas
+    // EstatÃ­sticas
     stats: {
       totalTrips: {
         type: Number,
@@ -183,7 +183,7 @@ const vehicleSchema = new mongoose.Schema(
       },
       totalDistance: {
         type: Number,
-        default: 0 // em quilômetros
+        default: 0 // em quilÃ´metros
       },
       totalHours: {
         type: Number,
@@ -194,7 +194,7 @@ const vehicleSchema = new mongoose.Schema(
       nextMaintenanceDate: Date
     },
 
-    // Configurações
+    // ConfiguraÃ§Ãµes
     settings: {
       allowTracking: {
         type: Boolean,
@@ -217,7 +217,7 @@ const vehicleSchema = new mongoose.Schema(
   }
 );
 
-// Índices
+// Ãndices
 vehicleSchema.index({ carrierId: 1, status: 1 });
 vehicleSchema.index({ plate: 1 });
 vehicleSchema.index({ status: 1 });
@@ -247,10 +247,10 @@ vehicleSchema.virtual('insuranceExpired').get(function () {
 
 // Middleware pre-save
 vehicleSchema.pre('save', function (next) {
-  // Atualizar estatísticas
+  // Atualizar estatÃ­sticas
   this.stats.totalTrips = this.trips.length;
 
-  // Calcular próxima manutenção
+  // Calcular prÃ³xima manutenÃ§Ã£o
   if (this.maintenance.length > 0) {
     const lastMaintenance = this.maintenance.sort((a, b) => b.date - a.date)[0];
 
@@ -262,7 +262,7 @@ vehicleSchema.pre('save', function (next) {
   next();
 });
 
-// Métodos de instância
+// MÃ©todos de instÃ¢ncia
 vehicleSchema.methods.addTrip = function (freightOrderId, origin, destination) {
   this.trips.push({
     freightOrderId,
@@ -316,7 +316,7 @@ vehicleSchema.methods.addDocument = function (type, number, issueDate, expiryDat
   return this.save();
 };
 
-// Métodos estáticos
+// MÃ©todos estÃ¡ticos
 vehicleSchema.statics.findByCarrier = function (carrierId) {
   return this.find({ carrierId }).sort({ createdAt: -1 });
 };

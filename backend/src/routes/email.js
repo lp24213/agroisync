@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import User from '../models/User.js';
 import { authenticateToken } from '../middleware/auth.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
@@ -11,40 +11,40 @@ const router = express.Router();
 // Apply rate limiting
 router.use(apiLimiter);
 
-// POST /api/email/send-verification - Enviar verificação de email
+// POST /api/email/send-verification - Enviar verificaÃ§Ã£o de email
 router.post(
   '/send-verification',
-  [body('email').isEmail().withMessage('Email inválido')],
+  [body('email').isEmail().withMessage('Email invÃ¡lido')],
   async (req, res) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
 
       const { email } = req.body;
 
-      // Buscar usuário por email (para casos de pré-cadastro)
+      // Buscar usuÃ¡rio por email (para casos de prÃ©-cadastro)
       const user = await User.findOne({ email });
 
-      // Se usuário não existe, criar um temporário para verificação
+      // Se usuÃ¡rio nÃ£o existe, criar um temporÃ¡rio para verificaÃ§Ã£o
       if (!user) {
-        // Gerar código de verificação temporário
+        // Gerar cÃ³digo de verificaÃ§Ã£o temporÃ¡rio
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-        // Enviar email de verificação
+        // Enviar email de verificaÃ§Ã£o
         try {
           const emailResult = await notificationService.sendOTPEmail(
             email,
             verificationCode,
-            'Usuário'
+            'UsuÃ¡rio'
           );
           if (emailResult.success) {
-            logger.info(`Email de verificação enviado para ${email}: ${verificationCode}`);
+            logger.info(`Email de verificaÃ§Ã£o enviado para ${email}: ${verificationCode}`);
           } else {
             logger.error(`Erro ao enviar email para ${email}:`, emailResult.error);
           }
@@ -54,7 +54,7 @@ router.post(
 
         res.json({
           success: true,
-          message: 'Código de verificação enviado para seu email',
+          message: 'CÃ³digo de verificaÃ§Ã£o enviado para seu email',
           data: {
             email: email.replace(/(.{2}).*(@.*)/, '$1***$2'),
             verificationCode, // Apenas para desenvolvimento
@@ -64,37 +64,37 @@ router.post(
         return;
       }
 
-      // Verificar se email já está verificado
+      // Verificar se email jÃ¡ estÃ¡ verificado
       if (user.emailVerified) {
         return res.status(400).json({
           success: false,
-          message: 'Email já está verificado'
+          message: 'Email jÃ¡ estÃ¡ verificado'
         });
       }
 
-      // Verificar se já existe token válido
+      // Verificar se jÃ¡ existe token vÃ¡lido
       if (user.emailVerificationToken && user.emailVerificationExpires > Date.now()) {
         return res.status(400).json({
           success: false,
           message:
-            'Email de verificação já enviado. Verifique sua caixa de entrada ou aguarde 24 horas para solicitar novo email.'
+            'Email de verificaÃ§Ã£o jÃ¡ enviado. Verifique sua caixa de entrada ou aguarde 24 horas para solicitar novo email.'
         });
       }
 
-      // Gerar novo token de verificação
+      // Gerar novo token de verificaÃ§Ã£o
       const verificationToken = user.generateEmailVerificationToken();
       await user.save();
 
-      // Criar URL de verificação
+      // Criar URL de verificaÃ§Ã£o
       const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}&userId=${user._id}`;
 
-      // Enviar email de verificação
+      // Enviar email de verificaÃ§Ã£o
       try {
         await notificationService.sendEmailVerification(email, verificationToken, user.name);
 
         res.json({
           success: true,
-          message: 'Email de verificação enviado com sucesso',
+          message: 'Email de verificaÃ§Ã£o enviado com sucesso',
           data: {
             email: email.replace(/(.{2}).*(@.*)/, '$1***$2'), // Mascarar email
             expiresIn: '24 horas'
@@ -103,10 +103,10 @@ router.post(
       } catch (emailError) {
         logger.error('Erro ao enviar email:', emailError);
 
-        // Em caso de erro no email, ainda retornar sucesso para não quebrar o fluxo
+        // Em caso de erro no email, ainda retornar sucesso para nÃ£o quebrar o fluxo
         res.json({
           success: true,
-          message: 'Token de verificação gerado (Email pode estar temporariamente indisponível)',
+          message: 'Token de verificaÃ§Ã£o gerado (Email pode estar temporariamente indisponÃ­vel)',
           data: {
             email: email.replace(/(.{2}).*(@.*)/, '$1***$2'),
             expiresIn: '24 horas',
@@ -115,7 +115,7 @@ router.post(
         });
       }
     } catch (error) {
-      logger.error('Erro ao enviar verificação de email:', error);
+      logger.error('Erro ao enviar verificaÃ§Ã£o de email:', error);
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -124,12 +124,12 @@ router.post(
   }
 );
 
-// POST /api/email/verify - Verificar email com código
+// POST /api/email/verify - Verificar email com cÃ³digo
 router.post(
   '/verify',
   [
-    body('email').isEmail().withMessage('Email inválido'),
-    body('code').notEmpty().withMessage('Código é obrigatório')
+    body('email').isEmail().withMessage('Email invÃ¡lido'),
+    body('code').notEmpty().withMessage('CÃ³digo Ã© obrigatÃ³rio')
   ],
   (req, res) => {
     try {
@@ -137,15 +137,15 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
 
       const { email, code } = req.body;
 
-      // Verificação simplificada para pré-cadastro
-      // Em produção, você salvaria o código em uma tabela temporária
+      // VerificaÃ§Ã£o simplificada para prÃ©-cadastro
+      // Em produÃ§Ã£o, vocÃª salvaria o cÃ³digo em uma tabela temporÃ¡ria
       if (code.length === 6 && /^\d+$/.test(code)) {
         res.json({
           success: true,
@@ -158,7 +158,7 @@ router.post(
       } else {
         res.status(400).json({
           success: false,
-          message: 'Código inválido'
+          message: 'CÃ³digo invÃ¡lido'
         });
       }
     } catch (error) {
@@ -171,12 +171,12 @@ router.post(
   }
 );
 
-// POST /api/email/resend-verification - Reenviar verificação de email
+// POST /api/email/resend-verification - Reenviar verificaÃ§Ã£o de email
 router.post(
   '/resend-verification',
   [
-    body('email').isEmail().withMessage('Email inválido'),
-    body('userId').isMongoId().withMessage('ID de usuário inválido')
+    body('email').isEmail().withMessage('Email invÃ¡lido'),
+    body('userId').isMongoId().withMessage('ID de usuÃ¡rio invÃ¡lido')
   ],
   async (req, res) => {
     try {
@@ -184,31 +184,31 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
-          message: 'Dados inválidos',
+          message: 'Dados invÃ¡lidos',
           errors: errors.array()
         });
       }
 
       const { email, userId } = req.body;
 
-      // Buscar usuário
+      // Buscar usuÃ¡rio
       const user = await User.findById(userId);
       if (!user) {
         return res.status(404).json({
           success: false,
-          message: 'Usuário não encontrado'
+          message: 'UsuÃ¡rio nÃ£o encontrado'
         });
       }
 
-      // Verificar se email já está verificado
+      // Verificar se email jÃ¡ estÃ¡ verificado
       if (user.emailVerified) {
         return res.status(400).json({
           success: false,
-          message: 'Email já está verificado'
+          message: 'Email jÃ¡ estÃ¡ verificado'
         });
       }
 
-      // Verificar rate limiting (máximo 3 tentativas por dia)
+      // Verificar rate limiting (mÃ¡ximo 3 tentativas por dia)
       const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
       if (
         user.emailVerificationAttempts &&
@@ -227,7 +227,7 @@ router.post(
       user.lastEmailVerificationAttempt = Date.now();
       await user.save();
 
-      // Criar URL de verificação
+      // Criar URL de verificaÃ§Ã£o
       const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}&userId=${user._id}`;
 
       // Enviar email
@@ -236,7 +236,7 @@ router.post(
 
         res.json({
           success: true,
-          message: 'Novo email de verificação enviado',
+          message: 'Novo email de verificaÃ§Ã£o enviado',
           data: {
             email: email.replace(/(.{2}).*(@.*)/, '$1***$2'),
             expiresIn: '24 horas',
@@ -248,7 +248,7 @@ router.post(
 
         res.json({
           success: true,
-          message: 'Novo token gerado (Email pode estar temporariamente indisponível)',
+          message: 'Novo token gerado (Email pode estar temporariamente indisponÃ­vel)',
           data: {
             email: email.replace(/(.{2}).*(@.*)/, '$1***$2'),
             expiresIn: '24 horas',
@@ -257,7 +257,7 @@ router.post(
         });
       }
     } catch (error) {
-      logger.error('Erro ao reenviar verificação de email:', error);
+      logger.error('Erro ao reenviar verificaÃ§Ã£o de email:', error);
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -266,12 +266,12 @@ router.post(
   }
 );
 
-// GET /api/email/status - Verificar status da verificação
+// GET /api/email/status - Verificar status da verificaÃ§Ã£o
 router.get('/status/:userId', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // Verificar se usuário pode acessar este endpoint
+    // Verificar se usuÃ¡rio pode acessar este endpoint
     if (req.user.id !== userId && !req.user.isAdmin) {
       return res.status(403).json({
         success: false,
@@ -286,7 +286,7 @@ router.get('/status/:userId', authenticateToken, async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Usuário não encontrado'
+        message: 'UsuÃ¡rio nÃ£o encontrado'
       });
     }
 

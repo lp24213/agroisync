@@ -1,8 +1,9 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
+import logger from '../utils/logger.js';
 const notificationSchema = new mongoose.Schema(
   {
-    // Identificação única
+    // IdentificaÃ§Ã£o Ãºnica
     id: {
       type: String,
       required: true,
@@ -10,7 +11,7 @@ const notificationSchema = new mongoose.Schema(
       default: () => `NOTIF_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     },
 
-    // Usuário destinatário
+    // UsuÃ¡rio destinatÃ¡rio
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -18,7 +19,7 @@ const notificationSchema = new mongoose.Schema(
       index: true
     },
 
-    // Tipo de notificação
+    // Tipo de notificaÃ§Ã£o
     type: {
       type: String,
       required: true,
@@ -38,18 +39,18 @@ const notificationSchema = new mongoose.Schema(
       index: true
     },
 
-    // Título da notificação
+    // TÃ­tulo da notificaÃ§Ã£o
     title: {
       type: String,
       required: true,
-      maxlength: [100, 'Título não pode ter mais de 100 caracteres']
+      maxlength: [100, 'TÃ­tulo nÃ£o pode ter mais de 100 caracteres']
     },
 
     // Corpo da mensagem
     body: {
       type: String,
       required: true,
-      maxlength: [500, 'Corpo da mensagem não pode ter mais de 500 caracteres']
+      maxlength: [500, 'Corpo da mensagem nÃ£o pode ter mais de 500 caracteres']
     },
 
     // Dados adicionais (JSON)
@@ -112,7 +113,7 @@ const notificationSchema = new mongoose.Schema(
       }
     },
 
-    // Prioridade da notificação
+    // Prioridade da notificaÃ§Ã£o
     priority: {
       type: String,
       enum: ['LOW', 'NORMAL', 'HIGH', 'URGENT'],
@@ -120,7 +121,7 @@ const notificationSchema = new mongoose.Schema(
       index: true
     },
 
-    // Categoria da notificação
+    // Categoria da notificaÃ§Ã£o
     category: {
       type: String,
       enum: ['TRANSACTION', 'MESSAGE', 'PAYMENT', 'SYSTEM', 'SECURITY', 'MARKETING'],
@@ -128,13 +129,13 @@ const notificationSchema = new mongoose.Schema(
       index: true
     },
 
-    // Se a notificação é persistente
+    // Se a notificaÃ§Ã£o Ã© persistente
     persistent: {
       type: Boolean,
       default: false
     },
 
-    // Se a notificação foi lida
+    // Se a notificaÃ§Ã£o foi lida
     read: {
       type: Boolean,
       default: false,
@@ -144,7 +145,7 @@ const notificationSchema = new mongoose.Schema(
     // Data de leitura
     readAt: Date,
 
-    // Se a notificação foi arquivada
+    // Se a notificaÃ§Ã£o foi arquivada
     archived: {
       type: Boolean,
       default: false,
@@ -161,7 +162,7 @@ const notificationSchema = new mongoose.Schema(
       push: { type: Number, default: 0 }
     },
 
-    // Configurações de retry
+    // ConfiguraÃ§Ãµes de retry
     retryConfig: {
       maxAttempts: { type: Number, default: 3 },
       retryDelay: { type: Number, default: 300000 }, // 5 minutos
@@ -170,19 +171,19 @@ const notificationSchema = new mongoose.Schema(
 
     // Metadados adicionais
     metadata: {
-      source: String, // Sistema que gerou a notificação
-      trigger: String, // Evento que disparou a notificação
+      source: String, // Sistema que gerou a notificaÃ§Ã£o
+      trigger: String, // Evento que disparou a notificaÃ§Ã£o
       context: mongoose.Schema.Types.Mixed, // Contexto adicional
-      tags: [String] // Tags para categorização
+      tags: [String] // Tags para categorizaÃ§Ã£o
     },
 
-    // Configurações de expiração
+    // ConfiguraÃ§Ãµes de expiraÃ§Ã£o
     expiresAt: {
       type: Date,
       index: true
     },
 
-    // Se a notificação foi processada
+    // Se a notificaÃ§Ã£o foi processada
     processed: {
       type: Boolean,
       default: false,
@@ -199,7 +200,7 @@ const notificationSchema = new mongoose.Schema(
   }
 );
 
-// Índices para performance
+// Ãndices para performance
 notificationSchema.index({ userId: 1, createdAt: -1 });
 notificationSchema.index({ userId: 1, read: 1, archived: 1 });
 notificationSchema.index({ type: 1, createdAt: -1 });
@@ -238,7 +239,7 @@ notificationSchema.virtual('canRetry').get(function () {
   });
 });
 
-// Métodos de instância
+// MÃ©todos de instÃ¢ncia
 notificationSchema.methods.markAsRead = function () {
   this.read = true;
   this.readAt = new Date();
@@ -270,7 +271,7 @@ notificationSchema.methods.archive = function () {
   return this.save();
 };
 
-// Métodos estáticos
+// MÃ©todos estÃ¡ticos
 notificationSchema.statics.findUnreadByUser = function (userId, limit = 50) {
   return this.find({
     userId,
@@ -300,9 +301,9 @@ notificationSchema.statics.cleanupExpired = function () {
   });
 };
 
-// Middleware para limpeza automática
+// Middleware para limpeza automÃ¡tica
 notificationSchema.pre('save', function (next) {
-  // Definir data de expiração se não estiver definida
+  // Definir data de expiraÃ§Ã£o se nÃ£o estiver definida
   if (!this.expiresAt) {
     this.expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 dias
   }
@@ -322,9 +323,9 @@ notificationSchema.pre('save', function (next) {
 
 // Middleware para limpeza de cache
 notificationSchema.post('save', function () {
-  // Em produção, invalidar cache aqui
+  // Em produÃ§Ã£o, invalidar cache aqui
   if (process.env.NODE_ENV !== 'production') {
-    console.log(`Notificação ${this.id} salva para usuário ${this.userId}`);
+    logger.info(`NotificaÃ§Ã£o ${this.id} salva para usuÃ¡rio ${this.userId}`);
   }
 });
 

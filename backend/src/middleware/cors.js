@@ -1,10 +1,12 @@
-// =============================================================
-// AGROISYNC • Middleware CORS Otimizado
+﻿// =============================================================
+// AGROISYNC â€¢ Middleware CORS Otimizado
 // =============================================================
 
 /**
- * Configuração CORS para múltiplas origens
+ * ConfiguraÃ§Ã£o CORS para mÃºltiplas origens
  */
+import logger from '../utils/logger.js';
+
 const isProduction =
   typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'production';
 
@@ -24,12 +26,12 @@ export const corsOptions = {
   origin(origin, callback) {
     const allowedOrigins = getAllowedOriginsForEnv();
 
-    // Permitir requisições sem origin (mobile apps, Postman, etc.)
+    // Permitir requisiÃ§Ãµes sem origin (mobile apps, Postman, etc.)
     if (!origin) {
       return callback(null, true);
     }
 
-    // Verificar se a origem está na lista
+    // Verificar se a origem estÃ¡ na lista
     const isAllowed = allowedOrigins.some(allowedOrigin => {
       if (typeof allowedOrigin === 'string') {
         return allowedOrigin === origin;
@@ -42,9 +44,7 @@ export const corsOptions = {
     if (isAllowed) {
       callback(null, true);
     } else {
-      // if (process.env.NODE_ENV !== 'production') {
-   console.warn(`CORS: Origem bloqueada: ${origin}`);
- }
+      logger.warn(`CORS: Origem bloqueada: ${origin}`);
       callback(new Error('Não permitido pelo CORS'), false);
     }
   },
@@ -111,10 +111,10 @@ export const corsMiddleware = request => {
 };
 
 /**
- * Middleware para adicionar headers de segurança
+ * Middleware para adicionar headers de seguranÃ§a
  */
 export const securityHeaders = (req, res, next) => {
-  // Headers de segurança
+  // Headers de seguranÃ§a
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '1; mode=block');

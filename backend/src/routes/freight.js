@@ -1,4 +1,4 @@
-// Placeholder para rotas de frete
+﻿// Placeholder para rotas de frete
 export function handleFreightRoutes(request, env, url) {
   return new Response(
     JSON.stringify({

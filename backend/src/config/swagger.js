@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Swagger/OpenAPI Configuration
- * Documentação automática das APIs
+ * DocumentaÃ§Ã£o automÃ¡tica das APIs
  */
 
 import swaggerJsdoc from 'swagger-jsdoc';
@@ -11,7 +11,7 @@ const options = {
     info: {
       title: 'AGROISYNC API',
       version: '2.3.1',
-      description: 'API completa para plataforma de agronegócio - AGROISYNC',
+      description: 'API completa para plataforma de agronegÃ³cio - AGROISYNC',
       contact: {
         name: 'AgroSync Team',
         email: 'suporte@agroisync.com',
@@ -33,7 +33,7 @@ const options = {
       },
       {
         url: 'https://agroisync.com/api',
-        description: 'Servidor de Produção'
+        description: 'Servidor de ProduÃ§Ã£o'
       }
     ],
     components: {
@@ -48,7 +48,7 @@ const options = {
           type: 'apiKey',
           in: 'header',
           name: 'X-CSRF-Token',
-          description: 'Token CSRF para proteção'
+          description: 'Token CSRF para proteÃ§Ã£o'
         }
       },
       schemas: {
@@ -57,7 +57,7 @@ const options = {
           type: 'object',
           properties: {
             id: { type: 'string', example: '507f1f77bcf86cd799439011' },
-            name: { type: 'string', example: 'João Silva' },
+            name: { type: 'string', example: 'JoÃ£o Silva' },
             email: { type: 'string', format: 'email', example: 'joao@example.com' },
             phone: { type: 'string', example: '(11) 99999-9999' },
             businessType: {
@@ -87,7 +87,7 @@ const options = {
           type: 'object',
           required: ['name', 'email', 'password', 'phone'],
           properties: {
-            name: { type: 'string', example: 'João Silva' },
+            name: { type: 'string', example: 'JoÃ£o Silva' },
             email: { type: 'string', format: 'email', example: 'joao@example.com' },
             password: { type: 'string', format: 'password', example: 'Senha123!' },
             phone: { type: 'string', example: '(11) 99999-9999' },
@@ -139,7 +139,7 @@ const options = {
           properties: {
             id: { type: 'string', example: '507f1f77bcf86cd799439011' },
             origin: { type: 'string', example: 'Sinop - MT' },
-            destination: { type: 'string', example: 'São Paulo - SP' },
+            destination: { type: 'string', example: 'SÃ£o Paulo - SP' },
             cargo: { type: 'string', example: 'Soja' },
             weight: { type: 'number', example: 5000 },
             price: { type: 'number', example: 8500.0 },
@@ -158,7 +158,7 @@ const options = {
           type: 'object',
           properties: {
             success: { type: 'boolean', example: false },
-            error: { type: 'string', example: 'Erro ao processar requisição' },
+            error: { type: 'string', example: 'Erro ao processar requisiÃ§Ã£o' },
             code: { type: 'string', example: 'VALIDATION_ERROR' },
             details: { type: 'object' }
           }
@@ -178,7 +178,7 @@ const options = {
       },
       responses: {
         UnauthorizedError: {
-          description: 'Token de autenticação ausente ou inválido',
+          description: 'Token de autenticaÃ§Ã£o ausente ou invÃ¡lido',
           content: {
             'application/json': {
               schema: { $ref: '#/components/schemas/ErrorResponse' }
@@ -186,7 +186,7 @@ const options = {
           }
         },
         ValidationError: {
-          description: 'Erro de validação dos dados enviados',
+          description: 'Erro de validaÃ§Ã£o dos dados enviados',
           content: {
             'application/json': {
               schema: { $ref: '#/components/schemas/ErrorResponse' }
@@ -194,7 +194,7 @@ const options = {
           }
         },
         NotFoundError: {
-          description: 'Recurso não encontrado',
+          description: 'Recurso nÃ£o encontrado',
           content: {
             'application/json': {
               schema: { $ref: '#/components/schemas/ErrorResponse' }
@@ -204,13 +204,13 @@ const options = {
       }
     },
     tags: [
-      { name: 'Auth', description: 'Autenticação e registro de usuários' },
-      { name: 'Users', description: 'Gerenciamento de usuários' },
-      { name: 'Products', description: 'Produtos agrícolas' },
+      { name: 'Auth', description: 'AutenticaÃ§Ã£o e registro de usuÃ¡rios' },
+      { name: 'Users', description: 'Gerenciamento de usuÃ¡rios' },
+      { name: 'Products', description: 'Produtos agrÃ­colas' },
       { name: 'Freights', description: 'Fretes e transportes' },
-      { name: 'Payments', description: 'Pagamentos e transações' },
+      { name: 'Payments', description: 'Pagamentos e transaÃ§Ãµes' },
       { name: 'Crypto', description: 'Criptomoedas e blockchain' },
-      { name: 'Health', description: 'Status e saúde da API' },
+      { name: 'Health', description: 'Status e saÃºde da API' },
       { name: 'Admin', description: 'Endpoints administrativos' }
     ]
   },

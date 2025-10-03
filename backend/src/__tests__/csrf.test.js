@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Testes para CSRF Protection
  */
 
@@ -6,7 +6,7 @@ import { generateCSRFToken, validateCSRFToken } from '../middleware/csrf.js';
 
 describe('CSRF Protection', () => {
   describe('generateCSRFToken', () => {
-    it('deve gerar um token CSRF válido', () => {
+    it('deve gerar um token CSRF vÃ¡lido', () => {
       const req = { ip: '127.0.0.1' };
       const token = generateCSRFToken(req);
 
@@ -25,7 +25,7 @@ describe('CSRF Protection', () => {
   });
 
   describe('validateCSRFToken', () => {
-    it('deve validar um token recém criado', () => {
+    it('deve validar um token recÃ©m criado', () => {
       const req = { ip: '127.0.0.1' };
       const token = generateCSRFToken(req);
 
@@ -33,7 +33,7 @@ describe('CSRF Protection', () => {
       expect(isValid).toBe(true);
     });
 
-    it('deve rejeitar token inválido', () => {
+    it('deve rejeitar token invÃ¡lido', () => {
       const req = { ip: '127.0.0.1' };
       const isValid = validateCSRFToken(req, 'token-invalido');
 
@@ -47,7 +47,7 @@ describe('CSRF Protection', () => {
       expect(isValid).toBe(false);
     });
 
-    it('deve rejeitar token de outra sessão', () => {
+    it('deve rejeitar token de outra sessÃ£o', () => {
       const req1 = { ip: '127.0.0.1' };
       const req2 = { ip: '192.168.1.1' };
       const token = generateCSRFToken(req1);

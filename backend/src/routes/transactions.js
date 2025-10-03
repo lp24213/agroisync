@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import { authenticateToken, requireRole } from '../middleware/auth.js';
 import Transaction from '../models/Transaction.js';
 import TransactionMessage from '../models/TransactionMessage.js';
@@ -7,18 +7,19 @@ import Freight from '../models/Freight.js';
 import User from '../models/User.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
 
+import logger from '../utils/logger.js';
 const router = express.Router();
 
 // Aplicar rate limiting
 router.use(apiLimiter);
 
-// ===== MIDDLEWARE DE AUTENTICAÇÃO =====
-// Todas as rotas requerem autenticação
+// ===== MIDDLEWARE DE AUTENTICAÃ‡ÃƒO =====
+// Todas as rotas requerem autenticaÃ§Ã£o
 router.use(authenticateToken);
 
-// ===== ROTAS DE TRANSACÕES =====
+// ===== ROTAS DE TRANSACÃ•ES =====
 
-// POST / - Criar nova transação de intermediação
+// POST / - Criar nova transaÃ§Ã£o de intermediaÃ§Ã£o
 router.post('/', async (req, res) => {
   try {
     const { type, itemId, itemModel, total, shipping, paymentMethods, deliveryOptions, notes } =
@@ -26,19 +27,19 @@ router.post('/', async (req, res) => {
 
     const buyerId = req.user.userId;
 
-    // Validações básicas
+    // ValidaÃ§Ãµes bÃ¡sicas
     if (!type || !itemId || !itemModel || !total) {
       return res.status(400).json({
         success: false,
-        message: 'Campos obrigatórios: type, itemId, itemModel, total'
+        message: 'Campos obrigatÃ³rios: type, itemId, itemModel, total'
       });
     }
 
-    // Validar tipo de transação
+    // Validar tipo de transaÃ§Ã£o
     if (!['PRODUCT', 'FREIGHT', 'SERVICE'].includes(type)) {
       return res.status(400).json({
         success: false,
-        message: 'Tipo de transação inválido'
+        message: 'Tipo de transaÃ§Ã£o invÃ¡lido'
       });
     }
 
@@ -46,7 +47,7 @@ router.post('/', async (req, res) => {
     if (!['Product', 'Freight', 'Service'].includes(itemModel)) {
       return res.status(400).json({
         success: false,
-        message: 'Modelo de item inválido'
+        message: 'Modelo de item invÃ¡lido'
       });
     }
 
@@ -59,7 +60,7 @@ router.post('/', async (req, res) => {
         if (!item) {
           return res.status(404).json({
             success: false,
-            message: 'Produto não encontrado'
+            message: 'Produto nÃ£o encontrado'
           });
         }
         sellerId = item.seller;
@@ -70,7 +71,7 @@ router.post('/', async (req, res) => {
         if (!item) {
           return res.status(404).json({
             success: false,
-            message: 'Frete não encontrado'
+            message: 'Frete nÃ£o encontrado'
           });
         }
         sellerId = item.carrier;
@@ -79,19 +80,19 @@ router.post('/', async (req, res) => {
       default:
         return res.status(400).json({
           success: false,
-          message: 'Modelo de item não suportado'
+          message: 'Modelo de item nÃ£o suportado'
         });
     }
 
-    // Verificar se não está tentando comprar de si mesmo
+    // Verificar se nÃ£o estÃ¡ tentando comprar de si mesmo
     if (buyerId.toString() === sellerId.toString()) {
       return res.status(400).json({
         success: false,
-        message: 'Não é possível criar transação consigo mesmo'
+        message: 'NÃ£o Ã© possÃ­vel criar transaÃ§Ã£o consigo mesmo'
       });
     }
 
-    // Verificar se já existe uma transação pendente para este item
+    // Verificar se jÃ¡ existe uma transaÃ§Ã£o pendente para este item
     const existingTransaction = await Transaction.findOne({
       itemId,
       itemModel,
@@ -102,12 +103,12 @@ router.post('/', async (req, res) => {
     if (existingTransaction) {
       return res.status(409).json({
         success: false,
-        message: 'Já existe uma transação pendente para este item',
+        message: 'JÃ¡ existe uma transaÃ§Ã£o pendente para este item',
         transactionId: existingTransaction.id
       });
     }
 
-    // Criar transação
+    // Criar transaÃ§Ã£o
     const transaction = new Transaction({
       type,
       buyerId,
@@ -137,7 +138,7 @@ router.post('/', async (req, res) => {
 
     await transaction.save();
 
-    // Populate dados do usuário para resposta
+    // Populate dados do usuÃ¡rio para resposta
     await transaction.populate([
       { path: 'buyerId', select: 'name email phone' },
       { path: 'sellerId', select: 'name email phone' }
@@ -145,7 +146,7 @@ router.post('/', async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: 'Transação criada com sucesso',
+      message: 'TransaÃ§Ã£o criada com sucesso',
       transaction: {
         id: transaction.id,
         type: transaction.type,
@@ -160,7 +161,7 @@ router.post('/', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao criar transação:', error);
+      logger.error('Erro ao criar transaÃ§Ã£o:', error);
     }
     res.status(500).json({
       success: false,
@@ -170,7 +171,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// GET / - Listar transações do usuário
+// GET / - Listar transaÃ§Ãµes do usuÃ¡rio
 router.get('/', async (req, res) => {
   try {
     const { userId } = req.user;
@@ -188,16 +189,16 @@ router.get('/', async (req, res) => {
       filters.status = status;
     }
 
-    // Paginação
+    // PaginaÃ§Ã£o
     const skip = (page - 1) * limit;
 
-    // Buscar transações
+    // Buscar transaÃ§Ãµes
     const transactions = await Transaction.find(filters)
       .populate('buyerId', 'name email phone')
       .populate('sellerId', 'name email phone')
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit, 10));
+      .limit(parseInt(limit, 10, 10));
 
     // Contar total
     const total = await Transaction.countDocuments(filters);
@@ -213,8 +214,8 @@ router.get('/', async (req, res) => {
         purchases,
         sales,
         pagination: {
-          page: parseInt(page, 10),
-          limit: parseInt(limit, 10),
+          page: parseInt(page, 10, 10),
+          limit: parseInt(limit, 10, 10),
           total,
           pages: Math.ceil(total / limit)
         }
@@ -222,7 +223,7 @@ router.get('/', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar transações:', error);
+      logger.error('Erro ao buscar transaÃ§Ãµes:', error);
     }
     res.status(500).json({
       success: false,
@@ -231,7 +232,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /:id - Buscar transação por ID
+// GET /:id - Buscar transaÃ§Ã£o por ID
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -244,18 +245,18 @@ router.get('/:id', async (req, res) => {
     if (!transaction) {
       return res.status(404).json({
         success: false,
-        message: 'Transação não encontrada'
+        message: 'TransaÃ§Ã£o nÃ£o encontrada'
       });
     }
 
-    // Verificar se o usuário tem acesso a esta transação
+    // Verificar se o usuÃ¡rio tem acesso a esta transaÃ§Ã£o
     if (
       transaction.buyerId._id.toString() !== userId &&
       transaction.sellerId._id.toString() !== userId
     ) {
       return res.status(403).json({
         success: false,
-        message: 'Acesso negado a esta transação'
+        message: 'Acesso negado a esta transaÃ§Ã£o'
       });
     }
 
@@ -265,7 +266,7 @@ router.get('/:id', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar transação:', error);
+      logger.error('Erro ao buscar transaÃ§Ã£o:', error);
     }
     res.status(500).json({
       success: false,
@@ -274,35 +275,35 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// PUT /:id/status - Atualizar status da transação
+// PUT /:id/status - Atualizar status da transaÃ§Ã£o
 router.put('/:id/status', async (req, res) => {
   try {
     const { id } = req.params;
     const { newStatus, reason, notes } = req.body;
     const { userId } = req.user;
 
-    // Buscar transação
+    // Buscar transaÃ§Ã£o
     const transaction = await Transaction.findById(id);
     if (!transaction) {
       return res.status(404).json({
         success: false,
-        message: 'Transação não encontrada'
+        message: 'TransaÃ§Ã£o nÃ£o encontrada'
       });
     }
 
-    // Verificar permissões
+    // Verificar permissÃµes
     if (transaction.buyerId.toString() !== userId && transaction.sellerId.toString() !== userId) {
       return res.status(403).json({
         success: false,
-        message: 'Sem permissão para alterar esta transação'
+        message: 'Sem permissÃ£o para alterar esta transaÃ§Ã£o'
       });
     }
 
-    // Verificar se a mudança de status é válida
+    // Verificar se a mudanÃ§a de status Ã© vÃ¡lida
     if (!transaction.canChangeToStatus(newStatus)) {
       return res.status(400).json({
         success: false,
-        message: `Mudança de status inválida: ${transaction.status} → ${newStatus}`
+        message: `MudanÃ§a de status invÃ¡lida: ${transaction.status} â†’ ${newStatus}`
       });
     }
 
@@ -312,19 +313,19 @@ router.put('/:id/status', async (req, res) => {
     // Atualizar status
     transaction.status = newStatus;
 
-    // Adicionar ao histórico
+    // Adicionar ao histÃ³rico
     await transaction.addStatusHistory(newStatus, userId, reason, notes);
 
-    // Atualizar campos relacionados ao escrow se necessário
+    // Atualizar campos relacionados ao escrow se necessÃ¡rio
     if (newStatus.startsWith('ESCROW_')) {
       transaction.usesEscrow = true;
       transaction.escrowStatus = newStatus.replace('ESCROW_', '');
     }
 
-    // Salvar transação
+    // Salvar transaÃ§Ã£o
     await transaction.save();
 
-    // Buscar transação atualizada com populações
+    // Buscar transaÃ§Ã£o atualizada com populaÃ§Ãµes
     const updatedTransaction = await Transaction.findById(id)
       .populate('buyerId', 'name email')
       .populate('sellerId', 'name email')
@@ -333,7 +334,7 @@ router.put('/:id/status', async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Status da transação atualizado com sucesso',
+      message: 'Status da transaÃ§Ã£o atualizado com sucesso',
       data: {
         transaction: updatedTransaction,
         oldStatus,
@@ -344,7 +345,7 @@ router.put('/:id/status', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao atualizar status da transação:', error);
+      logger.error('Erro ao atualizar status da transaÃ§Ã£o:', error);
     }
     res.status(500).json({
       success: false,
@@ -353,23 +354,23 @@ router.put('/:id/status', async (req, res) => {
   }
 });
 
-// POST /:id/escrow/enable - Habilitar escrow para transação
+// POST /:id/escrow/enable - Habilitar escrow para transaÃ§Ã£o
 router.post('/:id/escrow/enable', async (req, res) => {
   try {
     const { id } = req.params;
     const { autoReleaseDays, requiresConfirmation, allowDisputes, maxDisputeDays } = req.body;
     const { userId } = req.user;
 
-    // Buscar transação
+    // Buscar transaÃ§Ã£o
     const transaction = await Transaction.findById(id);
     if (!transaction) {
       return res.status(404).json({
         success: false,
-        message: 'Transação não encontrada'
+        message: 'TransaÃ§Ã£o nÃ£o encontrada'
       });
     }
 
-    // Verificar permissões (apenas comprador pode habilitar escrow)
+    // Verificar permissÃµes (apenas comprador pode habilitar escrow)
     if (transaction.buyerId.toString() !== userId) {
       return res.status(403).json({
         success: false,
@@ -377,11 +378,11 @@ router.post('/:id/escrow/enable', async (req, res) => {
       });
     }
 
-    // Verificar se já tem escrow habilitado
+    // Verificar se jÃ¡ tem escrow habilitado
     if (transaction.usesEscrow) {
       return res.status(400).json({
         success: false,
-        message: 'Escrow já está habilitado para esta transação'
+        message: 'Escrow jÃ¡ estÃ¡ habilitado para esta transaÃ§Ã£o'
       });
     }
 
@@ -389,11 +390,11 @@ router.post('/:id/escrow/enable', async (req, res) => {
     if (!['PENDING', 'NEGOTIATING', 'AGREED'].includes(transaction.status)) {
       return res.status(400).json({
         success: false,
-        message: 'Status da transação não permite habilitar escrow'
+        message: 'Status da transaÃ§Ã£o nÃ£o permite habilitar escrow'
       });
     }
 
-    // Atualizar configurações de escrow
+    // Atualizar configuraÃ§Ãµes de escrow
     transaction.usesEscrow = true;
     transaction.escrowSettings = {
       enabled: true,
@@ -407,7 +408,7 @@ router.post('/:id/escrow/enable', async (req, res) => {
     transaction.status = 'ESCROW_PENDING';
     transaction.escrowStatus = 'PENDING';
 
-    // Adicionar ao histórico
+    // Adicionar ao histÃ³rico
     await transaction.addStatusHistory(
       'ESCROW_PENDING',
       userId,
@@ -415,10 +416,10 @@ router.post('/:id/escrow/enable', async (req, res) => {
       'Escrow habilitado pelo comprador'
     );
 
-    // Salvar transação
+    // Salvar transaÃ§Ã£o
     await transaction.save();
 
-    // Buscar transação atualizada
+    // Buscar transaÃ§Ã£o atualizada
     const updatedTransaction = await Transaction.findById(id)
       .populate('buyerId', 'name email')
       .populate('sellerId', 'name email')
@@ -435,7 +436,7 @@ router.post('/:id/escrow/enable', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao habilitar escrow:', error);
+      logger.error('Erro ao habilitar escrow:', error);
     }
     res.status(500).json({
       success: false,
@@ -444,23 +445,23 @@ router.post('/:id/escrow/enable', async (req, res) => {
   }
 });
 
-// POST /:id/escrow/disable - Desabilitar escrow para transação
+// POST /:id/escrow/disable - Desabilitar escrow para transaÃ§Ã£o
 router.post('/:id/escrow/disable', async (req, res) => {
   try {
     const { id } = req.params;
     const { reason } = req.body;
     const { userId } = req.user;
 
-    // Buscar transação
+    // Buscar transaÃ§Ã£o
     const transaction = await Transaction.findById(id);
     if (!transaction) {
       return res.status(404).json({
         success: false,
-        message: 'Transação não encontrada'
+        message: 'TransaÃ§Ã£o nÃ£o encontrada'
       });
     }
 
-    // Verificar permissões (apenas comprador pode desabilitar escrow)
+    // Verificar permissÃµes (apenas comprador pode desabilitar escrow)
     if (transaction.buyerId.toString() !== userId) {
       return res.status(403).json({
         success: false,
@@ -468,15 +469,15 @@ router.post('/:id/escrow/disable', async (req, res) => {
       });
     }
 
-    // Verificar se escrow está habilitado
+    // Verificar se escrow estÃ¡ habilitado
     if (!transaction.usesEscrow) {
       return res.status(400).json({
         success: false,
-        message: 'Escrow não está habilitado para esta transação'
+        message: 'Escrow nÃ£o estÃ¡ habilitado para esta transaÃ§Ã£o'
       });
     }
 
-    // Verificar se pode desabilitar (apenas se ainda não foi fundado)
+    // Verificar se pode desabilitar (apenas se ainda nÃ£o foi fundado)
     if (
       ['FUNDED', 'IN_TRANSIT', 'DELIVERED', 'CONFIRMED', 'DISPUTED', 'RELEASED'].includes(
         transaction.escrowStatus
@@ -484,7 +485,7 @@ router.post('/:id/escrow/disable', async (req, res) => {
     ) {
       return res.status(400).json({
         success: false,
-        message: 'Não é possível desabilitar escrow após o valor ser depositado'
+        message: 'NÃ£o Ã© possÃ­vel desabilitar escrow apÃ³s o valor ser depositado'
       });
     }
 
@@ -498,7 +499,7 @@ router.post('/:id/escrow/disable', async (req, res) => {
       transaction.status = 'AGREED';
     }
 
-    // Adicionar ao histórico
+    // Adicionar ao histÃ³rico
     await transaction.addStatusHistory(
       'AGREED',
       userId,
@@ -506,10 +507,10 @@ router.post('/:id/escrow/disable', async (req, res) => {
       reason || 'Escrow desabilitado pelo comprador'
     );
 
-    // Salvar transação
+    // Salvar transaÃ§Ã£o
     await transaction.save();
 
-    // Buscar transação atualizada
+    // Buscar transaÃ§Ã£o atualizada
     const updatedTransaction = await Transaction.findById(id)
       .populate('buyerId', 'name email')
       .populate('sellerId', 'name email')
@@ -525,7 +526,7 @@ router.post('/:id/escrow/disable', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao desabilitar escrow:', error);
+      logger.error('Erro ao desabilitar escrow:', error);
     }
     res.status(500).json({
       success: false,
@@ -540,7 +541,7 @@ router.get('/:id/escrow/status', async (req, res) => {
     const { id } = req.params;
     const { userId } = req.user;
 
-    // Buscar transação
+    // Buscar transaÃ§Ã£o
     const transaction = await Transaction.findById(id)
       .populate('buyerId', 'name email')
       .populate('sellerId', 'name email')
@@ -550,26 +551,26 @@ router.get('/:id/escrow/status', async (req, res) => {
     if (!transaction) {
       return res.status(404).json({
         success: false,
-        message: 'Transação não encontrada'
+        message: 'TransaÃ§Ã£o nÃ£o encontrada'
       });
     }
 
-    // Verificar permissões
+    // Verificar permissÃµes
     if (
       transaction.buyerId._id.toString() !== userId &&
       transaction.sellerId._id.toString() !== userId
     ) {
       return res.status(403).json({
         success: false,
-        message: 'Sem permissão para visualizar esta transação'
+        message: 'Sem permissÃ£o para visualizar esta transaÃ§Ã£o'
       });
     }
 
-    // Verificar se escrow está habilitado
+    // Verificar se escrow estÃ¡ habilitado
     if (!transaction.usesEscrow) {
       return res.status(400).json({
         success: false,
-        message: 'Escrow não está habilitado para esta transação'
+        message: 'Escrow nÃ£o estÃ¡ habilitado para esta transaÃ§Ã£o'
       });
     }
 
@@ -584,7 +585,7 @@ router.get('/:id/escrow/status', async (req, res) => {
       isOverdue: transaction.isOverdue()
     };
 
-    // Adicionar dados da transação de escrow se existir
+    // Adicionar dados da transaÃ§Ã£o de escrow se existir
     if (transaction.escrowTransactionId) {
       escrowData.escrowTransaction = {
         id: transaction.escrowTransactionId._id,
@@ -605,7 +606,7 @@ router.get('/:id/escrow/status', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter status do escrow:', error);
+      logger.error('Erro ao obter status do escrow:', error);
     }
     res.status(500).json({
       success: false,
@@ -614,7 +615,7 @@ router.get('/:id/escrow/status', async (req, res) => {
   }
 });
 
-// GET /:id/messages - Buscar mensagens da transação
+// GET /:id/messages - Buscar mensagens da transaÃ§Ã£o
 router.get('/:id/messages', async (req, res) => {
   try {
     const { id } = req.params;
@@ -625,25 +626,25 @@ router.get('/:id/messages', async (req, res) => {
     if (!transaction) {
       return res.status(404).json({
         success: false,
-        message: 'Transação não encontrada'
+        message: 'TransaÃ§Ã£o nÃ£o encontrada'
       });
     }
 
-    // Verificar se o usuário tem acesso a esta transação
+    // Verificar se o usuÃ¡rio tem acesso a esta transaÃ§Ã£o
     if (transaction.buyerId.toString() !== userId && transaction.sellerId.toString() !== userId) {
       return res.status(403).json({
         success: false,
-        message: 'Acesso negado a esta transação'
+        message: 'Acesso negado a esta transaÃ§Ã£o'
       });
     }
 
-    // Buscar mensagens da transação
+    // Buscar mensagens da transaÃ§Ã£o
     const messages = await TransactionMessage.findByTransaction(id, {
       limit: 100,
       sort: { createdAt: 1 }
     });
 
-    // Marcar mensagens como lidas se o usuário for o destinatário
+    // Marcar mensagens como lidas se o usuÃ¡rio for o destinatÃ¡rio
     const unreadMessages = messages.filter(
       msg => msg.to.toString() === userId && msg.status !== 'read'
     );
@@ -659,7 +660,7 @@ router.get('/:id/messages', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar mensagens:', error);
+      logger.error('Erro ao buscar mensagens:', error);
     }
     res.status(500).json({
       success: false,
@@ -668,7 +669,7 @@ router.get('/:id/messages', async (req, res) => {
   }
 });
 
-// POST /:id/messages - Adicionar mensagem à transação
+// POST /:id/messages - Adicionar mensagem Ã  transaÃ§Ã£o
 router.post('/:id/messages', async (req, res) => {
   try {
     const { id } = req.params;
@@ -680,23 +681,23 @@ router.post('/:id/messages', async (req, res) => {
     if (!transaction) {
       return res.status(404).json({
         success: false,
-        message: 'Transação não encontrada'
+        message: 'TransaÃ§Ã£o nÃ£o encontrada'
       });
     }
 
-    // Verificar se o usuário tem acesso a esta transação
+    // Verificar se o usuÃ¡rio tem acesso a esta transaÃ§Ã£o
     if (transaction.buyerId.toString() !== userId && transaction.sellerId.toString() !== userId) {
       return res.status(403).json({
         success: false,
-        message: 'Acesso negado a esta transação'
+        message: 'Acesso negado a esta transaÃ§Ã£o'
       });
     }
 
-    // Verificar se a transação não está cancelada ou concluída
+    // Verificar se a transaÃ§Ã£o nÃ£o estÃ¡ cancelada ou concluÃ­da
     if (['CANCELLED', 'COMPLETED'].includes(transaction.status)) {
       return res.status(400).json({
         success: false,
-        message: 'Não é possível enviar mensagens para transações canceladas ou concluídas'
+        message: 'NÃ£o Ã© possÃ­vel enviar mensagens para transaÃ§Ãµes canceladas ou concluÃ­das'
       });
     }
 
@@ -707,7 +708,7 @@ router.post('/:id/messages', async (req, res) => {
       await transaction.save();
     }
 
-    // Determinar destinatário
+    // Determinar destinatÃ¡rio
     const toUserId =
       transaction.buyerId.toString() === userId ? transaction.sellerId : transaction.buyerId;
 
@@ -740,7 +741,7 @@ router.post('/:id/messages', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao enviar mensagem:', error);
+      logger.error('Erro ao enviar mensagem:', error);
     }
     res.status(500).json({
       success: false,
@@ -749,7 +750,7 @@ router.post('/:id/messages', async (req, res) => {
   }
 });
 
-// GET /conversations - Buscar conversas ativas do usuário
+// GET /conversations - Buscar conversas ativas do usuÃ¡rio
 router.get('/conversations', async (req, res) => {
   try {
     const { userId } = req.user;
@@ -758,7 +759,7 @@ router.get('/conversations', async (req, res) => {
     // Buscar conversas ativas
     const conversations = await TransactionMessage.findActiveConversations(
       userId,
-      parseInt(limit, 10)
+      parseInt(limit, 10, 10)
     );
 
     res.json({
@@ -775,7 +776,7 @@ router.get('/conversations', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar conversas:', error);
+      logger.error('Erro ao buscar conversas:', error);
     }
     res.status(500).json({
       success: false,
@@ -784,12 +785,12 @@ router.get('/conversations', async (req, res) => {
   }
 });
 
-// GET /stats - Estatísticas das transações
+// GET /stats - EstatÃ­sticas das transaÃ§Ãµes
 router.get('/stats', async (req, res) => {
   try {
     const { userId } = req.user;
 
-    // Estatísticas gerais
+    // EstatÃ­sticas gerais
     const totalTransactions = await Transaction.countDocuments({
       $or: [{ buyerId: userId }, { sellerId: userId }]
     });
@@ -809,7 +810,7 @@ router.get('/stats', async (req, res) => {
       status: 'COMPLETED'
     });
 
-    // Valor total das transações
+    // Valor total das transaÃ§Ãµes
     const totalValue = await Transaction.aggregate([
       {
         $match: {
@@ -837,7 +838,7 @@ router.get('/stats', async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar estatísticas:', error);
+      logger.error('Erro ao buscar estatÃ­sticas:', error);
     }
     res.status(500).json({
       success: false,
@@ -848,7 +849,7 @@ router.get('/stats', async (req, res) => {
 
 // ===== ROTAS ADMIN =====
 
-// GET /admin/all - Listar todas as transações (admin only)
+// GET /admin/all - Listar todas as transaÃ§Ãµes (admin only)
 router.get('/admin/all', requireRole('admin'), async (req, res) => {
   try {
     const { page = 1, limit = 50, status, type } = req.query;
@@ -868,7 +869,7 @@ router.get('/admin/all', requireRole('admin'), async (req, res) => {
       .populate('sellerId', 'name email phone')
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit, 10));
+      .limit(parseInt(limit, 10, 10));
 
     const total = await Transaction.countDocuments(filters);
 
@@ -877,8 +878,8 @@ router.get('/admin/all', requireRole('admin'), async (req, res) => {
       data: {
         transactions,
         pagination: {
-          page: parseInt(page, 10),
-          limit: parseInt(limit, 10),
+          page: parseInt(page, 10, 10),
+          limit: parseInt(limit, 10, 10),
           total,
           pages: Math.ceil(total / limit)
         }
@@ -906,7 +907,7 @@ router.patch('/admin/:id/status', requireRole('admin'), async (req, res) => {
     if (!transaction) {
       return res.status(404).json({
         success: false,
-        message: 'Transação não encontrada'
+        message: 'TransaÃ§Ã£o nÃ£o encontrada'
       });
     }
 

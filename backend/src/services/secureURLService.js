@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+﻿import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 
 class SecureURLService {
@@ -40,7 +40,7 @@ class SecureURLService {
         audience: 'agroisync-signup'
       });
     } catch (error) {
-      throw new Error('Token inválido ou expirado');
+      throw new Error('Token invÃ¡lido ou expirado');
     }
   }
 
@@ -58,10 +58,10 @@ class SecureURLService {
   }
 
   /**
-   * Gerar código de convite seguro
-   * @param {string} referrerId - ID do usuário que está convidando
+   * Gerar cÃ³digo de convite seguro
+   * @param {string} referrerId - ID do usuÃ¡rio que estÃ¡ convidando
    * @param {string} type - Tipo de cadastro
-   * @returns {string} - Código de convite
+   * @returns {string} - CÃ³digo de convite
    */
   generateInviteCode(referrerId, type) {
     const payload = {
@@ -77,13 +77,13 @@ class SecureURLService {
       audience: 'agroisync-invite'
     });
 
-    // Converter para código mais amigável
+    // Converter para cÃ³digo mais amigÃ¡vel
     return Buffer.from(token).toString('base64url');
   }
 
   /**
-   * Verificar código de convite
-   * @param {string} inviteCode - Código de convite
+   * Verificar cÃ³digo de convite
+   * @param {string} inviteCode - CÃ³digo de convite
    * @returns {Object} - Dados do convite
    */
   verifyInviteCode(inviteCode) {
@@ -94,13 +94,13 @@ class SecureURLService {
         audience: 'agroisync-invite'
       });
     } catch (error) {
-      throw new Error('Código de convite inválido ou expirado');
+      throw new Error('CÃ³digo de convite invÃ¡lido ou expirado');
     }
   }
 
   /**
    * Gerar URL de convite completa
-   * @param {string} referrerId - ID do usuário que está convidando
+   * @param {string} referrerId - ID do usuÃ¡rio que estÃ¡ convidando
    * @param {string} type - Tipo de cadastro
    * @returns {string} - URL de convite completa
    */
@@ -112,7 +112,7 @@ class SecureURLService {
   }
 
   /**
-   * Criptografar dados sensíveis para URL
+   * Criptografar dados sensÃ­veis para URL
    * @param {Object} data - Dados a serem criptografados
    * @returns {string} - Dados criptografados em base64
    */

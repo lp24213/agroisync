@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import Product from '../models/Product.js';
 import Freight from '../models/Freight.js';
 import Payment from '../models/Payment.js';
@@ -6,16 +6,17 @@ import User from '../models/User.js';
 import { authenticateToken } from '../middleware/auth.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
 
+import logger from '../utils/logger.js';
 const router = express.Router();
 
 // Apply rate limiting
 router.use(apiLimiter);
 
-// GET /api/visibility/products/public - Listar produtos com dados públicos apenas
+// GET /api/visibility/products/public - Listar produtos com dados pÃºblicos apenas
 router.get('/products/public', async (req, res) => {
   try {
     const { page = 1, limit = 20, category, location } = req.query;
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const skip = (parseInt(page, 10, 10) - 1) * parseInt(limit, 10, 10);
 
     const query = { status: 'active' };
     if (category) {
@@ -29,7 +30,7 @@ router.get('/products/public', async (req, res) => {
       .select('name location category image createdAt')
       .populate('owner', 'name company')
       .skip(skip)
-      .limit(parseInt(limit, 10))
+      .limit(parseInt(limit, 10, 10))
       .sort({ createdAt: -1 });
 
     const total = await Product.countDocuments(query);
@@ -38,15 +39,15 @@ router.get('/products/public', async (req, res) => {
       success: true,
       data: products,
       pagination: {
-        page: parseInt(page, 10),
-        limit: parseInt(limit, 10),
+        page: parseInt(page, 10, 10),
+        limit: parseInt(limit, 10, 10),
         total,
-        pages: Math.ceil(total / parseInt(limit, 10))
+        pages: Math.ceil(total / parseInt(limit, 10, 10))
       }
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar produtos públicos:', error);
+      logger.error('Erro ao buscar produtos pÃºblicos:', error);
     }
     res.status(500).json({
       success: false,
@@ -55,11 +56,11 @@ router.get('/products/public', async (req, res) => {
   }
 });
 
-// GET /api/visibility/freights/public - Listar fretes com dados públicos apenas
+// GET /api/visibility/freights/public - Listar fretes com dados pÃºblicos apenas
 router.get('/freights/public', async (req, res) => {
   try {
     const { page = 1, limit = 20, origin, destination } = req.query;
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const skip = (parseInt(page, 10, 10) - 1) * parseInt(limit, 10, 10);
 
     const query = { status: 'active' };
     if (origin) {
@@ -73,7 +74,7 @@ router.get('/freights/public', async (req, res) => {
       .select('origin destination value vehicleType createdAt')
       .populate('owner', 'name company')
       .skip(skip)
-      .limit(parseInt(limit, 10))
+      .limit(parseInt(limit, 10, 10))
       .sort({ createdAt: -1 });
 
     const total = await Freight.countDocuments(query);
@@ -82,15 +83,15 @@ router.get('/freights/public', async (req, res) => {
       success: true,
       data: freights,
       pagination: {
-        page: parseInt(page, 10),
-        limit: parseInt(limit, 10),
+        page: parseInt(page, 10, 10),
+        limit: parseInt(limit, 10, 10),
         total,
-        pages: Math.ceil(total / parseInt(limit, 10))
+        pages: Math.ceil(total / parseInt(limit, 10, 10))
       }
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar fretes públicos:', error);
+      logger.error('Erro ao buscar fretes pÃºblicos:', error);
     }
     res.status(500).json({
       success: false,
@@ -99,13 +100,13 @@ router.get('/freights/public', async (req, res) => {
   }
 });
 
-// GET /api/visibility/products/:id/full - Obter dados completos do produto (após pagamento)
+// GET /api/visibility/products/:id/full - Obter dados completos do produto (apÃ³s pagamento)
 router.get('/products/:id/full', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const { userId } = req.user;
 
-    // Verificar se o usuário pagou para ver os dados completos
+    // Verificar se o usuÃ¡rio pagou para ver os dados completos
     const payment = await Payment.findOne({
       userId,
       itemId: id,
@@ -116,9 +117,9 @@ router.get('/products/:id/full', authenticateToken, async (req, res) => {
     if (!payment) {
       return res.status(403).json({
         success: false,
-        message: 'Pagamento necessário para acessar dados completos',
+        message: 'Pagamento necessÃ¡rio para acessar dados completos',
         paymentRequired: true,
-        amount: 29.9 // Preço para liberar dados do produto
+        amount: 29.9 // PreÃ§o para liberar dados do produto
       });
     }
 
@@ -130,7 +131,7 @@ router.get('/products/:id/full', authenticateToken, async (req, res) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        error: 'Produto não encontrado'
+        error: 'Produto nÃ£o encontrado'
       });
     }
 
@@ -140,7 +141,7 @@ router.get('/products/:id/full', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar dados completos do produto:', error);
+      logger.error('Erro ao buscar dados completos do produto:', error);
     }
     res.status(500).json({
       success: false,
@@ -149,13 +150,13 @@ router.get('/products/:id/full', authenticateToken, async (req, res) => {
   }
 });
 
-// GET /api/visibility/freights/:id/full - Obter dados completos do frete (após pagamento)
+// GET /api/visibility/freights/:id/full - Obter dados completos do frete (apÃ³s pagamento)
 router.get('/freights/:id/full', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const { userId } = req.user;
 
-    // Verificar se o usuário pagou para ver os dados completos
+    // Verificar se o usuÃ¡rio pagou para ver os dados completos
     const payment = await Payment.findOne({
       userId,
       itemId: id,
@@ -166,9 +167,9 @@ router.get('/freights/:id/full', authenticateToken, async (req, res) => {
     if (!payment) {
       return res.status(403).json({
         success: false,
-        message: 'Pagamento necessário para acessar dados completos',
+        message: 'Pagamento necessÃ¡rio para acessar dados completos',
         paymentRequired: true,
-        amount: 19.9 // Preço para liberar dados do frete
+        amount: 19.9 // PreÃ§o para liberar dados do frete
       });
     }
 
@@ -180,7 +181,7 @@ router.get('/freights/:id/full', authenticateToken, async (req, res) => {
     if (!freight) {
       return res.status(404).json({
         success: false,
-        error: 'Frete não encontrado'
+        error: 'Frete nÃ£o encontrado'
       });
     }
 
@@ -190,7 +191,7 @@ router.get('/freights/:id/full', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar dados completos do frete:', error);
+      logger.error('Erro ao buscar dados completos do frete:', error);
     }
     res.status(500).json({
       success: false,
@@ -199,13 +200,13 @@ router.get('/freights/:id/full', authenticateToken, async (req, res) => {
   }
 });
 
-// POST /api/visibility/unlock - Liberar dados após pagamento
+// POST /api/visibility/unlock - Liberar dados apÃ³s pagamento
 router.post('/unlock', authenticateToken, async (req, res) => {
   try {
     const { itemId, itemType, paymentMethod } = req.body;
     const { userId } = req.user;
 
-    // Verificar se já existe pagamento
+    // Verificar se jÃ¡ existe pagamento
     const existingPayment = await Payment.findOne({
       userId,
       itemId,
@@ -216,7 +217,7 @@ router.post('/unlock', authenticateToken, async (req, res) => {
     if (existingPayment) {
       return res.json({
         success: true,
-        message: 'Dados já liberados',
+        message: 'Dados jÃ¡ liberados',
         paymentId: existingPayment._id
       });
     }
@@ -236,7 +237,7 @@ router.post('/unlock', authenticateToken, async (req, res) => {
 
     await payment.save();
 
-    // Simular confirmação de pagamento (em produção, seria confirmado pelo gateway)
+    // Simular confirmaÃ§Ã£o de pagamento (em produÃ§Ã£o, seria confirmado pelo gateway)
     payment.status = 'completed';
     await payment.save();
 
@@ -247,7 +248,7 @@ router.post('/unlock', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao liberar dados:', error);
+      logger.error('Erro ao liberar dados:', error);
     }
     res.status(500).json({
       success: false,

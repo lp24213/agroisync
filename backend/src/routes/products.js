@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import Product from '../models/Product.js';
 import User from '../models/User.js';
 import { validateProduct } from '../middleware/validation.js';
@@ -7,6 +7,7 @@ import { authenticateToken } from '../middleware/auth.js';
 import { getClientIP } from '../utils/ipUtils.js';
 
 const router = express.Router();
+import logger from '../utils/logger.js';
 
 // Apply rate limiting
 router.use(apiLimiter);
@@ -27,7 +28,7 @@ router.get('/', async (req, res) => {
       sortOrder = 'desc'
     } = req.query;
 
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const skip = (parseInt(page, 10, 10) - 1) * parseInt(limit, 10, 10);
 
     // Build query
     const query = { status: 'active' };
@@ -66,7 +67,7 @@ router.get('/', async (req, res) => {
     const products = await Product.find(query)
       .sort(sort)
       .skip(skip)
-      .limit(parseInt(limit, 10))
+      .limit(parseInt(limit, 10, 10))
       .populate('sellerId', 'name company.name')
       .lean();
 
@@ -78,17 +79,15 @@ router.get('/', async (req, res) => {
       data: {
         products,
         pagination: {
-          currentPage: parseInt(page, 10),
-          totalPages: Math.ceil(total / parseInt(limit, 10)),
+          currentPage: parseInt(page, 10, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit, 10)
+          itemsPerPage: parseInt(limit, 10, 10)
         }
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching products:', error);
-    }
+    logger.error('Error fetching products:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -106,7 +105,7 @@ router.get('/featured', async (req, res) => {
       isFeatured: true
     })
       .sort({ createdAt: -1 })
-      .limit(parseInt(limit, 10))
+      .limit(parseInt(limit, 10, 10))
       .populate('sellerId', 'name company.name')
       .lean();
 
@@ -115,9 +114,7 @@ router.get('/featured', async (req, res) => {
       data: { products }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching featured products:', error);
-    }
+    logger.error('Error fetching featured products:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -135,9 +132,7 @@ router.get('/categories', async (req, res) => {
       data: { categories }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching categories:', error);
-    }
+    logger.error('Error fetching categories:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -157,14 +152,14 @@ router.get('/:id', async (req, res) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Produto não encontrado'
+        message: 'Produto nÃ£o encontrado'
       });
     }
 
     if (product.status !== 'active') {
       return res.status(404).json({
         success: false,
-        message: 'Produto não disponível'
+        message: 'Produto nÃ£o disponÃ­vel'
       });
     }
 
@@ -176,9 +171,7 @@ router.get('/:id', async (req, res) => {
       data: { product }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching product:', error);
-    }
+    logger.error('Error fetching product:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -196,21 +189,21 @@ router.post('/', authenticateToken, validateProduct, async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Usuário não encontrado'
+        message: 'UsuÃ¡rio nÃ£o encontrado'
       });
     }
 
     if (!user.hasActivePlan('store')) {
       return res.status(403).json({
         success: false,
-        message: 'Plano de loja não ativo. Ative um plano para criar anúncios.'
+        message: 'Plano de loja nÃ£o ativo. Ative um plano para criar anÃºncios.'
       });
     }
 
     if (!user.canCreateAd()) {
       return res.status(403).json({
         success: false,
-        message: 'Limite de anúncios atingido. Faça upgrade do seu plano.'
+        message: 'Limite de anÃºncios atingido. FaÃ§a upgrade do seu plano.'
       });
     }
 
@@ -229,17 +222,15 @@ router.post('/', authenticateToken, validateProduct, async (req, res) => {
       data: { product }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Error creating product:', error);
-    }
-    if (error.message.includes('Plano de loja não ativo')) {
+    logger.error('Error creating product:', error);
+    if (error.message.includes('Plano de loja nÃ£o ativo')) {
       return res.status(403).json({
         success: false,
         message: error.message
       });
     }
 
-    if (error.message.includes('Limite de anúncios atingido')) {
+    if (error.message.includes('Limite de anÃºncios atingido')) {
       return res.status(403).json({
         success: false,
         message: error.message
@@ -263,7 +254,7 @@ router.put('/:id', authenticateToken, validateProduct, async (req, res) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Produto não encontrado'
+        message: 'Produto nÃ£o encontrado'
       });
     }
 
@@ -271,7 +262,7 @@ router.put('/:id', authenticateToken, validateProduct, async (req, res) => {
     if (product.sellerId.toString() !== userId) {
       return res.status(403).json({
         success: false,
-        message: 'Acesso negado. Você só pode editar seus próprios produtos.'
+        message: 'Acesso negado. VocÃª sÃ³ pode editar seus prÃ³prios produtos.'
       });
     }
 
@@ -285,9 +276,7 @@ router.put('/:id', authenticateToken, validateProduct, async (req, res) => {
       data: { product }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Error updating product:', error);
-    }
+    logger.error('Error updating product:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -305,7 +294,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Produto não encontrado'
+        message: 'Produto nÃ£o encontrado'
       });
     }
 
@@ -313,7 +302,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     if (product.sellerId.toString() !== userId) {
       return res.status(403).json({
         success: false,
-        message: 'Acesso negado. Você só pode excluir seus próprios produtos.'
+        message: 'Acesso negado. VocÃª sÃ³ pode excluir seus prÃ³prios produtos.'
       });
     }
 
@@ -326,9 +315,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
       message: 'Produto removido com sucesso'
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Error deleting product:', error);
-    }
+    logger.error('Error deleting product:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -346,14 +333,14 @@ router.post('/:id/favorite', authenticateToken, async (req, res) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Produto não encontrado'
+        message: 'Produto nÃ£o encontrado'
       });
     }
 
     if (product.status !== 'active') {
       return res.status(400).json({
         success: false,
-        message: 'Produto não disponível'
+        message: 'Produto nÃ£o disponÃ­vel'
       });
     }
 
@@ -365,9 +352,7 @@ router.post('/:id/favorite', authenticateToken, async (req, res) => {
       message: 'Produto adicionado aos favoritos'
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Error adding to favorites:', error);
-    }
+    logger.error('Error adding to favorites:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -385,7 +370,7 @@ router.delete('/:id/favorite', authenticateToken, async (req, res) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Produto não encontrado'
+        message: 'Produto nÃ£o encontrado'
       });
     }
 
@@ -398,7 +383,7 @@ router.delete('/:id/favorite', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error removing from favorites:', error);
+      logger.error('Error removing from favorites:', error);
     }
     res.status(500).json({
       success: false,
@@ -412,7 +397,7 @@ router.get('/user/favorites', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.user;
     const { page = 1, limit = 20 } = req.query;
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const skip = (parseInt(page, 10, 10) - 1) * parseInt(limit, 10, 10);
 
     const products = await Product.find({
       'favorites.userId': userId,
@@ -420,7 +405,7 @@ router.get('/user/favorites', authenticateToken, async (req, res) => {
     })
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit, 10))
+      .limit(parseInt(limit, 10, 10))
       .populate('sellerId', 'name company.name')
       .lean();
 
@@ -434,16 +419,16 @@ router.get('/user/favorites', authenticateToken, async (req, res) => {
       data: {
         products,
         pagination: {
-          currentPage: parseInt(page, 10),
-          totalPages: Math.ceil(total / parseInt(limit, 10)),
+          currentPage: parseInt(page, 10, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit, 10)
+          itemsPerPage: parseInt(limit, 10, 10)
         }
       }
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching favorite products:', error);
+      logger.error('Error fetching favorite products:', error);
     }
     res.status(500).json({
       success: false,
@@ -457,7 +442,7 @@ router.get('/seller/my-products', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.user;
     const { page = 1, limit = 20, status } = req.query;
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const skip = (parseInt(page, 10, 10) - 1) * parseInt(limit, 10, 10);
 
     const query = { sellerId: userId };
     if (status) {
@@ -467,7 +452,7 @@ router.get('/seller/my-products', authenticateToken, async (req, res) => {
     const products = await Product.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit, 10))
+      .limit(parseInt(limit, 10, 10))
       .lean();
 
     const total = await Product.countDocuments(query);
@@ -477,16 +462,16 @@ router.get('/seller/my-products', authenticateToken, async (req, res) => {
       data: {
         products,
         pagination: {
-          currentPage: parseInt(page, 10),
-          totalPages: Math.ceil(total / parseInt(limit, 10)),
+          currentPage: parseInt(page, 10, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit, 10)
+          itemsPerPage: parseInt(limit, 10, 10)
         }
       }
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching seller products:', error);
+      logger.error('Error fetching seller products:', error);
     }
     res.status(500).json({
       success: false,
@@ -513,14 +498,14 @@ router.post('/:id/contact', authenticateToken, async (req, res) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Produto não encontrado'
+        message: 'Produto nÃ£o encontrado'
       });
     }
 
     if (product.status !== 'active') {
       return res.status(400).json({
         success: false,
-        message: 'Produto não disponível'
+        message: 'Produto nÃ£o disponÃ­vel'
       });
     }
 
@@ -528,7 +513,7 @@ router.post('/:id/contact', authenticateToken, async (req, res) => {
     if (product.sellerId.toString() === userId) {
       return res.status(400).json({
         success: false,
-        message: 'Você não pode enviar mensagem para si mesmo'
+        message: 'VocÃª nÃ£o pode enviar mensagem para si mesmo'
       });
     }
 
@@ -541,7 +526,7 @@ router.post('/:id/contact', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error contacting seller:', error);
+      logger.error('Error contacting seller:', error);
     }
     res.status(500).json({
       success: false,

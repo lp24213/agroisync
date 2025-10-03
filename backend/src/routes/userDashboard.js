@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import User from '../models/User.js';
 import Product from '../models/Product.js';
 import Freight from '../models/Freight.js';
@@ -12,29 +12,29 @@ const router = express.Router();
 // Apply rate limiting
 router.use(apiLimiter);
 
-// GET /api/user/dashboard - Dashboard do usuário
+// GET /api/user/dashboard - Dashboard do usuÃ¡rio
 router.get('/dashboard', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.user;
 
-    // Buscar dados do usuário
+    // Buscar dados do usuÃ¡rio
     const user = await User.findById(userId).select('-password');
 
     if (!user) {
       return res.status(404).json({
         success: false,
-        error: 'Usuário não encontrado'
+        error: 'UsuÃ¡rio nÃ£o encontrado'
       });
     }
 
-    // Contar produtos do usuário
+    // Contar produtos do usuÃ¡rio
     const productsCount = await Product.countDocuments({ owner: userId });
     const publicProductsCount = await Product.countDocuments({
       owner: userId,
       visibility: 'public'
     });
 
-    // Contar fretes do usuário
+    // Contar fretes do usuÃ¡rio
     const freightsCount = await Freight.countDocuments({ owner: userId });
     const publicFreightsCount = await Freight.countDocuments({
       owner: userId,
@@ -52,13 +52,13 @@ router.get('/dashboard', authenticateToken, async (req, res) => {
       .limit(5)
       .populate('itemId', 'name');
 
-    // Buscar mensagens não lidas
+    // Buscar mensagens nÃ£o lidas
     const unreadMessages = await PrivateMessage.countDocuments({
       receiverId: userId,
       isRead: false
     });
 
-    // Estatísticas do usuário
+    // EstatÃ­sticas do usuÃ¡rio
     const stats = {
       products: {
         total: productsCount,
@@ -96,9 +96,8 @@ router.get('/dashboard', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar dashboard do usuário:', error);
-    }
+    const logger = require('../utils/logger');
+    logger.error('Erro ao buscar dashboard do usuÃ¡rio:', error);
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -106,12 +105,12 @@ router.get('/dashboard', authenticateToken, async (req, res) => {
   }
 });
 
-// GET /api/user/items - Itens do usuário (produtos e fretes)
+// GET /api/user/items - Itens do usuÃ¡rio (produtos e fretes)
 router.get('/items', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.user;
     const { type = 'all', page = 1, limit = 20 } = req.query;
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const skip = (parseInt(page, 10, 10) - 1) * parseInt(limit, 10, 10);
 
     let items = [];
 
@@ -119,7 +118,7 @@ router.get('/items', authenticateToken, async (req, res) => {
       const products = await Product.find({ owner: userId })
         .select('name category location price visibility status createdAt')
         .skip(skip)
-        .limit(parseInt(limit, 10))
+        .limit(parseInt(limit, 10, 10))
         .sort({ createdAt: -1 });
 
       items = items.concat(
@@ -134,7 +133,7 @@ router.get('/items', authenticateToken, async (req, res) => {
       const freights = await Freight.find({ owner: userId })
         .select('origin destination value vehicleType visibility status createdAt')
         .skip(skip)
-        .limit(parseInt(limit, 10))
+        .limit(parseInt(limit, 10, 10))
         .sort({ createdAt: -1 });
 
       items = items.concat(
@@ -145,7 +144,7 @@ router.get('/items', authenticateToken, async (req, res) => {
       );
     }
 
-    // Ordenar por data de criação
+    // Ordenar por data de criaÃ§Ã£o
     items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     res.json({
@@ -153,9 +152,8 @@ router.get('/items', authenticateToken, async (req, res) => {
       data: items
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar itens do usuário:', error);
-    }
+    const logger = require('../utils/logger');
+    logger.error('Erro ao buscar itens do usuÃ¡rio:', error);
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -163,13 +161,13 @@ router.get('/items', authenticateToken, async (req, res) => {
   }
 });
 
-// GET /api/user/statistics - Estatísticas detalhadas do usuário
+// GET /api/user/statistics - EstatÃ­sticas detalhadas do usuÃ¡rio
 router.get('/statistics', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.user;
     const { period = '30d' } = req.query;
 
-    // Calcular data de início baseada no período
+    // Calcular data de inÃ­cio baseada no perÃ­odo
     const now = new Date();
     let startDate;
 
@@ -187,7 +185,7 @@ router.get('/statistics', authenticateToken, async (req, res) => {
         startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     }
 
-    // Estatísticas de produtos
+    // EstatÃ­sticas de produtos
     const productsStats = await Product.aggregate([
       { $match: { owner: userId, createdAt: { $gte: startDate } } },
       {
@@ -200,7 +198,7 @@ router.get('/statistics', authenticateToken, async (req, res) => {
       }
     ]);
 
-    // Estatísticas de fretes
+    // EstatÃ­sticas de fretes
     const freightsStats = await Freight.aggregate([
       { $match: { owner: userId, createdAt: { $gte: startDate } } },
       {
@@ -213,7 +211,7 @@ router.get('/statistics', authenticateToken, async (req, res) => {
       }
     ]);
 
-    // Estatísticas de mensagens
+    // EstatÃ­sticas de mensagens
     const messagesStats = await PrivateMessage.aggregate([
       {
         $match: {
@@ -239,7 +237,7 @@ router.get('/statistics', authenticateToken, async (req, res) => {
       }
     ]);
 
-    // Estatísticas de pagamentos
+    // EstatÃ­sticas de pagamentos
     const paymentsStats = await Payment.aggregate([
       { $match: { userId, createdAt: { $gte: startDate } } },
       {
@@ -264,9 +262,8 @@ router.get('/statistics', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar estatísticas do usuário:', error);
-    }
+    const logger = require('../utils/logger');
+    logger.error('Erro ao buscar estatÃ­sticas do usuÃ¡rio:', error);
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -274,7 +271,7 @@ router.get('/statistics', authenticateToken, async (req, res) => {
   }
 });
 
-// GET /api/user/profile - Perfil do usuário
+// GET /api/user/profile - Perfil do usuÃ¡rio
 router.get('/profile', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.user;
@@ -284,7 +281,7 @@ router.get('/profile', authenticateToken, async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        error: 'Usuário não encontrado'
+        error: 'UsuÃ¡rio nÃ£o encontrado'
       });
     }
 
@@ -293,9 +290,8 @@ router.get('/profile', authenticateToken, async (req, res) => {
       data: user
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao buscar perfil do usuário:', error);
-    }
+    const logger = require('../utils/logger');
+    logger.error('Erro ao buscar perfil do usuÃ¡rio:', error);
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'
@@ -303,13 +299,13 @@ router.get('/profile', authenticateToken, async (req, res) => {
   }
 });
 
-// PUT /api/user/profile - Atualizar perfil do usuário
+// PUT /api/user/profile - Atualizar perfil do usuÃ¡rio
 router.put('/profile', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.user;
     const updateData = req.body;
 
-    // Remover campos que não devem ser atualizados diretamente
+    // Remover campos que nÃ£o devem ser atualizados diretamente
     delete updateData.password;
     delete updateData._id;
     delete updateData.createdAt;
@@ -323,7 +319,7 @@ router.put('/profile', authenticateToken, async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        error: 'Usuário não encontrado'
+        error: 'UsuÃ¡rio nÃ£o encontrado'
       });
     }
 
@@ -333,9 +329,8 @@ router.put('/profile', authenticateToken, async (req, res) => {
       data: user
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao atualizar perfil do usuário:', error);
-    }
+    const logger = require('../utils/logger');
+    logger.error('Erro ao atualizar perfil do usuÃ¡rio:', error);
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'

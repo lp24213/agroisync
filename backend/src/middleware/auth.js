@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+﻿import jwt from 'jsonwebtoken';
 import User from '../models/UserD1.js';
 import logger from '../utils/logger.js';
 
@@ -9,7 +9,7 @@ const auth = async (req, res, next) => {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({
         success: false,
-        message: 'Token de acesso não fornecido'
+        message: 'Token de acesso nÃ£o fornecido'
       });
     }
 
@@ -19,16 +19,16 @@ const auth = async (req, res, next) => {
     // Verificar token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Buscar usuário
+    // Buscar usuÃ¡rio
     const user = await User.findById(req.db, decoded.id);
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'Usuário não encontrado'
+        message: 'UsuÃ¡rio nÃ£o encontrado'
       });
     }
 
-    // Verificar se usuário está ativo
+    // Verificar se usuÃ¡rio estÃ¡ ativo
     if (!user.isActive || user.isBlocked) {
       return res.status(401).json({
         success: false,
@@ -36,7 +36,7 @@ const auth = async (req, res, next) => {
       });
     }
 
-    // Adicionar usuário ao request
+    // Adicionar usuÃ¡rio ao request
     req.user = {
       id: user.id,
       email: user.email,
@@ -49,7 +49,7 @@ const auth = async (req, res, next) => {
     if (error.name === 'JsonWebTokenError') {
       return res.status(401).json({
         success: false,
-        message: 'Token inválido'
+        message: 'Token invÃ¡lido'
       });
     }
 
@@ -60,7 +60,7 @@ const auth = async (req, res, next) => {
       });
     }
 
-    logger.error('Erro na autenticação:', error);
+    logger.error('Erro na autenticaÃ§Ã£o:', error);
     return res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -68,7 +68,7 @@ const auth = async (req, res, next) => {
   }
 };
 
-// Middleware para verificar se é admin
+// Middleware para verificar se Ã© admin
 const adminAuth = async (req, res, next) => {
   try {
     await auth(req, res, () => {
@@ -81,7 +81,7 @@ const adminAuth = async (req, res, next) => {
       next();
     });
   } catch (error) {
-    logger.error('Erro na autenticação admin:', error);
+    logger.error('Erro na autenticaÃ§Ã£o admin:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -98,14 +98,14 @@ const planAuth = async (req, res, next) => {
       if (!user.isPaid) {
         return res.status(403).json({
           success: false,
-          message: 'Plano ativo necessário para acessar este recurso'
+          message: 'Plano ativo necessÃ¡rio para acessar este recurso'
         });
       }
 
       next();
     });
   } catch (error) {
-    logger.error('Erro na verificação de plano:', error);
+    logger.error('Erro na verificaÃ§Ã£o de plano:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -113,7 +113,7 @@ const planAuth = async (req, res, next) => {
   }
 };
 
-// Middleware opcional (não falha se não tiver token)
+// Middleware opcional (nÃ£o falha se nÃ£o tiver token)
 const optionalAuth = async (req, res, next) => {
   try {
     const authHeader = req.header('Authorization');

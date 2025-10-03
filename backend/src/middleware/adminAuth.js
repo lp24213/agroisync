@@ -1,7 +1,8 @@
-import jwt from 'jsonwebtoken';
+﻿import jwt from 'jsonwebtoken';
 import auditService from '../services/auditService.js';
 
-// Middleware para verificar se o usuário é admin
+import logger from '../utils/logger.js';
+// Middleware para verificar se o usuÃ¡rio Ã© admin
 const requireAdmin = async (req, res, next) => {
   try {
     // Verificar se o token foi fornecido
@@ -10,14 +11,14 @@ const requireAdmin = async (req, res, next) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: 'Token de acesso não fornecido'
+        message: 'Token de acesso nÃ£o fornecido'
       });
     }
 
-    // Verificar se o token é válido
+    // Verificar se o token Ã© vÃ¡lido
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Verificar se o usuário existe e é admin
+    // Verificar se o usuÃ¡rio existe e Ã© admin
     if (!decoded.email || !decoded.role || decoded.role !== 'admin') {
       return res.status(403).json({
         success: false,
@@ -25,14 +26,14 @@ const requireAdmin = async (req, res, next) => {
       });
     }
 
-    // Adicionar informações do usuário ao request
+    // Adicionar informaÃ§Ãµes do usuÃ¡rio ao request
     req.user = {
       id: decoded.id,
       email: decoded.email,
       role: decoded.role
     };
 
-    // Log da ação
+    // Log da aÃ§Ã£o
     await auditService.logAdminAccess({
       userId: decoded.id,
       resource: req.originalUrl,
@@ -55,12 +56,12 @@ const requireAdmin = async (req, res, next) => {
     next();
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro na verificação de admin:', error);
+      logger.error('Erro na verificaÃ§Ã£o de admin:', error);
     }
     if (error.name === 'JsonWebTokenError') {
       return res.status(401).json({
         success: false,
-        message: 'Token inválido'
+        message: 'Token invÃ¡lido'
       });
     }
 
@@ -78,7 +79,7 @@ const requireAdmin = async (req, res, next) => {
   }
 };
 
-// Middleware para validar ações administrativas
+// Middleware para validar aÃ§Ãµes administrativas
 const validateAdminAction = async (req, res, next) => {
   try {
     const { action, resourceId, details } = req.body;
@@ -86,11 +87,11 @@ const validateAdminAction = async (req, res, next) => {
     if (!action || !resourceId) {
       return res.status(400).json({
         success: false,
-        message: 'Ação e ID do recurso são obrigatórios'
+        message: 'AÃ§Ã£o e ID do recurso sÃ£o obrigatÃ³rios'
       });
     }
 
-    // Log da ação administrativa
+    // Log da aÃ§Ã£o administrativa
     await auditService.logAction({
       userId: req.user.id,
       action: `admin_${action.toLowerCase()}`,
@@ -117,7 +118,7 @@ const validateAdminAction = async (req, res, next) => {
     next();
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro na validação da ação administrativa:', error);
+      logger.error('Erro na validaÃ§Ã£o da aÃ§Ã£o administrativa:', error);
     }
     return res.status(500).json({
       success: false,

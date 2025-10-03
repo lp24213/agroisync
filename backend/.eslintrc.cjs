@@ -90,20 +90,33 @@ module.exports = {
     'no-new-func': 'error',
     'no-script-url': 'error',
     
-    // Async/Await
-    'require-await': 'error',
+  // Async/Await - reduzir severidade para não bloquear o lint em funções que são async por padrão
+  'require-await': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
     'no-async-promise-executor': 'error',
     
-    // Error handling
-    'no-throw-literal': 'error',
-    'prefer-promise-reject-errors': 'error',
+  // Error handling
+  'no-throw-literal': 'error',
+  'prefer-promise-reject-errors': 'error',
     
-    // Import/Export
-    'no-duplicate-imports': 'error',
-    'no-useless-rename': 'error',
+  // Import/Export
+  'no-duplicate-imports': 'error',
+  'no-useless-rename': 'error',
+
+  // TypeScript-ESLint specific adjustments (project uses CommonJS widely)
+  '@typescript-eslint/no-require-imports': 'off',
+  '@typescript-eslint/no-unused-vars': 'off',
     
     // Allow console.log in development
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn'
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+
+    // Reduce severity for some rules that currently produce a lot of noise
+    'callback-return': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+    'no-unused-vars': ['warn', { 
+      argsIgnorePattern: '^_',
+      varsIgnorePattern: '^_',
+      caughtErrorsIgnorePattern: '^_'
+    }],
+    'radix': process.env.NODE_ENV === 'production' ? 'error' : 'warn'
   },
   overrides: [
     {

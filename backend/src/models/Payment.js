@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 const paymentSchema = new mongoose.Schema(
   {
-    // Usuário que fez o pagamento
+    // UsuÃ¡rio que fez o pagamento
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -21,7 +21,7 @@ const paymentSchema = new mongoose.Schema(
       required: true
     },
 
-    // Informações financeiras
+    // InformaÃ§Ãµes financeiras
     amount: {
       type: Number,
       required: true,
@@ -34,7 +34,7 @@ const paymentSchema = new mongoose.Schema(
       default: 'BRL'
     },
 
-    // Método de pagamento
+    // MÃ©todo de pagamento
     paymentMethod: {
       type: String,
       required: true,
@@ -57,7 +57,7 @@ const paymentSchema = new mongoose.Schema(
       default: 'plan'
     },
 
-    // ID do anúncio (para pagamentos individuais)
+    // ID do anÃºncio (para pagamentos individuais)
     adId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Product',
@@ -66,7 +66,7 @@ const paymentSchema = new mongoose.Schema(
       }
     },
 
-    // Controle de liberação de dados
+    // Controle de liberaÃ§Ã£o de dados
     dataUnlocked: {
       type: Boolean,
       default: false
@@ -75,7 +75,7 @@ const paymentSchema = new mongoose.Schema(
       type: Date
     },
 
-    // Dados específicos do Stripe
+    // Dados especÃ­ficos do Stripe
     stripe: {
       sessionId: String,
       customerId: String,
@@ -84,7 +84,7 @@ const paymentSchema = new mongoose.Schema(
       chargeId: String
     },
 
-    // Dados específicos de crypto
+    // Dados especÃ­ficos de crypto
     crypto: {
       transactionHash: String,
       walletAddress: String,
@@ -96,7 +96,7 @@ const paymentSchema = new mongoose.Schema(
       gasPrice: Number
     },
 
-    // Dados específicos de PIX/Boleto
+    // Dados especÃ­ficos de PIX/Boleto
     brazilian: {
       pixKey: String,
       boletoCode: String,
@@ -116,7 +116,7 @@ const paymentSchema = new mongoose.Schema(
     refundedAt: Date,
     cancelledAt: Date,
 
-    // Informações de auditoria
+    // InformaÃ§Ãµes de auditoria
     ipAddress: String,
     userAgent: String,
     source: {
@@ -125,7 +125,7 @@ const paymentSchema = new mongoose.Schema(
       default: 'web'
     },
 
-    // Notas e comentários
+    // Notas e comentÃ¡rios
     notes: String,
     adminNotes: String,
 
@@ -139,7 +139,7 @@ const paymentSchema = new mongoose.Schema(
   }
 );
 
-// Índices para performance
+// Ãndices para performance
 paymentSchema.index({ userId: 1, createdAt: -1 });
 paymentSchema.index({ status: 1, createdAt: -1 });
 paymentSchema.index({ planId: 1, status: 1 });
@@ -152,7 +152,7 @@ paymentSchema.virtual('isSuccessful').get(function () {
   return this.status === 'succeeded';
 });
 
-// Virtual para verificar se pagamento está pendente
+// Virtual para verificar se pagamento estÃ¡ pendente
 paymentSchema.virtual('isPending').get(function () {
   return ['pending', 'processing'].includes(this.status);
 });
@@ -167,7 +167,7 @@ paymentSchema.virtual('isRefunded').get(function () {
   return this.status === 'refunded';
 });
 
-// Virtual para duração do processamento
+// Virtual para duraÃ§Ã£o do processamento
 paymentSchema.virtual('processingDuration').get(function () {
   if (!this.processedAt || !this.createdAt) {
     return null;
@@ -198,14 +198,14 @@ paymentSchema.pre('save', function (next) {
   next();
 });
 
-// Método para marcar como processado
+// MÃ©todo para marcar como processado
 paymentSchema.methods.markAsCompleted = function () {
   this.status = 'succeeded';
   this.processedAt = new Date();
   return this.save();
 };
 
-// Método para marcar como falhou
+// MÃ©todo para marcar como falhou
 paymentSchema.methods.markAsFailed = function (reason) {
   this.status = 'failed';
   this.failedAt = new Date();
@@ -213,7 +213,7 @@ paymentSchema.methods.markAsFailed = function (reason) {
   return this.save();
 };
 
-// Método para marcar como reembolsado
+// MÃ©todo para marcar como reembolsado
 paymentSchema.methods.markAsRefunded = function (reason) {
   this.status = 'refunded';
   this.refundedAt = new Date();
@@ -221,7 +221,7 @@ paymentSchema.methods.markAsRefunded = function (reason) {
   return this.save();
 };
 
-// Método para marcar como cancelado
+// MÃ©todo para marcar como cancelado
 paymentSchema.methods.markAsCancelled = function (reason) {
   this.status = 'cancelled';
   this.cancelledAt = new Date();
@@ -229,7 +229,7 @@ paymentSchema.methods.markAsCancelled = function (reason) {
   return this.save();
 };
 
-// Método para obter dados públicos (sem informações sensíveis)
+// MÃ©todo para obter dados pÃºblicos (sem informaÃ§Ãµes sensÃ­veis)
 paymentSchema.methods.getPublicData = function () {
   return {
     id: this._id,
@@ -244,7 +244,7 @@ paymentSchema.methods.getPublicData = function () {
   };
 };
 
-// Método para obter dados completos (apenas para usuário dono ou admin)
+// MÃ©todo para obter dados completos (apenas para usuÃ¡rio dono ou admin)
 paymentSchema.methods.getFullData = function (userId, isAdmin) {
   if (this.userId.toString() !== userId && !isAdmin) {
     throw new Error('Acesso negado');
@@ -266,7 +266,7 @@ paymentSchema.methods.getFullData = function (userId, isAdmin) {
   };
 };
 
-// Método estático para buscar pagamentos de um usuário
+// MÃ©todo estÃ¡tico para buscar pagamentos de um usuÃ¡rio
 paymentSchema.statics.findByUser = function (userId, options = {}) {
   const query = { userId, deletedAt: { $exists: false } };
 
@@ -289,7 +289,7 @@ paymentSchema.statics.findByUser = function (userId, options = {}) {
   return this.find(query).sort(sort).limit(limit).skip(skip);
 };
 
-// Método estático para estatísticas de pagamentos
+// MÃ©todo estÃ¡tico para estatÃ­sticas de pagamentos
 paymentSchema.statics.getStats = async function (userId = null) {
   const match = { deletedAt: { $exists: false } };
   if (userId) {
@@ -331,7 +331,7 @@ paymentSchema.statics.getStats = async function (userId = null) {
   );
 };
 
-// Método estático para buscar pagamentos por período
+// MÃ©todo estÃ¡tico para buscar pagamentos por perÃ­odo
 paymentSchema.statics.findByPeriod = function (startDate, endDate, userId = null) {
   const query = {
     createdAt: {

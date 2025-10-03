@@ -1,25 +1,25 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 const productSchema = new mongoose.Schema(
   {
-    // Dados Públicos (visíveis para todos)
+    // Dados PÃºblicos (visÃ­veis para todos)
     publicData: {
       title: {
         type: String,
-        required: [true, 'Título é obrigatório'],
+        required: [true, 'TÃ­tulo Ã© obrigatÃ³rio'],
         trim: true,
-        maxlength: [200, 'Título não pode ter mais de 200 caracteres']
+        maxlength: [200, 'TÃ­tulo nÃ£o pode ter mais de 200 caracteres']
       },
       shortDescription: {
         type: String,
-        required: [true, 'Descrição curta é obrigatória'],
+        required: [true, 'DescriÃ§Ã£o curta Ã© obrigatÃ³ria'],
         trim: true,
-        maxlength: [500, 'Descrição não pode ter mais de 500 caracteres']
+        maxlength: [500, 'DescriÃ§Ã£o nÃ£o pode ter mais de 500 caracteres']
       },
       price: {
         type: Number,
-        required: [true, 'Preço é obrigatório'],
-        min: [0, 'Preço não pode ser negativo']
+        required: [true, 'PreÃ§o Ã© obrigatÃ³rio'],
+        min: [0, 'PreÃ§o nÃ£o pode ser negativo']
       },
       currency: {
         type: String,
@@ -28,7 +28,7 @@ const productSchema = new mongoose.Schema(
       },
       category: {
         type: String,
-        required: [true, 'Categoria é obrigatória'],
+        required: [true, 'Categoria Ã© obrigatÃ³ria'],
         enum: ['grains', 'inputs', 'machinery', 'livestock', 'fruits', 'vegetables', 'other']
       },
       images: [
@@ -46,12 +46,12 @@ const productSchema = new mongoose.Schema(
       ],
       city: {
         type: String,
-        required: [true, 'Cidade é obrigatória'],
+        required: [true, 'Cidade Ã© obrigatÃ³ria'],
         trim: true
       },
       state: {
         type: String,
-        required: [true, 'Estado é obrigatório'],
+        required: [true, 'Estado Ã© obrigatÃ³rio'],
         trim: true,
         uppercase: true,
         minlength: 2,
@@ -59,13 +59,13 @@ const productSchema = new mongoose.Schema(
       },
       stock: {
         type: Number,
-        required: [true, 'Estoque é obrigatório'],
-        min: [0, 'Estoque não pode ser negativo']
+        required: [true, 'Estoque Ã© obrigatÃ³rio'],
+        min: [0, 'Estoque nÃ£o pode ser negativo']
       },
       unit: {
         type: String,
-        required: [true, 'Unidade é obrigatória'],
-        enum: ['kg', 'ton', 'un', 'l', 'm²', 'm³', 'outro']
+        required: [true, 'Unidade Ã© obrigatÃ³ria'],
+        enum: ['kg', 'ton', 'un', 'l', 'mÂ²', 'mÂ³', 'outro']
       },
       isActive: {
         type: Boolean,
@@ -77,12 +77,12 @@ const productSchema = new mongoose.Schema(
       }
     },
 
-    // Dados Privados (visíveis apenas após pagamento)
+    // Dados Privados (visÃ­veis apenas apÃ³s pagamento)
     privateData: {
       fullDescription: {
         type: String,
         trim: true,
-        maxlength: [2000, 'Descrição completa não pode ter mais de 2000 caracteres']
+        maxlength: [2000, 'DescriÃ§Ã£o completa nÃ£o pode ter mais de 2000 caracteres']
       },
       specifications: {
         type: Map,
@@ -136,7 +136,7 @@ const productSchema = new mongoose.Schema(
       ],
       paymentTerms: {
         type: String,
-        enum: ['à vista', '30 dias', '60 dias', '90 dias', 'negociável']
+        enum: ['Ã  vista', '30 dias', '60 dias', '90 dias', 'negociÃ¡vel']
       },
       deliveryInfo: {
         available: {
@@ -153,7 +153,7 @@ const productSchema = new mongoose.Schema(
     seller: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: [true, 'Vendedor é obrigatório']
+      required: [true, 'Vendedor Ã© obrigatÃ³rio']
     },
 
     // Status e controle
@@ -163,7 +163,7 @@ const productSchema = new mongoose.Schema(
       default: 'active'
     },
 
-    // Métricas
+    // MÃ©tricas
     views: {
       type: Number,
       default: 0
@@ -179,7 +179,7 @@ const productSchema = new mongoose.Schema(
     expiresAt: {
       type: Date,
       default() {
-        // Produto expira em 90 dias por padrão
+        // Produto expira em 90 dias por padrÃ£o
         const date = new Date();
         date.setDate(date.getDate() + 90);
         return date;
@@ -191,7 +191,7 @@ const productSchema = new mongoose.Schema(
   }
 );
 
-// Índices para performance
+// Ãndices para performance
 productSchema.index({ 'publicData.category': 1 });
 productSchema.index({ 'publicData.city': 1, 'publicData.state': 1 });
 productSchema.index({ 'publicData.price': 1 });
@@ -201,12 +201,12 @@ productSchema.index({ 'publicData.isActive': 1 });
 productSchema.index({ expiresAt: 1 });
 productSchema.index({ createdAt: -1 });
 
-// Middleware para verificar expiração
+// Middleware para verificar expiraÃ§Ã£o
 productSchema.pre('find', function () {
   this.where('expiresAt').gt(new Date());
 });
 
-// Método para obter dados públicos
+// MÃ©todo para obter dados pÃºblicos
 productSchema.methods.getPublicData = function () {
   return {
     _id: this._id,
@@ -221,10 +221,10 @@ productSchema.methods.getPublicData = function () {
   };
 };
 
-// Método para obter dados privados (apenas se usuário pagou)
+// MÃ©todo para obter dados privados (apenas se usuÃ¡rio pagou)
 productSchema.methods.getPrivateData = function (userId, userIsPaid) {
   if (!userIsPaid) {
-    throw new Error('Acesso negado: usuário não possui plano ativo');
+    throw new Error('Acesso negado: usuÃ¡rio nÃ£o possui plano ativo');
   }
 
   return {
@@ -239,13 +239,13 @@ productSchema.methods.getPrivateData = function (userId, userIsPaid) {
   };
 };
 
-// Método para incrementar visualizações
+// MÃ©todo para incrementar visualizaÃ§Ãµes
 productSchema.methods.incrementViews = function () {
   this.views += 1;
   return this.save();
 };
 
-// Método para adicionar/remover favoritos
+// MÃ©todo para adicionar/remover favoritos
 productSchema.methods.toggleFavorite = function (userId) {
   const index = this.favorites.indexOf(userId);
   if (index === -1) {
@@ -256,7 +256,7 @@ productSchema.methods.toggleFavorite = function (userId) {
   return this.save();
 };
 
-// Método para verificar se produto está ativo
+// MÃ©todo para verificar se produto estÃ¡ ativo
 productSchema.methods.isActive = function () {
   return this.status === 'active' && this.publicData.isActive && new Date() < this.expiresAt;
 };

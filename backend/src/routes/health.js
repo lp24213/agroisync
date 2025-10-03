@@ -1,14 +1,14 @@
-// Módulo de health check para Cloudflare Workers
+﻿// MÃ³dulo de health check para Cloudflare Workers
 
 export const handleHealthCheck = async (request, env) => {
   try {
-    // Testar conexão com banco D1
+    // Testar conexÃ£o com banco D1
     let dbStatus = 'disconnected';
     let dbError = null;
 
     try {
       if (env.DB) {
-        // Teste simples de conexão com D1
+        // Teste simples de conexÃ£o com D1
         await env.DB.prepare('SELECT 1').first();
         dbStatus = 'connected';
       }

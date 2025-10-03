@@ -1,7 +1,8 @@
-import express from 'express';
+﻿import express from 'express';
 import { apiLimiter } from '../middleware/rateLimiter.js';
 import { getClientIP } from '../utils/ipUtils.js';
 import axios from 'axios';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -13,72 +14,72 @@ const mockNews = [
   {
     id: 1,
     title: 'Safra de soja 2024/25 deve crescer 5% no Brasil',
-    summary: 'Estimativas apontam para produção recorde de 158 milhões de toneladas',
+    summary: 'Estimativas apontam para produÃ§Ã£o recorde de 158 milhÃµes de toneladas',
     content:
-      'A safra de soja 2024/25 no Brasil deve crescer 5% em relação à temporada anterior, atingindo 158 milhões de toneladas, segundo estimativas da Companhia Nacional de Abastecimento (Conab). O aumento é impulsionado pela expansão da área plantada e melhores condições climáticas.',
+      'A safra de soja 2024/25 no Brasil deve crescer 5% em relaÃ§Ã£o Ã  temporada anterior, atingindo 158 milhÃµes de toneladas, segundo estimativas da Companhia Nacional de Abastecimento (Conab). O aumento Ã© impulsionado pela expansÃ£o da Ã¡rea plantada e melhores condiÃ§Ãµes climÃ¡ticas.',
     category: 'grains',
     image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&h=600&fit=crop',
     source: 'AgroNews',
     publishedAt: '2024-01-15T10:00:00Z',
     isActive: true,
-    tags: ['soja', 'safra', 'conab', 'produção']
+    tags: ['soja', 'safra', 'conab', 'produÃ§Ã£o']
   },
   {
     id: 2,
-    title: 'Tecnologia de irrigação inteligente reduz consumo de água em 30%',
-    summary: 'Sistema automatizado monitora umidade do solo e otimiza uso de recursos hídricos',
+    title: 'Tecnologia de irrigaÃ§Ã£o inteligente reduz consumo de Ã¡gua em 30%',
+    summary: 'Sistema automatizado monitora umidade do solo e otimiza uso de recursos hÃ­dricos',
     content:
-      'Novas tecnologias de irrigação inteligente estão revolucionando a agricultura brasileira, permitindo redução de até 30% no consumo de água. Sensores IoT monitoram a umidade do solo em tempo real, ajustando automaticamente a irrigação conforme as necessidades das plantas.',
+      'Novas tecnologias de irrigaÃ§Ã£o inteligente estÃ£o revolucionando a agricultura brasileira, permitindo reduÃ§Ã£o de atÃ© 30% no consumo de Ã¡gua. Sensores IoT monitoram a umidade do solo em tempo real, ajustando automaticamente a irrigaÃ§Ã£o conforme as necessidades das plantas.',
     category: 'technology',
     image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=600&fit=crop',
     source: 'TechAgro',
     publishedAt: '2024-01-14T14:30:00Z',
     isActive: true,
-    tags: ['irrigação', 'tecnologia', 'IoT', 'sustentabilidade']
+    tags: ['irrigaÃ§Ã£o', 'tecnologia', 'IoT', 'sustentabilidade']
   },
   {
     id: 3,
-    title: 'Exportações de carne bovina batem recorde em dezembro',
-    summary: 'Volume exportado supera 200 mil toneladas, maior marca para o mês',
+    title: 'ExportaÃ§Ãµes de carne bovina batem recorde em dezembro',
+    summary: 'Volume exportado supera 200 mil toneladas, maior marca para o mÃªs',
     content:
-      'As exportações brasileiras de carne bovina em dezembro de 2023 atingiram 203 mil toneladas, representando um crescimento de 12% em relação ao mesmo período do ano anterior. A China continua sendo o principal destino, seguida pelos Estados Unidos e União Europeia.',
+      'As exportaÃ§Ãµes brasileiras de carne bovina em dezembro de 2023 atingiram 203 mil toneladas, representando um crescimento de 12% em relaÃ§Ã£o ao mesmo perÃ­odo do ano anterior. A China continua sendo o principal destino, seguida pelos Estados Unidos e UniÃ£o Europeia.',
     category: 'livestock',
     image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=800&h=600&fit=crop',
     source: 'AgroBusiness',
     publishedAt: '2024-01-13T16:45:00Z',
     isActive: true,
-    tags: ['carne bovina', 'exportação', 'china', 'mercado']
+    tags: ['carne bovina', 'exportaÃ§Ã£o', 'china', 'mercado']
   },
   {
     id: 4,
-    title: 'Fertilizantes orgânicos ganham espaço no mercado brasileiro',
-    summary: 'Produtores buscam alternativas sustentáveis aos fertilizantes químicos',
+    title: 'Fertilizantes orgÃ¢nicos ganham espaÃ§o no mercado brasileiro',
+    summary: 'Produtores buscam alternativas sustentÃ¡veis aos fertilizantes quÃ­micos',
     content:
-      'O mercado de fertilizantes orgânicos no Brasil está em expansão, impulsionado pela busca por práticas agrícolas mais sustentáveis. Produtores estão investindo em compostagem, biofertilizantes e outras alternativas naturais para reduzir dependência de insumos químicos.',
+      'O mercado de fertilizantes orgÃ¢nicos no Brasil estÃ¡ em expansÃ£o, impulsionado pela busca por prÃ¡ticas agrÃ­colas mais sustentÃ¡veis. Produtores estÃ£o investindo em compostagem, biofertilizantes e outras alternativas naturais para reduzir dependÃªncia de insumos quÃ­micos.',
     category: 'fertilizers',
     image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&h=600&fit=crop',
     source: 'SustentAgro',
     publishedAt: '2024-01-12T09:15:00Z',
     isActive: true,
-    tags: ['fertilizantes orgânicos', 'sustentabilidade', 'agricultura orgânica']
+    tags: ['fertilizantes orgÃ¢nicos', 'sustentabilidade', 'agricultura orgÃ¢nica']
   },
   {
     id: 5,
-    title: 'Preços do milho se estabilizam após período de alta',
-    summary: 'Oferta adequada e demanda estável levam à estabilização dos preços',
+    title: 'PreÃ§os do milho se estabilizam apÃ³s perÃ­odo de alta',
+    summary: 'Oferta adequada e demanda estÃ¡vel levam Ã  estabilizaÃ§Ã£o dos preÃ§os',
     content:
-      'Os preços do milho no mercado brasileiro se estabilizaram após um período de alta significativa. A oferta adequada do grão e a demanda estável por parte dos produtores de ração animal contribuíram para a estabilização dos preços nas principais praças do país.',
+      'Os preÃ§os do milho no mercado brasileiro se estabilizaram apÃ³s um perÃ­odo de alta significativa. A oferta adequada do grÃ£o e a demanda estÃ¡vel por parte dos produtores de raÃ§Ã£o animal contribuÃ­ram para a estabilizaÃ§Ã£o dos preÃ§os nas principais praÃ§as do paÃ­s.',
     category: 'grains',
     image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&h=600&fit=crop',
     source: 'MercadoAgro',
     publishedAt: '2024-01-11T11:20:00Z',
     isActive: true,
-    tags: ['milho', 'preços', 'mercado', 'oferta']
+    tags: ['milho', 'preÃ§os', 'mercado', 'oferta']
   }
 ];
 
 // GET /api/v1/news - Get latest news
-router.get('/', async (req, res) => {
+router.get('/', (req, res) => {
   try {
     const {
       page = 1,
@@ -127,45 +128,43 @@ router.get('/', async (req, res) => {
     });
 
     // Pagination
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
-    const paginatedNews = filteredNews.slice(skip, skip + parseInt(limit, 10));
+    const skip = (parseInt(page, 10, 10) - 1) * parseInt(limit, 10, 10);
+    const paginatedNews = filteredNews.slice(skip, skip + parseInt(limit, 10, 10));
 
     // Calculate pagination info
     const total = filteredNews.length;
-    const totalPages = Math.ceil(total / parseInt(limit, 10));
+    const totalPages = Math.ceil(total / parseInt(limit, 10, 10));
 
     res.json({
       success: true,
       data: {
         news: paginatedNews,
         pagination: {
-          currentPage: parseInt(page, 10),
+          currentPage: parseInt(page, 10, 10),
           totalPages,
           totalItems: total,
-          itemsPerPage: parseInt(limit, 10),
-          hasNextPage: parseInt(page, 10) < totalPages,
-          hasPrevPage: parseInt(page, 10) > 1
+          itemsPerPage: parseInt(limit, 10, 10),
+          hasNextPage: parseInt(page, 10, 10) < totalPages,
+          hasPrevPage: parseInt(page, 10, 10) > 1
         }
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Get news error:', error);
-    }
+    logger.error('Get news error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erro ao obter notícias'
+      message: 'Erro ao obter notÃ­cias'
     });
   }
 });
 
 // GET /api/v1/news/categories - Get news categories
-router.get('/categories', async (req, res) => {
+router.get('/categories', (req, res) => {
   try {
     const categories = [
       {
         id: 'grains',
-        name: 'Grãos',
+        name: 'GrÃ£os',
         count: mockNews.filter(n => n.category === 'grains' && n.isActive).length
       },
       {
@@ -175,7 +174,7 @@ router.get('/categories', async (req, res) => {
       },
       {
         id: 'livestock',
-        name: 'Pecuária',
+        name: 'PecuÃ¡ria',
         count: mockNews.filter(n => n.category === 'livestock' && n.isActive).length
       },
       {
@@ -185,7 +184,7 @@ router.get('/categories', async (req, res) => {
       },
       {
         id: 'machinery',
-        name: 'Maquinário',
+        name: 'MaquinÃ¡rio',
         count: mockNews.filter(n => n.category === 'machinery' && n.isActive).length
       },
       {
@@ -203,9 +202,7 @@ router.get('/categories', async (req, res) => {
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Get categories error:', error);
-    }
+    logger.error('Get categories error:', error);
     res.status(500).json({
       success: false,
       message: 'Erro ao obter categorias'
@@ -214,21 +211,21 @@ router.get('/categories', async (req, res) => {
 });
 
 // GET /api/v1/news/:id - Get news article by ID
-router.get('/:id', async (req, res) => {
+router.get('/:id', (req, res) => {
   try {
     const { id } = req.params;
-    const news = mockNews.find(n => n.id === parseInt(id, 10) && n.isActive);
+    const news = mockNews.find(n => n.id === parseInt(id, 10, 10) && n.isActive);
 
     if (!news) {
       return res.status(404).json({
         success: false,
-        message: 'Notícia não encontrada'
+        message: 'NotÃ­cia nÃ£o encontrada'
       });
     }
 
     // Get related news (same category, excluding current)
     const relatedNews = mockNews
-      .filter(n => n.id !== parseInt(id, 10) && n.category === news.category && n.isActive)
+      .filter(n => n.id !== parseInt(id, 10, 10) && n.category === news.category && n.isActive)
       .slice(0, 3);
 
     res.json({
@@ -239,18 +236,16 @@ router.get('/:id', async (req, res) => {
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Get news by ID error:', error);
-    }
+    logger.error('Get news by ID error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erro ao obter notícia'
+      message: 'Erro ao obter notÃ­cia'
     });
   }
 });
 
 // GET /api/v1/news/rss/agribusiness - Get agribusiness RSS feed
-router.get('/rss/agribusiness', async (req, res) => {
+router.get('/rss/agribusiness', (req, res) => {
   try {
     // Filter agribusiness related news
     const agribusinessNews = mockNews
@@ -265,37 +260,26 @@ router.get('/rss/agribusiness', async (req, res) => {
       .slice(0, 10);
 
     // Create RSS feed
-    const rssFeed = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>AGROTM - Notícias do Agronegócio</title>
-    <link>https://agrotm.com.br/news</link>
-    <description>Últimas notícias e atualizações do setor agrícola brasileiro</description>
-    <language>pt-BR</language>
-    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    <atom:link href="https://agrotm.com.br/api/v1/news/rss/agribusiness" rel="self" type="application/rss+xml" />
-    ${agribusinessNews
+    const items = agribusinessNews
       .map(
-        news => `
+        n => `
     <item>
-      <title><![CDATA[${news.title}]]></title>
-      <link>https://agrotm.com.br/news/${news.id}</link>
-      <description><![CDATA[${news.summary}]]></description>
-      <category>${news.category}</category>
-      <pubDate>${new Date(news.publishedAt).toUTCString()}</pubDate>
-      <guid>https://agrotm.com.br/news/${news.id}</guid>
+      <title><![CDATA[${n.title}]]></title>
+      <link>https://agrotm.com.br/news/${n.id}</link>
+      <description><![CDATA[${n.summary}]]></description>
+      <category>${n.category}</category>
+      <pubDate>${new Date(n.publishedAt).toUTCString()}</pubDate>
+      <guid>https://agrotm.com.br/news/${n.id}</guid>
     </item>`
       )
-      .join('')}
-  </channel>
-</rss>`;
+      .join('');
+
+    const rssFeed = `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n  <channel>\n    <title>AGROTM - Notícias do Agronegócio</title>\n    <link>https://agrotm.com.br/news</link>\n    <description>Últimas notícias e atualizações do setor agrícola brasileiro</description>\n    <language>pt-BR</language>\n    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>\n    <atom:link href="https://agrotm.com.br/api/v1/news/rss/agribusiness" rel="self" type="application/rss+xml" />\n${items}\n  </channel>\n</rss>`;
 
     res.set('Content-Type', 'application/xml');
     res.send(rssFeed);
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('RSS feed error:', error);
-    }
+    logger.error('RSS feed error:', error);
     res.status(500).json({
       success: false,
       message: 'Erro ao gerar feed RSS'
@@ -304,7 +288,7 @@ router.get('/rss/agribusiness', async (req, res) => {
 });
 
 // GET /api/v1/news/featured - Get featured news
-router.get('/featured', async (req, res) => {
+router.get('/featured', (req, res) => {
   try {
     const featuredNews = mockNews
       .filter(news => news.isActive)
@@ -319,24 +303,22 @@ router.get('/featured', async (req, res) => {
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Get featured news error:', error);
-    }
+    logger.error('Get featured news error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erro ao obter notícias em destaque'
+      message: 'Erro ao obter notÃ­cias em destaque'
     });
   }
 });
 
-// Configurações
+// ConfiguraÃ§Ãµes
 const RSS_URLS = {
   'globo-rural': 'https://g1.globo.com/rss/g1/economia/agronegocios/',
   agrolink: 'https://www.agrolink.com.br/rss/noticias',
   'canal-rural': 'https://www.canalrural.com.br/rss/noticias'
 };
 
-// GET /api/news/globo-rural - Obter notícias do Globo Rural
+// GET /api/news/globo-rural - Obter notÃ­cias do Globo Rural
 router.get(
   '/globo-rural',
   apiLimiter, // Use the existing apiLimiter
@@ -344,7 +326,7 @@ router.get(
     try {
       const rssUrl = RSS_URLS['globo-rural'];
 
-      // Fazer requisição para o RSS
+      // Fazer requisiÃ§Ã£o para o RSS
       const response = await axios.get(rssUrl, {
         timeout: 10000,
         headers: {
@@ -362,9 +344,7 @@ router.get(
         items: rssData.items || []
       });
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao obter notícias do Globo Rural:', error);
-      }
+      logger.error('Erro ao obter notícias do Globo Rural:', error);
       // Retornar dados de fallback
       res.json({
         success: true,
@@ -376,7 +356,7 @@ router.get(
   }
 );
 
-// GET /api/news/agrolink - Obter notícias do Agrolink
+// GET /api/news/agrolink - Obter notÃ­cias do Agrolink
 router.get(
   '/agrolink',
   apiLimiter, // Use the existing apiLimiter
@@ -400,9 +380,7 @@ router.get(
         items: rssData.items || []
       });
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao obter notícias do Agrolink:', error);
-      }
+      logger.error('Erro ao obter notícias do Agrolink:', error);
       res.json({
         success: true,
         source: 'Agrolink (Fallback)',
@@ -413,7 +391,7 @@ router.get(
   }
 );
 
-// GET /api/news/canal-rural - Obter notícias do Canal Rural
+// GET /api/news/canal-rural - Obter notÃ­cias do Canal Rural
 router.get(
   '/canal-rural',
   apiLimiter, // Use the existing apiLimiter
@@ -437,9 +415,7 @@ router.get(
         items: rssData.items || []
       });
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao obter notícias do Canal Rural:', error);
-      }
+      logger.error('Erro ao obter notícias do Canal Rural:', error);
       res.json({
         success: true,
         source: 'Canal Rural (Fallback)',
@@ -450,17 +426,17 @@ router.get(
   }
 );
 
-// GET /api/news/all - Obter notícias de todas as fontes
+// GET /api/news/all - Obter notÃ­cias de todas as fontes
 router.get(
   '/all',
   apiLimiter, // Use the existing apiLimiter
   async (req, res) => {
     try {
-      const limit = parseInt(req.query.limit, 10) || 20;
+      const limit = parseInt(req.query.limit, 10, 10) || 20;
       const sources = Object.keys(RSS_URLS);
       const allNews = [];
 
-      // Obter notícias de todas as fontes
+      // Obter notÃ­cias de todas as fontes
       for (const source of sources) {
         try {
           const response = await axios.get(RSS_URLS[source], {
@@ -475,9 +451,7 @@ router.get(
             allNews.push(...rssData.items.slice(0, Math.ceil(limit / sources.length)));
           }
         } catch (error) {
-          if (process.env.NODE_ENV !== 'production') {
-            console.warn(`Erro ao obter notícias de ${source}:`, error.message);
-          }
+          logger.warn(`Erro ao obter notícias de ${source}:`, error.message);
         }
       }
 
@@ -494,9 +468,7 @@ router.get(
         items: sortedNews
       });
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao obter notícias de todas as fontes:', error);
-      }
+      logger.error('Erro ao obter notícias de todas as fontes:', error);
       res.json({
         success: true,
         sources: ['Fallback'],
@@ -508,10 +480,10 @@ router.get(
   }
 );
 
-// Função para parsear XML RSS (simplificada)
+// FunÃ§Ã£o para parsear XML RSS (simplificada)
 function parseRSSXML(xmlString) {
   try {
-    // Parse básico do XML RSS
+    // Parse bÃ¡sico do XML RSS
     const items = [];
 
     // Extrair itens do RSS
@@ -541,20 +513,20 @@ function parseRSSXML(xmlString) {
     return { items };
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao parsear XML RSS:', error);
+      logger.error('Erro ao parsear XML RSS:', error);
     }
     return { items: [] };
   }
 }
 
-// Função para extrair conteúdo de tags XML
+// FunÃ§Ã£o para extrair conteÃºdo de tags XML
 function extractTag(content, tagName) {
   const regex = new RegExp(`<${tagName}[^>]*>([\\s\\S]*?)<\\/${tagName}>`, 'i');
   const match = content.match(regex);
   return match ? match[1].trim() : null;
 }
 
-// Função para decodificar entidades XML
+// FunÃ§Ã£o para decodificar entidades XML
 function decodeXMLEntities(text) {
   if (!text) {
     return '';
@@ -569,13 +541,13 @@ function decodeXMLEntities(text) {
     .replace(/&nbsp;/g, ' ');
 }
 
-// Função para gerar notícias de fallback
+// FunÃ§Ã£o para gerar notÃ­cias de fallback
 function getFallbackNews(limit = 10) {
   const fallbackNews = [
     {
-      title: 'Mercado agrícola em alta com forte demanda internacional',
+      title: 'Mercado agrÃ­cola em alta com forte demanda internacional',
       description:
-        'Commodities agrícolas brasileiras registram alta expressiva com forte demanda de países asiáticos.',
+        'Commodities agrÃ­colas brasileiras registram alta expressiva com forte demanda de paÃ­ses asiÃ¡ticos.',
       link: 'https://g1.globo.com/economia/agronegocios/',
       pubDate: new Date().toISOString(),
       guid: 'fallback-1'
@@ -589,25 +561,25 @@ function getFallbackNews(limit = 10) {
       guid: 'fallback-2'
     },
     {
-      title: 'Clima favorável para safra de grãos 2024',
+      title: 'Clima favorÃ¡vel para safra de grÃ£os 2024',
       description:
-        'Previsões climáticas indicam condições favoráveis para a próxima safra de grãos.',
+        'PrevisÃµes climÃ¡ticas indicam condiÃ§Ãµes favorÃ¡veis para a prÃ³xima safra de grÃ£os.',
       link: 'https://g1.globo.com/economia/agronegocios/',
       pubDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
       guid: 'fallback-3'
     },
     {
-      title: 'Exportação de carne bovina atinge recorde',
+      title: 'ExportaÃ§Ã£o de carne bovina atinge recorde',
       description:
-        'Setor de carne bovina brasileiro registra recorde de exportações para mercados internacionais.',
+        'Setor de carne bovina brasileiro registra recorde de exportaÃ§Ãµes para mercados internacionais.',
       link: 'https://g1.globo.com/economia/agronegocios/',
       pubDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
       guid: 'fallback-4'
     },
     {
-      title: 'Investimentos em agricultura sustentável crescem',
+      title: 'Investimentos em agricultura sustentÃ¡vel crescem',
       description:
-        'Produtores rurais investem cada vez mais em práticas sustentáveis e certificações ambientais.',
+        'Produtores rurais investem cada vez mais em prÃ¡ticas sustentÃ¡veis e certificaÃ§Ãµes ambientais.',
       link: 'https://g1.globo.com/economia/agronegocios/',
       pubDate: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
       guid: 'fallback-5'

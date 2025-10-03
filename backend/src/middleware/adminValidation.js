@@ -1,15 +1,16 @@
-import AuditLog from '../models/AuditLog.js';
+﻿import AuditLog from '../models/AuditLog.js';
 
-// Middleware para validar ações administrativas
+import logger from '../utils/logger.js';
+// Middleware para validar aÃ§Ãµes administrativas
 export const validateAdminAction = async (req, res, next) => {
   try {
     const { action, reason } = req.body;
 
-    // Validar se ação e motivo foram fornecidos
+    // Validar se aÃ§Ã£o e motivo foram fornecidos
     if (!action || !reason) {
       return res.status(400).json({
         success: false,
-        message: 'Ação e motivo são obrigatórios para operações administrativas'
+        message: 'AÃ§Ã£o e motivo sÃ£o obrigatÃ³rios para operaÃ§Ãµes administrativas'
       });
     }
 
@@ -21,16 +22,16 @@ export const validateAdminAction = async (req, res, next) => {
       });
     }
 
-    // Validar se a ação é válida
+    // Validar se a aÃ§Ã£o Ã© vÃ¡lida
     const validActions = ['ban', 'activate', 'update', 'delete', 'export'];
     if (!validActions.includes(action)) {
       return res.status(400).json({
         success: false,
-        message: 'Ação administrativa inválida'
+        message: 'AÃ§Ã£o administrativa invÃ¡lida'
       });
     }
 
-    // Log da validação da ação administrativa
+    // Log da validaÃ§Ã£o da aÃ§Ã£o administrativa
     await AuditLog.logAction({
       userId: req.user.id,
       userEmail: req.user.email,
@@ -44,7 +45,7 @@ export const validateAdminAction = async (req, res, next) => {
     next();
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro na validação da ação administrativa:', error);
+      logger.error('Erro na validaÃ§Ã£o da aÃ§Ã£o administrativa:', error);
     }
     await AuditLog.logAction({
       userId: req.user.id,
@@ -60,7 +61,7 @@ export const validateAdminAction = async (req, res, next) => {
 
     return res.status(500).json({
       success: false,
-      message: 'Erro na validação da ação administrativa'
+      message: 'Erro na validaÃ§Ã£o da aÃ§Ã£o administrativa'
     });
   }
 };

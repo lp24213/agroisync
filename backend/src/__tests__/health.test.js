@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Testes para Health Check endpoints
  */
 
@@ -38,7 +38,7 @@ describe('Health Check Endpoints', () => {
       expect(response.body.checks).toHaveProperty('database');
     });
 
-    it('deve incluir métricas de memória', async () => {
+    it('deve incluir mÃ©tricas de memÃ³ria', async () => {
       const response = await request(app).get('/health-check/detailed').expect(200);
 
       expect(response.body.memory).toHaveProperty('used');
@@ -70,7 +70,7 @@ describe('Health Check Endpoints', () => {
   });
 
   describe('GET /health-check/metrics', () => {
-    it('deve retornar métricas do sistema', async () => {
+    it('deve retornar mÃ©tricas do sistema', async () => {
       const response = await request(app)
         .get('/health-check/metrics')
         .expect('Content-Type', /json/)
@@ -83,7 +83,7 @@ describe('Health Check Endpoints', () => {
       expect(response.body).toHaveProperty('platform');
     });
 
-    it('deve retornar valores numéricos válidos', async () => {
+    it('deve retornar valores numÃ©ricos vÃ¡lidos', async () => {
       const response = await request(app).get('/health-check/metrics').expect(200);
 
       expect(typeof response.body.uptime_seconds).toBe('number');

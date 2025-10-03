@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import mongoose from 'mongoose';
 import Conversation from '../models/Conversation.js';
 import Message from '../models/Message.js';
@@ -13,13 +13,14 @@ import {
 } from '../middleware/requirePaidAccess.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
 import { createSecurityLog } from '../utils/securityLogger.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
 // Apply rate limiting
 router.use(apiLimiter);
 
-// ===== VALIDAÇÃO DE DADOS =====
+// ===== VALIDAÃ‡ÃƒO DE DADOS =====
 
 const validateConversationData = (req, res, next) => {
   const { serviceType, serviceId, participants } = req.body;
@@ -28,7 +29,7 @@ const validateConversationData = (req, res, next) => {
     return res.status(400).json({
       ok: false,
       error: 'invalid_service_type',
-      message: 'Tipo de serviço deve ser "product" ou "freight"'
+      message: 'Tipo de serviÃ§o deve ser "product" ou "freight"'
     });
   }
 
@@ -36,7 +37,7 @@ const validateConversationData = (req, res, next) => {
     return res.status(400).json({
       ok: false,
       error: 'invalid_service_id',
-      message: 'ID do serviço inválido'
+      message: 'ID do serviÃ§o invÃ¡lido'
     });
   }
 
@@ -48,12 +49,12 @@ const validateConversationData = (req, res, next) => {
     });
   }
 
-  // Verificar se o usuário atual está nos participantes
+  // Verificar se o usuÃ¡rio atual estÃ¡ nos participantes
   if (!participants.includes(req.user.userId)) {
     return res.status(400).json({
       ok: false,
       error: 'unauthorized_participant',
-      message: 'Você deve ser um dos participantes da conversa'
+      message: 'VocÃª deve ser um dos participantes da conversa'
     });
   }
 
@@ -67,7 +68,7 @@ const validateMessageData = (req, res, next) => {
     return res.status(400).json({
       ok: false,
       error: 'empty_message',
-      message: 'Mensagem não pode estar vazia'
+      message: 'Mensagem nÃ£o pode estar vazia'
     });
   }
 
@@ -75,7 +76,7 @@ const validateMessageData = (req, res, next) => {
     return res.status(400).json({
       ok: false,
       error: 'message_too_long',
-      message: 'Mensagem deve ter no máximo 5000 caracteres'
+      message: 'Mensagem deve ter no mÃ¡ximo 5000 caracteres'
     });
   }
 
@@ -84,13 +85,13 @@ const validateMessageData = (req, res, next) => {
 
 // ===== ROTAS DE CONVERSAS =====
 
-// GET /api/conversations - Listar conversas do usuário
+// GET /api/conversations - Listar conversas do usuÃ¡rio
 router.get('/', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.user;
     const { serviceType, page = 1, limit = 20, status } = req.query;
 
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const skip = (parseInt(page, 10, 10) - 1) * parseInt(limit, 10, 10);
 
     // Construir query
     const query = {
@@ -110,7 +111,7 @@ router.get('/', authenticateToken, async (req, res) => {
     const conversations = await Conversation.find(query)
       .sort({ lastMessageAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit, 10))
+      .limit(parseInt(limit, 10, 10))
       .populate('participants', 'name email company.name')
       .populate('lastMessage.senderId', 'name email')
       .populate('serviceId', 'name title origin destination price images');
@@ -136,17 +137,15 @@ router.get('/', authenticateToken, async (req, res) => {
       data: {
         conversations,
         pagination: {
-          currentPage: parseInt(page, 10),
-          totalPages: Math.ceil(total / parseInt(limit, 10)),
+          currentPage: parseInt(page, 10, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit, 10)
+          itemsPerPage: parseInt(limit, 10, 10)
         }
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Error listing conversations:', error);
-    }
+    logger.error('Error listing conversations:', error);
     await createSecurityLog(
       'system_error',
       'high',
@@ -169,7 +168,7 @@ router.post('/', authenticateToken, validateConversationData, async (req, res) =
     const { userId } = req.user;
     const { serviceType, serviceId, participants, title } = req.body;
 
-    // Verificar se o serviço existe
+    // Verificar se o serviÃ§o existe
     let service;
     if (serviceType === 'product') {
       service = await Product.findById(serviceId);
@@ -181,11 +180,11 @@ router.post('/', authenticateToken, validateConversationData, async (req, res) =
       return res.status(404).json({
         ok: false,
         error: 'service_not_found',
-        message: 'Serviço não encontrado'
+        message: 'ServiÃ§o nÃ£o encontrado'
       });
     }
 
-    // Verificar se já existe conversa entre estes usuários para este serviço
+    // Verificar se jÃ¡ existe conversa entre estes usuÃ¡rios para este serviÃ§o
     const existingConversation = await Conversation.findBetweenUsers(
       participants[0],
       participants[1],
@@ -197,7 +196,7 @@ router.post('/', authenticateToken, validateConversationData, async (req, res) =
       return res.status(409).json({
         ok: false,
         error: 'conversation_exists',
-        message: 'Conversa já existe para este serviço',
+        message: 'Conversa jÃ¡ existe para este serviÃ§o',
         data: { conversationId: existingConversation._id }
       });
     }
@@ -216,7 +215,7 @@ router.post('/', authenticateToken, validateConversationData, async (req, res) =
       { path: 'serviceId', select: 'name title origin destination price images' }
     ]);
 
-    // Log de criação
+    // Log de criaÃ§Ã£o
     await AuditLog.log({
       userId,
       userEmail: req.user.email,
@@ -237,7 +236,7 @@ router.post('/', authenticateToken, validateConversationData, async (req, res) =
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error creating conversation:', error);
+      logger.error('Error creating conversation:', error);
     }
     await createSecurityLog(
       'system_error',
@@ -255,7 +254,7 @@ router.post('/', authenticateToken, validateConversationData, async (req, res) =
   }
 });
 
-// GET /api/conversations/:id - Obter conversa específica
+// GET /api/conversations/:id - Obter conversa especÃ­fica
 router.get('/:id', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.user;
@@ -265,7 +264,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
       return res.status(400).json({
         ok: false,
         error: 'invalid_id',
-        message: 'ID da conversa inválido'
+        message: 'ID da conversa invÃ¡lido'
       });
     }
 
@@ -278,11 +277,11 @@ router.get('/:id', authenticateToken, async (req, res) => {
       return res.status(404).json({
         ok: false,
         error: 'conversation_not_found',
-        message: 'Conversa não encontrada'
+        message: 'Conversa nÃ£o encontrada'
       });
     }
 
-    // Verificar se o usuário é participante
+    // Verificar se o usuÃ¡rio Ã© participante
     if (!conversation.participants.some(p => p._id.toString() === userId)) {
       await createSecurityLog(
         'unauthorized_access',
@@ -318,7 +317,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching conversation:', error);
+      logger.error('Error fetching conversation:', error);
     }
     await createSecurityLog(
       'system_error',
@@ -347,7 +346,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
       return res.status(400).json({
         ok: false,
         error: 'invalid_id',
-        message: 'ID da conversa inválido'
+        message: 'ID da conversa invÃ¡lido'
       });
     }
 
@@ -357,11 +356,11 @@ router.put('/:id', authenticateToken, async (req, res) => {
       return res.status(404).json({
         ok: false,
         error: 'conversation_not_found',
-        message: 'Conversa não encontrada'
+        message: 'Conversa nÃ£o encontrada'
       });
     }
 
-    // Verificar se o usuário é participante
+    // Verificar se o usuÃ¡rio Ã© participante
     if (!conversation.participants.includes(userId)) {
       await createSecurityLog(
         'unauthorized_access',
@@ -388,7 +387,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
 
     await conversation.save();
 
-    // Log de atualização
+    // Log de atualizaÃ§Ã£o
     await AuditLog.log({
       userId,
       userEmail: req.user.email,
@@ -409,7 +408,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error updating conversation:', error);
+      logger.error('Error updating conversation:', error);
     }
     await createSecurityLog(
       'system_error',
@@ -436,24 +435,24 @@ router.get('/:id/messages', authenticateToken, async (req, res) => {
     const conversationId = req.params.id;
     const { page = 1, limit = 50 } = req.query;
 
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const skip = (parseInt(page, 10, 10) - 1) * parseInt(limit, 10, 10);
 
     if (!mongoose.Types.ObjectId.isValid(conversationId)) {
       return res.status(400).json({
         ok: false,
         error: 'invalid_id',
-        message: 'ID da conversa inválido'
+        message: 'ID da conversa invÃ¡lido'
       });
     }
 
-    // Verificar se a conversa existe e se o usuário é participante
+    // Verificar se a conversa existe e se o usuÃ¡rio Ã© participante
     const conversation = await Conversation.findById(conversationId);
 
     if (!conversation) {
       return res.status(404).json({
         ok: false,
         error: 'conversation_not_found',
-        message: 'Conversa não encontrada'
+        message: 'Conversa nÃ£o encontrada'
       });
     }
 
@@ -480,7 +479,7 @@ router.get('/:id/messages', authenticateToken, async (req, res) => {
     })
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit, 10))
+      .limit(parseInt(limit, 10, 10))
       .populate('senderId', 'name email company.name')
       .populate('receiverId', 'name email company.name');
 
@@ -490,7 +489,7 @@ router.get('/:id/messages', authenticateToken, async (req, res) => {
       status: { $ne: 'deleted' }
     });
 
-    // Marcar mensagens como lidas se o usuário for o destinatário
+    // Marcar mensagens como lidas se o usuÃ¡rio for o destinatÃ¡rio
     const unreadMessages = messages.filter(
       msg => msg.receiverId._id.toString() === userId && !msg.isRead
     );
@@ -519,18 +518,18 @@ router.get('/:id/messages', authenticateToken, async (req, res) => {
     res.json({
       ok: true,
       data: {
-        messages: messages.reverse(), // Ordem cronológica
+        messages: messages.reverse(), // Ordem cronolÃ³gica
         pagination: {
-          currentPage: parseInt(page, 10),
-          totalPages: Math.ceil(total / parseInt(limit, 10)),
+          currentPage: parseInt(page, 10, 10),
+          totalPages: Math.ceil(total / parseInt(limit, 10, 10)),
           totalItems: total,
-          itemsPerPage: parseInt(limit, 10)
+          itemsPerPage: parseInt(limit, 10, 10)
         }
       }
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching messages:', error);
+      logger.error('Error fetching messages:', error);
     }
     await createSecurityLog(
       'system_error',
@@ -559,18 +558,18 @@ router.post('/:id/messages', authenticateToken, validateMessageData, async (req,
       return res.status(400).json({
         ok: false,
         error: 'invalid_id',
-        message: 'ID da conversa inválido'
+        message: 'ID da conversa invÃ¡lido'
       });
     }
 
-    // Verificar se a conversa existe e se o usuário é participante
+    // Verificar se a conversa existe e se o usuÃ¡rio Ã© participante
     const conversation = await Conversation.findById(conversationId);
 
     if (!conversation) {
       return res.status(404).json({
         ok: false,
         error: 'conversation_not_found',
-        message: 'Conversa não encontrada'
+        message: 'Conversa nÃ£o encontrada'
       });
     }
 
@@ -590,7 +589,7 @@ router.post('/:id/messages', authenticateToken, validateMessageData, async (req,
       });
     }
 
-    // Verificar se a conversa não está bloqueada
+    // Verificar se a conversa nÃ£o estÃ¡ bloqueada
     if (conversation.status === 'blocked') {
       return res.status(403).json({
         ok: false,
@@ -599,7 +598,7 @@ router.post('/:id/messages', authenticateToken, validateMessageData, async (req,
       });
     }
 
-    // Encontrar destinatário (outro participante)
+    // Encontrar destinatÃ¡rio (outro participante)
     const recipientId = conversation.participants.find(p => p.toString() !== userId);
 
     // Criar mensagem
@@ -651,7 +650,7 @@ router.post('/:id/messages', authenticateToken, validateMessageData, async (req,
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error sending message:', error);
+      logger.error('Error sending message:', error);
     }
     await createSecurityLog(
       'system_error',
@@ -669,9 +668,9 @@ router.post('/:id/messages', authenticateToken, validateMessageData, async (req,
   }
 });
 
-// ===== ROTAS DE ESTATÍSTICAS =====
+// ===== ROTAS DE ESTATÃSTICAS =====
 
-// GET /api/conversations/stats - Estatísticas das conversas
+// GET /api/conversations/stats - EstatÃ­sticas das conversas
 router.get('/stats/summary', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.user;
@@ -684,7 +683,7 @@ router.get('/stats/summary', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error fetching conversation stats:', error);
+      logger.error('Error fetching conversation stats:', error);
     }
     await createSecurityLog(
       'system_error',

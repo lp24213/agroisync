@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+﻿import nodemailer from 'nodemailer';
 import twilio from 'twilio';
 import devConfig from '../config/devConfig.js';
 import logger from '../utils/logger.js';
@@ -6,7 +6,7 @@ import logger from '../utils/logger.js';
 // Verificar se estamos em modo de desenvolvimento
 const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.SMTP_HOST;
 
-// Configuração de email (usando SMTP genérico)
+// ConfiguraÃ§Ã£o de email (usando SMTP genÃ©rico)
 const emailTransporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || devConfig.email.host,
   port: process.env.SMTP_PORT || devConfig.email.port,
@@ -17,13 +17,13 @@ const emailTransporter = nodemailer.createTransport({
   }
 });
 
-// Configuração SMS (usando Twilio) - desativado se não houver credenciais
+// ConfiguraÃ§Ã£o SMS (usando Twilio) - desativado se nÃ£o houver credenciais
 const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID || devConfig.sms.accountSid;
 const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN || devConfig.sms.authToken;
 const isSmsConfigured = Boolean(twilioAccountSid && twilioAuthToken);
 const twilioClient = isSmsConfigured ? twilio(twilioAccountSid, twilioAuthToken) : null;
 
-// Função para enviar email via Resend
+// FunÃ§Ã£o para enviar email via Resend
 const sendEmailViaResend = async (to, subject, html) => {
   try {
     const response = await fetch('https://api.resend.com/emails', {
@@ -63,8 +63,8 @@ class NotificationService {
   }
 
   /**
-   * Enviar email via Resend (prioritário) ou SMTP (fallback)
-   * @param {string} to - Email do destinatário
+   * Enviar email via Resend (prioritÃ¡rio) ou SMTP (fallback)
+   * @param {string} to - Email do destinatÃ¡rio
    * @param {string} subject - Assunto do email
    * @param {string} htmlBody - Corpo HTML do email
    * @param {string} textBody - Corpo texto do email (opcional)
@@ -72,7 +72,7 @@ class NotificationService {
    */
   async sendEmail(to, subject, htmlBody, textBody = null) {
     try {
-      // 1) Priorizar Resend quando configurado (produção ou dev)
+      // 1) Priorizar Resend quando configurado (produÃ§Ã£o ou dev)
       if (process.env.RESEND_API_KEY) {
         const resendResult = await sendEmailViaResend(to, subject, htmlBody);
         if (resendResult.success) {
@@ -81,7 +81,7 @@ class NotificationService {
         logger.warn('Resend falhou, tentando Cloudflare Worker como fallback');
       }
 
-      // 2) Fallback para Cloudflare Worker (quando disponível)
+      // 2) Fallback para Cloudflare Worker (quando disponÃ­vel)
       const workerResult = await this.sendEmailViaWorker(to, subject, htmlBody);
       if (workerResult.success) {
         return workerResult;
@@ -102,7 +102,7 @@ class NotificationService {
 
       const result = await emailTransporter.sendMail(mailOptions);
 
-      logger.info(`✅ Email enviado com sucesso para ${to}:`, result.messageId);
+      logger.info(`âœ… Email enviado com sucesso para ${to}:`, result.messageId);
 
       return {
         success: true,
@@ -110,7 +110,7 @@ class NotificationService {
         message: 'Email enviado com sucesso'
       };
     } catch (error) {
-      logger.error(`❌ Erro ao enviar email para ${to}:`, error);
+      logger.error(`âŒ Erro ao enviar email para ${to}:`, error);
 
       return {
         success: false,
@@ -122,7 +122,7 @@ class NotificationService {
 
   /**
    * Enviar SMS via Twilio
-   * @param {string} phoneNumber - Número do telefone (formato E.164)
+   * @param {string} phoneNumber - NÃºmero do telefone (formato E.164)
    * @param {string} message - Mensagem do SMS
    * @returns {Promise<Object>} - Resultado do envio
    */
@@ -130,7 +130,7 @@ class NotificationService {
     try {
       // Modo de desenvolvimento - simular envio
       if (this.isDevelopment) {
-        logger.info('🔧 [DEV MODE] Simulando envio de SMS:');
+        logger.info('ðŸ”§ [DEV MODE] Simulando envio de SMS:');
         logger.info(`   Para: ${phoneNumber}`);
         logger.info(`   Mensagem: ${message}`);
         return {
@@ -140,13 +140,13 @@ class NotificationService {
         };
       }
 
-      // Se não há configuração válida de SMS, retornar como desabilitado
+      // Se nÃ£o hÃ¡ configuraÃ§Ã£o vÃ¡lida de SMS, retornar como desabilitado
       if (!this.isSmsConfigured || !twilioClient) {
-        logger.warn('SMS não configurado. Ignorando envio.');
+        logger.warn('SMS nÃ£o configurado. Ignorando envio.');
         return { success: false, error: 'SMS desabilitado', code: 'SMS_DISABLED' };
       }
 
-      // Formatar número de telefone para E.164 se necessário
+      // Formatar nÃºmero de telefone para E.164 se necessÃ¡rio
       const formattedPhone = this.formatPhoneNumber(phoneNumber);
 
       const result = await twilioClient.messages.create({
@@ -155,7 +155,7 @@ class NotificationService {
         to: formattedPhone
       });
 
-      logger.info(`✅ SMS enviado com sucesso para ${formattedPhone}:`, result.sid);
+      logger.info(`âœ… SMS enviado com sucesso para ${formattedPhone}:`, result.sid);
 
       return {
         success: true,
@@ -163,7 +163,7 @@ class NotificationService {
         message: 'SMS enviado com sucesso'
       };
     } catch (error) {
-      logger.error(`❌ Erro ao enviar SMS para ${phoneNumber}:`, error);
+      logger.error(`âŒ Erro ao enviar SMS para ${phoneNumber}:`, error);
 
       return {
         success: false,
@@ -175,7 +175,7 @@ class NotificationService {
 
   /**
    * Enviar email via Cloudflare Worker
-   * @param {string} to - Email do destinatário
+   * @param {string} to - Email do destinatÃ¡rio
    * @param {string} subject - Assunto do email
    * @param {string} htmlBody - Corpo HTML do email
    * @returns {Promise<Object>} - Resultado do envio
@@ -187,7 +187,7 @@ class NotificationService {
 
       // Determinar endpoint baseado no assunto
       let endpoint = '/api/email/send-verification';
-      if (subject.includes('Recuperação') || subject.includes('recuperação')) {
+      if (subject.includes('RecuperaÃ§Ã£o') || subject.includes('recuperaÃ§Ã£o')) {
         endpoint = '/api/forgot-password';
       }
 
@@ -215,49 +215,49 @@ class NotificationService {
   }
 
   /**
-   * Enviar código OTP por email
-   * @param {string} to - Email do destinatário
-   * @param {string} code - Código OTP
-   * @param {string} userName - Nome do usuário
+   * Enviar cÃ³digo OTP por email
+   * @param {string} to - Email do destinatÃ¡rio
+   * @param {string} code - CÃ³digo OTP
+   * @param {string} userName - Nome do usuÃ¡rio
    * @returns {Promise<Object>} - Resultado do envio
    */
   async sendOTPEmail(to, code, userName) {
-    const subject = 'Código de Verificação - AgroSync';
+    const subject = 'CÃ³digo de VerificaÃ§Ã£o - AgroSync';
 
     const htmlBody = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
           <h1 style="color: #059669; margin: 0;">AgroSync</h1>
-          <p style="color: #666; margin: 10px 0 0 0;">Plataforma de Agronegócio</p>
+          <p style="color: #666; margin: 10px 0 0 0;">Plataforma de AgronegÃ³cio</p>
         </div>
         
         <div style="background: #f8f9fa; padding: 30px; border-radius: 10px; text-align: center;">
-          <h2 style="color: #333; margin: 0 0 20px 0;">Seu código de verificação</h2>
+          <h2 style="color: #333; margin: 0 0 20px 0;">Seu cÃ³digo de verificaÃ§Ã£o</h2>
           <div style="background: #059669; color: white; font-size: 36px; font-weight: bold; padding: 20px; border-radius: 8px; letter-spacing: 5px; margin: 20px 0;">
             ${code}
           </div>
-          <p style="color: #666; margin: 20px 0 0 0;">Este código é válido por 10 minutos.</p>
+          <p style="color: #666; margin: 20px 0 0 0;">Este cÃ³digo Ã© vÃ¡lido por 10 minutos.</p>
         </div>
         
         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
           <p style="color: #999; font-size: 14px; margin: 0;">
-            Se você não solicitou este código, ignore este email.<br>
-            AgroSync - Conectando o agronegócio brasileiro.
+            Se vocÃª nÃ£o solicitou este cÃ³digo, ignore este email.<br>
+            AgroSync - Conectando o agronegÃ³cio brasileiro.
           </p>
         </div>
       </div>
     `;
 
-    const textBody = `Código de Verificação AgroSync\n\nOlá, ${userName}!\n\nUse o código abaixo para verificar seu email:\n\n${code}\n\nEste código expira em 10 minutos.\n\nSe você não solicitou este código, ignore este email.\n\nAtenciosamente,\nEquipe AgroSync`;
+    const textBody = `CÃ³digo de VerificaÃ§Ã£o AgroSync\n\nOlÃ¡, ${userName}!\n\nUse o cÃ³digo abaixo para verificar seu email:\n\n${code}\n\nEste cÃ³digo expira em 10 minutos.\n\nSe vocÃª nÃ£o solicitou este cÃ³digo, ignore este email.\n\nAtenciosamente,\nEquipe AgroSync`;
 
     return await this.sendEmail(to, subject, htmlBody, textBody);
   }
 
   /**
-   * Enviar email de verificação de conta
-   * @param {string} to - Email do usuário
-   * @param {string} verificationToken - Token de verificação
-   * @param {string} userName - Nome do usuário
+   * Enviar email de verificaÃ§Ã£o de conta
+   * @param {string} to - Email do usuÃ¡rio
+   * @param {string} verificationToken - Token de verificaÃ§Ã£o
+   * @param {string} userName - Nome do usuÃ¡rio
    * @returns {Promise<Object>} - Resultado do envio
    */
   async sendEmailVerification(to, verificationToken, userName) {
@@ -269,13 +269,13 @@ class NotificationService {
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
           <h1 style="color: #059669; margin: 0;">AgroSync</h1>
-          <p style="color: #666; margin: 10px 0 0 0;">Plataforma de Agronegócio</p>
+          <p style="color: #666; margin: 10px 0 0 0;">Plataforma de AgronegÃ³cio</p>
         </div>
         
         <div style="background: #f8f9fa; padding: 30px; border-radius: 10px;">
           <h2 style="color: #333; margin: 0 0 20px 0;">Bem-vindo ao AgroSync, ${userName}!</h2>
           
-          <p style="color: #666; margin: 0 0 20px 0;">Obrigado por se cadastrar em nossa plataforma. Para ativar sua conta, clique no botão abaixo:</p>
+          <p style="color: #666; margin: 0 0 20px 0;">Obrigado por se cadastrar em nossa plataforma. Para ativar sua conta, clique no botÃ£o abaixo:</p>
           
           <div style="text-align: center; margin: 30px 0;">
             <a href="${verificationUrl}" style="display: inline-block; background: #059669; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">
@@ -283,30 +283,30 @@ class NotificationService {
             </a>
           </div>
           
-          <p style="color: #666; margin: 20px 0 0 0;">Após verificar sua conta, você terá acesso completo a todos os recursos da plataforma.</p>
+          <p style="color: #666; margin: 20px 0 0 0;">ApÃ³s verificar sua conta, vocÃª terÃ¡ acesso completo a todos os recursos da plataforma.</p>
           
           <p style="color: #999; font-size: 14px; margin: 20px 0 0 0;">
-            Se o botão não funcionar, copie e cole este link: ${verificationUrl}
+            Se o botÃ£o nÃ£o funcionar, copie e cole este link: ${verificationUrl}
           </p>
         </div>
         
         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
           <p style="color: #999; font-size: 14px; margin: 0;">
-            AgroSync - Conectando o agronegócio brasileiro.
+            AgroSync - Conectando o agronegÃ³cio brasileiro.
           </p>
         </div>
       </div>
     `;
 
     const textBody = `
-      Verificação de Conta - AgroSync
+      VerificaÃ§Ã£o de Conta - AgroSync
       
       Bem-vindo ao AgroSync, ${userName}!
       
       Obrigado por se cadastrar em nossa plataforma. Para ativar sua conta, acesse:
       ${verificationUrl}
       
-      Após verificar sua conta, você terá acesso completo a todos os recursos.
+      ApÃ³s verificar sua conta, vocÃª terÃ¡ acesso completo a todos os recursos.
       
       Atenciosamente,
       Equipe AgroSync
@@ -318,99 +318,99 @@ class NotificationService {
   }
 
   /**
-   * Enviar SMS com código OTP
-   * @param {string} phoneNumber - Número do telefone
-   * @param {string} otpCode - Código OTP de 6 dígitos
-   * @param {string} userName - Nome do usuário
+   * Enviar SMS com cÃ³digo OTP
+   * @param {string} phoneNumber - NÃºmero do telefone
+   * @param {string} otpCode - CÃ³digo OTP de 6 dÃ­gitos
+   * @param {string} userName - Nome do usuÃ¡rio
    * @returns {Promise<Object>} - Resultado do envio
    */
   async sendOTPSMS(phoneNumber, otpCode, userName) {
-    const message = `AgroSync: Olá ${userName}! Seu código de verificação é: ${otpCode}. Expira em 5 minutos. Não compartilhe com ninguém.`;
+    const message = `AgroSync: OlÃ¡ ${userName}! Seu cÃ³digo de verificaÃ§Ã£o Ã©: ${otpCode}. Expira em 5 minutos. NÃ£o compartilhe com ninguÃ©m.`;
 
     return await this.sendSMS(phoneNumber, message);
   }
 
   /**
    * Enviar SMS de boas-vindas
-   * @param {string} phoneNumber - Número do telefone
-   * @param {string} userName - Nome do usuário
+   * @param {string} phoneNumber - NÃºmero do telefone
+   * @param {string} userName - Nome do usuÃ¡rio
    * @returns {Promise<Object>} - Resultado do envio
    */
   async sendWelcomeSMS(phoneNumber, userName) {
-    const message = `AgroSync: Bem-vindo ${userName}! Sua conta foi criada com sucesso. Acesse ${process.env.FRONTEND_URL} para começar.`;
+    const message = `AgroSync: Bem-vindo ${userName}! Sua conta foi criada com sucesso. Acesse ${process.env.FRONTEND_URL} para comeÃ§ar.`;
 
     return await this.sendSMS(phoneNumber, message);
   }
 
   /**
-   * Formatar número de telefone para formato E.164
-   * @param {string} phoneNumber - Número do telefone
-   * @returns {string} - Número formatado
+   * Formatar nÃºmero de telefone para formato E.164
+   * @param {string} phoneNumber - NÃºmero do telefone
+   * @returns {string} - NÃºmero formatado
    */
   formatPhoneNumber(phoneNumber) {
-    // Remove todos os caracteres não numéricos
+    // Remove todos os caracteres nÃ£o numÃ©ricos
     let cleaned = phoneNumber.replace(/\D/g, '');
 
-    // Se começa com 0, remove
+    // Se comeÃ§a com 0, remove
     if (cleaned.startsWith('0')) {
       cleaned = cleaned.substring(1);
     }
 
-    // Se não tem código do país, adiciona +55 (Brasil)
+    // Se nÃ£o tem cÃ³digo do paÃ­s, adiciona +55 (Brasil)
     if (!cleaned.startsWith('55')) {
       cleaned = `55${cleaned}`;
     }
 
-    // Adiciona o + no início
+    // Adiciona o + no inÃ­cio
     return `+${cleaned}`;
   }
 
   /**
-   * Enviar email de recuperação de senha
-   * @param {string} to - Email do usuário
-   * @param {string} resetCode - Código de recuperação
-   * @param {string} userName - Nome do usuário
+   * Enviar email de recuperaÃ§Ã£o de senha
+   * @param {string} to - Email do usuÃ¡rio
+   * @param {string} resetCode - CÃ³digo de recuperaÃ§Ã£o
+   * @param {string} userName - Nome do usuÃ¡rio
    * @returns {Promise<Object>} - Resultado do envio
    */
   async sendPasswordResetEmail(to, resetCode, userName) {
-    const subject = 'Recuperação de Senha - AgroSync';
+    const subject = 'RecuperaÃ§Ã£o de Senha - AgroSync';
 
     const htmlBody = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
           <h1 style="color: #059669; margin: 0;">AgroSync</h1>
-          <p style="color: #666; margin: 10px 0 0 0;">Recuperação de Senha</p>
+          <p style="color: #666; margin: 10px 0 0 0;">RecuperaÃ§Ã£o de Senha</p>
         </div>
         
         <div style="background: #f8f9fa; padding: 30px; border-radius: 10px; text-align: center;">
-          <h2 style="color: #333; margin: 0 0 20px 0;">Código de recuperação</h2>
+          <h2 style="color: #333; margin: 0 0 20px 0;">CÃ³digo de recuperaÃ§Ã£o</h2>
           <div style="background: #dc2626; color: white; font-size: 36px; font-weight: bold; padding: 20px; border-radius: 8px; letter-spacing: 5px; margin: 20px 0;">
             ${resetCode}
           </div>
-          <p style="color: #666; margin: 20px 0 0 0;">Este código é válido por 15 minutos.</p>
+          <p style="color: #666; margin: 20px 0 0 0;">Este cÃ³digo Ã© vÃ¡lido por 15 minutos.</p>
         </div>
         
         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
           <p style="color: #999; font-size: 14px; margin: 0;">
-            Se você não solicitou a recuperação de senha, ignore este email.<br>
-            AgroSync - Conectando o agronegócio brasileiro.
+            Se vocÃª nÃ£o solicitou a recuperaÃ§Ã£o de senha, ignore este email.<br>
+            AgroSync - Conectando o agronegÃ³cio brasileiro.
           </p>
         </div>
       </div>
     `;
 
     const textBody = `
-      Recuperação de Senha - AgroSync
+      RecuperaÃ§Ã£o de Senha - AgroSync
       
-      Olá, ${userName}!
+      OlÃ¡, ${userName}!
       
-      Recebemos uma solicitação para redefinir sua senha na plataforma AgroSync.
+      Recebemos uma solicitaÃ§Ã£o para redefinir sua senha na plataforma AgroSync.
       
-      Seu código de recuperação é: ${resetCode}
+      Seu cÃ³digo de recuperaÃ§Ã£o Ã©: ${resetCode}
       
-      Este código é válido por 15 minutos.
+      Este cÃ³digo Ã© vÃ¡lido por 15 minutos.
       
-      Se você não fez essa solicitação, ignore este email.
+      Se vocÃª nÃ£o fez essa solicitaÃ§Ã£o, ignore este email.
       
       Atenciosamente,
       Equipe AgroSync
@@ -422,8 +422,8 @@ class NotificationService {
   }
 
   /**
-   * Verificar configuração do serviço
-   * @returns {Promise<Object>} - Status da configuração
+   * Verificar configuraÃ§Ã£o do serviÃ§o
+   * @returns {Promise<Object>} - Status da configuraÃ§Ã£o
    */
   checkConfiguration() {
     const config = {
@@ -445,7 +445,7 @@ class NotificationService {
       }
     };
 
-    logger.info('📧 Configuração de Notificações:', config);
+    logger.info('ðŸ“§ ConfiguraÃ§Ã£o de NotificaÃ§Ãµes:', config);
     return config;
   }
 }

@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import { authenticateToken } from '../middleware/auth.js';
 import AuditLog from '../models/AuditLog.js';
 import Message from '../models/Message.js';
@@ -9,17 +9,17 @@ import Payment from '../models/Payment.js';
 
 const router = express.Router();
 
-// Middleware para verificar se o usuário tem acesso à mensageria
+// Middleware para verificar se o usuÃ¡rio tem acesso Ã  mensageria
 const checkMessagingAccess = async (req, res, next) => {
   try {
     const userId = req.user.id;
 
-    // Verificar se o usuário tem plano ativo
+    // Verificar se o usuÃ¡rio tem plano ativo
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Usuário não encontrado'
+        message: 'UsuÃ¡rio nÃ£o encontrado'
       });
     }
 
@@ -29,7 +29,7 @@ const checkMessagingAccess = async (req, res, next) => {
       ((user.subscriptions.store && user.subscriptions.store.status === 'active') ||
         (user.subscriptions.agroconecta && user.subscriptions.agroconecta.status === 'active'));
 
-    // Verificar pagamentos recentes (últimos 30 dias)
+    // Verificar pagamentos recentes (Ãºltimos 30 dias)
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -42,11 +42,11 @@ const checkMessagingAccess = async (req, res, next) => {
     if (!hasActivePlan && !recentPayment) {
       return res.status(403).json({
         success: false,
-        message: '🔒 Para acessar esta mensageria, finalize o pagamento de sua assinatura.',
+        message: 'ðŸ”’ Para acessar esta mensageria, finalize o pagamento de sua assinatura.',
         requiresPayment: true,
         plans: {
-          store: 'R$25/mês - Mensageria de Produtos',
-          agroconecta: 'R$50/mês - Mensageria de Fretes'
+          store: 'R$25/mÃªs - Mensageria de Produtos',
+          agroconecta: 'R$50/mÃªs - Mensageria de Fretes'
         }
       });
     }
@@ -54,7 +54,7 @@ const checkMessagingAccess = async (req, res, next) => {
     req.userHasAccess = true;
     return next();
   } catch {
-    // Erro ao verificar acesso à mensageria
+    // Erro ao verificar acesso Ã  mensageria
     return res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -70,11 +70,11 @@ router.post('/', authenticateToken, checkMessagingAccess, async (req, res) => {
     const { destinatarioId, tipo, servicoId, conteudo } = req.body;
     const remetenteId = req.user.id;
 
-    // Validações
+    // ValidaÃ§Ãµes
     if (!destinatarioId || !tipo || !servicoId || !conteudo) {
       return res.status(400).json({
         success: false,
-        message: 'Todos os campos são obrigatórios'
+        message: 'Todos os campos sÃ£o obrigatÃ³rios'
       });
     }
 
@@ -88,20 +88,20 @@ router.post('/', authenticateToken, checkMessagingAccess, async (req, res) => {
     if (conteudo.trim().length === 0 || conteudo.length > 2000) {
       return res.status(400).json({
         success: false,
-        message: 'Conteúdo deve ter entre 1 e 2000 caracteres'
+        message: 'ConteÃºdo deve ter entre 1 e 2000 caracteres'
       });
     }
 
-    // Verificar se o destinatário existe
+    // Verificar se o destinatÃ¡rio existe
     const destinatario = await User.findById(destinatarioId);
     if (!destinatario) {
       return res.status(404).json({
         success: false,
-        message: 'Destinatário não encontrado'
+        message: 'DestinatÃ¡rio nÃ£o encontrado'
       });
     }
 
-    // Verificar se o serviço existe e é do tipo correto
+    // Verificar se o serviÃ§o existe e Ã© do tipo correto
     let servico;
     if (tipo === 'product') {
       servico = await Product.findById(servicoId);
@@ -112,22 +112,22 @@ router.post('/', authenticateToken, checkMessagingAccess, async (req, res) => {
     if (!servico) {
       return res.status(404).json({
         success: false,
-        message: 'Serviço não encontrado'
+        message: 'ServiÃ§o nÃ£o encontrado'
       });
     }
 
-    // Verificar se o usuário tem permissão para enviar mensagem para este serviço
+    // Verificar se o usuÃ¡rio tem permissÃ£o para enviar mensagem para este serviÃ§o
     if (tipo === 'product' && servico.ownerId.toString() !== destinatarioId.toString()) {
       return res.status(403).json({
         success: false,
-        message: 'Sem permissão para enviar mensagem para este produto'
+        message: 'Sem permissÃ£o para enviar mensagem para este produto'
       });
     }
 
     if (tipo === 'freight' && servico.ownerId.toString() !== destinatarioId.toString()) {
       return res.status(403).json({
         success: false,
-        message: 'Sem permissão para enviar mensagem para este frete'
+        message: 'Sem permissÃ£o para enviar mensagem para este frete'
       });
     }
 
@@ -156,7 +156,7 @@ router.post('/', authenticateToken, checkMessagingAccess, async (req, res) => {
 
     await message.save();
 
-    // Log da ação
+    // Log da aÃ§Ã£o
     await AuditLog.logAction({
       userId: remetenteId,
       userEmail: req.user.email,
@@ -199,7 +199,7 @@ router.post('/', authenticateToken, checkMessagingAccess, async (req, res) => {
   }
 });
 
-// GET /api/messages - Listar mensagens do usuário
+// GET /api/messages - Listar mensagens do usuÃ¡rio
 router.get('/', authenticateToken, checkMessagingAccess, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -226,12 +226,12 @@ router.get('/', authenticateToken, checkMessagingAccess, async (req, res) => {
       .populate('destinatario', 'name email')
       .sort({ timestamp: -1 })
       .skip(skip)
-      .limit(parseInt(limit, 10));
+      .limit(parseInt(limit, 10, 10));
 
     // Contar total
     const total = await Message.countDocuments(query);
 
-    // Log da ação
+    // Log da aÃ§Ã£o
     await AuditLog.logAction({
       userId,
       userEmail: req.user.email,
@@ -247,10 +247,10 @@ router.get('/', authenticateToken, checkMessagingAccess, async (req, res) => {
       data: {
         messages,
         pagination: {
-          page: parseInt(page, 10),
-          limit: parseInt(limit, 10),
+          page: parseInt(page, 10, 10),
+          limit: parseInt(limit, 10, 10),
           total,
-          pages: Math.ceil(total / parseInt(limit, 10))
+          pages: Math.ceil(total / parseInt(limit, 10, 10))
         }
       }
     });
@@ -276,14 +276,14 @@ router.get('/', authenticateToken, checkMessagingAccess, async (req, res) => {
   }
 });
 
-// GET /api/messages/conversations - Listar conversas do usuário
+// GET /api/messages/conversations - Listar conversas do usuÃ¡rio
 router.get('/conversations', authenticateToken, checkMessagingAccess, async (req, res) => {
   try {
     const userId = req.user.id;
     const { page = 1, limit = 20 } = req.query;
     const skip = (page - 1) * limit;
 
-    // Buscar conversas únicas
+    // Buscar conversas Ãºnicas
     const conversations = await Message.aggregate([
       {
         $match: {
@@ -330,11 +330,11 @@ router.get('/conversations', authenticateToken, checkMessagingAccess, async (req
         $skip: skip
       },
       {
-        $limit: parseInt(limit, 10)
+        $limit: parseInt(limit, 10, 10)
       }
     ]);
 
-    // Populate dados dos usuários e serviços
+    // Populate dados dos usuÃ¡rios e serviÃ§os
     for (const conv of conversations) {
       const otherUser = await User.findById(conv._id.otherUser).select('name email');
       conv.otherUser = otherUser;
@@ -386,10 +386,10 @@ router.get('/conversations', authenticateToken, checkMessagingAccess, async (req
       data: {
         conversations,
         pagination: {
-          page: parseInt(page, 10),
-          limit: parseInt(limit, 10),
+          page: parseInt(page, 10, 10),
+          limit: parseInt(limit, 10, 10),
           total,
-          pages: Math.ceil(total / parseInt(limit, 10))
+          pages: Math.ceil(total / parseInt(limit, 10, 10))
         }
       }
     });
@@ -415,7 +415,7 @@ router.get('/conversations', authenticateToken, checkMessagingAccess, async (req
   }
 });
 
-// GET /api/messages/conversation/:otherUserId/:tipo/:servicoId - Obter conversa específica
+// GET /api/messages/conversation/:otherUserId/:tipo/:servicoId - Obter conversa especÃ­fica
 router.get(
   '/conversation/:otherUserId/:tipo/:servicoId',
   authenticateToken,
@@ -427,12 +427,12 @@ router.get(
       const { page = 1, limit = 100 } = req.query;
       const skip = (page - 1) * limit;
 
-      // Verificar se o outro usuário existe
+      // Verificar se o outro usuÃ¡rio existe
       const otherUser = await User.findById(otherUserId);
       if (!otherUser) {
         return res.status(404).json({
           success: false,
-          message: 'Usuário não encontrado'
+          message: 'UsuÃ¡rio nÃ£o encontrado'
         });
       }
 
@@ -441,7 +441,7 @@ router.get(
         .populate('remetente', 'name email')
         .populate('destinatario', 'name email')
         .skip(skip)
-        .limit(parseInt(limit, 10));
+        .limit(parseInt(limit, 10, 10));
 
       // Contar total
       const total = await Message.countDocuments({
@@ -476,10 +476,10 @@ router.get(
             email: otherUser.email
           },
           pagination: {
-            page: parseInt(page, 10),
-            limit: parseInt(limit, 10),
+            page: parseInt(page, 10, 10),
+            limit: parseInt(limit, 10, 10),
             total,
-            pages: Math.ceil(total / parseInt(limit, 10))
+            pages: Math.ceil(total / parseInt(limit, 10, 10))
           }
         }
       });
@@ -516,15 +516,15 @@ router.put('/:messageId/read', authenticateToken, checkMessagingAccess, async (r
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: 'Mensagem não encontrada'
+        message: 'Mensagem nÃ£o encontrada'
       });
     }
 
-    // Verificar se o usuário é o destinatário
+    // Verificar se o usuÃ¡rio Ã© o destinatÃ¡rio
     if (message.destinatario.toString() !== userId) {
       return res.status(403).json({
         success: false,
-        message: 'Sem permissão para marcar esta mensagem como lida'
+        message: 'Sem permissÃ£o para marcar esta mensagem como lida'
       });
     }
 
@@ -553,21 +553,21 @@ router.delete('/:messageId', authenticateToken, checkMessagingAccess, async (req
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: 'Mensagem não encontrada'
+        message: 'Mensagem nÃ£o encontrada'
       });
     }
 
-    // Verificar se o usuário é o remetente ou destinatário
+    // Verificar se o usuÃ¡rio Ã© o remetente ou destinatÃ¡rio
     if (message.remetente.toString() !== userId && message.destinatario.toString() !== userId) {
       return res.status(403).json({
         success: false,
-        message: 'Sem permissão para deletar esta mensagem'
+        message: 'Sem permissÃ£o para deletar esta mensagem'
       });
     }
 
     await message.softDelete(userId);
 
-    // Log da ação
+    // Log da aÃ§Ã£o
     await AuditLog.logAction({
       userId,
       userEmail: req.user.email,
@@ -610,21 +610,21 @@ router.post('/:messageId/report', authenticateToken, checkMessagingAccess, async
     if (!message) {
       return res.status(404).json({
         success: false,
-        message: 'Mensagem não encontrada'
+        message: 'Mensagem nÃ£o encontrada'
       });
     }
 
-    // Verificar se o usuário é o destinatário
+    // Verificar se o usuÃ¡rio Ã© o destinatÃ¡rio
     if (message.destinatario.toString() !== userId) {
       return res.status(403).json({
         success: false,
-        message: 'Sem permissão para reportar esta mensagem'
+        message: 'Sem permissÃ£o para reportar esta mensagem'
       });
     }
 
     await message.report(reason.trim());
 
-    // Log da ação
+    // Log da aÃ§Ã£o
     await AuditLog.logAction({
       userId,
       userEmail: req.user.email,
@@ -649,7 +649,7 @@ router.post('/:messageId/report', authenticateToken, checkMessagingAccess, async
   }
 });
 
-// GET /api/messages/stats - Estatísticas das mensagens do usuário
+// GET /api/messages/stats - EstatÃ­sticas das mensagens do usuÃ¡rio
 router.get('/stats', authenticateToken, checkMessagingAccess, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -661,7 +661,7 @@ router.get('/stats', authenticateToken, checkMessagingAccess, async (req, res) =
       data: stats
     });
   } catch {
-    // Erro ao buscar estatísticas
+    // Erro ao buscar estatÃ­sticas
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'

@@ -1,9 +1,10 @@
-import { ethers } from 'ethers';
+﻿import { ethers } from 'ethers';
 import { createSecurityLog } from '../utils/securityLogger.js';
 
-// ===== CONFIGURAÇÃO DO METAMASK =====
+import logger from '../utils/logger.js';
+// ===== CONFIGURAÃ‡ÃƒO DO METAMASK =====
 
-// Endereços das redes suportadas
+// EndereÃ§os das redes suportadas
 export const SUPPORTED_NETWORKS = {
   ethereum: {
     chainId: 1,
@@ -51,9 +52,9 @@ export const SUPPORTED_NETWORKS = {
   }
 };
 
-// ===== FUNÇÕES DE VALIDAÇÃO =====
+// ===== FUNÃ‡Ã•ES DE VALIDAÃ‡ÃƒO =====
 
-// Validar endereço Ethereum
+// Validar endereÃ§o Ethereum
 export const isValidEthereumAddress = address => {
   try {
     return ethers.isAddress(address);
@@ -72,7 +73,7 @@ export const isValidSignature = (message, signature, address) => {
   }
 };
 
-// Validar hash de transação
+// Validar hash de transaÃ§Ã£o
 export const isValidTransactionHash = hash => {
   try {
     return ethers.isHexString(hash, 32);
@@ -81,7 +82,7 @@ export const isValidTransactionHash = hash => {
   }
 };
 
-// ===== FUNÇÕES DE AUTENTICAÇÃO =====
+// ===== FUNÃ‡Ã•ES DE AUTENTICAÃ‡ÃƒO =====
 
 // Gerar mensagem para assinatura
 export const generateAuthMessage = (address, nonce) => {
@@ -95,10 +96,10 @@ export const generateAuthMessage = (address, nonce) => {
   };
 };
 
-// Verificar autenticação Metamask
-export const verifyMetamaskAuth = async (address, signature, nonce, timestamp) => {
+// Verificar autenticaÃ§Ã£o Metamask
+export const verifyMetamaskAuth = (address, signature, nonce, timestamp) => {
   try {
-    // Verificar se o timestamp não é muito antigo (5 minutos)
+    // Verificar se o timestamp nÃ£o Ã© muito antigo (5 minutos)
     const now = Date.now();
     if (now - timestamp > 5 * 60 * 1000) {
       return {
@@ -107,7 +108,7 @@ export const verifyMetamaskAuth = async (address, signature, nonce, timestamp) =
       };
     }
 
-    // Verificar se o endereço é válido
+    // Verificar se o endereÃ§o Ã© vÃ¡lido
     if (!isValidEthereumAddress(address)) {
       return {
         valid: false,
@@ -115,7 +116,7 @@ export const verifyMetamaskAuth = async (address, signature, nonce, timestamp) =
       };
     }
 
-    // Verificar se a assinatura é válida
+    // Verificar se a assinatura Ã© vÃ¡lida
     const authMessage = generateAuthMessage(address, nonce);
     if (!isValidSignature(authMessage.message, signature, address)) {
       return {
@@ -129,7 +130,7 @@ export const verifyMetamaskAuth = async (address, signature, nonce, timestamp) =
       address: address.toLowerCase()
     };
   } catch (error) {
-    // Console log removido (dados sensíveis)
+    // Console log removido (dados sensÃ­veis)
     return {
       valid: false,
       error: 'Verification failed'
@@ -137,9 +138,9 @@ export const verifyMetamaskAuth = async (address, signature, nonce, timestamp) =
   }
 };
 
-// ===== FUNÇÕES DE PAGAMENTO =====
+// ===== FUNÃ‡Ã•ES DE PAGAMENTO =====
 
-// Criar transação de pagamento
+// Criar transaÃ§Ã£o de pagamento
 export const createPaymentTransaction = async (
   fromAddress,
   toAddress,
@@ -158,15 +159,15 @@ export const createPaymentTransaction = async (
     // Obter nonce atual
     const nonce = await provider.getTransactionCount(fromAddress);
 
-    // Obter preço do gas
+    // Obter preÃ§o do gas
     const gasPrice = await provider.getFeeData();
 
-    // Criar transação
+    // Criar transaÃ§Ã£o
     const transaction = {
       to: toAddress,
       value: ethers.parseEther(amount.toString()),
       nonce,
-      gasLimit: 21000, // Gas limit padrão para transferências
+      gasLimit: 21000, // Gas limit padrÃ£o para transferÃªncias
       gasPrice: gasPrice.gasPrice
     };
 
@@ -177,13 +178,13 @@ export const createPaymentTransaction = async (
     };
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error creating payment transaction:', error);
+      logger.error('Error creating payment transaction:', error);
     }
     throw error;
   }
 };
 
-// Verificar status da transação
+// Verificar status da transaÃ§Ã£o
 export const checkTransactionStatus = async (txHash, network = 'ethereum') => {
   try {
     const networkConfig = SUPPORTED_NETWORKS[network];
@@ -193,7 +194,7 @@ export const checkTransactionStatus = async (txHash, network = 'ethereum') => {
 
     const provider = new ethers.JsonRpcProvider(networkConfig.rpcUrl);
 
-    // Obter receita da transação
+    // Obter receita da transaÃ§Ã£o
     const receipt = await provider.getTransactionReceipt(txHash);
 
     if (!receipt) {
@@ -217,13 +218,13 @@ export const checkTransactionStatus = async (txHash, network = 'ethereum') => {
     };
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error checking transaction status:', error);
+      logger.error('Error checking transaction status:', error);
     }
     throw error;
   }
 };
 
-// ===== FUNÇÕES DE CARTEIRA =====
+// ===== FUNÃ‡Ã•ES DE CARTEIRA =====
 
 // Obter saldo da carteira
 export const getWalletBalance = async (address, network = 'ethereum') => {
@@ -245,14 +246,14 @@ export const getWalletBalance = async (address, network = 'ethereum') => {
     };
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error getting wallet balance:', error);
+      logger.error('Error getting wallet balance:', error);
     }
     throw error;
   }
 };
 
-// Obter histórico de transações
-export const getTransactionHistory = async (address, network = 'ethereum', limit = 50) => {
+// Obter histÃ³rico de transaÃ§Ãµes
+export const getTransactionHistory = (address, network = 'ethereum', limit = 50) => {
   try {
     const networkConfig = SUPPORTED_NETWORKS[network];
     if (!networkConfig) {
@@ -264,32 +265,32 @@ export const getTransactionHistory = async (address, network = 'ethereum', limit
     // Obter bloco atual
     const currentBlock = await provider.getBlockNumber();
 
-    // Buscar transações (limitado pela API)
+    // Buscar transaÃ§Ãµes (limitado pela API)
     const transactions = [];
 
-    // Buscar transações de entrada
+    // Buscar transaÃ§Ãµes de entrada
     const incomingTxs = await provider.getLogs({
       address,
-      fromBlock: currentBlock - 10000, // Últimos 10k blocos
+      fromBlock: currentBlock - 10000, // Ãšltimos 10k blocos
       toBlock: currentBlock,
       topics: [
         null, // Qualquer evento
-        `0x000000000000000000000000${address.slice(2)}` // Para endereço
+        `0x000000000000000000000000${address.slice(2)}` // Para endereÃ§o
       ]
     });
 
-    // Buscar transações de saída
+    // Buscar transaÃ§Ãµes de saÃ­da
     const outgoingTxs = await provider.getLogs({
       address,
       fromBlock: currentBlock - 10000,
       toBlock: currentBlock,
       topics: [
         null,
-        address.slice(2).padStart(64, '0') // De endereço
+        address.slice(2).padStart(64, '0') // De endereÃ§o
       ]
     });
 
-    // Combinar e ordenar transações
+    // Combinar e ordenar transaÃ§Ãµes
     const allTxs = [...incomingTxs, ...outgoingTxs];
     allTxs.sort((a, b) => b.blockNumber - a.blockNumber);
 
@@ -304,15 +305,15 @@ export const getTransactionHistory = async (address, network = 'ethereum', limit
     }));
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error getting transaction history:', error);
+      logger.error('Error getting transaction history:', error);
     }
     throw error;
   }
 };
 
-// ===== FUNÇÕES DE TOKEN =====
+// ===== FUNÃ‡Ã•ES DE TOKEN =====
 
-// ABI básico para tokens ERC-20
+// ABI bÃ¡sico para tokens ERC-20
 const ERC20_ABI = [
   'function name() view returns (string)',
   'function symbol() view returns (string)',
@@ -327,7 +328,7 @@ const ERC20_ABI = [
   'event Approval(address indexed owner, address indexed spender, uint256 value)'
 ];
 
-// Obter informações do token
+// Obter informaÃ§Ãµes do token
 export const getTokenInfo = async (tokenAddress, network = 'ethereum') => {
   try {
     const networkConfig = SUPPORTED_NETWORKS[network];
@@ -354,13 +355,13 @@ export const getTokenInfo = async (tokenAddress, network = 'ethereum') => {
       network: networkConfig.name
     };
   } catch (error) {
-    // Console log removido (dados sensíveis)
+    // Console log removido (dados sensÃ­veis)
     throw error;
   }
 };
 
 // Obter saldo do token
-export const getTokenBalance = async (tokenAddress, walletAddress, network = 'ethereum') => {
+export const getTokenBalance = (tokenAddress, walletAddress, network = 'ethereum') => {
   try {
     const networkConfig = SUPPORTED_NETWORKS[network];
     if (!networkConfig) {
@@ -385,14 +386,14 @@ export const getTokenBalance = async (tokenAddress, walletAddress, network = 'et
       network: networkConfig.name
     };
   } catch (error) {
-    // Console log removido (dados sensíveis)
+    // Console log removido (dados sensÃ­veis)
     throw error;
   }
 };
 
-// ===== FUNÇÕES DE SEGURANÇA =====
+// ===== FUNÃ‡Ã•ES DE SEGURANÃ‡A =====
 
-// Verificar se o endereço está na lista de permissões
+// Verificar se o endereÃ§o estÃ¡ na lista de permissÃµes
 export const isAddressWhitelisted = (address, whitelist) => {
   if (!whitelist || !Array.isArray(whitelist)) {
     return false;
@@ -403,8 +404,8 @@ export const isAddressWhitelisted = (address, whitelist) => {
   );
 };
 
-// Verificar se o endereço é um contrato
-export const isContractAddress = async (address, network = 'ethereum') => {
+// Verificar se o endereÃ§o Ã© um contrato
+export const isContractAddress = (address, network = 'ethereum') => {
   try {
     const networkConfig = SUPPORTED_NETWORKS[network];
     if (!networkConfig) {
@@ -417,13 +418,13 @@ export const isContractAddress = async (address, network = 'ethereum') => {
     return code !== '0x';
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error checking if address is contract:', error);
+      logger.error('Error checking if address is contract:', error);
     }
     return false;
   }
 };
 
-// ===== FUNÇÕES DE UTILIDADE =====
+// ===== FUNÃ‡Ã•ES DE UTILIDADE =====
 
 // Converter valor para Wei
 export const toWei = (amount, decimals = 18) => {
@@ -443,7 +444,7 @@ export const fromWei = (amount, decimals = 18) => {
   }
 };
 
-// Formatar endereço para exibição
+// Formatar endereÃ§o para exibiÃ§Ã£o
 export const formatAddress = (address, start = 6, end = 4) => {
   if (!address || address.length < start + end) {
     return address;
@@ -452,12 +453,12 @@ export const formatAddress = (address, start = 6, end = 4) => {
   return `${address.slice(0, start)}...${address.slice(-end)}`;
 };
 
-// Verificar se o Metamask está disponível
+// Verificar se o Metamask estÃ¡ disponÃ­vel
 export const isMetamaskAvailable = () => {
   return typeof window !== 'undefined' && window.ethereum && window.ethereum.isMetaMask;
 };
 
-// Obter endereço conectado
+// Obter endereÃ§o conectado
 export const getConnectedAddress = async () => {
   try {
     if (!isMetamaskAvailable()) {
@@ -468,7 +469,7 @@ export const getConnectedAddress = async () => {
     return accounts[0] || null;
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error getting connected address:', error);
+      logger.error('Error getting connected address:', error);
     }
     return null;
   }
@@ -488,7 +489,7 @@ export const connectWallet = async () => {
     return accounts[0] || null;
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error connecting wallet:', error);
+      logger.error('Error connecting wallet:', error);
     }
     throw error;
   }
@@ -509,7 +510,7 @@ export const switchNetwork = async chainId => {
     return true;
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Error switching network:', error);
+      logger.error('Error switching network:', error);
     }
     throw error;
   }

@@ -1,8 +1,8 @@
-/* eslint-disable no-console */
-import axios from 'axios';
+﻿import axios from 'axios';
 import { EXTERNAL_APIS, API_TIMEOUT_CONFIG } from '../config/constants.js';
+import logger from '../utils/logger.js';
 
-// Configurações das APIs com fallbacks
+// ConfiguraÃ§Ãµes das APIs com fallbacks
 const API_CONFIG = {
   viacep: {
     primary: {
@@ -27,7 +27,7 @@ const API_CONFIG = {
       baseURL: EXTERNAL_APIS.ibge.baseUrl,
       timeout: EXTERNAL_APIS.ibge.timeout
     },
-    fallbacks: [] // IBGE é API pública estável
+    fallbacks: [] // IBGE Ã© API pÃºblica estÃ¡vel
   },
   openweather: {
     primary: {
@@ -64,22 +64,22 @@ const API_CONFIG = {
       apiKey: EXTERNAL_APIS.baiduMaps.apiKey,
       timeout: EXTERNAL_APIS.baiduMaps.timeout
     },
-    fallbacks: [] // Específico para China
+    fallbacks: [] // EspecÃ­fico para China
   }
 };
 
-// Configuração de retry
+// ConfiguraÃ§Ã£o de retry
 const RETRY_CONFIG = {
   maxRetries: API_TIMEOUT_CONFIG.retryAttempts,
   retryDelay: 1000, // 1 segundo
   retryableStatusCodes: [408, 429, 500, 502, 503, 504]
 };
 
-// Cache simples em memória (em produção, usar Redis)
+// Cache simples em memÃ³ria (em produÃ§Ã£o, usar Redis)
 const CACHE = new Map();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
 
-// Classe para serviços de API externa com fallback
+// Classe para serviÃ§os de API externa com fallback
 class ExternalAPIService {
   constructor() {
     this.viacepClient = axios.create({
@@ -120,9 +120,9 @@ class ExternalAPIService {
   // ===== SISTEMA DE RETRY COM FALLBACK =====
 
   /**
-   * Executa request com retry automático
-   * @param {Function} requestFn - Função que faz o request
-   * @param {Object} options - Opções de retry
+   * Executa request com retry automÃ¡tico
+   * @param {Function} requestFn - FunÃ§Ã£o que faz o request
+   * @param {Object} options - OpÃ§Ãµes de retry
    */
   async executeWithRetry(requestFn, options = {}) {
     const maxRetries = options.maxRetries || RETRY_CONFIG.maxRetries;
@@ -138,7 +138,7 @@ class ExternalAPIService {
 
         if (isLastAttempt || !shouldRetry) {
           if (process.env.NODE_ENV !== 'production') {
-            console.error(`Request failed after ${attempt + 1} attempts:`, error.message);
+            logger.error(`Request failed after ${attempt + 1} attempts:`, error.message);
           }
           return {
             success: false,
@@ -151,7 +151,7 @@ class ExternalAPIService {
         const delay = retryDelay * Math.pow(2, attempt);
         await this.sleep(delay);
         if (process.env.NODE_ENV !== 'production') {
-          console.log(`Retry attempt ${attempt + 1}/${maxRetries} after ${delay}ms`);
+          logger.log(`Retry attempt ${attempt + 1}/${maxRetries} after ${delay}ms`);
         }
       }
     }
@@ -159,8 +159,8 @@ class ExternalAPIService {
 
   /**
    * Executa request com fallback para APIs alternativas
-   * @param {Array} apiConfigs - Array de configurações de API [primary, ...fallbacks]
-   * @param {Function} requestBuilder - Função que constrói o request
+   * @param {Array} apiConfigs - Array de configuraÃ§Ãµes de API [primary, ...fallbacks]
+   * @param {Function} requestBuilder - FunÃ§Ã£o que constrÃ³i o request
    */
   async executeWithFallback(apiConfigs, requestBuilder) {
     const errors = [];
@@ -172,18 +172,18 @@ class ExternalAPIService {
       // Verificar circuit breaker
       if (this.isCircuitOpen(apiName)) {
         if (process.env.NODE_ENV !== 'production') {
-          console.log(`Circuit breaker open for ${apiName}, skipping...`);
+          logger.log(`Circuit breaker open for ${apiName}, skipping...`);
         }
         continue;
       }
 
       try {
         if (process.env.NODE_ENV !== 'production') {
-          console.log(`Trying ${apiName}...`);
+          logger.log(`Trying ${apiName}...`);
         }
         const result = await requestBuilder(config);
 
-        // Marcar API como saudável
+        // Marcar API como saudÃ¡vel
         this.recordSuccess(apiName);
 
         return {
@@ -193,17 +193,17 @@ class ExternalAPIService {
         };
       } catch (error) {
         if (process.env.NODE_ENV !== 'production') {
-          console.error(`${apiName} failed:`, error.message);
+          logger.error(`${apiName} failed:`, error.message);
         }
         errors.push({ api: apiName, error: error.message });
 
         // Marcar falha para circuit breaker
         this.recordFailure(apiName);
 
-        // Se não for a última opção, tentar próxima
+        // Se nÃ£o for a Ãºltima opÃ§Ã£o, tentar prÃ³xima
         if (i < apiConfigs.length - 1) {
           if (process.env.NODE_ENV !== 'production') {
-            console.log('Falling back to next API...');
+            logger.log('Falling back to next API...');
           }
           continue;
         }
@@ -231,7 +231,7 @@ class ExternalAPIService {
       return true;
     }
 
-    // Retry em status codes específicos
+    // Retry em status codes especÃ­ficos
     if (error.response) {
       const { status } = error.response;
       return RETRY_CONFIG.retryableStatusCodes.includes(status);
@@ -268,7 +268,7 @@ class ExternalAPIService {
   }
 
   /**
-   * Circuit Breaker: Verifica se API está indisponível
+   * Circuit Breaker: Verifica se API estÃ¡ indisponÃ­vel
    */
   isCircuitOpen(apiName) {
     const health = this.apiHealthStatus.get(apiName);
@@ -276,7 +276,7 @@ class ExternalAPIService {
       return false;
     }
 
-    // Se teve 3+ falhas nas últimas 5 minutos, considerar indisponível
+    // Se teve 3+ falhas nas Ãºltimas 5 minutos, considerar indisponÃ­vel
     const circuitOpenThreshold = 3;
     const circuitOpenDuration = 5 * 60 * 1000; // 5 minutos
 
@@ -285,7 +285,7 @@ class ExternalAPIService {
       if (timeSinceLastFailure < circuitOpenDuration) {
         return true;
       }
-      // Reset após duração
+      // Reset apÃ³s duraÃ§Ã£o
       health.failures = 0;
       health.lastFailure = null;
       this.apiHealthStatus.set(apiName, health);
@@ -340,12 +340,12 @@ class ExternalAPIService {
     }
   }
 
-  // ===== SERVIÇOS DE CEP E ENDEREÇO =====
+  // ===== SERVIÃ‡OS DE CEP E ENDEREÃ‡O =====
 
   /**
-   * Consultar CEP com fallback automático
+   * Consultar CEP com fallback automÃ¡tico
    * @param {string} cep - CEP a ser consultado
-   * @returns {Object} Dados do endereço
+   * @returns {Object} Dados do endereÃ§o
    */
   async consultarCEP(cep) {
     const cleanCEP = cep.replace(/\D/g, '');
@@ -353,7 +353,7 @@ class ExternalAPIService {
     if (cleanCEP.length !== 8) {
       return {
         success: false,
-        message: 'CEP deve ter 8 dígitos'
+        message: 'CEP deve ter 8 dÃ­gitos'
       };
     }
 
@@ -388,7 +388,7 @@ class ExternalAPIService {
 
       // Validar resposta
       if (response.data.erro || response.data.error) {
-        throw new Error('CEP não encontrado');
+        throw new Error('CEP nÃ£o encontrado');
       }
 
       // Normalizar formato de resposta
@@ -425,9 +425,9 @@ class ExternalAPIService {
   }
 
   /**
-   * Buscar municípios por estado via IBGE
+   * Buscar municÃ­pios por estado via IBGE
    * @param {string} uf - Sigla do estado
-   * @returns {Array} Lista de municípios
+   * @returns {Array} Lista de municÃ­pios
    */
   async buscarMunicipiosPorEstado(uf) {
     try {
@@ -444,11 +444,11 @@ class ExternalAPIService {
       };
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao buscar municípios:', error);
+        logger.error('Erro ao buscar municÃ­pios:', error);
       }
       return {
         success: false,
-        message: 'Erro ao buscar municípios',
+        message: 'Erro ao buscar municÃ­pios',
         error: error.response?.data || error.message
       };
     }
@@ -473,7 +473,7 @@ class ExternalAPIService {
       };
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao buscar estados:', error);
+        logger.error('Erro ao buscar estados:', error);
       }
       return {
         success: false,
@@ -484,8 +484,8 @@ class ExternalAPIService {
   }
 
   /**
-   * Buscar regiões via IBGE
-   * @returns {Array} Lista de regiões
+   * Buscar regiÃµes via IBGE
+   * @returns {Array} Lista de regiÃµes
    */
   async buscarRegioes() {
     try {
@@ -501,17 +501,17 @@ class ExternalAPIService {
       };
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao buscar regiões:', error);
+        logger.error('Erro ao buscar regiÃµes:', error);
       }
       return {
         success: false,
-        message: 'Erro ao buscar regiões',
+        message: 'Erro ao buscar regiÃµes',
         error: error.response?.data || error.message
       };
     }
   }
 
-  // ===== SERVIÇOS DE CLIMA =====
+  // ===== SERVIÃ‡OS DE CLIMA =====
 
   /**
    * Obter clima por coordenadas
@@ -524,7 +524,7 @@ class ExternalAPIService {
   async obterClimaPorCoordenadas(lat, lon, units = 'metric', lang = 'pt') {
     try {
       if (!API_CONFIG.openweather.apiKey) {
-        throw new Error('API key do OpenWeather não configurada');
+        throw new Error('API key do OpenWeather nÃ£o configurada');
       }
 
       const response = await this.weatherClient.get('/weather', {
@@ -566,7 +566,7 @@ class ExternalAPIService {
       };
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao obter clima:', error);
+        logger.error('Erro ao obter clima:', error);
       }
       return {
         success: false,
@@ -577,8 +577,8 @@ class ExternalAPIService {
   }
 
   /**
-   * Obter clima por IP (usando serviço de geolocalização)
-   * @param {string} ip - Endereço IP
+   * Obter clima por IP (usando serviÃ§o de geolocalizaÃ§Ã£o)
+   * @param {string} ip - EndereÃ§o IP
    * @param {string} units - Unidades (metric, imperial, kelvin)
    * @param {string} lang - Idioma (pt, en, es, zh)
    * @returns {Object} Dados do clima
@@ -589,7 +589,7 @@ class ExternalAPIService {
       const geoResponse = await this.obterCoordenadasPorIP(ip);
 
       if (!geoResponse.success) {
-        throw new Error('Não foi possível obter localização pelo IP');
+        throw new Error('NÃ£o foi possÃ­vel obter localizaÃ§Ã£o pelo IP');
       }
 
       const { lat, lon } = geoResponse.data;
@@ -598,7 +598,7 @@ class ExternalAPIService {
       return await this.obterClimaPorCoordenadas(lat, lon, units, lang);
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao obter clima por IP:', error);
+        logger.error('Erro ao obter clima por IP:', error);
       }
       return {
         success: false,
@@ -610,18 +610,18 @@ class ExternalAPIService {
 
   /**
    * Obter coordenadas por IP
-   * @param {string} ip - Endereço IP
+   * @param {string} ip - EndereÃ§o IP
    * @returns {Object} Coordenadas (lat, lon)
    */
   async obterCoordenadasPorIP(ip) {
     try {
-      // Usar serviço gratuito de geolocalização por IP
+      // Usar serviÃ§o gratuito de geolocalizaÃ§Ã£o por IP
       const response = await axios.get(`https://ip-api.com/json/${ip}`, {
         timeout: 10000
       });
 
       if (response.data.status === 'fail') {
-        throw new Error('Não foi possível obter localização pelo IP');
+        throw new Error('NÃ£o foi possÃ­vel obter localizaÃ§Ã£o pelo IP');
       }
 
       return {
@@ -637,7 +637,7 @@ class ExternalAPIService {
       };
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao obter coordenadas por IP:', error);
+        logger.error('Erro ao obter coordenadas por IP:', error);
       }
       return {
         success: false,
@@ -647,21 +647,21 @@ class ExternalAPIService {
     }
   }
 
-  // ===== SERVIÇOS DA RECEITA FEDERAL =====
+  // ===== SERVIÃ‡OS DA RECEITA FEDERAL =====
 
-  // ===== SERVIÇOS DO BAIDU MAPS =====
+  // ===== SERVIÃ‡OS DO BAIDU MAPS =====
 
   /**
-   * Geocoding: converter endereço em coordenadas
-   * @param {string} address - Endereço para geocodificar
+   * Geocoding: converter endereÃ§o em coordenadas
+   * @param {string} address - EndereÃ§o para geocodificar
    * @param {string} city - Cidade (opcional)
-   * @param {string} region - Região/Estado (opcional)
-   * @returns {Object} Coordenadas e informações do endereço
+   * @param {string} region - RegiÃ£o/Estado (opcional)
+   * @returns {Object} Coordenadas e informaÃ§Ãµes do endereÃ§o
    */
   async geocodeAddress(address, city = '', region = '') {
     try {
       if (!API_CONFIG.baiduMaps.apiKey) {
-        throw new Error('API key do Baidu Maps não configurada');
+        throw new Error('API key do Baidu Maps nÃ£o configurada');
       }
 
       const cacheKey = `geocode:${address}:${city}:${region}`;
@@ -708,26 +708,26 @@ class ExternalAPIService {
       return geocodeResult;
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro no geocoding:', error);
+        logger.error('Erro no geocoding:', error);
       }
       return {
         success: false,
-        message: 'Erro ao geocodificar endereço',
+        message: 'Erro ao geocodificar endereÃ§o',
         error: error.message
       };
     }
   }
 
   /**
-   * Reverse geocoding: converter coordenadas em endereço
+   * Reverse geocoding: converter coordenadas em endereÃ§o
    * @param {number} lat - Latitude
    * @param {number} lng - Longitude
-   * @returns {Object} Endereço e informações da localização
+   * @returns {Object} EndereÃ§o e informaÃ§Ãµes da localizaÃ§Ã£o
    */
   async reverseGeocode(lat, lng) {
     try {
       if (!API_CONFIG.baiduMaps.apiKey) {
-        throw new Error('API key do Baidu Maps não configurada');
+        throw new Error('API key do Baidu Maps nÃ£o configurada');
       }
 
       const cacheKey = `reverse_geocode:${lat}:${lng}`;
@@ -774,7 +774,7 @@ class ExternalAPIService {
       return reverseGeocodeResult;
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro no reverse geocoding:', error);
+        logger.error('Erro no reverse geocoding:', error);
       }
       return {
         success: false,
@@ -789,12 +789,12 @@ class ExternalAPIService {
    * @param {Object} origin - Coordenadas de origem {lat, lng}
    * @param {Object} destination - Coordenadas de destino {lat, lng}
    * @param {string} mode - Modo de transporte (driving, walking, bicycling, transit)
-   * @returns {Object} Informações da rota
+   * @returns {Object} InformaÃ§Ãµes da rota
    */
   async calculateRoute(origin, destination, mode = 'driving') {
     try {
       if (!API_CONFIG.baiduMaps.apiKey) {
-        throw new Error('API key do Baidu Maps não configurada');
+        throw new Error('API key do Baidu Maps nÃ£o configurada');
       }
 
       const cacheKey = `route:${origin.lat}:${origin.lng}:${destination.lat}:${destination.lng}:${mode}`;
@@ -842,7 +842,7 @@ class ExternalAPIService {
       return routeResult;
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao calcular rota:', error);
+        logger.error('Erro ao calcular rota:', error);
       }
       return {
         success: false,
@@ -852,7 +852,7 @@ class ExternalAPIService {
     }
   }
 
-  // ===== SERVIÇOS DA RECEITA FEDERAL =====
+  // ===== SERVIÃ‡OS DA RECEITA FEDERAL =====
 
   /**
    * Consultar CNPJ na Receita Federal
@@ -861,18 +861,18 @@ class ExternalAPIService {
    */
   async consultarCNPJ(cnpj) {
     try {
-      await Promise.resolve(); // Placeholder para implementação futura
+      await Promise.resolve(); // Placeholder para implementaÃ§Ã£o futura
       if (!API_CONFIG.receitaFederal.primary.apiKey) {
-        throw new Error('API key da Receita Federal não configurada');
+        throw new Error('API key da Receita Federal nÃ£o configurada');
       }
 
       const cleanCNPJ = cnpj.replace(/\D/g, '');
 
       if (cleanCNPJ.length !== 14) {
-        throw new Error('CNPJ deve ter 14 dígitos');
+        throw new Error('CNPJ deve ter 14 dÃ­gitos');
       }
 
-      // Aqui você implementaria a chamada real para a API da Receita Federal
+      // Aqui vocÃª implementaria a chamada real para a API da Receita Federal
       // Por enquanto, retornamos dados simulados
       return {
         success: true,
@@ -891,17 +891,17 @@ class ExternalAPIService {
             numero: '123',
             complemento: 'Sala 1',
             bairro: 'Centro',
-            municipio: 'São Paulo',
+            municipio: 'SÃ£o Paulo',
             uf: 'SP',
             cep: '01234-567'
           },
-          atividadePrincipal: '4751-2/01 - Comércio varejista de informática',
+          atividadePrincipal: '4751-2/01 - ComÃ©rcio varejista de informÃ¡tica',
           atividadesSecundarias: ['6201-5/01 - Desenvolvimento de sistemas']
         }
       };
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao consultar CNPJ:', error);
+        logger.error('Erro ao consultar CNPJ:', error);
       }
       return {
         success: false,
@@ -918,18 +918,18 @@ class ExternalAPIService {
    */
   async consultarCPF(cpf) {
     try {
-      await Promise.resolve(); // Placeholder para implementação futura
+      await Promise.resolve(); // Placeholder para implementaÃ§Ã£o futura
       if (!API_CONFIG.receitaFederal.primary.apiKey) {
-        throw new Error('API key da Receita Federal não configurada');
+        throw new Error('API key da Receita Federal nÃ£o configurada');
       }
 
       const cleanCPF = cpf.replace(/\D/g, '');
 
       if (cleanCPF.length !== 11) {
-        throw new Error('CPF deve ter 11 dígitos');
+        throw new Error('CPF deve ter 11 dÃ­gitos');
       }
 
-      // Aqui você implementaria a chamada real para a API da Receita Federal
+      // Aqui vocÃª implementaria a chamada real para a API da Receita Federal
       // Por enquanto, retornamos dados simulados
       return {
         success: true,
@@ -944,7 +944,7 @@ class ExternalAPIService {
       };
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao consultar CPF:', error);
+        logger.error('Erro ao consultar CPF:', error);
       }
       return {
         success: false,
@@ -954,12 +954,12 @@ class ExternalAPIService {
     }
   }
 
-  // ===== SERVIÇOS DE VALIDAÇÃO =====
+  // ===== SERVIÃ‡OS DE VALIDAÃ‡ÃƒO =====
 
   /**
-   * Validar endereço completo
-   * @param {Object} endereco - Dados do endereço
-   * @returns {Object} Endereço validado e complementado
+   * Validar endereÃ§o completo
+   * @param {Object} endereco - Dados do endereÃ§o
+   * @returns {Object} EndereÃ§o validado e complementado
    */
   async validarEndereco(endereco) {
     try {
@@ -981,14 +981,14 @@ class ExternalAPIService {
         }
       }
 
-      // Validar se todos os campos obrigatórios estão preenchidos
+      // Validar se todos os campos obrigatÃ³rios estÃ£o preenchidos
       const camposObrigatorios = ['logradouro', 'numero', 'bairro', 'cidade', 'estado', 'cep'];
       const camposFaltando = camposObrigatorios.filter(campo => !enderecoValidado[campo]);
 
       if (camposFaltando.length > 0) {
         return {
           success: false,
-          message: `Campos obrigatórios faltando: ${camposFaltando.join(', ')}`,
+          message: `Campos obrigatÃ³rios faltando: ${camposFaltando.join(', ')}`,
           camposFaltando
         };
       }
@@ -999,27 +999,27 @@ class ExternalAPIService {
       };
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao validar endereço:', error);
+        logger.error('Erro ao validar endereÃ§o:', error);
       }
       return {
         success: false,
-        message: 'Erro ao validar endereço',
+        message: 'Erro ao validar endereÃ§o',
         error: error.message
       };
     }
   }
 
-  // ===== SERVIÇOS DO BAIDU MAPS =====
+  // ===== SERVIÃ‡OS DO BAIDU MAPS =====
 
   /**
-   * Buscar coordenadas por endereço (geocoding)
-   * @param {string} address - Endereço para buscar
-   * @returns {Object} Coordenadas e dados do endereço
+   * Buscar coordenadas por endereÃ§o (geocoding)
+   * @param {string} address - EndereÃ§o para buscar
+   * @returns {Object} Coordenadas e dados do endereÃ§o
    */
   async buscarCoordenadasBaidu(address) {
     try {
       if (!API_CONFIG.baiduMaps.apiKey) {
-        throw new Error('API key do Baidu Maps não configurada');
+        throw new Error('API key do Baidu Maps nÃ£o configurada');
       }
 
       // Verificar cache primeiro
@@ -1066,7 +1066,7 @@ class ExternalAPIService {
       };
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao buscar coordenadas Baidu:', error);
+        logger.error('Erro ao buscar coordenadas Baidu:', error);
       }
       return {
         success: false,
@@ -1077,15 +1077,15 @@ class ExternalAPIService {
   }
 
   /**
-   * Buscar endereço por coordenadas (reverse geocoding)
+   * Buscar endereÃ§o por coordenadas (reverse geocoding)
    * @param {number} lat - Latitude
    * @param {number} lng - Longitude
-   * @returns {Object} Endereço e dados da localização
+   * @returns {Object} EndereÃ§o e dados da localizaÃ§Ã£o
    */
   async buscarEnderecoBaidu(lat, lng) {
     try {
       if (!API_CONFIG.baiduMaps.apiKey) {
-        throw new Error('API key do Baidu Maps não configurada');
+        throw new Error('API key do Baidu Maps nÃ£o configurada');
       }
 
       // Verificar cache primeiro
@@ -1131,11 +1131,11 @@ class ExternalAPIService {
       };
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao buscar endereço Baidu:', error);
+        logger.error('Erro ao buscar endereÃ§o Baidu:', error);
       }
       return {
         success: false,
-        message: 'Erro ao buscar endereço',
+        message: 'Erro ao buscar endereÃ§o',
         error: error.message
       };
     }
@@ -1149,7 +1149,7 @@ class ExternalAPIService {
   async buscarLugaresBaidu(query) {
     try {
       if (!API_CONFIG.baiduMaps.apiKey) {
-        throw new Error('API key do Baidu Maps não configurada');
+        throw new Error('API key do Baidu Maps nÃ£o configurada');
       }
 
       // Verificar cache primeiro
@@ -1198,7 +1198,7 @@ class ExternalAPIService {
       };
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao buscar lugares Baidu:', error);
+        logger.error('Erro ao buscar lugares Baidu:', error);
       }
       return {
         success: false,
@@ -1208,20 +1208,20 @@ class ExternalAPIService {
     }
   }
 
-  // ===== SERVIÇOS DA RECEITA FEDERAL =====
+  // ===== SERVIÃ‡OS DA RECEITA FEDERAL =====
 
   /**
    * Validar CNPJ
    * @param {string} cnpj - CNPJ a ser validado
-   * @returns {Object} Resultado da validação
+   * @returns {Object} Resultado da validaÃ§Ã£o
    */
   async validarCNPJ(cnpj) {
     try {
-      await Promise.resolve(); // Validação síncrona por enquanto
+      await Promise.resolve(); // ValidaÃ§Ã£o sÃ­ncrona por enquanto
       const cleanCNPJ = cnpj.replace(/\D/g, '');
 
       if (cleanCNPJ.length !== 14) {
-        throw new Error('CNPJ deve ter 14 dígitos');
+        throw new Error('CNPJ deve ter 14 dÃ­gitos');
       }
 
       // Verificar cache primeiro (24 horas)
@@ -1235,7 +1235,7 @@ class ExternalAPIService {
         };
       }
 
-      // Aqui você implementaria a chamada real para a API da Receita Federal
+      // Aqui vocÃª implementaria a chamada real para a API da Receita Federal
       // Por enquanto, retornamos dados simulados
       const data = {
         cnpj: cleanCNPJ,
@@ -1252,11 +1252,11 @@ class ExternalAPIService {
           numero: '123',
           complemento: 'Sala 1',
           bairro: 'Centro',
-          municipio: 'São Paulo',
+          municipio: 'SÃ£o Paulo',
           uf: 'SP',
           cep: '01234-567'
         },
-        atividadePrincipal: '4751-2/01 - Comércio varejista de informática',
+        atividadePrincipal: '4751-2/01 - ComÃ©rcio varejista de informÃ¡tica',
         atividadesSecundarias: ['6201-5/01 - Desenvolvimento de sistemas']
       };
 
@@ -1269,7 +1269,7 @@ class ExternalAPIService {
       };
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao validar CNPJ:', error);
+        logger.error('Erro ao validar CNPJ:', error);
       }
       return {
         success: false,
@@ -1282,15 +1282,15 @@ class ExternalAPIService {
   /**
    * Validar CPF
    * @param {string} cpf - CPF a ser validado
-   * @returns {Object} Resultado da validação
+   * @returns {Object} Resultado da validaÃ§Ã£o
    */
   async validarCPF(cpf) {
     try {
-      await Promise.resolve(); // Validação síncrona por enquanto
+      await Promise.resolve(); // ValidaÃ§Ã£o sÃ­ncrona por enquanto
       const cleanCPF = cpf.replace(/\D/g, '');
 
       if (cleanCPF.length !== 11) {
-        throw new Error('CPF deve ter 11 dígitos');
+        throw new Error('CPF deve ter 11 dÃ­gitos');
       }
 
       // Verificar cache primeiro (24 horas)
@@ -1304,7 +1304,7 @@ class ExternalAPIService {
         };
       }
 
-      // Aqui você implementaria a chamada real para a API da Receita Federal
+      // Aqui vocÃª implementaria a chamada real para a API da Receita Federal
       // Por enquanto, retornamos dados simulados
       const data = {
         cpf: cleanCPF,
@@ -1324,7 +1324,7 @@ class ExternalAPIService {
       };
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao validar CPF:', error);
+        logger.error('Erro ao validar CPF:', error);
       }
       return {
         success: false,
@@ -1335,17 +1335,17 @@ class ExternalAPIService {
   }
 
   /**
-   * Validar IE (Inscrição Estadual)
+   * Validar IE (InscriÃ§Ã£o Estadual)
    * @param {string} ie - IE a ser validada
-   * @returns {Object} Resultado da validação
+   * @returns {Object} Resultado da validaÃ§Ã£o
    */
   async validarIE(ie) {
     try {
-      await Promise.resolve(); // Validação síncrona por enquanto
+      await Promise.resolve(); // ValidaÃ§Ã£o sÃ­ncrona por enquanto
       const cleanIE = ie.replace(/\D/g, '');
 
       if (cleanIE.length < 8 || cleanIE.length > 12) {
-        throw new Error('IE deve ter entre 8 e 12 dígitos');
+        throw new Error('IE deve ter entre 8 e 12 dÃ­gitos');
       }
 
       // Verificar cache primeiro (24 horas)
@@ -1359,7 +1359,7 @@ class ExternalAPIService {
         };
       }
 
-      // Aqui você implementaria a chamada real para a API da Receita Federal
+      // Aqui vocÃª implementaria a chamada real para a API da Receita Federal
       // Por enquanto, retornamos dados simulados
       const data = {
         ie: cleanIE,
@@ -1378,7 +1378,7 @@ class ExternalAPIService {
       };
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao validar IE:', error);
+        logger.error('Erro ao validar IE:', error);
       }
       return {
         success: false,
@@ -1399,7 +1399,7 @@ class ExternalAPIService {
       const cleanCNPJ = cnpj.replace(/\D/g, '');
 
       if (cleanCNPJ.length !== 14) {
-        throw new Error('CNPJ deve ter 14 dígitos');
+        throw new Error('CNPJ deve ter 14 dÃ­gitos');
       }
 
       // Verificar cache primeiro (24 horas)
@@ -1413,7 +1413,7 @@ class ExternalAPIService {
         };
       }
 
-      // Aqui você implementaria a chamada real para a API da Receita Federal
+      // Aqui vocÃª implementaria a chamada real para a API da Receita Federal
       // Por enquanto, retornamos dados simulados
       const data = {
         cnpj: cleanCNPJ,
@@ -1430,16 +1430,16 @@ class ExternalAPIService {
           numero: '123',
           complemento: 'Sala 1',
           bairro: 'Centro',
-          municipio: 'São Paulo',
+          municipio: 'SÃ£o Paulo',
           uf: 'SP',
           cep: '01234-567'
         },
-        atividadePrincipal: '4751-2/01 - Comércio varejista de informática',
+        atividadePrincipal: '4751-2/01 - ComÃ©rcio varejista de informÃ¡tica',
         atividadesSecundarias: ['6201-5/01 - Desenvolvimento de sistemas'],
         quadroSocios: [
           {
-            nome: 'SÓCIO EXEMPLO',
-            qualificacao: 'Sócio-Administrador',
+            nome: 'SÃ“CIO EXEMPLO',
+            qualificacao: 'SÃ³cio-Administrador',
             participacao: '100%'
           }
         ],
@@ -1457,7 +1457,7 @@ class ExternalAPIService {
       };
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao obter dados da empresa:', error);
+        logger.error('Erro ao obter dados da empresa:', error);
       }
       return {
         success: false,
@@ -1467,13 +1467,13 @@ class ExternalAPIService {
     }
   }
 
-  // ===== SERVIÇOS DE VALIDAÇÃO =====
+  // ===== SERVIÃ‡OS DE VALIDAÃ‡ÃƒO =====
 }
 
-// Exportar instância única do serviço
+// Exportar instÃ¢ncia Ãºnica do serviÃ§o
 export const externalAPIService = new ExternalAPIService();
 
-// Exportar funções individuais para uso direto
+// Exportar funÃ§Ãµes individuais para uso direto
 export const {
   consultarCEP,
   buscarMunicipiosPorEstado,

@@ -1,4 +1,4 @@
-import { createAuditLog } from '../utils/securityLogger.js';
+﻿import { createAuditLog } from '../utils/securityLogger.js';
 import User from '../models/User.js';
 import Product from '../models/Product.js';
 import Freight from '../models/Freight.js';
@@ -6,28 +6,29 @@ import Message from '../models/Message.js';
 import Transaction from '../models/Transaction.js';
 import Payment from '../models/Payment.js';
 
+import logger from '../utils/logger.js';
 // ===== MIDDLEWARE DE PRIVACIDADE LGPD =====
 
 /**
  * Middleware para verificar consentimento LGPD
  */
-export const checkGDPRConsent = async (req, res, next) => {
+export const checkGDPRConsent = (req, res, next) => {
   try {
     if (!req.user) {
       return next();
     }
 
-    // Verificar se usuário deu consentimento LGPD
+    // Verificar se usuÃ¡rio deu consentimento LGPD
     if (!req.user.gdprConsent) {
       return res.status(403).json({
         success: false,
-        message: 'Consentimento LGPD necessário para continuar',
+        message: 'Consentimento LGPD necessÃ¡rio para continuar',
         requiresConsent: true,
         consentUrl: '/privacy/consent'
       });
     }
 
-    // Verificar se consentimento não expirou
+    // Verificar se consentimento nÃ£o expirou
     if (req.user.gdprConsentExpiry && new Date() > new Date(req.user.gdprConsentExpiry)) {
       return res.status(403).json({
         success: false,
@@ -40,7 +41,7 @@ export const checkGDPRConsent = async (req, res, next) => {
     next();
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro na verificação LGPD:', error);
+      logger.error('Erro na verificaÃ§Ã£o LGPD:', error);
     }
     next();
   }
@@ -54,7 +55,7 @@ export const recordGDPRConsent = async (req, res, next) => {
     if (!req.user) {
       return res.status(401).json({
         success: false,
-        message: 'Usuário não autenticado'
+        message: 'UsuÃ¡rio nÃ£o autenticado'
       });
     }
 
@@ -63,11 +64,11 @@ export const recordGDPRConsent = async (req, res, next) => {
     if (!consent) {
       return res.status(400).json({
         success: false,
-        message: 'Consentimento é obrigatório'
+        message: 'Consentimento Ã© obrigatÃ³rio'
       });
     }
 
-    // Atualizar usuário com consentimento
+    // Atualizar usuÃ¡rio com consentimento
     const user = await User.findById(req.user.userId);
     user.gdprConsent = consent;
     user.gdprConsentDate = new Date();
@@ -87,7 +88,7 @@ export const recordGDPRConsent = async (req, res, next) => {
     next();
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao registrar consentimento LGPD:', error);
+      logger.error('Erro ao registrar consentimento LGPD:', error);
     }
     return res.status(500).json({
       success: false,
@@ -105,17 +106,17 @@ export const canProcessData = dataType => {
       if (!req.user) {
         return res.status(401).json({
           success: false,
-          message: 'Usuário não autenticado'
+          message: 'UsuÃ¡rio nÃ£o autenticado'
         });
       }
 
       const user = await User.findById(req.user.userId);
 
-      // Verificar se usuário deu consentimento para o tipo de dado
+      // Verificar se usuÃ¡rio deu consentimento para o tipo de dado
       if (!user.gdprConsent || !user.gdprPreferences[dataType]) {
         return res.status(403).json({
           success: false,
-          message: `Consentimento necessário para processamento de ${dataType}`,
+          message: `Consentimento necessÃ¡rio para processamento de ${dataType}`,
           requiresConsent: true,
           dataType
         });
@@ -124,7 +125,7 @@ export const canProcessData = dataType => {
       next();
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro na verificação de processamento de dados:', error);
+        logger.error('Erro na verificaÃ§Ã£o de processamento de dados:', error);
       }
       return res.status(500).json({
         success: false,
@@ -134,16 +135,16 @@ export const canProcessData = dataType => {
   };
 };
 
-// ===== FUNÇÕES DE EXPORTAÇÃO DE DADOS =====
+// ===== FUNÃ‡Ã•ES DE EXPORTAÃ‡ÃƒO DE DADOS =====
 
 /**
- * Exportar dados do usuário (Direito de Portabilidade)
+ * Exportar dados do usuÃ¡rio (Direito de Portabilidade)
  */
-export const exportUserData = async (req, res) => {
+export const exportUserData = (req, res) => {
   try {
     const { userId } = req.user;
 
-    // Buscar todos os dados do usuário
+    // Buscar todos os dados do usuÃ¡rio
     const user = await User.findById(userId).select('-password -resetToken -resetTokenExpiry');
     const products = await Product.find({ seller: userId });
     const freights = await Freight.find({ carrier: userId });
@@ -155,7 +156,7 @@ export const exportUserData = async (req, res) => {
     });
     const payments = await Payment.find({ userId });
 
-    // Estruturar dados para exportação
+    // Estruturar dados para exportaÃ§Ã£o
     const exportData = {
       user: {
         profile: {
@@ -226,7 +227,7 @@ export const exportUserData = async (req, res) => {
       }
     };
 
-    // Log da exportação
+    // Log da exportaÃ§Ã£o
     await createAuditLog('DATA_EXPORT_REQUESTED', 'user_data', req, userId, {
       dataTypes: exportData.exportInfo.dataTypes,
       exportFormat: 'JSON'
@@ -239,7 +240,7 @@ export const exportUserData = async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro na exportação de dados:', error);
+      logger.error('Erro na exportaÃ§Ã£o de dados:', error);
     }
     return res.status(500).json({
       success: false,
@@ -249,7 +250,7 @@ export const exportUserData = async (req, res) => {
 };
 
 /**
- * Excluir dados do usuário (Direito ao Esquecimento)
+ * Excluir dados do usuÃ¡rio (Direito ao Esquecimento)
  */
 export const deleteUserData = async (req, res) => {
   try {
@@ -259,14 +260,14 @@ export const deleteUserData = async (req, res) => {
     if (!dataTypes || !Array.isArray(dataTypes)) {
       return res.status(400).json({
         success: false,
-        message: 'Tipos de dados para exclusão são obrigatórios'
+        message: 'Tipos de dados para exclusÃ£o sÃ£o obrigatÃ³rios'
       });
     }
 
     if (!reason || reason.trim().length < 10) {
       return res.status(400).json({
         success: false,
-        message: 'Motivo da exclusão deve ter pelo menos 10 caracteres'
+        message: 'Motivo da exclusÃ£o deve ter pelo menos 10 caracteres'
       });
     }
 
@@ -292,7 +293,7 @@ export const deleteUserData = async (req, res) => {
       deletionResults.messages = result.deletedCount;
     }
 
-    // Excluir transações
+    // Excluir transaÃ§Ãµes
     if (dataTypes.includes('transactions')) {
       const result = await Transaction.deleteMany({
         $or: [{ buyer: userId }, { seller: userId }]
@@ -322,7 +323,7 @@ export const deleteUserData = async (req, res) => {
       deletionResults.profile = 'anonymized';
     }
 
-    // Log da exclusão
+    // Log da exclusÃ£o
     await createAuditLog('DATA_DELETION_REQUESTED', 'user_data', req, userId, {
       dataTypes,
       reason,
@@ -333,13 +334,13 @@ export const deleteUserData = async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Dados excluídos com sucesso',
+      message: 'Dados excluÃ­dos com sucesso',
       deletionResults,
       dataTypes
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro na exclusão de dados:', error);
+      logger.error('Erro na exclusÃ£o de dados:', error);
     }
     return res.status(500).json({
       success: false,
@@ -349,7 +350,7 @@ export const deleteUserData = async (req, res) => {
 };
 
 /**
- * Obter status de privacidade do usuário
+ * Obter status de privacidade do usuÃ¡rio
  */
 export const getPrivacyStatus = async (req, res) => {
   try {
@@ -381,7 +382,7 @@ export const getPrivacyStatus = async (req, res) => {
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao obter status de privacidade:', error);
+      logger.error('Erro ao obter status de privacidade:', error);
     }
     return res.status(500).json({
       success: false,
@@ -391,9 +392,9 @@ export const getPrivacyStatus = async (req, res) => {
 };
 
 /**
- * Atualizar preferências de privacidade
+ * Atualizar preferÃªncias de privacidade
  */
-export const updatePrivacyPreferences = async (req, res) => {
+export const updatePrivacyPreferences = (req, res) => {
   try {
     const { userId } = req.user;
     const { preferences } = req.body;
@@ -401,11 +402,11 @@ export const updatePrivacyPreferences = async (req, res) => {
     if (!preferences || typeof preferences !== 'object') {
       return res.status(400).json({
         success: false,
-        message: 'Preferências de privacidade são obrigatórias'
+        message: 'PreferÃªncias de privacidade sÃ£o obrigatÃ³rias'
       });
     }
 
-    // Validar preferências
+    // Validar preferÃªncias
     const validPreferences = [
       'marketing_emails',
       'push_notifications',
@@ -417,34 +418,34 @@ export const updatePrivacyPreferences = async (req, res) => {
 
     const validatedPreferences = {};
     validPreferences.forEach(pref => {
-      if (preferences.hasOwnProperty(pref)) {
+      if (Object.prototype.hasOwnProperty.call(preferences, pref)) {
         validatedPreferences[pref] = !!preferences[pref];
       }
     });
 
-    // Atualizar usuário
+    // Atualizar usuÃ¡rio
     await User.findByIdAndUpdate(userId, {
       gdprPreferences: validatedPreferences,
       gdprConsentDate: new Date()
     });
 
-    // Log da atualização
+    // Log da atualizaÃ§Ã£o
     await createAuditLog('PRIVACY_PREFERENCES_UPDATED', 'user_privacy', req, userId, {
       preferences: validatedPreferences
     });
 
     res.json({
       success: true,
-      message: 'Preferências de privacidade atualizadas',
+      message: 'PreferÃªncias de privacidade atualizadas',
       preferences: validatedPreferences
     });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      console.error('Erro ao atualizar preferências de privacidade:', error);
+      logger.error('Erro ao atualizar preferÃªncias de privacidade:', error);
     }
     return res.status(500).json({
       success: false,
-      message: 'Erro ao atualizar preferências'
+      message: 'Erro ao atualizar preferÃªncias'
     });
   }
 };

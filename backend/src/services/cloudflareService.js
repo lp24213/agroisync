@@ -1,4 +1,4 @@
-const axios = require('axios');
+﻿const axios = require('axios');
 const logger = require('../utils/logger');
 
 class CloudflareService {
@@ -15,7 +15,7 @@ class CloudflareService {
   async verifyTurnstileToken(token, remoteip = null) {
     try {
       if (!this.turnstileSecret) {
-        logger.warn('CLOUDFLARE_TURNSTILE_SECRET não configurado, pulando verificação');
+        logger.warn('CLOUDFLARE_TURNSTILE_SECRET nÃ£o configurado, pulando verificaÃ§Ã£o');
         return true; // Em desenvolvimento, sempre retorna true
       }
 
@@ -36,7 +36,7 @@ class CloudflareService {
       const { success, error_codes, challenge_ts } = response.data;
 
       if (!success) {
-        logger.warn(`Token Turnstile inválido: ${error_codes?.join(', ') || 'erro desconhecido'}`);
+        logger.warn(`Token Turnstile invÃ¡lido: ${error_codes?.join(', ') || 'erro desconhecido'}`);
         return false;
       }
 
@@ -54,7 +54,7 @@ class CloudflareService {
   async setupAccessPolicy(route, allowedEmails = []) {
     try {
       if (!this.accessToken || !this.accountId) {
-        logger.warn('Cloudflare Access não configurado');
+        logger.warn('Cloudflare Access nÃ£o configurado');
         return false;
       }
 
@@ -96,7 +96,7 @@ class CloudflareService {
         }
       );
 
-      logger.info('Política Cloudflare Access configurada com sucesso');
+      logger.info('PolÃ­tica Cloudflare Access configurada com sucesso');
       return response.data;
     } catch (error) {
       logger.error('Erro ao configurar Cloudflare Access:', error);
@@ -105,7 +105,7 @@ class CloudflareService {
   }
 
   /**
-   * Verifica se usuário tem acesso via Cloudflare Access
+   * Verifica se usuÃ¡rio tem acesso via Cloudflare Access
    */
   async verifyAccessToken(accessToken) {
     try {
@@ -134,12 +134,12 @@ class CloudflareService {
   }
 
   /**
-   * Configura Workers para autenticação JWT
+   * Configura Workers para autenticaÃ§Ã£o JWT
    */
   async deployAuthWorker() {
     try {
       if (!this.accessToken || !this.accountId) {
-        logger.warn('Cloudflare Workers não configurado');
+        logger.warn('Cloudflare Workers nÃ£o configurado');
         return false;
       }
 
@@ -148,7 +148,7 @@ class CloudflareService {
           async fetch(request, env) {
             const url = new URL(request.url);
             
-            // Verificar se é rota protegida
+            // Verificar se Ã© rota protegida
             if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/api/admin')) {
               const token = request.headers.get('Authorization')?.replace('Bearer ', '');
               
@@ -168,7 +168,7 @@ class CloudflareService {
                   return new Response('Insufficient permissions', { status: 403 });
                 }
                 
-                // Adicionar headers de usuário
+                // Adicionar headers de usuÃ¡rio
                 const modifiedRequest = new Request(request, {
                   headers: {
                     ...request.headers,
@@ -200,7 +200,7 @@ class CloudflareService {
         }
       );
 
-      logger.info('Worker de autenticação Cloudflare implantado com sucesso');
+      logger.info('Worker de autenticaÃ§Ã£o Cloudflare implantado com sucesso');
       return response.data;
     } catch (error) {
       logger.error('Erro ao implantar Worker Cloudflare:', error);
@@ -214,7 +214,7 @@ class CloudflareService {
   async setupCacheRules() {
     try {
       if (!this.accessToken || !this.zoneId) {
-        logger.warn('Cloudflare Cache não configurado');
+        logger.warn('Cloudflare Cache nÃ£o configurado');
         return false;
       }
 
@@ -269,12 +269,12 @@ class CloudflareService {
   }
 
   /**
-   * Configura proteção DDoS
+   * Configura proteÃ§Ã£o DDoS
    */
   async setupDDoSProtection() {
     try {
       if (!this.accessToken || !this.zoneId) {
-        logger.warn('Proteção DDoS Cloudflare não configurada');
+        logger.warn('ProteÃ§Ã£o DDoS Cloudflare nÃ£o configurada');
         return false;
       }
 
@@ -291,16 +291,16 @@ class CloudflareService {
         }
       );
 
-      logger.info('Proteção DDoS Cloudflare ativada');
+      logger.info('ProteÃ§Ã£o DDoS Cloudflare ativada');
       return response.data;
     } catch (error) {
-      logger.error('Erro ao configurar proteção DDoS:', error);
+      logger.error('Erro ao configurar proteÃ§Ã£o DDoS:', error);
       return false;
     }
   }
 
   /**
-   * Obtém estatísticas de segurança
+   * ObtÃ©m estatÃ­sticas de seguranÃ§a
    */
   async getSecurityStats(startDate, endDate) {
     try {
@@ -323,17 +323,17 @@ class CloudflareService {
 
       return response.data;
     } catch (error) {
-      logger.error('Erro ao obter estatísticas de segurança:', error);
+      logger.error('Erro ao obter estatÃ­sticas de seguranÃ§a:', error);
       return null;
     }
   }
 
   /**
-   * Configuração inicial completa do Cloudflare
+   * ConfiguraÃ§Ã£o inicial completa do Cloudflare
    */
   async initializeCloudflare() {
     try {
-      logger.info('Inicializando configurações do Cloudflare...');
+      logger.info('Inicializando configuraÃ§Ãµes do Cloudflare...');
 
       const results = {
         turnstile: !!this.turnstileSecret,
@@ -343,10 +343,10 @@ class CloudflareService {
         ddos: await this.setupDDoSProtection()
       };
 
-      logger.info('Configurações Cloudflare inicializadas:', results);
+      logger.info('ConfiguraÃ§Ãµes Cloudflare inicializadas:', results);
       return results;
     } catch (error) {
-      logger.error('Erro na inicialização do Cloudflare:', error);
+      logger.error('Erro na inicializaÃ§Ã£o do Cloudflare:', error);
       return false;
     }
   }

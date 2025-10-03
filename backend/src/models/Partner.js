@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 const partnerSchema = new mongoose.Schema({
   name: {
@@ -123,30 +123,30 @@ partnerSchema.pre('save', function (next) {
   next();
 });
 
-// Índices para busca eficiente
+// Ãndices para busca eficiente
 partnerSchema.index({ name: 'text', description: 'text' });
 partnerSchema.index({ category: 1, status: 1 });
 partnerSchema.index({ 'location.country': 1, 'location.state': 1 });
 
-// Método para ativar parceiro
+// MÃ©todo para ativar parceiro
 partnerSchema.methods.activate = function () {
   this.status = 'active';
   return this.save();
 };
 
-// Método para desativar parceiro
+// MÃ©todo para desativar parceiro
 partnerSchema.methods.deactivate = function () {
   this.status = 'inactive';
   return this.save();
 };
 
-// Método para atualizar nível de parceria
+// MÃ©todo para atualizar nÃ­vel de parceria
 partnerSchema.methods.updatePartnershipLevel = function (level) {
   this.partnershipLevel = level;
   return this.save();
 };
 
-// Método para marcar como destaque
+// MÃ©todo para marcar como destaque
 partnerSchema.methods.toggleFeatured = function () {
   this.isFeatured = !this.isFeatured;
   return this.save();

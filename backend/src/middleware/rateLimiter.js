@@ -1,10 +1,10 @@
-// import rateLimit from 'express-rate-limit';
+﻿// import rateLimit from 'express-rate-limit';
 
-// Tornar Redis dependências externas para Cloudflare Workers
+// Tornar Redis dependÃªncias externas para Cloudflare Workers
 // import RedisStore from 'rate-limit-redis';
 // import Redis from 'ioredis';
 
-// Configuração do Redis para rate limiting (comentado para Workers)
+// ConfiguraÃ§Ã£o do Redis para rate limiting (comentado para Workers)
 // const redis = new Redis({
 //   host: process.env.REDIS_HOST || 'localhost',
 //   port: process.env.REDIS_PORT || 6379,
@@ -19,7 +19,7 @@
 //     sendCommand: (...args) => redis.call(...args)
 //   }),
 //   windowMs: 15 * 60 * 1000, // 15 minutos
-//   max: 100, // máximo 100 requests por IP por janela
+//   max: 100, // mÃ¡ximo 100 requests por IP por janela
 //   message: {
 //     success: false,
 //     message: 'Muitas tentativas. Tente novamente em 15 minutos.',
@@ -28,19 +28,19 @@
 //   standardHeaders: true,
 //   legacyHeaders: false,
 //   skip: req => {
-//     // Pular rate limiting para IPs confiáveis (admin, etc.)
+//     // Pular rate limiting para IPs confiÃ¡veis (admin, etc.)
 //     const trustedIPs = process.env.TRUSTED_IPS?.split(',') || [];
 //     return trustedIPs.includes(req.ip);
 //   }
 // });
 
-// Rate limiter para autenticação (comentado para Workers)
+// Rate limiter para autenticaÃ§Ã£o (comentado para Workers)
 // export const authLimiter = rateLimit({
 //   store: new RedisStore({
 //     sendCommand: (...args) => redis.call(...args)
 //   }),
 //   windowMs: 15 * 60 * 1000, // 15 minutos
-//   max: 5, // máximo 5 tentativas de login por IP por janela
+//   max: 5, // mÃ¡ximo 5 tentativas de login por IP por janela
 //   message: {
 //     success: false,
 //     message: 'Muitas tentativas de login. Tente novamente em 15 minutos.',
@@ -48,7 +48,7 @@
 //   },
 //   standardHeaders: true,
 //   legacyHeaders: false,
-//   skipSuccessfulRequests: true, // Não contar requests bem-sucedidos
+//   skipSuccessfulRequests: true, // NÃ£o contar requests bem-sucedidos
 //   keyGenerator: req => {
 //     // Usar email + IP para rate limiting de auth
 //     const email = req.body?.email || req.body?.username || 'unknown';
@@ -62,7 +62,7 @@
 //     sendCommand: (...args) => redis.call(...args)
 //   }),
 //   windowMs: 5 * 60 * 1000, // 5 minutos
-//   max: 10, // máximo 10 requests admin por IP por janela
+//   max: 10, // mÃ¡ximo 10 requests admin por IP por janela
 //   message: {
 //     success: false,
 //     message: 'Muitas tentativas de acesso admin. Tente novamente em 5 minutos.',
@@ -72,16 +72,16 @@
 //   legacyHeaders: false
 // });
 
-// Rate limiter para API pública (comentado para Workers)
+// Rate limiter para API pÃºblica (comentado para Workers)
 // export const apiLimiter = rateLimit({
 //   store: new RedisStore({
 //     sendCommand: (...args) => redis.call(...args)
 //   }),
 //   windowMs: 1 * 60 * 1000, // 1 minuto
-//   max: 60, // máximo 60 requests por IP por minuto
+//   max: 60, // mÃ¡ximo 60 requests por IP por minuto
 //   message: {
 //     success: false,
-//     message: 'Muitas requisições. Tente novamente em 1 minuto.',
+//     message: 'Muitas requisiÃ§Ãµes. Tente novamente em 1 minuto.',
 //     retryAfter: 60
 //   },
 //   standardHeaders: true,
@@ -94,7 +94,7 @@
 //     sendCommand: (...args) => redis.call(...args)
 //   }),
 //   windowMs: 60 * 60 * 1000, // 1 hora
-//   max: 10, // máximo 10 uploads por IP por hora
+//   max: 10, // mÃ¡ximo 10 uploads por IP por hora
 //   message: {
 //     success: false,
 //     message: 'Muitos uploads. Tente novamente em 1 hora.',
@@ -110,7 +110,7 @@
 //     sendCommand: (...args) => redis.call(...args)
 //   }),
 //   windowMs: 1 * 60 * 1000, // 1 minuto
-//   max: 30, // máximo 30 mensagens por IP por minuto
+//   max: 30, // mÃ¡ximo 30 mensagens por IP por minuto
 //   message: {
 //     success: false,
 //     message: 'Muitas mensagens. Tente novamente em 1 minuto.',
@@ -126,7 +126,7 @@
 //     sendCommand: (...args) => redis.call(...args)
 //   }),
 //   windowMs: 60 * 60 * 1000, // 1 hora
-//   max: 5, // máximo 5 mensagens de contato por IP por hora
+//   max: 5, // mÃ¡ximo 5 mensagens de contato por IP por hora
 //   message: {
 //     success: false,
 //     message: 'Muitas mensagens de contato. Tente novamente em 1 hora.',
