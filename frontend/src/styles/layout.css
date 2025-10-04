@@ -47,6 +47,24 @@
     background-position: center center !important;
   }
 
+  /* Ensure hero background and images always cover and are not constrained */
+  .home-hero-desktop,
+  .home-hero-desktop .hero-section,
+  .home-hero-desktop .background-image {
+    min-height: calc(100svh - 64px) !important;
+    height: auto !important;
+    background-size: cover !important;
+    background-position: center center !important;
+  }
+
+  .home-hero-desktop img.object-cover,
+  .home-hero-desktop img[alt] {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+  }
+
   /* Center the glass card within hero and prevent narrow appearance */
   .home-hero-desktop .rounded-3xl {
     margin-left: auto;
@@ -113,6 +131,49 @@
     .home-hero-desktop .rounded-3xl h1 {
       font-size: 4.25rem !important;
     }
+  }
+
+  /* GRains: force remove background/borders from any red variation badges */
+  .grains-chart, .GrainsChart, [class*="grains"] {
+    --agro-grain-bg: transparent !important;
+  }
+
+  .grains-chart [class*="text-red"],
+  .GrainsChart [class*="text-red"],
+  [class*="grains"] [class*="text-red"] {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    color: #ef4444 !important;
+  }
+
+  /* Footer: compact spacing and prevent email linebreak */
+  footer {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+
+  footer .mx-auto.max-w-7xl.px-4.py-4 {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  footer .mb-4 {
+    margin-bottom: 0.25rem !important;
+  }
+
+  /* Prevent splitting of the mailto link across lines */
+  footer a[href^="mailto:"] {
+    white-space: nowrap !important;
+    display: inline-block !important;
+  }
+
+  /* Reduce border gap between last section and footer */
+  .agro-section:last-of-type, .container-premium:last-of-type {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
   }
 
   /* Grains: remove any unwanted red backgrounds/borders on desktop */
