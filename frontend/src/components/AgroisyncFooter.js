@@ -36,10 +36,10 @@ const AgroisyncFooter = () => {
   ];
 
   return (
-    <footer className='mt-6 border-t border-gray-200 bg-gray-50'>
-      <div className='mx-auto max-w-7xl px-4 py-6'>
+    <footer className='mt-0 border-t border-gray-200 bg-gray-50'>
+      <div className='mx-auto max-w-7xl px-4 py-4'>
         {/* Main Footer Content */}
-        <div className='mb-8 grid grid-cols-1 gap-8 md:grid-cols-4'>
+  <div className='mb-4 grid grid-cols-1 gap-6 md:grid-cols-4'>
           {/* Company Info */}
           <div className='md:col-span-1'>
             <div className='mb-4 flex items-center gap-3'>
@@ -85,9 +85,9 @@ const AgroisyncFooter = () => {
         </div>
 
         {/* Bottom Footer */}
-        <div className='flex flex-col items-center justify-between border-t border-gray-200 pt-4 md:flex-row'>
-          <div className='mb-4 text-sm text-gray-600 md:mb-0'>
-            © {currentYear} AGROISYNC — contato@agroisync.com. Todos os direitos reservados.
+        <div className='flex flex-col items-center justify-between border-t border-gray-200 pt-2 md:flex-row'>
+          <div className='mb-3 text-sm text-gray-600 md:mb-0'>
+            © {currentYear} AGROISYNC. Todos os direitos reservados.
           </div>
           <div className='flex items-center gap-4'>
             <Link to='/terms' className='text-sm text-gray-600 transition-colors hover:text-green-600'>

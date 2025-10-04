@@ -5,8 +5,8 @@ const GrainsPriceCard = ({ grain, location }) => {
   const { name, symbol, price, change, changePercent, volume, unit, lastUpdate, market } = grain;
 
   const isPositive = change >= 0;
-  const changeColor = isPositive ? 'text-green-400' : 'text-white';
-  const bgGradient = isPositive ? 'from-green-900/20 to-green-800/10' : 'from-gray-900/20 to-gray-800/10';
+  const changeColor = isPositive ? 'text-green-400' : 'text-red-400';
+  const bgGradient = isPositive ? 'from-green-900/10 to-green-800/5' : 'from-red-900/10 to-red-800/5';
 
   const formatPrice = price => {
     return new Intl.NumberFormat('pt-BR', {
@@ -106,8 +106,8 @@ const GrainsPriceCard = ({ grain, location }) => {
     >
       {/* Header */}
       <div className='mb-4 flex items-center justify-between'>
-        <div className='flex items-center space-x-3'>
-          <div className='flex items-center justify-center h-12 w-12 rounded-md bg-white/5 md:h-14 md:w-14'>
+        <div className='flex items-center gap-3'>
+          <div className='flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-md bg-white/5 md:h-14 md:w-14'>
             {getGrainIcon(name)}
           </div>
           <div className='min-w-0'>
@@ -115,7 +115,7 @@ const GrainsPriceCard = ({ grain, location }) => {
               {name}
             </h3>
             <p className='text-sm text-gray-400 truncate'>
-              {symbol}  {unit}
+              {symbol} · {unit}
             </p>
           </div>
         </div>
