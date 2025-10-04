@@ -6,7 +6,8 @@ const GrainsPriceCard = ({ grain, location }) => {
 
   const isPositive = change >= 0;
   const changeColor = isPositive ? 'text-green-400' : 'text-red-400';
-  const bgGradient = isPositive ? 'from-green-900/10 to-green-800/5' : 'from-red-900/10 to-red-800/5';
+  // Não usar fundo vermelho agressivo para variação negativa — apenas destaque no texto
+  const bgGradient = isPositive ? 'from-green-900/10 to-green-800/5' : 'from-gray-900/6 to-gray-800/4';
 
   const formatPrice = price => {
     return new Intl.NumberFormat('pt-BR', {
