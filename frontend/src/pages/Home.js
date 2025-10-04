@@ -66,7 +66,7 @@ const Home = () => {
       {/* Imagem Ultrarealista 4K - Campo de Soja */}
       <section
         className='home-hero-desktop relative flex w-full items-center justify-center overflow-hidden hero-section background-image'
-        style={{
+          style={{
           backgroundImage:
             "url('https://images.unsplash.com/photo-1600747476236-76579658b1b1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Q0FNUE8lMjBERSUyMFNPSkF8ZW58MHx8MHx8fDA%3D')",
           backgroundSize: 'cover',
@@ -74,8 +74,8 @@ const Home = () => {
           backgroundRepeat: 'no-repeat',
           backgroundAttachment: 'scroll',
           width: '100%',
-          height: '100svh',
-          minHeight: '70vh',
+          /* Use calc to subtract the fixed header height so hero doesn't get hidden beneath it */
+          minHeight: 'calc(100svh - 64px)',
           zIndex: 1,
           display: 'flex',
           position: 'relative',
