@@ -54,6 +54,27 @@
     max-width: 64rem; /* ~1024px */
   }
 
+  /* Improve hero typography/spacing on large desktops to avoid overflow/cutoff */
+  .home-hero-desktop .rounded-3xl h1 {
+    font-size: clamp(2.25rem, 3.8vw, 3.75rem) !important; /* reduce from very large sizes */
+    line-height: 1.02 !important;
+    max-width: 56rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .home-hero-desktop .rounded-3xl p {
+    font-size: clamp(1rem, 1.6vw, 1.25rem) !important;
+    max-width: 48rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Slightly reduce the padding of the glass card on very large screens */
+  .home-hero-desktop .rounded-3xl {
+    padding: 2rem !important;
+  }
+
   /* Grains: remove any unwanted red backgrounds/borders on desktop */
   .grains-chart span[class*="text-red"] {
     border: none !important;
