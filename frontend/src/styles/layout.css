@@ -35,6 +35,36 @@
   --z-modal: 1050;
 }
 
+/* ===== DESKTOP REFINEMENTS (do not affect mobile) ===== */
+@media (min-width: 769px) {
+  /* Home hero: ensure full-bleed background and centered content */
+  .home-hero-desktop {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover !important;
+    background-position: center center !important;
+  }
+
+  /* Center the glass card within hero and prevent narrow appearance */
+  .home-hero-desktop .rounded-3xl {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 64rem; /* ~1024px */
+  }
+
+  /* Grains: remove any unwanted red backgrounds/borders on desktop */
+  .grains-chart span[class*="text-red"] {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
+
 /* ===== HEADER CLEAN ===== */
 .premium-header {
   position: fixed;

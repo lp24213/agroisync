@@ -21,29 +21,35 @@ const Web3Wallet = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  // memoize handleStatusUpdate so effect deps are stable
+  const handleStatusUpdateMemo = useCallback(
+    status => {
+      setConnectionStatus(status);
+      if (status.isConnected) {
+        loadWalletBalance();
+      } else {
+        setWalletBalance(null);
+      }
+    },
+    [loadWalletBalance]
+  );
+
   useEffect(() => {
     // Verificar status inicial
     updateConnectionStatus();
 
     // Inscrever para atualizações
-    const unsubscribe = cryptoService.subscribe(handleStatusUpdate);
+    const unsubscribe = cryptoService.subscribe(handleStatusUpdateMemo);
 
     return () => unsubscribe();
-  }, [handleStatusUpdate]);
+  }, [handleStatusUpdateMemo]);
 
   const updateConnectionStatus = () => {
     const status = cryptoService.getConnectionStatus();
     setConnectionStatus(status);
   };
 
-  const handleStatusUpdate = useCallback(status => {
-    setConnectionStatus(status);
-    if (status.isConnected) {
-      loadWalletBalance();
-    } else {
-      setWalletBalance(null);
-    }
-  }, []);
+  // removed original handleStatusUpdate in favor of handleStatusUpdateMemo above
 
   const handleConnectWallet = async () => {
     setLoading(true);
@@ -69,18 +75,18 @@ const Web3Wallet = () => {
     setWalletBalance(null);
   };
 
-  const loadWalletBalance = async () => {
+  const loadWalletBalance = useCallback(async () => {
     if (!connectionStatus.isConnected) return;
 
     try {
       const balance = await cryptoService.getWalletBalance();
-      if (balance.success) {
+      if (balance && balance.success) {
         setWalletBalance(balance);
       }
     } catch (error) {
       console.error('Erro ao carregar saldo:', error);
     }
-  };
+  }, [connectionStatus.isConnected]);
 
   const copyToClipboard = text => {
     navigator.clipboard.writeText(text);

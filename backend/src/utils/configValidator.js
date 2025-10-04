@@ -219,7 +219,7 @@ class ConfigurationValidator {
   validateEnvFile() {
     const fs = require('fs');
     import logger from './logger.js';
-const path = require('path');
+    const path = require('path');
 
     const envPath = path.join(process.cwd(), '.env');
 

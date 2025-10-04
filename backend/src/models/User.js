@@ -1,4 +1,4 @@
-﻿import mongoose from 'mongoose';
+import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
@@ -485,51 +485,18 @@ userSchema.methods.resetLoginAttempts = function () {
 // MÃ©todo para verificar se mudou senha apÃ³s o token JWT
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
-    const changedTimestamp = parseInt(this.passwordChangedAt.getTime(, 10) / 1000, 10);
+    const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
     return JWTTimestamp < changedTimestamp;
   }
   return false;
 };
 
-// MÃ©todos para criptografia de dados PII
-userSchema.methods.encryptPIIData = function (data) {
-  const algorithm = 'aes-256-gcm';
-  const key = process.env.PII_ENCRYPTION_KEY || 'default-pii-key-change-in-production';
-
-  try {
-    const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipher(algorithm, key);
-    cipher.setAAD(Buffer.from('pii-data', 'utf8'));
-
-    let encrypted = cipher.update(JSON.stringify(data), 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-
-    const authTag = cipher.getAuthTag();
-
-    return {
-      encrypted,
-      iv: iv.toString('hex'),
-      authTag: authTag.toString('hex'),
-      algorithm,
-      keyVersion: '1.0'
-    };
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    if (process.env.NODE_ENV !== 'production') {
-      logger.error('Erro ao criptografar dados PII:', error);
-    }
-    throw error;
-  }
-};
-
 userSchema.methods.decryptPIIData = function (encryptedData) {
   const key = process.env.PII_ENCRYPTION_KEY || 'default-pii-key-change-in-production';
-
   try {
     const decipher = crypto.createDecipher(encryptedData.algorithm, key);
     decipher.setAAD(Buffer.from('pii-data', 'utf8'));
-    decipher.setAuthTag(Buffer.from(encryptedData.authTag, 'hex'));
-
+    
     let decrypted = decipher.update(encryptedData.encrypted, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { FileCode, Loader2, CheckCircle, Clock, AlertCircle, Eye, Copy, Download, FileText } from 'lucide-react';
@@ -9,11 +9,7 @@ const SmartContractManager = ({ userId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    fetchContracts();
-  }, [userId]);
-
-  const fetchContracts = async () => {
+  const fetchContracts = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(`/api/blockchain/contracts?userId=${userId}`);
@@ -29,7 +25,11 @@ const SmartContractManager = ({ userId }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId, t]);
+
+  useEffect(() => {
+    fetchContracts();
+  }, [fetchContracts]);
 
   const getStatusIcon = status => {
     switch (status) {

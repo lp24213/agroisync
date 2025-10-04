@@ -1,18 +1,14 @@
-import js from '@eslint/js';
-import globals from 'globals';
+const js = require('@eslint/js');
+const globals = require('globals');
+const reactHooks = require('eslint-plugin-react-hooks');
 
-export default [
+module.exports = [
   js.configs.recommended,
   {
     languageOptions: {
-      globals: {
-        ...globals.browser,
-        ...globals.node,
-        ...globals.es2021,
-        ...globals.jest,
-      },
+      globals: Object.assign({}, globals.browser, globals.node, globals.es2021, globals.jest),
       ecmaVersion: 2021,
-      sourceType: 'module',
+      sourceType: 'module'
     },
     rules: {
       'no-unused-vars': 'warn',
@@ -22,33 +18,40 @@ export default [
       'no-var': 'warn',
       'no-undef': 'off',
       'no-case-declarations': 'off',
-      'no-cond-assign': 'off',
-    },
+      'no-cond-assign': 'off'
+    }
+  },
+  // React hooks rules for source files
+  {
+    files: ['src/**/*.{js,jsx}'],
+    plugins: { 'react-hooks': reactHooks },
+    rules: {
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn'
+    }
   },
   {
     files: ['src/**/*.{js,jsx}'],
     languageOptions: {
       parserOptions: {
         ecmaFeatures: {
-          jsx: true,
-        },
-      },
+          jsx: true
+        }
+      }
     },
     rules: {
       'react/jsx-uses-react': 'off',
       'react/react-in-jsx-scope': 'off',
-      'no-unused-vars': 'off',
-    },
+      'no-unused-vars': 'off'
+    }
   },
   {
     files: ['src/**/*.test.js', 'src/**/__tests__/**/*.js'],
     languageOptions: {
-      globals: {
-        ...globals.jest,
-      },
+      globals: Object.assign({}, globals.jest)
     },
     rules: {
-      'no-undef': 'off',
-    },
-  },
+      'no-undef': 'off'
+    }
+  }
 ];

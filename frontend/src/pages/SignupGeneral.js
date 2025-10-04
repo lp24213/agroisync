@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Building2, MapPin, Phone, CreditCard, Truck } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Building2, Phone } from 'lucide-react';
 import validationService from '../services/validationService';
 import authService from '../services/authService';
 import { toast } from 'react-hot-toast';
@@ -160,6 +160,8 @@ const SignupGeneral = () => {
         break;
       case 'password':
         validation = validationService.validatePassword(value);
+        break;
+      default:
         break;
     }
 

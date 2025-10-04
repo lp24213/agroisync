@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import {
   Users,
@@ -28,7 +28,7 @@ const AgroisyncDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   // const [showCryptoRoutes, setShowCryptoRoutes] = useState(false);
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     // Verificar se é super-admin
     if (!user || user.role !== 'super-admin') {
       return;
@@ -68,11 +68,11 @@ const AgroisyncDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchDashboardData();
-  }, [user]);
+  }, [fetchDashboardData]);
 
   // Verificar se é super-admin
   if (!user || user.role !== 'super-admin') {

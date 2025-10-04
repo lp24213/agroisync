@@ -1,37 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import {
-  User,
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
-  ArrowRight,
-  Building2,
-  MapPin,
-  Phone,
-  CreditCard,
-  Truck,
-  CheckCircle,
-  AlertCircle
-} from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Building2, Phone } from 'lucide-react';
 import validationService from '../services/validationService';
 import authService from '../services/authService';
 import { toast } from 'react-hot-toast';
 import CloudflareTurnstile from '../components/CloudflareTurnstile';
 import { setAuthToken } from '../config/constants.js';
-import {
-  ModernCard,
-  ModernInput,
-  ModernButton,
-  ModernBadge,
-  ModernProgress,
-  ModernStepIndicator,
-  ModernHeader,
-  ModernContainer,
-  ModernGrid
-} from '../components/ui/ModernComponents';
+// Modern UI components intentionally not used on this page (kept for future UI upgrades)
 
 const SignupStore = () => {
   const navigate = useNavigate();
@@ -157,6 +133,8 @@ const SignupStore = () => {
         break;
       case 'password':
         validation = validationService.validatePassword(value);
+        break;
+      default:
         break;
     }
 

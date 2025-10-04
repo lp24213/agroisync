@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowRight, Shield, Zap, Globe, Users, Smartphone, Truck, BarChart3 } from 'lucide-react';
+import { ArrowRight, Shield, Zap, Globe, Users } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import CryptoHash from '../components/CryptoHash';
 // import Noticias from '../components/Noticias'; // Componente removido
@@ -43,44 +43,14 @@ const Home = () => {
     }
   ];
 
-  const services = [
-    {
-      icon: Smartphone,
-      title: 'Produtos Digitais',
-      description: 'Plataforma completa para compra e venda de produtos agrícolas',
-      link: '/marketplace',
-      status: 'Projeto em andamento futuro'
-    },
-    {
-      icon: Truck,
-      title: 'Fretes',
-      description: 'Intermediação inteligente de fretes agrícolas',
-      link: '/agroconecta',
-      status: 'Disponível'
-    },
-    {
-      icon: BarChart3,
-      title: 'Analytics Avançado',
-      description: 'Dados em tempo real sobre preços, tendências e oportunidades',
-      link: '/analytics',
-      status: 'Disponível'
-    },
-    {
-      icon: Globe,
-      title: 'Notícias',
-      description: 'Fique por dentro das últimas notícias do agronegócio',
-      link: '/news',
-      status: 'Disponível'
-    }
-  ];
-
+  // services: lista de serviços (mantida apenas como documentação local) - não usada diretamente na Home
+  // Estatísticas exibidas na seção "Nossos Números"
   const stats = [
-    { number: '10K+', label: 'Usuários Ativos' },
-    { number: 'R$ 50M+', label: 'Volume Transacionado' },
-    { number: '99.9%', label: 'Uptime Garantido' },
-    { number: '24/7', label: 'Suporte Premium' }
+    { label: 'Usuários Ativos', number: '10k+' },
+    { label: 'Transações/Mês', number: '120k+' },
+    { label: 'Parceiros', number: '500+' },
+    { label: 'Cidades Atendidas', number: '1.200+' }
   ];
-
   return (
     <div className='min-h-screen'>
       {/* Bolsa de Valores Ticker */}
@@ -95,7 +65,7 @@ const Home = () => {
 
       {/* Imagem Ultrarealista 4K - Campo de Soja */}
       <section
-        className='relative flex w-full items-center justify-center overflow-hidden'
+        className='home-hero-desktop relative flex w-full items-center justify-center overflow-hidden hero-section background-image'
         style={{
           backgroundImage:
             "url('https://images.unsplash.com/photo-1600747476236-76579658b1b1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Q0FNUE8lMjBERSUyMFNPSkF8ZW58MHx8MHx8fDA%3D')",
@@ -104,8 +74,8 @@ const Home = () => {
           backgroundRepeat: 'no-repeat',
           backgroundAttachment: 'scroll',
           width: '100%',
-          height: '100vh',
-          minHeight: '800px',
+          height: '100svh',
+          minHeight: '70vh',
           zIndex: 1,
           display: 'flex',
           position: 'relative',
@@ -124,19 +94,19 @@ const Home = () => {
           style={{ zIndex: -1 }}
         />
 
-        {/* Conteúdo Centralizado */}
-        <div className='relative z-10 mx-auto max-w-4xl px-4 text-center'>
+  {/* Conteúdo Centralizado */}
+  <div className='relative z-10 mx-auto max-w-4xl px-4 text-center md:flex md:flex-col md:items-center md:justify-center'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
             className='rounded-3xl border border-white/20 bg-white/95 p-12 shadow-2xl backdrop-blur-md'
           >
-            <h1 className='mb-8 text-5xl font-bold text-gray-800 md:text-7xl'>
+            <h1 className='mb-8 text-5xl font-bold text-gray-800 md:text-7xl md:max-w-3xl md:mx-auto'>
               {t('home.partner.title', 'Seja Nosso')}{' '}
               <span className='text-green-600'>{t('home.partner.highlight', 'Parceiro')}</span>
             </h1>
-            <p className='mb-8 text-xl leading-relaxed text-gray-600 md:text-2xl'>
+            <p className='mb-8 text-xl leading-relaxed text-gray-600 md:text-2xl md:max-w-2xl md:mx-auto'>
               {t(
                 'home.partner.description',
                 'Junte-se à revolução do agronegócio brasileiro e faça parte da maior plataforma de conectividade rural do país.'
@@ -146,7 +116,7 @@ const Home = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className='rounded-xl bg-green-600 px-10 py-5 text-xl font-semibold text-white shadow-lg transition-colors hover:bg-green-700'
+                className='rounded-xl bg-green-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-colors hover:bg-green-700 md:px-10 md:py-5 md:text-xl'
               >
                 Explorar Plataforma
                 <ArrowRight size={24} className='ml-3 inline' />
@@ -154,7 +124,7 @@ const Home = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className='rounded-xl border-2 border-green-600 px-10 py-5 text-xl font-semibold text-green-600 transition-colors hover:bg-green-600 hover:text-white'
+                className='rounded-xl border-2 border-green-600 px-8 py-4 text-lg font-semibold text-green-600 transition-colors hover:bg-green-600 hover:text-white md:px-10 md:py-5 md:text-xl'
               >
                 Saiba Mais
               </motion.button>
@@ -164,7 +134,7 @@ const Home = () => {
       </section>
 
       {/* Hero Section com Imagem Agrícola */}
-      <section className='relative flex min-h-screen items-center justify-center overflow-hidden'>
+      <section className='home-hero-desktop relative flex min-h-screen items-center justify-center overflow-hidden hero-section background-image'>
         {/* Imagem de Fundo Agrícola */}
         <div className='absolute inset-0 z-0'>
           <img
@@ -327,67 +297,12 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Services Section - Cards Uniformes com Gradientes */}
-      <section className='bg-secondary py-20'>
-        <div className='container'>
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className='mb-16 text-center'
-          >
-            <h2 className='text-primary mb-6 text-4xl font-bold md:text-5xl'>
-              {t('home.services.title', 'Nossos')}{' '}
-              <span className='text-gradient'>{t('home.services.highlight', 'Serviços')}</span>
-            </h2>
-            <p className='text-muted mx-auto max-w-3xl text-xl'>
-              {t('home.services.description', 'Soluções completas para todas as necessidades do agronegócio moderno')}
-            </p>
-          </motion.div>
-
-          <div className='grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4'>
-            {services.map((service, index) => (
-              <motion.div
-                key={service.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className='card-premium group p-8 text-center transition-transform hover:scale-105'
-              >
-                <div className='bg-gradient-primary mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl transition-transform group-hover:scale-110'>
-                  <service.icon size={32} className='text-white' />
-                </div>
-                <h3 className='text-primary mb-4 text-xl font-bold'>{service.title}</h3>
-                <p className='text-muted mb-6 leading-relaxed'>{service.description}</p>
-                {service.status === 'Projeto em andamento futuro' ? (
-                  <div className='bg-gradient-warning rounded-lg px-4 py-2 text-sm font-semibold text-white'>
-                    {service.status}
-                  </div>
-                ) : (
-                  <Link
-                    to={service.link}
-                    className='btn-premium flex w-full items-center justify-center gap-2 text-center'
-                  >
-                    Conhecer
-                    <ArrowRight size={16} />
-                  </Link>
-                )}
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* News Section - Discreta e elegante */}
       <div className='py-8 text-center'>
         <h3 className='text-xl font-semibold text-gray-600'>{t('home.news.title', 'Notícias em Desenvolvimento')}</h3>
         <p className='mt-2 text-gray-500'>
           {t('home.news.description', 'Em breve teremos notícias do agronegócio disponíveis!')}
         </p>
       </div>
-
       {/* CTA Section - Premium */}
       <section className='bg-gradient-hero py-20'>
         <div className='container text-center'>

@@ -141,10 +141,8 @@ export const perfTimer = label => {
     end: () => {
       const duration = performance.now() - start;
       if (process.env.NODE_ENV !== 'production') {
-
-        console.log('%c[PERF]', 'color: #14b8a6; font-weight: bold', `${label} took ${duration.toFixed(2);
-
-      }}ms`);
+        console.log('%c[PERF]', 'color: #14b8a6; font-weight: bold', `${label} took ${duration.toFixed(2)}ms`);
+      }
       return duration;
     }
   };
@@ -182,11 +180,11 @@ export const withDevLogging = (Component, componentName) => {
  * useWhyDidYouUpdate('MyComponent', props);
  */
 export const useWhyDidYouUpdate = (name, props) => {
-  if (!isDevelopment()) return;
-
   const previousProps = useRef();
 
   useEffect(() => {
+    if (!isDevelopment()) return;
+
     if (previousProps.current) {
       const allKeys = Object.keys({ ...previousProps.current, ...props });
       const changedProps = {};
@@ -203,9 +201,7 @@ export const useWhyDidYouUpdate = (name, props) => {
       if (Object.keys(changedProps).length > 0) {
         devLog.group(`[WHY-UPDATE] ${name}`, () => {
           if (process.env.NODE_ENV !== 'production') {
-
             console.log('Changed props:', changedProps);
-
           }
         });
       }
@@ -219,11 +215,10 @@ export const useWhyDidYouUpdate = (name, props) => {
  * Hook para debug de renders
  */
 export const useRenderCount = componentName => {
-  if (!isDevelopment()) return;
-
   const renderCount = useRef(0);
 
   useEffect(() => {
+    if (!isDevelopment()) return;
     renderCount.current += 1;
     devLog.info(`${componentName} rendered ${renderCount.current} times`);
   });

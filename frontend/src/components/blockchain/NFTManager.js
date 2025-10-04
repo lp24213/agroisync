@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Image, Loader2, CheckCircle, Clock, AlertCircle, Plus, Eye, Share } from 'lucide-react';
@@ -10,11 +10,7 @@ const NFTManager = ({ userId }) => {
   const [error, setError] = useState('');
   const [selectedNFT, setSelectedNFT] = useState(null);
 
-  useEffect(() => {
-    fetchNFTs();
-  }, [userId]);
-
-  const fetchNFTs = async () => {
+  const fetchNFTs = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(`/api/blockchain/nfts?userId=${userId}`);
@@ -30,9 +26,13 @@ const NFTManager = ({ userId }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId, t]);
 
-  const mintNFT = async metadata => {
+  useEffect(() => {
+    fetchNFTs();
+  }, [fetchNFTs]);
+
+  const mintNFT = useCallback(async metadata => {
     try {
       const response = await fetch('/api/blockchain/nfts', {
         method: 'POST',
@@ -46,14 +46,14 @@ const NFTManager = ({ userId }) => {
       const data = await response.json();
 
       if (data.success) {
-        setNfts([...nfts, data.nft]);
+        setNfts(prev => [...prev, data.nft]);
       } else {
         setError(data.message);
       }
     } catch (err) {
       setError(t('nfts.mintError', 'Erro ao criar NFT'));
     }
-  };
+  }, [userId, t]);
 
   const getStatusIcon = status => {
     switch (status) {

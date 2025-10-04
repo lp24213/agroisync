@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { ArrowUpRight, ArrowDownLeft, Loader2, Clock, PieChart, AlertCircle, DollarSign } from 'lucide-react';
@@ -11,11 +11,7 @@ const DeFiManager = ({ userId }) => {
   const [totalValue, setTotalValue] = useState(0);
   const [dailyChange, setDailyChange] = useState(0);
 
-  useEffect(() => {
-    fetchDeFiData();
-  }, [userId]);
-
-  const fetchDeFiData = async () => {
+  const fetchDeFiData = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(`/api/blockchain/defi?userId=${userId}`);
@@ -33,7 +29,11 @@ const DeFiManager = ({ userId }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId, t]);
+
+  useEffect(() => {
+    fetchDeFiData();
+  }, [fetchDeFiData]);
 
   const getChangeIcon = change => {
     if (change > 0) {

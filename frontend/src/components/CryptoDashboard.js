@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { DollarSign, TrendingUp, TrendingDown, Wallet, Eye, EyeOff, Copy, CheckCircle } from 'lucide-react';
 
@@ -13,35 +13,38 @@ const CryptoDashboard = () => {
   const MASTER_WALLET = '0x5Ea5C5970e8AE23A5336d631707CF31C5916E8b1';
 
   // Simulação de dados de criptomoedas (em produção, viria da API)
-  const mockCryptoData = [
-    {
-      id: 'bitcoin',
-      name: 'Bitcoin',
-      symbol: 'BTC',
-      price: 115511.956,
-      change24h: -1.92,
-      volume: 28500000000,
-      marketCap: 2270000000000
-    },
-    {
-      id: 'ethereum',
-      name: 'Ethereum',
-      symbol: 'ETH',
-      price: 3892.45,
-      change24h: 2.34,
-      volume: 15200000000,
-      marketCap: 468000000000
-    },
-    {
-      id: 'cardano',
-      name: 'Cardano',
-      symbol: 'ADA',
-      price: 0.45,
-      change24h: 3.21,
-      volume: 850000000,
-      marketCap: 15000000000
-    }
-  ];
+  const mockCryptoData = useMemo(
+    () => [
+      {
+        id: 'bitcoin',
+        name: 'Bitcoin',
+        symbol: 'BTC',
+        price: 115511.956,
+        change24h: -1.92,
+        volume: 28500000000,
+        marketCap: 2270000000000
+      },
+      {
+        id: 'ethereum',
+        name: 'Ethereum',
+        symbol: 'ETH',
+        price: 3892.45,
+        change24h: 2.34,
+        volume: 15200000000,
+        marketCap: 468000000000
+      },
+      {
+        id: 'cardano',
+        name: 'Cardano',
+        symbol: 'ADA',
+        price: 0.45,
+        change24h: 3.21,
+        volume: 850000000,
+        marketCap: 15000000000
+      }
+    ],
+    []
+  );
 
   useEffect(() => {
     setCryptoData(mockCryptoData);

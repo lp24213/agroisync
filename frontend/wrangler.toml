@@ -23,4 +23,4 @@ routes = ["agroisync.com/*"]
 # Variáveis de ambiente
 [vars]
 NODE_ENV = "production"
-REACT_APP_API_URL = "https://api.agroisync.com"
+REACT_APP_API_URL = "https://agroisync.com/api"

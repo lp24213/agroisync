@@ -1,23 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import messagingService from '../services/messagingService';
-import {
-  MessageCircle,
-  Send,
-  Phone,
-  Video,
-  MoreVertical,
-  Search,
-  // Filter,
-  // Archive,
-  // Star,
-  // Trash2,
-  User,
-  // Clock,
-  Check,
-  CheckCheck
-} from 'lucide-react';
+import { MessageCircle, Send, Phone, Video, MoreVertical, Search, User, CheckCheck } from 'lucide-react';
 
 const Messaging = () => {
   const { user } = useAuth();
@@ -29,17 +14,7 @@ const Messaging = () => {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
 
-  useEffect(() => {
-    if (user) {
-      loadConversations();
-      messagingService.connectWebSocket(user.id);
-    }
-    return () => {
-      messagingService.disconnectWebSocket();
-    };
-  }, [user]);
-
-  const loadConversations = async () => {
+  const loadConversations = useCallback(async () => {
     try {
       const data = await messagingService.getConversations();
       setConversations(data);
@@ -52,7 +27,19 @@ const Messaging = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeConversation]);
+
+  useEffect(() => {
+    if (user) {
+      loadConversations();
+      messagingService.connectWebSocket(user.id);
+    }
+    return () => {
+      messagingService.disconnectWebSocket();
+    };
+  }, [user, loadConversations]);
+
+  // ...existing code... (loadConversations is memoized above)
 
   const loadMessages = async conversationId => {
     try {

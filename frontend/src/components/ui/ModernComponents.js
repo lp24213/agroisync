@@ -181,7 +181,7 @@ export const ModernGrid = ({ children, cols = 2, className = '' }) => {
   return <div className={`grid ${gridCols[cols]} gap-6 ${className}`}>{children}</div>;
 };
 
-export default {
+const ModernUI = {
   ModernCard,
   ModernInput,
   ModernButton,
@@ -192,3 +192,5 @@ export default {
   ModernContainer,
   ModernGrid
 };
+
+export default ModernUI;

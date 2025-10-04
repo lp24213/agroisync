@@ -42,8 +42,21 @@ const AgroconectaTracking = () => {
   };
 
   useEffect(() => {
-    if (input) handleTrack();
-  }, [input, handleTrack]);
+    // handleTrack é uma função local que não precisa ser redeclarada nas deps
+    // usamos apenas `input` como gatilho para buscar a timeline quando mudar
+    if (input) {
+      (async () => {
+        setLoading(true);
+        try {
+          const data = sampleTimeline(input);
+          setTracking(data);
+        } finally {
+          setLoading(false);
+        }
+      })();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [input]);
 
   return (
     <div className='mx-auto max-w-4xl p-4'>

@@ -38,12 +38,12 @@ const FreightMapDashboard = () => {
   // Carregar fretes
   useEffect(() => {
     loadFreights();
-  }, []);
+  }, [loadFreights]);
 
   // Filtros
   useEffect(() => {
     applyFilters();
-  }, [freights, searchTerm, statusFilter]);
+  }, [applyFilters]);
 
   // Auto refresh
   useEffect(() => {
@@ -56,7 +56,7 @@ const FreightMapDashboard = () => {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [autoRefresh]);
+  }, [autoRefresh, loadFreights]);
 
   const loadFreights = useCallback(async () => {
     try {

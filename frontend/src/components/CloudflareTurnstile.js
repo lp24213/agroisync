@@ -1,10 +1,16 @@
+
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 
+// Componente leve para o Cloudflare Turnstile.
+// Melhoria: usa a variável de ambiente REACT_APP_CLOUDFLARE_TURNSTILE_SITE_KEY como fallback
+// e evita inserir múltiplas tags <script> idênticas no head.
 const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'light' }) => {
   const turnstileRef = useRef(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [widgetId, setWidgetId] = useState(null);
+
+  const effectiveSiteKey = siteKey || process.env.REACT_APP_CLOUDFLARE_TURNSTILE_SITE_KEY || '';
 
   // Memoizar callbacks para evitar re-renders desnecessários
   const handleVerify = useCallback((token) => {
@@ -20,57 +26,100 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
   }, [onExpire]);
 
   useEffect(() => {
-    // Carregar o script do Turnstile se não estiver carregado
-    if (!window.turnstile) {
-      const script = document.createElement('script');
-      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
-      script.async = true;
-      script.defer = true;
-      script.onload = () => {
-        setIsLoaded(true);
-        setIsLoading(false);
-      };
-      script.onerror = () => {
-        setIsLoading(false);
-        console.error('Erro ao carregar Turnstile');
-      };
-      document.head.appendChild(script);
-    } else {
+    // Modo desenvolvimento: bypass quando não houver chave configurada
+    if (!effectiveSiteKey && process.env.NODE_ENV !== 'production') {
+      setIsLoading(false);
+      setIsLoaded(false);
+      // usar callback memoizado
+      handleVerify('dev-bypass');
+      return;
+    }
+    // Se já existe o objeto global, estamos prontos
+    if (window.turnstile) {
       setIsLoaded(true);
       setIsLoading(false);
+      return;
     }
-  }, []);
+
+    const src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+    // Evitar duplicidade de script
+    const existing = document.querySelector(`script[src="${src}"]`);
+    if (existing) {
+      // Pode já estar carregando; ligar no onload se ainda não carregado
+      if (existing.getAttribute && existing.getAttribute('data-loaded') === 'true') {
+        setIsLoaded(true);
+        setIsLoading(false);
+      } else {
+        existing.addEventListener('load', () => {
+          setIsLoaded(true);
+          setIsLoading(false);
+        });
+        existing.addEventListener('error', () => {
+          setIsLoading(false);
+          console.error('Erro ao carregar Turnstile');
+          handleError(new Error('Turnstile script load error'));
+        });
+      }
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = true;
+    script.defer = true;
+    script.setAttribute('data-loaded', 'false');
+    script.onload = () => {
+      script.setAttribute('data-loaded', 'true');
+      setIsLoaded(true);
+      setIsLoading(false);
+    };
+    script.onerror = () => {
+      setIsLoading(false);
+      console.error('Erro ao carregar Turnstile');
+      handleError(new Error('Turnstile script load error'));
+    };
+    document.head.appendChild(script);
+  }, [effectiveSiteKey, handleVerify, handleError]);
 
   useEffect(() => {
-    if (isLoaded && window.turnstile && turnstileRef.current && !widgetId) {
-      // Renderizar o Turnstile apenas uma vez
-      const id = window.turnstile.render(turnstileRef.current, {
-        sitekey: siteKey || '0x4AAAAAAB3pdjs4jRKvAtaA',
-        theme: theme,
-        size: 'compact',
-        callback: handleVerify,
-        'error-callback': handleError,
-        'expired-callback': handleExpire
-      });
-      setWidgetId(id);
+    if (!isLoaded || !turnstileRef.current) return;
+    if (!effectiveSiteKey) {
+      // Falhar rápido para facilitar debugging
+      console.error('Cloudflare Turnstile siteKey não configurado. Defina REACT_APP_CLOUDFLARE_TURNSTILE_SITE_KEY ou passe siteKey como prop.');
+      setIsLoading(false);
+      return;
+    }
+
+    if (!widgetId) {
+      try {
+        const id = window.turnstile.render(turnstileRef.current, {
+          sitekey: effectiveSiteKey,
+          theme,
+          size: 'normal',
+          callback: handleVerify,
+          'error-callback': handleError,
+          'expired-callback': handleExpire
+        });
+        setWidgetId(id);
+      } catch (e) {
+        console.error('Erro ao renderizar Turnstile:', e);
+        handleError(e);
+      }
     }
 
     return () => {
-      // Limpar widget quando componente for desmontado
       if (widgetId && window.turnstile) {
         try {
           window.turnstile.remove(widgetId);
         } catch (e) {
           if (process.env.NODE_ENV !== 'production') {
-
             console.warn('Erro ao remover widget Turnstile:', e);
-
           }
         }
         setWidgetId(null);
       }
     };
-  }, [isLoaded, siteKey, theme, handleVerify, handleError, handleExpire, widgetId]);
+  }, [isLoaded, effectiveSiteKey, theme, handleVerify, handleError, handleExpire, widgetId]);
 
   if (isLoading) {
     return (
@@ -84,6 +133,7 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
     <div className='flex justify-center'>
       <div
         ref={turnstileRef}
+        className='cf-turnstile'
         style={{
           minHeight: '65px',
           width: '100%',

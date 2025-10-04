@@ -238,7 +238,7 @@ export const fetchWithRetry = async (url, options = {}, retries = RETRY_CONFIG.a
   }
 };
 
-export default {
+const APIConfig = {
   API_URLS,
   ENDPOINTS,
   TIMEOUTS,
@@ -254,3 +254,5 @@ export default {
   getDefaultHeaders,
   fetchWithRetry,
 };
+
+export default APIConfig;

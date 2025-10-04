@@ -89,19 +89,46 @@
         languageOptions.forEach(opt => opt.classList.remove('active'));
         option.classList.add('active');
 
-        // Update button text
-        const flag = option.querySelector('.agro-lang-flag')?.textContent || '🌐';
+        // Update button content safely (no innerHTML)
         const name = option.querySelector('.agro-lang-name')?.textContent || langCode.toUpperCase();
-        languageBtn.innerHTML = `
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-          </svg>
-          <span class="agro-lang-text">${name}</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="6,9 12,15 18,9"/>
-          </svg>
-        `;
+        const ns = 'http://www.w3.org/2000/svg';
+        // Clear current contents
+        while (languageBtn.firstChild) languageBtn.removeChild(languageBtn.firstChild);
+        // Left globe icon
+        const globe = document.createElementNS(ns, 'svg');
+        globe.setAttribute('width', '18');
+        globe.setAttribute('height', '18');
+        globe.setAttribute('viewBox', '0 0 24 24');
+        globe.setAttribute('fill', 'none');
+        globe.setAttribute('stroke', 'currentColor');
+        globe.setAttribute('stroke-width', '2');
+        const globeCircle = document.createElementNS(ns, 'circle');
+        globeCircle.setAttribute('cx', '12');
+        globeCircle.setAttribute('cy', '12');
+        globeCircle.setAttribute('r', '10');
+        const globePath = document.createElementNS(ns, 'path');
+        globePath.setAttribute('d', 'M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z');
+        globe.appendChild(globeCircle);
+        globe.appendChild(globePath);
+        // Text span
+        const span = document.createElement('span');
+        span.className = 'agro-lang-text';
+        span.textContent = name;
+        // Caret icon
+        const caret = document.createElementNS(ns, 'svg');
+        caret.setAttribute('width', '14');
+        caret.setAttribute('height', '14');
+        caret.setAttribute('viewBox', '0 0 24 24');
+        caret.setAttribute('fill', 'none');
+        caret.setAttribute('stroke', 'currentColor');
+        caret.setAttribute('stroke-width', '2');
+        const caretPoly = document.createElementNS(ns, 'polyline');
+        caretPoly.setAttribute('points', '6,9 12,15 18,9');
+        caret.appendChild(caretPoly);
+        // Append in order
+        languageBtn.appendChild(globe);
+        languageBtn.appendChild(span);
+        languageBtn.appendChild(caret);
 
         closeDropdown();
 
@@ -132,7 +159,11 @@
       // Update button icon
       const icon = mobileMenuBtn.querySelector('svg');
       if (icon) {
-        icon.innerHTML = isOpen ? '<path d="M18 6L6 18M6 6l12 12"/>' : '<path d="M3 12h18M3 6h18M3 18h18"/>';
+        const ns = 'http://www.w3.org/2000/svg';
+        while (icon.firstChild) icon.removeChild(icon.firstChild);
+        const path = document.createElementNS(ns, 'path');
+        path.setAttribute('d', isOpen ? 'M18 6L6 18M6 6l12 12' : 'M3 12h18M3 6h18M3 18h18');
+        icon.appendChild(path);
       }
     }
 

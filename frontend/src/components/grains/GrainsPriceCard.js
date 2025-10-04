@@ -98,7 +98,7 @@ const GrainsPriceCard = ({ grain, location }) => {
 
   return (
     <motion.div
-      className={`bg-gradient-to-br ${bgGradient} group cursor-pointer rounded-xl border border-gray-700 p-6 backdrop-blur-sm transition-all duration-300 hover:border-green-500`}
+      className={`bg-gradient-to-br ${bgGradient} group cursor-pointer rounded-xl border border-gray-700 p-4 md:p-6 backdrop-blur-sm transition-all duration-300 hover:border-green-500`}
       variants={cardVariants}
       initial='hidden'
       animate='visible'
@@ -107,13 +107,15 @@ const GrainsPriceCard = ({ grain, location }) => {
       {/* Header */}
       <div className='mb-4 flex items-center justify-between'>
         <div className='flex items-center space-x-3'>
-          {getGrainIcon(name)}
-          <div>
-            <h3 className='text-xl font-bold text-white transition-colors duration-300 group-hover:text-green-400'>
+          <div className='flex items-center justify-center h-12 w-12 rounded-md bg-white/5 md:h-14 md:w-14'>
+            {getGrainIcon(name)}
+          </div>
+          <div className='min-w-0'>
+            <h3 className='text-lg md:text-xl font-bold text-white transition-colors duration-300 group-hover:text-green-400 truncate'>
               {name}
             </h3>
-            <p className='text-sm text-gray-400'>
-              {symbol} • {unit}
+            <p className='text-sm text-gray-400 truncate'>
+              {symbol}  {unit}
             </p>
           </div>
         </div>

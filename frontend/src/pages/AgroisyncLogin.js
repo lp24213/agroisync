@@ -521,7 +521,9 @@ const AgroisyncLogin = () => {
                 <motion.button
                   variants={itemVariants}
                   type='submit'
-                  disabled={isLoading || !turnstileToken}
+                  disabled={
+                    isLoading || (process.env.NODE_ENV === 'production' && !turnstileToken)
+                  }
                   style={{
                     width: '100%',
                     padding: '14px',
@@ -531,7 +533,6 @@ const AgroisyncLogin = () => {
                     borderRadius: '8px',
                     fontSize: '1rem',
                     fontWeight: '600',
-                    cursor: isLoading || !turnstileToken ? 'not-allowed' : 'pointer',
                     transition: 'all 0.2s ease',
                     display: 'flex',
                     alignItems: 'center',

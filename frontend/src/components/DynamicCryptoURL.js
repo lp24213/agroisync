@@ -90,7 +90,7 @@ const DynamicCryptoURL = ({ children }) => {
         console.error('Erro ao gerar URL criptografada:', error);
       }
     }
-  }, [location.pathname, location.search, navigate, generateParams, hasValidParams, mergeParams, isInitialized, isUpdating]);
+  }, [location.pathname, location.search, navigate, generateParams, hasValidParams, mergeParams, isUpdating]);
 
   useEffect(() => {
     // Marcar como inicializado imediatamente

@@ -36,8 +36,8 @@ const AgroisyncFooter = () => {
   ];
 
   return (
-    <footer className='mt-16 border-t border-gray-200 bg-gray-50'>
-      <div className='mx-auto max-w-7xl px-4 py-8'>
+    <footer className='mt-6 border-t border-gray-200 bg-gray-50'>
+      <div className='mx-auto max-w-7xl px-4 py-6'>
         {/* Main Footer Content */}
         <div className='mb-8 grid grid-cols-1 gap-8 md:grid-cols-4'>
           {/* Company Info */}
@@ -60,7 +60,9 @@ const AgroisyncFooter = () => {
               </div>
               <div className='flex items-center gap-2 text-sm text-gray-600'>
                 <Mail className='h-4 w-4 text-green-600' />
-                <span>contato@agroisync.com</span>
+                <a href='mailto:contato@agroisync.com' className='hover:text-green-700'>
+                  contato@agroisync.com
+                </a>
               </div>
             </div>
           </div>
@@ -83,11 +85,11 @@ const AgroisyncFooter = () => {
         </div>
 
         {/* Bottom Footer */}
-        <div className='flex flex-col items-center justify-between border-t border-gray-200 pt-6 md:flex-row'>
+        <div className='flex flex-col items-center justify-between border-t border-gray-200 pt-4 md:flex-row'>
           <div className='mb-4 text-sm text-gray-600 md:mb-0'>
-            © {currentYear} AGROISYNC. Todos os direitos reservados.
+            © {currentYear} AGROISYNC — contato@agroisync.com. Todos os direitos reservados.
           </div>
-          <div className='flex items-center gap-6'>
+          <div className='flex items-center gap-4'>
             <Link to='/terms' className='text-sm text-gray-600 transition-colors hover:text-green-600'>
               Termos de Uso
             </Link>

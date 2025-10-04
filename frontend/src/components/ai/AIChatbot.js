@@ -35,22 +35,25 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
   const recognitionRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Whitelist de intents públicas
-  const allowedPublicIntents = [
-    'preços',
-    'cotação',
-    'clima',
-    'tempo',
-    'ajuda',
-    'contato',
-    'planos',
-    'frete',
-    'produtos',
-    'como funciona',
-    'sobre',
-    'cadastro',
-    'login'
-  ];
+  // Whitelist de intents públicas (memoizada para não quebrar deps de hooks)
+  const allowedPublicIntents = React.useMemo(
+    () => [
+      'preços',
+      'cotação',
+      'clima',
+      'tempo',
+      'ajuda',
+      'contato',
+      'planos',
+      'frete',
+      'produtos',
+      'como funciona',
+      'sobre',
+      'cadastro',
+      'login'
+    ],
+    []
+  );
 
   // Inicializar mensagens
   useEffect(() => {
@@ -195,7 +198,7 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
         setDailyCount(current + 1);
       }
     },
-    [inputMessage]
+    [inputMessage, allowedPublicIntents, limits, plan, uploadFile]
   );
 
   const generateAIResponse = message => {

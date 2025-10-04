@@ -202,7 +202,7 @@ const GrainsChart = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className='mb-6 rounded-2xl bg-white p-6 shadow-lg'
+      className='grains-chart mb-6 rounded-2xl bg-white p-6 shadow-lg'
     >
       <div className='mb-6 flex items-center justify-between'>
         <div className='flex items-center gap-3'>

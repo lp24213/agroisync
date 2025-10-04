@@ -63,10 +63,8 @@ class SecurityUtils {
     // Detectar padrões suspeitos
     if (this.detectSuspiciousPattern(sanitized)) {
       if (process.env.NODE_ENV !== 'production') {
-
-        console.warn('Padrão suspeito detectado:', sanitized.substring(0, 100);
-
-      });
+        console.warn('Padrão suspeito detectado:', sanitized.substring(0, 100));
+      }
       return this.escapeHtml(sanitized);
     }
 

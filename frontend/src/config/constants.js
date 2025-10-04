@@ -321,7 +321,7 @@ export const getApiUrl = (path = '') => {
 };
 
 // Exportar tudo como default também
-export default {
+const Constants = {
   API_CONFIG,
   AUTH_CONFIG,
   STRIPE_CONFIG,
@@ -341,3 +341,5 @@ export default {
   isDevelopment,
   getApiUrl
 };
+
+export default Constants;

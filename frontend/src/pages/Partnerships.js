@@ -92,9 +92,7 @@ const Partnerships = () => {
 
       // Aqui seria a integração real com serviço de email
       if (process.env.NODE_ENV !== 'production') {
-
-        console.log('Dados enviados para suporte@agroisync.com:', formData);
-
+        console.log('Dados enviados para contato@agroisync.com:', formData);
       }
 
       setIsSubmitted(true);
@@ -502,6 +500,7 @@ const Partnerships = () => {
                   setTurnstileToken(token);
                 }}
                 onError={error => {
+                  console.error('Turnstile error (Partnerships):', error);
                   setTurnstileToken('');
                 }}
                 onExpire={() => {
@@ -513,7 +512,7 @@ const Partnerships = () => {
                 <button
                   type='submit'
                   className='submit-button agro-btn-animated'
-                  disabled={isSubmitting || !turnstileToken}
+                  disabled={isSubmitting || (process.env.NODE_ENV === 'production' && !turnstileToken)}
                 >
                   {isSubmitting ? (
                     <>
@@ -528,7 +527,7 @@ const Partnerships = () => {
                   )}
                 </button>
                 <p className='form-note'>
-                  * Campos obrigatórios. Sua solicitação será enviada diretamente para suporte@agroisync.com
+                  * Campos obrigatórios. Sua solicitação será enviada diretamente para contato@agroisync.com
                 </p>
               </div>
             </form>
@@ -544,7 +543,7 @@ const Partnerships = () => {
                 <Mail size={24} />
                 <div>
                   <h3>Email</h3>
-                  <p>suporte@agroisync.com</p>
+                  <p>contato@agroisync.com</p>
                 </div>
               </div>
               <div className='contact-item'>

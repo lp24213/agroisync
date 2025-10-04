@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import newsService from '../../services/newsService';
 import { motion } from 'framer-motion';
@@ -10,11 +10,7 @@ const NewsWidget = ({ limit = 5, showBreaking = true }) => {
   const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('all');
 
-  useEffect(() => {
-    loadNews();
-  }, [selectedCategory]);
-
-  const loadNews = async () => {
+  const loadNews = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -33,7 +29,11 @@ const NewsWidget = ({ limit = 5, showBreaking = true }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedCategory, limit]);
+
+  useEffect(() => {
+    loadNews();
+  }, [loadNews]);
 
   const categories = [
     { value: 'all', label: 'Todas', icon: '📰' },

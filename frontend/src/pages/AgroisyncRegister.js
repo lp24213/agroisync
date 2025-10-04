@@ -66,7 +66,7 @@ const AgroisyncRegister = () => {
 
     // Validação em tempo real
     if (name === 'phone') {
-      const phoneValidation = validationService.validatePhone(value);
+      validationService.validatePhone(value);
       // setValidations(prev => ({ ...prev, phone: phoneValidation }));
     }
   };

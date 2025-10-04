@@ -273,7 +273,10 @@ router.get('/registrations', async (req, res) => {
     }
 
     const [registrations, total] = await Promise.all([
-      Registration.find(query).sort({ createdAt: -1 }).skip(skip).limit(parseInt(limit, 10, 10)),
+      Registration.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(parseInt(limit, 10, 10)),
       Registration.countDocuments(query)
     ]);
 

@@ -73,7 +73,12 @@ logger.security = (event, details = {}) => {
 };
 
 logger.performance = (operation, duration, details = {}) => {
-  logger.info('PERFORMANCE', { operation, duration: `${duration}ms`, timestamp: new Date().toISOString(), ...details });
+  logger.info('PERFORMANCE', {
+    operation,
+    duration: `${duration}ms`,
+    timestamp: new Date().toISOString(),
+    ...details
+  });
 };
 
 logger.business = (event, details = {}) => {

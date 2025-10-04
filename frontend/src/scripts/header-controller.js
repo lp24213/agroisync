@@ -10,7 +10,6 @@ class AgroisyncHeaderController {
     this.hamburger = document.getElementById('hamburger');
     this.mobileMenu = null;
     this.isInitialized = false;
-
     this.init();
   }
 
@@ -56,18 +55,28 @@ class AgroisyncHeaderController {
     const mobileMenu = document.createElement('div');
     mobileMenu.className = 'mobile-menu';
 
-    // Copiar navegação para mobile
+    // Copiar navegação para mobile com clonagem segura
     const nav = document.getElementById('main-nav');
     if (nav) {
-      mobileMenu.innerHTML = `
-        <nav aria-label="Menu mobile">
-          ${nav.innerHTML}
-        </nav>
-        <div class="mobile-actions">
-          <a href="/login" class="btn-login">Entrar</a>
-          <a href="/register" class="btn-cta">Cadastrar</a>
-        </div>
-      `;
+      const navWrapper = document.createElement('nav');
+      navWrapper.setAttribute('aria-label', 'Menu mobile');
+      const cloned = nav.cloneNode(true);
+      navWrapper.appendChild(cloned);
+      mobileMenu.appendChild(navWrapper);
+
+      const actions = document.createElement('div');
+      actions.className = 'mobile-actions';
+      const loginLink = document.createElement('a');
+      loginLink.href = '/login';
+      loginLink.className = 'btn-login';
+      loginLink.textContent = 'Entrar';
+      const registerLink = document.createElement('a');
+      registerLink.href = '/register';
+      registerLink.className = 'btn-cta';
+      registerLink.textContent = 'Cadastrar';
+      actions.appendChild(loginLink);
+      actions.appendChild(registerLink);
+      mobileMenu.appendChild(actions);
     }
 
     document.body.appendChild(mobileMenu);
@@ -75,10 +84,8 @@ class AgroisyncHeaderController {
 
   updateHeaderState() {
     if (!this.header || !this.hero) return;
-
     const heroRect = this.hero.getBoundingClientRect();
     const isOverHero = heroRect.bottom > 0 && heroRect.top < window.innerHeight;
-
     if (isOverHero) {
       this.header.classList.add('header-over-image');
     } else {
