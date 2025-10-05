@@ -59,9 +59,9 @@ const GrainsDashboard = () => {
         variants={containerVariants}
       >
         <div className='mx-auto max-w-4xl text-center'>
-          <div className='rounded-lg border border-red-500 bg-red-900/20 p-8'>
+          <div className='rounded-lg border border-amber-500 bg-amber-900/20 p-8'>
             <svg
-              className='mx-auto mb-4 h-16 w-16 text-red-500'
+              className='mx-auto mb-4 h-16 w-16 text-amber-500'
               viewBox='0 0 24 24'
               fill='none'
               stroke='currentColor'
@@ -71,11 +71,11 @@ const GrainsDashboard = () => {
               <line x1='15' y1='9' x2='9' y2='15' />
               <line x1='9' y1='9' x2='15' y2='15' />
             </svg>
-            <h2 className='mb-4 text-2xl font-bold text-red-400'>Erro ao Carregar Dados</h2>
+            <h2 className='mb-4 text-2xl font-bold text-amber-400'>Erro ao Carregar Dados</h2>
             <p className='mb-6 text-gray-300'>{grainsError || 'Erro desconhecido'}</p>
             <button
               onClick={handleRefresh}
-              className='rounded-lg bg-red-600 px-6 py-3 text-white transition-colors duration-300 hover:bg-red-700'
+              className='rounded-lg bg-amber-600 px-6 py-3 text-white transition-colors duration-300 hover:bg-amber-700'
             >
               Tentar Novamente
             </button>

@@ -84,7 +84,9 @@ const Web3Wallet = () => {
         setWalletBalance(balance);
       }
     } catch (error) {
-      console.error('Erro ao carregar saldo:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao carregar saldo:', error);
+      }
     }
   }, [connectionStatus.isConnected]);
 

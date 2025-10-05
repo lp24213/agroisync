@@ -68,11 +68,11 @@ const Home = () => {
         className='home-hero-desktop relative flex w-full items-center justify-center overflow-hidden hero-section background-image'
           style={{
           backgroundImage:
-            "url('https://images.unsplash.com/photo-1600747476236-76579658b1b1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Q0FNUE8lMjBERSUyMFNPSkF8ZW58MHx8MHx8fDA%3D')",
+            "url('https://images.unsplash.com/photo-1600747476236-76579658b1b1?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Q0FNUE8lMjBERSUyMFNPSkF8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=1920&q=80')",
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'scroll',
+          backgroundAttachment: 'fixed',
           width: '100%',
           /* Use calc to subtract the fixed header height so hero doesn't get hidden beneath it */
           minHeight: 'calc(100svh - 64px)',
@@ -87,7 +87,7 @@ const Home = () => {
 
         {/* Imagem de fallback para mobile */}
         <img
-          src='https://images.unsplash.com/photo-1600747476236-76579658b1b1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Q0FNUE8lMjBERSUyMFNPSkF8ZW58MHx8MHx8fDA%3D'
+          src='https://images.unsplash.com/photo-1600747476236-76579658b1b1?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Q0FNUE8lMjBERSUyMFNPSkF8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=1080&q=80'
           alt='Campo de Soja'
           loading='lazy'
           className='absolute inset-0 h-full w-full object-cover md:hidden'

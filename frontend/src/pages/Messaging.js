@@ -23,7 +23,9 @@ const Messaging = () => {
         loadMessages(data[0].id);
       }
     } catch (error) {
-      console.error('Erro ao carregar conversas:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao carregar conversas:', error);
+      }
     } finally {
       setLoading(false);
     }
@@ -46,7 +48,9 @@ const Messaging = () => {
       const data = await messagingService.getMessages(conversationId);
       setMessages(data);
     } catch (error) {
-      console.error('Erro ao carregar mensagens:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao carregar mensagens:', error);
+      }
     }
   };
 
@@ -68,7 +72,9 @@ const Messaging = () => {
       // Atualizar mensagens localmente
       setMessages(prev => [...prev, { ...message, id: Date.now(), senderId: user.id }]);
     } catch (error) {
-      console.error('Erro ao enviar mensagem:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao enviar mensagem:', error);
+      }
     } finally {
       setSending(false);
     }

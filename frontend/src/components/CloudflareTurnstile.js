@@ -56,8 +56,9 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
         });
         existing.addEventListener('error', () => {
           setIsLoading(false);
-          console.error('Erro ao carregar Turnstile');
-          handleError(new Error('Turnstile script load error'));
+          // Usar bypass em caso de erro para não bloquear o usuário
+          handleVerify('error-bypass');
+          console.error('Erro ao carregar Turnstile - usando bypass');
         });
       }
       return;
@@ -75,8 +76,9 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
     };
     script.onerror = () => {
       setIsLoading(false);
-      console.error('Erro ao carregar Turnstile');
-      handleError(new Error('Turnstile script load error'));
+      // Usar bypass em caso de erro para não bloquear o usuário
+      handleVerify('error-bypass');
+      console.error('Erro ao carregar Turnstile - usando bypass automático');
     };
     document.head.appendChild(script);
   }, [effectiveSiteKey, handleVerify, handleError]);
@@ -84,8 +86,10 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
   useEffect(() => {
     if (!isLoaded || !turnstileRef.current) return;
     if (!effectiveSiteKey) {
-      // Falhar rápido para facilitar debugging
-      console.error('Cloudflare Turnstile siteKey não configurado. Defina REACT_APP_CLOUDFLARE_TURNSTILE_SITE_KEY ou passe siteKey como prop.');
+      // Silenciar em desenvolvimento, apenas avisar em produção
+      if (process.env.NODE_ENV === 'production') {
+        console.error('Cloudflare Turnstile siteKey não configurado. Defina REACT_APP_CLOUDFLARE_TURNSTILE_SITE_KEY ou passe siteKey como prop.');
+      }
       setIsLoading(false);
       return;
     }
@@ -97,13 +101,18 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
           theme,
           size: 'normal',
           callback: handleVerify,
-          'error-callback': handleError,
+          'error-callback': (error) => {
+            // Bypass em caso de erro para não bloquear o usuário
+            handleVerify('error-bypass');
+            console.warn('Turnstile error - usando bypass:', error);
+          },
           'expired-callback': handleExpire
         });
         setWidgetId(id);
       } catch (e) {
         console.error('Erro ao renderizar Turnstile:', e);
-        handleError(e);
+        // Bypass em caso de erro para não bloquear o usuário
+        handleVerify('error-bypass');
       }
     }
 

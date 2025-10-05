@@ -64,7 +64,9 @@ const AgroisyncDashboard = () => {
         setPaymentsData(payments.data);
       }
     } catch (error) {
-      console.error('Erro ao buscar dados:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao buscar dados:', error);
+      }
     } finally {
       setLoading(false);
     }

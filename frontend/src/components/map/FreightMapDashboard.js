@@ -138,7 +138,9 @@ const FreightMapDashboard = () => {
       setFreights(mockFreights);
       analytics.trackEvent('freights_loaded', { count: mockFreights.length });
     } catch (error) {
-      console.error('Error loading freights:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error loading freights:', error);
+      }
     } finally {
       setIsLoading(false);
     }

@@ -36,20 +36,20 @@ const AgroisyncFooter = () => {
   ];
 
   return (
-    <footer className='mt-0 border-t border-gray-200 bg-gray-50'>
-      <div className='mx-auto max-w-7xl px-4 py-4'>
+    <footer className='border-t border-gray-200 bg-gray-50'>
+      <div className='mx-auto max-w-7xl px-4 py-2'>
         {/* Main Footer Content */}
-  <div className='mb-4 grid grid-cols-1 gap-6 md:grid-cols-4'>
+  <div className='mb-2 grid grid-cols-1 gap-4 md:grid-cols-4'>
           {/* Company Info */}
           <div className='md:col-span-1'>
-            <div className='mb-4 flex items-center gap-3'>
+            <div className='mb-2 flex items-center gap-3'>
               <img src='/agroisync-logo.svg' alt='Agroisync' className='h-8 w-auto' loading='eager' />
             </div>
-            <p className='mb-4 text-sm text-gray-600'>
+            <p className='mb-2 text-sm text-gray-600'>
               A plataforma mais futurista e sofisticada do mundo para conectar produtores, compradores e
               transportadores.
             </p>
-            <div className='space-y-2'>
+            <div className='space-y-1'>
               <div className='flex items-center gap-2 text-sm text-gray-600'>
                 <MapPin className='h-4 w-4 text-green-600' />
                 <span>Sinop - MT, Brasil</span>
@@ -60,9 +60,7 @@ const AgroisyncFooter = () => {
               </div>
               <div className='flex items-center gap-2 text-sm text-gray-600'>
                 <Mail className='h-4 w-4 text-green-600' />
-                <a href='mailto:contato@agroisync.com' className='hover:text-green-700'>
-                  contato@agroisync.com
-                </a>
+                <span>contato@agroisync.com</span>
               </div>
             </div>
           </div>
@@ -70,8 +68,8 @@ const AgroisyncFooter = () => {
           {/* Navigation Links */}
           {footerSections.map((section, index) => (
             <div key={index}>
-              <h3 className='mb-4 font-semibold text-gray-900'>{section.title}</h3>
-              <ul className='space-y-2'>
+              <h3 className='mb-2 font-semibold text-gray-900'>{section.title}</h3>
+              <ul className='space-y-1'>
                 {section.links.map((link, linkIndex) => (
                   <li key={linkIndex}>
                     <Link to={link.path} className='text-sm text-gray-600 transition-colors hover:text-green-600'>
@@ -87,7 +85,7 @@ const AgroisyncFooter = () => {
         {/* Bottom Footer */}
         <div className='flex flex-col items-center justify-between border-t border-gray-200 pt-2 md:flex-row'>
           <div className='mb-3 text-sm text-gray-600 md:mb-0'>
-            © {currentYear} AGROISYNC. Todos os direitos reservados.
+            © {currentYear} AGROISYNC - Sinop - MT, Brasil (66) 99236-2830 contato@agroisync.com - Todos os direitos reservados.
           </div>
           <div className='flex items-center gap-4'>
             <Link to='/terms' className='text-sm text-gray-600 transition-colors hover:text-green-600'>

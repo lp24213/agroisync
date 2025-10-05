@@ -7,8 +7,8 @@ import CompactWeatherWidget from '../components/CompactWeatherWidget';
 import CryptoHash from '../components/CryptoHash';
 
 const AgroisyncHome = () => {
-  // Imagem de campo de soja verde vibrante com cache buster
-  const inicioImageUrl = `https://media.istockphoto.com/id/1465642013/pt/foto/a-vibrant-green-soybean-field-nestled-in-a-natural-setting.webp?a=1&b=1&s=612x612&w=0&k=20&c=Bz3SlprnpXY3r7wEKqU2NdeYoW0Ysb-itwzf4WiIuAs=`;
+  // Imagem de campo de soja verde vibrante com cache buster - usando imagem de alta resolução
+  const inicioImageUrl = `https://images.unsplash.com/photo-1600747476236-76579658b1b1?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Q0FNUE8lMjBERSUyMFNPSkF8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=1920&q=80`;
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 60 },
@@ -45,10 +45,18 @@ const AgroisyncHome = () => {
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'scroll',
+          backgroundAttachment: 'fixed',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          width: '100vw',
+          height: '100vh',
+          margin: 0,
+          padding: 0,
+          maxWidth: '100%',
+          position: 'relative',
+          left: '50%',
+          transform: 'translateX(-50%)'
         }}
       >
         <div className='agro-hero-overlay' style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

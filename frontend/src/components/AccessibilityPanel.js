@@ -173,7 +173,7 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: 300 }}
         transition={{ duration: 0.3 }}
-        className='accessibility-panel-button fixed right-0 top-0 z-40 h-full w-96 overflow-y-auto border-l border-black bg-black text-white shadow-2xl md:z-50'
+        className='accessibility-panel-button fixed right-0 top-0 z-40 h-full w-full overflow-y-auto border-l border-black bg-black text-white shadow-2xl sm:w-96 md:z-50'
         role='dialog'
         aria-labelledby='accessibility-panel-title'
         aria-modal='true'

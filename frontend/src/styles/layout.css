@@ -133,9 +133,12 @@
     }
   }
 
-  /* GRains: force remove background/borders from any red variation badges */
+  /* Grains: force remove background/borders from any red variation badges */
   .grains-chart, .GrainsChart, [class*="grains"] {
     --agro-grain-bg: transparent !important;
+    background-color: white !important;
+    border: none !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
   }
 
   .grains-chart [class*="text-red"],

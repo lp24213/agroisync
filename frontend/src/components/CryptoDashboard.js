@@ -76,7 +76,9 @@ const CryptoDashboard = () => {
         // Registrar cliente na blockchain
         await registerClient(accounts[0]);
       } catch (error) {
-        console.error('Erro ao conectar MetaMask:', error);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Erro ao conectar MetaMask:', error);
+        }
       }
     } else {
       alert('MetaMask não encontrado! Instale a extensão.');
@@ -139,7 +141,9 @@ const CryptoDashboard = () => {
       }
       alert(`Pagamento de ${amount} ${currency} enviado com sucesso!`);
     } catch (error) {
-      console.error('Erro no pagamento:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro no pagamento:', error);
+      }
     }
   };
 

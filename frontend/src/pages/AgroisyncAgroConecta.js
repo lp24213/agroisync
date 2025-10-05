@@ -28,6 +28,7 @@ import {
   Download
 } from 'lucide-react';
 import CryptoHash from '../components/CryptoHash';
+import CloudflareTurnstile from '../components/CloudflareTurnstile';
 // import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt'; // Componente removido
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
@@ -50,6 +51,7 @@ const AgroisyncAgroConecta = () => {
   const [aiClosureData, setAiClosureData] = useState(null);
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
   const [showPlansModal, setShowPlansModal] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState('');
   // const [publicRegistrations, setPublicRegistrations] = useState([]);
 
   // Dados de ofertas de frete
@@ -172,11 +174,17 @@ const AgroisyncAgroConecta = () => {
         }
       };
 
-      const response = await axios.post('/api/freight-orders', freightOrderData, {
-        headers: {
-          Authorization: `Bearer ${getAuthToken()}`
-        }
-      });
+      // Incluir o token do Turnstile na requisição
+      const response = await axios.post('/api/freight-orders', 
+        { 
+          ...freightOrderData,
+          turnstileToken: turnstileToken 
+        }, 
+        {
+          headers: {
+            Authorization: `Bearer ${getAuthToken()}`
+          }
+        });
 
       if (response.data.success) {
         toast.success('Pedido de frete criado com sucesso!');
@@ -185,7 +193,9 @@ const AgroisyncAgroConecta = () => {
         loadMyOrders();
       }
     } catch (error) {
-      console.error('Erro ao criar pedido de frete:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao criar pedido de frete:', error);
+      }
       toast.error('Erro ao criar pedido de frete');
     }
   };
@@ -238,7 +248,9 @@ const AgroisyncAgroConecta = () => {
         setShowAIClosureModal(true);
       }
     } catch (error) {
-      console.error('Erro ao gerar análise de IA:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao gerar análise de IA:', error);
+      }
       // Fallback para dados mockados
       const mockAIClosure = {
         summary: 'Pedido entregue dentro do prazo estimado. Performance excelente.',
@@ -281,7 +293,9 @@ const AgroisyncAgroConecta = () => {
         loadMyOrders();
       }
     } catch (error) {
-      console.error('Erro ao fechar pedido:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao fechar pedido:', error);
+      }
       toast.error('Erro ao fechar pedido');
     }
   };
@@ -313,7 +327,9 @@ const AgroisyncAgroConecta = () => {
           setMyOrders(response.data.data);
         }
       } catch (error) {
-        console.error('Erro ao carregar pedidos:', error);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Erro ao carregar pedidos:', error);
+        }
         // Dados mock para demonstração da IA
         const mockOrders = [
           {
@@ -796,6 +812,12 @@ const AgroisyncAgroConecta = () => {
                     />
                   </div>
                 </div>
+                
+                {/* Adicionando o componente CloudflareTurnstile */}
+                <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'center' }}>
+                  <CloudflareTurnstile onVerify={token => setTurnstileToken(token)} />
+                </div>
+                
                 <div style={{ textAlign: 'center' }}>
                   <button
                     type='submit'

@@ -439,7 +439,8 @@ function App() {
                 </div>
 
                 {/* AGROISYNC Footer */}
-                <footer id='footer' role='contentinfo'>
+                <div className="h-16"></div>
+                <footer id='footer' role='contentinfo' className="mt-0">
                   <AgroisyncFooter />
                 </footer>
 
@@ -480,10 +481,10 @@ function App() {
                 {/* Botão de Acessibilidade Azul */}
                 <button
                   onClick={() => setIsAccessibilityOpen(true)}
-                  className='fixed bottom-6 left-6 z-50 transform rounded-full bg-blue-600 p-4 text-white shadow-2xl transition-all duration-300 hover:scale-110'
+                  className='fixed bottom-4 left-4 z-30 transform rounded-full bg-blue-600 p-3 text-white shadow-xl transition-all duration-300 hover:scale-110 md:bottom-6 md:left-6 md:p-4 md:shadow-2xl'
                   aria-label='Abrir painel de acessibilidade'
                 >
-                  <Accessibility className='h-6 w-6 text-white' />
+                  <Accessibility className='h-5 w-5 text-white md:h-6 md:w-6' />
                 </button>
 
                 {/* Toast Notifications */}

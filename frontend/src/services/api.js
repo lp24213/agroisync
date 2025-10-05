@@ -2,7 +2,7 @@
 import { API_CONFIG, getAuthToken } from '../config/constants.js';
 
 // Usar configuração centralizada com fallback
-const API_BASE_URL = API_CONFIG?.baseURL || process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
+const API_BASE_URL = API_CONFIG?.baseURL || 'https://agroisync.com/api';
 
 class ApiService {
   constructor() {
@@ -33,7 +33,10 @@ class ApiService {
 
       return data;
     } catch (error) {
-      console.error('API Error:', error);
+      // Log apenas em desenvolvimento
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('API Error:', error);
+      }
       throw error;
     }
   }
