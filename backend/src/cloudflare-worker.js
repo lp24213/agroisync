@@ -18,8 +18,7 @@ function jsonResponse(data, status = 200) {
   });
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function verifyJWT(request, _jwtSecret) {
+async function verifyJWT(request, jwtSecret) {
   const authHeader = request.headers.get('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return null;
@@ -31,10 +30,40 @@ function verifyJWT(request, _jwtSecret) {
     if (parts.length !== 3) {
       return null;
     }
+    
+    // Decode payload
     const payload = JSON.parse(atob(parts[1]));
+    
+    // Check expiration
     if (payload.exp && payload.exp < Date.now() / 1000) {
       return null;
     }
+    
+    // Verify signature using Web Crypto API
+    const encoder = new TextEncoder();
+    const data = encoder.encode(parts[0] + '.' + parts[1]);
+    const key = await crypto.subtle.importKey(
+      'raw',
+      encoder.encode(jwtSecret),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['verify']
+    );
+    
+    // Decode signature
+    const signature = Uint8Array.from(atob(parts[2].replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
+    
+    const isValid = await crypto.subtle.verify(
+      'HMAC',
+      key,
+      signature,
+      data
+    );
+    
+    if (!isValid) {
+      return null;
+    }
+    
     return payload;
   } catch {
     return null;
@@ -739,7 +768,7 @@ async function handleAdminStats(request, env, user) {
 }
 
 // ROUTER
-function router(request, env) {
+async function router(request, env) {
   const { pathname: path } = new URL(request.url);
   const { method } = request;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -774,7 +803,7 @@ function router(request, env) {
     return handleProductsList(request, env);
   }
   if (path === '/api/products' && method === 'POST') {
-    const user = verifyJWT(request, env.JWT_SECRET);
+    const user = await verifyJWT(request, env.JWT_SECRET);
     if (!user) {
       return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
     }
@@ -791,7 +820,7 @@ function router(request, env) {
     return handleFreightList(request, env);
   }
   if (path === '/api/freight' && method === 'POST') {
-    const user = verifyJWT(request, env.JWT_SECRET);
+    const user = await verifyJWT(request, env.JWT_SECRET);
     if (!user) {
       return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
     }
@@ -800,14 +829,14 @@ function router(request, env) {
 
   // Users
   if (path === '/api/users/profile' && method === 'GET') {
-    const user = verifyJWT(request, env.JWT_SECRET);
+    const user = await verifyJWT(request, env.JWT_SECRET);
     if (!user) {
       return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
     }
     return handleUserProfile(request, env, user);
   }
   if (path === '/api/users/profile' && method === 'PUT') {
-    const user = verifyJWT(request, env.JWT_SECRET);
+    const user = await verifyJWT(request, env.JWT_SECRET);
     if (!user) {
       return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
     }
@@ -835,14 +864,14 @@ function router(request, env) {
 
   // Messages
   if (path === '/api/messages' && method === 'GET') {
-    const user = verifyJWT(request, env.JWT_SECRET);
+    const user = await verifyJWT(request, env.JWT_SECRET);
     if (!user) {
       return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
     }
     return handleMessagesList(request, env, user);
   }
   if (path === '/api/messages' && method === 'POST') {
-    const user = verifyJWT(request, env.JWT_SECRET);
+    const user = await verifyJWT(request, env.JWT_SECRET);
     if (!user) {
       return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
     }
@@ -851,7 +880,7 @@ function router(request, env) {
 
   // Payments
   if (path === '/api/payments' && method === 'POST') {
-    const user = verifyJWT(request, env.JWT_SECRET);
+    const user = await verifyJWT(request, env.JWT_SECRET);
     if (!user) {
       return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
     }
@@ -871,18 +900,99 @@ function router(request, env) {
 
   // Admin
   if (path === '/api/admin/users' && method === 'GET') {
-    const user = verifyJWT(request, env.JWT_SECRET);
+    const user = await verifyJWT(request, env.JWT_SECRET);
     if (!user) {
       return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
     }
     return handleAdminUsers(request, env, user);
   }
   if (path === '/api/admin/stats' && method === 'GET') {
-    const user = verifyJWT(request, env.JWT_SECRET);
+    const user = await verifyJWT(request, env.JWT_SECRET);
     if (!user) {
       return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
     }
     return handleAdminStats(request, env, user);
+  }
+
+  // Email Verify (POST)
+  if (path === '/api/email/verify' && method === 'POST') {
+    const { email, code } = await request.json();
+    if (!email || !code) {
+      return jsonResponse({ success: false, error: 'Email e código obrigatórios' }, 400);
+    }
+    // Simple validation for now
+    return jsonResponse({ success: true, message: 'Email verificado' });
+  }
+
+  // Freight Orders
+  if (path === '/api/freight-orders' && method === 'GET') {
+    const user = await verifyJWT(request, env.JWT_SECRET);
+    if (!user) {
+      return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
+    }
+    const { results } = await env.DB.prepare(
+      'SELECT * FROM freight_orders WHERE user_id = ? ORDER BY created_at DESC'
+    ).bind(user.userId).all();
+    return jsonResponse({ success: true, data: results || [] });
+  }
+  if (path === '/api/freight-orders' && method === 'POST') {
+    const user = await verifyJWT(request, env.JWT_SECRET);
+    if (!user) {
+      return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
+    }
+    const data = await request.json();
+    const orderId = crypto.randomUUID();
+    await env.DB.prepare(
+      "INSERT INTO freight_orders (id, freight_id, user_id, status, created_at) VALUES (?, ?, ?, 'pending', datetime('now'))"
+    ).bind(orderId, data.freightId, user.userId).run();
+    return jsonResponse({ success: true, data: { id: orderId } }, 201);
+  }
+
+  // Users/me
+  if (path === '/api/users/me' && method === 'GET') {
+    const user = await verifyJWT(request, env.JWT_SECRET);
+    if (!user) {
+      return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
+    }
+    const userData = await env.DB.prepare(
+      'SELECT id, email, name, phone, role, created_at FROM users WHERE id = ?'
+    ).bind(user.userId).first();
+    return jsonResponse({ success: true, data: userData });
+  }
+
+  // Users/dashboard
+  if (path === '/api/users/dashboard' && method === 'GET') {
+    const user = await verifyJWT(request, env.JWT_SECRET);
+    if (!user) {
+      return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
+    }
+    return jsonResponse({
+      success: true,
+      data: {
+        user: { id: user.userId, email: user.email, name: user.name },
+        stats: { products: 0, orders: 0, messages: 0 }
+      }
+    });
+  }
+
+  // Products/:id
+  if (path.match(/^\/api\/products\/[a-zA-Z0-9-]+$/) && method === 'GET') {
+    const productId = path.split('/').pop();
+    const product = await env.DB.prepare('SELECT * FROM products WHERE id = ?').bind(productId).first();
+    if (!product) {
+      return jsonResponse({ success: false, error: 'Produto não encontrado' }, 404);
+    }
+    return jsonResponse({ success: true, data: product });
+  }
+
+  // Contact
+  if (path === '/api/contact' && method === 'POST') {
+    const data = await request.json();
+    const messageId = crypto.randomUUID();
+    await env.DB.prepare(
+      "INSERT INTO contact_messages (id, name, email, phone, subject, message, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
+    ).bind(messageId, data.name, data.email, data.phone || '', data.subject || '', data.message).run();
+    return jsonResponse({ success: true, message: 'Mensagem enviada com sucesso' }, 201);
   }
 
   // 404

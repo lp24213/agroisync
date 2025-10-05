@@ -1,261 +1,256 @@
--- =============================================================
--- AGROISYNC • Cloudflare D1 Schema (backend/schema.sql)
--- Este arquivo define a estrutura base do banco relacional
--- compatível com Cloudflare D1. Não inclua dados sensíveis aqui.
--- =============================================================
+-- AgroSync Database Schema for Cloudflare D1
+-- Version: 1.0.0
+-- Created: 2025-10-05
 
-PRAGMA foreign_keys = ON;
-
--- =============================================================
--- Tabela: users
--- =============================================================
+-- ============================================
+-- USERS TABLE
+-- ============================================
 CREATE TABLE IF NOT EXISTS users (
-  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
-  email TEXT NOT NULL UNIQUE,
+  id TEXT PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
   name TEXT NOT NULL,
   phone TEXT,
-  avatar TEXT,
-  bio TEXT,
-
-  -- Dados de localização
-  address TEXT,
-  city TEXT,
-  state TEXT,
-  country TEXT DEFAULT 'Brasil',
-  zip_code TEXT,
-  json_coordinates TEXT, -- {"lat": number, "lng": number}
-
-  -- Dados de negócio
-  business_type TEXT CHECK (business_type IN ('producer','buyer','transporter','all')) DEFAULT 'all',
-  business_name TEXT,
-  business_document TEXT,
-  business_license TEXT,
-
-  -- Dados sensíveis (já criptografados na aplicação)
-  cpf TEXT,
-  cnpj TEXT,
-  rg TEXT,
-  passport TEXT,
-  bank_account TEXT,
-  credit_card TEXT,
-  tax_id TEXT,
-  business_id TEXT,
-  json_encryption_metadata TEXT,
-
-  -- Status/verificação
-  is_email_verified INTEGER NOT NULL DEFAULT 0,
-  email_verification_token TEXT,
-  email_verification_expires INTEGER,
-  verification_code TEXT,
-  code_expires INTEGER,
-  is_phone_verified INTEGER NOT NULL DEFAULT 0,
-  phone_verification_code TEXT,
-  phone_verification_expires INTEGER,
-
-  -- Segurança / 2FA
-  two_factor_enabled INTEGER NOT NULL DEFAULT 0,
-  two_factor_secret TEXT,
-
-  -- Permissões / papéis
-  role TEXT CHECK (role IN ('user','admin','super_admin','moderator','support')) DEFAULT 'user',
-  is_admin INTEGER NOT NULL DEFAULT 0,
-  admin_role TEXT,
-  admin_notes TEXT,
-
-  -- Plano / pagamentos
-  plan TEXT CHECK (plan IN ('free','basic','pro','enterprise')) DEFAULT 'free',
-  plan_expires_at INTEGER,
-  subscription_id TEXT,
-  payment_method TEXT,
-  plan_active INTEGER NOT NULL DEFAULT 0,
-  stripe_customer_id TEXT,
-  stripe_subscription_id TEXT,
-
-  -- Privacidade / notificações (JSON)
-  json_privacy_settings TEXT,
-  json_notification_settings TEXT,
-
-  -- Status da conta
-  is_active INTEGER NOT NULL DEFAULT 1,
-  is_suspended INTEGER NOT NULL DEFAULT 0,
-  suspension_reason TEXT,
-  suspension_expires_at INTEGER,
-  is_blocked INTEGER NOT NULL DEFAULT 0,
-  blocked_reason TEXT,
-  blocked_at INTEGER,
-
-  -- LGPD / consentimentos
-  lgpd_consent INTEGER NOT NULL DEFAULT 0,
-  lgpd_consent_date INTEGER,
-  data_processing_consent INTEGER NOT NULL DEFAULT 0,
-  marketing_consent INTEGER NOT NULL DEFAULT 0,
-
-  -- Segurança adicional
-  last_login_at INTEGER,
-  last_login_ip TEXT,
-  login_attempts INTEGER NOT NULL DEFAULT 0,
-  lock_until INTEGER,
-  password_changed_at INTEGER,
-  password_reset_token TEXT,
-  password_reset_expires INTEGER,
-
-  -- Estatísticas / preferências
-  json_stats TEXT,
-  language TEXT DEFAULT 'pt-BR',
-  timezone TEXT DEFAULT 'America/Sao_Paulo',
-  json_metadata TEXT,
-
-  -- Timestamps padrão
-  created_at INTEGER NOT NULL DEFAULT (strftime('%s','now')),
-  updated_at INTEGER NOT NULL DEFAULT (strftime('%s','now'))
+  cpf TEXT UNIQUE,
+  cnpj TEXT UNIQUE,
+  role TEXT DEFAULT 'user',
+  business_type TEXT,
+  email_verified INTEGER DEFAULT 0,
+  is_active INTEGER DEFAULT 1,
+  avatar_url TEXT,
+  created_at TEXT DEFAULT (datetime('now')),
+  updated_at TEXT DEFAULT (datetime('now'))
 );
 
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-CREATE INDEX IF NOT EXISTS idx_users_active ON users(is_active);
-CREATE INDEX IF NOT EXISTS idx_users_plan ON users(plan);
-CREATE INDEX IF NOT EXISTS idx_users_created_at ON users(created_at);
-CREATE INDEX IF NOT EXISTS idx_users_last_login_at ON users(last_login_at);
+CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
 
--- =============================================================
--- Tabela: user_admin_permissions
--- =============================================================
-CREATE TABLE IF NOT EXISTS user_admin_permissions (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id TEXT NOT NULL,
-  permission TEXT NOT NULL,
-  created_at INTEGER NOT NULL DEFAULT (strftime('%s','now')),
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-  UNIQUE (user_id, permission)
-);
-
-CREATE INDEX IF NOT EXISTS idx_user_admin_permissions_user ON user_admin_permissions(user_id);
-
--- =============================================================
--- Tabela: user_twofactor_backup_codes
--- =============================================================
-CREATE TABLE IF NOT EXISTS user_twofactor_backup_codes (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id TEXT NOT NULL,
-  code_hash TEXT NOT NULL,
-  created_at INTEGER NOT NULL DEFAULT (strftime('%s','now')),
-  used_at INTEGER,
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
-CREATE INDEX IF NOT EXISTS idx_user_twofactor_codes_user ON user_twofactor_backup_codes(user_id);
-CREATE INDEX IF NOT EXISTS idx_user_twofactor_codes_used ON user_twofactor_backup_codes(used_at);
-
--- =============================================================
--- Tabela: password_resets
--- =============================================================
-CREATE TABLE IF NOT EXISTS password_resets (
-  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
-  user_id TEXT NOT NULL,
-  token TEXT UNIQUE NOT NULL,
-  expires_at INTEGER NOT NULL,
-  attempts INTEGER DEFAULT 0,
-  max_attempts INTEGER DEFAULT 3,
-  ip_address TEXT,
-  user_agent TEXT,
-  status TEXT CHECK (status IN ('pending', 'used', 'expired', 'revoked')) DEFAULT 'pending',
-  used_at INTEGER,
-  created_at INTEGER NOT NULL DEFAULT (strftime('%s','now')),
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
-CREATE INDEX IF NOT EXISTS idx_password_resets_token ON password_resets(token);
-CREATE INDEX IF NOT EXISTS idx_password_resets_user_id ON password_resets(user_id);
-CREATE INDEX IF NOT EXISTS idx_password_resets_status ON password_resets(status);
-CREATE INDEX IF NOT EXISTS idx_password_resets_expires_at ON password_resets(expires_at);
-
--- =============================================================
--- Tabela: partners
--- =============================================================
-CREATE TABLE IF NOT EXISTS partners (
-  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
-  name TEXT NOT NULL,
-  company_name TEXT,
-  email TEXT,
-  phone TEXT,
-  website TEXT,
-  category TEXT NOT NULL,
-  description TEXT,
-  logo TEXT,
-  address TEXT,
-  city TEXT,
-  state TEXT,
-  country TEXT DEFAULT 'Brasil',
-  status TEXT CHECK (status IN ('active','inactive','pending')) DEFAULT 'active',
-  featured INTEGER NOT NULL DEFAULT 0,
-  partnership_level TEXT CHECK (partnership_level IN ('bronze','silver','gold','platinum')) DEFAULT 'bronze',
-  created_at INTEGER NOT NULL DEFAULT (strftime('%s','now')),
-  updated_at INTEGER NOT NULL DEFAULT (strftime('%s','now'))
-);
-
-CREATE INDEX IF NOT EXISTS idx_partners_status ON partners(status);
-CREATE INDEX IF NOT EXISTS idx_partners_category ON partners(category);
-CREATE INDEX IF NOT EXISTS idx_partners_featured ON partners(featured);
-
--- =============================================================
--- Tabela: freight_orders
--- =============================================================
-CREATE TABLE IF NOT EXISTS freight_orders (
-  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
-  customer_id TEXT NOT NULL,
-  origin TEXT NOT NULL,
-  destination TEXT NOT NULL,
-  cargo_type TEXT NOT NULL,
-  weight REAL,
-  volume REAL,
-  distance REAL,
-  estimated_price REAL,
-  final_price REAL,
-  scheduled_date INTEGER,
-  pickup_date INTEGER,
-  delivery_date INTEGER,
-  status TEXT CHECK (status IN ('pending','confirmed','in_transit','delivered','cancelled')) DEFAULT 'pending',
-  driver_id TEXT,
-  vehicle_plate TEXT,
-  tracking_code TEXT,
-  notes TEXT,
-  created_at INTEGER NOT NULL DEFAULT (strftime('%s','now')),
-  updated_at INTEGER NOT NULL DEFAULT (strftime('%s','now')),
-  FOREIGN KEY (customer_id) REFERENCES users(id) ON DELETE CASCADE,
-  FOREIGN KEY (driver_id) REFERENCES users(id) ON DELETE SET NULL
-);
-
-CREATE INDEX IF NOT EXISTS idx_freight_orders_customer ON freight_orders(customer_id);
-CREATE INDEX IF NOT EXISTS idx_freight_orders_status ON freight_orders(status);
-CREATE INDEX IF NOT EXISTS idx_freight_orders_driver ON freight_orders(driver_id);
-CREATE INDEX IF NOT EXISTS idx_freight_orders_created_at ON freight_orders(created_at);
-
--- =============================================================
--- Tabela: products
--- =============================================================
+-- ============================================
+-- PRODUCTS TABLE
+-- ============================================
 CREATE TABLE IF NOT EXISTS products (
-  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
-  seller_id TEXT NOT NULL,
-  name TEXT NOT NULL,
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  title TEXT NOT NULL,
   description TEXT,
-  category TEXT NOT NULL,
-  subcategory TEXT,
+  category TEXT,
   price REAL NOT NULL,
-  quantity REAL NOT NULL DEFAULT 0,
-  unit TEXT DEFAULT 'kg',
-  origin TEXT,
-  quality_grade TEXT,
-  harvest_date INTEGER,
-  certifications TEXT,
-  images TEXT,
-  status TEXT CHECK (status IN ('active','sold','inactive')) DEFAULT 'active',
-  created_at INTEGER NOT NULL DEFAULT (strftime('%s','now')),
-  updated_at INTEGER NOT NULL DEFAULT (strftime('%s','now')),
-  FOREIGN KEY (seller_id) REFERENCES users(id) ON DELETE CASCADE
+  quantity REAL,
+  unit TEXT,
+  image_url TEXT,
+  status TEXT DEFAULT 'active',
+  location TEXT,
+  created_at TEXT DEFAULT (datetime('now')),
+  updated_at TEXT DEFAULT (datetime('now')),
+  FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_products_seller ON products(seller_id);
+CREATE INDEX IF NOT EXISTS idx_products_user ON products(user_id);
 CREATE INDEX IF NOT EXISTS idx_products_status ON products(status);
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
-CREATE INDEX IF NOT EXISTS idx_products_created_at ON products(created_at);
 
+-- ============================================
+-- FREIGHT TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS freight (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  origin TEXT NOT NULL,
+  destination TEXT NOT NULL,
+  cargo_type TEXT,
+  weight REAL,
+  price REAL,
+  status TEXT DEFAULT 'available',
+  created_at TEXT DEFAULT (datetime('now')),
+  updated_at TEXT DEFAULT (datetime('now')),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_freight_user ON freight(user_id);
+CREATE INDEX IF NOT EXISTS idx_freight_status ON freight(status);
+
+-- ============================================
+-- FREIGHT ORDERS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS freight_orders (
+  id TEXT PRIMARY KEY,
+  freight_id TEXT NOT NULL,
+  user_id TEXT NOT NULL,
+  status TEXT DEFAULT 'pending',
+  tracking_code TEXT,
+  pickup_date TEXT,
+  delivery_date TEXT,
+  notes TEXT,
+  created_at TEXT DEFAULT (datetime('now')),
+  updated_at TEXT DEFAULT (datetime('now')),
+  FOREIGN KEY (freight_id) REFERENCES freight(id),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_freight_orders_user ON freight_orders(user_id);
+CREATE INDEX IF NOT EXISTS idx_freight_orders_freight ON freight_orders(freight_id);
+
+-- ============================================
+-- PARTNERS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS partners (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT,
+  logo_url TEXT,
+  website TEXT,
+  category TEXT,
+  is_active INTEGER DEFAULT 1,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_partners_category ON partners(category);
+
+-- ============================================
+-- MESSAGES TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS messages (
+  id TEXT PRIMARY KEY,
+  sender_id TEXT NOT NULL,
+  receiver_id TEXT NOT NULL,
+  content TEXT NOT NULL,
+  is_read INTEGER DEFAULT 0,
+  created_at TEXT DEFAULT (datetime('now')),
+  FOREIGN KEY (sender_id) REFERENCES users(id),
+  FOREIGN KEY (receiver_id) REFERENCES users(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_messages_sender ON messages(sender_id);
+CREATE INDEX IF NOT EXISTS idx_messages_receiver ON messages(receiver_id);
+
+-- ============================================
+-- PAYMENTS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS payments (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  amount REAL NOT NULL,
+  currency TEXT DEFAULT 'BRL',
+  status TEXT DEFAULT 'pending',
+  payment_method TEXT,
+  transaction_id TEXT,
+  metadata TEXT,
+  created_at TEXT DEFAULT (datetime('now')),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_payments_user ON payments(user_id);
+CREATE INDEX IF NOT EXISTS idx_payments_status ON payments(status);
+
+-- ============================================
+-- TRANSACTIONS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS transactions (
+  id TEXT PRIMARY KEY,
+  buyer_id TEXT NOT NULL,
+  seller_id TEXT NOT NULL,
+  product_id TEXT,
+  amount REAL NOT NULL,
+  status TEXT DEFAULT 'pending',
+  payment_method TEXT,
+  created_at TEXT DEFAULT (datetime('now')),
+  completed_at TEXT,
+  FOREIGN KEY (buyer_id) REFERENCES users(id),
+  FOREIGN KEY (seller_id) REFERENCES users(id),
+  FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_transactions_buyer ON transactions(buyer_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_seller ON transactions(seller_id);
+
+-- ============================================
+-- NEWS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS news (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  content TEXT NOT NULL,
+  author TEXT,
+  category TEXT,
+  image_url TEXT,
+  published INTEGER DEFAULT 1,
+  created_at TEXT DEFAULT (datetime('now')),
+  updated_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_news_category ON news(category);
+CREATE INDEX IF NOT EXISTS idx_news_published ON news(published);
+
+-- ============================================
+-- GAMIFICATION POINTS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS gamification_points (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  points INTEGER DEFAULT 0,
+  level INTEGER DEFAULT 1,
+  badges TEXT,
+  last_activity TEXT DEFAULT (datetime('now')),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_gamification_user ON gamification_points(user_id);
+
+-- ============================================
+-- SECURE URLS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS secure_urls (
+  id TEXT PRIMARY KEY,
+  token TEXT UNIQUE NOT NULL,
+  user_type TEXT,
+  plan TEXT,
+  referrer_id TEXT,
+  expires_at TEXT NOT NULL,
+  is_used INTEGER DEFAULT 0,
+  created_at TEXT DEFAULT (datetime('now')),
+  FOREIGN KEY (referrer_id) REFERENCES users(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_secure_urls_token ON secure_urls(token);
+
+-- ============================================
+-- CONTACT MESSAGES TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS contact_messages (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT,
+  subject TEXT,
+  message TEXT NOT NULL,
+  status TEXT DEFAULT 'new',
+  created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_contact_status ON contact_messages(status);
+
+-- ============================================
+-- VERIFICATION CODES TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS verification_codes (
+  id TEXT PRIMARY KEY,
+  email TEXT NOT NULL,
+  code TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  is_used INTEGER DEFAULT 0,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_verification_email ON verification_codes(email);
+
+-- ============================================
+-- SEED DATA (Optional - Partners)
+-- ============================================
+INSERT OR IGNORE INTO partners (id, name, description, category, logo_url) VALUES
+  ('partner-1', 'Banco do Brasil', 'Soluções financeiras para o agronegócio', 'finance', '/logos/bb.png'),
+  ('partner-2', 'Embrapa', 'Pesquisa e inovação agropecuária', 'research', '/logos/embrapa.png'),
+  ('partner-3', 'John Deere', 'Máquinas e equipamentos agrícolas', 'equipment', '/logos/deere.png');
+
+-- ============================================
+-- END OF SCHEMA
+-- ============================================
