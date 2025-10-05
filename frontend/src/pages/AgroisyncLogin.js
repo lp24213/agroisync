@@ -118,12 +118,8 @@ const AgroisyncLogin = () => {
         const user = envelope.user;
 
         if (process.env.NODE_ENV !== 'production') {
-          console.log('Token:', token);
-          if (process.env.NODE_ENV !== 'production') {
-
-            console.log('User:', user);
-
-          }
+          console.log('Token recebido');
+          console.log('User:', user);
         }
 
         if (token && user) {

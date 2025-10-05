@@ -36,9 +36,7 @@ const CryptoRoutesStatus = () => {
       // Testar geração de chaves
       const keysResult = await cryptoService.generateKeys();
       if (process.env.NODE_ENV !== 'production') {
-
-        console.log('Chaves geradas:', keysResult);
-
+        console.log('Chaves geradas');
       }
 
       // Testar criptografia

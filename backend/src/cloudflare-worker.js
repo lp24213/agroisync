@@ -63,6 +63,45 @@ async function sendEmail(env, { to, subject, html }) {
   }
 }
 
+// EMAIL VERIFICATION ROUTES
+async function handleSendVerificationEmail(request, env) {
+  const { email } = await request.json();
+  if (!email) {
+    return jsonResponse({ success: false, error: 'Email obrigatório' }, 400);
+  }
+
+  // Generate 6-digit code
+  const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+  
+  // Send verification email
+  await sendEmail(env, {
+    to: email,
+    subject: 'Código de Verificação - AgroSync',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #2a7f4f 0%, #1e5f3a 100%); color: white; padding: 30px; text-align: center;">
+          <h1>Código de Verificação</h1>
+          <p>AgroSync - Plataforma Inteligente de Agronegócio</p>
+        </div>
+        <div style="background: #f9f9f9; padding: 30px;">
+          <h2>Olá!</h2>
+          <p>Seu código de verificação é:</p>
+          <div style="background: #2a7f4f; color: white; padding: 20px; text-align: center; font-size: 2rem; font-weight: bold; border-radius: 8px; margin: 20px 0; letter-spacing: 5px;">
+            ${verificationCode}
+          </div>
+          <p style="color: #666;"><strong>Este código expira em 10 minutos</strong></p>
+        </div>
+      </div>
+    `
+  });
+
+  return jsonResponse({
+    success: true,
+    message: 'Código de verificação enviado',
+    data: { verificationCode, emailCode: verificationCode } // For development
+  });
+}
+
 // AUTH ROUTES
 async function handleRegister(request, env) {
   const { email, password, name } = await request.json();
@@ -715,6 +754,11 @@ function router(request, env) {
       database: 'D1 Connected',
       timestamp: new Date().toISOString()
     });
+  }
+
+  // Email
+  if (path === '/api/email/send-verification' && method === 'POST') {
+    return handleSendVerificationEmail(request, env);
   }
 
   // Auth
