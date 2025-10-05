@@ -32,7 +32,7 @@ export const LanguageProvider = ({ children }) => {
   const changeLanguage = useCallback(
     async langCode => {
       if (!supportedLanguages.find(lang => lang.code === langCode)) {
-        console.error(`Unsupported language: ${langCode}`);
+        // Unsupported language
         return;
       }
 
@@ -48,7 +48,7 @@ export const LanguageProvider = ({ children }) => {
         // Atualizar atributo lang do HTML
         document.documentElement.lang = langCode;
       } catch (error) {
-        console.error('Error changing language:', error);
+        // Error changing language
       } finally {
         setIsLoading(false);
       }

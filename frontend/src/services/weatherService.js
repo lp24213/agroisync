@@ -90,12 +90,12 @@ class WeatherService {
 
       return weatherData;
     } catch (error) {
-      console.error('Erro ao buscar dados do clima:', error);
+      // Erro ao buscar dados do clima
       
       // Tentar retornar dados do cache antigo se disponível
       if (cached) {
         if (process.env.NODE_ENV !== 'production') {
-          console.warn('Usando dados do clima em cache (podem estar desatualizados)');
+          // Usando dados do clima em cache
         }
         return { ...cached.data, isStale: true };
       }
@@ -168,7 +168,7 @@ class WeatherService {
 
       return forecast;
     } catch (error) {
-      console.error('Erro ao buscar previsão:', error);
+      // Erro ao buscar previsão
       return this.getFallbackForecast();
     }
   }

@@ -156,7 +156,7 @@ export const handleError = (error, options = {}) => {
 
   // Log no console (desenvolvimento)
   if (logToConsole) {
-    console.error('🔴 Error Handler:', {
+    // Error Handler
       type: parsed.type,
       message: parsed.message,
       statusCode: parsed.statusCode,
@@ -282,7 +282,7 @@ export const retryOnError = async (fn, options = {}) => {
         if (isDevelopment()) {
           if (process.env.NODE_ENV !== 'production') {
 
-            console.log(`🔄 Retry attempt ${attempt + 1}/${maxRetries} after ${retryDelay}ms`);
+            // Retry attempt
 
           }
         }
@@ -316,7 +316,7 @@ export const validateApiResponse = response => {
   if (typeof response.success === 'undefined') {
     if (process.env.NODE_ENV !== 'production') {
 
-      console.warn('⚠️ Resposta da API sem campo "success". Formato antigo?');
+      // Resposta da API sem campo "success"
 
     }
   }
@@ -341,7 +341,7 @@ export const logErrorToMonitoring = (error, context = {}) => {
   if (isDevelopment()) {
     if (process.env.NODE_ENV !== 'production') {
 
-      console.log('📊 Error logged:', { error, context });
+      // Error logged
 
     }
     return;

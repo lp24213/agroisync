@@ -25,7 +25,7 @@ export const PaymentProvider = ({ children }) => {
         const stripeInstance = await loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
         setStripe(stripeInstance);
       } catch (error) {
-        console.error('Erro ao inicializar Stripe:', error);
+        // Erro ao inicializar Stripe
         setError('Erro ao inicializar sistema de pagamentos');
       } finally {
         setLoading(false);
@@ -59,7 +59,7 @@ export const PaymentProvider = ({ children }) => {
 
       return data;
     } catch (error) {
-      console.error('Erro ao criar payment intent:', error);
+      // Erro ao criar payment intent
       throw error;
     }
   };
@@ -79,7 +79,7 @@ export const PaymentProvider = ({ children }) => {
 
       return confirmedPayment;
     } catch (error) {
-      console.error('Erro ao processar pagamento Stripe:', error);
+      // Erro ao processar pagamento Stripe
       throw error;
     }
   };
@@ -108,7 +108,7 @@ export const PaymentProvider = ({ children }) => {
 
       return txHash;
     } catch (error) {
-      console.error('Erro ao processar pagamento MetaMask:', error);
+      // Erro ao processar pagamento MetaMask
       throw error;
     }
   };
@@ -125,7 +125,7 @@ export const PaymentProvider = ({ children }) => {
 
       return data.plans;
     } catch (error) {
-      console.error('Erro ao obter planos:', error);
+      // Erro ao obter planos
       throw error;
     }
   };
@@ -154,7 +154,7 @@ export const PaymentProvider = ({ children }) => {
       setSubscription(data.subscription);
       return data;
     } catch (error) {
-      console.error('Erro ao criar assinatura:', error);
+      // Erro ao criar assinatura
       throw error;
     }
   };
@@ -178,7 +178,7 @@ export const PaymentProvider = ({ children }) => {
       setSubscription(null);
       return data;
     } catch (error) {
-      console.error('Erro ao cancelar assinatura:', error);
+      // Erro ao cancelar assinatura
       throw error;
     }
   };
@@ -200,7 +200,7 @@ export const PaymentProvider = ({ children }) => {
 
       return data.payments;
     } catch (error) {
-      console.error('Erro ao obter histórico:', error);
+      // Erro ao obter histórico
       throw error;
     }
   };

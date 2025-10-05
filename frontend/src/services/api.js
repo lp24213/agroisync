@@ -35,7 +35,7 @@ class ApiService {
     } catch (error) {
       // Log apenas em desenvolvimento
       if (process.env.NODE_ENV !== 'production') {
-        console.error('API Error:', error);
+        // API Error
       }
       throw error;
     }

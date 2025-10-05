@@ -58,7 +58,7 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
           setIsLoading(false);
           // Usar bypass em caso de erro para não bloquear o usuário
           handleVerify('error-bypass');
-          console.error('Erro ao carregar Turnstile - usando bypass');
+          // Erro ao carregar Turnstile - usando bypass
         });
       }
       return;
@@ -78,7 +78,7 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
       setIsLoading(false);
       // Usar bypass em caso de erro para não bloquear o usuário
       handleVerify('error-bypass');
-      console.error('Erro ao carregar Turnstile - usando bypass automático');
+      // Erro ao carregar Turnstile - usando bypass automático
     };
     document.head.appendChild(script);
   }, [effectiveSiteKey, handleVerify, handleError]);
@@ -88,7 +88,7 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
     if (!effectiveSiteKey) {
       // Silenciar em desenvolvimento, apenas avisar em produção
       if (process.env.NODE_ENV === 'production') {
-        console.error('Cloudflare Turnstile siteKey não configurado. Defina REACT_APP_CLOUDFLARE_TURNSTILE_SITE_KEY ou passe siteKey como prop.');
+        // Cloudflare Turnstile siteKey não configurado
       }
       setIsLoading(false);
       return;
@@ -104,13 +104,13 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
           'error-callback': (error) => {
             // Bypass em caso de erro para não bloquear o usuário
             handleVerify('error-bypass');
-            console.warn('Turnstile error - usando bypass:', error);
+            // Turnstile error - usando bypass
           },
           'expired-callback': handleExpire
         });
         setWidgetId(id);
       } catch (e) {
-        console.error('Erro ao renderizar Turnstile:', e);
+        // Erro ao renderizar Turnstile
         // Bypass em caso de erro para não bloquear o usuário
         handleVerify('error-bypass');
       }
@@ -122,7 +122,7 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
           window.turnstile.remove(widgetId);
         } catch (e) {
           if (process.env.NODE_ENV !== 'production') {
-            console.warn('Erro ao remover widget Turnstile:', e);
+            // Erro ao remover widget Turnstile
           }
         }
         setWidgetId(null);
