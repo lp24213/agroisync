@@ -279,14 +279,16 @@ const GrainsChart = () => {
             </div>
 
             <div className='text-right'>
-              <p className='text-lg font-bold text-gray-900'>R$ {grain.price.toFixed(2)}</p>
+              <p className='text-lg font-bold text-gray-900' suppressHydrationWarning>
+                R$ {grain.price.toFixed(2)}
+              </p>
               <div className='flex items-center gap-1'>
                 {grain.change >= 0 ? (
                   <TrendingUp className='h-4 w-4 text-green-500' />
                 ) : (
                   <TrendingDown className='h-4 w-4 text-red-500' />
                 )}
-                <span className={`text-sm font-medium ${grain.change >= 0 ? 'text-green-600' : 'text-amber-600'}`} style={{ backgroundColor: 'transparent', border: 'none', padding: '0', margin: '0', color: grain.change >= 0 ? '#16a34a' : '#d97706' }}>
+                <span className={`text-sm font-medium ${grain.change >= 0 ? 'text-green-600' : 'text-amber-600'}`} suppressHydrationWarning>
                   {grain.change >= 0 ? '+' : ''}
                   {grain.change.toFixed(2)} ({grain.changePercent >= 0 ? '+' : ''}
                   {grain.changePercent.toFixed(2)}%)

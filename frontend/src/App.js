@@ -439,7 +439,6 @@ function App() {
                 </div>
 
                 {/* AGROISYNC Footer */}
-                <div className="h-16"></div>
                 <footer id='footer' role='contentinfo' className="mt-0">
                   <AgroisyncFooter />
                 </footer>
