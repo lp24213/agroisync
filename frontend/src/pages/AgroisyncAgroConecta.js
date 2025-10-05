@@ -194,7 +194,7 @@ const AgroisyncAgroConecta = () => {
       }
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao criar pedido de frete:', error);
+        // Erro ao criar pedido de frete
       }
       toast.error('Erro ao criar pedido de frete');
     }
@@ -219,10 +219,7 @@ const AgroisyncAgroConecta = () => {
         setMyOrders(response.data.data);
       }
     } catch (error) {
-      // Silenciar erro e usar dados mock
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('Usando dados mock de pedidos');
-      }
+      // Silenciar erro ao carregar pedidos
       // Não mostrar toast de erro para não poluir a interface
     }
   };
@@ -249,7 +246,7 @@ const AgroisyncAgroConecta = () => {
       }
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao gerar análise de IA:', error);
+        // Erro ao gerar análise de IA
       }
       // Fallback para dados mockados
       const mockAIClosure = {
@@ -294,7 +291,7 @@ const AgroisyncAgroConecta = () => {
       }
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao fechar pedido:', error);
+        // Erro ao fechar pedido
       }
       toast.error('Erro ao fechar pedido');
     }
@@ -309,7 +306,7 @@ const AgroisyncAgroConecta = () => {
   //       setPublicRegistrations(data.data);
   //     }
   //   } catch (error) {
-  //     console.error('Erro ao buscar cadastros públicos:', error);
+  //     Erro ao buscar cadastros públicos
   //   }
   // };
 
@@ -328,7 +325,7 @@ const AgroisyncAgroConecta = () => {
         }
       } catch (error) {
         if (process.env.NODE_ENV !== 'production') {
-          console.error('Erro ao carregar pedidos:', error);
+          // Erro ao carregar pedidos
         }
         // Dados mock para demonstração da IA
         const mockOrders = [

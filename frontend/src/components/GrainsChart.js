@@ -21,7 +21,7 @@ const GrainsChart = () => {
         } catch (ipError) {
           // Silenciar log de localização em produção
           if (process.env.NODE_ENV !== 'production') {
-            console.log('Usando localização padrão:', ipError);
+            // Usando localização padrão
           }
           userRegion = 'Mato Grosso';
           userCity = 'Sinop';
@@ -126,7 +126,7 @@ const GrainsChart = () => {
       } catch (error) {
         // Silenciar erro de grãos em produção
         if (process.env.NODE_ENV !== 'production') {
-          console.error('Erro ao buscar dados de grãos:', error);
+          // Erro ao buscar dados de grãos
         }
 
         // Fallback com dados do MT (dados completos)

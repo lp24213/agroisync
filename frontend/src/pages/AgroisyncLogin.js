@@ -98,35 +98,15 @@ const AgroisyncLogin = () => {
         body: JSON.stringify(payloadToSend)
       });
 
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('Response status:', res.status);
-        if (process.env.NODE_ENV !== 'production') {
-
-          console.log('Response ok:', res.ok);
-
-        }
-      }
-
       if (res.ok) {
         const payload = await res.json();
-        if (process.env.NODE_ENV !== 'production') {
-          console.log('Full response payload:', payload);
-        }
 
         const envelope = payload && payload.data ? payload.data : {};
         const token = envelope.token;
         const user = envelope.user;
 
-        if (process.env.NODE_ENV !== 'production') {
-          console.log('Token recebido');
-          console.log('User:', user);
-        }
-
         if (token && user) {
           updateUserState(user, token);
-          if (process.env.NODE_ENV !== 'production') {
-            console.log('Login successful, redirecting based on role');
-          }
           
           // Redirecionar baseado no papel do usuário
           if (user.role === 'super-admin' || user.role === 'admin') {
@@ -137,16 +117,10 @@ const AgroisyncLogin = () => {
             window.location.href = '/user-dashboard';
           }
         } else {
-          if (process.env.NODE_ENV !== 'production') {
-            console.log('Missing token or user in response');
-          }
           setErrors({ general: payload.message || 'Credenciais inválidas' });
         }
       } else {
         const errorData = await res.json();
-        if (process.env.NODE_ENV !== 'production') {
-          console.log('Error response:', errorData);
-        }
         setErrors({ general: errorData.message || 'Credenciais inválidas' });
       }
     } catch (error) {
@@ -162,10 +136,6 @@ const AgroisyncLogin = () => {
       }
       
       setErrors({ general: errorMessage });
-      
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('Login error:', error);
-      }
     } finally {
       setIsLoading(false);
     }

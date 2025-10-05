@@ -191,7 +191,7 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
         setMessages(prev => [...prev, aiResponse]);
       } catch (error) {
         if (process.env.NODE_ENV !== 'production') {
-          console.error('Erro ao enviar mensagem:', error);
+          // Erro ao enviar mensagem
         }
       } finally {
         setIsLoading(false);

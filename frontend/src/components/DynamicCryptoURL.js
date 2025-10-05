@@ -87,7 +87,7 @@ const DynamicCryptoURL = ({ children }) => {
     } catch (error) {
       setIsUpdating(false);
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao gerar URL criptografada:', error);
+        // Erro ao gerar URL criptografada
       }
     }
   }, [location.pathname, location.search, navigate, generateParams, hasValidParams, mergeParams, isUpdating]);

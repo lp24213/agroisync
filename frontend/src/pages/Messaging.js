@@ -24,7 +24,7 @@ const Messaging = () => {
       }
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao carregar conversas:', error);
+        // Erro ao carregar conversas
       }
     } finally {
       setLoading(false);
@@ -49,7 +49,7 @@ const Messaging = () => {
       setMessages(data);
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao carregar mensagens:', error);
+        // Erro ao carregar mensagens
       }
     }
   };
@@ -73,7 +73,7 @@ const Messaging = () => {
       setMessages(prev => [...prev, { ...message, id: Date.now(), senderId: user.id }]);
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao enviar mensagem:', error);
+        // Erro ao enviar mensagem
       }
     } finally {
       setSending(false);

@@ -77,7 +77,7 @@ const CryptoDashboard = () => {
         await registerClient(accounts[0]);
       } catch (error) {
         if (process.env.NODE_ENV !== 'production') {
-          console.error('Erro ao conectar MetaMask:', error);
+          // Erro ao conectar MetaMask
         }
       }
     } else {
@@ -90,7 +90,7 @@ const CryptoDashboard = () => {
     // Registrando o cliente e criando seu painel
     if (process.env.NODE_ENV !== 'production') {
 
-      console.log('Registrando cliente:', walletAddress);
+      // Registrando cliente
 
     }
 
@@ -135,14 +135,14 @@ const CryptoDashboard = () => {
       if (process.env.NODE_ENV !== 'production') {
 
 
-        console.log('Pagamento enviado:', txHash);
+        // Pagamento enviado
 
 
       }
       alert(`Pagamento de ${amount} ${currency} enviado com sucesso!`);
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro no pagamento:', error);
+        // Erro no pagamento
       }
     }
   };

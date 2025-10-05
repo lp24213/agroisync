@@ -25,7 +25,7 @@ const NewsWidget = ({ limit = 5, showBreaking = true }) => {
       setNews(newsData);
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao carregar notícias:', error);
+        // Erro ao carregar notícias
       }
       setError('Não foi possível carregar as notícias');
     } finally {

@@ -114,11 +114,6 @@ export const fetchCEP = async (cep) => {
         return transformed;
       }
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-
-        console.warn(`${source.name} falhou:`, error.message);
-
-      }
       continue;
     }
   }
@@ -201,11 +196,6 @@ export const fetchCNPJ = async (cnpj) => {
         return transformed;
       }
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-
-        console.warn(`${source.name} falhou:`, error.message);
-
-      }
       continue;
     }
   }
@@ -260,11 +250,7 @@ export const fetchWeather = async (city, country = 'BR') => {
       return weatherData;
     }
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-
-      console.warn('OpenWeather API falhou:', error.message);
-
-    }
+    // API falhou, usar fallback
   }
 
   // Fallback para dados mock
@@ -317,11 +303,6 @@ export const fetchEstados = async () => {
         return estados;
       }
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-
-        console.warn(`${source.name} falhou:`, error.message);
-
-      }
       continue;
     }
   }

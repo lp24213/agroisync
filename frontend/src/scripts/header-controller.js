@@ -15,7 +15,7 @@ class AgroisyncHeaderController {
 
   init() {
     if (!this.header) {
-      console.warn('Header element not found');
+      // Header element not found
       return;
     }
 
@@ -110,7 +110,7 @@ class AgroisyncHeaderController {
       this.hero.classList.add('loaded');
     };
     img.onerror = () => {
-      console.warn('Failed to load hero image:', imageUrl);
+      // Failed to load hero image
       // Fallback para imagem padrão
       this.hero.style.backgroundImage = `url('/assets/hero-default.jpg')`;
     };

@@ -268,7 +268,7 @@
 
     // Log to console
     console.group('🔍 I18N Audit Report');
-    console.log(`Found ${exposedKeys.length} exposed i18n keys`);
+    // I18n keys processed
     console.table(report.keys);
     console.groupEnd();
 
@@ -360,7 +360,7 @@
       return;
     }
 
-    console.log('🚀 Initializing UI TXC Final Behaviors...');
+    // Initializing UI behaviors
 
     // Initialize all behaviors
     initLanguageSelector();
@@ -376,7 +376,7 @@
       localStorage.setItem('i18nAuditReport', JSON.stringify(report));
     }, 1000);
 
-    console.log('✅ UI TXC Final Behaviors initialized successfully');
+    // UI behaviors initialized
   }
 
   // Start initialization

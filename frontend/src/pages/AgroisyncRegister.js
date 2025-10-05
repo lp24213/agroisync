@@ -28,7 +28,7 @@ import CloudflareTurnstile from '../components/CloudflareTurnstile';
 const AgroisyncRegister = () => {
   if (process.env.NODE_ENV !== 'production') {
 
-    console.log('AgroisyncRegister component loaded');
+    // Component loaded
 
   }
   const navigate = useNavigate();

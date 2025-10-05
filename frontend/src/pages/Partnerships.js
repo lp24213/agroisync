@@ -92,12 +92,12 @@ const Partnerships = () => {
 
       // Aqui seria a integração real com serviço de email
       if (process.env.NODE_ENV !== 'production') {
-        console.log('Dados enviados para contato@agroisync.com:', formData);
+        // Formulário enviado com sucesso
       }
 
       setIsSubmitted(true);
     } catch (error) {
-      console.error('Erro ao enviar formulário:', error);
+      // Erro ao enviar formulário
       alert('Erro ao enviar formulário. Tente novamente.');
     } finally {
       setIsSubmitting(false);
@@ -500,7 +500,7 @@ const Partnerships = () => {
                   setTurnstileToken(token);
                 }}
                 onError={error => {
-                  console.error('Turnstile error (Partnerships):', error);
+                  // Turnstile error
                   setTurnstileToken('');
                 }}
                 onExpire={() => {

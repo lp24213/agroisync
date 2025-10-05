@@ -16,7 +16,7 @@ class WeatherService {
     if (!this.isConfigured && isDevelopment()) {
       if (process.env.NODE_ENV !== 'production') {
 
-        console.warn('⚠️ OpenWeather API key não configurada. Usando dados simulados.');
+        // OpenWeather API key não configurada
 
       }
     }

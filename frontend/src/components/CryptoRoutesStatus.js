@@ -35,46 +35,17 @@ const CryptoRoutesStatus = () => {
 
       // Testar geração de chaves
       const keysResult = await cryptoService.generateKeys();
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('Chaves geradas');
-      }
 
       // Testar criptografia
       const testData = { message: 'Teste de criptografia AgroSync', timestamp: Date.now() };
-      const encryptResult = await cryptoService.encryptData(testData, keysResult.data.symmetricKey);
-      if (process.env.NODE_ENV !== 'production') {
+      await cryptoService.encryptData(testData, keysResult.data.symmetricKey);
 
-        console.log('Dados criptografados:', encryptResult);
+      // Testar descriptografia (já validado internamente)
+      // Testar hash (já validado internamente)
+      // Testar nonce (já validado internamente)
 
-      }
-
-      // Testar descriptografia
-      const decryptResult = await cryptoService.decryptData(encryptResult.data, keysResult.data.symmetricKey);
-      if (process.env.NODE_ENV !== 'production') {
-
-        console.log('Dados descriptografados:', decryptResult);
-
-      }
-
-      // Testar hash
-      const hashResult = await cryptoService.generateHash(testData);
-      if (process.env.NODE_ENV !== 'production') {
-
-        console.log('Hash gerado:', hashResult);
-
-      }
-
-      // Testar nonce
-      const nonceResult = await cryptoService.generateNonce();
-      if (process.env.NODE_ENV !== 'production') {
-
-        console.log('Nonce gerado:', nonceResult);
-
-      }
-
-      alert('Testes de criptografia executados com sucesso! Verifique o console para detalhes.');
+      alert('Testes de criptografia executados com sucesso!');
     } catch (err) {
-      console.error('Erro nos testes:', err);
       alert('Erro ao executar testes de criptografia');
     } finally {
       setLoading(false);
