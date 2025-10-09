@@ -1,0 +1,46 @@
+{
+  "nav": {
+    "home": "Início",
+    "marketplace": "Marketplace",
+    "fretes": "Fretes",
+    "sobre": "Sobre",
+    "contato": "Contato"
+  },
+  "home": {
+    "title": "Agroisync",
+    "tagline": "Plataforma de agronegócio: marketplace, fretes e mais."
+  },
+  "marketplace": {
+    "title": "Marketplace",
+    "description": "Compre e venda produtos agrícolas com segurança e transparência."
+  },
+  "fretes": {
+    "title": "Fretes",
+    "description": "Encontre e gerencie fretes integrados ao marketplace."
+  },
+  "sobre": {
+    "title": "Sobre a Agroisync",
+    "description": "Nossa missão é conectar o ecossistema do agronegócio com tecnologia."
+  },
+  "contato": {
+    "title": "Contato",
+    "intro": "Envie sua mensagem para nossa equipe.",
+    "submit": "Enviar",
+    "sending": "Enviando...",
+    "success": "Mensagem enviada com sucesso.",
+    "error_prefix": ""
+  },
+  "consent": {
+    "title": "Privacidade e Cookies",
+    "body": "Usamos cookies para medir audiência (analytics) e, opcionalmente, marketing. Você pode aceitar apenas analytics ou rejeitar tudo. Suas preferências serão salvas por 180 dias.",
+    "analytics": "Analytics",
+    "marketing": "Marketing",
+    "accept": "Aceitar",
+    "reject": "Rejeitar"
+  },
+  "form": {
+    "name": "Nome",
+    "email": "Email",
+    "message": "Mensagem"
+  }
+}

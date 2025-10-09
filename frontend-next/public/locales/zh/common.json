@@ -1,0 +1,46 @@
+{
+  "nav": {
+    "home": "主页",
+    "marketplace": "市场",
+    "fretes": "货运",
+    "sobre": "关于",
+    "contato": "联系"
+  },
+  "home": {
+    "title": "Agroisync",
+    "tagline": "农业业务平台：市场、货运等。"
+  },
+  "marketplace": {
+    "title": "市场",
+    "description": "以安全透明的方式买卖农产品。"
+  },
+  "fretes": {
+    "title": "货运",
+    "description": "在市场内查找和管理货运。"
+  },
+  "sobre": {
+    "title": "关于 Agroisync",
+    "description": "我们的使命是用技术连接农业生态系统。"
+  },
+  "contato": {
+    "title": "联系",
+    "intro": "向我们的团队发送您的消息。",
+    "submit": "发送",
+    "sending": "正在发送...",
+    "success": "消息发送成功。",
+    "error_prefix": ""
+  },
+  "consent": {
+    "title": "隐私与 Cookie",
+    "body": "我们使用 Cookie 用于受众测量（分析）以及可选的营销。您可以仅接受分析，或拒绝所有。您的偏好将保存 180 天。",
+    "analytics": "分析",
+    "marketing": "营销",
+    "accept": "接受",
+    "reject": "拒绝"
+  },
+  "form": {
+    "name": "姓名",
+    "email": "电子邮件",
+    "message": "消息"
+  }
+}
