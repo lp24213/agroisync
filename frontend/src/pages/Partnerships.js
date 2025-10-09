@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Users, TrendingUp, Globe, Mail, Phone, MapPin, Send, CheckCircle, Star, Award } from 'lucide-react';
+import { Users, TrendingUp, Globe, Mail, Phone, MapPin, Send, CheckCircle, Award } from 'lucide-react';
 // import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt'; // Componente removido
 import CloudflareTurnstile from '../components/CloudflareTurnstile';
 import CryptoHash from '../components/CryptoHash';
@@ -50,27 +50,6 @@ const Partnerships = () => {
       icon: <Award size={32} />,
       title: 'Suporte Especializado',
       description: 'Equipe dedicada para seu sucesso'
-    }
-  ];
-
-  const successStories = [
-    {
-      company: 'TechAgro Solutions',
-      partnership: 'Parceria Tecnológica',
-      result: 'Aumento de 300% nas vendas em 6 meses',
-      testimonial: 'A parceria com AGROISYNC revolucionou nosso negócio.'
-    },
-    {
-      company: 'AgroDistribuidora',
-      partnership: 'Parceria Comercial',
-      result: 'Expansão para 5 novos estados',
-      testimonial: 'Conseguimos expandir nossa operação rapidamente.'
-    },
-    {
-      company: 'FarmTech Brasil',
-      partnership: 'Parceria de Distribuição',
-      result: 'Redução de 40% nos custos logísticos',
-      testimonial: 'A plataforma otimizou toda nossa cadeia de suprimentos.'
     }
   ];
 
@@ -328,32 +307,14 @@ const Partnerships = () => {
           </div>
         </section>
 
-        {/* Success Stories */}
+        {/* Success Stories (placeholder sem parceiros listados) */}
         <section className='success-stories'>
           <div className='stories-container'>
-            <h2>Histórias de Sucesso</h2>
+            <h2>Parcerias</h2>
             <div className='stories-grid'>
-              {successStories.map((story, index) => (
-                <motion.div
-                  key={story.company}
-                  className='story-card agro-card-animated'
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                >
-                  <div className='story-header'>
-                    <Star size={20} />
-                    <span className='story-rating'>5.0</span>
-                  </div>
-                  <blockquote>"{story.testimonial}"</blockquote>
-                  <div className='story-footer'>
-                    <div className='story-company'>{story.company}</div>
-                    <div className='story-partnership'>{story.partnership}</div>
-                    <div className='story-result'>{story.result}</div>
-                  </div>
-                </motion.div>
-              ))}
+              <div className='text-center text-gray-400 w-full'>
+                Ainda não temos parceiros listados publicamente. Entre em contato para iniciar uma parceria.
+              </div>
             </div>
           </div>
         </section>

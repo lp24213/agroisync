@@ -16,7 +16,9 @@ import {
 // import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt'; // Componente removido
 import ProductCard from '../components/ProductCard';
 import CryptoHash from '../components/CryptoHash';
-// import { API_CONFIG } from '../config/constants';
+import { getApiUrl } from '../config/constants';
+import logger from '../services/logger';
+import { toast } from 'react-hot-toast';
 
 const AgroisyncMarketplace = () => {
   const [email, setEmail] = useState('');
@@ -34,19 +36,21 @@ const AgroisyncMarketplace = () => {
     const fetchProducts = async () => {
       try {
         // setLoading(true);
-        const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://agroisync.com/api'}/products`);
+        const response = await fetch(getApiUrl('/products'));
         
         if (response.ok) {
           const data = await response.json();
-          setProducts(data.products || data.data || []);
+          const productsArray = data?.products || data?.data?.products || data?.data || [];
+          setProducts(Array.isArray(productsArray) ? productsArray : []);
         } else {
-          console.error('Erro ao carregar produtos');
+          logger.error('Erro ao carregar produtos', null, { page: 'marketplace', status: response.status });
           setProducts([]);
+          toast.error('Não foi possível carregar os produtos');
         }
       } catch (err) {
-        console.error('Erro ao buscar produtos:', err);
-        // setError('Não foi possível carregar os produtos');
+        logger.error('Erro ao buscar produtos', err, { page: 'marketplace' });
         setProducts([]);
+        toast.error('Erro ao carregar produtos. Tente novamente.');
       } finally {
         // setLoading(false);
       }
@@ -75,11 +79,17 @@ const AgroisyncMarketplace = () => {
 
   // Filtrar produtos
   const filteredProducts = products.filter(product => {
+    if (!product || typeof product !== 'object') return false;
+    
+    const title = product.title || product.name || '';
+    const description = product.description || '';
+    const location = product.location || product.city || product.state || '';
+    
     const matchesSearch =
-      product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchTerm.toLowerCase());
+      title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'todos' || product.category === selectedCategory;
-    const matchesState = selectedState === 'todos' || product.location.toLowerCase().includes(selectedState);
+    const matchesState = selectedState === 'todos' || location.toLowerCase().includes(selectedState);
 
     return matchesSearch && matchesCategory && matchesState;
   });
@@ -108,27 +118,27 @@ const AgroisyncMarketplace = () => {
   const benefits = [
     {
       icon: <CheckCircle size={24} />,
-      text: 'Preços competitivos do mercado'
+      text: 'Preços competitivos (variam conforme oferta e demanda)'
     },
     {
       icon: <CheckCircle size={24} />,
-      text: 'Transações instantâneas'
+      text: 'Transações planejadas com segurança (em desenvolvimento)'
     },
     {
       icon: <CheckCircle size={24} />,
-      text: 'Suporte 24/7'
+      text: 'Atendimento e suporte evoluindo conforme as fases do projeto'
     },
     {
       icon: <CheckCircle size={24} />,
-      text: 'Relatórios detalhados'
+      text: 'Relatórios informativos (roadmap)'
     },
     {
       icon: <CheckCircle size={24} />,
-      text: 'Integração com sistemas existentes'
+      text: 'Integrações técnicas planejadas (roadmap)'
     },
     {
       icon: <CheckCircle size={24} />,
-      text: 'Certificação de qualidade'
+      text: 'Certificação e verificação progressivas'
     }
   ];
 

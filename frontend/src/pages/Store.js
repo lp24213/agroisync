@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import productService from '../services/productService';
 import { Search, Star, Heart, Truck, Shield, Zap, ArrowRight, Grid, List } from 'lucide-react';
+import logger from '../services/logger';
 
 const Store = () => {
   const [viewMode, setViewMode] = useState('grid');
@@ -20,9 +21,10 @@ const Store = () => {
       setLoading(true);
       setError(null);
       const productsData = await productService.getProducts();
-      setProducts(productsData.products || productsData || []);
+      const productsArray = productsData?.products || productsData?.data || productsData || [];
+      setProducts(Array.isArray(productsArray) ? productsArray : []);
     } catch (error) {
-      console.error('Erro ao carregar produtos:', error);
+      logger.error('Erro ao carregar produtos', error, { page: 'store' });
       setError('Erro ao carregar produtos. Tente novamente.');
       setProducts([]);
     } finally {
@@ -167,6 +169,8 @@ const Store = () => {
                   className={`rounded-lg p-2 transition-colors ${
                     viewMode === 'grid' ? 'bg-primary text-white' : 'text-secondary hover:bg-gray-100'
                   }`}
+                  aria-label="Visualização em grade"
+                  aria-pressed={viewMode === 'grid'}
                 >
                   <Grid size={20} />
                 </button>
@@ -175,6 +179,8 @@ const Store = () => {
                   className={`rounded-lg p-2 transition-colors ${
                     viewMode === 'list' ? 'bg-primary text-white' : 'text-secondary hover:bg-gray-100'
                   }`}
+                  aria-label="Visualização em lista"
+                  aria-pressed={viewMode === 'list'}
                 >
                   <List size={20} />
                 </button>

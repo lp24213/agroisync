@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import productService from '../services/productService';
 import {
-  ShoppingCart,
   Star,
   Heart,
   Filter,
@@ -20,6 +19,7 @@ import {
   X
 } from 'lucide-react';
 import CryptoHash from '../components/CryptoHash';
+import logger from '../services/logger';
 
 const AgroisyncLoja = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -39,9 +39,10 @@ const AgroisyncLoja = () => {
     try {
       // setLoading(true);
       const productsData = await productService.getProducts();
-      setProducts(productsData.products || productsData || []);
+      const productsArray = productsData?.products || productsData?.data || productsData || [];
+      setProducts(Array.isArray(productsArray) ? productsArray : []);
     } catch (error) {
-      console.error('Erro ao carregar produtos:', error);
+      logger.error('Erro ao carregar produtos', error, { page: 'loja' });
       setProducts([]);
     } finally {
       // setLoading(false);
@@ -66,9 +67,14 @@ const AgroisyncLoja = () => {
 
   // Filtrar produtos
   const filteredProducts = products.filter(product => {
+    if (!product || typeof product !== 'object') return false;
+    
+    const name = product.name || product.title || '';
+    const description = product.description || '';
+    
     const matchesSearch =
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchTerm.toLowerCase());
+      name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'todos' || product.category === selectedCategory;
 
     return matchesSearch && matchesCategory;
@@ -77,23 +83,23 @@ const AgroisyncLoja = () => {
   const features = [
     {
       icon: <Shield size={32} />,
-      title: 'Garantia Total',
-      description: 'Todos os produtos com garantia estendida e suporte técnico especializado'
+      title: 'Seleção Verificada',
+      description: 'Produtos e fornecedores passam por verificação antes da listagem'
     },
     {
       icon: <Truck size={32} />,
-      title: 'Entrega Rápida',
-      description: 'Entrega em todo o Brasil com rastreamento em tempo real'
+      title: 'Logística em Expansão',
+      description: 'Parcerias logísticas em evolução para ampliar cobertura'
     },
     {
       icon: <CheckCircle size={32} />,
-      title: 'Produtos Originais',
-      description: '100% originais com certificação e procedência garantida'
+      title: 'Transparência',
+      description: 'Informações claras sobre procedência e especificações'
     },
     {
       icon: <Clock size={32} />,
-      title: 'Suporte 24/7',
-      description: 'Atendimento especializado disponível 24 horas por dia'
+      title: 'Atendimento',
+      description: 'Suporte em horário comercial; canais adicionais em breve'
     }
   ];
 
@@ -144,7 +150,7 @@ const AgroisyncLoja = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            A maior loja online do agronegócio brasileiro
+            Loja do agronegócio em evolução — funcionalidades em desenvolvimento
           </motion.p>
           <motion.div
             className='flex justify-center gap-4'
@@ -409,12 +415,8 @@ const AgroisyncLoja = () => {
                     {product.discount && <div className='agro-discount-badge'>{product.discount}</div>}
                   </div>
 
-                  {/* Botões de Ação */}
+                  {/* Ações (sem compra direta enquanto checkout não estiver disponível) */}
                   <div className='agro-product-actions'>
-                    <button className='agro-btn-primary agro-btn-animated'>
-                      <ShoppingCart size={16} />
-                      Comprar Agora
-                    </button>
                     <button
                       className='agro-btn-secondary agro-btn-animated'
                       onClick={() => window.open(`/produto/${product.id}`, '_blank')}
