@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import logger from '../services/logger';
 import {
   ArrowRight,
   TrendingUp,
@@ -68,7 +69,7 @@ const AgroisyncCrypto = () => {
       setCryptoData(mockCryptoData);
       setLastUpdate(new Date());
     } catch (error) {
-      console.error('Erro ao buscar dados de criptomoedas:', error);
+      logger.error('Erro ao buscar dados de criptomoedas', error, { page: 'crypto' });
     } finally {
       setLoading(false);
     }
@@ -167,7 +168,7 @@ const AgroisyncCrypto = () => {
     e.preventDefault();
     if (process.env.NODE_ENV !== 'production') {
 
-      console.log('Email submitted:', email);
+      // Email submitted (log removido)
 
     }
   };

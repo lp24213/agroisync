@@ -1,101 +1,52 @@
-﻿// ===== D1 DATABASE HELPER =====
-// UtilitÃ¡rios para trabalhar com Cloudflare D1 Database
-// Substitui MongoDB com queries SQL otimizadas
-
-import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 import bcrypt from 'bcryptjs';
 
 /**
- * Gerar ID Ãºnico para registros
+ * Funções auxiliares para D1
  */
+
+// Função para gerar IDs únicos
 export const generateId = (prefix = '') => {
-  const id = uuidv4();
-  return prefix ? `${prefix}-${id}` : id;
+  return `${prefix}_${nanoid()}`;
 };
 
-/**
- * Timestamp Unix atual
- */
+// Função para executar queries no D1 com retry
+export const executeD1Query = async (db, query, params = []) => {
+  try {
+    const stmt = db.prepare(query);
+    if (params.length > 0) {
+      return await stmt.bind(...params).all();
+    }
+    return await stmt.all();
+  } catch (error) {
+    console.error('Erro ao executar query D1:', error);
+    throw error;
+  }
+};
+
+// Função para executar writes no D1 com retry
+export const executeD1Write = async (db, query, params = []) => {
+  try {
+    const stmt = db.prepare(query);
+    if (params.length > 0) {
+      return await stmt.bind(...params).run();
+    }
+    return await stmt.run();
+  } catch (error) {
+    console.error('Erro ao executar write D1:', error);
+    throw error;
+  }
+};
+
+// Função para pegar timestamp atual
 export const now = () => Math.floor(Date.now() / 1000);
 
 /**
- * Executar query D1 com tratamento de erro
+ * Funções de usuário
  */
-export const executeD1Query = async (db, query, params = []) => {
-  try {
-    const result = await db
-      .prepare(query)
-      .bind(...params)
-      .all();
-    return {
-      success: true,
-      results: result.results || [],
-      meta: result.meta || {}
-    };
-  } catch (error) {
-    const logger = require('./logger');
-    logger.error('D1 Query Error:', error);
-    return {
-      success: false,
-      error: error.message,
-      results: []
-    };
-  }
-};
 
-/**
- * Executar query e retornar primeiro resultado
- */
-export const executeD1QueryFirst = async (db, query, params = []) => {
-  try {
-    const result = await db
-      .prepare(query)
-      .bind(...params)
-      .first();
-    return {
-      success: true,
-      result: result || null
-    };
-  } catch (error) {
-    const logger = require('./logger');
-    logger.error('D1 Query Error:', error);
-    return {
-      success: false,
-      error: error.message,
-      result: null
-    };
-  }
-};
-
-/**
- * Executar query de escrita (INSERT, UPDATE, DELETE)
- */
-export const executeD1Write = async (db, query, params = []) => {
-  try {
-    const result = await db
-      .prepare(query)
-      .bind(...params)
-      .run();
-    return {
-      success: true,
-      meta: result.meta || {},
-      changes: result.meta?.changes || 0
-    };
-  } catch (error) {
-    const logger = require('./logger');
-    logger.error('D1 Write Error:', error);
-    return {
-      success: false,
-      error: error.message,
-      changes: 0
-    };
-  }
-};
-
-/**
- * Criar usuÃ¡rio no D1
- */
-export const createUser = (db, userData) => {
+// Criar usuário
+export const createUser = async (db, userData) => {
   const { email, name, password, phone = null, businessType = 'user', role = 'user' } = userData;
 
   const id = generateId('user');
@@ -110,9 +61,11 @@ export const createUser = (db, userData) => {
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  const result = await executeD1Write(db, query, [
+  const timestamp = now();
+
+  await executeD1Write(db, query, [
     id,
-    email.toLowerCase(),
+    email,
     name,
     hashedPassword,
     phone,
@@ -120,73 +73,67 @@ export const createUser = (db, userData) => {
     role,
     verificationCode,
     codeExpires,
-    now(),
-    now()
+    timestamp,
+    timestamp
   ]);
 
-  if (result.success) {
-    return {
-      success: true,
-      userId: id,
-      verificationCode
-    };
-  }
-
-  return result;
+  return {
+    id,
+    email,
+    name,
+    phone,
+    businessType,
+    role,
+    verificationCode
+  };
 };
 
-/**
- * Buscar usuÃ¡rio por email
- */
-export const findUserByEmail = (db, email) => {
+// Encontrar usuário por email
+export const findUserByEmail = async (db, email) => {
   const query = 'SELECT * FROM users WHERE email = ? LIMIT 1';
-  return executeD1QueryFirst(db, query, [email.toLowerCase()]);
+  const results = await executeD1Query(db, query, [email]);
+  return results.length > 0 ? results[0] : null;
 };
 
-/**
- * Buscar usuÃ¡rio por ID
- */
-export const findUserById = (db, userId) => {
+// Encontrar usuário por ID
+export const findUserById = async (db, userId) => {
   const query = 'SELECT * FROM users WHERE id = ? LIMIT 1';
-  return executeD1QueryFirst(db, query, [userId]);
+  const results = await executeD1Query(db, query, [userId]);
+  return results.length > 0 ? results[0] : null;
+};
+
+// Atualizar usuário
+export const updateUser = async (db, userId, updates) => {
+  const allowedFields = ['name', 'phone', 'businessType', 'verificationCode', 'codeExpires', 'verified', 'password'];
+  const fields = Object.keys(updates).filter(field => allowedFields.includes(field));
+  
+  if (fields.length === 0) return false;
+
+  const setClause = fields.map(field => `${field} = ?`).join(', ');
+  const values = fields.map(field => updates[field]);
+  
+  const query = `
+    UPDATE users 
+    SET ${setClause}, updatedAt = ?
+    WHERE id = ?
+  `;
+
+  values.push(now(), userId);
+  await executeD1Write(db, query, values);
+  return true;
+};
+
+// Verificar senha
+export const verifyPassword = async (plainPassword, hashedPassword) => {
+  return await bcrypt.compare(plainPassword, hashedPassword);
 };
 
 /**
- * Atualizar usuÃ¡rio
+ * Funções de produto
  */
-export const updateUser = (db, userId, updates) => {
-  const fields = [];
-  const values = [];
 
-  Object.keys(updates).forEach(key => {
-    if (updates[key] !== undefined) {
-      fields.push(`${key} = ?`);
-      values.push(updates[key]);
-    }
-  });
-
-  // Adicionar updatedAt
-  fields.push('updatedAt = ?');
-  values.push(now());
-
-  // Adicionar userId no final
-  values.push(userId);
-
-  const query = `UPDATE users SET ${fields.join(', ')} WHERE id = ?`;
-  return executeD1Write(db, query, values);
-};
-
-/**
- * Verificar senha
- */
-export const verifyPassword = (plainPassword, hashedPassword) => {
-  return bcrypt.compare(plainPassword, hashedPassword);
-};
-
-/**
- * Criar produto
- */
-export const createProduct = (db, userId, productData) => {
+// Criar produto
+export const createProduct = async (db, userId, productData) => {
   const {
     title,
     description = '',
@@ -211,7 +158,9 @@ export const createProduct = (db, userId, productData) => {
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  const result = await executeD1Write(db, query, [
+  const timestamp = now();
+
+  await executeD1Write(db, query, [
     id,
     userId,
     title,
@@ -224,269 +173,331 @@ export const createProduct = (db, userId, productData) => {
     state,
     slug,
     'active',
-    now(),
-    now()
+    timestamp,
+    timestamp
   ]);
 
-  if (result.success) {
-    return {
-      success: true,
-      productId: id
-    };
-  }
-
-  return result;
+  return { id, slug };
 };
 
-/**
- * Buscar produtos com filtros
- */
-export const findProducts = (db, filters = {}) => {
-  let query = "SELECT * FROM products WHERE status = 'active'";
+// Encontrar produtos
+export const findProducts = async (db, filters = {}) => {
+  const {
+    userId,
+    category,
+    city,
+    state,
+    status = 'active',
+    minPrice,
+    maxPrice,
+    search,
+    limit = 50,
+    offset = 0
+  } = filters;
+
+  let query = 'SELECT * FROM products WHERE 1=1';
   const params = [];
 
-  if (filters.category) {
+  if (userId) {
+    query += ' AND userId = ?';
+    params.push(userId);
+  }
+
+  if (category) {
     query += ' AND category = ?';
-    params.push(filters.category);
+    params.push(category);
   }
 
-  if (filters.state) {
+  if (city) {
+    query += ' AND city = ?';
+    params.push(city);
+  }
+
+  if (state) {
     query += ' AND state = ?';
-    params.push(filters.state);
+    params.push(state);
   }
 
-  if (filters.search) {
+  if (status) {
+    query += ' AND status = ?';
+    params.push(status);
+  }
+
+  if (minPrice !== undefined) {
+    query += ' AND price >= ?';
+    params.push(minPrice);
+  }
+
+  if (maxPrice !== undefined) {
+    query += ' AND price <= ?';
+    params.push(maxPrice);
+  }
+
+  if (search) {
     query += ' AND (title LIKE ? OR description LIKE ?)';
-    const searchTerm = `%${filters.search}%`;
+    const searchTerm = `%${search}%`;
     params.push(searchTerm, searchTerm);
   }
 
-  query += ' ORDER BY createdAt DESC';
+  query += ' ORDER BY createdAt DESC LIMIT ? OFFSET ?';
+  params.push(limit, offset);
 
-  if (filters.limit) {
-    query += ' LIMIT ?';
-    params.push(parseInt(filters.limit, 10, 10));
-  }
-
-  return executeD1Query(db, query, params);
+  return await executeD1Query(db, query, params);
 };
 
 /**
- * Criar frete
+ * Funções de frete
  */
-export const createFreight = (db, userId, freightData) => {
-  const { originCity, originState, destinationCity, destinationState, loadType, price } =
-    freightData;
 
-  const id = generateId('freight');
-  const trackingCode = `AGR${Date.now().toString(36).toUpperCase()}`;
-
-  const query = `
-    INSERT INTO freights (
-      id, userId, originCity, originState, destinationCity, destinationState,
-      loadType, price, trackingCode, status, createdAt, updatedAt
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
-
-  const result = await executeD1Write(db, query, [
-    id,
-    userId,
+// Criar frete
+export const createFreight = async (db, userId, freightData) => {
+  const {
+    title,
+    description,
     originCity,
     originState,
     destinationCity,
     destinationState,
-    loadType,
+    cargoType,
     price,
-    trackingCode,
-    'available',
-    now(),
-    now()
+    availableDate,
+    capacity = null
+  } = freightData;
+
+  const id = generateId('frt');
+  const timestamp = now();
+
+  const query = `
+    INSERT INTO freights (
+      id, userId, title, description, originCity, originState,
+      destinationCity, destinationState, cargoType, price,
+      availableDate, capacity, status, createdAt, updatedAt
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  await executeD1Write(db, query, [
+    id,
+    userId,
+    title,
+    description,
+    originCity,
+    originState,
+    destinationCity,
+    destinationState,
+    cargoType,
+    price,
+    availableDate,
+    capacity,
+    'active',
+    timestamp,
+    timestamp
   ]);
 
-  if (result.success) {
-    return {
-      success: true,
-      freightId: id,
-      trackingCode
-    };
-  }
-
-  return result;
+  return { id };
 };
 
-/**
- * Buscar fretes
- */
-export const findFreights = (db, filters = {}) => {
-  let query = "SELECT * FROM freights WHERE status = 'available'";
+// Encontrar fretes
+export const findFreights = async (db, filters = {}) => {
+  const {
+    userId,
+    cargoType,
+    originState,
+    destinationState,
+    status = 'active',
+    minPrice,
+    maxPrice,
+    search,
+    limit = 50,
+    offset = 0
+  } = filters;
+
+  let query = 'SELECT * FROM freights WHERE 1=1';
   const params = [];
 
-  if (filters.originState) {
+  if (userId) {
+    query += ' AND userId = ?';
+    params.push(userId);
+  }
+
+  if (cargoType) {
+    query += ' AND cargoType = ?';
+    params.push(cargoType);
+  }
+
+  if (originState) {
     query += ' AND originState = ?';
-    params.push(filters.originState);
+    params.push(originState);
   }
 
-  if (filters.destinationState) {
+  if (destinationState) {
     query += ' AND destinationState = ?';
-    params.push(filters.destinationState);
+    params.push(destinationState);
   }
 
-  query += ' ORDER BY createdAt DESC';
-
-  if (filters.limit) {
-    query += ' LIMIT ?';
-    params.push(parseInt(filters.limit, 10, 10));
+  if (status) {
+    query += ' AND status = ?';
+    params.push(status);
   }
 
-  return executeD1Query(db, query, params);
+  if (minPrice !== undefined) {
+    query += ' AND price >= ?';
+    params.push(minPrice);
+  }
+
+  if (maxPrice !== undefined) {
+    query += ' AND price <= ?';
+    params.push(maxPrice);
+  }
+
+  if (search) {
+    query += ' AND (title LIKE ? OR description LIKE ?)';
+    const searchTerm = `%${search}%`;
+    params.push(searchTerm, searchTerm);
+  }
+
+  query += ' ORDER BY createdAt DESC LIMIT ? OFFSET ?';
+  params.push(limit, offset);
+
+  return await executeD1Query(db, query, params);
 };
 
 /**
- * Criar mensagem
+ * Funções de mensagem
  */
-export const createMessage = (db, messageData) => {
-  const { conversationId, senderId, receiverId, content, type = 'text' } = messageData;
+
+// Criar mensagem
+export const createMessage = async (db, messageData) => {
+  const {
+    senderId,
+    receiverId,
+    subject,
+    content,
+    messageType = 'general',
+    relatedItemId = null,
+    relatedItemType = null
+  } = messageData;
 
   const id = generateId('msg');
+  const conversationId = generateId('conv');
+  const timestamp = now();
 
   const query = `
     INSERT INTO messages (
-      id, conversationId, senderId, receiverId, content, type, createdAt
-    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+      id, conversationId, senderId, receiverId, subject,
+      content, messageType, relatedItemId, relatedItemType,
+      status, createdAt, updatedAt
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  return executeD1Write(db, query, [
+  await executeD1Write(db, query, [
     id,
     conversationId,
     senderId,
     receiverId,
+    subject,
     content,
-    type,
-    now()
+    messageType,
+    relatedItemId,
+    relatedItemType,
+    'unread',
+    timestamp,
+    timestamp
   ]);
+
+  return { id, conversationId };
 };
 
-/**
- * Buscar mensagens de uma conversa
- */
-export const findMessages = (db, conversationId, limit = 50) => {
+// Encontrar mensagens
+export const findMessages = async (db, conversationId, limit = 50) => {
   const query = `
-    SELECT * FROM messages 
-    WHERE conversationId = ? AND isDeleted = 0
+    SELECT * FROM messages
+    WHERE conversationId = ?
     ORDER BY createdAt DESC
     LIMIT ?
   `;
 
-  return executeD1Query(db, query, [conversationId, limit]);
+  return await executeD1Query(db, query, [conversationId, limit]);
 };
 
 /**
- * Criar transaÃ§Ã£o
+ * Funções de transação
  */
-export const createTransaction = (db, transactionData) => {
-  const { userId, type, amount, paymentMethod, description } = transactionData;
+
+// Criar transação
+export const createTransaction = async (db, transactionData) => {
+  const {
+    buyerId,
+    sellerId,
+    itemId,
+    itemType,
+    amount,
+    status = 'pending',
+    paymentMethod,
+    paymentDetails = {}
+  } = transactionData;
 
   const id = generateId('txn');
+  const timestamp = now();
 
   const query = `
     INSERT INTO transactions (
-      id, userId, type, amount, paymentMethod, paymentStatus, description, createdAt
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      id, buyerId, sellerId, itemId, itemType, amount,
+      status, paymentMethod, paymentDetails, createdAt, updatedAt
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  return executeD1Write(db, query, [
+  await executeD1Write(db, query, [
     id,
-    userId,
-    type,
+    buyerId,
+    sellerId,
+    itemId,
+    itemType,
     amount,
+    status,
     paymentMethod,
-    'pending',
-    description,
-    now()
+    JSON.stringify(paymentDetails),
+    timestamp,
+    timestamp
   ]);
+
+  return { id };
 };
 
 /**
- * Criar log de auditoria
+ * Funções de auditoria
  */
-export const createAuditLog = (db, logData) => {
-  const { userId, action, entity, entityId, ipAddress, userAgent } = logData;
+
+// Criar log de auditoria
+export const createAuditLog = async (db, logData) => {
+  const {
+    userId,
+    action,
+    resourceType,
+    resourceId,
+    details = {},
+    ipAddress = null
+  } = logData;
 
   const id = generateId('log');
+  const timestamp = now();
 
   const query = `
     INSERT INTO audit_logs (
-      id, userId, action, entity, entityId, ipAddress, userAgent, createdAt
+      id, userId, action, resourceType, resourceId,
+      details, ipAddress, createdAt
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  return executeD1Write(db, query, [
+  await executeD1Write(db, query, [
     id,
     userId,
     action,
-    entity,
-    entityId,
+    resourceType,
+    resourceId,
+    JSON.stringify(details),
     ipAddress,
-    userAgent,
-    now()
+    timestamp
   ]);
-};
 
-/**
- * Sanitizar dados para JSON
- */
-export const sanitizeForJSON = data => {
-  if (!data) {
-    return null;
-  }
-
-  const sanitized = { ...data };
-
-  // Converter integers para boolean
-  ['isAdmin', 'isActive', 'isBlocked', 'isEmailVerified', 'isPaid', 'twoFactorEnabled'].forEach(
-    field => {
-      if (field in sanitized) {
-        sanitized[field] = Boolean(sanitized[field]);
-      }
-    }
-  );
-
-  // Parsear JSON strings
-  ['images', 'tags', 'certifications', 'dimensions'].forEach(field => {
-    if (sanitized[field] && typeof sanitized[field] === 'string') {
-      try {
-        sanitized[field] = JSON.parse(sanitized[field]);
-      } catch (e) {
-        // Manter como string se nÃ£o for JSON vÃ¡lido
-      }
-    }
-  });
-
-  // Remover senha
-  delete sanitized.password;
-  delete sanitized.twoFactorSecret;
-
-  return sanitized;
-};
-
-export default {
-  generateId,
-  now,
-  executeD1Query,
-  executeD1QueryFirst,
-  executeD1Write,
-  createUser,
-  findUserByEmail,
-  findUserById,
-  updateUser,
-  verifyPassword,
-  createProduct,
-  findProducts,
-  createFreight,
-  findFreights,
-  createMessage,
-  findMessages,
-  createTransaction,
-  createAuditLog,
-  sanitizeForJSON
+  return { id };
 };

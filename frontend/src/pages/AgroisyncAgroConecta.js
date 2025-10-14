@@ -54,42 +54,8 @@ const AgroisyncAgroConecta = () => {
   const [turnstileToken, setTurnstileToken] = useState('');
   // const [publicRegistrations, setPublicRegistrations] = useState([]);
 
-  // Dados de ofertas de frete
-  const ofertasFrete = [
-    {
-      id: 1,
-      transportador: 'Transportadora ABC',
-      origem: 'São Paulo, SP',
-      destino: 'Mato Grosso, MT',
-      volume: '50 toneladas',
-      preco: 'R$ 2.500,00',
-      data: '15/12/2024',
-      avaliacao: 4.8,
-      veiculo: 'Caminhão Truck 6x2'
-    },
-    {
-      id: 2,
-      transportador: 'Logística XYZ',
-      origem: 'Paraná, PR',
-      destino: 'Goiás, GO',
-      volume: '30 toneladas',
-      preco: 'R$ 1.800,00',
-      data: '18/12/2024',
-      avaliacao: 4.6,
-      veiculo: 'Caminhão Bitruck'
-    },
-    {
-      id: 3,
-      transportador: 'Frete Express',
-      origem: 'Minas Gerais, MG',
-      destino: 'Bahia, BA',
-      volume: '25 toneladas',
-      preco: 'R$ 2.200,00',
-      data: '20/12/2024',
-      avaliacao: 4.9,
-      veiculo: 'Caminhão Truck 6x4'
-    }
-  ];
+  // Ofertas de frete - buscar da API
+  const [ofertasFrete, setOfertasFrete] = useState([]);
 
   // Dados mockados para pedidos do usuário
   const mockOrders = [
@@ -201,10 +167,12 @@ const AgroisyncAgroConecta = () => {
   };
 
   const handleStartTracking = orderId => {
-    const order = mockOrders.find(o => o.id === orderId);
-    setSelectedOrder(order);
-    setTrackingUpdates(order.trackingEvents);
-    setShowTrackingModal(true);
+    const order = myOrders.find(o => o.id === orderId);
+    if (order) {
+      setSelectedOrder(order);
+      setTrackingUpdates(order.trackingEvents || []);
+      setShowTrackingModal(true);
+    }
   };
 
   const loadMyOrders = async () => {
@@ -248,21 +216,7 @@ const AgroisyncAgroConecta = () => {
       if (process.env.NODE_ENV !== 'production') {
         // Erro ao gerar análise de IA
       }
-      // Fallback para dados mockados
-      const mockAIClosure = {
-        summary: 'Pedido entregue dentro do prazo estimado. Performance excelente.',
-        performanceMetrics: {
-          onTimeDelivery: true,
-          damageReport: 'Nenhum dano reportado',
-          delayReason: null,
-          overallScore: 5
-        },
-        suggestedMessage: 'Obrigado pela confiança! Pedido entregue com sucesso.',
-        invoiceDraft: 'Fatura FR-002 - R$ 1.800,00 - Entregue em 13/01/2024'
-      };
-
-      setAiClosureData(mockAIClosure);
-      setShowAIClosureModal(true);
+      toast.error('Erro ao gerar análise. Tente novamente.');
     }
   };
 
@@ -327,30 +281,8 @@ const AgroisyncAgroConecta = () => {
         if (process.env.NODE_ENV !== 'production') {
           // Erro ao carregar pedidos
         }
-        // Dados mock para demonstração da IA
-        const mockOrders = [
-          {
-            id: 1,
-            orderNumber: 'FR-001',
-            origin: { city: 'São Paulo', state: 'SP' },
-            destination: { city: 'Cuiabá', state: 'MT' },
-            pricing: { totalPrice: 2500 },
-            pickupDate: new Date().toISOString(),
-            status: 'delivered', // Status entregue para mostrar botão IA
-            trackingCode: 'TRK001'
-          },
-          {
-            id: 2,
-            orderNumber: 'FR-002',
-            origin: { city: 'Curitiba', state: 'PR' },
-            destination: { city: 'Goiânia', state: 'GO' },
-            pricing: { totalPrice: 1800 },
-            pickupDate: new Date().toISOString(),
-            status: 'in_transit',
-            trackingCode: 'TRK002'
-          }
-        ];
-        setMyOrders(mockOrders);
+        // SEM DADOS FALSOS - apenas array vazio
+        setMyOrders([]);
       }
     };
 

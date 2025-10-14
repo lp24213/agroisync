@@ -38,6 +38,7 @@
     "react-countup": "^6.5.3",
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.3.8",
+    "react-helmet-async": "^2.0.4",
     "react-hook-form": "^7.62.0",
     "react-hot-toast": "^2.6.0",
     "react-i18next": "^13.5.0",
@@ -58,15 +59,22 @@
   "scripts": {
     "start": "react-scripts start",
     "dev": "react-scripts start",
-    "build": "react-scripts build",
-    "build:production": "GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "react-scripts build && node scripts/generate-sitemap.js",
+    "build:production": "GENERATE_SOURCEMAP=false react-scripts build && node scripts/generate-sitemap.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint \"src/**/*.{js,jsx}\" --fix",
     "lint:check": "eslint \"src/**/*.{js,jsx}\"",
     "format": "prettier --write \"src/**/*.{js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{js,jsx,json,css,md}\"",
-    "postbuild": "echo 'Build completed successfully!'"
+    "postbuild": "node scripts/generate-sitemap.js",
+    "test:a11y": "axe http://localhost:3000 http://localhost:3000/sobre http://localhost:3000/contato http://localhost:3000/produtos http://localhost:3000/frete --exit 0",
+    "ci:build": "npm run build",
+    "ci:start": "serve -s build -p 3000",
+    "ci:lhci": "wait-on http://localhost:3000 && lhci collect --config=./lighthouserc.json && lhci assert --config=./lighthouserc.json",
+    "cf:build": "npm run build",
+    "cf:deploy": "wrangler pages deploy build --project-name=agroisync",
+    "generate:csp": "node scripts/csp-hashes.js"
   },
   "eslintConfig": {
     "extends": [
@@ -87,15 +95,21 @@
     ]
   },
   "devDependencies": {
+    "@axe-core/cli": "^4.9.1",
+    "@lhci/cli": "^0.13.0",
     "autoprefixer": "^10.4.16",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^6.1.1",
     "globals": "^16.4.0",
     "postcss": "^8.4.47",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.14",
-    "tailwindcss": "^3.3.5"
+    "serve": "^14.2.1",
+    "tailwindcss": "^3.3.5",
+    "wait-on": "^7.2.0",
+    "wrangler": "^3.80.0"
   },
   "overrides": {
     "nth-check": "^2.0.1",

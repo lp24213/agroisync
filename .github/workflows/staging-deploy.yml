@@ -12,16 +12,16 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Ambiente para deploy'
+        description: "Ambiente para deploy"
         required: true
-        default: 'staging'
+        default: "staging"
         type: choice
         options:
-        - staging
-        - preview
+          - staging
+          - preview
 
 env:
-  NODE_VERSION: '18'
+  NODE_VERSION: "18"
   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
@@ -30,7 +30,7 @@ jobs:
   test-and-validate:
     runs-on: ubuntu-latest
     name: Testes e Validações
-    
+
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
@@ -41,7 +41,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Instalar dependências do frontend
         run: |
@@ -101,7 +101,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy Backend (Staging)
     environment: staging-backend
-    
+
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
@@ -157,7 +157,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy Frontend (Staging)
     environment: staging-frontend
-    
+
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
@@ -203,7 +203,7 @@ jobs:
     needs: [deploy-backend, deploy-frontend]
     runs-on: ubuntu-latest
     name: Testes de Integração
-    
+
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
@@ -242,7 +242,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Notificações
     if: always()
-    
+
     steps:
       - name: Notificar sucesso
         if: needs.integration-tests.result == 'success'
@@ -263,7 +263,7 @@ jobs:
         uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
-          channel: '#deployments'
+          channel: "#deployments"
           text: |
             Deploy de Staging: ${{ job.status }}
             Frontend: https://staging.agroisync.com
@@ -277,7 +277,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Limpeza
     if: always()
-    
+
     steps:
       - name: Limpar artefatos temporários
         run: |

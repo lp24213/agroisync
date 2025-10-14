@@ -1,31 +1,150 @@
-// Serviço de API para integrar frontend com backend existente
-import { API_CONFIG, getAuthToken } from '../config/constants.js';
+// @ts-check
+import axios from 'axios';
+import { config } from '../config';
 
-// Usar configuração centralizada com fallback
-const API_BASE_URL = API_CONFIG?.baseURL || 'https://agroisync.com/api';
-
-class ApiService {
-  constructor() {
-    this.baseURL = API_BASE_URL;
+/**
+ * Cliente HTTP configurado para a API
+ */
+export const api = axios.create({
+  baseURL: config.api.url,
+  headers: {
+    'Content-Type': 'application/json'
   }
+});
 
-  // Método para fazer requisições autenticadas
-  async request(endpoint, options = {}) {
-    // Usar helper centralizado que mantém compatibilidade
-    const token = getAuthToken();
+// Interceptor para adicionar token
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem(config.storage.authToken);
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }),
-        ...options.headers
-      },
-      ...options
-    };
+// Interceptor para tratar erros
+api.interceptors.response.use(
+  response => response,
+  error => {
+    // Erros de rede
+    if (!error.response) {
+      return Promise.reject({
+        message: 'Network error. Please check your connection.',
+        status: 0
+      });
+    }
 
-    try {
-      const response = await fetch(`${this.baseURL}${endpoint}`, config);
-      const data = await response.json();
+    // Erro de autenticação
+    if (error.response.status === 401) {
+      localStorage.removeItem(config.storage.authToken);
+      localStorage.removeItem(config.storage.userData);
+      window.location.href = '/login';
+    }
+
+    // Erro do Turnstile
+    if (error.response.status === 403 && error.response.data?.error?.includes('Turnstile')) {
+      return Promise.reject({
+        message: 'Security check failed. Please try again.',
+        status: 403
+      });
+    }
+
+    // Outros erros
+    return Promise.reject(error.response.data);
+  }
+);
+
+/**
+ * Serviços da API
+ */
+
+// Autenticação
+export const auth = {
+  async login(email, password, turnstileToken) {
+    const { data } = await api.post('/auth/login', {
+      email,
+      password,
+      turnstileToken
+    });
+    return data;
+  },
+
+  async register(userData, turnstileToken) {
+    const { data } = await api.post('/auth/register', {
+      ...userData,
+      turnstileToken
+    });
+    return data;
+  },
+
+  async recover(email, turnstileToken) {
+    const { data } = await api.post('/auth/recover', {
+      email,
+      turnstileToken
+    });
+    return data;
+  }
+};
+
+// Perfil
+export const profile = {
+  async get() {
+    const { data } = await api.get('/user/profile');
+    return data;
+  },
+
+  async update(changes) {
+    const { data } = await api.put('/user/profile', changes);
+    return data;
+  }
+};
+
+// Produtos
+export const products = {
+  async list(filters = {}) {
+    const { data } = await api.get('/shop/products', {
+      params: filters
+    });
+    return data;
+  },
+
+  async create(product) {
+    const { data } = await api.post('/shop/products', product);
+    return data;
+  },
+
+  async update(id, changes) {
+    const { data } = await api.put(`/shop/products/${id}`, changes);
+    return data;
+  },
+
+  async delete(id) {
+    const { data } = await api.delete(`/shop/products/${id}`);
+    return data;
+  }
+};
+
+// Mensagens
+export const messages = {
+  async list() {
+    const { data } = await api.get('/messages');
+    return data;
+  },
+
+  async send(message) {
+    const { data } = await api.post('/messages', message);
+    return data;
+  }
+};
+
+// Fretes
+export const freight = {
+  async calculate(params) {
+    const { data } = await api.get('/freight/calculate', {
+      params
+    });
+    return data;
+  }
+};
 
       if (!response.ok) {
         throw new Error(data.message || 'Erro na requisição');

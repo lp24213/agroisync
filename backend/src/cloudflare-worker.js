@@ -1,95 +1,98 @@
 ﻿/**
  * Cloudflare Worker - AgroSync Backend
- * Stack: Cloudflare Workers + D1 + Resend + JWT ONLY
  */
 
-// CORS Headers
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Access-Control-Max-Age': '86400'
-};
+import { Resend } from 'resend';
+import { testConnections, testDB, testResend } from './utils/test-connections';
 
-function jsonResponse(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+// Handler de verificação de saúde do sistema
+async function healthCheck(env) {
+  const connections = await testConnections(env);
+  const dbStatus = await testDB(env);
+  const emailStatus = await testResend(env);
+
+  const healthy = connections.d1 && connections.resend && connections.turnstile;
+
+  return new Response(JSON.stringify({
+    status: healthy ? 'healthy' : 'unhealthy',
+    connections,
+    database: dbStatus,
+    email: emailStatus
+  }), {
+    status: healthy ? 200 : 503,
+    headers: { 'Content-Type': 'application/json' }
   });
+  };
+
+// Handler principal do Worker
+export default {
+  async fetch(request, env, ctx) {
+    try {
+      // Verificar CORS
+      const corsResponse = await handleCORS(request);
+      if (corsResponse) return corsResponse;
+
+      // Extrair rota
+      const url = new URL(request.url);
+      const routeKey = `${request.method} ${url.pathname}`;
+      const handler = routes[routeKey];
+
+      // Rota não encontrada
+      if (!handler) {
+        return jsonResponse({ error: 'Not Found' }, 404);
+      }
+
+      // Executar handler da rota
+      return await handler(request, env, ctx);
+    } catch (error) {
+      console.error('Worker Error:', error);
+      return jsonResponse(
+        { error: 'Internal Server Error' },
+        500
+      );
+    }
+  }
 }
 
-async function verifyJWT(request, jwtSecret) {
-  const authHeader = request.headers.get('Authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return null;
-  }
-
-  try {
-    const token = authHeader.substring(7);
-    const parts = token.split('.');
-    if (parts.length !== 3) {
-      return null;
-    }
-    
-    // Decode payload
-    const payload = JSON.parse(atob(parts[1]));
-    
-    // Check expiration
-    if (payload.exp && payload.exp < Date.now() / 1000) {
-      return null;
-    }
-    
-    // Verify signature using Web Crypto API
-    const encoder = new TextEncoder();
-    const data = encoder.encode(parts[0] + '.' + parts[1]);
-    const key = await crypto.subtle.importKey(
-      'raw',
-      encoder.encode(jwtSecret),
-      { name: 'HMAC', hash: 'SHA-256' },
-      false,
-      ['verify']
+async function sendEmail(env, { to, subject, html, text }) {
+  const from = env.RESEND_FROM || 'AgroSync <contato@agroisync.com>';
+  const resp = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${env.RESEND_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ from, to, subject, html, ...(text ? { text } : {}) })
+  });
+  if (!resp.ok) {
+    const err = await resp.text().catch(() => 'Erro desconhecido');
+    // eslint-disable-next-line no-console
+    console.error(
+      JSON.stringify({
+        event: 'email.error',
+        provider: 'resend',
+        to,
+        subject,
+        status: resp.status,
+        error: err,
+        timestamp: new Date().toISOString()
+      })
     );
-    
-    // Decode signature
-    const signature = Uint8Array.from(atob(parts[2].replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
-    
-    const isValid = await crypto.subtle.verify(
-      'HMAC',
-      key,
-      signature,
-      data
-    );
-    
-    if (!isValid) {
-      return null;
-    }
-    
-    return payload;
-  } catch {
-    return null;
+    throw new Error(`Resend falhou: ${resp.status} ${err}`);
   }
-}
-
-function generateJWT(payload, secret) {
-  const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
-  const now = Math.floor(Date.now() / 1000);
-  const jwtPayload = btoa(JSON.stringify({ ...payload, iat: now, exp: now + 86400 }));
-  return `${header}.${jwtPayload}.${btoa(secret)}`;
-}
-
-async function sendEmail(env, { to, subject, html }) {
-  try {
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${env.RESEND_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ from: 'AgroSync <no-reply@agroisync.com>', to, subject, html })
-    });
-  } catch {
-    // Silent fail
-  }
+  const data = await resp.json().catch(() => null);
+  const messageId = data?.id || 'resend-sent';
+  // eslint-disable-next-line no-console
+  console.log(
+    JSON.stringify({
+      event: 'email.sent',
+      provider: 'resend',
+      to,
+      subject,
+      messageId,
+      timestamp: new Date().toISOString()
+    })
+  );
 }
 
 // EMAIL VERIFICATION ROUTES
@@ -101,7 +104,7 @@ async function handleSendVerificationEmail(request, env) {
 
   // Generate 6-digit code
   const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-  
+
   // Send verification email
   await sendEmail(env, {
     to: email,
@@ -138,7 +141,10 @@ async function handleRegister(request, env) {
     return jsonResponse({ success: false, error: 'Dados incompletos' }, 400);
   }
 
-  const exists = await env.DB.prepare('SELECT id FROM users WHERE email = ?')
+  // [AGROISYNC_FIX] Usar helper getDb para resolver binding D1 preferencial (AGROISYNC_DB) com fallback.
+  const db = getDb(env);
+  const exists = await db
+    .prepare('SELECT id FROM users WHERE email = ?')
     .bind(email.toLowerCase())
     .first();
 
@@ -147,9 +153,10 @@ async function handleRegister(request, env) {
   }
 
   const userId = crypto.randomUUID();
-  await env.DB.prepare(
-    "INSERT INTO users (id, email, password, name, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
-  )
+  await db
+    .prepare(
+      "INSERT INTO users (id, email, password, name, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
+    )
     .bind(userId, email.toLowerCase(), password, name)
     .run();
 
@@ -169,7 +176,8 @@ async function handleLogin(request, env) {
     return jsonResponse({ success: false, error: 'Dados incompletos' }, 400);
   }
 
-  const user = await env.DB.prepare('SELECT * FROM users WHERE email = ?')
+  const user = await db
+    .prepare('SELECT * FROM users WHERE email = ?')
     .bind(email.toLowerCase())
     .first();
 
@@ -194,13 +202,13 @@ async function handleProductsList(request, env) {
   const limit = parseInt(url.searchParams.get('limit', 10, 10) || '20', 10);
   const offset = (page - 1) * limit;
 
-  const { results } = await env.DB.prepare(
-    'SELECT * FROM products WHERE status = ? ORDER BY created_at DESC LIMIT ? OFFSET ?'
-  )
+  const { results } = await db
+    .prepare('SELECT * FROM products WHERE status = ? ORDER BY created_at DESC LIMIT ? OFFSET ?')
     .bind('active', limit, offset)
     .all();
 
-  const { total } = await env.DB.prepare('SELECT COUNT(*) as total FROM products WHERE status = ?')
+  const { total } = await db
+    .prepare('SELECT COUNT(*) as total FROM products WHERE status = ?')
     .bind('active')
     .first();
 
@@ -225,9 +233,10 @@ async function handleProductCreate(request, env, user) {
   }
 
   const productId = crypto.randomUUID();
-  await env.DB.prepare(
-    "INSERT INTO products (id, name, description, price, category, seller_id, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))"
-  )
+  await db
+    .prepare(
+      "INSERT INTO products (id, name, description, price, category, seller_id, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))"
+    )
     .bind(productId, name, description, price, category, user.userId, 'active')
     .run();
 
@@ -241,13 +250,13 @@ async function handlePartnersList(request, env) {
   const limit = parseInt(url.searchParams.get('limit', 10, 10) || '20', 10);
   const offset = (page - 1) * limit;
 
-  const { results } = await env.DB.prepare(
-    'SELECT * FROM partners WHERE status = ? ORDER BY created_at DESC LIMIT ? OFFSET ?'
-  )
+  const { results } = await db
+    .prepare('SELECT * FROM partners WHERE status = ? ORDER BY created_at DESC LIMIT ? OFFSET ?')
     .bind('active', limit, offset)
     .all();
 
-  const { total } = await env.DB.prepare('SELECT COUNT(*) as total FROM partners WHERE status = ?')
+  const { total } = await db
+    .prepare('SELECT COUNT(*) as total FROM partners WHERE status = ?')
     .bind('active')
     .first();
 
@@ -271,13 +280,12 @@ async function handleFreightList(request, env) {
   const limit = parseInt(url.searchParams.get('limit', 10, 10) || '20', 10);
   const offset = (page - 1) * limit;
 
-  const { results } = await env.DB.prepare(
-    'SELECT * FROM freight_orders ORDER BY created_at DESC LIMIT ? OFFSET ?'
-  )
+  const { results } = await db
+    .prepare('SELECT * FROM freight_orders ORDER BY created_at DESC LIMIT ? OFFSET ?')
     .bind(limit, offset)
     .all();
 
-  const { total } = await env.DB.prepare('SELECT COUNT(*) as total FROM freight_orders').first();
+  const { total } = await db.prepare('SELECT COUNT(*) as total FROM freight_orders').first();
 
   return jsonResponse({
     success: true,
@@ -299,9 +307,10 @@ async function handleFreightCreate(request, env, user) {
   }
 
   const freightId = crypto.randomUUID();
-  await env.DB.prepare(
-    "INSERT INTO freight_orders (id, origin, destination, cargo_type, customer_id, status, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
-  )
+  await db
+    .prepare(
+      "INSERT INTO freight_orders (id, origin, destination, cargo_type, customer_id, status, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
+    )
     .bind(freightId, origin, destination, cargoType, user.userId, 'pending')
     .run();
 
@@ -310,9 +319,8 @@ async function handleFreightCreate(request, env, user) {
 
 // USER ROUTES
 async function handleUserProfile(request, env, user) {
-  const profile = await env.DB.prepare(
-    'SELECT id, email, name, phone, bio, city, state FROM users WHERE id = ?'
-  )
+  const profile = await db
+    .prepare('SELECT id, email, name, phone, bio, city, state FROM users WHERE id = ?')
     .bind(user.userId)
     .first();
 
@@ -326,9 +334,10 @@ async function handleUserProfile(request, env, user) {
 async function handleUserUpdate(request, env, user) {
   const { name, phone, bio, city, state } = await request.json();
 
-  await env.DB.prepare(
-    "UPDATE users SET name = ?, phone = ?, bio = ?, city = ?, state = ?, updated_at = datetime('now') WHERE id = ?"
-  )
+  await db
+    .prepare(
+      "UPDATE users SET name = ?, phone = ?, bio = ?, city = ?, state = ?, updated_at = datetime('now') WHERE id = ?"
+    )
     .bind(name, phone, bio, city, state, user.userId)
     .run();
 
@@ -344,7 +353,8 @@ async function handlePasswordReset(request, env) {
       return jsonResponse({ success: false, error: 'Email Ã© obrigatÃ³rio' }, 400);
     }
 
-    const user = await env.DB.prepare('SELECT id, name FROM users WHERE email = ?')
+    const user = await db
+      .prepare('SELECT id, name FROM users WHERE email = ?')
       .bind(email.toLowerCase())
       .first();
 
@@ -358,9 +368,10 @@ async function handlePasswordReset(request, env) {
     const resetToken = crypto.randomUUID();
     const expiresAt = Date.now() + 60 * 60 * 1000; // 1 hora
 
-    await env.DB.prepare(
-      "INSERT OR REPLACE INTO password_resets (user_id, token, expires_at, status, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
-    )
+    await db
+      .prepare(
+        "INSERT OR REPLACE INTO password_resets (user_id, token, expires_at, status, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
+      )
       .bind(user.id, resetToken, expiresAt, 'pending')
       .run();
 
@@ -392,9 +403,8 @@ async function handlePasswordResetConfirm(request, env) {
       return jsonResponse({ success: false, error: 'Token e nova senha sÃ£o obrigatÃ³rios' }, 400);
     }
 
-    const reset = await env.DB.prepare(
-      'SELECT * FROM password_resets WHERE token = ? AND status = ? AND expires_at > ?'
-    )
+    const reset = await db
+      .prepare('SELECT * FROM password_resets WHERE token = ? AND status = ? AND expires_at > ?')
       .bind(token, 'pending', Date.now())
       .first();
 
@@ -402,11 +412,13 @@ async function handlePasswordResetConfirm(request, env) {
       return jsonResponse({ success: false, error: 'Token invÃ¡lido ou expirado' }, 400);
     }
 
-    await env.DB.prepare('UPDATE users SET password = ? WHERE id = ?')
+    await db
+      .prepare('UPDATE users SET password = ? WHERE id = ?')
       .bind(newPassword, reset.user_id)
       .run();
 
-    await env.DB.prepare('UPDATE password_resets SET status = ? WHERE token = ?')
+    await db
+      .prepare('UPDATE password_resets SET status = ? WHERE token = ?')
       .bind('used', token)
       .run();
 
@@ -425,9 +437,10 @@ async function handleEmailVerify(request, env) {
       return jsonResponse({ success: false, error: 'Token Ã© obrigatÃ³rio' }, 400);
     }
 
-    const user = await env.DB.prepare(
-      'SELECT id FROM users WHERE email_verification_token = ? AND email_verification_expires > ?'
-    )
+    const user = await getDb(env)
+      .prepare(
+        'SELECT id FROM users WHERE email_verification_token = ? AND email_verification_expires > ?'
+      )
       .bind(token, Date.now())
       .first();
 
@@ -435,9 +448,10 @@ async function handleEmailVerify(request, env) {
       return jsonResponse({ success: false, error: 'Token invÃ¡lido ou expirado' }, 400);
     }
 
-    await env.DB.prepare(
-      'UPDATE users SET is_email_verified = 1, email_verification_token = NULL, email_verification_expires = NULL WHERE id = ?'
-    )
+    await getDb(env)
+      .prepare(
+        'UPDATE users SET is_email_verified = 1, email_verification_token = NULL, email_verification_expires = NULL WHERE id = ?'
+      )
       .bind(user.id)
       .run();
 
@@ -475,7 +489,8 @@ async function handleStoreList(request, env) {
     query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
     params.push(limit, offset);
 
-    const { results } = await env.DB.prepare(query)
+    const { results } = await getDb(env)
+      .prepare(query)
       .bind(...params)
       .all();
 
@@ -503,7 +518,8 @@ async function handleStoreProductDetail(request, env) {
     const url = new URL(request.url);
     const productId = url.pathname.split('/').pop();
 
-    const product = await env.DB.prepare('SELECT * FROM products WHERE id = ? AND status = ?')
+    const product = await getDb(env)
+      .prepare('SELECT * FROM products WHERE id = ? AND status = ?')
       .bind(productId, 'active')
       .first();
 
@@ -529,8 +545,9 @@ async function handleMessagesList(request, env, user) {
     const limit = parseInt(url.searchParams.get('limit', 10, 10) || '20', 10);
     const offset = (page - 1) * limit;
 
-    const { results } = await env.DB.prepare(
-      `
+    const { results } = await getDb(env)
+      .prepare(
+        `
       SELECT m.*, 
              sender.name as sender_name,
              receiver.name as receiver_name
@@ -541,7 +558,7 @@ async function handleMessagesList(request, env, user) {
       ORDER BY m.created_at DESC
       LIMIT ? OFFSET ?
     `
-    )
+      )
       .bind(user.userId, user.userId, limit, offset)
       .all();
 
@@ -569,9 +586,10 @@ async function handleMessageSend(request, env, user) {
     }
 
     const messageId = crypto.randomUUID();
-    await env.DB.prepare(
-      "INSERT INTO messages (id, sender_id, receiver_id, subject, content, type, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))"
-    )
+    await getDb(env)
+      .prepare(
+        "INSERT INTO messages (id, sender_id, receiver_id, subject, content, type, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))"
+      )
       .bind(
         messageId,
         user.userId,
@@ -606,9 +624,10 @@ async function handlePaymentCreate(request, env, user) {
     }
 
     const paymentId = crypto.randomUUID();
-    await env.DB.prepare(
-      "INSERT INTO payments (id, user_id, amount, type, description, status, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
-    )
+    await getDb(env)
+      .prepare(
+        "INSERT INTO payments (id, user_id, amount, type, description, status, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
+      )
       .bind(paymentId, user.userId, amount, type, description || '', 'pending')
       .run();
 
@@ -651,7 +670,8 @@ async function handlePaymentWebhook(request, env) {
     if (event.type === 'payment_intent.succeeded') {
       const paymentId = event.data.object.id;
 
-      await env.DB.prepare('UPDATE payments SET status = ? WHERE id = ?')
+      await getDb(env)
+        .prepare('UPDATE payments SET status = ? WHERE id = ?')
         .bind('completed', paymentId)
         .run();
     }
@@ -671,9 +691,8 @@ async function handleNewsList(request, env) {
     const limit = parseInt(url.searchParams.get('limit', 10, 10) || '10', 10);
     const offset = (page - 1) * limit;
 
-    const { results } = await env.DB.prepare(
-      'SELECT * FROM news WHERE status = ? ORDER BY created_at DESC LIMIT ? OFFSET ?'
-    )
+    const { results } = await getDb(env)
+      .prepare('SELECT * FROM news WHERE status = ? ORDER BY created_at DESC LIMIT ? OFFSET ?')
       .bind('published', limit, offset)
       .all();
 
@@ -694,7 +713,8 @@ async function handleNewsDetail(request, env) {
     const url = new URL(request.url);
     const newsId = url.pathname.split('/').pop();
 
-    const news = await env.DB.prepare('SELECT * FROM news WHERE id = ? AND status = ?')
+    const news = await getDb(env)
+      .prepare('SELECT * FROM news WHERE id = ? AND status = ?')
       .bind(newsId, 'published')
       .first();
 
@@ -719,9 +739,11 @@ async function handleAdminUsers(request, env, user) {
       return jsonResponse({ success: false, error: 'Acesso negado' }, 403);
     }
 
-    const { results } = await env.DB.prepare(
-      'SELECT id, email, name, role, is_active, created_at FROM users ORDER BY created_at DESC LIMIT 50'
-    ).all();
+    const { results } = await getDb(env)
+      .prepare(
+        'SELECT id, email, name, role, is_active, created_at FROM users ORDER BY created_at DESC LIMIT 50'
+      )
+      .all();
 
     return jsonResponse({
       success: true,
@@ -742,10 +764,10 @@ async function handleAdminStats(request, env, user) {
     }
 
     const [usersCount, productsCount, messagesCount, paymentsCount] = await Promise.all([
-      env.DB.prepare('SELECT COUNT(*) as count FROM users').first(),
-      env.DB.prepare('SELECT COUNT(*) as count FROM products').first(),
-      env.DB.prepare('SELECT COUNT(*) as count FROM messages').first(),
-      env.DB.prepare('SELECT COUNT(*) as count FROM payments').first()
+      getDb(env).prepare('SELECT COUNT(*) as count FROM users').first(),
+      getDb(env).prepare('SELECT COUNT(*) as count FROM products').first(),
+      getDb(env).prepare('SELECT COUNT(*) as count FROM messages').first(),
+      getDb(env).prepare('SELECT COUNT(*) as count FROM payments').first()
     ]);
 
     return jsonResponse({
@@ -788,6 +810,14 @@ async function router(request, env) {
   // Email
   if (path === '/api/email/send-verification' && method === 'POST') {
     return handleSendVerificationEmail(request, env);
+  }
+  if (path === '/api/email/health' && method === 'GET') {
+    return jsonResponse({
+      success: true,
+      provider: 'resend',
+      configured: Boolean(env.RESEND_API_KEY),
+      from: env.RESEND_FROM || 'AgroSync <contato@agroisync.com>'
+    });
   }
 
   // Auth
@@ -930,9 +960,10 @@ async function router(request, env) {
     if (!user) {
       return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
     }
-    const { results } = await env.DB.prepare(
-      'SELECT * FROM freight_orders WHERE user_id = ? ORDER BY created_at DESC'
-    ).bind(user.userId).all();
+    const { results } = await getDb(env)
+      .prepare('SELECT * FROM freight_orders WHERE user_id = ? ORDER BY created_at DESC')
+      .bind(user.userId)
+      .all();
     return jsonResponse({ success: true, data: results || [] });
   }
   if (path === '/api/freight-orders' && method === 'POST') {
@@ -942,9 +973,12 @@ async function router(request, env) {
     }
     const data = await request.json();
     const orderId = crypto.randomUUID();
-    await env.DB.prepare(
-      "INSERT INTO freight_orders (id, freight_id, user_id, status, created_at) VALUES (?, ?, ?, 'pending', datetime('now'))"
-    ).bind(orderId, data.freightId, user.userId).run();
+    await getDb(env)
+      .prepare(
+        "INSERT INTO freight_orders (id, freight_id, user_id, status, created_at) VALUES (?, ?, ?, 'pending', datetime('now'))"
+      )
+      .bind(orderId, data.freightId, user.userId)
+      .run();
     return jsonResponse({ success: true, data: { id: orderId } }, 201);
   }
 
@@ -954,9 +988,10 @@ async function router(request, env) {
     if (!user) {
       return jsonResponse({ success: false, error: 'Unauthorized' }, 401);
     }
-    const userData = await env.DB.prepare(
-      'SELECT id, email, name, phone, role, created_at FROM users WHERE id = ?'
-    ).bind(user.userId).first();
+    const userData = await getDb(env)
+      .prepare('SELECT id, email, name, phone, role, created_at FROM users WHERE id = ?')
+      .bind(user.userId)
+      .first();
     return jsonResponse({ success: true, data: userData });
   }
 
@@ -978,7 +1013,10 @@ async function router(request, env) {
   // Products/:id
   if (path.match(/^\/api\/products\/[a-zA-Z0-9-]+$/) && method === 'GET') {
     const productId = path.split('/').pop();
-    const product = await env.DB.prepare('SELECT * FROM products WHERE id = ?').bind(productId).first();
+    const product = await getDb(env)
+      .prepare('SELECT * FROM products WHERE id = ?')
+      .bind(productId)
+      .first();
     if (!product) {
       return jsonResponse({ success: false, error: 'Produto não encontrado' }, 404);
     }
@@ -989,9 +1027,12 @@ async function router(request, env) {
   if (path === '/api/contact' && method === 'POST') {
     const data = await request.json();
     const messageId = crypto.randomUUID();
-    await env.DB.prepare(
-      "INSERT INTO contact_messages (id, name, email, phone, subject, message, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
-    ).bind(messageId, data.name, data.email, data.phone || '', data.subject || '', data.message).run();
+    await getDb(env)
+      .prepare(
+        "INSERT INTO contact_messages (id, name, email, phone, subject, message, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
+      )
+      .bind(messageId, data.name, data.email, data.phone || '', data.subject || '', data.message)
+      .run();
     return jsonResponse({ success: true, message: 'Mensagem enviada com sucesso' }, 201);
   }
 
@@ -1003,6 +1044,9 @@ async function router(request, env) {
 export default {
   fetch(request, env) {
     try {
+      // [AGROISYNC_FIX] Garantir que o binding padrão 'DB' exista para compatibilidade
+      // com código legado. Se AGROISYNC_DB estiver definido no wrangler.toml, use-o.
+      env.DB = env.DB || env.AGROISYNC_DB;
       if (request.method === 'OPTIONS') {
         return new Response(null, { status: 204, headers: corsHeaders });
       }

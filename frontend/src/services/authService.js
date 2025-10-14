@@ -82,7 +82,9 @@ class AuthService {
         token: response.data.data.token
       };
     } catch (error) {
-      console.error('Erro ao cadastrar usuário:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao cadastrar usuário:', error);
+      }
       return {
         success: false,
         error: error.response?.data?.message || 'Erro ao cadastrar usuário'
@@ -103,7 +105,9 @@ class AuthService {
         user: response.data.data.user
       };
     } catch (error) {
-      console.error('Erro ao verificar email:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao verificar email:', error);
+      }
       return {
         success: false,
         error: error.response?.data?.message || 'Erro ao verificar email'
@@ -145,7 +149,9 @@ class AuthService {
         message: response.data.message
       };
     } catch (error) {
-      console.error('Erro ao verificar código:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao verificar código:', error);
+      }
       return {
         success: false,
         error: error.response?.data?.message || 'Erro ao verificar código'
@@ -189,7 +195,9 @@ class AuthService {
         user: response.data.data.user
       };
     } catch (error) {
-      console.error('Erro ao redefinir senha:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao redefinir senha:', error);
+      }
       return {
         success: false,
         error: error.response?.data?.message || 'Erro ao redefinir senha'
@@ -292,7 +300,9 @@ class AuthService {
         data: response.data.data
       };
     } catch (error) {
-      console.error('❌ Erro ao processar pagamento:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('❌ Erro ao processar pagamento:', error);
+      }
       return {
         success: false,
         error: error.response?.data?.message || 'Erro ao processar pagamento'

@@ -1,148 +1,25 @@
-﻿import jwt from 'jsonwebtoken';
-import User from '../models/UserD1.js';
-import logger from '../utils/logger.js';
+import { json } from 'itty-router-extras';
 
-const auth = async (req, res, next) => {
+export function verifyToken(request, env) {
   try {
-    // Verificar se o token existe
-    const authHeader = req.header('Authorization');
+    const authHeader = request.headers.get('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({
-        success: false,
-        message: 'Token de acesso nÃ£o fornecido'
-      });
-    }
-
-    // Extrair token
-    const token = authHeader.substring(7);
-
-    // Verificar token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // Buscar usuÃ¡rio
-    const user = await User.findById(req.db, decoded.id);
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: 'UsuÃ¡rio nÃ£o encontrado'
-      });
-    }
-
-    // Verificar se usuÃ¡rio estÃ¡ ativo
-    if (!user.isActive || user.isBlocked) {
-      return res.status(401).json({
-        success: false,
-        message: 'Conta desativada ou bloqueada'
-      });
-    }
-
-    // Adicionar usuÃ¡rio ao request
-    req.user = {
-      id: user.id,
-      email: user.email,
-      role: user.role,
-      isAdmin: user.isAdmin
-    };
-
-    return next();
-  } catch (error) {
-    if (error.name === 'JsonWebTokenError') {
-      return res.status(401).json({
-        success: false,
-        message: 'Token invÃ¡lido'
-      });
-    }
-
-    if (error.name === 'TokenExpiredError') {
-      return res.status(401).json({
-        success: false,
-        message: 'Token expirado'
-      });
-    }
-
-    logger.error('Erro na autenticaÃ§Ã£o:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-};
-
-// Middleware para verificar se Ã© admin
-const adminAuth = async (req, res, next) => {
-  try {
-    await auth(req, res, () => {
-      if (!req.user.isAdmin) {
-        return res.status(403).json({
-          success: false,
-          message: 'Acesso negado. Apenas administradores.'
-        });
-      }
-      next();
-    });
-  } catch (error) {
-    logger.error('Erro na autenticaÃ§Ã£o admin:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-};
-
-// Middleware para verificar se tem plano ativo
-const planAuth = async (req, res, next) => {
-  try {
-    await auth(req, res, async () => {
-      const user = await User.findById(req.db, req.user.id);
-
-      if (!user.isPaid) {
-        return res.status(403).json({
-          success: false,
-          message: 'Plano ativo necessÃ¡rio para acessar este recurso'
-        });
-      }
-
-      next();
-    });
-  } catch (error) {
-    logger.error('Erro na verificaÃ§Ã£o de plano:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-};
-
-// Middleware opcional (nÃ£o falha se nÃ£o tiver token)
-const optionalAuth = async (req, res, next) => {
-  try {
-    const authHeader = req.header('Authorization');
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      req.user = null;
-      return next();
+      return json({ error: 'Token não fornecido' }, { status: 401 });
     }
 
     const token = authHeader.substring(7);
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(req.db, decoded.id);
+    const [_header, payload, _signature] = token.split('.');
+    const decodedPayload = JSON.parse(atob(payload));
 
-    if (user && user.isActive && !user.isBlocked) {
-      req.user = {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-        isAdmin: user.isAdmin
-      };
-    } else {
-      req.user = null;
+    if (decodedPayload.exp < Date.now() / 1000) {
+      return json({ error: 'Token expirado' }, { status: 401 });
     }
 
-    return next();
-  } catch {
-    req.user = null;
-    return next();
-  }
-};
+    // Adiciona o userId no request para uso posterior
+    request.userId = decodedPayload.sub;
+    return null; // continua para o próximo handler
 
-export { auth, adminAuth, planAuth, optionalAuth };
+  } catch (error) {
+    return json({ error: 'Token inválido' }, { status: 401 });
+  }
+}

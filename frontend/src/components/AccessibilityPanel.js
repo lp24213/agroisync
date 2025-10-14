@@ -50,6 +50,7 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
   // Aplicar configurações de acessibilidade
   const applyAccessibilitySettings = newSettings => {
     const root = document.documentElement;
+    if (!root || !root.classList) return; // PROTEÇÃO CRÍTICA
 
     // Visual
     if (newSettings.highContrast) {

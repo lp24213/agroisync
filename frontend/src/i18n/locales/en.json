@@ -318,5 +318,13 @@
       "searchReached": "Search limit reached",
       "upgradePrompt": "Upgrade to Pro to use more features!"
     }
+  },
+  "consent": {
+    "title": "Privacy and Cookies",
+    "body": "We use cookies to measure audience (analytics) and, optionally, marketing. You can accept only analytics or reject everything. Your preferences will be saved for 180 days.",
+    "analytics": "Analytics",
+    "marketing": "Marketing",
+    "accept": "Accept",
+    "reject": "Reject"
   }
 }

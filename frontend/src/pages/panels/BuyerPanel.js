@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { ShoppingCart, MessageSquare, Bell, LogOut, Heart, Settings, Plus } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import logger from '../../services/logger';
 
 const BuyerPanel = () => {
   const { t } = useTranslation();
@@ -88,7 +89,7 @@ const BuyerPanel = () => {
         }
       ]);
     } catch (error) {
-      console.error('Erro ao carregar dados:', error);
+      logger.error('Erro ao carregar dados do comprador', error, { panel: 'buyer' });
     } finally {
       setLoading(false);
     }

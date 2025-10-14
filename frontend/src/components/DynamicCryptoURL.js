@@ -7,19 +7,38 @@ const DynamicCryptoURL = ({ children }) => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // Gera valores de parâmetros criptografados (querystring)
+  // Gera valores de parâmetros criptografados (querystring) - ESTÁVEIS
   const generateParams = useCallback(() => {
-    const ts = Date.now().toString();
-    const rand = Math.random().toString(36).substring(2, 10);
-    // IDs persistentes para estabilidade
-    const storedUsr = localStorage.getItem('agro_usr') || `${ts}${rand}`;
-    const storedSess = sessionStorage.getItem('agro_sess') || `${ts.substring(ts.length - 6)}${rand}`;
-    localStorage.setItem('agro_usr', storedUsr);
-    sessionStorage.setItem('agro_sess', storedSess);
+    // IDs persistentes para estabilidade - NÃO mudam constantemente
+    let storedUsr = localStorage.getItem('agro_usr');
+    let storedSess = sessionStorage.getItem('agro_sess');
+    let storedZx = localStorage.getItem('agro_zx');
+    let storedCr = localStorage.getItem('agro_cr');
+    
+    // Gerar apenas se não existirem
+    if (!storedUsr) {
+      storedUsr = `usr_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 8)}`;
+      localStorage.setItem('agro_usr', storedUsr);
+    }
+    
+    if (!storedSess) {
+      storedSess = `sess_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
+      sessionStorage.setItem('agro_sess', storedSess);
+    }
+    
+    if (!storedZx) {
+      storedZx = Date.now().toString();
+      localStorage.setItem('agro_zx', storedZx);
+    }
+    
+    if (!storedCr) {
+      storedCr = Math.random().toString(36).substring(2, 10);
+      localStorage.setItem('agro_cr', storedCr);
+    }
 
     return {
-      zx: ts, // timestamp atual
-      no_sw_cr: rand, // token aleatório simples
+      zx: storedZx, // timestamp fixo
+      no_sw_cr: storedCr, // token fixo
       usr: storedUsr, // estável por dispositivo
       sess: storedSess // estável por sessão do navegador
     };
@@ -53,6 +72,8 @@ const DynamicCryptoURL = ({ children }) => {
         '/payment/cancel',
         '/unauthorized'
       ];
+      
+      // IMPORTANTE: Permitir TODAS as rotas funcionarem, apenas adicionar parâmetros se não existirem
 
       const shouldExclude = excludeCrypto.some(route => {
         return location.pathname === route || (route !== '/' && location.pathname.startsWith(route + '/'));
@@ -64,14 +85,8 @@ const DynamicCryptoURL = ({ children }) => {
         return;
       }
 
-      // Verificar se já tem parametros válidos
-      if (hasValidParams(location.search)) {
-        setIsInitialized(true);
-        return;
-      }
-
-      // Aplicar criptografia para todas as rotas (exceto excluídas)
-      if (!isUpdating) {
+      // SEMPRE permitir acesso às páginas, mas adicionar parâmetros se necessário
+      if (!hasValidParams(location.search) && !isUpdating) {
         setIsUpdating(true);
 
         const ensured = generateParams();
@@ -82,7 +97,13 @@ const DynamicCryptoURL = ({ children }) => {
         navigate(newUrl, { replace: true });
 
         // Reset flag após navegação
-        setTimeout(() => setIsUpdating(false), 100);
+        setTimeout(() => {
+          setIsUpdating(false);
+          setIsInitialized(true);
+        }, 100);
+      } else {
+        // Se já tem parâmetros válidos ou deve ser excluído, marcar como inicializado
+        setIsInitialized(true);
       }
     } catch (error) {
       setIsUpdating(false);
@@ -93,16 +114,21 @@ const DynamicCryptoURL = ({ children }) => {
   }, [location.pathname, location.search, navigate, generateParams, hasValidParams, mergeParams, isUpdating]);
 
   useEffect(() => {
-    // Marcar como inicializado imediatamente
-    setIsInitialized(true);
-  }, []);
-
-  useEffect(() => {
-    if (isInitialized) {
+    // Executar apenas uma vez na inicialização
+    if (!isInitialized) {
+      setIsInitialized(true);
       updateCryptoURL();
     }
   }, [isInitialized, updateCryptoURL]);
 
+  // Executar apenas quando a rota muda (não constantemente)
+  useEffect(() => {
+    if (isInitialized && !isUpdating) {
+      updateCryptoURL();
+    }
+  }, [location.pathname, isInitialized, isUpdating, updateCryptoURL]); // Todas as dependências
+
+  // SEMPRE renderizar as páginas, independente do estado de inicialização
   return children;
 };
 

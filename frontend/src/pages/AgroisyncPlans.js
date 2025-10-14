@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Crown, Check, Star, Zap, Shield, Users, CreditCard, Gift, TrendingUp } from 'lucide-react';
+import { 
+  Check, Star, Zap, Shield, Users, CreditCard, Gift, 
+  Brain, Globe, MessageCircle, Award, Target, BarChart3,
+  Phone, ArrowRight, Sparkles, Rocket, DollarSign, Clock
+} from 'lucide-react';
 import CryptoHash from '../components/CryptoHash';
 
 const AgroisyncPlans = () => {
@@ -9,93 +13,112 @@ const AgroisyncPlans = () => {
 
   const plans = [
     {
-      name: 'Básico',
-      price: 14.99, // Preço mensal normal
-      // Sem descontos: valores brutos para 6 e 12 meses
-      semiannualPrice: 89.94, // 14.99 x 6 meses (sem desconto)
-      annualPrice: 179.88, // 14.99 x 12 meses (sem desconto)
-      annualPixPrice: 179.88, // Sem desconto no PIX para o básico
-      description: 'Ideal para começar no agronegócio',
-      features: ['1 frete por mês', '1 anúncio de produto por mês', 'Suporte por email', 'Dashboard básico', 'Relatórios simples'],
+      name: 'Inicial',
+      price: 9.90,
+      semiannualPrice: 59.40, // 9.90 x 6 meses (sem desconto)
+      annualPrice: 118.80, // 9.90 x 12 meses (sem desconto)
+      annualPixPrice: 118.80, // Sem desconto no PIX para o inicial
+      description: 'Ideal para quem está começando no agronegócio digital',
+      features: [
+        '2 fretes por mês',
+        '2 anúncios de produtos',
+        'Suporte por e-mail',
+        'Dashboard básico com relatórios simples',
+        'Visibilidade padrão nas buscas'
+      ],
       noDiscount: true,
       popular: false,
-      color: 'green'
+      color: 'green',
+      icon: '🌱',
+      target: 'Pequenos produtores testarem a plataforma'
     },
     {
       name: 'Profissional',
-      price: 29.99, // Preço mensal normal
-      semiannualPrice: 170.94, // 29.99 x 6 meses - 5% = 179.94 - 9.00 = 170.94
-      annualPrice: 323.88, // 29.99 x 12 meses - 10% = 359.88 - 36.00 = 323.88
-      annualPixPrice: 287.88, // 29.99 x 12 meses - 20% = 359.88 - 72.00 = 287.88
-      description: 'Para produtores em crescimento',
+      price: 19.90,
+      semiannualPrice: 113.43, // 19.90 x 6 meses - 5% = 119.40 - 5.97 = 113.43
+      annualPrice: 214.92, // 19.90 x 12 meses - 10% = 238.80 - 23.88 = 214.92
+      annualPixPrice: 191.04, // 19.90 x 12 meses - 20% = 238.80 - 47.76 = 191.04
+      description: 'Para produtores e caminhoneiros em crescimento',
       features: [
-        '3 fretes por mês',
-        '3 anúncios de produtos por mês',
-        'Suporte prioritário',
-        'Dashboard avançado',
-        'Relatórios detalhados',
-        'Prioridade nas buscas'
+        '10 fretes por mês',
+        '10 anúncios de produtos',
+        'Suporte prioritário (resposta em até 2h úteis)',
+        'Dashboard avançado com gráficos e métricas',
+        'Relatórios detalhados de desempenho',
+        'Prioridade nas buscas e nos resultados regionais',
+        'Acesso ao painel de cotação instantânea'
       ],
       popular: true,
-      color: 'blue'
+      color: 'blue',
+      icon: '🚜',
+      target: 'Quem quer profissionalizar seus negócios'
     },
     {
       name: 'Empresarial',
-      price: 149.99, // Preço mensal normal
-      semiannualPrice: 854.94, // 149.99 x 6 meses - 5% = 899.94 - 45.00 = 854.94
-      annualPrice: 1619.88, // 149.99 x 12 meses - 10% = 1799.88 - 180.00 = 1619.88
-      annualPixPrice: 1439.88, // 149.99 x 12 meses - 20% = 1799.88 - 360.00 = 1439.88
-      description: 'Para grandes operações',
+      price: 79.90,
+      semiannualPrice: 455.43, // 79.90 x 6 meses - 5% = 479.40 - 23.97 = 455.43
+      annualPrice: 863.52, // 79.90 x 12 meses - 10% = 958.80 - 95.28 = 863.52
+      annualPixPrice: 767.04, // 79.90 x 12 meses - 20% = 958.80 - 191.76 = 767.04
+      description: 'Para transportadoras, cooperativas e empresas do agro',
       features: [
-        '25 fretes por mês',
-        '25 anúncios de produtos por mês',
-        'Suporte 24/7',
-        'Dashboard personalizado',
-        'Relatórios avançados',
-        'API de integração',
-        'Notificações personalizadas'
+        '50 fretes por mês',
+        '50 anúncios de produtos',
+        'Suporte 24h (WhatsApp e e-mail)',
+        'Dashboard e relatórios personalizados',
+        'API de integração com ERPs e planilhas',
+        'Notificações automáticas via WhatsApp e e-mail',
+        'Destaque Premium nas buscas',
+        'Acesso ao painel de parceiros e distribuidores'
       ],
       popular: false,
-      color: 'purple'
+      color: 'purple',
+      icon: '🏗️',
+      target: 'Performance, automação e alcance nacional'
     },
     {
       name: 'Premium',
-      price: 459.99, // Preço mensal normal
-      semiannualPrice: 2621.94, // 459.99 x 6 meses - 5% = 2759.94 - 138.00 = 2621.94
-      annualPrice: 4959.88, // 459.99 x 12 meses - 10% = 5519.88 - 560.00 = 4959.88
-      annualPixPrice: 4419.88, // 459.99 x 12 meses - 20% = 5519.88 - 1100.00 = 4419.88
-      description: 'Para grandes empresas',
+      price: 249.90,
+      semiannualPrice: 1424.43, // 249.90 x 6 meses - 5% = 1499.40 - 74.97 = 1424.43
+      annualPrice: 2699.52, // 249.90 x 12 meses - 10% = 2998.80 - 299.28 = 2699.52
+      annualPixPrice: 2399.04, // 249.90 x 12 meses - 20% = 2998.80 - 599.76 = 2399.04
+      description: 'Para grandes operações com foco em automação e escala',
       features: [
-        'Fretes ilimitados',
-        'Anúncios de produtos ilimitados',
-        'Loja com até 10 produtos',
+        'Fretes e anúncios ilimitados',
+        'Loja personalizada com até 20 produtos',
+        'Dashboard e relatórios avançados com IA',
+        'API completa e integração com marketplaces externos',
         'Suporte 24/7 dedicado',
-        'Dashboard personalizado',
-        'Relatórios avançados',
-        'API completa',
-        'Notificações personalizadas',
-        'Gerente de conta dedicado',
-        'Treinamento especializado',
-        'Prioridade máxima'
+        'Gerente de conta exclusivo',
+        'Notificações inteligentes com IA',
+        'Treinamento personalizado e onboarding',
+        'Selo de verificação "Empresa Ouro"'
       ],
       popular: false,
-      color: 'gold'
+      color: 'gold',
+      icon: '💎',
+      target: 'Dominar o mercado agro digital com IA'
     },
     {
       name: 'Loja Ilimitada',
-      price: 1099.0, // Preço mensal normal
-      semiannualPrice: 6264.3, // 1099 x 6 - 5%
-      annualPrice: 11869.2, // 1099 x 12 - 10%
-      annualPixPrice: 10550.4, // 1099 x 12 - 20% (PIX)
-      description: 'Operação completa com loja e produtos ilimitados',
+      price: 499.90,
+      semiannualPrice: 2849.43, // 499.90 x 6 meses - 5% = 2999.40 - 149.97 = 2849.43
+      annualPrice: 5399.52, // 499.90 x 12 meses - 10% = 5998.80 - 599.28 = 5399.52
+      annualPixPrice: 4799.04, // 499.90 x 12 meses - 20% = 5998.80 - 1199.76 = 4799.04
+      description: 'Operação completa com recursos empresariais e loja virtual expandida',
       features: [
-        'Loja com produtos ilimitados',
-        'Suporte premium 24/7',
-        'Dashboard e relatórios avançados',
-        'API completa e integrações'
+        'Loja virtual com produtos ilimitados',
+        'API e integrações corporativas completas',
+        'Dashboard avançado + relatórios financeiros',
+        'Integração com sistemas de pagamento e logística',
+        'Equipe de suporte Premium 24/7',
+        'Treinamento para equipes',
+        'Consultoria estratégica de vendas no agro',
+        'Selo "AGROiSYNC PRO"'
       ],
       popular: false,
-      color: 'black'
+      color: 'black',
+      icon: '🏬',
+      target: 'Grandes redes, cooperativas e empresas'
     }
   ];
 
@@ -264,8 +287,8 @@ const AgroisyncPlans = () => {
 
       {/* Planos */}
       <section className='bg-white py-16'>
-        <div className='mx-auto max-w-6xl px-4'>
-          <div className='grid grid-cols-1 gap-8 md:grid-cols-3'>
+        <div className='mx-auto max-w-7xl px-4'>
+          <div className='grid grid-cols-1 gap-8 lg:grid-cols-2 xl:grid-cols-3'>
             {plans.map((plan, index) => (
               <motion.div
                 key={plan.name}
@@ -273,14 +296,14 @@ const AgroisyncPlans = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 className={`relative rounded-2xl border-2 bg-white shadow-lg transition-all duration-300 hover:shadow-xl ${
-                  plan.popular ? 'scale-105 border-blue-500' : 'border-gray-200 hover:border-gray-300'
+                  plan.popular ? 'scale-105 border-blue-500 ring-4 ring-blue-100' : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
                 {plan.popular && (
                   <div className='absolute -top-4 left-1/2 -translate-x-1/2 transform'>
                     <div className='flex items-center gap-1 rounded-full bg-blue-500 px-4 py-1 text-sm font-semibold text-white'>
                       <Star className='h-4 w-4 fill-current' />
-                      Mais Popular
+                      + Popular
                     </div>
                   </div>
                 )}
@@ -288,28 +311,12 @@ const AgroisyncPlans = () => {
                 <div className='p-8'>
                   {/* Header do Plano */}
                   <div className='mb-8 text-center'>
-                    <div
-                      className={`mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full ${
-                        plan.color === 'green'
-                          ? 'bg-green-100'
-                          : plan.color === 'blue'
-                            ? 'bg-blue-100'
-                            : 'bg-purple-100'
-                      }`}
-                    >
-                      <Crown
-                        className={`h-8 w-8 ${
-                          plan.color === 'green'
-                            ? 'text-green-600'
-                            : plan.color === 'blue'
-                              ? 'text-blue-600'
-                              : 'text-purple-600'
-                        }`}
-                      />
-                    </div>
-
+                    <div className='mb-4 text-4xl'>{plan.icon}</div>
                     <h3 className='mb-2 text-2xl font-bold text-gray-900'>{plan.name}</h3>
-                    <p className='mb-6 text-gray-600'>{plan.description}</p>
+                    <p className='mb-4 text-gray-600'>{plan.description}</p>
+                    <div className='rounded-lg bg-gray-50 p-3 text-sm text-gray-700'>
+                      <span className='font-medium'>🟩 {plan.target}</span>
+                    </div>
 
                     {/* Preço */}
                     <div className='mb-6'>
@@ -335,23 +342,32 @@ const AgroisyncPlans = () => {
                   {/* Features */}
                   <div className='mb-8 space-y-4'>
                     {plan.features.map((feature, featureIndex) => (
-                      <div key={featureIndex} className='flex items-center gap-3'>
-                        <Check className='h-5 w-5 flex-shrink-0 text-green-500' />
+                      <div key={featureIndex} className='flex items-start gap-3'>
+                        <Check className='h-5 w-5 flex-shrink-0 text-green-500 mt-0.5' />
                         <span className='text-gray-700'>{feature}</span>
                       </div>
                     ))}
                   </div>
 
                   {/* Botão de Contratação */}
-                  <button
-                    className={`w-full rounded-lg px-6 py-3 font-semibold transition-colors ${
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`w-full rounded-lg px-6 py-3 font-semibold transition-all duration-300 ${
                       plan.popular
-                        ? 'bg-blue-600 text-white hover:bg-blue-700'
-                        : 'bg-gray-900 text-white hover:bg-gray-800'
+                        ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg hover:shadow-xl'
+                        : plan.color === 'gold'
+                          ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-lg hover:shadow-xl'
+                          : plan.color === 'black'
+                            ? 'bg-gradient-to-r from-gray-800 to-gray-900 text-white shadow-lg hover:shadow-xl'
+                            : 'bg-gray-900 text-white hover:bg-gray-800'
                     }`}
                   >
-                    {plan.popular ? 'Começar Agora' : 'Escolher Plano'}
-                  </button>
+                    <span className='flex items-center justify-center gap-2'>
+                      Assinar Agora
+                      <ArrowRight className='h-4 w-4' />
+                    </span>
+                  </motion.button>
                 </div>
               </motion.div>
             ))}
@@ -359,66 +375,99 @@ const AgroisyncPlans = () => {
         </div>
       </section>
 
-      {/* Seção de Benefícios */}
-      <section className='bg-gray-50 py-16'>
+      {/* Seção de Diferenciais */}
+      <section className='bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 py-16'>
         <div className='mx-auto max-w-6xl px-4'>
           <div className='mb-12 text-center'>
-            <h2 className='mb-4 text-3xl font-bold text-gray-900'>Por que escolher os Planos Agroisync?</h2>
-            <p className='text-lg text-gray-600'>Tecnologia de ponta para acelerar seu crescimento no agronegócio</p>
+            <motion.h2 
+              className='mb-4 text-4xl font-bold text-white'
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              ⚙️ DIFERENCIAIS AGROISYNC
+            </motion.h2>
+            <motion.p 
+              className='text-xl text-blue-200'
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
+              Tecnologia de ponta para acelerar seu crescimento no agronegócio
+            </motion.p>
           </div>
 
-          <div className='grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4'>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className='text-center'
-            >
-              <div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100'>
-                <TrendingUp className='h-8 w-8 text-green-600' />
-              </div>
-              <h3 className='mb-2 text-xl font-semibold text-gray-900'>Crescimento Garantido</h3>
-              <p className='text-gray-600'>Aumente suas vendas e conecte-se com mais clientes</p>
-            </motion.div>
+          <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
+            {[
+              { icon: DollarSign, title: 'Planos competitivos', desc: 'Preços acessíveis para democratizar o agronegócio digital' },
+              { icon: Brain, title: 'Cotações instantâneas com IA', desc: 'Tempo, rota e custo médio calculados automaticamente' },
+              { icon: Target, title: 'Match inteligente', desc: 'Entre produtor, comprador e transportador' },
+              { icon: BarChart3, title: 'Dashboards avançados', desc: 'Métricas de rentabilidade e histórico de vendas' },
+              { icon: MessageCircle, title: 'Chat direto', desc: 'Com compradores e caminhoneiros' },
+              { icon: Shield, title: 'Segurança total', desc: 'Validação de CPF/CNPJ e reputação' },
+              { icon: Globe, title: 'Suporte multilíngue', desc: 'Português, Inglês, Espanhol, Mandarim' },
+              { icon: Award, title: 'Ranqueamento transparente', desc: 'Sistema justo e transparente' },
+              { icon: Sparkles, title: 'Recomendações inteligentes', desc: 'De anúncios e rotas com IA' },
+              { icon: Gift, title: 'Zero comissão', desc: 'Sobre transações internas' }
+            ].map((benefit, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className='group rounded-xl bg-white/10 p-6 backdrop-blur-sm transition-all duration-300 hover:bg-white/20 hover:scale-105'
+              >
+                <div className='mb-4 flex items-center gap-3'>
+                  <div className='flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/20'>
+                    <benefit.icon className='h-6 w-6 text-blue-400' />
+                  </div>
+                  <h3 className='text-lg font-semibold text-white'>{benefit.title}</h3>
+                </div>
+                <p className='text-blue-200'>{benefit.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className='text-center'
-            >
-              <div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100'>
-                <Shield className='h-8 w-8 text-blue-600' />
-              </div>
-              <h3 className='mb-2 text-xl font-semibold text-gray-900'>Segurança Total</h3>
-              <p className='text-gray-600'>Transações seguras e dados protegidos</p>
-            </motion.div>
+      {/* Seção Comparativa com Concorrentes */}
+      <section className='bg-white py-16'>
+        <div className='mx-auto max-w-6xl px-4'>
+          <div className='mb-12 text-center'>
+            <h2 className='mb-4 text-3xl font-bold text-gray-900'>💰 Preços Acessíveis</h2>
+            <p className='text-lg text-gray-600'>Planos pensados para democratizar o agronegócio digital</p>
+          </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className='text-center'
-            >
-              <div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-purple-100'>
-                <Users className='h-8 w-8 text-purple-600' />
-              </div>
-              <h3 className='mb-2 text-xl font-semibold text-gray-900'>Suporte Especializado</h3>
-              <p className='text-gray-600'>Equipe dedicada para seu sucesso</p>
-            </motion.div>
+          <div className='grid grid-cols-1 gap-8 md:grid-cols-3'>
+            <div className='rounded-xl bg-green-50 p-8 text-center'>
+              <div className='mb-4 text-4xl'>🌱</div>
+              <h3 className='mb-2 text-xl font-bold text-green-800'>Plano Inicial</h3>
+              <div className='mb-4 text-3xl font-bold text-green-600'>R$ 9,90</div>
+              <p className='text-green-700'>Ideal para começar no agronegócio digital</p>
+            </div>
+            
+            <div className='rounded-xl bg-blue-50 p-8 text-center'>
+              <div className='mb-4 text-4xl'>🚜</div>
+              <h3 className='mb-2 text-xl font-bold text-blue-800'>Plano Profissional</h3>
+              <div className='mb-4 text-3xl font-bold text-blue-600'>R$ 19,90</div>
+              <p className='text-blue-700'>Para produtores em crescimento</p>
+            </div>
+            
+            <div className='rounded-xl bg-purple-50 p-8 text-center'>
+              <div className='mb-4 text-4xl'>🏗️</div>
+              <h3 className='mb-2 text-xl font-bold text-purple-800'>Plano Empresarial</h3>
+              <div className='mb-4 text-3xl font-bold text-purple-600'>R$ 79,90</div>
+              <p className='text-purple-700'>Para empresas e cooperativas</p>
+            </div>
+          </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className='text-center'
-            >
-              <div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-yellow-100'>
-                <Gift className='h-8 w-8 text-yellow-600' />
-              </div>
-              <h3 className='mb-2 text-xl font-semibold text-gray-900'>Descontos Especiais</h3>
-              <p className='text-gray-600'>5% semestral, 10% anual e 20% anual no PIX</p>
-            </motion.div>
+          <div className='mt-8 text-center'>
+            <div className='inline-flex items-center gap-2 rounded-full bg-green-100 px-6 py-3 text-green-800'>
+              <Sparkles className='h-5 w-5' />
+              <span className='font-semibold'>Preços justos e transparentes!</span>
+            </div>
           </div>
         </div>
       </section>
@@ -458,6 +507,74 @@ const AgroisyncPlans = () => {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Seção Consultor WhatsApp */}
+      <section className='bg-gradient-to-r from-green-600 via-green-700 to-green-800 py-16'>
+        <div className='mx-auto max-w-4xl px-4 text-center'>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className='rounded-2xl bg-white/10 p-8 backdrop-blur-sm'
+          >
+            <div className='mb-6'>
+              <div className='mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white/20'>
+                <MessageCircle className='h-10 w-10 text-white' />
+              </div>
+              <h2 className='mb-4 text-3xl font-bold text-white'>
+                Ainda em dúvida? Fale com nosso consultor pelo WhatsApp
+              </h2>
+              <p className='text-xl text-green-100'>
+                Nossa equipe especializada está pronta para ajudar você a escolher o plano ideal para seu negócio
+              </p>
+            </div>
+
+            <div className='grid grid-cols-1 gap-6 md:grid-cols-3'>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className='rounded-xl bg-white/20 p-6 backdrop-blur-sm'
+              >
+                <Phone className='mx-auto mb-3 h-8 w-8 text-white' />
+                <h3 className='mb-2 text-lg font-semibold text-white'>Suporte Imediato</h3>
+                <p className='text-green-100'>Resposta em até 2 horas úteis</p>
+              </motion.div>
+
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className='rounded-xl bg-white/20 p-6 backdrop-blur-sm'
+              >
+                <Users className='mx-auto mb-3 h-8 w-8 text-white' />
+                <h3 className='mb-2 text-lg font-semibold text-white'>Consultoria Personalizada</h3>
+                <p className='text-green-100'>Análise do seu perfil de negócio</p>
+              </motion.div>
+
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className='rounded-xl bg-white/20 p-6 backdrop-blur-sm'
+              >
+                <Rocket className='mx-auto mb-3 h-8 w-8 text-white' />
+                <h3 className='mb-2 text-lg font-semibold text-white'>Onboarding Gratuito</h3>
+                <p className='text-green-100'>Treinamento completo incluído</p>
+              </motion.div>
+            </div>
+
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className='mt-8 inline-flex items-center gap-3 rounded-full bg-white px-8 py-4 text-lg font-semibold text-green-700 shadow-lg transition-all duration-300 hover:shadow-xl'
+            >
+              <MessageCircle className='h-6 w-6' />
+              Falar com Consultor AGROISYNC
+              <ArrowRight className='h-5 w-5' />
+            </motion.button>
+
+            <div className='mt-6 text-sm text-green-200'>
+              <Clock className='mx-auto mb-2 h-5 w-5' />
+              <p>Horário de atendimento: Segunda a Sexta, 8h às 18h</p>
+            </div>
+          </motion.div>
         </div>
       </section>
       <div className='mt-8 flex justify-center'>

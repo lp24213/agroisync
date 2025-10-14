@@ -547,16 +547,23 @@ class MonitoringSystem {
   }
 }
 
-// Instância única
-const monitoringSystem = new MonitoringSystem();
+// Evitar efeitos colaterais no topo do módulo (SSR/builds)
+let monitoringSystem = null;
+let cleanupInterval = null;
+const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
+
+export function getMonitoringSystem() {
+  if (!monitoringSystem && isBrowser) {
+    monitoringSystem = new MonitoringSystem();
+    startCleanupInterval();
+  }
+  return monitoringSystem;
+}
 
 // Limpeza automática a cada hora - com cleanup adequado
-let cleanupInterval = null;
-
-// Inicializar limpeza automática
 const startCleanupInterval = () => {
   if (cleanupInterval) clearInterval(cleanupInterval);
-  cleanupInterval = setInterval(() => monitoringSystem.cleanup(), 3600000);
+  cleanupInterval = setInterval(() => monitoringSystem && monitoringSystem.cleanup(), 3600000);
 };
 
 // Parar limpeza automática
@@ -567,9 +574,6 @@ const stopCleanupInterval = () => {
   }
 };
 
-// Iniciar automaticamente
-startCleanupInterval();
-
 // Exportar funções de controle
-export { startCleanupInterval, stopCleanupInterval };
+export { startCleanupInterval, stopCleanupInterval, getMonitoringSystem };
 export default monitoringSystem;

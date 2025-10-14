@@ -243,3 +243,8 @@ jspm_packages/
 
 # TernJS port file
 .tern-port
+
+# --- Permitir traduções i18n ---
+!frontend-next/public/
+!frontend-next/public/locales/
+!frontend-next/public/locales/**

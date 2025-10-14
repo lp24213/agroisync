@@ -278,8 +278,8 @@ const SignupFreight = () => {
         localStorage.setItem('authToken', data.data.token);
         localStorage.setItem('user', JSON.stringify(data.data.user));
       }
-      // Redirecionar para dashboard
-      navigate('/user-dashboard', { replace: true });
+      // Redirecionar para painel de escolhas
+      navigate('/onboarding', { replace: true });
     } catch (error) {
       setErrors({ general: 'Erro ao criar conta. Tente novamente.' });
     } finally {

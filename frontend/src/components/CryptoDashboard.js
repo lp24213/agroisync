@@ -8,60 +8,50 @@ const CryptoDashboard = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [showBalance, setShowBalance] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Sua MetaMask principal
-  const MASTER_WALLET = '0x5Ea5C5970e8AE23A5336d631707CF31C5916E8b1';
-
-  // Simulação de dados de criptomoedas (em produção, viria da API)
-  const mockCryptoData = useMemo(
-    () => [
-      {
-        id: 'bitcoin',
-        name: 'Bitcoin',
-        symbol: 'BTC',
-        price: 115511.956,
-        change24h: -1.92,
-        volume: 28500000000,
-        marketCap: 2270000000000
-      },
-      {
-        id: 'ethereum',
-        name: 'Ethereum',
-        symbol: 'ETH',
-        price: 3892.45,
-        change24h: 2.34,
-        volume: 15200000000,
-        marketCap: 468000000000
-      },
-      {
-        id: 'cardano',
-        name: 'Cardano',
-        symbol: 'ADA',
-        price: 0.45,
-        change24h: 3.21,
-        volume: 850000000,
-        marketCap: 15000000000
+  // Fetch real crypto data from API
+  const fetchCryptoData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Em produção, usar API real (CoinGecko, CoinMarketCap, etc)
+      const apiUrl = process.env.REACT_APP_CRYPTO_API_URL;
+      
+      if (!apiUrl) {
+        // Se não há API configurada, não mostrar dados
+        setCryptoData([]);
+        setLoading(false);
+        return;
       }
-    ],
-    []
-  );
+
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error('Falha ao buscar dados de criptomoedas');
+      }
+      
+      const data = await response.json();
+      setCryptoData(data);
+    } catch (err) {
+      setError(err.message);
+      setCryptoData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    setCryptoData(mockCryptoData);
+    fetchCryptoData();
 
-    // Simular atualização em tempo real
+    // Atualizar dados a cada 30 segundos
     const interval = setInterval(() => {
-      setCryptoData(prevData =>
-        prevData.map(crypto => ({
-          ...crypto,
-          price: crypto.price * (1 + (Math.random() - 0.5) * 0.02),
-          change24h: crypto.change24h + (Math.random() - 0.5) * 0.5
-        }))
-      );
-    }, 30000); // Atualiza a cada 30 segundos
+      fetchCryptoData();
+    }, 30000);
 
     return () => clearInterval(interval);
-  }, [mockCryptoData]);
+  }, []);
 
   const connectMetaMask = async () => {
     if (window.ethereum) {
@@ -72,26 +62,12 @@ const CryptoDashboard = () => {
 
         setUserWallet(accounts[0]);
         setIsConnected(true);
-
-        // Registrar cliente na blockchain
-        await registerClient(accounts[0]);
       } catch (error) {
-        if (process.env.NODE_ENV !== 'production') {
-          // Erro ao conectar MetaMask
-        }
+        console.error('Erro ao conectar MetaMask:', error);
+        alert('Erro ao conectar com MetaMask. Tente novamente.');
       }
     } else {
-      alert('MetaMask não encontrado! Instale a extensão.');
-    }
-  };
-
-  const registerClient = async walletAddress => {
-    // Aqui você faria a chamada para sua blockchain
-    // Registrando o cliente e criando seu painel
-    if (process.env.NODE_ENV !== 'production') {
-
-      // Registrando cliente
-
+      alert('MetaMask não encontrado! Por favor, instale a extensão MetaMask para continuar.');
     }
 
     // Simulação de registro

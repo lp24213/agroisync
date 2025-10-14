@@ -67,59 +67,6 @@ O AgroSync é uma plataforma moderna de tecnologia agrícola inspirada nos desig
 - Animações Framer Motion
 
 ## 🛠️ Tecnologias
-
-### **Frontend**
-- React 18
-- TailwindCSS
-- Framer Motion
-- React Router
-- Lucide React Icons
-
-### **Backend (Integração)**
-- AWS Lambda
-- MongoDB Atlas
-- API Gateway
-- JWT Authentication
-
-### **Deploy**
-- AWS Amplify
-- GitHub Actions
-- CI/CD Automatizado
-
-## 📁 Estrutura do Projeto
-
-```
-frontend/
-├── src/
-│   ├── components/          # Componentes reutilizáveis
-│   ├── pages/              # Páginas da aplicação
-│   ├── contexts/           # Contextos React
-│   ├── services/           # Serviços de API
-│   ├── utils/              # Utilitários
-│   └── styles/             # Estilos globais
-├── public/                 # Assets estáticos
-├── scripts/                # Scripts de análise
-└── package.json
-```
-
-## 🚀 Scripts Disponíveis
-
-### **Análise de Links**
-```bash
-node scripts/analyze-internal-links.js
-```
-- Verifica links internos quebrados
-- Gera relatório de navegação
-- Taxa de sucesso: 90%+
-
-### **Análise de Performance**
-```bash
-node scripts/analyze-performance.js
-```
-- Identifica problemas de performance
-- Sugere otimizações
-- Relatório detalhado
-
 ### **Otimização Automática**
 ```bash
 node scripts/optimize-project.js

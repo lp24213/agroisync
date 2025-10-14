@@ -10,10 +10,8 @@ import CryptoHash from '../components/CryptoHash';
 import {
   PremiumScrollReveal,
   PremiumFloatingCard,
-  Premium3DButton,
   PremiumStaggeredContainer,
   PremiumGradientText,
-  PremiumRevealText,
   MouseTracker
 } from '../components/animations/PremiumAnimations';
 
@@ -63,7 +61,7 @@ const Home = () => {
         </p>
       </div>
 
-      {/* Imagem Ultrarealista 4K - Campo de Soja */}
+      {/* Hero Section Principal */}
       <section
         className='home-hero-desktop relative flex w-full items-center justify-center overflow-hidden hero-section background-image'
           style={{
@@ -74,7 +72,6 @@ const Home = () => {
           backgroundRepeat: 'no-repeat',
           backgroundAttachment: 'fixed',
           width: '100%',
-          /* Use calc to subtract the fixed header height so hero doesn't get hidden beneath it */
           minHeight: 'calc(100svh - 64px)',
           zIndex: 1,
           display: 'flex',
@@ -94,8 +91,8 @@ const Home = () => {
           style={{ zIndex: -1 }}
         />
 
-  {/* Conteúdo Centralizado */}
-  <div className='relative z-10 mx-auto max-w-4xl px-4 text-center md:flex md:flex-col md:items-center md:justify-center'>
+        {/* Conteúdo Centralizado */}
+        <div className='relative z-10 mx-auto max-w-4xl px-4 text-center md:flex md:flex-col md:items-center md:justify-center'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -113,107 +110,27 @@ const Home = () => {
               )}
             </p>
             <div className='flex flex-col items-center justify-center gap-6 sm:flex-row'>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className='rounded-xl bg-green-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-colors hover:bg-green-700 md:px-10 md:py-5 md:text-xl'
-              >
-                Explorar Plataforma
-                <ArrowRight size={24} className='ml-3 inline' />
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className='rounded-xl border-2 border-green-600 px-8 py-4 text-lg font-semibold text-green-600 transition-colors hover:bg-green-600 hover:text-white md:px-10 md:py-5 md:text-xl'
-              >
-                Saiba Mais
-              </motion.button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Hero Section com Imagem Agrícola */}
-      <section className='home-hero-desktop relative flex min-h-screen items-center justify-center overflow-hidden hero-section background-image'>
-        {/* Imagem de Fundo Agrícola */}
-        <div className='absolute inset-0 z-0'>
-          <img
-            src='/images/agricultural-field.jpg'
-            alt='Campo de soja ao pôr do sol'
-            className='h-full w-full object-cover'
-            loading='lazy'
-          />
-          <div className='absolute inset-0 bg-black bg-opacity-40'></div>
-        </div>
-
-        {/* Conteúdo Centralizado sobre a Imagem */}
-        <div className='relative z-10 mx-auto max-w-6xl px-4 text-center'>
-          <PremiumScrollReveal delay={0.2} parallax={true}>
-            <PremiumRevealText
-              text='Junte-se à AGROISYNC e faça parte da revolução do agronegócio brasileiro'
-              className='mb-8 text-4xl font-bold leading-tight text-white drop-shadow-2xl md:text-6xl'
-              delay={0.5}
-            />
-
-            <div className='mt-12 flex flex-col items-center justify-center gap-6 sm:flex-row'>
-              <MouseTracker intensity={0.1}>
-                <Premium3DButton
-                  variant='primary'
-                  size='lg'
-                  className='bg-white px-10 py-5 text-xl font-semibold text-gray-900 hover:bg-gray-100'
+              <Link to='/register'>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className='rounded-xl bg-green-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-colors hover:bg-green-700 md:px-10 md:py-5 md:text-xl'
                 >
                   Explorar Plataforma
-                  <ArrowRight size={24} className='ml-3' />
-                </Premium3DButton>
-              </MouseTracker>
-              <MouseTracker intensity={0.1}>
-                <Premium3DButton
-                  variant='secondary'
-                  size='lg'
-                  className='border-2 border-white px-10 py-5 text-xl font-semibold text-white hover:bg-white hover:text-gray-900'
+                  <ArrowRight size={24} className='ml-3 inline' />
+                </motion.button>
+              </Link>
+              <Link to='/about'>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className='rounded-xl border-2 border-green-600 px-8 py-4 text-lg font-semibold text-green-600 transition-colors hover:bg-green-600 hover:text-white md:px-10 md:py-5 md:text-xl'
                 >
                   Saiba Mais
-                </Premium3DButton>
-              </MouseTracker>
+                </motion.button>
+              </Link>
             </div>
-          </PremiumScrollReveal>
-        </div>
-      </section>
-
-      {/* Hero Section - Premium Futuristic */}
-      <section className='relative flex min-h-screen items-center py-32'>
-        <div className='container-premium'>
-          <PremiumScrollReveal delay={0.2} parallax={true}>
-            <div className='mx-auto max-w-6xl text-center'>
-              <PremiumRevealText
-                text='O Futuro do Agronegócio é Agora'
-                className='mb-8 text-6xl font-bold leading-tight md:text-8xl'
-                delay={0.5}
-              />
-
-              <PremiumGradientText
-                className='mx-auto mb-12 max-w-5xl text-2xl leading-relaxed md:text-3xl'
-                gradient='metallic'
-              >
-                A plataforma mais futurista e sofisticada do mundo para conectar produtores, compradores e
-                transportadores. Design premium, tecnologia de ponta e performance excepcional.
-              </PremiumGradientText>
-
-              <div className='flex flex-col items-center justify-center gap-6 sm:flex-row'>
-                <MouseTracker intensity={0.1}>
-                  <Premium3DButton variant='primary' size='lg' className='px-10 py-5 text-xl font-semibold'>
-                    Começar Agora
-                    <ArrowRight size={24} className='ml-3' />
-                  </Premium3DButton>
-                </MouseTracker>
-                <MouseTracker intensity={0.1}>
-                  <Premium3DButton variant='secondary' size='lg' className='px-10 py-5 text-xl font-semibold'>
-                    Ver Demonstração
-                  </Premium3DButton>
-                </MouseTracker>
-              </div>
-            </div>
-          </PremiumScrollReveal>
+          </motion.div>
         </div>
       </section>
 

@@ -154,13 +154,9 @@ const AgroisyncRegister = () => {
       );
 
       if (result.success) {
-        if (result.requiresEmailVerification) {
-          toast.success(`Cadastro realizado! Verifique seu email. Código: ${result.emailCode}`, { duration: 10000 });
-          setEmailSent(true);
-        } else {
-          toast.success('Cadastro realizado com sucesso!');
-          navigate('/login');
-        }
+        toast.success('Cadastro realizado com sucesso! Agora escolha seu perfil.');
+        // Redirecionar para escolher o tipo de perfil
+        navigate('/signup/type');
       } else {
         setErrors({ general: result.error || 'Erro ao criar conta' });
       }

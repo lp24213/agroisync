@@ -4,11 +4,12 @@ Este arquivo lista as variáveis de ambiente essenciais para rodar localmente o 
 Preencha `.env` em cada diretório conforme necessário (não commite `.env`).
 
 ## Frontend (frontend/.env)
+
 - REACT_APP_API_URL - URL da API backend (ex: http://localhost:3001/api)
 - REACT_APP_WS_URL - WebSocket URL (ex: ws://localhost:3001)
 - REACT_APP_SUPABASE_URL - (se usar Supabase)
 - REACT_APP_SUPABASE_ANON_KEY - (se usar Supabase)
-- REACT_APP_STRIPE_PUBLISHABLE_KEY - Chave pública Stripe (pk_...)
+- REACT*APP_STRIPE_PUBLISHABLE_KEY - Chave pública Stripe (pk*...)
 - REACT_APP_CLOUDFLARE_TURNSTILE_SITE_KEY - Turnstile site key pública
 - REACT_APP_NEWS_API_KEY - (opcional) para serviços de notícias
 - REACT_APP_ALPHA_VANTAGE_API_KEY - (opcional) para dados financeiros
@@ -17,6 +18,7 @@ Preencha `.env` em cada diretório conforme necessário (não commite `.env`).
 > Nota: o frontend usa `process.env.REACT_APP_*` (CRA). Não use nomes `NEXT_PUBLIC_*` aqui a menos que esteja usando Next.js.
 
 ## Backend (backend/.env)
+
 - NODE_ENV - development|production
 - PORT - porta do servidor (ex: 3001)
 - JWT_SECRET - segredo JWT (min 32 chars)
@@ -26,7 +28,7 @@ Preencha `.env` em cada diretório conforme necessário (não commite `.env`).
 - RESEND_API_KEY - chave da API Resend para envio de emails
 - RESEND_FROM - endereço "From" padrão
 - CLOUDFLARE_TURNSTILE_SECRET_KEY - secret do Turnstile (usado no backend para validar)
-- STRIPE_SECRET_KEY - chave secreta Stripe (sk_...)
+- STRIPE*SECRET_KEY - chave secreta Stripe (sk*...)
 - STRIPE_WEBHOOK_SECRET - secret do webhook do Stripe
 - CLOUDFLARE_D1_DATABASE_ID - (se usar D1)
 - CLOUDINARY_CLOUD_NAME / CLOUDINARY_API_KEY / CLOUDINARY_API_SECRET - para uploads
@@ -35,10 +37,12 @@ Preencha `.env` em cada diretório conforme necessário (não commite `.env`).
 - CORS_ORIGIN - origem permitida para CORS (ex: http://localhost:3000)
 
 ## Notas de padronização
+
 - JWT expirations: padronize nomes entre root/envs e backend (`JWT_EXPIRES_IN` e `JWT_REFRESH_EXPIRES_IN` são recomendados).
 - Turnstile: frontend recebe a `REACT_APP_CLOUDFLARE_TURNSTILE_SITE_KEY` (pública). O backend valida com `CLOUDFLARE_TURNSTILE_SECRET_KEY`.
 
 ## Como usar localmente (exemplo PowerShell)
+
 ```powershell
 # frontend
 cd .\frontend

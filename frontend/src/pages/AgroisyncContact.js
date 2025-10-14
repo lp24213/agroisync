@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Mail, Phone, MapPin, Clock, MessageCircle, Send, CheckCircle } from 'lucide-react';
 import CryptoHash from '../components/CryptoHash';
+import SEOHead from '../components/SEOHead';
 
 const AgroisyncContact = () => {
   const { t } = useTranslation();
@@ -52,11 +53,7 @@ const AgroisyncContact = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    if (process.env.NODE_ENV !== 'production') {
-
-      console.log('Form submitted:', formData);
-
-    }
+    // Form submitted (log removido)
     setIsSubmitted(true);
     setTimeout(() => setIsSubmitted(false), 3000);
   };
@@ -84,7 +81,17 @@ const AgroisyncContact = () => {
   };
 
   return (
-    <div>
+    <>
+      <SEOHead 
+        title="Contato"
+        description="Fale com nossa equipe. Entre em contato conosco para saber mais sobre nossas soluções para o agronegócio."
+        url="https://agroisync.com/contato"
+        breadcrumbs={[
+          { name: "Home", url: "https://agroisync.com/" },
+          { name: "Contato", url: "https://agroisync.com/contato" }
+        ]}
+      />
+      <div>
       {/* Hero Section TXC */}
       <section
         className='agro-hero-section'
@@ -412,7 +419,8 @@ const AgroisyncContact = () => {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 };
 

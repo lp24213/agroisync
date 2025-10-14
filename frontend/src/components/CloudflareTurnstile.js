@@ -10,7 +10,13 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
   const [isLoading, setIsLoading] = useState(true);
   const [widgetId, setWidgetId] = useState(null);
 
-  const effectiveSiteKey = siteKey || process.env.REACT_APP_CLOUDFLARE_TURNSTILE_SITE_KEY || '';
+  // Allow multiple env var fallbacks to handle different deploy setups
+  const effectiveSiteKey =
+    siteKey ||
+    process.env.REACT_APP_CLOUDFLARE_TURNSTILE_SITE_KEY ||
+    process.env.REACT_APP_TURNSTILE_SITE_KEY ||
+    process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY ||
+    '';
 
   // Memoizar callbacks para evitar re-renders desnecessários
   const handleVerify = useCallback((token) => {
@@ -27,11 +33,20 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
 
   useEffect(() => {
     // Modo desenvolvimento: bypass quando não houver chave configurada
-    if (!effectiveSiteKey && process.env.NODE_ENV !== 'production') {
+    if (!effectiveSiteKey) {
+      // Em desenvolvimento apenas, permitir bypass para não bloquear o fluxo local
+      if (process.env.NODE_ENV !== 'production') {
+        setIsLoading(false);
+        setIsLoaded(false);
+        // usar callback memoizado
+        handleVerify('dev-bypass');
+        return;
+      }
+
+      // Em produção, avisar e disparar onError para não aceitar bypass silencioso
+      console.error('Cloudflare Turnstile siteKey não configurado. Defina REACT_APP_CLOUDFLARE_TURNSTILE_SITE_KEY ou NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY.');
       setIsLoading(false);
-      setIsLoaded(false);
-      // usar callback memoizado
-      handleVerify('dev-bypass');
+      if (onError) onError(new Error('Turnstile siteKey missing'));
       return;
     }
     // Se já existe o objeto global, estamos prontos

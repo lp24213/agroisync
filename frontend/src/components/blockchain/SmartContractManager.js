@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { FileCode, Loader2, CheckCircle, Clock, AlertCircle, Eye, Copy, Download, FileText } from 'lucide-react';
+import { getApiUrl } from '../../config/constants.js';
 
 const SmartContractManager = ({ userId }) => {
   const { t } = useTranslation();
@@ -12,7 +13,7 @@ const SmartContractManager = ({ userId }) => {
   const fetchContracts = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/blockchain/contracts?userId=${userId}`);
+      const response = await fetch(getApiUrl(`/blockchain/contracts?userId=${userId}`));
       const data = await response.json();
 
       if (data.success) {

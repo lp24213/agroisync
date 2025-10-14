@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { CreditCard, Shield, Star, Zap } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { getAuthToken } from '../config/constants.js';
+import logger from '../services/logger';
 
 const Payment = () => {
   const navigate = useNavigate();
@@ -22,11 +23,7 @@ const Payment = () => {
     setStripeEnabled(!!stripeKey && stripeKey.startsWith('pk_'));
     
     if (!stripeKey || !stripeKey.startsWith('pk_')) {
-      if (process.env.NODE_ENV !== 'production') {
-
-        console.warn('Stripe não configurado - pagamentos desabilitados');
-
-      }
+      logger.warn('Stripe não configurado - pagamentos desabilitados', null, { page: 'payment' });
     }
   }, []);
 
@@ -137,7 +134,7 @@ const Payment = () => {
       }
 
     } catch (error) {
-      console.error('Erro no pagamento:', error);
+      logger.error('Erro no pagamento', error, { page: 'payment', plan: selectedPlan });
       const errorMessage = error.message || 'Erro ao processar pagamento';
       // setError(errorMessage);
       toast.error(errorMessage);

@@ -13,6 +13,43 @@ const AgroisyncHeader = () => {
   const { t } = useTranslation();
   const location = useLocation();
 
+  // Gera/garante os parâmetros criptográficos e retorna string de busca
+  const getCryptoSearch = () => {
+    try {
+      let storedUsr = localStorage.getItem('agro_usr');
+      let storedSess = sessionStorage.getItem('agro_sess');
+      let storedZx = localStorage.getItem('agro_zx');
+      let storedCr = localStorage.getItem('agro_cr');
+
+      if (!storedUsr) {
+        storedUsr = `usr_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 8)}`;
+        localStorage.setItem('agro_usr', storedUsr);
+      }
+      if (!storedSess) {
+        storedSess = `sess_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
+        sessionStorage.setItem('agro_sess', storedSess);
+      }
+      if (!storedZx) {
+        storedZx = Date.now().toString();
+        localStorage.setItem('agro_zx', storedZx);
+      }
+      if (!storedCr) {
+        storedCr = Math.random().toString(36).substring(2, 10);
+        localStorage.setItem('agro_cr', storedCr);
+      }
+
+      const params = new URLSearchParams({
+        zx: storedZx,
+        no_sw_cr: storedCr,
+        usr: storedUsr,
+        sess: storedSess
+      });
+      return `?${params.toString()}`;
+    } catch {
+      return '';
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -76,6 +113,11 @@ const AgroisyncHeader = () => {
     { path: '/signup', label: 'Cadastrar', icon: User, i18nKey: 'register' }
   ];
 
+  const buildPath = (path) => {
+    const search = getCryptoSearch();
+    return { pathname: path, search };
+  };
+
   return (
     <>
       <header
@@ -87,7 +129,7 @@ const AgroisyncHeader = () => {
         <div className='mx-auto max-w-7xl px-4'>
           <div className='flex h-16 flex-wrap items-center justify-between md:flex-nowrap'>
             {/* Logo */}
-            <Link to='/' className='flex items-center'>
+            <Link to={buildPath('/')} className='flex items-center'>
               <AgroisyncLogo />
             </Link>
 
@@ -98,9 +140,9 @@ const AgroisyncHeader = () => {
                 const isActive = location.pathname === item.path;
                 const children = submenuItems[item.path];
                 return (
-                  <div key={item.path} className={`group relative`}>
+                  <div key={item.path} className='group relative'>
                     <Link
-                      to={item.path}
+                      to={buildPath(item.path)}
                       className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${
                         isActive
                           ? 'bg-green-500 text-white shadow-md'
@@ -111,13 +153,13 @@ const AgroisyncHeader = () => {
                       {t ? t(`nav.${item.i18nKey}`, item.label) : item.label}
                     </Link>
                     {children && children.length > 0 && (
-                      <div className='absolute left-0 z-50 mt-2 hidden min-w-[220px] rounded-lg border border-gray-200 bg-white shadow-lg group-hover:block'>
+                      <div className='absolute left-0 z-50 mt-1 hidden min-w-[220px] rounded-lg border border-gray-200 bg-white shadow-lg transition-all duration-200 group-hover:block'>
                         <ul className='py-2'>
                           {children.map(sub => (
                             <li key={sub.path}>
                               <Link
-                                to={sub.path}
-                                className='block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700'
+                                to={buildPath(sub.path)}
+                                className='block w-full text-left px-4 py-2.5 text-sm text-gray-700 transition-colors duration-150 hover:bg-green-50 hover:text-green-700'
                               >
                                 {sub.label}
                               </Link>
@@ -151,6 +193,7 @@ const AgroisyncHeader = () => {
                 <button
                   onClick={handleLogout}
                   className='flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-red-50 hover:text-red-600'
+                  type='button'
                 >
                   <LogOut className='h-4 w-4' />
                   Sair
@@ -172,24 +215,24 @@ const AgroisyncHeader = () => {
                   <button
                     onClick={handleLogout}
                     className='flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm text-gray-700 transition-all duration-200 hover:bg-red-50 hover:text-red-600'
+                    type='button'
                   >
                     <LogOut className='h-4 w-4' />
-                    Sair
                   </button>
                 </div>
               )}
               {!user && (
                 <div className='flex items-center gap-2'>
                   <Link
-                    to='/login'
+                    to={buildPath('/login')}
                     className='flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 transition-all duration-200 hover:bg-green-50 hover:text-green-600'
                   >
                     <LogIn className='h-4 w-4' />
                     Entrar
                   </Link>
                   <Link
-                    to='/signup'
-                    className='flex items-center gap-2 rounded-lg bg-green-600 px-3 py-2 text-sm text-white transition-all duration-200 hover:bg-green-700 hover:shadow-md'
+                    to={buildPath('/signup')}
+                    className='flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm font-medium text-white transition-all duration-200 hover:bg-green-600 hover:shadow-md'
                   >
                     <User className='h-4 w-4' />
                     Cadastrar
@@ -202,6 +245,7 @@ const AgroisyncHeader = () => {
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className='rounded-lg p-2.5 text-gray-700 transition-all duration-200 hover:bg-green-50 hover:text-green-600 md:hidden'
+              type='button'
             >
               {isMobileMenuOpen ? <X className='h-5 w-5' /> : <Menu className='h-5 w-5' />}
             </button>
@@ -218,7 +262,7 @@ const AgroisyncHeader = () => {
                 return (
                   <Link
                     key={item.path}
-                    to={item.path}
+                    to={buildPath(item.path)}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={`flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200 ${
                       isActive
@@ -246,7 +290,7 @@ const AgroisyncHeader = () => {
                   {(submenuItems[parent] || []).map(sub => (
                     <Link
                       key={sub.path}
-                      to={sub.path}
+                      to={buildPath(sub.path)}
                       onClick={() => setIsMobileMenuOpen(false)}
                       className='block rounded px-6 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700'
                     >
@@ -265,8 +309,6 @@ const AgroisyncHeader = () => {
         )}
       </header>
 
-      {/* Spacer */}
-      <div className='h-16'></div>
     </>
   );
 };

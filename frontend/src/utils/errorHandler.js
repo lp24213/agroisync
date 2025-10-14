@@ -155,8 +155,8 @@ export const handleError = (error, options = {}) => {
   const parsed = parseError(error);
 
   // Log no console (desenvolvimento)
-  if (logToConsole) {
-    // Error Handler
+  if (logToConsole && process.env.NODE_ENV !== 'production') {
+    console.log('Error Handler', {
       type: parsed.type,
       message: parsed.message,
       statusCode: parsed.statusCode,

@@ -82,7 +82,9 @@ export const FeatureFlagsProvider = ({ children }) => {
           setFlags(defaultFlags);
         }
       } catch (error) {
-        console.error('Erro ao carregar feature flags:', error);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Erro ao carregar feature flags:', error);
+        }
         setFlags(defaultFlags);
       } finally {
         setLoading(false);
@@ -136,7 +138,9 @@ export const FeatureFlagsProvider = ({ children }) => {
       }
       return false;
     } catch (error) {
-      console.error('Erro ao atualizar feature flag:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao atualizar feature flag:', error);
+      }
       return false;
     }
   };

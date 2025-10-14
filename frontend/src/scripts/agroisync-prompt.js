@@ -7,6 +7,8 @@
 
 (function () {
   const header = document.getElementById('main-header');
+  
+  if (!header) return; // Sair se header não existe
 
   function checkHero() {
     const hero = document.querySelector('.hero-image');

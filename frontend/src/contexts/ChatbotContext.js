@@ -65,7 +65,9 @@ export const ChatbotProvider = ({ children }) => {
         1000 + Math.random() * 2000
       ); // Simular tempo de processamento
     } catch (error) {
-      console.error('Erro ao enviar mensagem:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao enviar mensagem:', error);
+      }
       setIsTyping(false);
     }
   };
@@ -105,7 +107,9 @@ export const ChatbotProvider = ({ children }) => {
         setIsTyping(false);
       }, 2000);
     } catch (error) {
-      console.error('Erro ao processar áudio:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao processar áudio:', error);
+      }
       setIsTyping(false);
     }
   };
@@ -142,7 +146,9 @@ export const ChatbotProvider = ({ children }) => {
         setIsTyping(false);
       }, 3000);
     } catch (error) {
-      console.error('Erro ao processar imagem:', error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Erro ao processar imagem:', error);
+      }
       setIsTyping(false);
     }
   };

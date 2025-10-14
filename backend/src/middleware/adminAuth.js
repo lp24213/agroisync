@@ -1,113 +1,113 @@
-﻿import jwt from 'jsonwebtoken';
+﻿import { json } from 'itty-router-extras';
 import auditService from '../services/auditService.js';
-
 import logger from '../utils/logger.js';
-// Middleware para verificar se o usuÃ¡rio Ã© admin
-const requireAdmin = async (req, res, next) => {
+
+// Middleware para verificar se o usuário é admin
+export async function requireAdmin(request, env) {
   try {
     // Verificar se o token foi fornecido
-    const token = req.headers.authorization?.split(' ')[1];
-
-    if (!token) {
-      return res.status(401).json({
+    const authHeader = request.headers.get('Authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return json({
         success: false,
-        message: 'Token de acesso nÃ£o fornecido'
-      });
+        message: 'Token de acesso não fornecido'
+      }, { status: 401 });
     }
 
-    // Verificar se o token Ã© vÃ¡lido
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const token = authHeader.substring(7);
+    const [_header, payload, _signature] = token.split('.');
+    const decodedPayload = JSON.parse(atob(payload));
 
-    // Verificar se o usuÃ¡rio existe e Ã© admin
-    if (!decoded.email || !decoded.role || decoded.role !== 'admin') {
-      return res.status(403).json({
+    // Verificar se o usuário existe e é admin
+    if (!decodedPayload.email || !decodedPayload.role || decodedPayload.role !== 'admin') {
+      return json({
         success: false,
         message: 'Acesso negado. Apenas administradores podem acessar este recurso.'
-      });
+      }, { status: 403 });
     }
 
-    // Adicionar informaÃ§Ãµes do usuÃ¡rio ao request
-    req.user = {
-      id: decoded.id,
-      email: decoded.email,
-      role: decoded.role
+    // Adicionar informações do usuário ao request
+    request.user = {
+      id: decodedPayload.sub,
+      email: decodedPayload.email,
+      role: decodedPayload.role
     };
 
-    // Log da aÃ§Ã£o
+    // Log da ação
     await auditService.logAdminAccess({
-      userId: decoded.id,
-      resource: req.originalUrl,
+      userId: request.user.id,
+      resource: new URL(request.url).pathname,
       resourceId: null,
       sessionInfo: {
-        ip: req.ip,
-        userAgent: req.get('User-Agent'),
-        country: req.get('CF-IPCountry') || 'unknown',
-        city: req.get('CF-IPCity') || 'unknown',
-        isp: req.get('CF-IPISP') || 'unknown'
+        ip: request.headers.get('CF-Connecting-IP'),
+        userAgent: request.headers.get('User-Agent'),
+        country: request.headers.get('CF-IPCountry') || 'unknown',
+        city: request.headers.get('CF-IPCity') || 'unknown',
+        isp: request.headers.get('CF-IPISP') || 'unknown'
       },
       metadata: {
-        endpoint: req.originalUrl,
-        method: req.method,
+        endpoint: new URL(request.url).pathname,
+        method: request.method,
         statusCode: 200,
         responseTime: 0
       }
     });
 
-    next();
+    return null; // continua para o próximo handler
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      logger.error('Erro na verificaÃ§Ã£o de admin:', error);
+      logger.error('Erro na verificação de admin:', error);
     }
     if (error.name === 'JsonWebTokenError') {
-      return res.status(401).json({
+      return json({
         success: false,
-        message: 'Token invÃ¡lido'
-      });
+        message: 'Token inválido'
+      }, { status: 401 });
     }
 
     if (error.name === 'TokenExpiredError') {
-      return res.status(401).json({
+      return json({
         success: false,
         message: 'Token expirado'
-      });
+      }, { status: 401 });
     }
 
-    return res.status(500).json({
+    return json({
       success: false,
       message: 'Erro interno do servidor'
-    });
+    }, { status: 500 });
   }
 };
 
-// Middleware para validar aÃ§Ãµes administrativas
-const validateAdminAction = async (req, res, next) => {
+// Middleware para validar ações administrativas
+export async function validateAdminAction(request, env) {
   try {
-    const { action, resourceId, details } = req.body;
+    const { action, resourceId, details } = await request.json();
 
     if (!action || !resourceId) {
-      return res.status(400).json({
+      return json({
         success: false,
-        message: 'AÃ§Ã£o e ID do recurso sÃ£o obrigatÃ³rios'
-      });
+        message: 'Ação e ID do recurso são obrigatórios'
+      }, { status: 400 });
     }
 
-    // Log da aÃ§Ã£o administrativa
+    // Log da ação administrativa
     await auditService.logAction({
-      userId: req.user.id,
+      userId: request.user.id,
       action: `admin_${action.toLowerCase()}`,
-      resource: req.originalUrl,
+      resource: new URL(request.url).pathname,
       resourceId,
       afterData: { details: details || `Admin action: ${action}` },
       sessionInfo: {
-        ip: req.ip,
-        userAgent: req.get('User-Agent'),
-        country: req.get('CF-IPCountry') || 'unknown',
-        city: req.get('CF-IPCity') || 'unknown',
-        isp: req.get('CF-IPISP') || 'unknown'
+        ip: request.headers.get('CF-Connecting-IP'),
+        userAgent: request.headers.get('User-Agent'),
+        country: request.headers.get('CF-IPCountry') || 'unknown',
+        city: request.headers.get('CF-IPCity') || 'unknown',
+        isp: request.headers.get('CF-IPISP') || 'unknown'
       },
       metadata: {
-        endpoint: req.originalUrl,
-        method: req.method,
+        endpoint: new URL(request.url).pathname,
+        method: request.method,
         statusCode: 200,
         responseTime: 0
       },
@@ -115,16 +115,14 @@ const validateAdminAction = async (req, res, next) => {
       containsPII: false
     });
 
-    next();
+    return null; // continua para o próximo handler
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      logger.error('Erro na validaÃ§Ã£o da aÃ§Ã£o administrativa:', error);
+      logger.error('Erro na validação da ação administrativa:', error);
     }
-    return res.status(500).json({
+    return json({
       success: false,
       message: 'Erro interno do servidor'
-    });
+    }, { status: 500 });
   }
-};
-
-export { requireAdmin, validateAdminAction };
+}

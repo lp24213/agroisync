@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import logger from '../../services/logger';
 import {
   Users,
   MessageSquare,
@@ -104,7 +105,7 @@ const AdminAnonymousPanel = () => {
 
       toast.success('Dados administrativos carregados com sucesso!');
     } catch (error) {
-      console.error('Erro ao carregar dados admin:', error);
+      logger.error('Erro ao carregar dados admin', error, { panel: 'admin-anonymous' });
 
       if (error.response?.status === 401) {
         toast.error('Sessão expirada. Faça login novamente.');

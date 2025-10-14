@@ -318,5 +318,13 @@
       "searchReached": "Límite de búsquedas alcanzado",
       "upgradePrompt": "¡Actualiza a Pro para usar más funciones!"
     }
+  },
+  "consent": {
+    "title": "Privacidad y Cookies",
+    "body": "Usamos cookies para medir audiencia (analytics) y, opcionalmente, marketing. Puedes aceptar solo analytics o rechazar todo. Tus preferencias se guardarán por 180 días.",
+    "analytics": "Analytics",
+    "marketing": "Marketing",
+    "accept": "Aceptar",
+    "reject": "Rechazar"
   }
 }

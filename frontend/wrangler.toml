@@ -15,10 +15,20 @@ to = "/index.html"
 status = 200
 
 # Configuração para Cloudflare Pages
+pages_build_output_dir = "build"
+
 [env.production]
-routes = ["agroisync.com/*"]
+name = "agroisync"
+
+[env.staging]
+name = "agroisync-staging"
 
 # Variáveis de ambiente
 [vars]
 NODE_ENV = "production"
-REACT_APP_API_URL = "https://agroisync.com/api"
+
+[env.production.vars]
+NODE_ENV = "production"
+
+[env.staging.vars]
+NODE_ENV = "staging"

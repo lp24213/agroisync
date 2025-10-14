@@ -6,6 +6,12 @@
 class AgroisyncHeaderController {
   constructor() {
     this.header = document.getElementById('main-header');
+    
+    // Verificar se elementos existem antes de inicializar
+    if (!this.header) {
+      console.warn('Header não encontrado, controller não será inicializado');
+      return;
+    }
     this.hero = document.querySelector('.hero-image');
     this.hamburger = document.getElementById('hamburger');
     this.mobileMenu = null;

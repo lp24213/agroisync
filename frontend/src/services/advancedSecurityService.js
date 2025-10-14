@@ -782,10 +782,21 @@ class AdvancedSecurityService {
   }
 }
 
-// Instância global do serviço de segurança avançado
-const advancedSecurityService = new AdvancedSecurityService();
+// Instância global do serviço de segurança avançado (criada apenas no browser)
+let advancedSecurityService = null;
+const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
+if (isBrowser) {
+  advancedSecurityService = new AdvancedSecurityService();
+}
 
-// Exportar para uso em outros módulos
+// Exportar instância (poderá ser null em ambiente Node) e getter para inicialização tardia
+export function getAdvancedSecurityService() {
+  if (!advancedSecurityService && isBrowser) {
+    advancedSecurityService = new AdvancedSecurityService();
+  }
+  return advancedSecurityService;
+}
+
 export default advancedSecurityService;
 
 // Funções de utilidade de segurança avançada

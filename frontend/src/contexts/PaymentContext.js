@@ -37,31 +37,26 @@ export const PaymentProvider = ({ children }) => {
 
   // Criar payment intent
   const createPaymentIntent = async (amount, currency = 'brl', metadata = {}) => {
-    try {
-      const response = await fetch(getApiUrl('/payments/stripe/create-payment-intent'), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('authToken')}`
-        },
-        body: JSON.stringify({
-          amount: Math.round(amount * 100), // Stripe usa centavos
-          currency,
-          metadata
-        })
-      });
+    const response = await fetch(getApiUrl('/payments/stripe/create-payment-intent'), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('authToken')}`
+      },
+      body: JSON.stringify({
+        amount: Math.round(amount * 100), // Stripe usa centavos
+        currency,
+        metadata
+      })
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Erro ao criar payment intent');
-      }
-
-      return data;
-    } catch (error) {
-      // Erro ao criar payment intent
-      throw error;
+    if (!response.ok) {
+      throw new Error(data.message || 'Erro ao criar payment intent');
     }
+
+    return data;
   };
 
   // Processar pagamento com Stripe
@@ -70,139 +65,109 @@ export const PaymentProvider = ({ children }) => {
       throw new Error('Stripe não inicializado');
     }
 
-    try {
-      const { error, paymentIntent: confirmedPayment } = await stripe.confirmCardPayment(paymentIntent.client_secret);
+    const { error, paymentIntent: confirmedPayment } = await stripe.confirmCardPayment(paymentIntent.client_secret);
 
-      if (error) {
-        throw new Error(error.message);
-      }
-
-      return confirmedPayment;
-    } catch (error) {
-      // Erro ao processar pagamento Stripe
-      throw error;
+    if (error) {
+      throw new Error(error.message);
     }
+
+    return confirmedPayment;
   };
 
   // Processar pagamento com MetaMask
   const processMetaMaskPayment = async (amount, tokenAddress, recipientAddress) => {
-    try {
-      if (!window.ethereum) {
-        throw new Error('MetaMask não encontrado');
-      }
-
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      const account = accounts[0];
-
-      const transactionParameters = {
-        to: recipientAddress,
-        from: account,
-        value: '0x' + (amount * Math.pow(10, 18)).toString(16), // ETH em wei
-        gas: '0x5208' // 21000 gas
-      };
-
-      const txHash = await window.ethereum.request({
-        method: 'eth_sendTransaction',
-        params: [transactionParameters]
-      });
-
-      return txHash;
-    } catch (error) {
-      // Erro ao processar pagamento MetaMask
-      throw error;
+    if (!window.ethereum) {
+      throw new Error('MetaMask não encontrado');
     }
+
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const account = accounts[0];
+
+    const transactionParameters = {
+      to: recipientAddress,
+      from: account,
+      value: '0x' + (amount * Math.pow(10, 18)).toString(16), // ETH em wei
+      gas: '0x5208' // 21000 gas
+    };
+
+    const txHash = await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [transactionParameters]
+    });
+
+    return txHash;
   };
 
   // Obter planos de assinatura
   const getSubscriptionPlans = async () => {
-    try {
-      const response = await fetch(getApiUrl('/payments/plans'));
-      const data = await response.json();
+    const response = await fetch(getApiUrl('/payments/plans'));
+    const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Erro ao obter planos');
-      }
-
-      return data.plans;
-    } catch (error) {
-      // Erro ao obter planos
-      throw error;
+    if (!response.ok) {
+      throw new Error(data.message || 'Erro ao obter planos');
     }
+
+    return data.plans;
   };
 
   // Criar assinatura
   const createSubscription = async (planId, paymentMethodId) => {
-    try {
-      const response = await fetch(getApiUrl('/payments/subscriptions'), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('authToken')}`
-        },
-        body: JSON.stringify({
-          planId,
-          paymentMethodId
-        })
-      });
+    const response = await fetch(getApiUrl('/payments/subscriptions'), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('authToken')}`
+      },
+      body: JSON.stringify({
+        planId,
+        paymentMethodId
+      })
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Erro ao criar assinatura');
-      }
-
-      setSubscription(data.subscription);
-      return data;
-    } catch (error) {
-      // Erro ao criar assinatura
-      throw error;
+    if (!response.ok) {
+      throw new Error(data.message || 'Erro ao criar assinatura');
     }
+
+    setSubscription(data.subscription);
+    return data;
   };
 
   // Cancelar assinatura
   const cancelSubscription = async subscriptionId => {
-    try {
-      const response = await fetch(getApiUrl(`/payments/subscriptions/${subscriptionId}/cancel`), {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('authToken')}`
-        }
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Erro ao cancelar assinatura');
+    const response = await fetch(getApiUrl(`/payments/subscriptions/${subscriptionId}/cancel`), {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('authToken')}`
       }
+    });
 
-      setSubscription(null);
-      return data;
-    } catch (error) {
-      // Erro ao cancelar assinatura
-      throw error;
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Erro ao cancelar assinatura');
     }
+
+    setSubscription(null);
+    return data;
   };
 
   // Obter histórico de pagamentos
   const getPaymentHistory = async () => {
-    try {
-      const response = await fetch(getApiUrl('/payments/history'), {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('authToken')}`
-        }
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Erro ao obter histórico');
+    const response = await fetch(getApiUrl('/payments/history'), {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('authToken')}`
       }
+    });
 
-      return data.payments;
-    } catch (error) {
-      // Erro ao obter histórico
-      throw error;
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Erro ao obter histórico');
     }
+
+    return data.payments;
   };
 
   const value = {

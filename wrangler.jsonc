@@ -1,4 +1,10 @@
 {
-  "name": "agroisync",
-  "pages_build_output_dir": "frontend/build"
+	"name": "agroisync",
+	"pages_build_output_dir": "frontend/build",
+	"kv_namespaces": [
+		{
+			"binding": "SESSIONS",
+			"id": "13903703f9474a8181e852306a287eb7"
+		}
+	]
 }

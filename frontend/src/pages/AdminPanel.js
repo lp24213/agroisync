@@ -17,13 +17,12 @@ const AdminPanel = () => {
         const response = await axios.get('/api/admin/stats');
         setStats(response.data.data || {});
       } catch (error) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.log('Usando dados mock de admin');
-        }
+        // Em produção, SEMPRE mostrar erro se backend falhar
         setStats({
-          totalUsers: 150,
-          activeOrders: 45,
-          revenue: 125000
+          totalUsers: 0,
+          activeOrders: 0,
+          revenue: 0,
+          error: 'Erro ao carregar dados do servidor'
         });
       } finally {
         setLoading(false);

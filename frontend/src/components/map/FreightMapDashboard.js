@@ -62,81 +62,10 @@ const FreightMapDashboard = () => {
     try {
       setIsLoading(true);
 
-      // Simular dados de fretes (em produção, viria da API)
-      const mockFreights = [
-        {
-          id: '1',
-          origin: 'São Paulo, SP',
-          destination: 'Rio de Janeiro, RJ',
-          driver: {
-            id: 'driver1',
-            name: 'João Silva',
-            phone: '(11) 99999-9999',
-            vehicle: 'Scania R450',
-            plate: 'ABC-1234'
-          },
-          status: 'in_transit',
-          progress: 65,
-          estimatedArrival: new Date(Date.now() + 2 * 60 * 60 * 1000),
-          cargo: 'Soja',
-          weight: '25 ton',
-          value: 15000,
-          coordinates: {
-            origin: { lat: -23.5505, lng: -46.6333 },
-            destination: { lat: -22.9068, lng: -43.1729 },
-            current: { lat: -22.8, lng: -44.0 }
-          }
-        },
-        {
-          id: '2',
-          origin: 'Brasília, DF',
-          destination: 'Belo Horizonte, MG',
-          driver: {
-            id: 'driver2',
-            name: 'Maria Santos',
-            phone: '(11) 88888-8888',
-            vehicle: 'Volvo FH',
-            plate: 'DEF-5678'
-          },
-          status: 'loading',
-          progress: 0,
-          estimatedArrival: new Date(Date.now() + 6 * 60 * 60 * 1000),
-          cargo: 'Milho',
-          weight: '30 ton',
-          value: 18000,
-          coordinates: {
-            origin: { lat: -15.7801, lng: -47.9292 },
-            destination: { lat: -19.9167, lng: -43.9345 },
-            current: { lat: -15.7801, lng: -47.9292 }
-          }
-        },
-        {
-          id: '3',
-          origin: 'Curitiba, PR',
-          destination: 'Porto Alegre, RS',
-          driver: {
-            id: 'driver3',
-            name: 'Pedro Oliveira',
-            phone: '(11) 77777-7777',
-            vehicle: 'Mercedes Actros',
-            plate: 'GHI-9012'
-          },
-          status: 'delivered',
-          progress: 100,
-          estimatedArrival: new Date(Date.now() - 2 * 60 * 60 * 1000),
-          cargo: 'Trigo',
-          weight: '20 ton',
-          value: 12000,
-          coordinates: {
-            origin: { lat: -25.4244, lng: -49.2654 },
-            destination: { lat: -30.0346, lng: -51.2177 },
-            current: { lat: -30.0346, lng: -51.2177 }
-          }
-        }
-      ];
-
-      setFreights(mockFreights);
-      analytics.trackEvent('freights_loaded', { count: mockFreights.length });
+      // SEM DADOS FALSOS - buscar apenas da API
+      // Se a API não retornar dados, mostrar vazio
+      setFreights([]);
+      analytics.trackEvent('freights_loaded', { count: 0 });
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
         // Error loading freights

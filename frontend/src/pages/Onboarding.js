@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import logger from '../services/logger';
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -57,19 +58,19 @@ const Onboarding = () => {
             }));
             if (process.env.NODE_ENV !== 'production') {
 
-              console.log('CEP encontrado:', viaCepData);
+              // CEP encontrado
 
             }
           } else {
             if (process.env.NODE_ENV !== 'production') {
 
-              console.log('CEP não encontrado');
+              // CEP não encontrado
 
             }
           }
         }
       } catch (error) {
-        console.error('Erro ao buscar CEP:', error);
+        logger.error('Erro ao buscar CEP', error, { page: 'onboarding', cep });
         // Não fazer nada em caso de erro - deixar usuário preencher manualmente
       }
     }
@@ -90,7 +91,7 @@ const Onboarding = () => {
           }
         }
       } catch (error) {
-        console.error('Erro ao validar documento:', error);
+        logger.error('Erro ao validar documento', error, { page: 'onboarding', docType: type });
       }
     }
   };

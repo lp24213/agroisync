@@ -5,10 +5,12 @@ import StockTicker from '../components/StockTicker';
 import GrainsChart from '../components/GrainsChart';
 import CompactWeatherWidget from '../components/CompactWeatherWidget';
 import CryptoHash from '../components/CryptoHash';
+import GrainInfo from '../components/GrainInfo';
+import AgriNews from '../components/AgriNews';
 
 const AgroisyncHome = () => {
-  // Imagem de campo de soja verde vibrante com cache buster - usando imagem de alta resolução
-  const inicioImageUrl = `https://images.unsplash.com/photo-1600747476236-76579658b1b1?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Q0FNUE8lMjBERSUyMFNPSkF8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=1920&q=80`;
+  // Imagem de campo de soja e trigo com cache buster - usando imagem de alta resolução
+  const inicioImageUrl = `https://media.istockphoto.com/id/2228728040/pt/foto/soybean-and-wheat-fields-at-summer-season.webp?a=1&b=1&s=612x612&w=0&k=20&c=N6HRSCwp0KbkAMuNBlSM7YbBq74KOBQvKvnRSB3Ws-A=`;
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 60 },
@@ -141,42 +143,23 @@ const AgroisyncHome = () => {
               </motion.div>
             </motion.div>
           </section>
+
+          {/* Seção de Informações dos Grãos */}
+          <GrainInfo />
         </div>
 
         {/* Sidebar - Direita */}
         <div className='agro-sidebar'>
           {/* Ultra Gráfico de Cotações */}
           <GrainsChart />
+          
+          {/* Notícias do Agronegócio */}
+          <AgriNews />
 
           {/* Widget de Clima Compacto */}
           <CompactWeatherWidget />
 
-          {/* Notícias do Agronegócio */}
-          <div className='agro-news-card agro-card-animated'>
-            <h3 className='agro-news-title' style={{ textAlign: 'center' }}>
-              Notícias do Agronegócio
-            </h3>
 
-            <div className='agro-news-items'>
-              <div className='agro-news-item'>
-                <div className='agro-news-category'>COMMODITIES</div>
-                <div className='agro-news-text'>Soja atinge maior preço em 3 meses com alta da demanda chinesa</div>
-                <div className='agro-news-time'>3h atrás</div>
-              </div>
-
-              <div className='agro-news-item'>
-                <div className='agro-news-category'>TECNOLOGIA</div>
-                <div className='agro-news-text'>Tecnologia SG revoluciona monitoramento de safras no Brasil</div>
-                <div className='agro-news-time'>3h atrás</div>
-              </div>
-
-              <div className='agro-news-item'>
-                <div className='agro-news-category'>CLIMA</div>
-                <div className='agro-news-text'>Chuva em excesso preocupa produtores de milho no Centro-Oeste</div>
-                <div className='agro-news-time'>3h atrás</div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 

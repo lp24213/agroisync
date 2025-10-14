@@ -266,16 +266,38 @@
     // Store report in global variable for access
     window.i18nAuditReport = report;
 
-    // Log to console
-    console.group('🔍 I18N Audit Report');
-    // I18n keys processed
-    console.table(report.keys);
-    console.groupEnd();
+    // Log to console (only in development)
+    if (process.env.NODE_ENV !== 'production') {
+      console.group('🔍 I18N Audit Report');
+      // I18n keys processed
+      console.table(report.keys);
+      console.groupEnd();
+    }
 
     return report;
   }
 
   function getFallbackText(key) {
+    // Primeiro, verifica se é qualquer variação de agroisync
+    if (key.toLowerCase().includes('agroisync') || key.toLowerCase().includes('agroisync.com')) {
+      return 'contato@agroisync.com';
+    }
+    
+    // Verifica se é "Agroisync Com" especificamente
+    if (key === 'Agroisync Com' || key === 'agroisync com' || key === 'AGROISYNC COM') {
+      return 'contato@agroisync.com';
+    }
+    
+    // Verifica se contém "agroisync" em qualquer parte
+    if (key.toLowerCase().includes('agroisync')) {
+      return 'contato@agroisync.com';
+    }
+    
+    // Verifica se é "agroisync.com" especificamente
+    if (key === 'agroisync.com' || key === 'agroisync.com/') {
+      return 'contato@agroisync.com';
+    }
+
     const fallbacks = {
       'nav.inicio': 'Início',
       'nav.loja': 'Loja',
@@ -365,7 +387,7 @@
     // Initialize all behaviors
     initLanguageSelector();
     initMobileMenu();
-    initSmoothScrolling();
+    initSmoothScrolling(); // Reabilitado para uso sem conflito
     initFormValidation();
 
     // Run i18n audit

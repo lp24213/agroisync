@@ -1,0 +1,35 @@
+# Robots.txt for Agroisync
+User-agent: *
+Allow: /
+
+# Host
+Host: https://agroisync.com
+
+# Sitemaps
+Sitemap: https://agroisync.com/sitemap.xml
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /user/
+Disallow: /api/
+Disallow: /useradmin/
+Disallow: /messaging/
+Disallow: /payment/
+Disallow: /crypto-routes/
+
+# Allow important pages
+Allow: /
+Allow: /produtos
+Allow: /frete
+Allow: /sobre
+Allow: /contato
+Allow: /planos
+Allow: /loja
+Allow: /tecnologia
+Allow: /partnerships
+Allow: /login
+Allow: /register
+
+# Crawl delay
+Crawl-delay: 1

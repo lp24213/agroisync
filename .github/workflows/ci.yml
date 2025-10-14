@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build-and-lhci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install root deps (if any)
+        run: npm ci || true
+
+      - name: Install frontend-next deps
+        run: npm --prefix frontend-next ci
+
+      - name: Build Next.js (SSR/SSG)
+        run: npm run next:build
+
+      - name: Start Next.js server
+        run: |
+          nohup npm run next:start > .next_server.log 2>&1 &
+          echo $! > next_server_pid
+
+      - name: Lighthouse CI
+        run: npm --prefix frontend-next run ci:lhci
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: frontend-next/.lighthouseci
+
+      - name: Stop Next.js server
+        if: always()
+        run: |
+          if [ -f next_server_pid ]; then
+            kill $(cat next_server_pid) || true
+          fi

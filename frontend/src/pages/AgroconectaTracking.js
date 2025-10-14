@@ -1,24 +1,16 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Truck, MapPin, Clock, CheckCircle, Bot } from 'lucide-react';
+import { getApiUrl } from '../config/constants.js';
 
 const sampleTimeline = code => {
-  const base = Date.now();
-  return [
-    { ts: new Date(base - 1000 * 60 * 60 * 24 * 2).toISOString(), status: 'Pedido recebido', location: 'Sinop, MT' },
-    { ts: new Date(base - 1000 * 60 * 60 * 24).toISOString(), status: 'Coleta realizada', location: 'Sinop, MT' },
-    {
-      ts: new Date(base - 1000 * 60 * 60 * 12).toISOString(),
-      status: 'Em trânsito',
-      location: 'Lucas do Rio Verde, MT'
-    },
-    { ts: new Date(base - 1000 * 60 * 60 * 1).toISOString(), status: 'Chegando ao destino', location: 'Cuiabá, MT' }
-  ].map((e, idx) => ({ ...e, id: `${code || 'AG'}-${idx + 1}` }));
+  // Retorna array vazio - dados reais virão do backend quando disponíveis
+  return [];
 };
 
 const AgroconectaTracking = () => {
   const [params] = useSearchParams();
-  const [input, setInput] = useState(params.get('code') || 'AG-2025-0001');
+  const [input, setInput] = useState(params.get('code') || '');
   const [tracking, setTracking] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -33,9 +25,32 @@ const AgroconectaTracking = () => {
   const handleTrack = async () => {
     setLoading(true);
     try {
-      // TODO: integrar backend quando disponível. Por ora, timeline simulada determinística.
-      const data = sampleTimeline(input);
-      setTracking(data);
+      // Tentar buscar dados reais do backend primeiro
+      try {
+        const response = await fetch(getApiUrl(`/freight-orders/track/${input}`), {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          }
+        });
+        
+        if (response.ok) {
+          const realData = await response.json();
+          setTracking(realData);
+          return;
+        }
+      } catch (error) {
+        // Em produção, silenciar erro
+        if (process.env.NODE_ENV === 'production') {
+          setTracking([]);
+          return;
+        }
+      }
+      
+      // Fallback para dados simulados APENAS em desenvolvimento
+      if (process.env.NODE_ENV !== 'production') {
+        const data = sampleTimeline(input);
+        setTracking(data);
+      }
     } finally {
       setLoading(false);
     }
@@ -63,6 +78,15 @@ const AgroconectaTracking = () => {
       <h1 className='mb-4 flex items-center gap-2 text-2xl font-bold text-gray-900'>
         <Truck className='h-5 w-5' /> Rastreamento de Frete
       </h1>
+      <div className='mb-6 rounded-xl border border-blue-100 bg-blue-50 p-4 text-blue-800'>
+        <p className='font-semibold'>Como funciona o rastreamento</p>
+        <ul className='mt-2 list-disc space-y-1 pl-5 text-sm'>
+          <li>Informe o código fornecido no seu pedido ou ordem de frete.</li>
+          <li>Buscamos os dados reais no sistema (quando disponíveis).</li>
+          <li>Sem código válido, nenhuma informação é exibida por segurança.</li>
+          <li>A IA auxilia com dicas contextuais baseadas no último status.</li>
+        </ul>
+      </div>
       <div className='mb-6 rounded-xl border border-gray-200 bg-white p-4 shadow-sm'>
         <label className='mb-2 block text-sm font-medium text-gray-700'>Código de rastreamento</label>
         <div className='flex gap-2'>
@@ -70,7 +94,7 @@ const AgroconectaTracking = () => {
             value={input}
             onChange={e => setInput(e.target.value)}
             className='flex-1 rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500'
-            placeholder='AG-2025-0001'
+            placeholder='Digite o código de rastreamento'
           />
           <button
             onClick={handleTrack}

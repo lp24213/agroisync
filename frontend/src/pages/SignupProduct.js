@@ -290,8 +290,8 @@ const SignupProduct = () => {
         setAuthToken(data.data.token);
         localStorage.setItem('user', JSON.stringify(data.data.user));
       }
-      // Redirecionar para dashboard
-      navigate('/user-dashboard', { replace: true });
+      // Redirecionar para painel de escolhas
+      navigate('/onboarding', { replace: true });
     } catch (error) {
       setErrors({ general: 'Erro ao criar conta. Tente novamente.' });
     } finally {
@@ -1517,6 +1517,53 @@ const SignupProduct = () => {
                 </p>
               </motion.div>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Seção explicativa: Como vender no AGROiSYNC */}
+      <section aria-labelledby='como-vender-heading' className='bg-white'>
+        <div className='container' style={{ padding: '3rem 1rem', maxWidth: 1000 }}>
+          <h2 id='como-vender-heading' className='sr-only'>Como vender no AGROiSYNC</h2>
+          <div className='rounded-2xl border border-gray-200 bg-white p-6 shadow-sm'>
+            <div className='mb-6'>
+              <p className='text-xl font-extrabold text-gray-900'>Como Vender</p>
+              <p className='text-gray-600'>
+                Publique seus produtos com apoio de verificação de dados, recomendações por IA e gestão simples.
+              </p>
+            </div>
+
+            <ol className='grid grid-cols-1 gap-6 md:grid-cols-2' aria-label='Passo a passo para vender'>
+              <li className='rounded-xl border border-gray-100 bg-gray-50 p-4'>
+                <p className='font-semibold text-gray-900'>1. Crie sua conta e verifique seu e-mail</p>
+                <p className='text-sm text-gray-600'>Proteção contra fraudes com verificação de e-mail e validação de documentos.</p>
+              </li>
+              <li className='rounded-xl border border-gray-100 bg-gray-50 p-4'>
+                <p className='font-semibold text-gray-900'>2. Cadastre sua loja e seus produtos</p>
+                <p className='text-sm text-gray-600'>Inclua fotos, origem, qualidade, estoque e preço. A IA sugere categorias e descrições.</p>
+              </li>
+              <li className='rounded-xl border border-gray-100 bg-gray-50 p-4'>
+                <p className='font-semibold text-gray-900'>3. Ative sua vitrine</p>
+                <p className='text-sm text-gray-600'>Defina disponibilidade, regiões atendidas e preferências de contato.</p>
+              </li>
+              <li className='rounded-xl border border-gray-100 bg-gray-50 p-4'>
+                <p className='font-semibold text-gray-900'>4. Receba contatos de interessados</p>
+                <p className='text-sm text-gray-600'>Negocie diretamente no chat. Em breve, integrações de pagamento/logística.</p>
+              </li>
+              <li className='rounded-xl border border-gray-100 bg-gray-50 p-4'>
+                <p className='font-semibold text-gray-900'>5. Gerencie pedidos no painel</p>
+                <p className='text-sm text-gray-600'>Acompanhe status, estoque, faturamento e reputação.</p>
+              </li>
+              <li className='rounded-xl border border-gray-100 bg-gray-50 p-4'>
+                <p className='font-semibold text-gray-900'>6. Conte com a IA do Agroisync</p>
+                <p className='text-sm text-gray-600'>Sugestões de preço, descrição e matching com compradores (roadmap em evolução).</p>
+              </li>
+            </ol>
+
+            <div className='mt-6 rounded-lg bg-emerald-50 p-4 text-emerald-800' role='note' aria-live='polite'>
+              <p className='font-semibold'>Importante</p>
+              <p className='text-sm'>Sem informações falsas: produtos só aparecem publicamente após cadastro verdadeiro e validações básicas.</p>
+            </div>
           </div>
         </div>
       </section>

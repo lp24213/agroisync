@@ -1,8 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { MapPin, Phone, Mail, Instagram, MessageCircle } from 'lucide-react';
 
 const AgroisyncFooter = () => {
+  const location = useLocation();
+  const currentSearch = location && location.search ? location.search : '';
   const currentYear = new Date().getFullYear();
 
   const footerSections = [
@@ -72,7 +74,7 @@ const AgroisyncFooter = () => {
               <ul className='space-y-1'>
                 {section.links.map((link, linkIndex) => (
                   <li key={linkIndex}>
-                    <Link to={link.path} className='text-sm text-gray-600 transition-colors hover:text-green-600'>
+                    <Link to={{ pathname: link.path, search: currentSearch }} className='text-sm text-gray-600 transition-colors hover:text-green-600'>
                       {link.label}
                     </Link>
                   </li>
@@ -88,10 +90,10 @@ const AgroisyncFooter = () => {
             © {currentYear} AGROISYNC - Sinop - MT - Todos os direitos reservados.
           </div>
           <div className='flex items-center gap-4'>
-            <Link to='/terms' className='text-sm text-gray-600 transition-colors hover:text-green-600'>
+            <Link to={{ pathname: '/terms', search: currentSearch }} className='text-sm text-gray-600 transition-colors hover:text-green-600'>
               Termos de Uso
             </Link>
-            <Link to='/privacy' className='text-sm text-gray-600 transition-colors hover:text-green-600'>
+            <Link to={{ pathname: '/privacy', search: currentSearch }} className='text-sm text-gray-600 transition-colors hover:text-green-600'>
               Privacidade
             </Link>
             <a

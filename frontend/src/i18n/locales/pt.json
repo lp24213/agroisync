@@ -114,6 +114,7 @@
   "contact": {
     "title": "Entre em Contato",
     "subtitle": "Estamos aqui para ajudar você a transformar seu agronegócio com tecnologia de ponta",
+    "intro": "Envie sua mensagem para nossa equipe.",
     "email": "Email",
     "phone": "Telefone",
     "location": "Localização",
@@ -121,7 +122,24 @@
     "phoneNumber": "(66) 99236-2830",
     "responseTime": "Resposta em até 2 horas",
     "workingHours": "Segunda a Sexta, 8h às 18h",
-    "visitInfo": "Visitas com agendamento"
+    "visitInfo": "Visitas com agendamento",
+    "submit": "Enviar",
+    "sending": "Enviando...",
+    "success": "Mensagem enviada com sucesso.",
+    "error_prefix": ""
+  },
+  "consent": {
+    "title": "Privacidade e Cookies",
+    "body": "Usamos cookies para medir audiência (analytics) e, opcionalmente, marketing. Você pode aceitar apenas analytics ou rejeitar tudo. Suas preferências serão salvas por 180 dias.",
+    "analytics": "Analytics",
+    "marketing": "Marketing",
+    "accept": "Aceitar",
+    "reject": "Rejeitar"
+  },
+  "form": {
+    "name": "Nome",
+    "email": "Email",
+    "message": "Mensagem"
   },
   "marketplace": {
     "title": "Produtos",

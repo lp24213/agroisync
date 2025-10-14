@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { Truck, MessageSquare, Bell, LogOut, Navigation } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import logger from '../../services/logger';
 
 const DriverPanel = () => {
   const { t } = useTranslation();
@@ -116,7 +117,7 @@ const DriverPanel = () => {
         }
       ]);
     } catch (error) {
-      console.error('Erro ao carregar dados:', error);
+      logger.error('Erro ao carregar dados do motorista', error, { panel: 'driver' });
     } finally {
       setLoading(false);
     }

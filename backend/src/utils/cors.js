@@ -5,7 +5,7 @@
 // Headers CORS para Cloudflare Workers
 // IMPORTANTE: NÃ£o usar '*' em produÃ§Ã£o - configurar origem especÃ­fica
 export const corsHeaders = {
-  'Access-Control-Allow-Origin': process.env.FRONTEND_URL || 'http://localhost:3000',
+  'Access-Control-Allow-Origin': typeof env !== 'undefined' && env.FRONTEND_URL ? env.FRONTEND_URL : 'http://localhost:3000',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
   'Access-Control-Allow-Credentials': 'true',

@@ -4,12 +4,60 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    
+    <!-- SEO Meta Tags -->
     <title>AGROISYNC - Futuro do Agronegócio</title>
+    <meta name="description" content="Conectamos produtores, compradores e logística em uma única plataforma. Marketplace, fretes e pagamentos cripto para o agronegócio brasileiro." />
+    <meta name="keywords" content="agronegócio, marketplace, fretes, agricultura, produtores, compradores, logística, blockchain, cripto" />
+    <meta name="author" content="Agroisync" />
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="AGROISYNC - Futuro do Agronegócio" />
+    <meta property="og:description" content="Conectamos produtores, compradores e logística em uma única plataforma. Marketplace, fretes e pagamentos cripto." />
+    <meta property="og:image" content="https://agroisync.com/agroisync-logo.svg" />
+    <meta property="og:url" content="https://agroisync.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Agroisync" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AGROISYNC - Futuro do Agronegócio" />
+    <meta name="twitter:description" content="Conectamos produtores, compradores e logística em uma única plataforma." />
+    <meta name="twitter:image" content="https://agroisync.com/agroisync-logo.svg" />
+    
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Agroisync",
+      "url": "https://agroisync.com",
+      "logo": "https://agroisync.com/agroisync-logo.svg",
+      "description": "Plataforma de agronegócio que conecta produtores, compradores e logística",
+      "sameAs": [
+        "https://www.linkedin.com/company/agroisync",
+        "https://twitter.com/agroisync"
+      ]
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Agroisync",
+      "url": "https://agroisync.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://agroisync.com/marketplace?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/index.js"></script>
   </body>
-  
 </html>
 

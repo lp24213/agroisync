@@ -1,8 +1,8 @@
-import React from 'react';
-import DynamicCryptoURL from './components/DynamicCryptoURL';
+import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
+import { Helmet } from 'react-helmet-async';
 import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -14,6 +14,8 @@ import LGPDCompliance from './components/LGPDCompliance';
 import GlobalWeatherWidget from './components/GlobalWeatherWidget';
 import AccessibilityPanel from './components/AccessibilityPanel';
 import ErrorBoundary from './components/ErrorBoundary';
+import LoadingFallback from './components/LoadingFallback';
+import DynamicCryptoURL from './components/DynamicCryptoURL';
 import { Accessibility } from 'lucide-react';
 
 // CSS unificado (5 arquivos)
@@ -25,7 +27,6 @@ import './styles/mobile.css';
 
 // Components que precisam carregar imediatamente
 import ProtectedRoute from './components/ProtectedRoute';
-import LoadingFallback from './components/LoadingFallback';
 import CryptoRouteHandler from './components/CryptoRouteHandler';
 
 // Pages - LAZY LOADING para melhor performance
@@ -210,17 +211,6 @@ function App() {
                         <Route path='/crypto' element={<AgroisyncCrypto />} />
                         <Route path='/insumos' element={<Insumos />} />
                         
-                        {/* Plans Routes - Consolidadas */}
-                        <Route path='/plans' element={<AgroisyncPlans />} />
-                        <Route path='/planos' element={<AgroisyncPlans />} />
-                        
-                        {/* About Routes - Consolidadas */}
-                        <Route path='/about' element={<AgroisyncAbout />} />
-                        <Route path='/sobre' element={<AgroisyncAbout />} />
-                        
-                        {/* Contact Routes - Consolidadas */}
-                        <Route path='/contact' element={<AgroisyncContact />} />
-                        
                         {/* Partnerships Routes */}
                         <Route path='/partnerships' element={<Partnerships />} />
                         <Route path='/partnerships/current' element={<PartnershipsCurrent />} />
@@ -239,17 +229,16 @@ function App() {
                         <Route path='/crypto/:id' element={<CryptoDetail />} />
                         <Route path='/crypto/:id/:cryptoHash' element={<CryptoRouteHandler><CryptoDetail /></CryptoRouteHandler>} />
 
-                        {/* Auth Routes - Consolidadas */}
+                        {/* Auth Routes */}
                         <Route path='/register' element={<AgroisyncRegister />} />
                         <Route path='/login' element={<AgroisyncLogin />} />
-                        <Route path='/signup' element={<SignupType />} />
+                        <Route path='/signup' element={<AgroisyncRegister />} />
+                        <Route path='/signup/type' element={<SignupType />} />
                         <Route path='/signup/general' element={<SignupGeneral />} />
                         <Route path='/signup/freight' element={<SignupFreight />} />
-                        <Route path='/frete' element={<SignupFreight />} />
                         <Route path='/signup/store' element={<SignupStore />} />
                         <Route path='/signup/product' element={<SignupProduct />} />
                         <Route path='/store-plans' element={<StorePlans />} />
-                        <Route path='/payment' element={<Payment />} />
                         <Route path='/forgot-password' element={<AgroisyncForgotPassword />} />
                         <Route path='/reset-password' element={<ResetPassword />} />
                         <Route path='/two-factor-auth' element={<TwoFactorAuth />} />
@@ -396,22 +385,6 @@ function App() {
                         <Route path='/:path1/:path2/:path3/:cryptoHash' element={<AgroisyncHome />} />
                         <Route path='/:path1/:path2/:path3/:path4/:cryptoHash' element={<AgroisyncHome />} />
 
-                        {/* Rotas específicas para páginas principais sem criptografia */}
-                        <Route path='/loja' element={<AgroisyncLoja />} />
-                        <Route path='/store' element={<Store />} />
-                        {/* Rotas duplicadas removidas - já definidas acima */}
-                        <Route path='/usuario-geral' element={<UsuarioGeral />} />
-                        <Route path='/tecnologia' element={<AgroisyncCrypto />} />
-                        <Route path='/insumos' element={<Insumos />} />
-                        <Route path='/plans' element={<AgroisyncPlans />} />
-                        <Route path='/planos' element={<AgroisyncPlans />} />
-                        <Route path='/about' element={<AgroisyncAbout />} />
-                        <Route path='/sobre' element={<AgroisyncAbout />} />
-                        <Route path='/contact' element={<AgroisyncContact />} />
-                        <Route path='/partnerships' element={<Partnerships />} />
-                        <Route path='/register' element={<AgroisyncRegister />} />
-                        <Route path='/login' element={<AgroisyncLogin />} />
-                        <Route path='/signup' element={<SignupType />} />
 
                         {/* Catch all para 404 */}
                         <Route path='*' element={<NotFound />} />
