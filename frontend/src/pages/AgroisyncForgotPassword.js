@@ -64,10 +64,14 @@ const AgroisyncForgotPassword = () => {
     setIsLoading(true);
     try {
       const result = await authService.forgotPassword(formData.email);
+      console.log('🔍 Forgot password result:', result);
+      
       if (result.success) {
-        toast.success(`Código enviado! Código: ${result.resetCode}`, { duration: 10000 });
+        toast.success(`Código enviado para ${formData.email}! Código: ${result.resetCode}`, { duration: 10000 });
+        console.log('✅ Mudando para step 2');
         setStep(2);
       } else {
+        console.error('❌ Erro:', result.error);
         toast.error(result.error || 'Erro ao enviar código');
       }
     } catch (error) {

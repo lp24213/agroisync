@@ -1,18 +1,13 @@
+// Next.js configuration for AgroSync
+// Note: This project uses React (not Next.js), but this file may be referenced by some tools
+
 module.exports = {
   reactStrictMode: true,
-  // Force server output where needed and improve production build for Vercel
-  // This keeps existing behavior but reduces fallback-only pages.
-  output: typeof process !== 'undefined' && process.env.NEXTJS_OUTPUT ? process.env.NEXTJS_OUTPUT : undefined,
-  experimental: {
-    // only add safe experimental flags if not present
-    ...(module.exports && module.exports.experimental ? module.exports.experimental : {}),
-    runtime: 'nodejs', // ensure server runtime for SSR pages
-  },
-  // Ensure images and assets behave consistently
+  // Standard React app configuration
   images: {
-    unoptimized: false,
-    // Keep domains as-is; do not change default behavior. Add additional domains
-    // only if your app requires external image hosts.
-    ...(module.exports && module.exports.images ? module.exports.images : {}),
+    unoptimized: true,
   },
+  // Ensure compatibility with Cloudflare Pages
+  output: 'export',
+  trailingSlash: true,
 };

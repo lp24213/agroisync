@@ -1,13 +1,8 @@
-﻿import express from 'express';
+﻿import { Router } from '@agroisync/router';
 import { authenticateToken } from '../middleware/auth.js';
-import AuditLog from '../models/AuditLog.js';
-import Message from '../models/Message.js';
-import User from '../models/User.js';
-import Product from '../models/Product.js';
-import Freight from '../models/Freight.js';
-import Payment from '../models/Payment.js';
+import { generateId, now } from '../utils/d1-helper.js';
 
-const router = express.Router();
+const router = new Router();
 
 // Middleware para verificar se o usuÃ¡rio tem acesso Ã  mensageria
 const checkMessagingAccess = async (req, res, next) => {
@@ -64,354 +59,174 @@ const checkMessagingAccess = async (req, res, next) => {
 
 // ===== ROTAS DE MENSAGERIA =====
 
-// POST /api/messages - Enviar mensagem
-router.post('/', authenticateToken, checkMessagingAccess, async (req, res) => {
+
+// Enviar mensagem (adaptado para Worker + D1)
+router.post('/messages', authenticateToken, async (request, env) => {
   try {
-    const { destinatarioId, tipo, servicoId, conteudo } = req.body;
-    const remetenteId = req.user.id;
-
-    // ValidaÃ§Ãµes
+    const data = await request.json();
+    const { destinatarioId, tipo, servicoId, conteudo } = data;
+    const remetenteId = request.user.id;
     if (!destinatarioId || !tipo || !servicoId || !conteudo) {
-      return res.status(400).json({
-        success: false,
-        message: 'Todos os campos sÃ£o obrigatÃ³rios'
-      });
+      return new Response(JSON.stringify({ success: false, message: 'Todos os campos são obrigatórios' }), { status: 400 });
     }
-
     if (!['product', 'freight'].includes(tipo)) {
-      return res.status(400).json({
-        success: false,
-        message: "Tipo deve ser 'product' ou 'freight'"
-      });
+      return new Response(JSON.stringify({ success: false, message: "Tipo deve ser 'product' ou 'freight'" }), { status: 400 });
     }
-
     if (conteudo.trim().length === 0 || conteudo.length > 2000) {
-      return res.status(400).json({
-        success: false,
-        message: 'ConteÃºdo deve ter entre 1 e 2000 caracteres'
-      });
+      return new Response(JSON.stringify({ success: false, message: 'Conteúdo deve ter entre 1 e 2000 caracteres' }), { status: 400 });
     }
-
-    // Verificar se o destinatÃ¡rio existe
-    const destinatario = await User.findById(destinatarioId);
+    // Verificar se destinatário existe
+    const destinatario = await env.DB.prepare('SELECT id, email FROM users WHERE id = ?').bind(destinatarioId).first();
     if (!destinatario) {
-      return res.status(404).json({
-        success: false,
-        message: 'DestinatÃ¡rio nÃ£o encontrado'
-      });
+      return new Response(JSON.stringify({ success: false, message: 'Destinatário não encontrado' }), { status: 404 });
     }
-
-    // Verificar se o serviÃ§o existe e Ã© do tipo correto
+    // Verificar se serviço existe (produto ou frete)
     let servico;
     if (tipo === 'product') {
-      servico = await Product.findById(servicoId);
+      servico = await env.DB.prepare('SELECT id, user_id, title, price FROM products WHERE id = ?').bind(servicoId).first();
+      if (!servico || servico.user_id !== destinatarioId) {
+        return new Response(JSON.stringify({ success: false, message: 'Sem permissão para enviar mensagem para este produto' }), { status: 403 });
+      }
     } else {
-      servico = await Freight.findById(servicoId);
+      servico = await env.DB.prepare('SELECT id, provider_id, origin_city, destination_city, freight_value FROM freights WHERE id = ?').bind(servicoId).first();
+      if (!servico || servico.provider_id !== destinatarioId) {
+        return new Response(JSON.stringify({ success: false, message: 'Sem permissão para enviar mensagem para este frete' }), { status: 403 });
+      }
     }
-
-    if (!servico) {
-      return res.status(404).json({
-        success: false,
-        message: 'ServiÃ§o nÃ£o encontrado'
-      });
-    }
-
-    // Verificar se o usuÃ¡rio tem permissÃ£o para enviar mensagem para este serviÃ§o
-    if (tipo === 'product' && servico.ownerId.toString() !== destinatarioId.toString()) {
-      return res.status(403).json({
-        success: false,
-        message: 'Sem permissÃ£o para enviar mensagem para este produto'
-      });
-    }
-
-    if (tipo === 'freight' && servico.ownerId.toString() !== destinatarioId.toString()) {
-      return res.status(403).json({
-        success: false,
-        message: 'Sem permissÃ£o para enviar mensagem para este frete'
-      });
-    }
-
-    // Criar metadados baseados no tipo
-    const metadata = {};
-    if (tipo === 'product') {
-      metadata.productTitle = servico.title;
-      metadata.productPrice = servico.price;
-    } else {
-      metadata.freightOrigin = servico.origin;
-      metadata.freightDestination = servico.destination;
-      metadata.freightPrice = servico.price;
-    }
-
-    // Criar a mensagem
-    const message = new Message({
-      remetente: remetenteId,
-      destinatario: destinatarioId,
-      conteudo: conteudo.trim(),
-      tipo,
-      servico_id: servicoId,
-      metadata,
-      ipAddress: req.ip,
-      userAgent: req.get('User-Agent')
-    });
-
-    await message.save();
-
-    // Log da aÃ§Ã£o
-    await AuditLog.logAction({
-      userId: remetenteId,
-      userEmail: req.user.email,
-      action: 'MESSAGE_SENT',
-      resource: 'message',
-      resourceId: message._id,
-      details: `Message sent to ${destinatario.email} about ${tipo} service`,
-      ip: req.ip,
-      userAgent: req.get('User-Agent')
-    });
-
-    // Populate dados para retorno
-    await message.populate('remetente', 'name email');
-    await message.populate('destinatario', 'name email');
-
-    res.status(201).json({
+    // Criar metadados
+    const metadata = tipo === 'product'
+      ? { productTitle: servico.title, productPrice: servico.price }
+      : { freightOrigin: servico.origin_city, freightDestination: servico.destination_city, freightPrice: servico.freight_value };
+    // Salvar mensagem
+    const id = generateId('msg');
+    const createdAt = now();
+    await env.DB.prepare('INSERT INTO messages (id, remetente, destinatario, conteudo, tipo, servico_id, metadata, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+      .bind(id, remetenteId, destinatarioId, conteudo.trim(), tipo, servicoId, JSON.stringify(metadata), createdAt).run();
+    return new Response(JSON.stringify({
       success: true,
       message: 'Mensagem enviada com sucesso',
-      data: message
-    });
+      data: { id, remetente: remetenteId, destinatario: destinatarioId, conteudo, tipo, servicoId, metadata, createdAt }
+    }), { status: 201, headers: { 'Content-Type': 'application/json' } });
   } catch (error) {
-    // Erro ao enviar mensagem
-
-    await AuditLog.logAction({
-      userId: req.user.id,
-      userEmail: req.user.email,
-      action: 'MESSAGE_SEND_ERROR',
-      resource: 'message',
-      details: `Error sending message: ${error.message}`,
-      ip: req.ip,
-      userAgent: req.get('User-Agent'),
-      errorCode: 'SEND_ERROR',
-      errorMessage: error.message
-    });
-
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
+    return new Response(JSON.stringify({ success: false, message: 'Erro interno do servidor', details: error.message }), { status: 500 });
   }
 });
 
 // GET /api/messages - Listar mensagens do usuÃ¡rio
-router.get('/', authenticateToken, checkMessagingAccess, async (req, res) => {
+
+// Listar mensagens do usuário autenticado (Worker + D1)
+router.get('/messages', authenticateToken, async (request, env) => {
   try {
-    const userId = req.user.id;
-    const { tipo, servicoId, page = 1, limit = 50 } = req.query;
-    const skip = (page - 1) * limit;
+    const url = new URL(request.url);
+    const userId = request.user.id;
+    const tipo = url.searchParams.get('tipo');
+    const servicoId = url.searchParams.get('servicoId');
+    const page = parseInt(url.searchParams.get('page') || '1', 10);
+    const limit = parseInt(url.searchParams.get('limit') || '50', 10);
+    const offset = (page - 1) * limit;
 
-    // Construir query
-    const query = {
-      $or: [{ remetente: userId }, { destinatario: userId }],
-      deletedAt: { $exists: false }
-    };
-
+    let where = '(remetente = ? OR destinatario = ?)';
+    let params = [userId, userId];
     if (tipo) {
-      query.tipo = tipo;
+      where += ' AND tipo = ?';
+      params.push(tipo);
     }
-
     if (servicoId) {
-      query.servico_id = servicoId;
+      where += ' AND servico_id = ?';
+      params.push(servicoId);
     }
 
     // Buscar mensagens
-    const messages = await Message.find(query)
-      .populate('remetente', 'name email')
-      .populate('destinatario', 'name email')
-      .sort({ timestamp: -1 })
-      .skip(skip)
-      .limit(parseInt(limit, 10, 10));
-
+    const sql = `SELECT * FROM messages WHERE ${where} ORDER BY created_at DESC LIMIT ? OFFSET ?`;
+    const messages = (await env.DB.prepare(sql).bind(...params, limit, offset).all()).results;
     // Contar total
-    const total = await Message.countDocuments(query);
+    const countSql = `SELECT COUNT(*) as total FROM messages WHERE ${where}`;
+    const total = (await env.DB.prepare(countSql).bind(...params).first()).total;
 
-    // Log da aÃ§Ã£o
-    await AuditLog.logAction({
-      userId,
-      userEmail: req.user.email,
-      action: 'MESSAGES_LISTED',
-      resource: 'message',
-      details: `Listed ${messages.length} messages`,
-      ip: req.ip,
-      userAgent: req.get('User-Agent')
-    });
-
-    res.json({
+    return new Response(JSON.stringify({
       success: true,
       data: {
         messages,
         pagination: {
-          page: parseInt(page, 10, 10),
-          limit: parseInt(limit, 10, 10),
+          page,
+          limit,
           total,
-          pages: Math.ceil(total / parseInt(limit, 10, 10))
+          pages: Math.ceil(total / limit)
         }
       }
-    });
+    }), { status: 200, headers: { 'Content-Type': 'application/json' } });
   } catch (error) {
-    // Erro ao listar mensagens
-
-    await AuditLog.logAction({
-      userId: req.user.id,
-      userEmail: req.user.email,
-      action: 'MESSAGES_LIST_ERROR',
-      resource: 'message',
-      details: `Error listing messages: ${error.message}`,
-      ip: req.ip,
-      userAgent: req.get('User-Agent'),
-      errorCode: 'LIST_ERROR',
-      errorMessage: error.message
-    });
-
-    res.status(500).json({
+    return new Response(JSON.stringify({
       success: false,
-      message: 'Erro interno do servidor'
-    });
+      message: 'Erro interno do servidor',
+      details: error.message
+    }), { status: 500 });
   }
 });
 
 // GET /api/messages/conversations - Listar conversas do usuÃ¡rio
-router.get('/conversations', authenticateToken, checkMessagingAccess, async (req, res) => {
+
+// Listar conversas do usuário autenticado (Worker + D1)
+router.get('/messages/conversations', authenticateToken, async (request, env) => {
   try {
-    const userId = req.user.id;
-    const { page = 1, limit = 20 } = req.query;
-    const skip = (page - 1) * limit;
+    const url = new URL(request.url);
+    const userId = request.user.id;
+    const page = parseInt(url.searchParams.get('page') || '1', 10);
+    const limit = parseInt(url.searchParams.get('limit') || '20', 10);
+    const offset = (page - 1) * limit;
 
-    // Buscar conversas Ãºnicas
-    const conversations = await Message.aggregate([
-      {
-        $match: {
-          $or: [{ remetente: userId }, { destinatario: userId }],
-          deletedAt: { $exists: false }
-        }
-      },
-      {
-        $addFields: {
-          otherUser: {
-            $cond: [{ $eq: ['$remetente', userId] }, '$destinatario', '$remetente']
-          }
-        }
-      },
-      {
-        $group: {
-          _id: {
-            otherUser: '$otherUser',
-            tipo: '$tipo',
-            servico_id: '$servico_id'
-          },
-          lastMessage: { $first: '$$ROOT' },
-          messageCount: { $sum: 1 },
-          unreadCount: {
-            $sum: {
-              $cond: [
-                {
-                  $and: [
-                    { $eq: ['$destinatario', userId] },
-                    { $in: ['$status', ['sent', 'delivered']] }
-                  ]
-                },
-                1,
-                0
-              ]
-            }
-          }
-        }
-      },
-      {
-        $sort: { 'lastMessage.timestamp': -1 }
-      },
-      {
-        $skip: skip
-      },
-      {
-        $limit: parseInt(limit, 10, 10)
-      }
-    ]);
+    // Buscar todas as mensagens do usuário
+    const allMessages = (await env.DB.prepare(`
+      SELECT * FROM messages WHERE remetente = ? OR destinatario = ?
+    `).bind(userId, userId).all()).results;
 
-    // Populate dados dos usuÃ¡rios e serviÃ§os
-    for (const conv of conversations) {
-      const otherUser = await User.findById(conv._id.otherUser).select('name email');
-      conv.otherUser = otherUser;
-
-      if (conv._id.tipo === 'product') {
-        const product = await Product.findById(conv._id.servico_id).select('title price images');
-        conv.service = product;
+    // Agrupar conversas por outro usuário, tipo e serviço
+    const convMap = new Map();
+    for (const msg of allMessages) {
+      const otherUser = msg.remetente === userId ? msg.destinatario : msg.remetente;
+      const key = `${otherUser}|${msg.tipo}|${msg.servico_id}`;
+      if (!convMap.has(key)) {
+        convMap.set(key, {
+          otherUser,
+          tipo: msg.tipo,
+          servico_id: msg.servico_id,
+          lastMessage: msg,
+          messageCount: 1,
+          unreadCount: (msg.destinatario === userId && ['sent', 'delivered'].includes(msg.status)) ? 1 : 0
+        });
       } else {
-        const freight = await Freight.findById(conv._id.servico_id).select(
-          'origin destination price'
-        );
-        conv.service = freight;
+        const conv = convMap.get(key);
+        // Atualiza último se necessário
+        if (msg.created_at > conv.lastMessage.created_at) conv.lastMessage = msg;
+        conv.messageCount++;
+        if (msg.destinatario === userId && ['sent', 'delivered'].includes(msg.status)) conv.unreadCount++;
       }
     }
+    // Ordenar por data da última mensagem
+    const conversations = Array.from(convMap.values()).sort((a, b) => b.lastMessage.created_at.localeCompare(a.lastMessage.created_at));
+    // Paginar
+    const paged = conversations.slice(offset, offset + limit);
+    // Total
+    const total = conversations.length;
 
-    // Contar total de conversas
-    const totalConversations = await Message.aggregate([
-      {
-        $match: {
-          $or: [{ remetente: userId }, { destinatario: userId }],
-          deletedAt: { $exists: false }
-        }
-      },
-      {
-        $addFields: {
-          otherUser: {
-            $cond: [{ $eq: ['$remetente', userId] }, '$destinatario', '$remetente']
-          }
-        }
-      },
-      {
-        $group: {
-          _id: {
-            otherUser: '$otherUser',
-            tipo: '$tipo',
-            servico_id: '$servico_id'
-          }
-        }
-      },
-      {
-        $count: 'total'
-      }
-    ]);
-
-    const total = totalConversations[0]?.total || 0;
-
-    res.json({
+    return new Response(JSON.stringify({
       success: true,
       data: {
-        conversations,
+        conversations: paged,
         pagination: {
-          page: parseInt(page, 10, 10),
-          limit: parseInt(limit, 10, 10),
+          page,
+          limit,
           total,
-          pages: Math.ceil(total / parseInt(limit, 10, 10))
+          pages: Math.ceil(total / limit)
         }
       }
-    });
+    }), { status: 200, headers: { 'Content-Type': 'application/json' } });
   } catch (error) {
-    // Erro ao listar conversas
-
-    await AuditLog.logAction({
-      userId: req.user.id,
-      userEmail: req.user.email,
-      action: 'CONVERSATIONS_LIST_ERROR',
-      resource: 'message',
-      details: `Error listing conversations: ${error.message}`,
-      ip: req.ip,
-      userAgent: req.get('User-Agent'),
-      errorCode: 'CONVERSATIONS_ERROR',
-      errorMessage: error.message
-    });
-
-    res.status(500).json({
+    return new Response(JSON.stringify({
       success: false,
-      message: 'Erro interno do servidor'
-    });
+      message: 'Erro interno do servidor',
+      details: error.message
+    }), { status: 500 });
   }
 });
 
@@ -650,22 +465,27 @@ router.post('/:messageId/report', authenticateToken, checkMessagingAccess, async
 });
 
 // GET /api/messages/stats - EstatÃ­sticas das mensagens do usuÃ¡rio
-router.get('/stats', authenticateToken, checkMessagingAccess, async (req, res) => {
+
+// Estatísticas das mensagens do usuário (Worker + D1)
+router.get('/messages/stats', authenticateToken, async (request, env) => {
   try {
-    const userId = req.user.id;
-
-    const stats = await Message.getMessageStats(userId);
-
-    res.json({
+    const userId = request.user.id;
+    // Total de mensagens
+    const total = (await env.DB.prepare('SELECT COUNT(*) as total FROM messages WHERE remetente = ? OR destinatario = ?').bind(userId, userId).first()).total;
+    // Não lidas
+    const unread = (await env.DB.prepare("SELECT COUNT(*) as unread FROM messages WHERE destinatario = ? AND status IN ('sent','delivered')").bind(userId).first()).unread;
+    // Lidas
+    const read = (await env.DB.prepare("SELECT COUNT(*) as read FROM messages WHERE destinatario = ? AND status = 'read'").bind(userId).first()).read;
+    return new Response(JSON.stringify({
       success: true,
-      data: stats
-    });
-  } catch {
-    // Erro ao buscar estatÃ­sticas
-    res.status(500).json({
+      data: { total, unread, read }
+    }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+  } catch (error) {
+    return new Response(JSON.stringify({
       success: false,
-      message: 'Erro interno do servidor'
-    });
+      message: 'Erro interno do servidor',
+      details: error.message
+    }), { status: 500 });
   }
 });
 

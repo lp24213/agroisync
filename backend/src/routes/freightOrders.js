@@ -1,14 +1,9 @@
-﻿import express from 'express';
-import { body, validationResult } from 'express-validator';
-import FreightOrder from '../models/FreightOrder.js';
-import User from '../models/User.js';
-import Vehicle from '../models/Vehicle.js';
-import { auth } from '../middleware/auth.js';
-import logger from '../utils/logger.js';
-import { getOpenAIService } from '../services/openaiService.js';
-import emailService from '../services/emailService.js';
+﻿
+import { Router } from '@agroisync/router';
+import { authenticateToken } from '../middleware/auth.js';
+import { generateId, now } from '../utils/d1-helper.js';
 
-const router = express.Router();
+const router = new Router();
 
 /**
  * @swagger
@@ -142,91 +137,40 @@ const router = express.Router();
  *       400:
  *         description: Dados invÃ¡lidos
  */
-router.post(
-  '/',
-  auth,
-  [
-    body('sellerId').isMongoId().withMessage('ID do vendedor invÃ¡lido'),
-    body('origin.address').notEmpty().withMessage('EndereÃ§o de origem Ã© obrigatÃ³rio'),
-    body('origin.city').notEmpty().withMessage('Cidade de origem Ã© obrigatÃ³ria'),
-    body('origin.state').notEmpty().withMessage('Estado de origem Ã© obrigatÃ³rio'),
-    body('destination.address').notEmpty().withMessage('EndereÃ§o de destino Ã© obrigatÃ³rio'),
-    body('destination.city').notEmpty().withMessage('Cidade de destino Ã© obrigatÃ³ria'),
-    body('destination.state').notEmpty().withMessage('Estado de destino Ã© obrigatÃ³rio'),
-    body('pickupDate').isISO8601().withMessage('Data de coleta invÃ¡lida'),
-    body('deliveryDateEstimate').isISO8601().withMessage('Data estimada de entrega invÃ¡lida'),
-    body('items').isArray({ min: 1 }).withMessage('Pelo menos um item Ã© obrigatÃ³rio'),
-    body('pricing.basePrice').isNumeric().withMessage('PreÃ§o base Ã© obrigatÃ³rio')
-  ],
-  async (req, res) => {
-    try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({
-          success: false,
-          message: 'Dados invÃ¡lidos',
-          errors: errors.array()
-        });
-      }
-
-      const userId = req.user.id;
-      const freightOrderData = {
-        ...req.body,
-        buyerId: userId
-      };
-
-      const freightOrder = new FreightOrder(freightOrderData);
-      await freightOrder.save();
-
-      // Adicionar evento inicial de criaÃ§Ã£o
-      await freightOrder.addTrackingEvent('created', {}, 'Pedido de frete criado');
-
-      // Enviar notificaÃ§Ã£o para vendedor
-      const seller = await User.findById(freightOrderData.sellerId);
-      if (seller) {
-        await emailService.sendFreightOrderNotification({
-          to: seller.email,
-          name: seller.name,
-          orderNumber: freightOrder.orderNumber,
-          buyerName: req.user.name,
-          origin: freightOrder.origin,
-          destination: freightOrder.destination,
-          pickupDate: freightOrder.pickupDate,
-          totalPrice: freightOrder.pricing.totalPrice
-        });
-      }
-
-      logger.info(
-        `Novo pedido de frete criado: ${freightOrder.orderNumber} por usuÃ¡rio ${userId}`
-      );
-
-      res.status(201).json({
-        success: true,
-        message: 'Pedido de frete criado com sucesso',
-        data: {
-          freightOrder: {
-            id: freightOrder._id,
-            orderNumber: freightOrder.orderNumber,
-            status: freightOrder.status,
-            origin: freightOrder.origin,
-            destination: freightOrder.destination,
-            pickupDate: freightOrder.pickupDate,
-            deliveryDateEstimate: freightOrder.deliveryDateEstimate,
-            items: freightOrder.items,
-            pricing: freightOrder.pricing,
-            createdAt: freightOrder.createdAt
-          }
-        }
-      });
-    } catch (error) {
-      logger.error('Erro ao criar pedido de frete:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Erro interno do servidor'
-      });
+// Criar novo pedido de frete (adaptado para Worker + D1)
+router.post('/freight-orders', authenticateToken, async (request, env) => {
+  try {
+    const data = await request.json();
+    // Validação básica manual
+    if (!data.sellerId || !data.origin || !data.destination || !data.pickupDate || !data.deliveryDateEstimate || !data.items || !data.pricing || !data.pricing.basePrice) {
+      return new Response(JSON.stringify({ success: false, message: 'Dados obrigatórios ausentes' }), { status: 400 });
     }
+    const id = generateId('freightorder');
+    const createdAt = now();
+    // Exemplo de insert simplificado (ajuste os campos conforme o schema D1 real)
+    await env.DB.prepare(`INSERT INTO freight_orders (id, buyer_id, seller_id, origin, destination, pickup_date, delivery_date_estimate, items, pricing, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'created', ?)`)
+      .bind(
+        id,
+        request.user.id,
+        data.sellerId,
+        JSON.stringify(data.origin),
+        JSON.stringify(data.destination),
+        data.pickupDate,
+        data.deliveryDateEstimate,
+        JSON.stringify(data.items),
+        JSON.stringify(data.pricing),
+        createdAt
+      ).run();
+    // Notificação por e-mail pode ser adaptada para Resend aqui se desejado
+    return new Response(JSON.stringify({
+      success: true,
+      message: 'Pedido de frete criado com sucesso',
+      data: { id }
+    }), { status: 201, headers: { 'Content-Type': 'application/json' } });
+  } catch (error) {
+    return new Response(JSON.stringify({ success: false, message: 'Erro interno do servidor', details: error.message }), { status: 500 });
   }
-);
+});
 
 /**
  * @swagger

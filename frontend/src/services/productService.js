@@ -4,6 +4,17 @@ import { API_CONFIG } from '../config/constants.js';
 // Configuração da API
 const API_BASE_URL = API_CONFIG.baseURL;
 
+// Helper para pegar token
+const getAuthToken = () => {
+  return localStorage.getItem('token') || localStorage.getItem('authToken');
+};
+
+// Helper para headers com auth
+const getAuthHeaders = () => {
+  const token = getAuthToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
 // Categorias principais do agronegócio
 export const PRODUCT_CATEGORIES = {
   graos: {
@@ -170,10 +181,29 @@ class ProductService {
   // Criar novo produto (Loja)
   async createProduct(productData) {
     try {
-      const response = await axios.post(`${API_BASE_URL}/products`, productData);
+      console.log('📦 Criando produto:', productData);
+      console.log('🔑 Token:', getAuthToken() ? 'Presente' : 'AUSENTE');
+      console.log('📍 URL:', `${API_BASE_URL}/products`);
+      
+      const response = await axios.post(`${API_BASE_URL}/products`, productData, {
+        headers: getAuthHeaders()
+      });
+      console.log('✅ Produto criado:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Erro ao criar produto:', error);
+      console.error('❌ Erro ao criar produto:', error.response?.data || error);
+      console.error('Status:', error.response?.status);
+      console.error('Data:', error.response?.data);
+      
+      // Se der erro 403 (limite atingido ou plano expirado), redirecionar para planos
+      if (error.response?.status === 403) {
+        console.log('🚫 Erro 403 - Redirecionando para /plans');
+        console.log('🚫 URL atual:', window.location.href);
+        console.log('🚫 Redirecionando para:', '/plans');
+        window.location.href = '/plans';
+        return;
+      }
+      
       throw error;
     }
   }
@@ -181,10 +211,14 @@ class ProductService {
   // Criar produto no AgroConecta (Fretes)
   async createAgroConectaProduct(productData) {
     try {
-      const response = await axios.post(`${API_BASE_URL}/fretes/products`, productData);
+      console.log('📦 Criando frete:', productData);
+      const response = await axios.post(`${API_BASE_URL}/freight`, productData, {
+        headers: getAuthHeaders()
+      });
+      console.log('✅ Frete criado:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Erro ao criar produto no AgroConecta (Fretes):', error);
+      console.error('❌ Erro ao criar frete:', error.response?.data || error);
       throw error;
     }
   }
@@ -192,10 +226,14 @@ class ProductService {
   // Criar produto no Marketplace (Produtos)
   async createMarketplaceProduct(productData) {
     try {
-      const response = await axios.post(`${API_BASE_URL}/produtos/products`, productData);
+      console.log('📦 Criando produto marketplace:', productData);
+      const response = await axios.post(`${API_BASE_URL}/products`, productData, {
+        headers: getAuthHeaders()
+      });
+      console.log('✅ Produto marketplace criado:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Erro ao criar produto no Marketplace (Produtos):', error);
+      console.error('❌ Erro ao criar produto marketplace:', error.response?.data || error);
       throw error;
     }
   }

@@ -6,10 +6,84 @@ import {
   Phone, ArrowRight, Sparkles, Rocket, DollarSign, Clock
 } from 'lucide-react';
 import CryptoHash from '../components/CryptoHash';
+import paymentService from '../services/paymentService';
+import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const AgroisyncPlans = () => {
+  const navigate = useNavigate();
   const [billingCycle, setBillingCycle] = useState('monthly'); // monthly, semiannual, annual
   const [paymentMethod, setPaymentMethod] = useState('card'); // card ou pix
+  const [loading, setLoading] = useState(null); // ID do plano sendo processado
+  
+  const handleSubscribe = async (plan, paymentMethod = 'pix') => {
+    try {
+      setLoading(plan.name);
+      
+      // Verificar se está logado
+      const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+      if (!token) {
+        toast.error('Você precisa estar logado para assinar um plano');
+        navigate('/login');
+        return;
+      }
+
+      // Criar pagamento (PIX ou Boleto)
+      console.log('💳 Criando checkout para plano:', plan.name.toLowerCase());
+      const result = await paymentService.createCheckoutSession(plan.name.toLowerCase(), billingCycle, paymentMethod);
+      console.log('✅ Resultado do checkout:', result);
+      
+      // Se for cartão, redirecionar para página de cartão primeiro
+      if (paymentMethod === 'credit_card') {
+        const amount = billingCycle === 'monthly' ? plan.price : billingCycle === 'semiannual' ? plan.semiannualPrice : plan.annualPrice;
+        navigate('/payment/credit-card', {
+          state: {
+            plan: plan.name,
+            billingCycle: billingCycle,
+            amount: amount
+          }
+        });
+        return;
+      }
+
+      if (result.success) {
+        // Mostrar modal com PIX ou Boleto
+        if (result.paymentMethod === 'pix') {
+          // Redirecionar para página de PIX com QR Code
+          navigate('/payment/pix', {
+            state: {
+              qrCode: result.qrCode,
+              qrCodeText: result.qrCodeText,
+              amount: result.amount,
+              txid: result.txid,
+              expiresAt: result.expiresAt,
+              plan: plan.name
+            }
+          });
+        } else {
+          // Redirecionar para página de Boleto
+          navigate('/payment/boleto', {
+            state: {
+              barcode: result.barcode,
+              barcodeNumber: result.barcodeNumber,
+              pdfUrl: result.pdfUrl,
+              amount: result.amount,
+              dueDate: result.dueDate,
+              plan: plan.name
+            }
+          });
+        }
+      } else {
+        toast.error('Erro ao gerar pagamento');
+      }
+    } catch (error) {
+      console.error('❌ Erro ao assinar plano:', error);
+      console.error('❌ Detalhes do erro:', error.response?.data || error.message);
+      toast.error(error.message || 'Erro ao processar assinatura');
+    } finally {
+      setLoading(null);
+    }
+  }
 
   const plans = [
     {
@@ -20,6 +94,7 @@ const AgroisyncPlans = () => {
       annualPixPrice: 118.80, // Sem desconto no PIX para o inicial
       description: 'Ideal para quem está começando no agronegócio digital',
       features: [
+        '🎁 3 DIAS DE TESTE GRÁTIS',
         '2 fretes por mês',
         '2 anúncios de produtos',
         'Suporte por e-mail',
@@ -28,6 +103,8 @@ const AgroisyncPlans = () => {
       ],
       noDiscount: true,
       popular: false,
+      trial: true,
+      trialDays: 3,
       color: 'green',
       icon: '🌱',
       target: 'Pequenos produtores testarem a plataforma'
@@ -351,20 +428,24 @@ const AgroisyncPlans = () => {
 
                   {/* Botão de Contratação */}
                   <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleSubscribe(plan, paymentMethod === 'card' ? 'credit_card' : paymentMethod)}
+                    disabled={loading === plan.name}
+                    whileHover={{ scale: loading === plan.name ? 1 : 1.05 }}
+                    whileTap={{ scale: loading === plan.name ? 1 : 0.95 }}
                     className={`w-full rounded-lg px-6 py-3 font-semibold transition-all duration-300 ${
-                      plan.popular
-                        ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg hover:shadow-xl'
-                        : plan.color === 'gold'
-                          ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-lg hover:shadow-xl'
-                          : plan.color === 'black'
-                            ? 'bg-gradient-to-r from-gray-800 to-gray-900 text-white shadow-lg hover:shadow-xl'
-                            : 'bg-gray-900 text-white hover:bg-gray-800'
+                      loading === plan.name
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : plan.popular
+                          ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg hover:shadow-xl'
+                          : plan.color === 'gold'
+                            ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-lg hover:shadow-xl'
+                            : plan.color === 'black'
+                              ? 'bg-gradient-to-r from-gray-800 to-gray-900 text-white shadow-lg hover:shadow-xl'
+                              : 'bg-gray-900 text-white hover:bg-gray-800'
                     }`}
                   >
                     <span className='flex items-center justify-center gap-2'>
-                      Assinar Agora
+                      {loading === plan.name ? 'Processando...' : 'Assinar Agora'}
                       <ArrowRight className='h-4 w-4' />
                     </span>
                   </motion.button>

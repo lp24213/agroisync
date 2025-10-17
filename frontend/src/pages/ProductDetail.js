@@ -72,8 +72,8 @@ const ProductDetail = () => {
   }, [id]);
 
   const handleContact = () => {
-    // Implementar contato com vendedor
-    alert('Funcionalidade de contato será implementada em breve!');
+    // Redirecionar para página de contato/mensagens
+    navigate('/messaging');
   };
 
   const handleFavorite = () => {

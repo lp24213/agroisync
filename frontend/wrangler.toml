@@ -1,34 +1,30 @@
-name = "agroisync"
-compatibility_date = "2025-01-20"
-
-[[pages_build_config]]
-assets = { not_found_handling = "single-page-application" }
-
-# Configuração para SPA com rotas criptografadas
-[build]
-command = "npm run build"
-
-# Configuração de redirecionamento para SPA
-[[redirects]]
-from = "/*"
-to = "/index.html"
-status = 200
-
-# Configuração para Cloudflare Pages
+# AgroSync Frontend - Cloudflare Pages Configuration
+name = "agroisync-frontend"
+compatibility_date = "2024-09-23"
 pages_build_output_dir = "build"
 
+# Production environment
 [env.production]
 name = "agroisync"
+routes = [
+  { pattern = "agroisync.com/*", zone_name = "agroisync.com" },
+  { pattern = "www.agroisync.com/*", zone_name = "agroisync.com" }
+]
 
-[env.staging]
-name = "agroisync-staging"
-
-# Variáveis de ambiente
-[vars]
-NODE_ENV = "production"
-
+# Environment variables for frontend
 [env.production.vars]
 NODE_ENV = "production"
+REACT_APP_API_URL = "https://agroisync.com/api"
+REACT_APP_TURNSTILE_SITE_KEY = "0x4AAAAAAAQ8VKGsaXcsV7Rd"
+REACT_APP_STRIPE_PUBLIC_KEY = ""
 
-[env.staging.vars]
-NODE_ENV = "staging"
+# Build configuration
+[build]
+command = "npm run build"
+cwd = "."
+
+[build.upload]
+format = "service-worker"
+
+# Note: This configuration is for reference.
+# Cloudflare Pages is typically configured via the dashboard or wrangler pages commands.

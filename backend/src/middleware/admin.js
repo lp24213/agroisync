@@ -1,122 +1,66 @@
-﻿import User from '../models/User.js';
-import logger from '../utils/logger.js';
-// Middleware para verificar se o usuÃ¡rio Ã© admin
-export const requireAdmin = async (req, res, next) => {
+﻿
+// Middleware para verificar se o usuário é admin (Worker + D1)
+export async function requireAdmin(request, env) {
   try {
-    const { userId } = req.user;
-
-    // Buscar o usuÃ¡rio no banco
-    const user = await User.findById(userId);
-
+    const userId = request.user?.id || request.userId;
+    if (!userId) {
+      return new Response(JSON.stringify({ success: false, message: 'Usuário não autenticado' }), { status: 401 });
+    }
+    // Buscar usuário no banco
+    const user = await env.DB.prepare('SELECT id, email, name, is_admin, admin_permissions FROM users WHERE id = ?').bind(userId).first();
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: 'UsuÃ¡rio nÃ£o encontrado'
-      });
+      return new Response(JSON.stringify({ success: false, message: 'Usuário não encontrado' }), { status: 401 });
     }
-
-    // Verificar se Ã© admin
-    if (!user.isAdmin) {
-      return res.status(403).json({
-        success: false,
-        message: 'Acesso negado. Apenas administradores podem acessar esta Ã¡rea.'
-      });
+    if (!user.is_admin) {
+      return new Response(JSON.stringify({ success: false, message: 'Acesso negado. Apenas administradores podem acessar esta área.' }), { status: 403 });
     }
-
-    // Adicionar informaÃ§Ãµes do admin ao req
-    req.admin = {
-      id: user._id,
+    // Adiciona info de admin ao request
+    request.admin = {
+      id: user.id,
       email: user.email,
       name: user.name,
-      permissions: user.adminPermissions || []
+      permissions: user.admin_permissions ? JSON.parse(user.admin_permissions) : []
     };
-
-    return next();
+    return null; // continua para o próximo handler
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      logger.error('Erro na verificaÃ§Ã£o de admin:', error);
-    }
-    return res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
+    return new Response(JSON.stringify({ success: false, message: 'Erro interno do servidor', details: error.message }), { status: 500 });
   }
-};
+}
 
-// Middleware para verificar permissÃµes especÃ­ficas de admin
-export const requireAdminPermission = permission => {
-  return (req, res, next) => {
+
+// Middleware para verificar permissões específicas de admin (Worker + D1)
+export function requireAdminPermission(permission) {
+  return (request) => {
+    if (!request.admin) {
+      return new Response(JSON.stringify({ success: false, message: 'Usuário não autenticado como admin' }), { status: 401 });
+    }
+    const perms = request.admin.permissions || [];
+    if (!perms.includes(permission) && !perms.includes('*')) {
+      return new Response(JSON.stringify({ success: false, message: `Permissão '${permission}' necessária para esta ação` }), { status: 403 });
+    }
+    return null; // continua para o próximo handler
+  };
+}
+
+
+// Middleware para log de auditoria automático (Worker + D1)
+export function auditLog(action, resource) {
+  return async (request, env, resourceId = null, details = null) => {
     try {
-      if (!req.admin) {
-        return res.status(401).json({
-          success: false,
-          message: 'UsuÃ¡rio nÃ£o autenticado como admin'
-        });
-      }
-
-      // Verificar se tem a permissÃ£o especÃ­fica
-      if (!req.admin.permissions.includes(permission) && !req.admin.permissions.includes('*')) {
-        return res.status(403).json({
-          success: false,
-          message: `PermissÃ£o '${permission}' necessÃ¡ria para esta aÃ§Ã£o`
-        });
-      }
-
-      return next();
+      await env.DB.prepare('INSERT INTO audit_logs (user_id, user_email, action, resource, resource_id, details, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)')
+        .bind(
+          request.user?.id || request.userId,
+          request.user?.email || '',
+          action,
+          resource,
+          resourceId,
+          details || `Admin action: ${action} on ${resource}`,
+          new Date().toISOString()
+        ).run();
+      return null;
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        logger.error('Erro na verificaÃ§Ã£o de permissÃ£o:', error);
-      }
-      return res.status(500).json({
-        success: false,
-        message: 'Erro interno do servidor'
-      });
+      // Apenas loga erro, não bloqueia fluxo
+      return null;
     }
   };
-};
-
-// Middleware para log de auditoria automÃ¡tico
-export const auditLog = (action, resource) => {
-  return async (req, res, next) => {
-    try {
-      // Interceptar a resposta para logar apÃ³s sucesso
-      const originalSend = res.send;
-
-      res.send = function (data) {
-        // SÃ³ logar se a resposta foi bem-sucedida
-        if (res.statusCode >= 200 && res.statusCode < 300) {
-          // Log assÃ­ncrono sem bloquear a resposta
-          setImmediate(async () => {
-            try {
-              const AuditLog = (await import('../models/AuditLog.js')).default;
-              await AuditLog.logAction({
-                userId: req.user?.userId,
-                userEmail: req.user?.email,
-                action,
-                resource,
-                resourceId: req.params?.id,
-                details: `Admin action: ${action} on ${resource}`,
-                ip: req.ip,
-                userAgent: req.get('User-Agent')
-              });
-            } catch (logError) {
-              if (process.env.NODE_ENV !== 'production') {
-                logger.error('Erro ao registrar log de auditoria:', logError);
-              }
-            }
-          });
-        }
-
-        // Chamar o mÃ©todo original
-        originalSend.call(this, data);
-      };
-
-      return next();
-    } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        logger.error('Erro no middleware de auditoria:', error);
-      }
-      return next(error);
-    }
-  };
-};
+}

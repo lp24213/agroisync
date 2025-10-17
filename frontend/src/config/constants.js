@@ -64,8 +64,24 @@ export const STRIPE_CONFIG = {
   },
 
   // URLs de redirecionamento
-  successUrl: `${window.location.origin}/payment/success`,
-  cancelUrl: `${window.location.origin}/payment/cancel`
+  // Calcular origem de forma segura (evita exceções quando executado em ambientes onde `window` pode não existir)
+  // Usa fallback para REACT_APP_PUBLIC_URL quando disponível
+  successUrl: (() => {
+    try {
+      if (typeof window !== 'undefined' && window.location && window.location.origin) return `${window.location.origin}/payment/success`;
+    } catch (e) {
+      // ignore
+    }
+    return `${process.env.REACT_APP_PUBLIC_URL || ''}/payment/success`;
+  })(),
+  cancelUrl: (() => {
+    try {
+      if (typeof window !== 'undefined' && window.location && window.location.origin) return `${window.location.origin}/payment/cancel`;
+    } catch (e) {
+      // ignore
+    }
+    return `${process.env.REACT_APP_PUBLIC_URL || ''}/payment/cancel`;
+  })()
 };
 
 // ===== WEB3/BLOCKCHAIN =====
@@ -169,6 +185,7 @@ export const CLOUDFLARE_CONFIG = {
   // Turnstile (Captcha)
   turnstile: {
     siteKey:
+      process.env.REACT_APP_TURNSTILE_SITE_KEY ||
       process.env.REACT_APP_CLOUDFLARE_TURNSTILE_SITE_KEY ||
       process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY ||
       '0x4AAAAAAB3pdjs4jRKvAtaA'

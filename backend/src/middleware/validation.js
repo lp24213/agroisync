@@ -1,4 +1,4 @@
-import { json } from 'itty-router-extras';
+import { json } from '../utils/respond.js';
 
 // Validação do Turnstile
 export async function validateTurnstile(request, env) {

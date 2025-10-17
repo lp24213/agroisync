@@ -22,6 +22,45 @@ class PaymentService {
     return await loadStripe(this.stripePublishableKey);
   }
 
+  async createCheckoutSession(planSlug, billingCycle = 'monthly', paymentMethod = 'pix', additionalData = {}) {
+    try {
+      const token = getAuthToken();
+      if (!token) {
+        throw new Error('Você precisa estar logado para assinar um plano');
+      }
+
+      console.log('💳 Criando pagamento Asaas:', { planSlug, billingCycle, paymentMethod });
+
+      const payload = { 
+        planSlug, 
+        billingCycle, 
+        paymentMethod,
+        ...additionalData
+      };
+
+      const response = await fetch(`${this.apiBaseUrl}/payments/create-checkout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Erro ao criar pagamento');
+      }
+
+      console.log('✅ Pagamento criado:', data);
+      return data;
+    } catch (error) {
+      console.error('❌ Erro ao criar pagamento:', error);
+      throw error;
+    }
+  }
+
   async createPaymentIntent(amount, currency = 'brl', metadata = {}) {
     try {
       // Usar helper para obter token de forma segura

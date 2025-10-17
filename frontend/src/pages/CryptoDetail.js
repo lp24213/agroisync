@@ -112,7 +112,8 @@ const CryptoDetail = () => {
   };
 
   const handleTrade = () => {
-    alert('Funcionalidade de trading será implementada em breve!');
+    // Redirecionar para página de crypto trading
+    navigate('/crypto');
   };
 
   if (loading) {

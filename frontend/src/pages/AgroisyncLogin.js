@@ -114,7 +114,80 @@ const AgroisyncLogin = () => {
           } else if (user.isAdmin) {
             window.location.href = '/admin';
           } else {
-            window.location.href = '/user-dashboard';
+            // Usuário normal - verificar status do plano e perfil
+            try {
+              // Buscar informações completas do usuário
+              console.log('🔍 Buscando perfil do usuário...');
+              const profileRes = await fetch(`${api}/user/profile`, {
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json'
+                }
+              });
+
+              console.log('📊 Status da resposta:', profileRes.status);
+              if (profileRes.ok) {
+                const profileData = await profileRes.json();
+                console.log('👤 Dados do perfil:', profileData);
+                const userProfile = profileData.data?.user || user;
+
+                // 1. VERIFICAR SE TEM PLANO ATIVO OU TRIAL
+                const hasPlan = userProfile.plan && userProfile.plan !== 'free';
+                const planExpiresAt = userProfile.plan_expires_at ? new Date(userProfile.plan_expires_at) : null;
+                const isPlanActive = planExpiresAt && planExpiresAt > new Date();
+                const now = new Date();
+                const daysRemaining = planExpiresAt ? Math.ceil((planExpiresAt - now) / (1000 * 60 * 60 * 24)) : 0;
+                const isTrialPlan = userProfile.plan === 'inicial' && daysRemaining <= 3;
+                
+                console.log('📋 Verificação de plano:');
+                console.log('  - hasPlan:', hasPlan);
+                console.log('  - plan:', userProfile.plan);
+                console.log('  - planExpiresAt:', planExpiresAt);
+                console.log('  - isPlanActive:', isPlanActive);
+                console.log('  - daysRemaining:', daysRemaining);
+                console.log('  - isTrialPlan:', isTrialPlan);
+
+                // 2. SE NÃO TEM PLANO ATIVO → Redirecionar para /plans
+                if (!hasPlan || !isPlanActive) {
+                  console.log('🚫 Usuário sem plano ativo - redirecionando para /plans');
+                  window.location.href = '/plans';
+                  return;
+                }
+
+                // 3. SE ESTÁ EM TRIAL (plano inicial com <= 3 dias) → Mostrar aviso mas deixar entrar
+                if (isTrialPlan && daysRemaining > 0) {
+                  console.log(`⚠️ Usuário em teste grátis (${daysRemaining} dias restantes) - permitindo acesso`);
+                  // Deixa entrar, mas vai ter aviso no dashboard
+                }
+
+                // 3. SE TEM PLANO → Verificar se completou perfil específico
+                const hasUserType = userProfile.user_type && userProfile.user_type !== 'general';
+                
+                // 4. SE NÃO COMPLETOU PERFIL → Redirecionar para escolher tipo
+                if (!hasUserType) {
+                  console.log('📋 Usuário precisa completar perfil - redirecionando para /signup/product');
+                  // Por padrão, redireciona para produto (pode ajustar para uma página de escolha)
+                  window.location.href = '/signup/product';
+                  return;
+                }
+
+                // 5. SE JÁ TEM TUDO → Dashboard
+                console.log('✅ Usuário completo - redirecionando para dashboard');
+                window.location.href = '/user-dashboard';
+              } else {
+                // Se falhar ao buscar perfil, redireciona para plans por segurança
+                console.log('❌ Falha ao buscar perfil - Status:', profileRes.status);
+                const errorData = await profileRes.json().catch(() => ({}));
+                console.log('❌ Erro da API:', errorData);
+                console.log('🚫 Redirecionando para /plans por segurança');
+                window.location.href = '/plans';
+              }
+            } catch (profileError) {
+              console.error('❌ Erro ao buscar perfil:', profileError);
+              // Em caso de erro, redireciona para plans por segurança
+              console.log('🚫 Redirecionando para /plans por segurança');
+              window.location.href = '/plans';
+            }
           }
         } else {
           setErrors({ general: payload.message || 'Credenciais inválidas' });

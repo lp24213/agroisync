@@ -412,7 +412,10 @@ const AgroisyncAgroConecta = () => {
             transition={{ duration: 0.8, delay: 0.4 }}
           >
             <button
-              onClick={() => setShowRegistrationModal(true)}
+              onClick={() => {
+                const token = localStorage.getItem('token');
+                window.location.href = token ? '/user-dashboard' : '/signup/freight';
+              }}
               className='rounded-lg bg-green-600 px-8 py-4 font-semibold text-white transition-colors hover:bg-green-700'
             >
               Oferecer Frete
@@ -580,7 +583,10 @@ const AgroisyncAgroConecta = () => {
             }}
           >
             <button
-              onClick={() => setShowRegistrationModal(true)}
+              onClick={() => {
+                const token = localStorage.getItem('token');
+                window.location.href = token ? '/user-dashboard' : '/signup/freight';
+              }}
               className='agro-btn-animated'
               style={{
                 display: 'flex',
@@ -1509,21 +1515,7 @@ const AgroisyncAgroConecta = () => {
         </div>
       )}
 
-      {/* Modal de Cadastro */}
-      {showRegistrationModal && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
-          <div className='mx-4 max-w-md rounded-lg bg-white p-8'>
-            <h3 className='text-xl font-semibold text-gray-600'>Sistema de Registro em Desenvolvimento</h3>
-            <p className='mt-2 text-gray-500'>Em breve teremos sistema de registro disponível!</p>
-            <button
-              onClick={() => setShowRegistrationModal(false)}
-              className='mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600'
-            >
-              Fechar
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Modal de Cadastro - REMOVIDO */}
 
       {/* Modal de Planos */}
       {showPlansModal && (

@@ -1,15 +1,26 @@
 {
-  "buildCommand": "npm run build",
-  "buildOutputDirectory": "dist",
-  "rootDirectory": ".",
-  "framework": "vite",
-  "environmentVariables": {
-    "NODE_VERSION": "18.20.4",
-    "VITE_API_URL": "https://agroisync.com/api",
-    "VITE_API_VERSION": "v1",
-    "VITE_TURNSTILE_SITE_KEY": "1x00000000000000000000AA",
-    "VITE_ENABLE_MARKETPLACE": "true",
-    "VITE_ENABLE_REALTIME_CHAT": "true",
-    "VITE_ENABLE_BLOCKCHAIN": "false"
+  "version": 1,
+  "production_branch": "main",
+  "build": {
+    "command": "npm run build",
+    "destination_dir": "build",
+    "root_dir": "frontend",
+    "environment_variables": {
+      "NODE_ENV": "production",
+      "REACT_APP_API_URL": "https://agroisync.com/api",
+      "REACT_APP_TURNSTILE_SITE_KEY": "0x4AAAAAAAQ8VKGsaXcsV7Rd",
+      "GENERATE_SOURCEMAP": "false"
+    }
+  },
+  "deployment": {
+    "compatibility_date": "2024-09-23",
+    "compatibility_flags": [],
+    "fail_open": true
+  },
+  "preview": {
+    "environment_variables": {
+      "NODE_ENV": "development",
+      "REACT_APP_API_URL": "https://agroisync.com/api"
+    }
   }
 }

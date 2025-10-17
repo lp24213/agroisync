@@ -1,18 +1,13 @@
-﻿import express from 'express';
-import Freight from '../models/Freight.js';
-import User from '../models/User.js';
-import { validateFreight } from '../middleware/validation.js';
-import { apiLimiter } from '../middleware/rateLimiter.js';
+﻿import { Router } from '@agroisync/router';
 import { authenticateToken, requireActivePlan } from '../middleware/auth.js';
-import logger from '../utils/logger.js';
+import { validateFreight } from '../middleware/validation.js';
+import { generateId, now } from '../utils/d1-helper.js';
 
-const router = express.Router();
-
-// Apply rate limiting
-router.use(apiLimiter);
+const router = new Router();
 
 // GET /api/freights - Get all freights with pagination and filters
-router.get('/', async (req, res) => {
+// GET /freights - Listar fretes com filtros e paginação
+router.get('/freights', async (request, env) => {
   try {
     const {
       page = 1,
@@ -29,7 +24,7 @@ router.get('/', async (req, res) => {
       sortOrder = 'desc'
     } = req.query;
 
-    const skip = (parseInt(page, 10, 10) - 1) * parseInt(limit, 10, 10);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
 
     // Build query
     const query = { status: 'active' };
@@ -71,15 +66,13 @@ router.get('/', async (req, res) => {
       .sort(sort)
       .skip(skip)
       .limit(parseInt(limit, 10, 10))
-      .populate('providerId', 'name company.name phone')
-      .lean();
-
-    // Get total count for pagination
-    const total = await Freight.countDocuments(query);
-
+      const sql = `SELECT * FROM freights WHERE status = 'active' ORDER BY ${sortBy} ${sortOrder === 'desc' ? 'DESC' : 'ASC'} LIMIT ? OFFSET ?`;
+      const allParams = [limit, skip];
+      const freights = await env.DB.prepare(sql).bind(...allParams).all();
     res.json({
       success: true,
-      data: {
+      const countSql = `SELECT COUNT(*) as total FROM freights WHERE status = 'active'`;
+      const countResult = await env.DB.prepare(countSql).first();
         freights,
         pagination: {
           currentPage: parseInt(page, 10, 10),

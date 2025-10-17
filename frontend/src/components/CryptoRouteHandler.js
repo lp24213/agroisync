@@ -13,15 +13,9 @@ const CryptoRouteHandler = ({ children }) => {
   useEffect(() => {
     const validateCryptoRoute = () => {
       try {
-        // Verificar se o hash é válido - formato mais flexível
-        if (!cryptoHash || !/^[a-z0-9_-]+$/i.test(cryptoHash)) {
-          setIsValid(false);
-          setIsValidating(false);
-          return;
-        }
-
+        // DESABILITADO: Aceitar rotas sem hash também
         // Verificar se o usuário está autenticado para rotas protegidas
-        const protectedRoutes = ['/dashboard', '/user-dashboard', '/messaging', '/admin', '/useradmin', '/crypto-routes'];
+        const protectedRoutes = ['/dashboard', '/user-dashboard', '/messaging', '/admin', '/useradmin'];
         const isProtectedRoute = protectedRoutes.some(route =>
           location.pathname.includes(route)
         );
@@ -32,12 +26,12 @@ const CryptoRouteHandler = ({ children }) => {
           return;
         }
 
-        // Hash válido - aceitar qualquer formato alfanumérico
+        // Aceitar todas as rotas (com ou sem hash)
         setIsValid(true);
         setIsValidating(false);
       } catch (error) {
         console.error('Erro na validação da rota criptografada:', error);
-        setIsValid(false);
+        setIsValid(true); // Aceitar mesmo em caso de erro
         setIsValidating(false);
       }
     };

@@ -212,13 +212,6 @@ const AgroisyncHeader = () => {
               {user && (
                 <div className='flex items-center gap-3'>
                   <span className='text-sm font-medium text-gray-700'>Olá, {user.name || user.email}</span>
-                  <button
-                    onClick={handleLogout}
-                    className='flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm text-gray-700 transition-all duration-200 hover:bg-red-50 hover:text-red-600'
-                    type='button'
-                  >
-                    <LogOut className='h-4 w-4' />
-                  </button>
                 </div>
               )}
               {!user && (

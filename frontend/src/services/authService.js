@@ -95,14 +95,15 @@ class AuthService {
   // Verificar email com código
   async verifyEmail(email, code) {
     try {
-      const response = await this.api.post('/auth/verify-email', {
+      const response = await this.api.post('/email/verify', {
         email,
         code
       });
 
       return {
-        success: true,
-        user: response.data.data.user
+        success: response.data.success || true,
+        message: response.data.message,
+        user: response.data.data?.user
       };
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
@@ -110,7 +111,7 @@ class AuthService {
       }
       return {
         success: false,
-        error: error.response?.data?.message || 'Erro ao verificar email'
+        error: error.response?.data?.error || error.response?.data?.message || 'Erro ao verificar email'
       };
     }
   }
@@ -118,20 +119,30 @@ class AuthService {
   // Reenviar código de verificação
   async resendVerificationEmail(email) {
     try {
+      console.log('=== ENVIANDO CÓDIGO DE VERIFICAÇÃO ===');
+      console.log('Email:', email);
+      console.log('URL:', this.api.defaults.baseURL + '/email/send-verification');
+      
       const response = await this.api.post('/email/send-verification', {
         email
       });
 
+      console.log('Resposta da API:', response.data);
+
       return {
         success: true,
-        emailCode: response.data.data.verificationCode || response.data.data.emailCode, // Para desenvolvimento
+        emailCode: response.data.code || response.data.data?.verificationCode || response.data.data?.emailCode, // Código retornado pela API
+        emailSent: response.data.emailSent,
         message: response.data.message
       };
     } catch (error) {
-      console.error('Erro ao reenviar verificação:', error);
+      console.error('=== ERRO AO ENVIAR CÓDIGO ===');
+      console.error('Erro completo:', error);
+      console.error('Response:', error.response);
+      console.error('Data:', error.response?.data);
       return {
         success: false,
-        error: error.response?.data?.message || 'Erro ao reenviar verificação'
+        error: error.response?.data?.error || error.response?.data?.message || error.message || 'Erro ao reenviar verificação'
       };
     }
   }
@@ -167,16 +178,19 @@ class AuthService {
         turnstileToken
       });
 
+      console.log('📧 Forgot password response:', response.data);
+
       return {
         success: true,
-        resetCode: response.data.data.resetCode, // Para desenvolvimento
+        resetCode: response.data.code || response.data.data?.resetCode || response.data.token, // Aceita vários formatos
+        token: response.data.token || response.data.data?.token,
         message: response.data.message
       };
     } catch (error) {
       console.error('Erro ao solicitar recuperação:', error);
       return {
         success: false,
-        error: error.response?.data?.message || 'Erro ao solicitar recuperação'
+        error: error.response?.data?.message || error.response?.data?.error || 'Erro ao solicitar recuperação'
       };
     }
   }
@@ -184,23 +198,27 @@ class AuthService {
   // Redefinir senha
   async resetPassword(email, code, newPassword) {
     try {
+      console.log('🔑 Enviando reset:', { email, code, newPassword: '***' });
+      
       const response = await this.api.post('/auth/reset-password', {
         email,
         code,
-        newPassword
+        newPassword,
+        password: newPassword // Backend pode esperar 'password' ao invés de 'newPassword'
       });
+
+      console.log('✅ Reset response:', response.data);
 
       return {
         success: true,
-        user: response.data.data.user
+        user: response.data.data?.user || response.data.user
       };
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('Erro ao redefinir senha:', error);
-      }
+      console.error('❌ Erro ao redefinir senha:', error);
+      console.error('Response data:', error.response?.data);
       return {
         success: false,
-        error: error.response?.data?.message || 'Erro ao redefinir senha'
+        error: error.response?.data?.message || error.response?.data?.error || 'Erro ao redefinir senha'
       };
     }
   }

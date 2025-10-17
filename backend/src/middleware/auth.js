@@ -1,4 +1,4 @@
-import { json } from 'itty-router-extras';
+import { json } from '../utils/respond.js';
 
 export function verifyToken(request, env) {
   try {

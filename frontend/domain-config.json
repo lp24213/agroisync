@@ -1,0 +1,22 @@
+{
+  "custom_domains": [
+    {
+      "custom_domain": "agroisync.com",
+      "status": "active",
+      "verification_errors": [],
+      "ssl": {
+        "status": "active",
+        "method": "http",
+        "type": "dedicated"
+      }
+    }
+  ],
+  "source": {
+    "type": "pages",
+    "config": {
+      "deploymentId": "2167e2b4",
+      "projectName": "agroisync",
+      "production_branch": "main"
+    }
+  }
+}

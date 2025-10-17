@@ -36,9 +36,15 @@ const Terms = () => {
           </section>
 
           <section>
-            <h2 className='mb-2 text-2xl font-semibold text-white'>4. Pagamentos e Taxas</h2>
+            <h2 className='mb-2 text-2xl font-semibold text-white'>4. Pagamentos, Taxas e Reembolsos</h2>
             <p className='text-gray-300'>
-              Quando aplicável, tarifas, comissões e meios de pagamento serão apresentados de forma clara antes da contratação. Reembolsos seguem as políticas aplicáveis do meio de pagamento e da legislação vigente.
+              Quando aplicável, tarifas, comissões e meios de pagamento (cartão de crédito/débito, PIX, boleto, Apple Pay, Google Pay) serão apresentados de forma clara antes da contratação.
+            </p>
+            <p className='mt-2 text-gray-300'>
+              <strong>Política de Reembolso:</strong> Você pode solicitar cancelamento e reembolso dentro de <strong>60 (sessenta) dias úteis</strong> contados da data de contratação ou pagamento, conforme Código de Defesa do Consumidor (Lei 8.078/90) e legislação aplicável. O reembolso será processado no mesmo meio de pagamento utilizado, em até 10 dias úteis após análise da solicitação. Para solicitar, envie e-mail para <strong>contato@agroisync.com</strong> com o assunto "Solicitação de Reembolso" incluindo número do pedido e justificativa.
+            </p>
+            <p className='mt-2 text-gray-300'>
+              Após o prazo de 60 dias úteis, reembolsos ficam sujeitos à análise individual e à política de cada plano contratado.
             </p>
           </section>
 

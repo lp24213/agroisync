@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "homepage": "https://agroisync.com",
+  "domain": "agroisync.com",
   "dependencies": {
     "@headlessui/react": "^1.7.19",
     "@heroicons/react": "^2.2.0",
@@ -50,6 +51,7 @@
     "react-scripts": "5.0.1",
     "react-scroll": "^1.9.3",
     "react-spring": "^10.0.3",
+    "react-toastify": "^11.0.5",
     "recharts": "^2.15.4",
     "socket.io-client": "^4.8.1",
     "three": "^0.180.0",
@@ -59,8 +61,8 @@
   "scripts": {
     "start": "react-scripts start",
     "dev": "react-scripts start",
-    "build": "react-scripts build && node scripts/generate-sitemap.js",
-    "build:production": "GENERATE_SOURCEMAP=false react-scripts build && node scripts/generate-sitemap.js",
+    "build": "cross-env NODE_ENV=production REACT_APP_API_URL=https://agroisync.com/api REACT_APP_TURNSTILE_SITE_KEY=0x4AAAAAAB3pdjs4jRKvAtaA GENERATE_SOURCEMAP=false PUBLIC_URL=https://agroisync.com react-scripts build && node scripts/generate-sitemap.js",
+    "build:production": "cross-env NODE_ENV=production REACT_APP_API_URL=https://agroisync.com/api GENERATE_SOURCEMAP=false react-scripts build && node scripts/generate-sitemap.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint \"src/**/*.{js,jsx}\" --fix",
@@ -97,6 +99,9 @@
   "devDependencies": {
     "@axe-core/cli": "^4.9.1",
     "@lhci/cli": "^0.13.0",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react": "^5.0.4",
     "autoprefixer": "^10.4.16",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
@@ -108,6 +113,7 @@
     "prettier-plugin-tailwindcss": "^0.6.14",
     "serve": "^14.2.1",
     "tailwindcss": "^3.3.5",
+    "vite": "^7.1.7",
     "wait-on": "^7.2.0",
     "wrangler": "^3.80.0"
   },

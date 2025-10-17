@@ -126,11 +126,35 @@ const Payment = () => {
         throw new Error(data.message || 'Erro ao criar sessão de pagamento');
       }
 
-      // Redirecionar para Stripe Checkout
-      if (data.sessionId || data.url) {
-        window.location.href = data.url || `https://checkout.stripe.com/pay/${data.sessionId}`;
+      // Redirecionar para Stripe Checkout.
+      // A API pode retornar diferentes formas (url, checkout_url, sessionId, id, session: { url })
+      const candidates = [
+        data.url,
+        data.checkout_url,
+        data.checkoutUrl,
+        data.redirect_url,
+        data.redirectUrl,
+        data.session && data.session.url,
+        data.session && data.session.checkout_url,
+        data.session && data.session.id && `https://checkout.stripe.com/pay/${data.session.id}`,
+        data.sessionId && `https://checkout.stripe.com/pay/${data.sessionId}`,
+        data.session_id && `https://checkout.stripe.com/pay/${data.session_id}`,
+        data.id && `https://checkout.stripe.com/pay/${data.id}`
+      ];
+
+      const redirectUrl = candidates.find(Boolean);
+
+      if (redirectUrl) {
+        window.location.href = redirectUrl;
       } else {
-        throw new Error('Sessão de pagamento inválida');
+        // Se a API retornou um client_secret para PaymentIntent, podemos redirecionar para uma rota que processe isso
+        if (data.client_secret || (data.paymentIntent && data.paymentIntent.client_secret)) {
+          const secret = data.client_secret || data.paymentIntent.client_secret;
+          // Rota interna que o app já tem para exibir a tela de pagamento/confirm (não altera Stripe server-side)
+          window.location.href = `${api}/payment/stripe?intent=${encodeURIComponent(secret)}`;
+        } else {
+          throw new Error('Sessão de pagamento inválida');
+        }
       }
 
     } catch (error) {

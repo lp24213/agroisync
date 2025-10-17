@@ -93,8 +93,14 @@ const DynamicCryptoURL = ({ children }) => {
         const newSearch = mergeParams(location.search, ensured);
         const newUrl = `${location.pathname}${newSearch}`;
 
+        // Se for a primeira vez que adicionamos parâmetros, usar replace para não deixar
+        // uma entrada duplicada no histórico inicial. Em atualizações subsequentes,
+        // usamos navegação padrão (push) para não quebrar o comportamento do botão Voltar.
+        const useReplace = !isInitialized;
+
         // Navegar para a URL com query params criptografados
-        navigate(newUrl, { replace: true });
+        if (useReplace) navigate(newUrl, { replace: true });
+        else navigate(newUrl);
 
         // Reset flag após navegação
         setTimeout(() => {
@@ -111,7 +117,7 @@ const DynamicCryptoURL = ({ children }) => {
         // Erro ao gerar URL criptografada
       }
     }
-  }, [location.pathname, location.search, navigate, generateParams, hasValidParams, mergeParams, isUpdating]);
+  }, [location.pathname, location.search, navigate, generateParams, hasValidParams, mergeParams, isUpdating, isInitialized]);
 
   useEffect(() => {
     // Executar apenas uma vez na inicialização

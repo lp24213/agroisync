@@ -575,5 +575,5 @@ const stopCleanupInterval = () => {
 };
 
 // Exportar funções de controle
-export { startCleanupInterval, stopCleanupInterval, getMonitoringSystem };
+export { startCleanupInterval, stopCleanupInterval };
 export default monitoringSystem;

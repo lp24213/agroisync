@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "description": "Cloudflare Pages routing configuration for AgroSync",
+  "include": [
+    "/*"
+  ],
+  "exclude": [
+    "/api/*"
+  ]
+}

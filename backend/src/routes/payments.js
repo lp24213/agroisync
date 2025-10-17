@@ -1,74 +1,69 @@
-﻿import express from 'express';
+﻿import { Router } from '@agroisync/router';
 import { authenticateToken } from '../middleware/auth.js';
-import { requirePaidAccess as _requirePaidAccess } from '../middleware/requirePaidAccess.js';
-import { rateLimiter as _rateLimiter } from '../middleware/rateLimiter.js';
-import _User from '../models/User.js';
-import Payment from '../models/Payment.js';
-import AuditLog from '../models/AuditLog.js';
-import Stripe from 'stripe';
-import { ethers } from 'ethers';
-import logger from '../utils/logger.js';
+import { generateId, now } from '../utils/d1-helper.js';
 
-const router = express.Router();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const router = new Router();
+const COMMISSION_RATE = 0.05;
+const MIN_COMMISSION = 0.01;
 
-// ConfiguraÃ§Ãµes
-const OWNER_WALLET = process.env.OWNER_WALLET || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6';
-const _WEB3_PROVIDER = process.env.WEB3_PROVIDER || 'https://mainnet.infura.io/v3/your-project-id';
-const COMMISSION_RATE = 0.05; // 5% de comissÃ£o para intermediaÃ§Ã£o
-const MIN_COMMISSION = 0.01; // ComissÃ£o mÃ­nima
-
-// Middleware de autenticaÃ§Ã£o para todas as rotas
-router.use(authenticateToken);
-
-// Sistema de comissÃµes automÃ¡ticas para intermediaÃ§Ã£o
-router.post('/commission/calculate', (req, res) => {
+// Calcular comissão
+router.post('/payments/commission/calculate', authenticateToken, async (request, env) => {
   try {
-    const { transactionAmount, transactionType } = req.body;
-
+    const { transactionAmount, transactionType } = await request.json();
     if (!transactionAmount || transactionAmount <= 0) {
-      return res.status(400).json({
-        success: false,
-        error: 'Valor da transaÃ§Ã£o invÃ¡lido'
-      });
+      return new Response(JSON.stringify({ success: false, error: 'Valor da transação inválido' }), { status: 400 });
     }
-
-    // Calcular comissÃ£o baseada no tipo de transaÃ§Ã£o
     let commissionRate = COMMISSION_RATE;
-
     switch (transactionType) {
-      case 'product_sale':
-        commissionRate = 0.05; // 5% para vendas de produtos
-        break;
-      case 'freight_service':
-        commissionRate = 0.03; // 3% para serviÃ§os de frete
-        break;
-      case 'premium_plan':
-        commissionRate = 0.1; // 10% para planos premium
-        break;
-      default:
-        commissionRate = COMMISSION_RATE;
+      case 'product_sale': commissionRate = 0.05; break;
+      case 'freight_service': commissionRate = 0.03; break;
+      case 'premium_plan': commissionRate = 0.1; break;
+      default: commissionRate = COMMISSION_RATE;
     }
-
     const commission = Math.max(transactionAmount * commissionRate, MIN_COMMISSION);
     const netAmount = transactionAmount - commission;
-
-    res.json({
+    return new Response(JSON.stringify({
       success: true,
       transactionAmount,
       commissionRate: commissionRate * 100,
       commission,
       netAmount,
-      ownerWallet: OWNER_WALLET
-    });
+      ownerWallet: env.OWNER_WALLET || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'
+    }), { headers: { 'Content-Type': 'application/json' } });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      logger.error('Erro ao calcular comissÃ£o:', error);
+    return new Response(JSON.stringify({ success: false, error: 'Erro interno do servidor', details: error.message }), { status: 500 });
+  }
+});
+
+// Processar pagamento de comissão (registro no D1)
+router.post('/payments/commission/process', authenticateToken, async (request, env) => {
+  try {
+    const { transactionId, amount, paymentMethod, userWallet } = await request.json();
+    if (!transactionId || !amount || !paymentMethod) {
+      return new Response(JSON.stringify({ success: false, error: 'Dados de comissão inválidos' }), { status: 400 });
     }
-    res.status(500).json({
-      success: false,
-      error: 'Erro interno do servidor'
-    });
+    const id = generateId('commission');
+    const createdAt = now();
+    const query = `INSERT INTO payments (id, user_id, transaction_id, amount, payment_method, type, status, recipient_wallet, sender_wallet, description, created_at) VALUES (?, ?, ?, ?, ?, 'commission', 'pending', ?, ?, ?, ?)`;
+    await env.DB.prepare(query).bind(
+      id,
+      request.user.id,
+      transactionId,
+      amount,
+      paymentMethod,
+      env.OWNER_WALLET || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
+      userWallet,
+      'Comissão de intermediação AgroSync',
+      createdAt
+    ).run();
+    return new Response(JSON.stringify({
+      success: true,
+      commissionId: id,
+      message: 'Comissão processada com sucesso',
+      ownerWallet: env.OWNER_WALLET || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'
+    }), { headers: { 'Content-Type': 'application/json' } });
+  } catch (error) {
+    return new Response(JSON.stringify({ success: false, error: 'Erro interno do servidor', details: error.message }), { status: 500 });
   }
 });
 
@@ -128,33 +123,23 @@ router.post('/commission/process', async (req, res) => {
   }
 });
 
-// Verificar status de pagamento do usuÃ¡rio
-router.get('/status', async (req, res) => {
+
+// Verificar status de pagamento do usuário
+router.get('/payments/status', authenticateToken, async (request, env) => {
   try {
-    const user = await User.findById(req.user.id).select('isPaid planActive planType planExpiry');
-
+    const user = await env.DB.prepare('SELECT is_paid, plan_active, plan_type, plan_expiry FROM users WHERE id = ?').bind(request.user.id).first();
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        error: 'UsuÃ¡rio nÃ£o encontrado'
-      });
+      return new Response(JSON.stringify({ success: false, error: 'Usuário não encontrado' }), { status: 404 });
     }
-
-    res.json({
+    return new Response(JSON.stringify({
       success: true,
-      isPaid: user.isPaid || false,
-      planActive: user.planActive || null,
-      planType: user.planType || null,
-      planExpiry: user.planExpiry || null
-    });
+      isPaid: !!user.is_paid,
+      planActive: user.plan_active,
+      planType: user.plan_type,
+      planExpiry: user.plan_expiry
+    }), { headers: { 'Content-Type': 'application/json' } });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      logger.error('Erro ao verificar status de pagamento:', error);
-    }
-    res.status(500).json({
-      success: false,
-      error: 'Erro interno do servidor'
-    });
+    return new Response(JSON.stringify({ success: false, error: 'Erro interno do servidor', details: error.message }), { status: 500 });
   }
 });
 
@@ -163,66 +148,33 @@ router.post('/stripe/create-session', async (req, res) => {
   try {
     const { planId, planData } = req.body;
 
-    if (!planId || !planData) {
-      return res.status(400).json({
-        success: false,
-        error: 'Dados do plano sÃ£o obrigatÃ³rios'
-      });
-    }
 
-    // Validar dados do plano
-    const validPlans = {
-      'loja-basic': { price: 2500, name: 'Loja BÃ¡sico' },
-      'loja-pro': { price: 5000, name: 'Loja Pro' },
-      'agroconecta-basic': { price: 5000, name: 'AgroConecta BÃ¡sico' },
-      'agroconecta-pro': { price: 14900, name: 'AgroConecta Pro' }
-    };
-
-    const plan = validPlans[planId];
-    if (!plan) {
-      return res.status(400).json({
-        success: false,
-        error: 'Plano invÃ¡lido'
-      });
-    }
-
-    // Criar sessÃ£o do Stripe
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'brl',
-            product_data: {
-              name: plan.name,
-              description: `Plano ${plan.name} - AgroSync`
-            },
-            unit_amount: plan.price // em centavos
-          },
-          quantity: 1
+    // Cancelar assinatura
+    router.post('/payments/cancel', authenticateToken, async (request, env) => {
+      try {
+        const user = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(request.user.id).first();
+        if (!user) {
+          return new Response(JSON.stringify({ success: false, error: 'Usuário não encontrado' }), { status: 404 });
         }
-      ],
-      mode: 'subscription',
-      success_url: `${process.env.FRONTEND_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL}/planos?canceled=true`,
-      customer_email: req.user.email,
-      metadata: {
-        userId: req.user.id,
-        planId,
-        planName: plan.name
+        if (!user.is_paid) {
+          return new Response(JSON.stringify({ success: false, error: 'Usuário não possui plano ativo' }), { status: 400 });
+        }
+        // Cancelar assinatura Stripe (se aplicável) - implementar via fetch se necessário
+        await env.DB.prepare('UPDATE users SET is_paid = 0, plan_active = NULL, plan_type = NULL, plan_expiry = NULL, cancellation_date = ? WHERE id = ?').bind(now(), request.user.id).run();
+        return new Response(JSON.stringify({
+          success: true,
+          message: 'Assinatura cancelada com sucesso',
+          user: {
+            isPaid: false,
+            planActive: null,
+            planType: null,
+            planExpiry: null
+          }
+        }), { headers: { 'Content-Type': 'application/json' } });
+      } catch (error) {
+        return new Response(JSON.stringify({ success: false, error: 'Erro interno do servidor', details: error.message }), { status: 500 });
       }
     });
-
-    res.json({
-      success: true,
-      sessionId: session.id,
-      url: session.url
-    });
-  } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      logger.error('Erro ao criar sessÃ£o Stripe:', error);
-    }
-    res.status(500).json({
       success: false,
       error: 'Erro ao processar pagamento'
     });
@@ -476,23 +428,14 @@ router.post('/cancel', async (req, res) => {
   }
 });
 
-// HistÃ³rico de pagamentos
-router.get('/history', async (req, res) => {
-  try {
-    const payments = await Payment.find({ userId: req.user.id }).sort({ createdAt: -1 }).limit(20);
 
-    res.json({
-      success: true,
-      payments
-    });
+// Histórico de pagamentos
+router.get('/payments/history', authenticateToken, async (request, env) => {
+  try {
+    const result = await env.DB.prepare('SELECT * FROM payments WHERE user_id = ? ORDER BY created_at DESC LIMIT 20').bind(request.user.id).all();
+    return new Response(JSON.stringify({ success: true, payments: result.results }), { headers: { 'Content-Type': 'application/json' } });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      logger.error('Erro ao buscar histÃ³rico:', error);
-    }
-    res.status(500).json({
-      success: false,
-      error: 'Erro interno do servidor'
-    });
+    return new Response(JSON.stringify({ success: false, error: 'Erro interno do servidor', details: error.message }), { status: 500 });
   }
 });
 

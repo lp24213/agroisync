@@ -4,6 +4,17 @@ import { API_CONFIG } from '../config/constants.js';
 // Configuração da API
 const API_BASE_URL = API_CONFIG.baseURL;
 
+// Helper para pegar token
+const getAuthToken = () => {
+  return localStorage.getItem('token') || localStorage.getItem('authToken');
+};
+
+// Helper para headers com auth
+const getAuthHeaders = () => {
+  const token = getAuthToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
 // Tipos de caminhão
 export const TRUCK_TYPES = {
   truck_3_4: { label: 'Truck 3/4', icon: '🚛', capacity: '3-4 ton' },
@@ -62,12 +73,23 @@ class FreightService {
   // Criar novo frete
   async createFreight(freightData) {
     try {
-      const response = await axios.post(`${API_BASE_URL}/freights`, freightData);
+      console.log('🚛 Criando frete:', freightData);
+      const response = await axios.post(`${API_BASE_URL}/freight`, freightData, {
+        headers: getAuthHeaders()
+      });
+      console.log('✅ Frete criado:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Erro ao criar frete:', error);
-      // Simular criação para desenvolvimento
-      return this.createMockFreight(freightData);
+      console.error('❌ Erro ao criar frete:', error.response?.data || error);
+      
+      // Se der erro 403 (limite atingido ou plano expirado), redirecionar para planos
+      if (error.response?.status === 403) {
+        console.log('🚫 Erro 403 - Redirecionando para /plans');
+        window.location.href = '/plans';
+        return;
+      }
+      
+      throw error;
     }
   }
 

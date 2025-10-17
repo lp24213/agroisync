@@ -1,173 +1,61 @@
-﻿import { LoggingService } from '../services/loggingService.js';
-
-// Middleware para logging de requisiÃ§Ãµes HTTP
-export const requestLogging = (req, res, next) => {
-  const startTime = Date.now();
-
-  // Interceptar o mÃ©todo end da resposta
-  const originalEnd = res.end;
-  res.end = function (chunk, encoding) {
-    const responseTime = Date.now() - startTime;
-
-    // Log da requisiÃ§Ã£o
-    LoggingService.logRequest(req, res, responseTime);
-
-    // Log de performance se a resposta for lenta
-    if (responseTime > 1000) {
-      LoggingService.logPerformance(
-        `${req.method} ${req.originalUrl}`,
-        responseTime,
-        res.statusCode < 400,
-        {
-          method: req.method,
-          url: req.originalUrl,
-          statusCode: res.statusCode,
-          userAgent: req.get('User-Agent'),
-          ip: req.ip,
-          userId: req.user?.userId
-        }
-      );
-    }
-
-    // Log de erro se status >= 400
-    if (res.statusCode >= 400) {
-      LoggingService.logSecurity(
-        'HTTP_ERROR',
-        req.user?.userId,
-        req.ip,
-        req.get('User-Agent'),
-        res.statusCode >= 500 ? 'HIGH' : 'MEDIUM',
-        {
-          method: req.method,
-          url: req.originalUrl,
-          statusCode: res.statusCode,
-          userEmail: req.user?.email,
-          body: req.method !== 'GET' ? req.body : undefined
-        }
-      );
-    }
-
-    // Chamar o mÃ©todo original
-    originalEnd.call(this, chunk, encoding);
-  };
-
-  next();
-};
-
-// Middleware para logging de erros
-export const errorLogging = (error, req, res, next) => {
-  // Log do erro
-  LoggingService.error(`Unhandled Error: ${error.message}`, error, {
-    method: req.method,
-    url: req.originalUrl,
-    userAgent: req.get('User-Agent'),
-    ip: req.ip,
-    userId: req.user?.userId,
-    userEmail: req.user?.email,
-    body: req.method !== 'GET' ? req.body : undefined
-  });
-
-  // Log de seguranÃ§a para erros crÃ­ticos
-  if (error.status >= 500) {
-    LoggingService.logSecurity(
-      'CRITICAL_ERROR',
-      req.user?.userId,
-      req.ip,
-      req.get('User-Agent'),
-      'HIGH',
-      {
-        error: error.message,
-        stack: error.stack,
-        method: req.method,
-        url: req.originalUrl
-      }
-    );
+﻿
+// Logging utilitário para Worker/D1
+export async function logRequest(request, env, extra = {}) {
+  try {
+    const { method, url } = request;
+    const userAgent = request.headers.get('user-agent') || '';
+    const ip = request.headers.get('cf-connecting-ip') || '';
+    const userId = request.user?.id || null;
+    const now = new Date().toISOString();
+    await env.DB.prepare('INSERT INTO logs (type, method, url, user_agent, ip, user_id, details, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+      .bind('request', method, url, userAgent, ip, userId, JSON.stringify(extra), now).run();
+  } catch (e) {
+    // fallback para console
+    console.log('[logRequest]', e);
   }
+}
 
-  next(error);
-};
+export async function logError(error, request, env, extra = {}) {
+  try {
+    const { method, url } = request;
+    const userAgent = request.headers.get('user-agent') || '';
+    const ip = request.headers.get('cf-connecting-ip') || '';
+    const userId = request.user?.id || null;
+    const now = new Date().toISOString();
+    await env.DB.prepare('INSERT INTO logs (type, method, url, user_agent, ip, user_id, details, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+      .bind('error', method, url, userAgent, ip, userId, JSON.stringify({ error: error.message, ...extra }), now).run();
+  } catch (e) {
+    console.log('[logError]', e);
+  }
+}
 
-// Middleware para logging de autenticaÃ§Ã£o
-export const authLogging = (req, res, next) => {
-  const originalJson = res.json;
+export async function logAuth(event, request, env, success, extra = {}) {
+  try {
+    const { method, url } = request;
+    const userAgent = request.headers.get('user-agent') || '';
+    const ip = request.headers.get('cf-connecting-ip') || '';
+    const userId = request.user?.id || null;
+    const now = new Date().toISOString();
+    await env.DB.prepare('INSERT INTO logs (type, method, url, user_agent, ip, user_id, details, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+      .bind('auth', method, url, userAgent, ip, userId, JSON.stringify({ event, success, ...extra }), now).run();
+  } catch (e) {
+    console.log('[logAuth]', e);
+  }
+}
 
-  res.json = function (data) {
-    // Log de tentativas de autenticaÃ§Ã£o
-    if (req.originalUrl.includes('/auth/')) {
-      const isLogin = req.originalUrl.includes('/login');
-      const isRegister = req.originalUrl.includes('/register');
-      const isPasswordReset = req.originalUrl.includes('/forgot-password');
-
-      if (isLogin || isRegister || isPasswordReset) {
-        const success = res.statusCode < 400 && data?.success;
-        const email = req.body?.email || data?.data?.user?.email;
-        const userId = data?.data?.user?.id || data?.data?.userId;
-
-        LoggingService.logAuth(
-          isLogin ? 'login' : isRegister ? 'register' : 'password_reset',
-          userId,
-          email,
-          success,
-          {
-            ip: req.ip,
-            userAgent: req.get('User-Agent'),
-            method: req.method,
-            url: req.originalUrl,
-            success,
-            error: success ? null : data?.message
-          }
-        );
-      }
-    }
-
-    return originalJson.call(this, data);
-  };
-
-  next();
-};
-
-// Middleware para logging de pagamentos
-export const paymentLogging = (req, res, next) => {
-  const originalJson = res.json;
-
-  res.json = function (data) {
-    // Log de transaÃ§Ãµes de pagamento
-    if (req.originalUrl.includes('/payments/') || req.originalUrl.includes('/stripe/')) {
-      const isPayment =
-        req.originalUrl.includes('/create-payment') ||
-        req.originalUrl.includes('/confirm-payment') ||
-        req.originalUrl.includes('/webhook');
-
-      if (isPayment) {
-        const success = res.statusCode < 400 && data?.success;
-        const amount = req.body?.amount || data?.data?.amount;
-        const currency = req.body?.currency || data?.data?.currency || 'BRL';
-        const paymentMethod = req.body?.paymentMethod || data?.data?.paymentMethod;
-
-        LoggingService.logPayment(
-          req.originalUrl.includes('/webhook') ? 'webhook' : 'payment',
-          req.user?.userId,
-          amount,
-          currency,
-          success,
-          {
-            ip: req.ip,
-            userAgent: req.get('User-Agent'),
-            userEmail: req.user?.email,
-            paymentMethod,
-            transactionId: data?.data?.transactionId,
-            stripeId: data?.data?.stripeId,
-            error: success ? null : data?.message
-          }
-        );
-      }
-    }
-
-    return originalJson.call(this, data);
-  };
-
-  next();
-};
+export async function logPayment(event, request, env, success, extra = {}) {
+  try {
+    const { method, url } = request;
+    const userAgent = request.headers.get('user-agent') || '';
+    const ip = request.headers.get('cf-connecting-ip') || '';
+    const userId = request.user?.id || null;
+    const now = new Date().toISOString();
+    await env.DB.prepare('INSERT INTO logs (type, method, url, user_agent, ip, user_id, details, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+      .bind('payment', method, url, userAgent, ip, userId, JSON.stringify({ event, success, ...extra }), now).run();
+  } catch (e) {
+    console.log('[logPayment]', e);
+  }
+}
 
 // Middleware para logging de escrow
 export const escrowLogging = (req, res, next) => {

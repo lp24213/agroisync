@@ -1,4 +1,4 @@
-import { json } from 'itty-router-extras';
+import { json } from '../utils/respond.js';
 import { createUser as d1CreateUser } from '../utils/d1-helper.js';
 import { hashPassword, verifyPassword, generateJWT } from '../utils/auth.js';
 

@@ -1,44 +1,39 @@
+
 import React, { useState, useEffect } from 'react';
 import { Lock } from 'lucide-react';
-import { toast } from 'react-hot-toast';
-import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import AdminPanel from './AdminPanel';
 
 const UserAdmin = () => {
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const { user, isAuthenticated, isLoading } = useAuth();
+  const navigate = useNavigate();
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const verifyAdmin = async () => {
-      try {
-        const token = localStorage.getItem('agro_token');
-        if (!token) {
-          toast.error('Sessão inválida. Faça login novamente.');
-          window.location.href = '/admin';
-          return;
-        }
+    if (!isLoading && !isAuthenticated) {
+      navigate('/login', { replace: true });
+    }
+    // Checagem simples de admin (ajuste conforme sua lógica de roles)
+    if (user && user.role === 'admin') {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+  }, [user, isAuthenticated, isLoading, navigate]);
 
-        const resp = await axios.get('/api/admin/dashboard', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+  if (isLoading) {
+    return (
+      <div className='flex min-h-screen items-center justify-center bg-gray-50'>
+        <div className='text-center'>
+          <div className='mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-green-600 border-t-transparent'></div>
+          <p className='text-gray-600'>Carregando...</p>
+        </div>
+      </div>
+    );
+  }
 
-        if (resp?.data?.success) {
-          setIsAuthorized(true);
-          return;
-        }
-
-        throw new Error('Unauthorized');
-      } catch (err) {
-        toast.error('Acesso não autorizado');
-        setTimeout(() => {
-          window.location.href = '/admin';
-        }, 1500);
-      }
-    };
-
-    verifyAdmin();
-  }, []);
-
-  if (!isAuthorized) {
+  if (!isAdmin) {
     return (
       <div className='flex min-h-screen items-center justify-center'>
         <div className='text-center'>

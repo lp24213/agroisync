@@ -884,21 +884,7 @@ const AgroisyncLoja = () => {
         }
       `}</style>
 
-      {/* Modal de Cadastro */}
-      {showRegistrationModal && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
-          <div className='mx-4 max-w-md rounded-lg bg-white p-8'>
-            <h3 className='text-xl font-semibold text-gray-600'>Sistema de Registro em Desenvolvimento</h3>
-            <p className='mt-2 text-gray-500'>Em breve teremos sistema de registro disponível!</p>
-            <button
-              onClick={() => setShowRegistrationModal(false)}
-              className='mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600'
-            >
-              Fechar
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Modal de Cadastro - REMOVIDO */}
 
       {/* Modal de Planos */}
       {showPlansModal && (
@@ -911,9 +897,13 @@ const AgroisyncLoja = () => {
                   <X size={24} />
                 </button>
               </div>
-              <div className='py-8 text-center'>
-                <h3 className='text-xl font-semibold text-gray-600'>Sistema de Planos em Desenvolvimento</h3>
-                <p className='mt-2 text-gray-500'>Em breve teremos planos disponíveis para você!</p>
+              <div className='py-8'>
+                {/* Conteúdo dos planos será mostrado aqui */}
+                <iframe 
+                  src="/plans" 
+                  className="w-full h-[600px] border-0"
+                  title="Planos AgroSync"
+                />
               </div>
             </div>
           </div>

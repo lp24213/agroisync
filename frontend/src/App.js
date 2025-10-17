@@ -44,6 +44,9 @@ const UsuarioGeral = React.lazy(() => import('./pages/UsuarioGeral'));
 const AgroisyncCrypto = React.lazy(() => import('./pages/AgroisyncCrypto'));
 const AgroisyncDashboard = React.lazy(() => import('./pages/AgroisyncDashboard'));
 const AgroisyncPlans = React.lazy(() => import('./pages/AgroisyncPlans'));
+const PaymentPix = React.lazy(() => import('./pages/PaymentPix'));
+const PaymentBoleto = React.lazy(() => import('./pages/PaymentBoleto'));
+const PaymentCreditCard = React.lazy(() => import('./pages/PaymentCreditCard'));
 const AgroisyncAbout = React.lazy(() => import('./pages/AgroisyncAbout'));
 const AgroisyncContact = React.lazy(() => import('./pages/AgroisyncContact'));
 const Partnerships = React.lazy(() => import('./pages/Partnerships'));
@@ -202,6 +205,9 @@ function App() {
                         <Route path='/about' element={<AgroisyncAbout />} />
                         <Route path='/planos' element={<AgroisyncPlans />} />
                         <Route path='/plans' element={<AgroisyncPlans />} />
+                        <Route path='/payment/pix' element={<PaymentPix />} />
+                        <Route path='/payment/boleto' element={<PaymentBoleto />} />
+                        <Route path='/payment/credit-card' element={<PaymentCreditCard />} />
                         <Route path='/contato' element={<AgroisyncContact />} />
                         <Route path='/contact' element={<AgroisyncContact />} />
                         

@@ -5,6 +5,10 @@
 		{
 			"binding": "SESSIONS",
 			"id": "13903703f9474a8181e852306a287eb7"
+		},
+		{
+			"binding": "CACHE",
+			"id": "8a07f2664b154e84a26ca3f95836378d"
 		}
 	]
 }

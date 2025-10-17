@@ -1,0 +1,17 @@
+{
+  "id": "agroisync",
+  "zone_id": "*",
+  "zone_name": "agroisync.com",
+  "domains": [
+    "agroisync.com"
+  ],
+  "branch": "main",
+  "custom_domains": [
+    {
+      "domain": "agroisync.com",
+      "zone_id": "*",
+      "default": true,
+      "status": "active"
+    }
+  ]
+}

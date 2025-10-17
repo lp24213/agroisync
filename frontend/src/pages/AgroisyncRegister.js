@@ -79,15 +79,24 @@ const AgroisyncRegister = () => {
 
     setIsLoading(true);
     try {
+      console.log('Enviando código para:', formData.email);
       const result = await authService.resendVerificationEmail(formData.email);
+      console.log('Resultado do envio:', result);
+      
       if (result.success) {
         setEmailSent(true);
-        toast.success(`Código Email enviado! Código: ${result.emailCode}`, { duration: 10000 });
+        const message = result.emailSent 
+          ? `✅ Email ENVIADO! Código: ${result.emailCode}` 
+          : `⚠️ Código gerado (email não enviado): ${result.emailCode}`;
+        toast.success(message, { duration: 10000 });
+        console.log('Email enviado com sucesso:', result.emailCode);
       } else {
         toast.error(result.error || 'Erro ao enviar email');
+        console.error('Erro ao enviar:', result.error);
       }
     } catch (error) {
-      toast.error('Erro ao enviar email');
+      console.error('Erro catch:', error);
+      toast.error('Erro ao enviar email: ' + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -526,15 +535,19 @@ const AgroisyncRegister = () => {
                   style={{ marginBottom: '1.5rem' }}
                 >
                   <CloudflareTurnstile
+                    siteKey="0x4AAAAAAB3pdjs4jRKvAtaA"
                     onVerify={token => {
+                      console.log('Turnstile verificado:', token);
                       setTurnstileToken(token);
                       setErrors(prev => ({ ...prev, turnstile: '' }));
                     }}
                     onError={error => {
+                      console.error('Turnstile error:', error);
                       setErrors(prev => ({ ...prev, turnstile: 'Erro na verificação. Tente novamente.' }));
                       setTurnstileToken('');
                     }}
                     onExpire={() => {
+                      console.log('Turnstile expirado');
                       setTurnstileToken('');
                     }}
                   />

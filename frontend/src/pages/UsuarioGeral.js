@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+// ...existing code...
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Package, Star, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const UsuarioGeral = () => {
-  const { user } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
+  const navigate = useNavigate();
   const [productCount, setProductCount] = useState(0);
   const [planLimits] = useState({
     maxProducts: 1,
@@ -16,12 +19,25 @@ const UsuarioGeral = () => {
   });
 
   useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate('/login', { replace: true });
+    }
     // Simular contagem de produtos do usuário
     setProductCount(0);
-  }, [user]);
+  }, [user, isAuthenticated, isLoading, navigate]);
 
   const canAddProduct = productCount < planLimits.maxProducts;
 
+  if (isLoading) {
+    return (
+      <div className='flex min-h-screen items-center justify-center bg-gray-50'>
+        <div className='text-center'>
+          <div className='mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-green-600 border-t-transparent'></div>
+          <p className='text-gray-600'>Carregando...</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className='min-h-screen bg-gradient-to-br from-green-50 to-blue-50 py-8'>
       <div className='container mx-auto px-4'>
