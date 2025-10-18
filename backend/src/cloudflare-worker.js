@@ -2829,8 +2829,8 @@ function validateMessageSecurity(message) {
     /on(load|error|click|mouse)/i,
     
     // Path traversal
-    /\.\.[\/\\]/,
-    /(\/etc\/passwd|\/root\/|C:\\Windows)/i,
+    /\.\.[/\\]/,
+    /(\\/etc\\/passwd|\\/root\\/|C:\\\\Windows)/i,
     
     // Command injection
     /[;&|`$]\s*(rm|del|format|shutdown|reboot|kill)/i
