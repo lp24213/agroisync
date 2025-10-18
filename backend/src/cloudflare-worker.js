@@ -911,6 +911,9 @@ async function handleRegister(request, env) {
       html: `<h1>Olá ${name}!</h1><p>Sua conta foi criada com sucesso na AgroSync.</p>`
     });
     
+    // Enviar código de verificação de email
+    await sendVerificationEmail(env, userId, email);
+    
     // Generate JWT
     const token = await generateJWT({ userId, email, name }, env.JWT_SECRET);
     
@@ -918,7 +921,8 @@ async function handleRegister(request, env) {
       success: true,
       data: {
         token,
-        user: { id: userId, email, name }
+        user: { id: userId, email, name },
+        email_verification_required: true
       }
     }, 201);
   } catch (error) {
@@ -2678,6 +2682,133 @@ async function handleAIChatPrivate(request, env, user) {
   }
 }
 
+// Email Verification - Enviar código
+async function sendVerificationEmail(env, userId, email) {
+  try {
+    const db = getDb(env);
+    const code = Math.floor(100000 + Math.random() * 900000).toString(); // 6 dígitos
+    const expiresAt = Math.floor(Date.now() / 1000) + (30 * 60); // 30 minutos
+    
+    const codeId = crypto.randomUUID();
+    await db.prepare(
+      `INSERT INTO email_verification_codes (id, user_id, email, code, expires_at, created_at) 
+       VALUES (?, ?, ?, ?, ?, strftime('%s', 'now'))`
+    ).bind(codeId, userId, email, code, expiresAt).run();
+    
+    // Enviar email via Resend
+    if (env.RESEND_API_KEY && env.RESEND_ENABLED === 'true') {
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: env.RESEND_FROM_EMAIL || 'AgroSync <contato@agroisync.com>',
+          to: email,
+          subject: '🔐 Código de Verificação - AgroSync',
+          html: `
+            <h2>Bem-vindo ao AgroSync!</h2>
+            <p>Seu código de verificação é:</p>
+            <h1 style="font-size: 48px; color: #22c55e; letter-spacing: 5px;">${code}</h1>
+            <p>Este código expira em 30 minutos.</p>
+            <p>Se você não solicitou este código, ignore este email.</p>
+            <br>
+            <p>Atenciosamente,<br>Equipe AgroSync</p>
+          `
+        })
+      });
+    }
+    
+    return { success: true, codeId };
+  } catch (error) {
+    console.error('Send verification email error:', error);
+    return { success: false, error };
+  }
+}
+
+// Email Verification - Validar código
+async function handleEmailVerifyCode(request, env) {
+  try {
+    const { email, code } = await request.json();
+    
+    if (!email || !code) {
+      return jsonResponse({ success: false, error: 'Email e código obrigatórios' }, 400);
+    }
+    
+    const db = getDb(env);
+    const now = Math.floor(Date.now() / 1000);
+    
+    const verification = await db.prepare(
+      `SELECT id, user_id FROM email_verification_codes 
+       WHERE email = ? AND code = ? AND is_used = 0 AND expires_at > ?`
+    ).bind(email, code, now).first();
+    
+    if (!verification) {
+      return jsonResponse({ success: false, error: 'Código inválido ou expirado' }, 400);
+    }
+    
+    // Marcar código como usado
+    await db.prepare(
+      `UPDATE email_verification_codes SET is_used = 1, verified_at = strftime('%s', 'now') WHERE id = ?`
+    ).bind(verification.id).run();
+    
+    // Marcar email como verificado
+    await db.prepare(
+      `UPDATE users SET email_verified = 1 WHERE id = ?`
+    ).bind(verification.user_id).run();
+    
+    return jsonResponse({
+      success: true,
+      message: 'Email verificado com sucesso!'
+    });
+  } catch (error) {
+    console.error('Email verify code error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao verificar código' }, 500);
+  }
+}
+
+// Email Verification - Reenviar código
+async function handleEmailResendCode(request, env) {
+  try {
+    const { email } = await request.json();
+    
+    if (!email) {
+      return jsonResponse({ success: false, error: 'Email obrigatório' }, 400);
+    }
+    
+    const db = getDb(env);
+    
+    // Buscar usuário
+    const user = await db.prepare(
+      `SELECT id, email FROM users WHERE email = ?`
+    ).bind(email).first();
+    
+    if (!user) {
+      return jsonResponse({ success: false, error: 'Usuário não encontrado' }, 404);
+    }
+    
+    if (user.email_verified === 1) {
+      return jsonResponse({ success: false, error: 'Email já verificado' }, 400);
+    }
+    
+    // Enviar novo código
+    const result = await sendVerificationEmail(env, user.id, email);
+    
+    if (result.success) {
+      return jsonResponse({
+        success: true,
+        message: 'Código reenviado com sucesso!'
+      });
+    } else {
+      return jsonResponse({ success: false, error: 'Erro ao enviar código' }, 500);
+    }
+  } catch (error) {
+    console.error('Email resend code error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao reenviar código' }, 500);
+  }
+}
+
 // Chamar OpenAI (mantém API key SEGURA no backend!)
 async function callOpenAI(env, message, mode, user = null) {
   try {
@@ -3246,6 +3377,14 @@ async function handleRequest(request, env) {
     // Public route - AI Chatbot (whitelisted intents)
     if (path === '/api/ai/chat' && method === 'POST') {
       return handleAIChatPublic(request, env);
+    }
+
+    // Public route - Email verification
+    if (path === '/api/email/verify-code' && method === 'POST') {
+      return handleEmailVerifyCode(request, env);
+    }
+    if (path === '/api/email/resend-code' && method === 'POST') {
+      return handleEmailResendCode(request, env);
     }
 
       // Public route - create user with avatar
