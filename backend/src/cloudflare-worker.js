@@ -1910,6 +1910,45 @@ async function handleUserProfile(request, env, user) {
   }
 }
 
+// User Items (Products/Freights)
+async function handleUserItems(request, env, user) {
+  try {
+    const url = new URL(request.url);
+    const type = url.searchParams.get('type') || 'all';
+    const db = getDb(env);
+    
+    let items = [];
+    
+    if (type === 'all' || type === 'products') {
+      // Buscar produtos do usuário
+      const products = await db.prepare(
+        'SELECT id, title as name, description, price, category, quantity, unit, status, created_at, "public" as visibility FROM products WHERE user_id = ? ORDER BY created_at DESC LIMIT 50'
+      ).bind(user.userId).all();
+      
+      items = [...items, ...(products.results || []).map(p => ({ ...p, type: 'product' }))];
+    }
+    
+    if (type === 'all' || type === 'freights') {
+      // Buscar fretes do usuário
+      const freights = await db.prepare(
+        'SELECT id, origin, destination, price as value, cargo_type, weight, status, created_at, "public" as visibility FROM freight WHERE user_id = ? ORDER BY created_at DESC LIMIT 50'
+      ).bind(user.userId).all();
+      
+      items = [...items, ...(freights.results || []).map(f => ({ ...f, type: 'freight' }))];
+    }
+    
+    return jsonResponse({
+      success: true,
+      data: items,
+      products: items.filter(i => i.type === 'product'),
+      freights: items.filter(i => i.type === 'freight')
+    });
+  } catch (error) {
+    console.error('User items error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao buscar itens' }, 500);
+  }
+}
+
 // User Plan Info
 async function handleUserPlan(request, env, user) {
   try {
@@ -2467,7 +2506,10 @@ async function handleRequest(request, env) {
     if (path === '/api/user/profile' && (method === 'GET' || method === 'PUT')) {
       return handleUserProfile(request, env, user);
     }
-  if (path === '/api/users/me' && method === 'GET') {
+    if (path === '/api/user/items' && method === 'GET') {
+      return handleUserItems(request, env, user);
+    }
+    if (path === '/api/users/me' && method === 'GET') {
       return handleUserProfile(request, env, user);
     }
     if (path === '/api/users/plan' && method === 'GET') {
