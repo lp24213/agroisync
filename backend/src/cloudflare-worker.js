@@ -1892,7 +1892,7 @@ async function handleUserProfile(request, env, user) {
     } else {
       // GET - Buscar perfil do usuário
       const profile = await db.prepare(
-        'SELECT id, email, name, phone, role, plan, plan_expires_at, user_type, business_type, created_at FROM users WHERE id = ?'
+        'SELECT id, email, name, phone, role, plan, plan_status, plan_expires_at, user_type, business_type, created_at FROM users WHERE id = ?'
       ).bind(user.userId).first();
       
       if (!profile) {
