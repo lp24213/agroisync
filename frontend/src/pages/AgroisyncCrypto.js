@@ -17,6 +17,7 @@ import {
 // import CryptoChart from '../components/CryptoChart'; // Componente removido
 // import '../styles/crypto-dashboard.css'; // Arquivo removido
 import CryptoHash from '../components/CryptoHash';
+import MetaMaskIntegration from '../components/MetaMaskIntegration';
 
 const AgroisyncCrypto = () => {
   const [email, setEmail] = useState('');
@@ -690,6 +691,32 @@ const AgroisyncCrypto = () => {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* MetaMask / Pagamento Cripto Section */}
+      <section className='agro-section' style={{ padding: 'var(--agro-space-2xl) 0', background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(57, 255, 20, 0.1) 100%)' }}>
+        <div className='agro-container'>
+          <motion.div
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1 }}
+            className='agro-text-center'
+            style={{ marginBottom: 'var(--agro-space-xl)' }}
+          >
+            <h2 className='agro-section-title' style={{ marginBottom: 'var(--agro-space-md)' }}>
+              Conecte sua Carteira MetaMask
+            </h2>
+            <p className='agro-section-subtitle' style={{ marginBottom: 'var(--agro-space-md)' }}>
+              Pague com criptomoedas e aproveite nossa taxa de conversão de 10%.
+            </p>
+            <p className='agro-section-subtitle' style={{ fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.7)' }}>
+              Pagamentos seguros via blockchain - suas transações registradas e protegidas.
+            </p>
+          </motion.div>
+          
+          <MetaMaskIntegration />
         </div>
       </section>
 
