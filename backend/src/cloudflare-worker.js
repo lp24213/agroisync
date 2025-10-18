@@ -2830,7 +2830,7 @@ function validateMessageSecurity(message) {
     
     // Path traversal
     /\.\.[/\\]/,
-    /(\\/etc\\/passwd|\\/root\\/|C:\\\\Windows)/i,
+    /(\/etc\/passwd|\/root\/|C:\\Windows)/i,
     
     // Command injection
     /[;&|`$]\s*(rm|del|format|shutdown|reboot|kill)/i
