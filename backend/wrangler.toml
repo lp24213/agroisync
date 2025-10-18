@@ -35,7 +35,13 @@ LOG_LEVEL = "info"
 
 # Turnstile Configuration
 CF_TURNSTILE_SITE_KEY = "0x4AAAAAAB3pdjs4jRKvAtaA"
-CF_TURNSTILE_SECRET_KEY = "0x4AAAAAAB3pdkPMyeyfUQQaEpNBMb0NYhk"
+# IMPORTANT: Move secrets to Wrangler secrets with:
+#  npx wrangler secret put CF_TURNSTILE_SECRET_KEY
+#  npx wrangler secret put RESEND_API_KEY
+#  npx wrangler secret put JWT_SECRET
+#  npx wrangler secret put JWT_REFRESH_SECRET
+# Do NOT store sensitive secrets in this file for production.
+# CF_TURNSTILE_SECRET_KEY = "<set-via-wrangler-secret>"
 CF_TURNSTILE_ENABLED = "true"
 
 # Email Configuration (Resend)
@@ -45,7 +51,8 @@ RESEND_ENABLED = "true"
 
 # Stripe Configuration (DEPRECATED - usando Santander agora)
 STRIPE_ENABLED = "false"
-STRIPE_WEBHOOK_SECRET = "whsec_placeholder"
+# STRIPE_WEBHOOK_SECRET should be set as a secret in production:
+# npx wrangler secret put STRIPE_WEBHOOK_SECRET
 
 # Santander Configuration
 SANTANDER_ENABLED = "true"
