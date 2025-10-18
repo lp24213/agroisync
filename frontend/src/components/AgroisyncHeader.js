@@ -4,11 +4,12 @@ import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import LanguageSelectorPro from './LanguageSelectorPro';
 import AgroisyncLogo from './AgroisyncLogo';
-import { Menu, X, Home, ShoppingCart, Truck, LogIn, LogOut, User, Users, Info, Coins, Crown } from 'lucide-react';
+import { Menu, X, Home, ShoppingCart, Truck, LogIn, LogOut, User, Users, Info, Coins, Crown, LayoutDashboard, MessageSquare, Settings, ChevronDown } from 'lucide-react';
 
 const AgroisyncHeader = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const { t } = useTranslation();
   const location = useLocation();
@@ -173,33 +174,64 @@ const AgroisyncHeader = () => {
               })}
             </nav>
 
-            {/* User Menu - Apenas para usuários logados */}
-            {user ? (
-              <div className='hidden items-center gap-3 md:flex'>
-                <Link
-                  to='/user-dashboard'
-                  className='flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-green-50 hover:text-green-600'
-                >
-                  <User className='h-4 w-4' />
-                  Meu Painel
-                </Link>
-                <Link
-                  to='/messaging'
-                  className='flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-green-50 hover:text-green-600'
-                >
-                  <Users className='h-4 w-4' />
-                  Mensagens
-                </Link>
+            {/* User Menu Dropdown - MENU HAMBURGUER DO USUÁRIO */}
+            {user && (
+              <div className='relative hidden md:block'>
                 <button
-                  onClick={handleLogout}
-                  className='flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-red-50 hover:text-red-600'
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className='flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:bg-green-600 hover:shadow-md'
                   type='button'
                 >
-                  <LogOut className='h-4 w-4' />
-                  Sair
+                  <User className='h-4 w-4' />
+                  <span className='max-w-[100px] truncate'>{user.name || user.email}</span>
+                  <ChevronDown className={`h-4 w-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
+
+                {/* Dropdown Menu */}
+                {isUserMenuOpen && (
+                  <div className='absolute right-0 z-50 mt-2 w-56 rounded-lg border border-gray-200 bg-white shadow-xl'>
+                    <div className='p-2'>
+                      <Link
+                        to='/user-dashboard'
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className='flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-green-50 hover:text-green-600'
+                      >
+                        <LayoutDashboard className='h-4 w-4' />
+                        Meu Painel
+                      </Link>
+                      <Link
+                        to='/messaging'
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className='flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-green-50 hover:text-green-600'
+                      >
+                        <MessageSquare className='h-4 w-4' />
+                        Mensagens
+                      </Link>
+                      <Link
+                        to='/user-dashboard?tab=settings'
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className='flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-green-50 hover:text-green-600'
+                      >
+                        <Settings className='h-4 w-4' />
+                        Configurações
+                      </Link>
+                      <div className='my-1 border-t border-gray-200' />
+                      <button
+                        onClick={() => {
+                          setIsUserMenuOpen(false);
+                          handleLogout();
+                        }}
+                        className='flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-red-600 transition-all duration-200 hover:bg-red-50'
+                        type='button'
+                      >
+                        <LogOut className='h-4 w-4' />
+                        Sair
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-            ) : null}
+            )}
 
             {/* Desktop Actions */}
             <div className='hidden items-center gap-4 md:flex'>
@@ -208,12 +240,7 @@ const AgroisyncHeader = () => {
                 <LanguageSelectorPro />
               </div>
 
-              {/* Auth Buttons */}
-              {user && (
-                <div className='flex items-center gap-3'>
-                  <span className='text-sm font-medium text-gray-700'>Olá, {user.name || user.email}</span>
-                </div>
-              )}
+              {/* Auth Buttons - Só mostra se não tiver usuário logado */}
               {!user && (
                 <div className='flex items-center gap-2'>
                   <Link
@@ -249,25 +276,84 @@ const AgroisyncHeader = () => {
         {isMobileMenuOpen && (
           <div className='border-t border-gray-200/50 bg-white/95 shadow-lg backdrop-blur-md md:hidden'>
             <div className='space-y-2 px-6 py-4'>
-              {mobileNavigationItems.map(item => {
-                const Icon = item.icon;
-                const isActive = location.pathname === item.path;
-                return (
-                  <Link
-                    key={item.path}
-                    to={buildPath(item.path)}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200 ${
-                      isActive
-                        ? 'bg-green-500 text-white shadow-md'
-                        : 'text-gray-700 hover:bg-green-50 hover:text-green-600 hover:shadow-sm'
-                    }`}
-                  >
-                    <Icon className='h-4 w-4' />
-                    {t ? t(`nav.${item.i18nKey}`, item.label) : item.label}
-                  </Link>
-                );
-              })}
+              {/* Menu do Usuário no Mobile - SE ESTIVER LOGADO */}
+              {user && (
+                <>
+                  <div className='mb-3 rounded-lg bg-green-50 p-3'>
+                    <div className='mb-2 flex items-center gap-2 text-sm font-semibold text-green-700'>
+                      <User className='h-4 w-4' />
+                      {user.name || user.email}
+                    </div>
+                    <div className='space-y-1'>
+                      <Link
+                        to='/user-dashboard'
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className='flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-white hover:text-green-600'
+                      >
+                        <LayoutDashboard className='h-4 w-4' />
+                        Meu Painel
+                      </Link>
+                      <Link
+                        to='/messaging'
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className='flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-white hover:text-green-600'
+                      >
+                        <MessageSquare className='h-4 w-4' />
+                        Mensagens
+                      </Link>
+                      <Link
+                        to='/user-dashboard?tab=settings'
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className='flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-white hover:text-green-600'
+                      >
+                        <Settings className='h-4 w-4' />
+                        Configurações
+                      </Link>
+                      <button
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          handleLogout();
+                        }}
+                        className='flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition-all duration-200 hover:bg-white'
+                        type='button'
+                      >
+                        <LogOut className='h-4 w-4' />
+                        Sair
+                      </button>
+                    </div>
+                  </div>
+                  <div className='border-t border-gray-200/60' />
+                </>
+              )}
+
+              {/* Menu de Navegação Normal */}
+              {mobileNavigationItems
+                .filter(item => {
+                  // Se usuário logado, não mostrar Login/Cadastrar
+                  if (user && (item.path === '/login' || item.path === '/signup')) {
+                    return false;
+                  }
+                  return true;
+                })
+                .map(item => {
+                  const Icon = item.icon;
+                  const isActive = location.pathname === item.path;
+                  return (
+                    <Link
+                      key={item.path}
+                      to={buildPath(item.path)}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200 ${
+                        isActive
+                          ? 'bg-green-500 text-white shadow-md'
+                          : 'text-gray-700 hover:bg-green-50 hover:text-green-600 hover:shadow-sm'
+                      }`}
+                    >
+                      <Icon className='h-4 w-4' />
+                      {t ? t(`nav.${item.i18nKey}`, item.label) : item.label}
+                    </Link>
+                  );
+                })}
 
               {/* Subitens no mobile */}
               <div className='border-t border-gray-200/60 pt-2' />
