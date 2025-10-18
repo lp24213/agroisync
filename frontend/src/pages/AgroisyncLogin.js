@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { User, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import CloudflareTurnstile from '../components/CloudflareTurnstile';
@@ -8,6 +9,7 @@ import CloudflareTurnstile from '../components/CloudflareTurnstile';
 // import AgroisyncFooter from '../components/AgroisyncFooter'; // Já incluído no App.js
 
 const AgroisyncLogin = () => {
+  const { t } = useTranslation();
   const { updateUserState } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
@@ -55,15 +57,15 @@ const AgroisyncLogin = () => {
     const newErrors = {};
 
     if (!formData.email) {
-      newErrors.email = 'Email é obrigatório';
+      newErrors.email = t('login.emailRequired', 'Email é obrigatório');
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email inválido';
+      newErrors.email = t('login.emailInvalid', 'Email inválido');
     }
 
     if (!formData.password) {
-      newErrors.password = 'Senha é obrigatória';
+      newErrors.password = t('login.passwordRequired', 'Senha é obrigatória');
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Senha deve ter pelo menos 6 caracteres';
+      newErrors.password = t('login.passwordMinLength', 'Senha deve ter pelo menos 6 caracteres');
     }
 
     setErrors(newErrors);
@@ -351,10 +353,10 @@ const AgroisyncLogin = () => {
                     color: 'var(--text-primary)'
                   }}
                 >
-                  Fazer Login
+                  {t('login.title', 'Fazer Login')}
                 </h2>
                 <p style={{ color: 'var(--muted)', fontSize: '0.95rem' }}>
-                  Entre com suas credenciais para acessar sua conta
+                  {t('login.subtitle', 'Entre com suas credenciais para acessar sua conta')}
                 </p>
               </motion.div>
 
@@ -386,7 +388,7 @@ const AgroisyncLogin = () => {
                       color: 'var(--text-primary)'
                     }}
                   >
-                    Email
+                    {t('login.email', 'Email')}
                   </label>
                   <div style={{ position: 'relative' }}>
                     <Mail
@@ -437,7 +439,7 @@ const AgroisyncLogin = () => {
                       color: 'var(--text-primary)'
                     }}
                   >
-                    Senha
+                    {t('login.password', 'Senha')}
                   </label>
                   <div style={{ position: 'relative' }}>
                     <Lock
@@ -585,11 +587,11 @@ const AgroisyncLogin = () => {
                           borderRadius: '50%'
                         }}
                       />
-                      Entrando...
+                      {t('login.entering', 'Entrando...')}
                     </>
                   ) : (
                     <>
-                      Entrar
+                      {t('login.enter', 'Entrar')}
                       <ArrowRight size={20} />
                     </>
                   )}
@@ -607,13 +609,13 @@ const AgroisyncLogin = () => {
                     fontSize: '0.9rem'
                   }}
                 >
-                  Esqueci minha senha
+                  {t('login.forgotPassword', 'Esqueci minha senha')}
                 </Link>
               </motion.div>
 
               <motion.div variants={itemVariants} style={{ textAlign: 'center', marginTop: '2rem' }}>
                 <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>
-                  Não tem uma conta?{' '}
+                  {t('login.noAccount', 'Não tem uma conta?')}{' '}
                   <Link
                     to='/register'
                     style={{
@@ -622,7 +624,7 @@ const AgroisyncLogin = () => {
                       fontWeight: '600'
                     }}
                   >
-                    Criar Conta
+                    {t('login.register', 'Criar Conta')}
                   </Link>
                 </p>
               </motion.div>

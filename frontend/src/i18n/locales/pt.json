@@ -344,5 +344,37 @@
       "title": "Nossa Jornada",
       "subtitle": "Marcos importantes da nossa história"
     }
+  },
+  "login": {
+    "title": "Fazer Login",
+    "subtitle": "Entre com suas credenciais para acessar sua conta",
+    "email": "Email",
+    "emailRequired": "Email é obrigatório",
+    "emailInvalid": "Email inválido",
+    "password": "Senha",
+    "passwordRequired": "Senha é obrigatória",
+    "passwordMinLength": "Senha deve ter pelo menos 6 caracteres",
+    "forgotPassword": "Esqueci minha senha",
+    "enter": "Entrar",
+    "entering": "Entrando...",
+    "noAccount": "Não tem uma conta?",
+    "register": "Criar Conta"
+  },
+  "register": {
+    "fullName": "Nome Completo",
+    "email": "Email",
+    "company": "Empresa",
+    "phone": "Telefone",
+    "emailVerification": "Verificação de Email",
+    "emailCode": "Código do Email",
+    "sendCode": "Enviar",
+    "verify": "Verificar",
+    "emailVerified": "Email verificado com sucesso!",
+    "password": "Senha",
+    "confirmPassword": "Confirmar Senha",
+    "createAccount": "Criar Conta",
+    "creating": "Criando...",
+    "alreadyHaveAccount": "Já tem uma conta?",
+    "login": "Entrar"
   }
 }

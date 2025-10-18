@@ -225,6 +225,20 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
             <div className='space-y-4'>
               <h3 className='text-lg font-semibold text-green-400'>Configurações Visuais</h3>
 
+              {/* VLibras Info */}
+              <div className='rounded-lg bg-green-900/20 border border-green-500/30 p-4'>
+                <div className='flex items-center gap-2 mb-2'>
+                  <div className='w-2 h-2 bg-green-400 rounded-full'></div>
+                  <span className='font-semibold text-green-400'>VLibras Ativo</span>
+                </div>
+                <p className='text-sm text-green-300'>
+                  Widget oficial do governo brasileiro para tradução em Libras disponível no canto inferior direito da tela.
+                </p>
+                <p className='text-xs text-green-400 mt-1'>
+                  ♿ Clique no botão azul para ativar/desativar
+                </p>
+              </div>
+
               <div className='space-y-3'>
                 <label className='flex items-center justify-between rounded-lg bg-gray-800 p-3'>
                   <div>

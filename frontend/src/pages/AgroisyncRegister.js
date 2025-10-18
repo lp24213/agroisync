@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   User,
   Mail,
@@ -26,6 +27,7 @@ import { toast } from 'react-hot-toast';
 import CloudflareTurnstile from '../components/CloudflareTurnstile';
 
 const AgroisyncRegister = () => {
+  const { t } = useTranslation();
   if (process.env.NODE_ENV !== 'production') {
 
     // Component loaded
@@ -308,7 +310,7 @@ const AgroisyncRegister = () => {
               <form onSubmit={handleSubmit} className='space-y-6'>
                 {/* Nome */}
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
-                  <label className='mb-2 block text-sm font-bold text-gray-700'>Nome Completo</label>
+                  <label className='mb-2 block text-sm font-bold text-gray-700'>{t('register.fullName', 'Nome Completo')}</label>
                   <div className='relative'>
                     <User className='absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-400' />
                     <input
@@ -332,7 +334,7 @@ const AgroisyncRegister = () => {
 
                 {/* Email */}
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
-                  <label className='mb-2 block text-sm font-bold text-gray-700'>Email</label>
+                  <label className='mb-2 block text-sm font-bold text-gray-700'>{t('register.email', 'Email')}</label>
                   <div className='relative'>
                     <Mail className='absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-400' />
                     <input

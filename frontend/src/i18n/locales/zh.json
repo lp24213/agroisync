@@ -318,5 +318,37 @@
       "searchReached": "搜索限制已达到",
       "upgradePrompt": "升级到Pro版本以使用更多功能！"
     }
+  },
+  "login": {
+    "title": "登录",
+    "subtitle": "输入您的凭据以访问您的账户",
+    "email": "电子邮件",
+    "emailRequired": "电子邮件是必填项",
+    "emailInvalid": "电子邮件无效",
+    "password": "密码",
+    "passwordRequired": "密码是必填项",
+    "passwordMinLength": "密码必须至少6个字符",
+    "forgotPassword": "忘记密码",
+    "enter": "登录",
+    "entering": "登录中...",
+    "noAccount": "还没有账户？",
+    "register": "创建账户"
+  },
+  "register": {
+    "fullName": "全名",
+    "email": "电子邮件",
+    "company": "公司",
+    "phone": "电话",
+    "emailVerification": "电子邮件验证",
+    "emailCode": "电子邮件代码",
+    "sendCode": "发送",
+    "verify": "验证",
+    "emailVerified": "电子邮件验证成功！",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "createAccount": "创建账户",
+    "creating": "创建中...",
+    "alreadyHaveAccount": "已有账户？",
+    "login": "登录"
   }
 }

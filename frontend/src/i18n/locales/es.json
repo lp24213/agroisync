@@ -326,5 +326,37 @@
     "marketing": "Marketing",
     "accept": "Aceptar",
     "reject": "Rechazar"
+  },
+  "login": {
+    "title": "Iniciar Sesión",
+    "subtitle": "Ingresa tus credenciales para acceder a tu cuenta",
+    "email": "Correo Electrónico",
+    "emailRequired": "El correo electrónico es obligatorio",
+    "emailInvalid": "Correo electrónico inválido",
+    "password": "Contraseña",
+    "passwordRequired": "La contraseña es obligatoria",
+    "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
+    "forgotPassword": "Olvidé mi contraseña",
+    "enter": "Entrar",
+    "entering": "Entrando...",
+    "noAccount": "¿No tienes una cuenta?",
+    "register": "Crear Cuenta"
+  },
+  "register": {
+    "fullName": "Nombre Completo",
+    "email": "Correo Electrónico",
+    "company": "Empresa",
+    "phone": "Teléfono",
+    "emailVerification": "Verificación de Correo",
+    "emailCode": "Código de Correo",
+    "sendCode": "Enviar",
+    "verify": "Verificar",
+    "emailVerified": "¡Correo verificado con éxito!",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "createAccount": "Crear Cuenta",
+    "creating": "Creando...",
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+    "login": "Iniciar Sesión"
   }
 }

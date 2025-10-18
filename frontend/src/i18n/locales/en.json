@@ -326,5 +326,37 @@
     "marketing": "Marketing",
     "accept": "Accept",
     "reject": "Reject"
+  },
+  "login": {
+    "title": "Login",
+    "subtitle": "Enter your credentials to access your account",
+    "email": "Email",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Invalid email",
+    "password": "Password",
+    "passwordRequired": "Password is required",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "forgotPassword": "Forgot my password",
+    "enter": "Login",
+    "entering": "Logging in...",
+    "noAccount": "Don't have an account?",
+    "register": "Create Account"
+  },
+  "register": {
+    "fullName": "Full Name",
+    "email": "Email",
+    "company": "Company",
+    "phone": "Phone",
+    "emailVerification": "Email Verification",
+    "emailCode": "Email Code",
+    "sendCode": "Send",
+    "verify": "Verify",
+    "emailVerified": "Email verified successfully!",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "createAccount": "Create Account",
+    "creating": "Creating...",
+    "alreadyHaveAccount": "Already have an account?",
+    "login": "Login"
   }
 }
