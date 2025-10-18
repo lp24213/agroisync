@@ -267,10 +267,16 @@ const AgroisyncAgroConecta = () => {
   // Carregar pedidos quando a página carregar
   useEffect(() => {
     const loadMyOrders = async () => {
+      // Só carregar pedidos se o usuário estiver logado
+      if (!user?.token) {
+        setMyOrders([]);
+        return;
+      }
+
       try {
         const response = await axios.get('/api/freight-orders', {
           headers: {
-            Authorization: `Bearer ${user?.token}`
+            Authorization: `Bearer ${user.token}`
           }
         });
 
