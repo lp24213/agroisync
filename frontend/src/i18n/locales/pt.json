@@ -10,76 +10,7 @@
     "confirm": "Confirmar",
     "close": "Fechar"
   },
-  "nav": {
-    "inicio": "Início",
-    "loja": "Loja",
-    "agroconecta": "Fretes",
-    "marketplace": "Produtos",
-    "tecnologia": "Tecnologia",
-    "parcerias": "Parcerias",
-    "home": "Home",
-    "about": "Sobre",
-    "contact": "Contato",
-    "plans": "Planos",
-    "services": "Serviços",
-    "store": "Loja Agroisync",
-    "crypto": "Cripto",
-    "login": "Entrar",
-    "register": "Cadastrar"
-  },
   "home": {
-    "title": "Agroisync",
-    "subtitle": "A Plataforma de Agronegócio Mais Futurista do Mundo",
-    "description": "Conecte-se ao futuro do agronegócio com tecnologia blockchain, IA e marketplace inteligente.",
-    "getStarted": "Começar Agora",
-    "watchDemo": "Ver Demo",
-    "hero": {
-      "title": "Revolucione Seu Agronegócio",
-      "subtitle": "A plataforma mais avançada para conectar produtores, compradores e transportadores",
-      "cta": {
-        "primary": "Começar Agora",
-        "secondary": "Ver Demo"
-      }
-    },
-    "features": {
-      "title": "Recursos Revolucionários",
-      "subtitle": "Tecnologia de ponta para revolucionar o agronegócio",
-      "marketplace": {
-        "title": "Produtos Inteligentes",
-        "description": "Conectamos produtores e compradores através de nossa plataforma de intermediação"
-      },
-      "agroconecta": {
-        "title": "Fretes",
-        "description": "Conectamos cargas e transportadores com rastreamento em tempo real"
-      },
-      "crypto": {
-        "title": "Cripto & DeFi",
-        "description": "Pagamentos em cripto, staking e NFTs agrícolas"
-      },
-      "analytics": {
-        "title": "Analytics Avançado",
-        "description": "Dados em tempo real para otimizar seus negócios"
-      },
-      "learnMore": "Saiba Mais"
-    },
-    "stats": {
-      "users": "Usuários Ativos",
-      "transactions": "Transações",
-      "volume": "Volume Total",
-      "uptime": "Uptime"
-    },
-    "testimonials": {
-      "title": "O que nossos usuários dizem",
-      "subtitle": "Milhares de produtores, compradores e transportadores já confiam no Agroisync"
-    },
-    "cta": {
-      "title": "Pronto para o Futuro?",
-      "subtitle": "Junte-se à revolução do agronegócio e transforme sua forma de trabalhar",
-      "getStarted": "Começar Agora",
-      "contact": "Falar com Especialista",
-      "startFree": "Começar Gratuitamente",
-      "talkExpert": "Falar com Especialista"
-    },
     "ticker": {
       "title": "Ticker de Cotações em Desenvolvimento",
       "description": "Em breve teremos ticker de cotações disponível!"
@@ -90,7 +21,7 @@
       "description": "Junte-se à revolução do agronegócio brasileiro e faça parte da maior plataforma de conectividade rural do país."
     },
     "performance": {
-      "title": "Performance em",
+      "title": "Desempenho em",
       "highlight": "Tempo Real",
       "description": "Dados atualizados a cada segundo para decisões mais inteligentes"
     },
@@ -102,191 +33,12 @@
     "news": {
       "title": "Notícias em Desenvolvimento",
       "description": "Em breve teremos notícias do agronegócio disponíveis!"
-    }
-  },
-  "quotations": {
-    "title": "Cotações",
-    "soy": "Soja",
-    "corn": "Milho",
-    "wheat": "Trigo",
-    "cotton": "Algodão"
-  },
-  "contact": {
-    "title": "Entre em Contato",
-    "subtitle": "Estamos aqui para ajudar você a transformar seu agronegócio com tecnologia de ponta",
-    "intro": "Envie sua mensagem para nossa equipe.",
-    "email": "Email",
-    "phone": "Telefone",
-    "location": "Localização",
-    "address": "Sinop - MT",
-    "phoneNumber": "(66) 99236-2830",
-    "responseTime": "Resposta em até 2 horas",
-    "workingHours": "Segunda a Sexta, 8h às 18h",
-    "visitInfo": "Visitas com agendamento",
-    "submit": "Enviar",
-    "sending": "Enviando...",
-    "success": "Mensagem enviada com sucesso.",
-    "error_prefix": ""
-  },
-  "consent": {
-    "title": "Privacidade e Cookies",
-    "body": "Usamos cookies para medir audiência (analytics) e, opcionalmente, marketing. Você pode aceitar apenas analytics ou rejeitar tudo. Suas preferências serão salvas por 180 dias.",
-    "analytics": "Analytics",
-    "marketing": "Marketing",
-    "accept": "Aceitar",
-    "reject": "Rejeitar"
-  },
-  "form": {
-    "name": "Nome",
-    "email": "Email",
-    "message": "Mensagem"
-  },
-  "marketplace": {
-    "title": "Produtos",
-    "subtitle": "Nosso marketplace está em desenvolvimento para trazer a você a melhor experiência de compra e venda de produtos agrícolas.",
-    "status": "Projeto em Andamento Futuro",
-    "description": "Estamos trabalhando duro para criar uma plataforma revolucionária que conectará produtores e compradores de forma inteligente e segura.",
-    "features": {
-      "technology": "Tecnologia Avançada",
-      "technologyDesc": "IA, blockchain e automação para facilitar negócios",
-      "launch": "Lançamento Próximo",
-      "launchDesc": "Em breve você poderá acessar todas as funcionalidades",
-      "development": "Desenvolvimento Ativo",
-      "developmentDesc": "Nossa equipe trabalha 24/7 para entregar o melhor"
-    },
-    "notify": {
-      "title": "Quer ser notificado do lançamento?",
-      "subtitle": "Cadastre-se para receber atualizações sobre o desenvolvimento do marketplace",
-      "placeholder": "Seu melhor email",
-      "button": "Notificar-me"
-    }
-  },
-  "agroconecta": {
-    "title": "Fretes",
-    "subtitle": "Intermediação inteligente de fretes agrícolas. Conectamos cargas com transportadores através de nossa plataforma. Não transportamos, facilitamos conexões.",
-    "features": {
-      "freight": "Intermediação de Fretes",
-      "freightDesc": "Conectamos cargas com transportadores através de nossa plataforma inteligente",
-      "tracking": "Rastreamento em Tempo Real",
-      "trackingDesc": "Acompanhe sua carga do início ao fim com tecnologia GPS avançada",
-      "network": "Rede de Transportadores",
-      "networkDesc": "Milhares de transportadores cadastrados em todo o Brasil",
-      "ai": "IA Inteligente",
-      "aiDesc": "Nossa IA encontra os melhores matches entre cargas e transportadores",
-      "security": "Segurança Garantida",
-      "securityDesc": "Transações seguras com garantias para ambas as partes",
-      "fast": "Processo Rápido",
-      "fastDesc": "De acordo a entrega em questão de horas, não dias"
-    },
-    "howItWorks": {
-      "title": "Como Funciona Nossa Intermediação de Fretes",
-      "step1": "Publica a Carga",
-      "step1Desc": "Anunciantes cadastram suas cargas com origem, destino, peso e prazo",
-      "step2": "IA Conecta",
-      "step2Desc": "Nossa IA encontra transportadores disponíveis na rota e envia propostas",
-      "step3": "Frete Fechado",
-      "step3Desc": "Anunciante e transportador negociam diretamente através de nossa mensageria privada"
     },
     "cta": {
-      "title": "Pronto para Intermediar Seus Fretes?",
-      "subtitle": "Seja você anunciante ou transportador, nossa plataforma conecta você com os melhores parceiros de frete. Vocês negociam diretamente, nós só facilitamos a conexão!",
-      "haveLoad": "Tenho Carga",
-      "transporter": "Sou Transportador"
+      "title": "Pronto para o",
+      "highlight": "Futuro",
+      "description": "Junte-se a milhares de profissionais do agronegócio que já descobriram o poder da tecnologia Agroisync. Transforme seu negócio hoje mesmo."
     }
-  },
-  "footer": {
-    "description": "Revolucionando o agronegócio com tecnologia de ponta. Conectamos produtores, compradores e transportadores em uma plataforma inteligente e segura.",
-    "product": "Produto",
-    "company": "Empresa",
-    "legal": "Legal",
-    "connect": "Conectar",
-    "newsletter": {
-      "title": "Newsletter",
-      "description": "Receba as últimas novidades do agronegócio",
-      "placeholder": "Seu email",
-      "subscribe": "Inscrever-se"
-    },
-    "copyright": "Todos os direitos reservados."
-  },
-  "ai": {
-    "welcome": "👋 Olá! Sou o assistente IA da AGROISYNC. Como posso ajudá-lo hoje?",
-    "placeholder": "Digite sua pergunta sobre agricultura...",
-    "send": "Enviar",
-    "thinking": "Pensando...",
-    "error": "Erro ao processar sua pergunta. Tente novamente.",
-    "limit_reached": "Você atingiu o limite de perguntas para hoje.",
-    "upgrade": "Faça upgrade do seu plano para mais perguntas!"
-  },
-  "weather": {
-    "conditions": {
-      "sunny": "Ensolarado",
-      "partly-cloudy": "Parcialmente Nublado",
-      "cloudy": "Nublado",
-      "rainy": "Chuvoso"
-    },
-    "description": "Condições climáticas atuais"
-  },
-  "chatbot": {
-    "title": "Assistente IA",
-    "status": "Online",
-    "placeholder": "Digite sua mensagem ou use o microfone...",
-    "welcome": "Olá! Sou o assistente IA do Agroisync. Como posso ajudá-lo hoje?",
-    "thinking": "Pensando...",
-    "typing": "AGROISYNC AI está digitando...",
-    "recording": "Gravando... Fale agora",
-    "close": "Fechar Chatbot",
-    "open": "Abrir assistente de IA",
-    "settings": "Configurações",
-    "minimize": "Minimizar",
-    "maximize": "Expandir",
-    "closeButton": "Fechar chatbot",
-    "goToSite": "Ir para site principal",
-    "attachedFiles": "arquivo(s) anexado(s)",
-    "attachFile": "Anexar arquivo",
-    "stopRecording": "Parar gravação",
-    "startRecording": "Iniciar gravação de voz",
-    "sendMessage": "Enviar mensagem",
-    "suggestions": {
-      "intermediation": "Como funciona a intermediação?",
-      "plans": "Quais são os planos disponíveis?",
-      "product": "Como publicar um produto?",
-      "freight": "Como contratar um frete?"
-    },
-    "modes": {
-      "chat": "Chat",
-      "code": "Código",
-      "analysis": "Análise",
-      "search": "Busca"
-    },
-    "personalities": {
-      "agro-expert": "Especialista Agrícola",
-      "tech-savvy": "Especialista em Tecnologia",
-      "business-focused": "Focado em Negócios",
-      "friendly": "Amigável"
-    },
-    "features": {
-      "commodities": "🌾 Commodities",
-      "analysis": "📊 Análises",
-      "code": "💻 Código",
-      "search": "🔍 Busca"
-    },
-    "subtitle": "Seu assistente inteligente para agronegócio",
-    "error": {
-      "voiceRecognition": "Erro no reconhecimento de voz",
-      "voiceSynthesis": "Erro na síntese de voz",
-      "fileUpload": "Erro no upload do arquivo",
-      "messageSend": "Erro ao enviar mensagem"
-    },
-    "limits": {
-      "messagesReached": "Limite de mensagens atingido",
-      "imagesReached": "Limite de análise de imagens atingido",
-      "codeReached": "Limite de geração de código atingido",
-      "searchReached": "Limite de buscas atingido",
-      "upgradePrompt": "Faça upgrade para Pro para usar mais recursos!"
-    }
-  },
-  "buyerPanel": {
-    "emailNotifications": "Notificações por Email"
   },
   "about": {
     "hero": {
@@ -301,7 +53,7 @@
       "title": "Nossos Valores",
       "subtitle": "Os princípios que guiam nossa empresa",
       "innovation": "Inovação",
-      "innovationDesc": "Sempre buscamos as melhores tecnologias para revolucionar o agronegócio",
+      "innovationDesc": "Buscamos sempre as melhores tecnologias para revolucionar o agronegócio",
       "passion": "Paixão",
       "passionDesc": "Amamos o que fazemos e acreditamos no potencial do agronegócio brasileiro",
       "collaboration": "Colaboração",
@@ -376,5 +128,50 @@
     "creating": "Criando...",
     "alreadyHaveAccount": "Já tem uma conta?",
     "login": "Entrar"
+  },
+  "plans": {
+    "title": "Escolha Seu Plano",
+    "subtitle": "Selecione o plano ideal para seu negócio",
+    "monthly": "Mensal",
+    "quarterly": "Trimestral",
+    "semiannual": "Semestral",
+    "annual": "Anual",
+    "perMonth": "/mês",
+    "free": "Grátis",
+    "selectPlan": "Selecionar Plano",
+    "currentPlan": "Plano Atual",
+    "popular": "Mais Popular",
+    "features": "Funcionalidades",
+    "freights": "Fretes",
+    "products": "Produtos",
+    "unlimited": "Ilimitado"
+  },
+  "marketplace": {
+    "title": "Marketplace",
+    "search": "Buscar produtos...",
+    "filter": "Filtrar",
+    "allCategories": "Todas Categorias",
+    "noProducts": "Nenhum produto encontrado",
+    "viewDetails": "Ver Detalhes"
+  },
+  "store": {
+    "title": "Loja Agroisync",
+    "search": "Buscar na loja...",
+    "categories": "Categorias",
+    "addToCart": "Adicionar ao Carrinho",
+    "buyNow": "Comprar Agora"
+  },
+  "dashboard": {
+    "welcome": "Bem-vindo",
+    "overview": "Visão Geral",
+    "myProducts": "Meus Produtos",
+    "myFreights": "Meus Fretes",
+    "messages": "Mensagens",
+    "settings": "Configurações",
+    "stats": {
+      "registered": "Cadastrados",
+      "public": "Públicos",
+      "active": "Ativos"
+    }
   }
 }

@@ -350,5 +350,50 @@
     "creating": "创建中...",
     "alreadyHaveAccount": "已有账户？",
     "login": "登录"
+  },
+  "plans": {
+    "title": "选择您的套餐",
+    "subtitle": "为您的业务选择理想的套餐",
+    "monthly": "月付",
+    "quarterly": "季付",
+    "semiannual": "半年付",
+    "annual": "年付",
+    "perMonth": "/月",
+    "free": "免费",
+    "selectPlan": "选择套餐",
+    "currentPlan": "当前套餐",
+    "popular": "最受欢迎",
+    "features": "功能",
+    "freights": "货运",
+    "products": "产品",
+    "unlimited": "无限制"
+  },
+  "marketplace": {
+    "title": "市场",
+    "search": "搜索产品...",
+    "filter": "筛选",
+    "allCategories": "所有类别",
+    "noProducts": "未找到产品",
+    "viewDetails": "查看详情"
+  },
+  "store": {
+    "title": "Agroisync 商店",
+    "search": "在商店中搜索...",
+    "categories": "类别",
+    "addToCart": "加入购物车",
+    "buyNow": "立即购买"
+  },
+  "dashboard": {
+    "welcome": "欢迎",
+    "overview": "概览",
+    "myProducts": "我的产品",
+    "myFreights": "我的货运",
+    "messages": "消息",
+    "settings": "设置",
+    "stats": {
+      "registered": "已注册",
+      "public": "公开",
+      "active": "活跃"
+    }
   }
 }

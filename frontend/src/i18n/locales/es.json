@@ -358,5 +358,50 @@
     "creating": "Creando...",
     "alreadyHaveAccount": "¿Ya tienes una cuenta?",
     "login": "Iniciar Sesión"
+  },
+  "plans": {
+    "title": "Elige Tu Plan",
+    "subtitle": "Selecciona el plan ideal para tu negocio",
+    "monthly": "Mensual",
+    "quarterly": "Trimestral",
+    "semiannual": "Semestral",
+    "annual": "Anual",
+    "perMonth": "/mes",
+    "free": "Gratis",
+    "selectPlan": "Seleccionar Plan",
+    "currentPlan": "Plan Actual",
+    "popular": "Más Popular",
+    "features": "Funcionalidades",
+    "freights": "Fletes",
+    "products": "Productos",
+    "unlimited": "Ilimitado"
+  },
+  "marketplace": {
+    "title": "Marketplace",
+    "search": "Buscar productos...",
+    "filter": "Filtrar",
+    "allCategories": "Todas las Categorías",
+    "noProducts": "No se encontraron productos",
+    "viewDetails": "Ver Detalles"
+  },
+  "store": {
+    "title": "Tienda Agroisync",
+    "search": "Buscar en la tienda...",
+    "categories": "Categorías",
+    "addToCart": "Añadir al Carrito",
+    "buyNow": "Comprar Ahora"
+  },
+  "dashboard": {
+    "welcome": "Bienvenido",
+    "overview": "Resumen",
+    "myProducts": "Mis Productos",
+    "myFreights": "Mis Fletes",
+    "messages": "Mensajes",
+    "settings": "Configuración",
+    "stats": {
+      "registered": "Registrados",
+      "public": "Públicos",
+      "active": "Activos"
+    }
   }
 }
