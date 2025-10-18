@@ -1,0 +1,11 @@
+{
+  "name": "backend",
+  "compatibility_date": "2024-10-18",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "agroisync-db",
+      "database_id": "a3eb1069-9c36-4689-9ee9-971245cb2d12"
+    }
+  ]
+}

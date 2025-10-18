@@ -680,7 +680,7 @@ async function generateJWT(payload, secret) {
   return `${data}.${signatureB64}`;
 }
 
-async function verifyJWT(request) {
+async function verifyJWT(request, secret) {
   try {
     const authHeader = request.headers.get('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -694,14 +694,37 @@ async function verifyJWT(request) {
       return null;
     }
     
+    // Verificar assinatura
+    const expectedSignature = await crypto.subtle.importKey(
+      'raw',
+      new TextEncoder().encode(secret),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['sign']
+    );
+    
+    const signature = await crypto.subtle.sign(
+      'HMAC',
+      expectedSignature,
+      new TextEncoder().encode(`${headerB64}.${payloadB64}`)
+    );
+    
+    const expectedSignatureB64 = btoa(String.fromCharCode(...new Uint8Array(signature)));
+    
+    if (signatureB64 !== expectedSignatureB64) {
+      console.error('JWT signature verification failed');
+      return null;
+    }
+    
     const payload = JSON.parse(atob(payloadB64));
     
     if (payload.exp && payload.exp < Date.now()) {
+      console.error('JWT token expired');
       return null;
     }
     
     return payload;
-    } catch (error) {
+  } catch (error) {
     console.error('JWT verification error:', error);
     return null;
   }
@@ -1891,11 +1914,15 @@ async function handleUserProfile(request, env, user) {
       });
     } else {
       // GET - Buscar perfil do usuário
+      console.log('🔍 Buscando perfil para userId:', user.userId);
       const profile = await db.prepare(
-        'SELECT id, email, name, phone, role, plan, plan_status, plan_expires_at, user_type, business_type, created_at FROM users WHERE id = ?'
+        'SELECT id, email, name, phone, role, plan, plan_active as plan_status, plan_expires_at, business_type as user_type, business_type, created_at FROM users WHERE id = ?'
       ).bind(user.userId).first();
       
+      console.log('📋 Perfil encontrado:', profile);
+      
       if (!profile) {
+        console.log('❌ Usuário não encontrado no banco');
         return jsonResponse({ success: false, error: 'Usuário não encontrado' }, 404);
       }
       
@@ -1922,7 +1949,7 @@ async function handleUserItems(request, env, user) {
     if (type === 'all' || type === 'products') {
       // Buscar produtos do usuário
       const products = await db.prepare(
-        'SELECT id, title as name, description, price, category, quantity, unit, status, created_at, "public" as visibility FROM products WHERE user_id = ? ORDER BY created_at DESC LIMIT 50'
+        'SELECT id, name, description, price, category, quantity, unit, status, created_at, "public" as visibility FROM products WHERE user_id = ? ORDER BY created_at DESC LIMIT 50'
       ).bind(user.userId).all();
       
       items = [...items, ...(products.results || []).map(p => ({ ...p, type: 'product' }))];
@@ -1931,7 +1958,7 @@ async function handleUserItems(request, env, user) {
     if (type === 'all' || type === 'freights') {
       // Buscar fretes do usuário
       const freights = await db.prepare(
-        'SELECT id, origin, destination, price as value, cargo_type, weight, status, created_at, "public" as visibility FROM freight WHERE user_id = ? ORDER BY created_at DESC LIMIT 50'
+        'SELECT id, origin_city as origin, destination_city as destination, price_per_km as value, freight_type as cargo_type, capacity as weight, status, created_at, "public" as visibility FROM freight WHERE user_id = ? ORDER BY created_at DESC LIMIT 50'
       ).bind(user.userId).all();
       
       items = [...items, ...(freights.results || []).map(f => ({ ...f, type: 'freight' }))];
@@ -1946,6 +1973,25 @@ async function handleUserItems(request, env, user) {
   } catch (error) {
     console.error('User items error:', error);
     return jsonResponse({ success: false, error: 'Erro ao buscar itens' }, 500);
+  }
+}
+
+// Conversations
+async function handleConversations(request, env, user) {
+  try {
+    const url = new URL(request.url);
+    const status = url.searchParams.get('status') || 'all';
+    const db = getDb(env);
+    
+    // Por enquanto, retornar array vazio (não há sistema de conversas implementado)
+    return jsonResponse({
+      success: true,
+      data: [],
+      count: 0
+    });
+  } catch (error) {
+    console.error('Conversations error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao buscar conversas' }, 500);
   }
 }
 
@@ -2508,6 +2554,9 @@ async function handleRequest(request, env) {
     }
     if (path === '/api/user/items' && method === 'GET') {
       return handleUserItems(request, env, user);
+    }
+    if (path === '/api/conversations' && method === 'GET') {
+      return handleConversations(request, env, user);
     }
     if (path === '/api/users/me' && method === 'GET') {
       return handleUserProfile(request, env, user);
