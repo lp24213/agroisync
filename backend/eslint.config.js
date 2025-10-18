@@ -10,7 +10,7 @@ const nodeGlobals = globals.node;
 
 export default defineConfig([
   {
-    ignores: [
+  ignores: [
       '__tests__/',
       '*.test.js',
       '*.spec.js',
@@ -71,7 +71,9 @@ export default defineConfig([
       'src/routes/freights.js',
       'src/routes/subscriptions.js',
       'src/routes/contact.js',
-      'src/routes/email.js'
+      'src/routes/email.js',
+      // Ignorar backups e arquivos experimentais que poluem o lint
+      'src/backup/**'
     ],
     files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
     plugins: { js },
@@ -107,6 +109,15 @@ export default defineConfig([
         beforeEach: 'readonly',
         afterEach: 'readonly'
       }
+    }
+  }
+  ,
+  // Final override to silence rules that re-enable in recommended configs
+  {
+    files: ["**/*.{js,ts,jsx,tsx}"],
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
+      'prettier/prettier': 'off'
     }
   }
 ]);
