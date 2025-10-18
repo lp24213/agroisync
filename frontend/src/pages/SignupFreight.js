@@ -242,10 +242,19 @@ const SignupFreight = () => {
           price: parseFloat(formData.freightPrice) || 0,
           route: formData.freightRoute,
           availability: formData.freightAvailability,
+          // Dados completos do veículo
           vehicleType: formData.vehicleType,
+          vehicleBrand: formData.vehicleBrand,
+          vehicleModel: formData.vehicleModel,
+          vehicleYear: formData.vehicleYear,
+          vehicleColor: formData.vehicleColor,
           capacity: formData.capacity,
+          vehicleBodyType: formData.vehicleBodyType,
+          vehicleAxles: formData.vehicleAxles,
           licensePlate: formData.licensePlate,
-          vehicleModel: formData.vehicleModel
+          chassisNumber: formData.chassisNumber,
+          renavam: formData.renavam,
+          antt: formData.antt
         });
       }
 
@@ -916,6 +925,223 @@ const SignupFreight = () => {
                           width: '100%',
                           padding: '12px',
                           border: `2px solid ${errors.capacity ? '#dc2626' : 'rgba(15, 15, 15, 0.1)'}`,
+                          borderRadius: '8px',
+                          fontSize: '1rem',
+                          background: 'white',
+                          transition: 'all 0.2s ease',
+                          outline: 'none'
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Marca e Ano */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+                    <div>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: 'var(--text-primary)' }}>
+                        Marca *
+                      </label>
+                      <select
+                        name='vehicleBrand'
+                        value={formData.vehicleBrand}
+                        onChange={handleInputChange}
+                        style={{
+                          width: '100%',
+                          padding: '12px',
+                          border: `2px solid ${errors.vehicleBrand ? '#dc2626' : 'rgba(15, 15, 15, 0.1)'}`,
+                          borderRadius: '8px',
+                          fontSize: '1rem',
+                          background: 'white',
+                          transition: 'all 0.2s ease',
+                          outline: 'none'
+                        }}
+                      >
+                        <option value=''>Selecione a marca</option>
+                        <option value='Mercedes-Benz'>Mercedes-Benz</option>
+                        <option value='Scania'>Scania</option>
+                        <option value='Volvo'>Volvo</option>
+                        <option value='Volkswagen'>Volkswagen</option>
+                        <option value='Ford'>Ford</option>
+                        <option value='Iveco'>Iveco</option>
+                        <option value='DAF'>DAF</option>
+                        <option value='MAN'>MAN</option>
+                        <option value='Outro'>Outro</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: 'var(--text-primary)' }}>
+                        Ano *
+                      </label>
+                      <input
+                        type='number'
+                        name='vehicleYear'
+                        value={formData.vehicleYear}
+                        onChange={handleInputChange}
+                        placeholder='2020'
+                        min='1990'
+                        max='2025'
+                        style={{
+                          width: '100%',
+                          padding: '12px',
+                          border: `2px solid ${errors.vehicleYear ? '#dc2626' : 'rgba(15, 15, 15, 0.1)'}`,
+                          borderRadius: '8px',
+                          fontSize: '1rem',
+                          background: 'white',
+                          transition: 'all 0.2s ease',
+                          outline: 'none'
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Tipo de Carroceria e Eixos */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+                    <div>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: 'var(--text-primary)' }}>
+                        Tipo de Carroceria *
+                      </label>
+                      <select
+                        name='vehicleBodyType'
+                        value={formData.vehicleBodyType}
+                        onChange={handleInputChange}
+                        style={{
+                          width: '100%',
+                          padding: '12px',
+                          border: `2px solid ${errors.vehicleBodyType ? '#dc2626' : 'rgba(15, 15, 15, 0.1)'}`,
+                          borderRadius: '8px',
+                          fontSize: '1rem',
+                          background: 'white',
+                          transition: 'all 0.2s ease',
+                          outline: 'none'
+                        }}
+                      >
+                        <option value=''>Selecione o tipo</option>
+                        <option value='bau'>Baú</option>
+                        <option value='sider'>Sider</option>
+                        <option value='graneleiro'>Graneleiro</option>
+                        <option value='cacamba'>Caçamba</option>
+                        <option value='tanque'>Tanque</option>
+                        <option value='refrigerado'>Refrigerado</option>
+                        <option value='cegonha'>Cegonha</option>
+                        <option value='plataforma'>Plataforma</option>
+                        <option value='porta-container'>Porta Container</option>
+                        <option value='basculante'>Basculante</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: 'var(--text-primary)' }}>
+                        Número de Eixos
+                      </label>
+                      <input
+                        type='number'
+                        name='vehicleAxles'
+                        value={formData.vehicleAxles}
+                        onChange={handleInputChange}
+                        placeholder='3'
+                        min='2'
+                        max='9'
+                        style={{
+                          width: '100%',
+                          padding: '12px',
+                          border: '2px solid rgba(15, 15, 15, 0.1)',
+                          borderRadius: '8px',
+                          fontSize: '1rem',
+                          background: 'white',
+                          transition: 'all 0.2s ease',
+                          outline: 'none'
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Chassi e RENAVAM */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+                    <div>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: 'var(--text-primary)' }}>
+                        Chassi
+                      </label>
+                      <input
+                        type='text'
+                        name='chassisNumber'
+                        value={formData.chassisNumber}
+                        onChange={handleInputChange}
+                        placeholder='9BM384610G8123456'
+                        maxLength='17'
+                        style={{
+                          width: '100%',
+                          padding: '12px',
+                          border: '2px solid rgba(15, 15, 15, 0.1)',
+                          borderRadius: '8px',
+                          fontSize: '1rem',
+                          background: 'white',
+                          transition: 'all 0.2s ease',
+                          outline: 'none'
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: 'var(--text-primary)' }}>
+                        RENAVAM
+                      </label>
+                      <input
+                        type='text'
+                        name='renavam'
+                        value={formData.renavam}
+                        onChange={handleInputChange}
+                        placeholder='12345678901'
+                        maxLength='11'
+                        style={{
+                          width: '100%',
+                          padding: '12px',
+                          border: '2px solid rgba(15, 15, 15, 0.1)',
+                          borderRadius: '8px',
+                          fontSize: '1rem',
+                          background: 'white',
+                          transition: 'all 0.2s ease',
+                          outline: 'none'
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* ANTT e Cor */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+                    <div>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: 'var(--text-primary)' }}>
+                        ANTT (Registro)
+                      </label>
+                      <input
+                        type='text'
+                        name='antt'
+                        value={formData.antt}
+                        onChange={handleInputChange}
+                        placeholder='Número ANTT'
+                        style={{
+                          width: '100%',
+                          padding: '12px',
+                          border: '2px solid rgba(15, 15, 15, 0.1)',
+                          borderRadius: '8px',
+                          fontSize: '1rem',
+                          background: 'white',
+                          transition: 'all 0.2s ease',
+                          outline: 'none'
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: 'var(--text-primary)' }}>
+                        Cor do Veículo
+                      </label>
+                      <input
+                        type='text'
+                        name='vehicleColor'
+                        value={formData.vehicleColor}
+                        onChange={handleInputChange}
+                        placeholder='Branca'
+                        style={{
+                          width: '100%',
+                          padding: '12px',
+                          border: '2px solid rgba(15, 15, 15, 0.1)',
                           borderRadius: '8px',
                           fontSize: '1rem',
                           background: 'white',

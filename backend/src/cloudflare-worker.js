@@ -1270,11 +1270,35 @@ async function handlePlansList(request, env) {
 // Freight - Create
 async function handleFreightCreate(request, env, user) {
   try {
-    const { origin, destination, cargo_type, weight, price } = await request.json();
+    const bodyData = await request.json();
+    const { 
+      origin, 
+      destination, 
+      cargo_type, 
+      weight, 
+      capacity,
+      price,
+      // Dados completos do veículo
+      vehicleType,
+      vehicleBrand,
+      vehicleModel,
+      vehicleYear,
+      vehicleColor,
+      vehicleBodyType,
+      vehicleAxles,
+      licensePlate,
+      chassisNumber,
+      renavam,
+      antt
+    } = bodyData;
     
     if (!origin || !destination || !cargo_type) {
-    return jsonResponse({ success: false, error: 'Dados incompletos' }, 400);
-  }
+      return jsonResponse({ success: false, error: 'Dados incompletos' }, 400);
+    }
+    
+    if (!licensePlate || !vehicleModel) {
+      return jsonResponse({ success: false, error: 'Dados do veículo obrigatórios: placa e modelo' }, 400);
+    }
 
     const db = getDb(env);
     
@@ -1300,8 +1324,27 @@ async function handleFreightCreate(request, env, user) {
   const freightId = crypto.randomUUID();
     
     await db.prepare(
-      "INSERT INTO freights (id, user_id, origin_city, destination_city, cargo_type, weight, price, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, 'available', datetime('now'))"
-    ).bind(freightId, user.userId, origin, destination, cargo_type, weight || 0, price || 0).run();
+      "INSERT INTO freight (id, user_id, origin_city, destination_city, freight_type, capacity, price_per_km, vehicle_type, vehicle_brand, vehicle_model, vehicle_year, vehicle_color, vehicle_body_type, vehicle_axles, vehicle_plate, chassis_number, renavam, antt, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'available', datetime('now'))"
+    ).bind(
+      freightId, 
+      user.userId, 
+      origin, 
+      destination, 
+      cargo_type,
+      weight || capacity || 0,
+      price || 0,
+      vehicleType,
+      vehicleBrand,
+      vehicleModel,
+      vehicleYear,
+      vehicleColor,
+      vehicleBodyType,
+      vehicleAxles,
+      licensePlate,
+      chassisNumber,
+      renavam,
+      antt
+    ).run();
     
     // Incrementar uso
     await incrementUserUsage(db, user.userId, 'freight');
