@@ -25,11 +25,20 @@ const SignupFreight = () => {
     cnpj: '',
     ie: '',
 
-    // Dados do Veículo
+    // Dados do Veículo (Completo - estilo FreteBrás)
     licensePlate: '',
     vehicleType: '',
-    capacity: '',
-    vehicleModel: '',
+    vehicleBrand: '', // Marca (Mercedes, Scania, Volvo, etc)
+    vehicleModel: '', // Modelo específico
+    vehicleYear: '', // Ano de fabricação
+    vehicleColor: '', // Cor do veículo
+    capacity: '', // Capacidade em toneladas
+    vehicleBodyType: '', // Tipo de carroceria (baú, sider, graneleiro, etc)
+    vehicleAxles: '', // Número de eixos
+    chassisNumber: '', // Número do chassi
+    renavam: '', // RENAVAM
+    antt: '', // Número ANTT
+    crlv: '', // CRLV (documento do veículo)
 
     // Serviços de Frete
     freightDescription: '',
