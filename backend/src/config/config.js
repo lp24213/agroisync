@@ -96,13 +96,19 @@ const config = {
 
 // ValidaÃ§Ã£o de configuraÃ§Ãµes obrigatÃ³rias em produÃ§Ã£o
 if (config.NODE_ENV === 'production') {
-  const requiredEnvVars = ['JWT_SECRET', 'SMTP_USER', 'SMTP_PASS', 'STRIPE_SECRET_KEY'];
+  // Em produção, exigir variáveis críticas. Stripe é opcional via STRIPE_ENABLED.
+  const requiredEnvVars = ['JWT_SECRET', 'SMTP_USER', 'SMTP_PASS'];
+
+  // Se Stripe estiver habilitado explicitamente, exigir a chave secreta
+  if ((process.env.STRIPE_ENABLED || 'false').toLowerCase() === 'true') {
+    requiredEnvVars.push('STRIPE_SECRET_KEY');
+  }
 
   const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
 
   if (missingVars.length > 0) {
     throw new Error(
-      `VariÃ¡veis de ambiente obrigatÃ³rias nÃ£o encontradas: ${missingVars.join(', ')}`
+      `Variáveis de ambiente obrigatórias não encontradas: ${missingVars.join(', ')}`
     );
   }
 }

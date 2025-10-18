@@ -11,8 +11,9 @@ class ConfigurationValidator {
     this.criticalConfigs = [
       'JWT_SECRET',
       'MONGODB_URI',
-      'STRIPE_SECRET_KEY',
-      'STRIPE_WEBHOOK_SECRET',
+      // Stripe keys são opcionais a menos que ENABLED
+      // 'STRIPE_SECRET_KEY',
+      // 'STRIPE_WEBHOOK_SECRET',
       'SMTP_USER',
       'SMTP_PASS'
     ];
@@ -25,8 +26,18 @@ class ConfigurationValidator {
     ];
   }
   validateStripeKeys(env) {
+    // Só validar se Stripe estiver explicitamente habilitado
+    const stripeEnabled = (env.STRIPE_ENABLED || 'false').toLowerCase() === 'true';
+    if (!stripeEnabled) return true;
+
     const webhookSecret = env.STRIPE_WEBHOOK_SECRET;
-    if (!webhookSecret) return;
+    if (!webhookSecret) {
+      const msg = '✒ STRIPE_WEBHOOK_SECRET não configurado mas STRIPE_ENABLED=true';
+      if (env.NODE_ENV === 'production') throw new Error(msg);
+      logger.warn(msg);
+      return false;
+    }
+
     if (!webhookSecret.startsWith('whsec_')) {
       const msg = '✒ STRIPE_WEBHOOK_SECRET deve começar com whsec_';
       if (env.NODE_ENV === 'production') {
@@ -179,12 +190,14 @@ class ConfigurationValidator {
       }
     });
 
-    // Validar configurações específicas
-    this.validateJWTSecret(env);
-    this.validateMongoURI(env);
-    this.validateStripeKeys(env);
-    this.validateEmailConfig(env);
-    this.validateSecurityConfig(env);
+  // Validar configurações específicas
+  this.validateJWTSecret(env);
+  this.validateMongoURI(env);
+  this.validateEmailConfig(env);
+  this.validateSecurityConfig(env);
+
+  // Validar Stripe apenas se habilitado
+  this.validateStripeKeys(env);
 
     return { errors, warnings };
   }

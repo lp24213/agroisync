@@ -5,7 +5,9 @@ const { ethers } = require('ethers');
 
 const logger = require('../../utils/logger.js');
 const d1Client = require('../../db/d1Client.js');
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Habilitar Stripe somente quando STRIPE_ENABLED='true'
+const stripeEnabled = (process.env.STRIPE_ENABLED || 'false').toLowerCase() === 'true';
+const stripe = stripeEnabled ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
 const ADMIN_EMAIL = 'luispaulodeoliveira@agrotm.com.br';
 
 // ConfiguraÃ§Ãµes dos planos
@@ -48,7 +50,14 @@ const verifyAuth = event => {
   const token = authHeader.substring(7);
   let decodedToken;
 
-  try {
+    try {
+        if (!stripeEnabled || !stripe) {
+          return {
+            statusCode: 403,
+            headers: corsHeaders,
+            body: JSON.stringify({ error: { code: 'STRIPE_DISABLED', message: 'Stripe está desativado neste ambiente' } })
+          };
+        }
     decodedToken = jwt.decode(token);
     if (!decodedToken) {
       return { error: 'INVALID_TOKEN', message: 'Token invÃ¡lido' };

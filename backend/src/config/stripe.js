@@ -5,11 +5,17 @@
 import Stripe from 'stripe';
 import logger from '../utils/logger.js';
 
-// Inicializar Stripe com chave secreta
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2024-06-20',
-  typescript: false
-});
+// Habilitação via env var STRIPE_ENABLED (string 'true')
+const stripeEnabled = (process.env.STRIPE_ENABLED || 'false').toLowerCase() === 'true';
+
+// Inicializar Stripe somente quando habilitado. Importar o pacote não causa side-effects,
+// mas não devemos criar o cliente sem a intenção de usar (evita dependência de segredos em runtime).
+const stripe = stripeEnabled
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2024-06-20',
+      typescript: false
+    })
+  : null;
 
 // IDs reais dos produtos Stripe
 export const STRIPE_PRODUCTS = {
@@ -76,6 +82,10 @@ export const STRIPE_CONFIG = {
 // FunÃ§Ã£o para criar sessÃ£o de checkout
 export const createCheckoutSession = async (priceId, customerEmail, userId) => {
   try {
+    if (!stripeEnabled || !stripe) {
+      logger.warn('createCheckoutSession chamado mas Stripe está desativado');
+      return { success: false, error: 'Stripe desativado' };
+    }
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -109,6 +119,10 @@ export const createCheckoutSession = async (priceId, customerEmail, userId) => {
 // FunÃ§Ã£o para verificar webhook
 export const verifyWebhookSignature = (payload, signature) => {
   try {
+    if (!stripeEnabled || !stripe) {
+      logger.warn('verifyWebhookSignature chamado mas Stripe está desativado');
+      return { success: false, error: 'Stripe desativado' };
+    }
     const event = stripe.webhooks.constructEvent(payload, signature, STRIPE_CONFIG.WEBHOOK_SECRET);
     return { success: true, event };
   } catch (error) {
@@ -120,6 +134,10 @@ export const verifyWebhookSignature = (payload, signature) => {
 // FunÃ§Ã£o para obter detalhes da sessÃ£o
 export const getSessionDetails = async sessionId => {
   try {
+    if (!stripeEnabled || !stripe) {
+      logger.warn('getSessionDetails chamado mas Stripe está desativado');
+      return { success: false, error: 'Stripe desativado' };
+    }
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     return { success: true, session };
   } catch (error) {
@@ -131,6 +149,10 @@ export const getSessionDetails = async sessionId => {
 // FunÃ§Ã£o para cancelar assinatura
 export const cancelSubscription = async subscriptionId => {
   try {
+    if (!stripeEnabled || !stripe) {
+      logger.warn('cancelSubscription chamado mas Stripe está desativado');
+      return { success: false, error: 'Stripe desativado' };
+    }
     const subscription = await stripe.subscriptions.cancel(subscriptionId);
     return { success: true, subscription };
   } catch (error) {
@@ -142,6 +164,10 @@ export const cancelSubscription = async subscriptionId => {
 // FunÃ§Ã£o para obter assinatura
 export const getSubscription = async subscriptionId => {
   try {
+    if (!stripeEnabled || !stripe) {
+      logger.warn('getSubscription chamado mas Stripe está desativado');
+      return { success: false, error: 'Stripe desativado' };
+    }
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
     return { success: true, subscription };
   } catch (error) {

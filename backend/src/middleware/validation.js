@@ -158,6 +158,16 @@ const validationRules = {
       pattern: /^[a-zA-ZÀ-ÿ\s]+$/,
       message: 'Nome deve conter apenas letras e espaços'
     },
+    cpf: {
+      required: false,
+      pattern: /^\d{11}$/, // CPF apenas dígitos (11)
+      message: 'CPF inv\u00e1lido (use apenas dígitos)'
+    },
+    cnpj: {
+      required: false,
+      pattern: /^\d{14}$/, // CNPJ apenas dígitos (14)
+      message: 'CNPJ inv\u00e1lido (use apenas dígitos)'
+    },
     email: {
       required: true,
       maxLength: 100,

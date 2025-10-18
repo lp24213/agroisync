@@ -1,0 +1,14 @@
+{
+  "name": "agroisync-signing-service",
+  "version": "1.0.0",
+  "description": "Small signing service to generate R2 presigned PUT URLs (S3 compatible)",
+  "main": "presign.js",
+  "scripts": {
+    "start": "node presign.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.0.0",
+    "@aws-sdk/s3-request-presigner": "^3.0.0",
+    "dotenv": "^16.0.0"
+  }
+}

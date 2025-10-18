@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Check, Star, Zap, Shield, Users, CreditCard, Gift, 
@@ -19,23 +19,40 @@ const AgroisyncPlans = () => {
   const handleSubscribe = async (plan, paymentMethod = 'pix') => {
     try {
       setLoading(plan.name);
-      
+      // canonical slug for plan
+      const slug = plan.slug || plan.id || (plan.name && plan.name.toLowerCase());
+
       // Verificar se está logado
       const token = localStorage.getItem('token') || localStorage.getItem('authToken');
       if (!token) {
-        toast.error('Você precisa estar logado para assinar um plano');
-        navigate('/login');
+        // redirecionar para login e passar o plano selecionado como query param
+        navigate(`/login?plan=${encodeURIComponent(slug)}`);
+        return;
+      }
+
+      // Buscar perfil do usuário para validar CPF/CNPJ ou email
+      const profileResp = await fetch(`${process.env.REACT_APP_API_BASE_URL || ''}/api/users/profile`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(r => r.json()).catch(() => null);
+
+      const userProfile = profileResp && profileResp.success ? profileResp.data : null;
+      const cpfCnpj = userProfile ? (userProfile.cpf || userProfile.cnpj) : null;
+      if (!userProfile || (!userProfile.email && !cpfCnpj)) {
+        toast.error('É necessário preencher E-mail ou CPF/CNPJ no seu perfil antes de assinar. Você será redirecionado para seu perfil.');
+        navigate('/user/profile');
         return;
       }
 
       // Criar pagamento (PIX ou Boleto)
-      console.log('💳 Criando checkout para plano:', plan.name.toLowerCase());
-      const result = await paymentService.createCheckoutSession(plan.name.toLowerCase(), billingCycle, paymentMethod);
+  console.log('💳 Criando checkout para plano:', slug);
+  const result = await paymentService.createCheckoutSession(slug, billingCycle, paymentMethod);
       console.log('✅ Resultado do checkout:', result);
       
       // Se for cartão, redirecionar para página de cartão primeiro
       if (paymentMethod === 'credit_card') {
-        const amount = billingCycle === 'monthly' ? plan.price : billingCycle === 'semiannual' ? plan.semiannualPrice : plan.annualPrice;
+        // compute numeric amount preferring cents when available
+        const basePrice = plan.price_cents ? (plan.price_cents / 100) : (typeof plan.price === 'number' ? plan.price : Number(plan.price));
+        const amount = billingCycle === 'monthly' ? basePrice : billingCycle === 'semiannual' ? (plan.semiannualPrice ?? basePrice * 6) : (plan.annualPrice ?? basePrice * 12);
         navigate('/payment/credit-card', {
           state: {
             plan: plan.name,
@@ -199,20 +216,105 @@ const AgroisyncPlans = () => {
     }
   ];
 
+  // plans carregados do backend (fonte canônica)
+  const [remotePlans, setRemotePlans] = useState(null);
+
+  useEffect(() => {
+    let mounted = true;
+    const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+    const url = `${process.env.REACT_APP_API_BASE_URL || ''}/api/plans`;
+
+    fetch(url, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
+      .then(r => {
+        if (!r.ok) throw new Error('Resposta /api/plans não ok');
+        return r.json();
+      })
+      .then(data => {
+        if (!mounted) return;
+        if (!data) return;
+        // Normalize different possible shapes coming from backend
+        // Possible shapes:
+        // 1) { success: true, data: { plans: [...] } }
+        // 2) { plans: [...] }
+        // 3) { success: true, data: [...] }
+        // 4) [...] (array)
+        let list = null;
+        if (data.success && data.data) {
+          if (Array.isArray(data.data)) list = data.data;
+          else if (Array.isArray(data.data.plans)) list = data.data.plans;
+          else list = Object.values(data.data).flat();
+        } else if (Array.isArray(data)) {
+          list = data;
+        } else if (Array.isArray(data.plans)) {
+          list = data.plans;
+        }
+
+        if (list && Array.isArray(list)) {
+          const normalize = p => {
+            const priceMonthly = p.price_monthly ?? p.price ?? null;
+            let price = null;
+            if (typeof priceMonthly === 'number') price = priceMonthly;
+            else if (typeof priceMonthly === 'string' && priceMonthly.trim() !== '') {
+              const parsed = Number(priceMonthly.replace(',', '.'));
+              if (!Number.isNaN(parsed)) price = parsed;
+            }
+
+            const price_cents = p.price_monthly_cents ?? p.price_cents ?? (price !== null ? Math.round(price * 100) : null);
+            const semiannualPrice = p.price_6months ?? p.semiannualPrice ?? (price !== null ? price * 6 : null);
+            const annualPrice = p.price_annual ?? p.annualPrice ?? (price !== null ? price * 12 : null);
+            const features = Array.isArray(p.features) ? p.features : (typeof p.features === 'string' ? (() => { try { return JSON.parse(p.features); } catch { return []; } })() : []);
+
+            return {
+              slug: p.slug || p.id || (p.name && p.name.toLowerCase()),
+              name: p.name || p.id || 'Plano',
+              price: price !== null ? price : p.price,
+              price_cents: price_cents,
+              semiannualPrice: p.price_6months ?? p.semiannualPrice ?? null,
+              semiannualPrice_cents: p.price_6months_cents ?? null,
+              annualPrice: annualPrice,
+              annualPrice_cents: p.price_annual_cents ?? null,
+              annualPixPrice: p.annualPixPrice ?? p.annual_pix_price ?? null,
+              noDiscount: p.noDiscount || p.noDiscount === true || p.no_discount || false,
+              features,
+              product_limit: p.product_limit,
+              freight_limit: p.freight_limit,
+              raw: p
+            };
+          };
+
+          setRemotePlans(list.map(normalize));
+        }
+      })
+      .catch(err => {
+        // fallback: manter os planos locais definidos acima
+        console.debug('Não foi possível carregar /api/plans, usando fallback local', err.message);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // Usar planos remotos (se disponíveis) como fonte da verdade
+  const displayPlans = remotePlans || plans;
+
+  const centsToFloat = cents => (typeof cents === 'number' ? cents / 100 : null);
+
   const getPrice = plan => {
-    // Básico (14,99) sem descontos: apenas valores brutos
+    // suporta planos vindos do backend com campos em centavos
+    const price = plan.price_cents ? centsToFloat(plan.price_cents) : plan.price;
+    const semi = plan.semiannualPrice_cents ? centsToFloat(plan.semiannualPrice_cents) : plan.semiannualPrice;
+    const annual = plan.annualPrice_cents ? centsToFloat(plan.annualPrice_cents) : plan.annualPrice;
+    const annualPix = plan.annualPixPrice_cents ? centsToFloat(plan.annualPixPrice_cents) : plan.annualPixPrice;
+
     if (plan.noDiscount) {
-      if (billingCycle === 'semiannual') return plan.semiannualPrice;
-      if (billingCycle === 'annual') return plan.annualPrice;
-      return plan.price;
+      if (billingCycle === 'semiannual') return semi;
+      if (billingCycle === 'annual') return annual;
+      return price;
     }
-    if (billingCycle === 'semiannual') {
-      return plan.semiannualPrice;
-    }
-    if (billingCycle === 'annual') {
-      return paymentMethod === 'pix' ? plan.annualPixPrice : plan.annualPrice;
-    }
-    return plan.price; // monthly
+    if (billingCycle === 'semiannual') return semi || price * 6;
+    if (billingCycle === 'annual') return paymentMethod === 'pix' ? (annualPix || annual) : annual || price * 12;
+    return price;
   };
 
   const getDiscount = plan => {
@@ -366,7 +468,7 @@ const AgroisyncPlans = () => {
       <section className='bg-white py-16'>
         <div className='mx-auto max-w-7xl px-4'>
           <div className='grid grid-cols-1 gap-8 lg:grid-cols-2 xl:grid-cols-3'>
-            {plans.map((plan, index) => (
+            {displayPlans.map((plan, index) => (
               <motion.div
                 key={plan.name}
                 initial={{ opacity: 0, y: 30 }}
@@ -403,6 +505,14 @@ const AgroisyncPlans = () => {
                           {billingCycle === 'monthly' ? '/mês' : billingCycle === 'semiannual' ? '/6 meses' : '/ano'}
                         </span>
                       </div>
+                      {/* Precise badge when price_cents is available */}
+                      {plan.price_cents && (
+                        <div className='mt-2 flex items-center justify-center'>
+                          <span className='rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700'>
+                            Preço exato: R$ {formatBRL(plan.price_cents / 100)}
+                          </span>
+                        </div>
+                      )}
                       {getDiscount(plan) > 0 && (
                         <div className='mt-2 flex items-center justify-center gap-2'>
                           <span className='text-lg text-gray-400 line-through'>

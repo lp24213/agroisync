@@ -13,7 +13,9 @@ if (process.env.USE_D1 === 'true') {
     d1 = null;
   }
 }
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Ativar Stripe apenas via STRIPE_ENABLED='true'
+const stripeEnabled = (process.env.STRIPE_ENABLED || 'false').toLowerCase() === 'true';
+const stripe = stripeEnabled ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
 const webhookSecret = process.env.WEBHOOK_SECRET;
 
 exports.handler = async event => {
@@ -42,6 +44,15 @@ exports.handler = async event => {
         body: JSON.stringify({
           error: { code: 'METHOD_NOT_ALLOWED', message: 'MÃ©todo nÃ£o permitido' }
         })
+      };
+    }
+
+    // Se Stripe não está habilitado, responder 403 para evitar processamento acidental
+    if (!stripeEnabled || !stripe) {
+      return {
+        statusCode: 403,
+        headers: corsHeaders,
+        body: JSON.stringify({ error: { code: 'STRIPE_DISABLED', message: 'Stripe está desativado neste ambiente' } })
       };
     }
 

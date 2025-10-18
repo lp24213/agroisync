@@ -3,6 +3,22 @@
  * Configurado para agroisync.com/api/*
  */
 
+// Helper: parse response defensively (try json, fallback to text)
+async function parseResponseSafe(response) {
+  try {
+    const text = await response.text();
+    if (!text) return null;
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      // Retornar texto cru quando não for JSON
+      return text;
+    }
+  } catch (err) {
+    return null;
+  }
+}
+
 // ============================================
 // ASAAS SERVICE (INLINE)
 // ============================================
@@ -12,18 +28,23 @@ class AsaasService {
     this.baseUrl = env === 'production' 
       ? 'https://api.asaas.com/v3'
       : 'https://sandbox.asaas.com/api/v3';
+    this.defaultHeaders = {
+      'Content-Type': 'application/json',
+      'access_token': this.apiKey,
+      'User-Agent': 'Agroisync/1.0',
+      'Accept': 'application/json'
+    };
   }
 
   async createPixCharge({ value, description, customer }) {
     try {
       console.log('💳 [ASAAS] Criando cobrança PIX:', { value, customer });
 
+      const defaultHeaders = this.defaultHeaders;
+
       const response = await fetch(`${this.baseUrl}/payments`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'access_token': this.apiKey
-        },
+        headers: defaultHeaders,
         body: JSON.stringify({
           customer: customer.id,
           billingType: 'PIX',
@@ -35,21 +56,20 @@ class AsaasService {
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        console.error('❌ [ASAAS] Erro ao criar cobrança PIX:', error);
-        throw new Error(error.errors?.[0]?.description || 'Erro ao criar cobrança PIX');
+        const parsed = await parseResponseSafe(response);
+        const errorMsg = typeof parsed === 'string' ? parsed : (parsed?.errors?.[0]?.description || JSON.stringify(parsed));
+        console.error('❌ [ASAAS] Erro ao criar cobrança PIX:', errorMsg);
+        throw new Error(errorMsg || 'Erro ao criar cobrança PIX');
       }
 
-      const payment = await response.json();
+      const payment = await parseResponseSafe(response);
 
       // Buscar QR Code
       const qrCodeResponse = await fetch(`${this.baseUrl}/payments/${payment.id}/pixQrCode`, {
-        headers: {
-          'access_token': this.apiKey
-        }
+        headers: this.defaultHeaders
       });
 
-      const qrCodeData = await qrCodeResponse.json();
+      const qrCodeData = await parseResponseSafe(qrCodeResponse);
 
       console.log('✅ [ASAAS] Cobrança PIX criada com sucesso');
 
@@ -72,12 +92,11 @@ class AsaasService {
     try {
       console.log('💳 [ASAAS] Criando boleto:', { value, customer });
 
+      const defaultHeaders = this.defaultHeaders;
+
       const response = await fetch(`${this.baseUrl}/payments`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'access_token': this.apiKey
-        },
+        headers: defaultHeaders,
         body: JSON.stringify({
           customer: customer.id,
           billingType: 'BOLETO',
@@ -89,12 +108,13 @@ class AsaasService {
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        console.error('❌ [ASAAS] Erro ao criar boleto:', error);
-        throw new Error(error.errors?.[0]?.description || 'Erro ao criar boleto');
+        const parsed = await parseResponseSafe(response);
+        const errorMsg = typeof parsed === 'string' ? parsed : (parsed?.errors?.[0]?.description || JSON.stringify(parsed));
+        console.error('❌ [ASAAS] Erro ao criar boleto:', errorMsg);
+        throw new Error(errorMsg || 'Erro ao criar boleto');
       }
 
-      const payment = await response.json();
+      const payment = await parseResponseSafe(response);
 
       console.log('✅ [ASAAS] Boleto criado com sucesso');
 
@@ -120,50 +140,51 @@ class AsaasService {
       console.log('🔍 [ASAAS] Base URL:', this.baseUrl);
       
       // Verificar se cliente já existe
-      const searchResponse = await fetch(`${this.baseUrl}/customers?email=${encodeURIComponent(email)}`, {
-        headers: {
-          'access_token': this.apiKey
-        }
+      // Montar query de busca: preferir email, cair para cpfCnpj quando email não disponível
+      const queryParts = [];
+      if (email) queryParts.push(`email=${encodeURIComponent(email)}`);
+      if (cpfCnpj) queryParts.push(`cpfCnpj=${encodeURIComponent(cpfCnpj.replace(/\D/g, ''))}`);
+      const searchUrl = `${this.baseUrl}/customers${queryParts.length ? '?' + queryParts.join('&') : ''}`;
+
+      const defaultHeaders = this.defaultHeaders;
+
+      const searchResponse = await fetch(searchUrl, {
+        headers: defaultHeaders
       });
-      
+
       console.log('📊 [ASAAS] Status da busca:', searchResponse.status);
 
-      const searchData = await searchResponse.json();
+      const searchData = await parseResponseSafe(searchResponse);
 
-      if (searchData.data && searchData.data.length > 0) {
+      if (searchData && searchData.data && searchData.data.length > 0) {
         console.log('✅ [ASAAS] Cliente já existe:', searchData.data[0].id);
         return { success: true, customer: searchData.data[0] };
       }
 
       // Criar novo cliente
+      // Montar payload de criação contendo só campos presentes
+      const payload = {};
+      if (name) payload.name = name;
+      if (email) payload.email = email;
+      if (cpfCnpj) payload.cpfCnpj = cpfCnpj.replace(/\D/g, '');
+      if (phone) payload.phone = phone.replace(/\D/g, '');
+      payload.notificationDisabled = false;
+
       const response = await fetch(`${this.baseUrl}/customers`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'access_token': this.apiKey
-        },
-        body: JSON.stringify({
-          name: name,
-          email: email,
-          cpfCnpj: cpfCnpj?.replace(/\D/g, ''),
-          phone: phone?.replace(/\D/g, ''),
-          notificationDisabled: false
-        })
+        headers: this.defaultHeaders,
+        body: JSON.stringify(payload)
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
+        const parsed = await parseResponseSafe(response);
+        const safeMessage = typeof parsed === 'string' ? parsed.split('\n')[0] : (parsed?.errors?.[0]?.description || `Erro desconhecido (status ${response.status})`);
         console.error('❌ [ASAAS] Erro ao criar cliente - Status:', response.status);
-        console.error('❌ [ASAAS] Resposta:', errorText);
-        try {
-          const error = JSON.parse(errorText);
-          throw new Error(error.errors?.[0]?.description || 'Erro ao criar cliente');
-        } catch {
-          throw new Error(`Erro ao criar cliente: ${errorText.substring(0, 100)}`);
-        }
+        console.error('❌ [ASAAS] Resposta:', parsed);
+        return { success: false, error: safeMessage };
       }
 
-      const customer = await response.json();
+      const customer = await parseResponseSafe(response);
       console.log('✅ [ASAAS] Cliente criado:', customer.id);
 
       return { success: true, customer };
@@ -206,22 +227,22 @@ class AsaasService {
         payload.installmentValue = (value / installmentCount).toFixed(2);
       }
 
+      const defaultHeaders = this.defaultHeaders;
+
       const response = await fetch(`${this.baseUrl}/payments`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'access_token': this.apiKey
-        },
+        headers: defaultHeaders,
         body: JSON.stringify(payload)
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        console.error('❌ [ASAAS] Erro ao criar cobrança com cartão:', error);
-        throw new Error(error.errors?.[0]?.description || 'Erro ao processar cartão');
+          const parsed = await parseResponseSafe(response);
+          const errorMsg = typeof parsed === 'string' ? parsed : (parsed?.errors?.[0]?.description || JSON.stringify(parsed));
+          console.error('❌ [ASAAS] Erro ao criar cobrança com cartão:', errorMsg);
+          throw new Error(errorMsg || 'Erro ao processar cartão');
       }
 
-      const payment = await response.json();
+      const payment = await parseResponseSafe(response);
 
       console.log('✅ [ASAAS] Cobrança com cartão criada com sucesso');
 
@@ -242,16 +263,14 @@ class AsaasService {
   async getPaymentStatus(paymentId) {
     try {
       const response = await fetch(`${this.baseUrl}/payments/${paymentId}`, {
-        headers: {
-          'access_token': this.apiKey
-        }
+        headers: this.defaultHeaders
       });
 
       if (!response.ok) {
         throw new Error('Erro ao buscar status do pagamento');
       }
 
-      const payment = await response.json();
+      const payment = await parseResponseSafe(response);
       return {
         success: true,
         status: payment.status,
@@ -885,6 +904,93 @@ async function handleRegister(request, env) {
   }
 }
 
+// Create User with optional avatar (simple, secure proposal)
+// Accepts JSON: { name, email, password, avatarBase64 (optional), avatarFilename (optional) }
+// If avatarBase64 present and env.R2_BUCKET is configured + R2 binding, will upload to R2 and store URL in users.avatar_url
+async function handleCreateUserWithAvatar(request, env) {
+  try {
+    const contentType = request.headers.get('Content-Type') || '';
+    if (!contentType.includes('application/json')) {
+      return jsonResponse({ success: false, error: 'Use application/json com avatar em base64' }, 400);
+    }
+
+    const { name, email, password, avatarBase64, avatarFilename } = await request.json();
+    if (!name || !email || !password) {
+      return jsonResponse({ success: false, error: 'Dados obrigatórios: name, email, password' }, 400);
+    }
+
+    const db = getDb(env);
+
+    // Check existing
+    const existing = await db.prepare('SELECT id FROM users WHERE email = ?').bind(email.toLowerCase()).first();
+    if (existing) return jsonResponse({ success: false, error: 'Email já cadastrado' }, 409);
+
+    // Hash password
+    const hashed = await hashPassword(password);
+
+    // Insert user
+    const result = await db.prepare(
+      "INSERT INTO users (name, email, password, plan, created_at) VALUES (?, ?, ?, 'inicial', datetime('now'))"
+    ).bind(name, email.toLowerCase(), hashed).run();
+
+    const userId = result.meta?.last_row_id || null;
+    let avatarUrl = null;
+
+    // If avatar provided and R2 binding exists, upload
+    if (avatarBase64 && env.R2_BUCKET) {
+      try {
+        const key = `avatars/${userId}-${Date.now()}-${avatarFilename || 'avatar.png'}`;
+        const buffer = Uint8Array.from(atob(avatarBase64.replace(/^data:\w+\/[a-zA-Z]+;base64,/, '')), c => c.charCodeAt(0));
+        await env.R2_BUCKET.put(key, buffer, {
+          httpMetadata: { contentType: 'image/png' }
+        });
+        // If public, construct URL (depends on account/account-level binding). We'll store a relative key.
+        avatarUrl = `https://{R2_ACCOUNT_ID}.r2.cloudflarestorage.com/${key}`; // <-- replace token programmatically in deploy
+        // Save avatar_url
+        await db.prepare('UPDATE users SET avatar_url = ? WHERE id = ?').bind(avatarUrl, userId).run();
+      } catch (e) {
+        console.warn('Avatar upload failed:', e.message || e);
+      }
+    }
+
+    // Generate token
+    const token = await generateJWT({ userId: userId.toString(), email, name }, env.JWT_SECRET);
+
+    return jsonResponse({ success: true, data: { user: { id: userId, name, email, avatar_url: avatarUrl }, token } }, 201);
+  } catch (error) {
+    console.error('Create user with avatar error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao criar usuário' }, 500);
+  }
+}
+
+// R2 Upload Info - returns a structured upload info for client to PUT directly to R2
+async function handleR2UploadInfo(request, env, user) {
+  try {
+    // Only allow authenticated users
+    if (!user) return jsonResponse({ success: false, error: 'Não autorizado' }, 401);
+
+    const { filename, contentType } = await request.json();
+    if (!filename || !contentType) return jsonResponse({ success: false, error: 'filename e contentType são obrigatórios' }, 400);
+
+    const key = `avatars/${user.userId}-${Date.now()}-${filename}`;
+
+    // If R2 binding available, we could generate an object url; here we return structured info
+    const info = {
+      uploadUrl: env.R2_PUBLIC_URL ? `${env.R2_PUBLIC_URL}/${encodeURIComponent(key)}` : `https://{R2_ACCOUNT_ID}.r2.cloudflarestorage.com/${encodeURIComponent(key)}`,
+      method: 'PUT',
+      headers: {
+        'Content-Type': contentType
+      },
+      key
+    };
+
+    return jsonResponse({ success: true, data: info });
+  } catch (error) {
+    console.error('R2 upload info error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao gerar info de upload' }, 500);
+  }
+}
+
 // Auth - Login
 async function handleLogin(request, env) {
   try {
@@ -973,7 +1079,22 @@ async function handleProductsList(request, env) {
   return jsonResponse({
     success: true,
     data: {
-      products: results || [],
+      products: (results || []).map(p => ({
+        id: p.id,
+        name: p.name,
+        description: p.description,
+        category: p.category,
+        price: p.price,
+        quantity: p.quantity,
+        unit: p.unit,
+        origin: p.origin,
+        quality_grade: p.quality_grade,
+        harvest_date: p.harvest_date,
+        certifications: p.certifications,
+        images: p.images,
+        status: p.status,
+        created_at: p.created_at
+      })),
       pagination: {
         currentPage: page,
         totalPages: Math.ceil((total || 0) / limit),
@@ -1018,18 +1139,21 @@ async function handleProductCreate(request, env, user) {
       }, 403);
     }
     
-    const productId = crypto.randomUUID();
     const imagesJson = images ? JSON.stringify(images) : '[]';
-    
-    await db.prepare(
-      "INSERT INTO products (id, user_id, title, short_description, price, category, stock, unit, images, status, city, state, expires_at, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', '', '', datetime('now', '+30 days'), datetime('now'))"
-    ).bind(productId, user.userId, title, description || '', price, category, quantity || 0, unit || 'kg', imagesJson).run();
+
+    // Inserir sem especificar `id` (INTEGER AUTOINCREMENT no esquema atual)
+    const insertResult = await db.prepare(
+      "INSERT INTO products (user_id, name, description, category, price, quantity, unit, images, status, origin, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'active', '', datetime('now'))"
+    ).bind(user.userId, title, description || '', category, price, quantity || 0, unit || 'kg', imagesJson).run();
+
+    // Recuperar id gerado pelo DB (last_row_id)
+    const productId = insertResult?.meta?.last_row_id || null;
 
     // Incrementar uso
     await incrementUserUsage(db, user.userId, 'product');
 
-  return jsonResponse({
-    success: true,
+    return jsonResponse({
+      success: true,
       message: 'Produto criado com sucesso',
       data: { id: productId },
       usage: { current: limitCheck.current + 1, limit: limitCheck.limit }
@@ -1057,13 +1181,66 @@ async function handleFreightList(request, env) {
   return jsonResponse({
     success: true,
     data: {
-      freights: results || [],
+      freights: (results || []).map(f => ({
+        id: f.id,
+        origin_city: f.origin_city,
+        origin_state: f.origin_state,
+        destination_city: f.destination_city,
+        destination_state: f.destination_state,
+        freight_type: f.freight_type,
+        price_per_km: f.price_per_km,
+        capacity: f.capacity,
+        available_date: f.available_date,
+        status: f.status,
+        created_at: f.created_at
+      })),
         pagination: { currentPage: page, itemsPerPage: limit }
       }
     });
   } catch (error) {
     console.error('Freight list error:', error);
     return jsonResponse({ success: false, error: 'Erro ao listar fretes' }, 500);
+  }
+}
+
+// Plans - Public List (prices should be public)
+async function handlePlansList(request, env) {
+  try {
+    const db = getDb(env);
+    const { results } = await db.prepare('SELECT slug, name, price_monthly, price_6months, price_annual, features, product_limit, freight_limit FROM plans ORDER BY price_monthly ASC').all();
+
+    const plans = (results || []).map(p => {
+      // features may be stored as JSON string
+      let features = [];
+      try { features = p.features ? JSON.parse(p.features) : []; } catch (e) { features = []; }
+
+      // try to compute price in cents if price_monthly is numeric
+      let priceMonthly = p.price_monthly;
+      let price_monthly_cents = null;
+      if (typeof priceMonthly === 'number') {
+        price_monthly_cents = Math.round(priceMonthly * 100);
+      } else if (typeof priceMonthly === 'string' && priceMonthly.trim() !== '') {
+        const parsed = Number(priceMonthly);
+        if (!Number.isNaN(parsed)) price_monthly_cents = Math.round(parsed * 100);
+      }
+
+      return {
+        slug: p.slug,
+        name: p.name,
+        price_monthly: p.price_monthly,
+        price_monthly_cents: price_monthly_cents,
+        price_6months: p.price_6months,
+        price_annual: p.price_annual,
+        product_limit: p.product_limit,
+        freight_limit: p.freight_limit,
+        features
+      };
+    });
+
+    return jsonResponse({ success: true, data: { plans } });
+  } catch (error) {
+    console.error('Plans list error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao listar planos' }, 500);
   }
 }
 
@@ -1175,10 +1352,11 @@ async function handlePaymentCreate(request, env, user) {
     
     const db = getDb(env);
     const paymentId = crypto.randomUUID();
-    
+
+    // Inserir pagamento com tipo padrão 'payment' para respeitar constraint NOT NULL
     await db.prepare(
-      "INSERT INTO payments (id, user_id, amount, payment_method, metadata, status, created_at) VALUES (?, ?, ?, ?, ?, 'pending', datetime('now'))"
-    ).bind(paymentId, user.userId, amount, payment_method || 'stripe', metadata || '{}').run();
+      "INSERT INTO payments (id, user_id, type, amount, payment_method, metadata, status, created_at) VALUES (?, ?, ?, ?, ?, ?, 'pending', datetime('now'))"
+    ).bind(paymentId, user.userId, 'payment', amount, payment_method || 'stripe', metadata || '{}').run();
     
     return jsonResponse({
       success: true,
@@ -1237,11 +1415,18 @@ async function handleCreateCheckout(request, env, user) {
     // Buscar dados do usuário completos
     const userProfile = await db.prepare('SELECT * FROM users WHERE id = ?').bind(user.userId).first();
 
+    // Validar que temos ao menos um identificador para criar cliente no Asaas
+    const cpfCnpj = userProfile.cpf || userProfile.cnpj;
+    if (!userProfile.email && !cpfCnpj) {
+      console.warn('Usuário sem email nem CPF/CNPJ - não é possível criar cliente Asaas');
+      return jsonResponse({ success: false, error: 'É necessário ter E-mail ou CPF/CNPJ cadastrado para gerar uma cobrança' }, 400);
+    }
+
     // Criar ou buscar cliente no Asaas
     const customerResult = await asaas.createOrGetCustomer({
       name: userProfile.name,
       email: userProfile.email,
-      cpfCnpj: userProfile.cpf || userProfile.cnpj,
+      cpfCnpj: cpfCnpj,
       phone: userProfile.phone
     });
 
@@ -1253,9 +1438,10 @@ async function handleCreateCheckout(request, env, user) {
 
     // Criar registro de pagamento pendente
     const paymentId = crypto.randomUUID();
+    // Inserir pagamento de assinatura com type 'subscription'
     await db.prepare(
-      "INSERT INTO payments (id, user_id, plan_slug, amount, payment_method, status, billing_cycle, created_at) VALUES (?, ?, ?, ?, ?, 'pending', ?, datetime('now'))"
-    ).bind(paymentId, user.userId, planSlug, amount, paymentMethod, billingCycle).run();
+      "INSERT INTO payments (id, user_id, plan_slug, amount, payment_method, type, status, billing_cycle, created_at) VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, datetime('now'))"
+    ).bind(paymentId, user.userId, planSlug, amount, paymentMethod, 'subscription', billingCycle).run();
 
     // Gerar PIX ou Boleto
     if (paymentMethod === 'pix') {
@@ -1369,7 +1555,8 @@ async function handleCreateCheckout(request, env, user) {
     }
   } catch (error) {
     console.error('Create checkout error:', error);
-    return jsonResponse({ success: false, error: 'Erro ao criar pagamento: ' + error.message }, 500);
+    const msg = error && error.message ? error.message : String(error);
+    return jsonResponse({ success: false, error: 'Erro ao criar pagamento: ' + msg }, 500);
   }
 }
 
@@ -2188,6 +2375,16 @@ async function handleRequest(request, env) {
   if (path === '/api/products' && method === 'GET') {
     return handleProductsList(request, env);
   }
+
+    // Public routes - Plans (list) - allow frontend to fetch prices without auth
+    if (path === '/api/plans' && method === 'GET') {
+      return handlePlansList(request, env);
+    }
+
+      // Public route - create user with avatar
+      if (path === '/api/users/create-with-avatar' && method === 'POST') {
+        return handleCreateUserWithAvatar(request, env);
+      }
     
     // Public routes - Freight
   if (path === '/api/freight' && method === 'GET') {
@@ -2262,6 +2459,10 @@ async function handleRequest(request, env) {
     // Protected - User
     if (path === '/api/users/profile' && (method === 'GET' || method === 'PUT')) {
       return handleUserProfile(request, env, user);
+    }
+    // R2 upload info (authenticated)
+    if (path === '/api/uploads/r2-info' && method === 'POST') {
+      return handleR2UploadInfo(request, env, user);
     }
     if (path === '/api/user/profile' && (method === 'GET' || method === 'PUT')) {
       return handleUserProfile(request, env, user);

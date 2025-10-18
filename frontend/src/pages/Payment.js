@@ -19,11 +19,11 @@ const Payment = () => {
     setUser(userData);
     
     // Verificar se Stripe está configurado
-    const stripeKey = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
-    setStripeEnabled(!!stripeKey && stripeKey.startsWith('pk_'));
-    
-    if (!stripeKey || !stripeKey.startsWith('pk_')) {
-      logger.warn('Stripe não configurado - pagamentos desabilitados', null, { page: 'payment' });
+    // A configuração de Stripe deve ser determinada pelo build/env var REACT_APP_ENABLE_STRIPE
+    const enableStripe = (process.env.REACT_APP_ENABLE_STRIPE || 'false').toLowerCase() === 'true';
+    setStripeEnabled(enableStripe);
+    if (!enableStripe) {
+      logger.warn('Stripe desabilitado via ambiente - pagamentos desabilitados', null, { page: 'payment' });
     }
   }, []);
 
@@ -81,8 +81,7 @@ const Payment = () => {
     try {
       // Verificar se Stripe está configurado
       if (!stripeEnabled) {
-        toast.error('Sistema de pagamento ainda não configurado. Entre em contato com o suporte.');
-        // setError('Sistema de pagamento indisponível no momento.');
+        toast.error('Sistema de pagamento desabilitado. Entre em contato com o suporte se precisar ativar pagamentos.');
         setLoading(false);
         return;
       }
@@ -120,7 +119,7 @@ const Payment = () => {
         })
       });
 
-      const data = await response.json();
+  const data = await response.json();
 
       if (!response.ok) {
         throw new Error(data.message || 'Erro ao criar sessão de pagamento');

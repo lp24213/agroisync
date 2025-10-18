@@ -397,6 +397,10 @@ function sanitizeObject(obj) {
 
 export const validateStripeWebhook = (req, res, next) => {
   try {
+    const stripeEnabled = (process.env.STRIPE_ENABLED || 'false').toLowerCase() === 'true';
+    if (!stripeEnabled) {
+      return res.status(403).json({ success: false, message: 'Stripe desativado', code: 'STRIPE_DISABLED' });
+    }
     const signature = req.get('stripe-signature');
     const payload = JSON.stringify(req.body);
 

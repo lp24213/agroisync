@@ -4,13 +4,24 @@ import { apiRateLimiter } from '../middleware/rateLimiter.js';
 import AuditLog from '../models/AuditLog.js';
 import User from '../models/User.js';
 import Payment from '../models/Payment.js';
-import stripe from 'stripe';
 
 import logger from '../utils/logger.js';
 const router = express.Router();
 
-// Inicializar Stripe
-const stripeClient = new stripe(process.env.STRIPE_SECRET_KEY);
+// Nota: Stripe está intencionalmente protegido por STRIPE_ENABLED. Não inicializamos o cliente
+// quando Stripe está desativado para evitar dependência de segredos em ambientes sem Stripe.
+let stripeClient = null;
+if ((process.env.STRIPE_ENABLED || 'false').toLowerCase() === 'true') {
+  try {
+    // carregamento condicional do SDK apenas quando necessário
+     
+    const Stripe = require('stripe');
+    stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY);
+  } catch (e) {
+    // se não conseguir carregar o SDK, manter stripeClient como null
+    stripeClient = null;
+  }
+}
 
 // ===== VERIFICAÃ‡ÃƒO DE PAGAMENTO =====
 
@@ -101,87 +112,31 @@ router.get('/status', authenticateToken, async (req, res) => {
 // POST /api/payment-verification/verify-stripe - Verificar pagamento Stripe
 router.post('/verify-stripe', authenticateToken, async (req, res) => {
   try {
+    const stripeEnabled = (process.env.STRIPE_ENABLED || 'false').toLowerCase() === 'true';
+    if (!stripeEnabled || !stripeClient) {
+      return res.status(403).json({ success: false, message: 'Stripe desativado' });
+    }
+
     const { paymentIntentId } = req.body;
     const userId = req.user.id;
 
     if (!paymentIntentId) {
       return res.status(400).json({
         success: false,
-        message: 'ID do pagamento Ã© obrigatÃ³rio'
+        message: 'ID do pagamento é obrigatório'
       });
     }
 
-    // Verificar pagamento no Stripe
-    const paymentIntent = await stripeClient.paymentIntents.retrieve(paymentIntentId);
-
-    if (paymentIntent.status === 'succeeded') {
-      // Buscar ou criar registro de pagamento
-      let payment = await Payment.findOne({
-        stripePaymentIntentId: paymentIntentId
-      });
-
-      if (!payment) {
-        payment = new Payment({
-          userId,
-          amount: paymentIntent.amount / 100, // Stripe usa centavos
-          currency: paymentIntent.currency,
-          status: 'completed',
-          provider: 'stripe',
-          stripePaymentIntentId: paymentIntentId,
-          metadata: {
-            stripeCustomerId: paymentIntent.customer,
-            stripeChargeId: paymentIntent.latest_charge
-          }
-        });
-
-        await payment.save();
-      }
-
-      // Atualizar status do usuÃ¡rio se necessÃ¡rio
-      const user = await User.findById(userId);
-      if (user) {
-        // Aqui vocÃª pode implementar lÃ³gica para ativar planos especÃ­ficos
-        // baseado no valor do pagamento ou metadata
-        await user.save();
-      }
-
-      // Log do pagamento verificado
-      await AuditLog.logAction({
-        userId,
-        userEmail: req.user.email,
-        action: 'STRIPE_PAYMENT_VERIFIED',
-        resource: 'payment_verification',
-        resourceId: payment._id,
-        details: `Stripe payment verified: ${paymentIntentId}`,
-        ip: req.ip,
-        userAgent: req.get('User-Agent')
-      });
-
-      res.json({
-        success: true,
-        message: 'Pagamento verificado com sucesso',
-        data: {
-          payment,
-          canAccessMessaging: true
-        }
-      });
-    } else {
-      return res.status(400).json({
-        success: false,
-        message: 'Pagamento nÃ£o foi concluÃ­do com sucesso',
-        data: {
-          status: paymentIntent.status,
-          canAccessMessaging: false
-        }
-      });
-    }
+    // Se Stripe estiver habilitado, a lógica original pode ser restaurada aqui.
+    // Por enquanto, retornar 501 para indicar que a operação não está implementada neste ambiente.
+    return res.status(501).json({ success: false, message: 'Verificação Stripe não implementada' });
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
       logger.error('Erro ao verificar pagamento Stripe:', error);
     }
     await AuditLog.logAction({
-      userId: req.user.id,
-      userEmail: req.user.email,
+      userId: req.user?.id || 'unknown',
+      userEmail: req.user?.email || 'unknown',
       action: 'STRIPE_PAYMENT_VERIFICATION_ERROR',
       resource: 'payment_verification',
       details: `Error verifying Stripe payment: ${error.message}`,

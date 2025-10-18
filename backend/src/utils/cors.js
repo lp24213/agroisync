@@ -5,7 +5,9 @@
 // Headers CORS para Cloudflare Workers
 // IMPORTANTE: NÃ£o usar '*' em produÃ§Ã£o - configurar origem especÃ­fica
 export const corsHeaders = {
-  'Access-Control-Allow-Origin': typeof env !== 'undefined' && env.FRONTEND_URL ? env.FRONTEND_URL : 'http://localhost:3000',
+  // Prefer explicit FRONTEND_URL from the worker environment; if missing, use the
+  // production site origin. Do not fall back to localhost in production code.
+  'Access-Control-Allow-Origin': typeof env !== 'undefined' && env.FRONTEND_URL ? env.FRONTEND_URL : 'https://agroisync.com',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
   'Access-Control-Allow-Credentials': 'true',

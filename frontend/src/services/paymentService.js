@@ -46,9 +46,16 @@ class PaymentService {
         },
         body: JSON.stringify(payload)
       });
+      // tentar decodificar JSON; se falhar, ler texto cru para melhor diagnóstico
+      let data = null;
+      try {
+        data = await response.json();
+      } catch (parseErr) {
+        const text = await response.text().catch(() => null);
+        const message = text || parseErr.message || 'Resposta inválida do servidor';
+        throw new Error(message);
+      }
 
-      const data = await response.json();
-      
       if (!response.ok) {
         throw new Error(data.error || 'Erro ao criar pagamento');
       }

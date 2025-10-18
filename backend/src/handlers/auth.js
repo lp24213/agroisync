@@ -1,22 +1,40 @@
 import { json } from '../utils/respond.js';
-import { createUser as d1CreateUser } from '../utils/d1-helper.js';
+import { createUser as d1CreateUser, findUserByEmail, findUserByCpf, findUserByCnpj } from '../utils/d1-helper.js';
 import { hashPassword, verifyPassword, generateJWT } from '../utils/auth.js';
 
 // Criar usuário
 export async function createUser(request, env) {
-  const { email, name, password } = await request.json();
-  
-  try {
-    const hashedPassword = await hashPassword(password);
-    const user = await d1CreateUser(env.DB, { 
-      email, 
-      name, 
-      password: hashedPassword 
-    });
+  const { email, name, password, cpf = null, cnpj = null } = await request.json();
 
-    if (!user.success) {
-      return json({ error: 'Erro ao criar usuário' }, { status: 500 });
+  try {
+    // Checar duplicatas
+    const existingByEmail = await findUserByEmail(env.DB, email);
+    if (existingByEmail) {
+      return json({ error: 'Email ja registrado' }, { status: 400 });
     }
+
+    if (cpf) {
+      const existingByCpf = await findUserByCpf(env.DB, cpf.replace(/\D/g, ''));
+      if (existingByCpf) {
+        return json({ error: 'CPF ja registrado' }, { status: 400 });
+      }
+    }
+
+    if (cnpj) {
+      const existingByCnpj = await findUserByCnpj(env.DB, cnpj.replace(/\D/g, ''));
+      if (existingByCnpj) {
+        return json({ error: 'CNPJ ja registrado' }, { status: 400 });
+      }
+    }
+
+    const hashedPassword = await hashPassword(password);
+    const user = await d1CreateUser(env.DB, {
+      email,
+      name,
+      password: hashedPassword,
+      cpf: cpf ? cpf.replace(/\D/g, '') : null,
+      cnpj: cnpj ? cnpj.replace(/\D/g, '') : null
+    });
 
     const token = await generateJWT(user.id);
     return json({ token });

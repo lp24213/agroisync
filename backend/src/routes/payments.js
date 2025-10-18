@@ -143,41 +143,17 @@ router.get('/payments/status', authenticateToken, async (request, env) => {
   }
 });
 
-// Criar sessÃ£o de pagamento Stripe
+// Criar sessÃ£o de pagamento Stripe - desativado quando STRIPE_ENABLED != 'true'
 router.post('/stripe/create-session', async (req, res) => {
   try {
-    const { planId, planData } = req.body;
-
-
-    // Cancelar assinatura
-    router.post('/payments/cancel', authenticateToken, async (request, env) => {
-      try {
-        const user = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(request.user.id).first();
-        if (!user) {
-          return new Response(JSON.stringify({ success: false, error: 'Usuário não encontrado' }), { status: 404 });
-        }
-        if (!user.is_paid) {
-          return new Response(JSON.stringify({ success: false, error: 'Usuário não possui plano ativo' }), { status: 400 });
-        }
-        // Cancelar assinatura Stripe (se aplicável) - implementar via fetch se necessário
-        await env.DB.prepare('UPDATE users SET is_paid = 0, plan_active = NULL, plan_type = NULL, plan_expiry = NULL, cancellation_date = ? WHERE id = ?').bind(now(), request.user.id).run();
-        return new Response(JSON.stringify({
-          success: true,
-          message: 'Assinatura cancelada com sucesso',
-          user: {
-            isPaid: false,
-            planActive: null,
-            planType: null,
-            planExpiry: null
-          }
-        }), { headers: { 'Content-Type': 'application/json' } });
-      } catch (error) {
-        return new Response(JSON.stringify({ success: false, error: 'Erro interno do servidor', details: error.message }), { status: 500 });
-      }
-    });
-      success: false,
-      error: 'Erro ao processar pagamento'
-    });
+    const stripeEnabled = (process.env.STRIPE_ENABLED || 'false').toLowerCase() === 'true';
+    if (!stripeEnabled) {
+      return new Response(JSON.stringify({ success: false, error: 'Stripe desativado' }), { status: 403, headers: { 'Content-Type': 'application/json' } });
+    }
+    // Caso Stripe seja reativado no futuro, a lógica de criação de sessão ficará aqui.
+    return new Response(JSON.stringify({ success: false, error: 'Stripe não configurado no servidor' }), { status: 501, headers: { 'Content-Type': 'application/json' } });
+  } catch (error) {
+    return new Response(JSON.stringify({ success: false, error: 'Erro interno do servidor', details: error.message }), { status: 500 });
   }
 });
 

@@ -11,14 +11,31 @@
 export const API_CONFIG = {
   // URL base da API - usa variável de ambiente ou fallback inteligente
   baseURL:
-    process.env.REACT_APP_API_URL ||
-    (process.env.NODE_ENV === 'production' ? 'https://agroisync.com/api' : 'http://localhost:3001/api'),
+    // Prefer Vite env (VITE_API_URL) or CRA env (REACT_APP_API_URL). Fallbacks:
+    // - Em produção, usamos a rota relativa '/api' para permitir proxy via worker/origem atual
+    // - Em desenvolvimento, usamos localhost:3001 para compatibilidade local
+    process.env.VITE_API_URL || process.env.REACT_APP_API_URL ||
+    (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:3001/api'),
 
   // URL do Socket.IO (para messaging)
   socketURL:
-    process.env.REACT_APP_SOCKET_URL ||
-    process.env.REACT_APP_API_URL?.replace('/api', '') ||
-    (process.env.NODE_ENV === 'production' ? 'https://agroisync.com' : 'http://localhost:3001'),
+    process.env.VITE_WS_URL || process.env.REACT_APP_SOCKET_URL ||
+      // Derivar de VITE_API_URL / REACT_APP_API_URL se possível.
+      // Em produção, se não houver variável, usar a origem atual (window.location.origin)
+      (() => {
+        const envBase = process.env.VITE_API_URL || process.env.REACT_APP_API_URL;
+        if (envBase) return envBase.replace(/\/api\/?$/, '');
+        if (process.env.NODE_ENV === 'production') {
+          try {
+            if (typeof window !== 'undefined' && window.location && window.location.origin) return window.location.origin;
+          } catch (e) {
+            // ignore
+          }
+          // Fallback seguro em produção quando a origem não estiver disponível
+          return 'https://agroisync.com';
+        }
+        return 'http://localhost:3001';
+      })(),
 
   // Timeout para requisições (30 segundos)
   timeout: parseInt(process.env.REACT_APP_API_TIMEOUT) || 30000,
