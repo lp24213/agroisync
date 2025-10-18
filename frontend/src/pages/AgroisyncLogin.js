@@ -131,45 +131,28 @@ const AgroisyncLogin = () => {
                 console.log('👤 Dados do perfil:', profileData);
                 const userProfile = profileData.data?.user || user;
 
-                // 1. VERIFICAR SE TEM PLANO ATIVO OU TRIAL
-                const hasPlan = userProfile.plan && userProfile.plan !== 'free';
-                const planExpiresAt = userProfile.plan_expires_at ? new Date(userProfile.plan_expires_at) : null;
-                const isPlanActive = planExpiresAt && planExpiresAt > new Date();
-                const now = new Date();
-                const daysRemaining = planExpiresAt ? Math.ceil((planExpiresAt - now) / (1000 * 60 * 60 * 24)) : 0;
-                const isTrialPlan = userProfile.plan === 'inicial' && daysRemaining <= 3;
+                // 1. VERIFICAR SE TEM PLANO (qualquer plano diferente de 'free' ou null)
+                const userPlan = userProfile.plan || 'free';
+                const hasPaidPlan = userPlan && userPlan !== 'free' && userPlan !== '' && userPlan !== null;
                 
                 console.log('📋 Verificação de plano:');
-                console.log('  - hasPlan:', hasPlan);
-                console.log('  - plan:', userProfile.plan);
-                console.log('  - planExpiresAt:', planExpiresAt);
-                console.log('  - isPlanActive:', isPlanActive);
-                console.log('  - daysRemaining:', daysRemaining);
-                console.log('  - isTrialPlan:', isTrialPlan);
+                console.log('  - userPlan:', userPlan);
+                console.log('  - hasPaidPlan:', hasPaidPlan);
+                console.log('  - plan_status:', userProfile.plan_status);
+                console.log('  - plan_expires_at:', userProfile.plan_expires_at);
 
-                // 2. SE NÃO TEM PLANO → Redirecionar para /plans (mas SE TEM plano, mesmo que expirado, deixa entrar)
-                // CORREÇÃO: Verificar se plan_status existe e está 'active' OU se tem plano que não seja free
-                const planStatus = userProfile.plan_status || 'inactive';
-                const hasActivePlan = (hasPlan && isPlanActive) || planStatus === 'active';
-                
-                if (!hasPlan || (!hasActivePlan && planExpiresAt && planExpiresAt < now)) {
-                  console.log('🚫 Usuário sem plano ativo - redirecionando para /plans');
+                // 2. SE NÃO TEM PLANO PAGO → Redirecionar para /plans
+                // Só redireciona se for 'free', null, ou vazio
+                if (!hasPaidPlan) {
+                  console.log('🚫 Usuário sem plano pago - redirecionando para /plans');
                   window.location.href = '/plans';
                   return;
                 }
 
-                // 3. SE ESTÁ EM TRIAL (plano inicial com <= 3 dias) → Mostrar aviso mas deixar entrar
-                if (isTrialPlan && daysRemaining > 0) {
-                  console.log(`⚠️ Usuário em teste grátis (${daysRemaining} dias restantes) - permitindo acesso`);
-                  // Deixa entrar, mas vai ter aviso no dashboard
-                }
-                
-                // 4. SE TEM PLANO PAGO (mesmo que perto de expirar) → Deixar entrar
-                if (hasPlan && isPlanActive) {
-                  console.log('✅ Usuário com plano ativo - permitindo acesso');
-                }
+                // 3. SE TEM PLANO PAGO → Deixar entrar (independente de expiração)
+                console.log('✅ Usuário com plano pago - permitindo acesso');
 
-                // 3. SE TEM PLANO → Verificar se completou perfil específico
+                // 4. SE TEM PLANO → Verificar se completou perfil específico
                 const hasUserType = userProfile.user_type && userProfile.user_type !== 'general';
                 
                 // 4. SE NÃO COMPLETOU PERFIL → Redirecionar para escolher tipo
