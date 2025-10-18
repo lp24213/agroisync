@@ -88,11 +88,16 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
     }
 
     console.log('🎯 Renderizando widget Turnstile com chave:', effectiveSiteKey);
+    console.log('🔍 Tipo de effectiveSiteKey:', typeof effectiveSiteKey);
+    console.log('🔍 effectiveSiteKey é string?', typeof effectiveSiteKey === 'string');
     console.log('window.turnstile existe?', !!window.turnstile);
     
     try {
+      // Garantir que sitekey seja string
+      const sitekeyValue = typeof effectiveSiteKey === 'string' ? effectiveSiteKey : String(effectiveSiteKey);
+      
       const id = window.turnstile.render(turnstileRef.current, {
-        sitekey: effectiveSiteKey,
+        sitekey: sitekeyValue,
         theme,
         size: 'normal',
         // appearance: 'interaction-only', // REMOVIDO - pode estar escondendo
