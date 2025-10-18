@@ -3072,6 +3072,11 @@ async function handleRequest(request, env) {
       return handlePlansList(request, env);
     }
 
+    // Public route - Crypto prices
+    if (path === '/api/crypto/prices' && method === 'GET') {
+      return handleCryptoPrices(request, env);
+    }
+
       // Public route - create user with avatar
       if (path === '/api/users/create-with-avatar' && method === 'POST') {
         return handleCreateUserWithAvatar(request, env);
@@ -3189,9 +3194,6 @@ async function handleRequest(request, env) {
     }
     if (path === '/api/crypto/transactions' && method === 'GET') {
       return handleCryptoTransactions(request, env, user);
-    }
-    if (path === '/api/crypto/prices' && method === 'GET') {
-      return handleCryptoPrices(request, env);
     }
     if (path === '/api/users/me' && method === 'GET') {
       return handleUserProfile(request, env, user);
