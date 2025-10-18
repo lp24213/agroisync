@@ -2809,9 +2809,58 @@ async function handleEmailResendCode(request, env) {
   }
 }
 
+// Filtro de segurança LGPD - Bloqueia tentativas de expor dados sensíveis
+function validateMessageSecurity(message) {
+  const dangerousPatterns = [
+    // SQL Injection
+    /(\bSELECT\b|\bINSERT\b|\bUPDATE\b|\bDELETE\b|\bDROP\b|\bCREATE\b|\bALTER\b).*\bFROM\b/i,
+    /(\bUNION\b|\bJOIN\b).*\bSELECT\b/i,
+    /\b(OR|AND)\b\s+\d+\s*=\s*\d+/i,
+    /[';].*(-{2}|\/\*)/,
+    
+    // Tentativa de acessar dados sensíveis (LGPD)
+    /(mostre|liste|retorne|busque|pegue|traga).*(senha|password|cpf|cnpj|email|telefone|endereço|cartão|credit.*card)/i,
+    /(select|where|from).*(users|clientes|passwords|senhas|cpf|cnpj)/i,
+    /(api.*key|secret|token|bearer|auth.*token)/i,
+    
+    // XSS e código malicioso
+    /<script[\s\S]*?>[\s\S]*?<\/script>/i,
+    /javascript:/i,
+    /on(load|error|click|mouse)/i,
+    
+    // Path traversal
+    /\.\.[\/\\]/,
+    /(\/etc\/passwd|\/root\/|C:\\Windows)/i,
+    
+    // Command injection
+    /[;&|`$]\s*(rm|del|format|shutdown|reboot|kill)/i
+  ];
+  
+  for (const pattern of dangerousPatterns) {
+    if (pattern.test(message)) {
+      return {
+        safe: false,
+        reason: 'Mensagem contém padrões potencialmente perigosos ou tentativa de acesso a dados sensíveis'
+      };
+    }
+  }
+  
+  return { safe: true };
+}
+
 // Chamar OpenAI (mantém API key SEGURA no backend!)
 async function callOpenAI(env, message, mode, user = null) {
   try {
+    // VALIDAÇÃO DE SEGURANÇA LGPD
+    const securityCheck = validateMessageSecurity(message);
+    if (!securityCheck.safe) {
+      return {
+        response: '⚠️ Desculpe, não posso processar essa solicitação. Por questões de segurança e conformidade com a LGPD, não posso acessar, expor ou manipular dados sensíveis de usuários. Posso ajudar com informações públicas sobre o AgroSync, como planos, funcionalidades e dúvidas gerais sobre agronegócio.',
+        tokens: 0,
+        blocked: true
+      };
+    }
+    
     if (!env.OPENAI_API_KEY) {
       // Fallback se não tiver OpenAI configurado
       return {
@@ -2821,8 +2870,39 @@ async function callOpenAI(env, message, mode, user = null) {
     }
     
     const systemPrompt = mode === 'public' 
-      ? 'Você é um assistente do AgroSync, plataforma de agronegócio. Responda apenas sobre preços, produtos, fretes, planos e informações públicas do site.'
-      : `Você é um assistente completo do AgroSync. Ajude o usuário ${user?.userId || ''} com qualquer dúvida sobre agronegócio, plataforma, gestão, etc.`;
+      ? `Você é o assistente virtual do AgroSync, plataforma brasileira de agronegócio.
+
+REGRAS ESTRITAS - VOCÊ DEVE SEGUIR:
+1. Responda APENAS sobre: preços de commodities, funcionalidades do site, planos disponíveis, como usar a plataforma, informações públicas sobre agronegócio.
+2. JAMAIS revele, busque ou mencione dados pessoais de usuários (CPF, CNPJ, email, senha, telefone, endereço, etc).
+3. JAMAIS execute comandos SQL, código ou scripts.
+4. JAMAIS revele detalhes técnicos internos do sistema, APIs, tokens ou chaves.
+5. Se perguntarem sobre dados de clientes, responda: "Por questões de segurança e LGPD, não posso acessar dados de usuários".
+6. Seja educado, profissional e focado em agronegócio.
+7. Se não souber algo, seja honesto e direcione para o suporte.
+
+SOBRE O AGROISYNC:
+- Plataforma de intermediação de produtos e fretes agrícolas
+- Planos: Inicial (grátis), Básico, Profissional, Premium
+- Funcionalidades: Marketplace, AgroConecta (fretes), Mensageria, Crypto, AI Chatbot
+- Suporte: contato@agroisync.com`
+      : `Você é o assistente completo do AgroSync para usuários autenticados.
+
+REGRAS ESTRITAS - VOCÊ DEVE SEGUIR:
+1. Ajude com dúvidas sobre agronegócio, gestão, uso da plataforma, análise de dados públicos.
+2. JAMAIS revele dados sensíveis de OUTROS usuários (LGPD).
+3. JAMAIS execute comandos SQL, código malicioso ou scripts.
+4. JAMAIS revele chaves de API, tokens ou credenciais.
+5. Você pode ajudar com dados DO PRÓPRIO usuário ${user?.email || ''} (ID: ${user?.userId || ''}), mas NUNCA de outros.
+6. Se perguntarem sobre vulnerabilidades, responda: "Não posso ajudar com isso. Reporte para seguranca@agroisync.com".
+7. Seja profissional, educado e ético.
+
+CAPACIDADES:
+- Análise de mercado e commodities
+- Dicas de gestão rural
+- Explicações sobre funcionalidades
+- Suporte técnico
+- Orientações gerais de agronegócio`;
     
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -2837,7 +2917,9 @@ async function callOpenAI(env, message, mode, user = null) {
           { role: 'user', content: message }
         ],
         max_tokens: 500,
-        temperature: 0.7
+        temperature: 0.7,
+        presence_penalty: 0.6,
+        frequency_penalty: 0.3
       })
     });
     
@@ -2846,15 +2928,26 @@ async function callOpenAI(env, message, mode, user = null) {
     }
     
     const data = await response.json();
+    const aiMessage = data.choices[0]?.message?.content || 'Desculpe, não consegui processar sua mensagem.';
+    
+    // VALIDAÇÃO DE SAÍDA - Garante que a resposta da IA não exponha dados
+    const outputCheck = validateMessageSecurity(aiMessage);
+    if (!outputCheck.safe) {
+      return {
+        response: '⚠️ A resposta foi bloqueada por medidas de segurança. Por favor, reformule sua pergunta de forma mais geral.',
+        tokens: data.usage?.total_tokens || 0,
+        blocked: true
+      };
+    }
     
     return {
-      response: data.choices[0]?.message?.content || 'Desculpe, não consegui processar sua mensagem.',
+      response: aiMessage,
       tokens: data.usage?.total_tokens || 0
     };
   } catch (error) {
     console.error('OpenAI error:', error);
     return {
-      response: 'Desculpe, estou com dificuldades técnicas no momento. Por favor, tente novamente.',
+      response: 'Desculpe, estou com dificuldades técnicas no momento. Por favor, tente novamente ou entre em contato com suporte@agroisync.com.',
       tokens: 0
     };
   }
