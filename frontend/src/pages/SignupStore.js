@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Building2, Phone, ArrowRight } from 'lucide-react';
+import { Building2, Phone, ArrowRight, User, Mail } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 // Modern UI components intentionally not used on this page (kept for future UI upgrades)
 
