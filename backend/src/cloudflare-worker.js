@@ -2563,6 +2563,172 @@ async function handleCryptoPrices(request, env) {
   }
 }
 
+// AI Chatbot - Público (com whitelist)
+async function handleAIChatPublic(request, env) {
+  try {
+    const { message, session_id } = await request.json();
+    
+    if (!message || !session_id) {
+      return jsonResponse({ success: false, error: 'Mensagem e session_id obrigatórios' }, 400);
+    }
+    
+    // Whitelist de intents públicas
+    const allowedIntents = ['preços', 'cotação', 'clima', 'tempo', 'ajuda', 'contato', 'planos', 'frete', 'produtos', 'como funciona', 'sobre', 'cadastro', 'login'];
+    
+    const messageL = message.toLowerCase();
+    const isAllowed = allowedIntents.some(intent => messageL.includes(intent));
+    
+    if (!isAllowed) {
+      return jsonResponse({ 
+        success: false, 
+        error: 'Para perguntas avançadas, faça login primeiro!',
+        response: 'Desculpe, para essa pergunta você precisa estar logado. Por favor, faça login ou cadastre-se para acesso completo à IA.'
+      }, 403);
+    }
+    
+    const db = getDb(env);
+    
+    // Verificar limite (20 mensagens/dia para não logado)
+    const today = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
+    const limit = await db.prepare(
+      `SELECT messages_today FROM ai_chat_limits WHERE session_id = ? AND last_reset >= ?`
+    ).bind(session_id, today).first();
+    
+    if (limit && limit.messages_today >= 20) {
+      return jsonResponse({ success: false, error: 'Limite diário atingido (20 mensagens). Faça login para acesso ilimitado!' }, 429);
+    }
+    
+    // Chamar OpenAI
+    const aiResponse = await callOpenAI(env, message, 'public');
+    
+    // Salvar no histórico
+    const messageId = crypto.randomUUID();
+    await db.prepare(
+      `INSERT INTO ai_chat_history (id, session_id, message_type, message_content, intent, is_public, tokens_used, created_at) 
+       VALUES (?, ?, 'user', ?, ?, 1, 0, strftime('%s', 'now'))`
+    ).bind(messageId, session_id, message, allowedIntents.find(i => messageL.includes(i)) || 'general').run();
+    
+    const responseId = crypto.randomUUID();
+    await db.prepare(
+      `INSERT INTO ai_chat_history (id, session_id, message_type, message_content, is_public, tokens_used, created_at) 
+       VALUES (?, ?, 'ai', ?, 1, ?, strftime('%s', 'now'))`
+    ).bind(responseId, session_id, aiResponse.response, aiResponse.tokens || 0).run();
+    
+    // Atualizar limites
+    if (limit) {
+      await db.prepare(
+        `UPDATE ai_chat_limits SET messages_today = messages_today + 1, tokens_today = tokens_today + ? WHERE session_id = ?`
+      ).bind(aiResponse.tokens || 0, session_id).run();
+    } else {
+      const limitId = crypto.randomUUID();
+      await db.prepare(
+        `INSERT INTO ai_chat_limits (id, session_id, messages_today, tokens_today, last_reset, created_at) 
+         VALUES (?, ?, 1, ?, ?, strftime('%s', 'now'))`
+      ).bind(limitId, session_id, aiResponse.tokens || 0, today).run();
+    }
+    
+    return jsonResponse({
+      success: true,
+      response: aiResponse.response,
+      tokens_used: aiResponse.tokens,
+      remaining_today: 20 - ((limit?.messages_today || 0) + 1)
+    });
+  } catch (error) {
+    console.error('AI Chat Public error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao processar mensagem' }, 500);
+  }
+}
+
+// AI Chatbot - Privado (sem limites)
+async function handleAIChatPrivate(request, env, user) {
+  try {
+    const { message, session_id } = await request.json();
+    
+    if (!message) {
+      return jsonResponse({ success: false, error: 'Mensagem obrigatória' }, 400);
+    }
+    
+    const db = getDb(env);
+    const sessionId = session_id || `user_${user.userId}_${Date.now()}`;
+    
+    // Chamar OpenAI (sem restrições)
+    const aiResponse = await callOpenAI(env, message, 'private', user);
+    
+    // Salvar no histórico
+    const messageId = crypto.randomUUID();
+    await db.prepare(
+      `INSERT INTO ai_chat_history (id, user_id, session_id, message_type, message_content, is_public, tokens_used, created_at) 
+       VALUES (?, ?, ?, 'user', ?, 0, 0, strftime('%s', 'now'))`
+    ).bind(messageId, user.userId, sessionId, message).run();
+    
+    const responseId = crypto.randomUUID();
+    await db.prepare(
+      `INSERT INTO ai_chat_history (id, user_id, session_id, message_type, message_content, is_public, tokens_used, created_at) 
+       VALUES (?, ?, ?, 'ai', ?, 0, ?, strftime('%s', 'now'))`
+    ).bind(responseId, user.userId, sessionId, aiResponse.response, aiResponse.tokens || 0).run();
+    
+    return jsonResponse({
+      success: true,
+      response: aiResponse.response,
+      tokens_used: aiResponse.tokens
+    });
+  } catch (error) {
+    console.error('AI Chat Private error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao processar mensagem' }, 500);
+  }
+}
+
+// Chamar OpenAI (mantém API key SEGURA no backend!)
+async function callOpenAI(env, message, mode, user = null) {
+  try {
+    if (!env.OPENAI_API_KEY) {
+      // Fallback se não tiver OpenAI configurado
+      return {
+        response: 'Olá! Sou o assistente virtual do AgroSync. Como posso ajudar você hoje?',
+        tokens: 0
+      };
+    }
+    
+    const systemPrompt = mode === 'public' 
+      ? 'Você é um assistente do AgroSync, plataforma de agronegócio. Responda apenas sobre preços, produtos, fretes, planos e informações públicas do site.'
+      : `Você é um assistente completo do AgroSync. Ajude o usuário ${user?.userId || ''} com qualquer dúvida sobre agronegócio, plataforma, gestão, etc.`;
+    
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${env.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: message }
+        ],
+        max_tokens: 500,
+        temperature: 0.7
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error('OpenAI API error');
+    }
+    
+    const data = await response.json();
+    
+    return {
+      response: data.choices[0]?.message?.content || 'Desculpe, não consegui processar sua mensagem.',
+      tokens: data.usage?.total_tokens || 0
+    };
+  } catch (error) {
+    console.error('OpenAI error:', error);
+    return {
+      response: 'Desculpe, estou com dificuldades técnicas no momento. Por favor, tente novamente.',
+      tokens: 0
+    };
+  }
+}
+
 // Helper para buscar preço
 async function getCurrentCryptoPrice(symbol) {
   const prices = {
@@ -3077,6 +3243,11 @@ async function handleRequest(request, env) {
       return handleCryptoPrices(request, env);
     }
 
+    // Public route - AI Chatbot (whitelisted intents)
+    if (path === '/api/ai/chat' && method === 'POST') {
+      return handleAIChatPublic(request, env);
+    }
+
       // Public route - create user with avatar
       if (path === '/api/users/create-with-avatar' && method === 'POST') {
         return handleCreateUserWithAvatar(request, env);
@@ -3178,6 +3349,10 @@ async function handleRequest(request, env) {
     }
     if (path.startsWith('/api/tracking/history/') && method === 'GET') {
       return handleTrackingHistory(request, env);
+    }
+    // AI Chat Private (authenticated)
+    if (path === '/api/ai/chat/private' && method === 'POST') {
+      return handleAIChatPrivate(request, env, user);
     }
     // Crypto routes
     if (path === '/api/crypto/wallet' && method === 'POST') {
