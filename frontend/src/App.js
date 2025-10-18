@@ -64,6 +64,7 @@ const AdminPanel = React.lazy(() => import('./pages/AdminPanel'));
 const UserAdmin = React.lazy(() => import('./pages/UserAdmin'));
 const CryptoRoutesStatus = React.lazy(() => import('./components/CryptoRoutesStatus'));
 const UserDashboard = React.lazy(() => import('./pages/UserDashboard'));
+const CryptoDashboard = React.lazy(() => import('./pages/CryptoDashboard'));
 const Messaging = React.lazy(() => import('./pages/Messaging'));
 const TwoFactorAuth = React.lazy(() => import('./pages/TwoFactorAuth'));
 const VerifyEmail = React.lazy(() => import('./pages/VerifyEmail'));
@@ -277,6 +278,14 @@ function App() {
                               <CryptoRouteHandler>
                                 <AgroisyncDashboard />
                               </CryptoRouteHandler>
+                            </ProtectedRoute>
+                          }
+                        />
+                        <Route
+                          path='/crypto-dashboard'
+                          element={
+                            <ProtectedRoute>
+                              <CryptoDashboard />
                             </ProtectedRoute>
                           }
                         />

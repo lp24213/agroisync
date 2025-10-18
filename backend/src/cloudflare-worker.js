@@ -2290,6 +2290,317 @@ async function sendStatusUpdateEmail(env, freight_order_id, status, description)
   }
 }
 
+// Crypto - Cadastrar Carteira
+async function handleCryptoWalletRegister(request, env, user) {
+  try {
+    const { wallet_address, wallet_type } = await request.json();
+    
+    if (!wallet_address) {
+      return jsonResponse({ success: false, error: 'Endereço da carteira obrigatório' }, 400);
+    }
+    
+    const db = getDb(env);
+    const walletId = crypto.randomUUID();
+    
+    const existing = await db.prepare(
+      `SELECT id FROM crypto_wallets WHERE wallet_address = ?`
+    ).bind(wallet_address).first();
+    
+    if (existing) {
+      return jsonResponse({ success: false, error: 'Carteira já cadastrada' }, 400);
+    }
+    
+    await db.prepare(
+      `INSERT INTO crypto_wallets (id, user_id, wallet_address, wallet_type, is_verified, is_active, created_at) 
+       VALUES (?, ?, ?, ?, 1, 1, strftime('%s', 'now'))`
+    ).bind(walletId, user.userId, wallet_address, wallet_type || 'metamask').run();
+    
+    return jsonResponse({
+      success: true,
+      data: { id: walletId, wallet_address }
+    });
+  } catch (error) {
+    console.error('Wallet register error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao cadastrar carteira' }, 500);
+  }
+}
+
+// Crypto - Comprar
+async function handleCryptoBuy(request, env, user) {
+  try {
+    const { crypto_symbol, amount_brl } = await request.json();
+    
+    if (!crypto_symbol || !amount_brl || amount_brl <= 0) {
+      return jsonResponse({ success: false, error: 'Dados inválidos' }, 400);
+    }
+    
+    const currentPrice = await getCurrentCryptoPrice(crypto_symbol);
+    
+    if (!currentPrice) {
+      return jsonResponse({ success: false, error: 'Criptomoeda não suportada' }, 400);
+    }
+    
+    const COMMISSION_PERCENTAGE = 10;
+    const totalWithCommission = amount_brl * (1 + COMMISSION_PERCENTAGE / 100);
+    const commissionAmount = totalWithCommission - amount_brl;
+    const cryptoAmount = amount_brl / currentPrice;
+    
+    const db = getDb(env);
+    const transactionId = crypto.randomUUID();
+    const paymentId = crypto.randomUUID();
+    
+    await db.prepare(
+      `INSERT INTO crypto_transactions (id, user_id, transaction_type, crypto_symbol, amount, amount_usd, price_at_time, fee_percentage, fee_amount, status, created_at) 
+       VALUES (?, ?, 'buy', ?, ?, ?, ?, ?, ?, 'completed', strftime('%s', 'now'))`
+    ).bind(
+      transactionId,
+      user.userId,
+      crypto_symbol,
+      cryptoAmount,
+      amount_brl / 5.5,
+      currentPrice,
+      COMMISSION_PERCENTAGE,
+      commissionAmount
+    ).run();
+    
+    await db.prepare(
+      `INSERT INTO crypto_payments (id, user_id, transaction_id, crypto_symbol, amount, amount_brl, commission_percentage, commission_amount_brl, net_amount_brl, owner_wallet, status, payment_for, created_at) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, '0x5Ea5C5970e8AE23A5336d631707CF31C5916E8b1', 'completed', 'crypto_purchase', strftime('%s', 'now'))`
+    ).bind(
+      paymentId,
+      user.userId,
+      transactionId,
+      crypto_symbol,
+      cryptoAmount,
+      totalWithCommission,
+      COMMISSION_PERCENTAGE,
+      commissionAmount,
+      amount_brl
+    ).run();
+    
+    const commissionId = crypto.randomUUID();
+    await db.prepare(
+      `INSERT INTO crypto_commissions (id, payment_id, amount_brl, crypto_symbol, transferred_to_owner, created_at) 
+       VALUES (?, ?, ?, ?, 0, strftime('%s', 'now'))`
+    ).bind(commissionId, paymentId, commissionAmount, crypto_symbol).run();
+    
+    const existingBalance = await db.prepare(
+      `SELECT id FROM crypto_balances WHERE user_id = ? AND crypto_symbol = ?`
+    ).bind(user.userId, crypto_symbol).first();
+    
+    if (existingBalance) {
+      await db.prepare(
+        `UPDATE crypto_balances SET balance = balance + ?, balance_usd = balance_usd + ?, last_updated = strftime('%s', 'now') WHERE user_id = ? AND crypto_symbol = ?`
+      ).bind(cryptoAmount, cryptoAmount * currentPrice, user.userId, crypto_symbol).run();
+    } else {
+      const balanceId = crypto.randomUUID();
+      await db.prepare(
+        `INSERT INTO crypto_balances (id, user_id, crypto_symbol, balance, balance_usd, last_updated) 
+         VALUES (?, ?, ?, ?, ?, strftime('%s', 'now'))`
+      ).bind(balanceId, user.userId, crypto_symbol, cryptoAmount, cryptoAmount * currentPrice).run();
+    }
+    
+    return jsonResponse({
+      success: true,
+      data: {
+        transaction_id: transactionId,
+        payment_id: paymentId,
+        crypto_amount: cryptoAmount,
+        total_brl: totalWithCommission,
+        commission_brl: commissionAmount,
+        price: currentPrice
+      }
+    });
+  } catch (error) {
+    console.error('Crypto buy error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao comprar criptomoeda' }, 500);
+  }
+}
+
+// Crypto - Vender
+async function handleCryptoSell(request, env, user) {
+  try {
+    const { crypto_symbol, crypto_amount } = await request.json();
+    
+    if (!crypto_symbol || !crypto_amount || crypto_amount <= 0) {
+      return jsonResponse({ success: false, error: 'Dados inválidos' }, 400);
+    }
+    
+    const db = getDb(env);
+    
+    const balance = await db.prepare(
+      `SELECT balance FROM crypto_balances WHERE user_id = ? AND crypto_symbol = ?`
+    ).bind(user.userId, crypto_symbol).first();
+    
+    if (!balance || balance.balance < crypto_amount) {
+      return jsonResponse({ success: false, error: 'Saldo insuficiente' }, 400);
+    }
+    
+    const currentPrice = await getCurrentCryptoPrice(crypto_symbol);
+    const amountBrl = crypto_amount * currentPrice * 5.5;
+    const COMMISSION_PERCENTAGE = 10;
+    const commissionAmount = amountBrl * (COMMISSION_PERCENTAGE / 100);
+    const netAmount = amountBrl - commissionAmount;
+    
+    const transactionId = crypto.randomUUID();
+    
+    await db.prepare(
+      `INSERT INTO crypto_transactions (id, user_id, transaction_type, crypto_symbol, amount, amount_usd, price_at_time, fee_percentage, fee_amount, status, created_at) 
+       VALUES (?, ?, 'sell', ?, ?, ?, ?, ?, ?, 'completed', strftime('%s', 'now'))`
+    ).bind(
+      transactionId,
+      user.userId,
+      crypto_symbol,
+      crypto_amount,
+      amountBrl / 5.5,
+      currentPrice,
+      COMMISSION_PERCENTAGE,
+      commissionAmount
+    ).run();
+    
+    await db.prepare(
+      `UPDATE crypto_balances SET balance = balance - ?, balance_usd = balance_usd - ?, last_updated = strftime('%s', 'now') WHERE user_id = ? AND crypto_symbol = ?`
+    ).bind(crypto_amount, crypto_amount * currentPrice, user.userId, crypto_symbol).run();
+    
+    return jsonResponse({
+      success: true,
+      data: {
+        transaction_id: transactionId,
+        crypto_amount: crypto_amount,
+        gross_brl: amountBrl,
+        commission_brl: commissionAmount,
+        net_brl: netAmount,
+        price: currentPrice
+      }
+    });
+  } catch (error) {
+    console.error('Crypto sell error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao vender criptomoeda' }, 500);
+  }
+}
+
+// Crypto - Saldos
+async function handleCryptoBalances(request, env, user) {
+  try {
+    const db = getDb(env);
+    
+    const balances = await db.prepare(
+      `SELECT * FROM crypto_balances WHERE user_id = ? ORDER BY balance_usd DESC`
+    ).bind(user.userId).all();
+    
+    return jsonResponse({
+      success: true,
+      data: balances.results || []
+    });
+  } catch (error) {
+    console.error('Crypto balances error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao buscar saldos' }, 500);
+  }
+}
+
+// Crypto - Transações
+async function handleCryptoTransactions(request, env, user) {
+  try {
+    const db = getDb(env);
+    
+    const transactions = await db.prepare(
+      `SELECT * FROM crypto_transactions WHERE user_id = ? ORDER BY created_at DESC LIMIT 100`
+    ).bind(user.userId).all();
+    
+    return jsonResponse({
+      success: true,
+      data: transactions.results || []
+    });
+  } catch (error) {
+    console.error('Crypto transactions error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao buscar transações' }, 500);
+  }
+}
+
+// Crypto - Preços (público)
+async function handleCryptoPrices(request, env) {
+  try {
+    const prices = {
+      'BTC': 43250.50,
+      'ETH': 2650.30,
+      'USDT': 1.00,
+      'BNB': 310.50,
+      'SOL': 98.75,
+      'XRP': 0.52,
+      'USDC': 1.00,
+      'ADA': 0.45,
+      'AVAX': 35.20,
+      'DOGE': 0.08,
+      'TRX': 0.10,
+      'DOT': 6.50,
+      'MATIC': 0.85,
+      'LINK': 14.30,
+      'SHIB': 0.000009,
+      'DAI': 1.00,
+      'UNI': 6.20,
+      'LTC': 72.50,
+      'BCH': 245.80,
+      'ATOM': 9.75,
+      'XMR': 158.90,
+      'ETC': 20.15,
+      'XLM': 0.13,
+      'FIL': 4.85,
+      'AAVE': 95.40,
+      'ALGO': 0.18,
+      'VET': 0.025,
+      'ICP': 4.50,
+      'APT': 8.30,
+      'NEAR': 2.15
+    };
+    
+    return jsonResponse({
+      success: true,
+      data: prices
+    });
+  } catch (error) {
+    console.error('Crypto prices error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao buscar preços' }, 500);
+  }
+}
+
+// Helper para buscar preço
+async function getCurrentCryptoPrice(symbol) {
+  const prices = {
+    'BTC': 43250.50,
+    'ETH': 2650.30,
+    'USDT': 1.00,
+    'BNB': 310.50,
+    'SOL': 98.75,
+    'XRP': 0.52,
+    'USDC': 1.00,
+    'ADA': 0.45,
+    'AVAX': 35.20,
+    'DOGE': 0.08,
+    'TRX': 0.10,
+    'DOT': 6.50,
+    'MATIC': 0.85,
+    'LINK': 14.30,
+    'SHIB': 0.000009,
+    'DAI': 1.00,
+    'UNI': 6.20,
+    'LTC': 72.50,
+    'BCH': 245.80,
+    'ATOM': 9.75,
+    'XMR': 158.90,
+    'ETC': 20.15,
+    'XLM': 0.13,
+    'FIL': 4.85,
+    'AAVE': 95.40,
+    'ALGO': 0.18,
+    'VET': 0.025,
+    'ICP': 4.50,
+    'APT': 8.30,
+    'NEAR': 2.15
+  };
+  
+  return prices[symbol] || null;
+}
+
 // User Plan Info
 async function handleUserPlan(request, env, user) {
   try {
@@ -2862,6 +3173,25 @@ async function handleRequest(request, env) {
     }
     if (path.startsWith('/api/tracking/history/') && method === 'GET') {
       return handleTrackingHistory(request, env);
+    }
+    // Crypto routes
+    if (path === '/api/crypto/wallet' && method === 'POST') {
+      return handleCryptoWalletRegister(request, env, user);
+    }
+    if (path === '/api/crypto/buy' && method === 'POST') {
+      return handleCryptoBuy(request, env, user);
+    }
+    if (path === '/api/crypto/sell' && method === 'POST') {
+      return handleCryptoSell(request, env, user);
+    }
+    if (path === '/api/crypto/balances' && method === 'GET') {
+      return handleCryptoBalances(request, env, user);
+    }
+    if (path === '/api/crypto/transactions' && method === 'GET') {
+      return handleCryptoTransactions(request, env, user);
+    }
+    if (path === '/api/crypto/prices' && method === 'GET') {
+      return handleCryptoPrices(request, env);
     }
     if (path === '/api/users/me' && method === 'GET') {
       return handleUserProfile(request, env, user);
