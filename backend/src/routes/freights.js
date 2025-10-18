@@ -7,89 +7,33 @@ const router = new Router();
 
 // GET /api/freights - Get all freights with pagination and filters
 // GET /freights - Listar fretes com filtros e paginação
-router.get('/freights', async (request, env) => {
+router.get('/freights', async (req, res) => {
   try {
-    const {
-      page = 1,
-      limit = 20,
-      originCity,
-      originState,
-      destCity,
-      destState,
-      cargoType,
-      minWeight,
-      maxWeight,
-      maxPrice,
-      sortBy = 'createdAt',
-      sortOrder = 'desc'
-    } = req.query;
+    const page = parseInt(req.query.page || '1', 10);
+    const limit = parseInt(req.query.limit || '20', 10);
+    const offset = (page - 1) * limit;
 
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const sql = `SELECT id, title, origin_city, origin_state, dest_city, dest_state, price, weight, created_at
+      FROM freights WHERE status = 'active' ORDER BY created_at DESC LIMIT ? OFFSET ?`;
+    const freights = await req.env.DB.prepare(sql).bind(limit, offset).all();
 
-    // Build query
-    const query = { status: 'active' };
+    const countSql = `SELECT COUNT(*) as total FROM freights WHERE status = 'active'`;
+    const countResult = await req.env.DB.prepare(countSql).first();
+    const total = countResult?.total || 0;
 
-    if (originCity) {
-      query['origin.city'] = { $regex: originCity, $options: 'i' };
-    }
-    if (originState) {
-      query['origin.state'] = { $regex: originState, $options: 'i' };
-    }
-    if (destCity) {
-      query['destination.city'] = { $regex: destCity, $options: 'i' };
-    }
-    if (destState) {
-      query['destination.state'] = { $regex: destState, $options: 'i' };
-    }
-    if (cargoType) {
-      query.cargoType = cargoType;
-    }
-    if (minWeight || maxWeight) {
-      query.weight = {};
-      if (minWeight) {
-        query.weight.min = { $gte: parseFloat(minWeight) };
-      }
-      if (maxWeight) {
-        query.weight.max = { $lte: parseFloat(maxWeight) };
-      }
-    }
-    if (maxPrice) {
-      query.price = { $lte: parseFloat(maxPrice) };
-    }
-
-    // Build sort
-    const sort = {};
-    sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
-
-    // Execute query
-    const freights = await Freight.find(query)
-      .sort(sort)
-      .skip(skip)
-      .limit(parseInt(limit, 10, 10))
-      const sql = `SELECT * FROM freights WHERE status = 'active' ORDER BY ${sortBy} ${sortOrder === 'desc' ? 'DESC' : 'ASC'} LIMIT ? OFFSET ?`;
-      const allParams = [limit, skip];
-      const freights = await env.DB.prepare(sql).bind(...allParams).all();
     res.json({
       success: true,
-      const countSql = `SELECT COUNT(*) as total FROM freights WHERE status = 'active'`;
-      const countResult = await env.DB.prepare(countSql).first();
-        freights,
-        pagination: {
-          currentPage: parseInt(page, 10, 10),
-          totalPages: Math.ceil(total / parseInt(limit, 10, 10)),
-          totalItems: total,
-          itemsPerPage: parseInt(limit, 10, 10)
-        }
+      data: freights.results || freights,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        totalItems: total,
+        itemsPerPage: limit
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      logger.error('Error fetching freights:', error);
-    }
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
+    console.error('Error fetching freights:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
   }
 });
 

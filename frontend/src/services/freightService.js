@@ -116,6 +116,22 @@ class FreightService {
     }
   }
 
+  // Buscar fretes do usuário logado (meus fretes)
+  async getMyFreights() {
+    try {
+      console.log('🚛 Buscando meus fretes...');
+      const response = await axios.get(`${API_BASE_URL}/user/items?type=freights`, {
+        headers: getAuthHeaders()
+      });
+      console.log('✅ Meus fretes:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Erro ao buscar meus fretes:', error);
+      // Retornar estrutura vazia ao invés de array vazio
+      return { success: false, freights: [], data: { freights: [] } };
+    }
+  }
+
   // Buscar frete por ID
   async getFreightById(freightId) {
     try {

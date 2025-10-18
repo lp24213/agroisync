@@ -1,7 +1,7 @@
 // @ts-check
 import { Router } from 'itty-router';
 import { json } from './utils/respond.js';
-// @ts-ignore - handlers are local JS modules without types
+// handlers are local JS modules without TypeScript definitions
 import { createUser, loginUser, recoverPassword, resetPassword } from './handlers/auth.js';
 import { verifyToken } from './middleware/auth.js';
 import { validateRequest } from './middleware/validation.js';

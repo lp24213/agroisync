@@ -256,13 +256,11 @@ router.get('/subscriptions', authenticateToken, async (req, res) => {
               0,
               user.subscriptions.store.maxAds - user.subscriptions.store.currentAds
             ),
-            /* eslint-disable prettier/prettier */
-            daysRemaining: user.subscriptions.store.endDate
-              ? Math.ceil(
-                  (new Date(user.subscriptions.store.endDate) - new Date()) / (1000 * 60 * 60 * 24)
-                )
-              : 0
-            /* eslint-enable prettier/prettier */
+            daysRemaining: (() => {
+              const end = user.subscriptions.store.endDate;
+              if (!end) return 0;
+              return Math.ceil((new Date(end) - new Date()) / (1000 * 60 * 60 * 24));
+            })()
           },
           freight: {
             hasActivePlan: user.subscriptions.freight.status === 'active',
@@ -273,14 +271,11 @@ router.get('/subscriptions', authenticateToken, async (req, res) => {
               0,
               user.subscriptions.freight.maxFreights - user.subscriptions.freight.currentFreights
             ),
-            /* eslint-disable prettier/prettier */
-            daysRemaining: user.subscriptions.freight.endDate
-              ? Math.ceil(
-                  (new Date(user.subscriptions.freight.endDate) - new Date()) /
-                    (1000 * 60 * 60 * 24)
-                )
-              : 0
-            /* eslint-enable prettier/prettier */
+            daysRemaining: (() => {
+              const end = user.subscriptions.freight.endDate;
+              if (!end) return 0;
+              return Math.ceil((new Date(end) - new Date()) / (1000 * 60 * 60 * 24));
+            })()
           }
         }
       }

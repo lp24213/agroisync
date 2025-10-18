@@ -332,7 +332,9 @@ function getOpenAIService() {
       openAIServiceInstance = new OpenAIService();
     } catch (err) {
       // Avoid throwing during import; log and keep null so callers can handle absence
-      logger && logger.warn && logger.warn('OpenAIService could not be initialized at import time:', err?.message || err);
+      if (logger && typeof logger.warn === 'function') {
+        logger.warn('OpenAIService could not be initialized at import time:', err?.message || err);
+      }
       openAIServiceInstance = null;
     }
   }

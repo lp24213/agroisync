@@ -271,6 +271,22 @@ class ProductService {
     }
   }
 
+  // Buscar produtos do usuário logado (meus produtos)
+  async getMyProducts() {
+    try {
+      console.log('📦 Buscando meus produtos...');
+      const response = await axios.get(`${API_BASE_URL}/user/items?type=products`, {
+        headers: getAuthHeaders()
+      });
+      console.log('✅ Meus produtos:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Erro ao buscar meus produtos:', error);
+      // Retornar estrutura vazia ao invés de array vazio
+      return { success: false, products: [], data: { products: [] } };
+    }
+  }
+
   // Buscar produtos por categoria (Loja)
   async getProductsByCategory(category) {
     try {

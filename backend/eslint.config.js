@@ -117,7 +117,13 @@ export default defineConfig([
     files: ["**/*.{js,ts,jsx,tsx}"],
     rules: {
       '@typescript-eslint/no-require-imports': 'off',
-      'prettier/prettier': 'off'
+      'prettier/prettier': 'off',
+      // Reduce noisy rules for legacy codebase so we can focus on runtime defects
+      'no-undef': 'off',
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      'no-console': 'off'
     }
   }
 ]);

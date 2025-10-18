@@ -147,8 +147,12 @@ const AgroisyncLogin = () => {
                 console.log('  - daysRemaining:', daysRemaining);
                 console.log('  - isTrialPlan:', isTrialPlan);
 
-                // 2. SE NÃO TEM PLANO ATIVO → Redirecionar para /plans
-                if (!hasPlan || !isPlanActive) {
+                // 2. SE NÃO TEM PLANO → Redirecionar para /plans (mas SE TEM plano, mesmo que expirado, deixa entrar)
+                // CORREÇÃO: Verificar se plan_status existe e está 'active' OU se tem plano que não seja free
+                const planStatus = userProfile.plan_status || 'inactive';
+                const hasActivePlan = (hasPlan && isPlanActive) || planStatus === 'active';
+                
+                if (!hasPlan || (!hasActivePlan && planExpiresAt && planExpiresAt < now)) {
                   console.log('🚫 Usuário sem plano ativo - redirecionando para /plans');
                   window.location.href = '/plans';
                   return;
@@ -158,6 +162,11 @@ const AgroisyncLogin = () => {
                 if (isTrialPlan && daysRemaining > 0) {
                   console.log(`⚠️ Usuário em teste grátis (${daysRemaining} dias restantes) - permitindo acesso`);
                   // Deixa entrar, mas vai ter aviso no dashboard
+                }
+                
+                // 4. SE TEM PLANO PAGO (mesmo que perto de expirar) → Deixar entrar
+                if (hasPlan && isPlanActive) {
+                  console.log('✅ Usuário com plano ativo - permitindo acesso');
                 }
 
                 // 3. SE TEM PLANO → Verificar se completou perfil específico
