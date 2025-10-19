@@ -3532,7 +3532,7 @@ async function handleAdminListUsers(request, env) {
     
     const db = getDb(env);
     
-    let query = 'SELECT id, email, name, company, phone, cpf, cnpj, plan, plan_active, created_at, role FROM users';
+    let query = 'SELECT id, email, name, company, phone, cpf, cnpj, plan, plan_active, created_at FROM users';
     let params = [];
     
     if (search) {
