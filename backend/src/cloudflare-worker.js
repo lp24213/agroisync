@@ -3486,7 +3486,7 @@ async function handleRequest(request, env) {
       }
     
     // Public routes - Freight
-  if (path === '/api/freight' && method === 'GET') {
+  if ((path === '/api/freight' || path === '/api/freights') && method === 'GET') {
     return handleFreightList(request, env);
   }
     
