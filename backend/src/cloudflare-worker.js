@@ -1128,7 +1128,8 @@ async function handleLogin(request, env) {
           id: user.id,
           email: user.email,
           name: user.name,
-          role: user.role
+          role: user.role,
+          isAdmin: isAdmin  // Flag para redirecionar no frontend
         }
       }
     });
