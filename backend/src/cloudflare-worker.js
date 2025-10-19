@@ -923,8 +923,6 @@ async function handleRegister(request, env) {
     } else {
       console.log('📝 Sem token do Turnstile ou secret key não configurada');
   }
-
-  const db = getDb(env);
     
     // Check if user exists
     const existing = await db.prepare('SELECT id FROM users WHERE email = ?')
@@ -3658,38 +3656,179 @@ async function handleAdminUnblock(request, env, blockId) {
   }
 }
 
-// Admin - Stats
+// Admin - Stats COMPLETO (com pagamentos, valores, percentagens)
 async function handleAdminStats(request, env) {
   try {
     const db = getDb(env);
     
+    // Usuários
     const totalUsers = await db.prepare('SELECT COUNT(*) as count FROM users').first();
-    const totalProducts = await db.prepare('SELECT COUNT(*) as count FROM products').first();
-    const totalFreights = await db.prepare('SELECT COUNT(*) as count FROM freight').first();
-    const totalBlocks = await db.prepare('SELECT COUNT(*) as count FROM blocked_identifiers').first();
-    
     const usersToday = await db.prepare(
       "SELECT COUNT(*) as count FROM users WHERE DATE(created_at) = DATE('now')"
     ).first();
-    
+    const usersThisWeek = await db.prepare(
+      "SELECT COUNT(*) as count FROM users WHERE created_at >= DATE('now', '-7 days')"
+    ).first();
+    const usersThisMonth = await db.prepare(
+      "SELECT COUNT(*) as count FROM users WHERE created_at >= DATE('now', 'start of month')"
+    ).first();
     const paidUsers = await db.prepare(
       "SELECT COUNT(*) as count FROM users WHERE plan != 'inicial' AND plan IS NOT NULL"
     ).first();
     
+    // Produtos e Fretes
+    const totalProducts = await db.prepare('SELECT COUNT(*) as count FROM products').first();
+    const totalFreights = await db.prepare('SELECT COUNT(*) as count FROM freight').first();
+    const productsToday = await db.prepare(
+      "SELECT COUNT(*) as count FROM products WHERE DATE(created_at) = DATE('now')"
+    ).first();
+    const freightsToday = await db.prepare(
+      "SELECT COUNT(*) as count FROM freight WHERE DATE(created_at) = DATE('now')"
+    ).first();
+    
+    // Bloqueios
+    const totalBlocks = await db.prepare('SELECT COUNT(*) as count FROM blocked_identifiers').first();
+    
+    // Pagamentos (se tabela existir)
+    let totalRevenue = 0;
+    let paymentsToday = 0;
+    let paymentsThisMonth = 0;
+    try {
+      const revenue = await db.prepare("SELECT SUM(amount) as total FROM payments WHERE status = 'completed'").first();
+      totalRevenue = revenue?.total || 0;
+      
+      const payToday = await db.prepare(
+        "SELECT COUNT(*) as count FROM payments WHERE DATE(created_at) = DATE('now') AND status = 'completed'"
+      ).first();
+      paymentsToday = payToday?.count || 0;
+      
+      const payMonth = await db.prepare(
+        "SELECT COUNT(*) as count FROM payments WHERE created_at >= DATE('now', 'start of month') AND status = 'completed'"
+      ).first();
+      paymentsThisMonth = payMonth?.count || 0;
+    } catch (e) {
+      // Tabela payments pode não existir ainda
+      console.log('Payments table not found, skipping revenue stats');
+    }
+    
+    // Conversas ativas
+    let activeConversations = 0;
+    try {
+      const convos = await db.prepare("SELECT COUNT(DISTINCT sender_id) as count FROM messages WHERE created_at >= DATE('now', '-7 days')").first();
+      activeConversations = convos?.count || 0;
+    } catch (e) {
+      console.log('Messages table not found');
+    }
+    
+    // Cálculos de crescimento (%)
+    const usersLastWeek = totalUsers?.count - (usersThisWeek?.count || 0);
+    const growthPercentage = usersLastWeek > 0 
+      ? (((usersThisWeek?.count || 0) / usersLastWeek) * 100).toFixed(2)
+      : 0;
+    
+    const paidPercentage = totalUsers?.count > 0
+      ? ((paidUsers?.count / totalUsers?.count) * 100).toFixed(2)
+      : 0;
+    
     return jsonResponse({
       success: true,
       stats: {
+        // Usuários
         totalUsers: totalUsers?.count || 0,
+        usersToday: usersToday?.count || 0,
+        usersThisWeek: usersThisWeek?.count || 0,
+        usersThisMonth: usersThisMonth?.count || 0,
+        paidUsers: paidUsers?.count || 0,
+        paidPercentage: parseFloat(paidPercentage),
+        growthPercentage: parseFloat(growthPercentage),
+        
+        // Conteúdo
         totalProducts: totalProducts?.count || 0,
         totalFreights: totalFreights?.count || 0,
-        totalBlocks: totalBlocks?.count || 0,
-        usersToday: usersToday?.count || 0,
-        paidUsers: paidUsers?.count || 0
+        productsToday: productsToday?.count || 0,
+        freightsToday: freightsToday?.count || 0,
+        
+        // Financeiro
+        totalRevenue: parseFloat(totalRevenue) || 0,
+        paymentsToday: paymentsToday || 0,
+        paymentsThisMonth: paymentsThisMonth || 0,
+        
+        // Atividade
+        activeConversations: activeConversations || 0,
+        totalBlocks: totalBlocks?.count || 0
       }
     });
   } catch (error) {
     console.error('Admin stats error:', error);
     return jsonResponse({ success: false, error: 'Erro ao buscar estatísticas' }, 500);
+  }
+}
+
+// Admin - Deletar produto
+async function handleAdminDeleteProduct(request, env, productId) {
+  try {
+    const db = getDb(env);
+    await db.prepare('DELETE FROM products WHERE id = ?').bind(productId).run();
+    return jsonResponse({ success: true, message: 'Produto deletado com sucesso' });
+  } catch (error) {
+    console.error('Admin delete product error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao deletar produto' }, 500);
+  }
+}
+
+// Admin - Deletar frete
+async function handleAdminDeleteFreight(request, env, freightId) {
+  try {
+    const db = getDb(env);
+    await db.prepare('DELETE FROM freight WHERE id = ?').bind(freightId).run();
+    return jsonResponse({ success: true, message: 'Frete deletado com sucesso' });
+  } catch (error) {
+    console.error('Admin delete freight error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao deletar frete' }, 500);
+  }
+}
+
+// Admin - Listar todos os produtos
+async function handleAdminListProducts(request, env) {
+  try {
+    const db = getDb(env);
+    const products = await db.prepare(`
+      SELECT p.*, u.email as user_email, u.name as user_name 
+      FROM products p 
+      LEFT JOIN users u ON p.user_id = u.id 
+      ORDER BY p.created_at DESC 
+      LIMIT 100
+    `).all();
+    
+    return jsonResponse({
+      success: true,
+      products: products.results || []
+    });
+  } catch (error) {
+    console.error('Admin list products error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao listar produtos' }, 500);
+  }
+}
+
+// Admin - Listar todos os fretes
+async function handleAdminListFreights(request, env) {
+  try {
+    const db = getDb(env);
+    const freights = await db.prepare(`
+      SELECT f.*, u.email as user_email, u.name as user_name 
+      FROM freight f 
+      LEFT JOIN users u ON f.user_id = u.id 
+      ORDER BY f.created_at DESC 
+      LIMIT 100
+    `).all();
+    
+    return jsonResponse({
+      success: true,
+      freights: freights.results || []
+    });
+  } catch (error) {
+    console.error('Admin list freights error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao listar fretes' }, 500);
   }
 }
 
@@ -3812,8 +3951,8 @@ async function handleRequest(request, env) {
       return jsonResponse({ success: false, error: 'Não autorizado' }, 401);
     }
     
-    // ADMIN ROUTES - Verificar se é admin
-    const isAdmin = user?.email === 'luispaulo-de-oliveira@hotmail.com' || user?.role === 'admin';
+    // ADMIN ROUTES - Verificar se é admin (MÁXIMA SEGURANÇA)
+    const isAdmin = user?.email === 'luispaulodeoliveira@agrotm.com.br' || user?.email === 'luispaulo-de-oliveira@hotmail.com' || user?.role === 'admin';
     
     if (path.startsWith('/api/admin/')) {
       if (!isAdmin) {
@@ -3862,6 +4001,28 @@ async function handleRequest(request, env) {
       // Admin - Stats
       if (path === '/api/admin/stats' && method === 'GET') {
         return handleAdminStats(request, env);
+      }
+      
+      // Admin - Deletar produto
+      if (path.startsWith('/api/admin/products/') && method === 'DELETE') {
+        const productId = path.split('/').pop();
+        return handleAdminDeleteProduct(request, env, productId);
+      }
+      
+      // Admin - Deletar frete
+      if (path.startsWith('/api/admin/freights/') && method === 'DELETE') {
+        const freightId = path.split('/').pop();
+        return handleAdminDeleteFreight(request, env, freightId);
+      }
+      
+      // Admin - Listar todos os produtos
+      if (path === '/api/admin/products' && method === 'GET') {
+        return handleAdminListProducts(request, env);
+      }
+      
+      // Admin - Listar todos os fretes
+      if (path === '/api/admin/freights' && method === 'GET') {
+        return handleAdminListFreights(request, env);
       }
     }
     
