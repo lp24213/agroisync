@@ -4018,8 +4018,13 @@ async function handleRequest(request, env) {
     const isAdmin = user?.email === 'luispaulodeoliveira@agrotm.com.br' || user?.role === 'admin';
     
     if (path.startsWith('/api/admin/')) {
+      console.log('🔐 Admin check:', { email: user?.email, role: user?.role, isAdmin });
       if (!isAdmin) {
-        return jsonResponse({ success: false, error: 'Acesso negado - apenas administradores' }, 403);
+        return jsonResponse({ 
+          success: false, 
+          error: 'Acesso negado - apenas administradores',
+          debug: { email: user?.email, role: user?.role }
+        }, 403);
       }
       
       // Admin - Listar todos os usuários
