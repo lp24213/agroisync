@@ -3532,7 +3532,7 @@ async function handleAdminListUsers(request, env) {
     
     const db = getDb(env);
     
-    let query = 'SELECT id, email, name, company, phone, cpf, cnpj, plan, plan_active, created_at FROM users';
+    let query = 'SELECT id, email, name, company, phone, cpf, cnpj, plan, plan_active, created_at, role FROM users';
     let params = [];
     
     if (search) {
@@ -3544,8 +3544,16 @@ async function handleAdminListUsers(request, env) {
     query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
     params.push(limit, offset);
     
+    console.log('📊 Admin query:', query, 'params:', params);
+    
     const users = await db.prepare(query).bind(...params).all();
     const totalResult = await db.prepare('SELECT COUNT(*) as total FROM users').first();
+    
+    console.log('📊 Admin users result:', {
+      count: users.results?.length || 0,
+      total: totalResult?.total || 0,
+      firstUser: users.results?.[0]
+    });
     
     return jsonResponse({
       success: true,
@@ -3556,8 +3564,8 @@ async function handleAdminListUsers(request, env) {
       totalPages: Math.ceil((totalResult?.total || 0) / limit)
     });
   } catch (error) {
-    console.error('Admin list users error:', error);
-    return jsonResponse({ success: false, error: 'Erro ao listar usuários' }, 500);
+    console.error('❌ Admin list users error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao listar usuários', details: error.message }, 500);
   }
 }
 
