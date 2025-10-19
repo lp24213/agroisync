@@ -74,8 +74,8 @@ export default function LanguageSelectorPro({ className = '' }) {
                 onClick={() => changeLanguage(lang.code)}
                 className={`flex w-full items-center justify-between gap-3 px-4 py-3 text-sm font-medium transition-all duration-200 ${
                   i18n.language === lang.code
-                    ? 'bg-gradient-to-r from-green-50 to-emerald-50 text-green-700'
-                    : 'text-gray-700 hover:bg-gray-50'
+                    ? 'bg-gradient-to-r from-green-50 to-emerald-50 text-green-800'
+                    : 'text-gray-900 hover:bg-gray-50'
                 }`}
               >
                 <div className='flex items-center gap-3'>

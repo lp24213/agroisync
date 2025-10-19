@@ -855,11 +855,57 @@ async function handleHealth(request, env) {
 // Auth - Register
 async function handleRegister(request, env) {
   try {
-  const { email, password, name, turnstileToken } = await request.json();
+  const { email, password, name, cpf, cnpj, ie, turnstileToken } = await request.json();
     
     if (!email || !password || !name) {
     return jsonResponse({ success: false, error: 'Dados incompletos' }, 400);
   }
+
+    // VERIFICAR BLOQUEIOS (LGPD/Segurança)
+    const db = getDb(env);
+    
+    // Criar tabela de bloqueios se não existir
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS blocked_identifiers (
+        id TEXT PRIMARY KEY,
+        type TEXT NOT NULL,
+        value TEXT NOT NULL,
+        reason TEXT,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        created_by TEXT
+      )
+    `).run();
+    
+    // Verificar se email, CPF, CNPJ ou IE estão bloqueados
+    const emailBlocked = await db.prepare('SELECT * FROM blocked_identifiers WHERE type = ? AND value = ?')
+      .bind('email', email.toLowerCase()).first();
+    if (emailBlocked) {
+      return jsonResponse({ success: false, error: 'Email bloqueado. Contate o suporte.' }, 403);
+    }
+    
+    if (cpf) {
+      const cpfBlocked = await db.prepare('SELECT * FROM blocked_identifiers WHERE type = ? AND value = ?')
+        .bind('cpf', cpf.replace(/\D/g, '')).first();
+      if (cpfBlocked) {
+        return jsonResponse({ success: false, error: 'CPF bloqueado. Contate o suporte.' }, 403);
+      }
+    }
+    
+    if (cnpj) {
+      const cnpjBlocked = await db.prepare('SELECT * FROM blocked_identifiers WHERE type = ? AND value = ?')
+        .bind('cnpj', cnpj.replace(/\D/g, '')).first();
+      if (cnpjBlocked) {
+        return jsonResponse({ success: false, error: 'CNPJ bloqueado. Contate o suporte.' }, 403);
+      }
+    }
+    
+    if (ie) {
+      const ieBlocked = await db.prepare('SELECT * FROM blocked_identifiers WHERE type = ? AND value = ?')
+        .bind('ie', ie.toLowerCase()).first();
+      if (ieBlocked) {
+        return jsonResponse({ success: false, error: 'IE bloqueado. Contate o suporte.' }, 403);
+      }
+    }
 
     // Verify Turnstile (log apenas para debug)
     if (turnstileToken && env.CF_TURNSTILE_SECRET_KEY) {
@@ -3411,6 +3457,243 @@ async function handleVerifyEmail(request, env) {
 }
 
 // ============================================
+// ADMIN FUNCTIONS
+// ============================================
+
+// Admin - Listar todos os usuários
+async function handleAdminListUsers(request, env) {
+  try {
+    const url = new URL(request.url);
+    const page = parseInt(url.searchParams.get('page') || '1');
+    const limit = parseInt(url.searchParams.get('limit') || '50');
+    const search = url.searchParams.get('search') || '';
+    const offset = (page - 1) * limit;
+    
+    const db = getDb(env);
+    
+    let query = 'SELECT id, email, name, company, phone, cpf, cnpj, plan, plan_active, created_at FROM users';
+    let params = [];
+    
+    if (search) {
+      query += ' WHERE email LIKE ? OR name LIKE ? OR company LIKE ? OR cpf LIKE ? OR cnpj LIKE ?';
+      const searchParam = `%${search}%`;
+      params = [searchParam, searchParam, searchParam, searchParam, searchParam];
+    }
+    
+    query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
+    params.push(limit, offset);
+    
+    const users = await db.prepare(query).bind(...params).all();
+    const totalResult = await db.prepare('SELECT COUNT(*) as total FROM users').first();
+    
+    return jsonResponse({
+      success: true,
+      users: users.results || [],
+      total: totalResult?.total || 0,
+      page,
+      limit,
+      totalPages: Math.ceil((totalResult?.total || 0) / limit)
+    });
+  } catch (error) {
+    console.error('Admin list users error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao listar usuários' }, 500);
+  }
+}
+
+// Admin - Ver detalhes de um usuário
+async function handleAdminGetUser(request, env, userId) {
+  try {
+    const db = getDb(env);
+    const user = await db.prepare('SELECT * FROM users WHERE id = ?').bind(userId).first();
+    
+    if (!user) {
+      return jsonResponse({ success: false, error: 'Usuário não encontrado' }, 404);
+    }
+    
+    // Buscar produtos do usuário
+    const products = await db.prepare('SELECT * FROM products WHERE user_id = ?').bind(userId).all();
+    
+    // Buscar fretes do usuário
+    const freights = await db.prepare('SELECT * FROM freight WHERE user_id = ?').bind(userId).all();
+    
+    return jsonResponse({
+      success: true,
+      user,
+      stats: {
+        productsCount: products.results?.length || 0,
+        freightsCount: freights.results?.length || 0
+      }
+    });
+  } catch (error) {
+    console.error('Admin get user error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao buscar usuário' }, 500);
+  }
+}
+
+// Admin - Editar usuário
+async function handleAdminUpdateUser(request, env, userId) {
+  try {
+    const data = await request.json();
+    const db = getDb(env);
+    
+    const updateFields = [];
+    const values = [];
+    
+    if (data.name) { updateFields.push('name = ?'); values.push(data.name); }
+    if (data.email) { updateFields.push('email = ?'); values.push(data.email); }
+    if (data.company) { updateFields.push('company = ?'); values.push(data.company); }
+    if (data.phone) { updateFields.push('phone = ?'); values.push(data.phone); }
+    if (data.plan) { updateFields.push('plan = ?'); values.push(data.plan); }
+    if (data.plan_active !== undefined) { updateFields.push('plan_active = ?'); values.push(data.plan_active ? 1 : 0); }
+    
+    if (updateFields.length === 0) {
+      return jsonResponse({ success: false, error: 'Nenhum campo para atualizar' }, 400);
+    }
+    
+    values.push(userId);
+    await db.prepare(`UPDATE users SET ${updateFields.join(', ')} WHERE id = ?`).bind(...values).run();
+    
+    return jsonResponse({ success: true, message: 'Usuário atualizado com sucesso' });
+  } catch (error) {
+    console.error('Admin update user error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao atualizar usuário' }, 500);
+  }
+}
+
+// Admin - Deletar usuário
+async function handleAdminDeleteUser(request, env, userId) {
+  try {
+    const db = getDb(env);
+    
+    // Deletar produtos do usuário
+    await db.prepare('DELETE FROM products WHERE user_id = ?').bind(userId).run();
+    
+    // Deletar fretes do usuário
+    await db.prepare('DELETE FROM freight WHERE user_id = ?').bind(userId).run();
+    
+    // Deletar usuário
+    await db.prepare('DELETE FROM users WHERE id = ?').bind(userId).run();
+    
+    return jsonResponse({ success: true, message: 'Usuário deletado com sucesso' });
+  } catch (error) {
+    console.error('Admin delete user error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao deletar usuário' }, 500);
+  }
+}
+
+// Admin - Bloquear CPF/CNPJ/IE/Email
+async function handleAdminBlock(request, env) {
+  try {
+    const { type, value, reason } = await request.json();
+    
+    if (!type || !value) {
+      return jsonResponse({ success: false, error: 'Tipo e valor são obrigatórios' }, 400);
+    }
+    
+    const db = getDb(env);
+    const blockId = crypto.randomUUID();
+    
+    // Criar tabela de bloqueios se não existir
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS blocked_identifiers (
+        id TEXT PRIMARY KEY,
+        type TEXT NOT NULL,
+        value TEXT NOT NULL,
+        reason TEXT,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        created_by TEXT
+      )
+    `).run();
+    
+    await db.prepare(
+      'INSERT INTO blocked_identifiers (id, type, value, reason) VALUES (?, ?, ?, ?)'
+    ).bind(blockId, type, value.toLowerCase(), reason || 'Bloqueado pelo admin').run();
+    
+    return jsonResponse({ success: true, message: `${type.toUpperCase()} bloqueado com sucesso`, blockId });
+  } catch (error) {
+    console.error('Admin block error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao bloquear' }, 500);
+  }
+}
+
+// Admin - Listar bloqueios
+async function handleAdminListBlocks(request, env) {
+  try {
+    const db = getDb(env);
+    
+    // Criar tabela se não existir
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS blocked_identifiers (
+        id TEXT PRIMARY KEY,
+        type TEXT NOT NULL,
+        value TEXT NOT NULL,
+        reason TEXT,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        created_by TEXT
+      )
+    `).run();
+    
+    const blocks = await db.prepare('SELECT * FROM blocked_identifiers ORDER BY created_at DESC').all();
+    
+    return jsonResponse({
+      success: true,
+      blocks: blocks.results || []
+    });
+  } catch (error) {
+    console.error('Admin list blocks error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao listar bloqueios' }, 500);
+  }
+}
+
+// Admin - Remover bloqueio
+async function handleAdminUnblock(request, env, blockId) {
+  try {
+    const db = getDb(env);
+    await db.prepare('DELETE FROM blocked_identifiers WHERE id = ?').bind(blockId).run();
+    
+    return jsonResponse({ success: true, message: 'Bloqueio removido com sucesso' });
+  } catch (error) {
+    console.error('Admin unblock error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao remover bloqueio' }, 500);
+  }
+}
+
+// Admin - Stats
+async function handleAdminStats(request, env) {
+  try {
+    const db = getDb(env);
+    
+    const totalUsers = await db.prepare('SELECT COUNT(*) as count FROM users').first();
+    const totalProducts = await db.prepare('SELECT COUNT(*) as count FROM products').first();
+    const totalFreights = await db.prepare('SELECT COUNT(*) as count FROM freight').first();
+    const totalBlocks = await db.prepare('SELECT COUNT(*) as count FROM blocked_identifiers').first();
+    
+    const usersToday = await db.prepare(
+      "SELECT COUNT(*) as count FROM users WHERE DATE(created_at) = DATE('now')"
+    ).first();
+    
+    const paidUsers = await db.prepare(
+      "SELECT COUNT(*) as count FROM users WHERE plan != 'inicial' AND plan IS NOT NULL"
+    ).first();
+    
+    return jsonResponse({
+      success: true,
+      stats: {
+        totalUsers: totalUsers?.count || 0,
+        totalProducts: totalProducts?.count || 0,
+        totalFreights: totalFreights?.count || 0,
+        totalBlocks: totalBlocks?.count || 0,
+        usersToday: usersToday?.count || 0,
+        paidUsers: paidUsers?.count || 0
+      }
+    });
+  } catch (error) {
+    console.error('Admin stats error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao buscar estatísticas' }, 500);
+  }
+}
+
+// ============================================
 // MAIN ROUTER
 // ============================================
 
@@ -3527,6 +3810,59 @@ async function handleRequest(request, env) {
     const user = await verifyJWT(request, env.JWT_SECRET);
     if (!user) {
       return jsonResponse({ success: false, error: 'Não autorizado' }, 401);
+    }
+    
+    // ADMIN ROUTES - Verificar se é admin
+    const isAdmin = user?.email === 'luispaulo-de-oliveira@hotmail.com' || user?.role === 'admin';
+    
+    if (path.startsWith('/api/admin/')) {
+      if (!isAdmin) {
+        return jsonResponse({ success: false, error: 'Acesso negado - apenas administradores' }, 403);
+      }
+      
+      // Admin - Listar todos os usuários
+      if (path === '/api/admin/users' && method === 'GET') {
+        return handleAdminListUsers(request, env);
+      }
+      
+      // Admin - Ver detalhes de um usuário
+      if (path.startsWith('/api/admin/users/') && method === 'GET') {
+        const userId = path.split('/').pop();
+        return handleAdminGetUser(request, env, userId);
+      }
+      
+      // Admin - Editar usuário
+      if (path.startsWith('/api/admin/users/') && method === 'PUT') {
+        const userId = path.split('/').pop();
+        return handleAdminUpdateUser(request, env, userId);
+      }
+      
+      // Admin - Deletar usuário
+      if (path.startsWith('/api/admin/users/') && method === 'DELETE') {
+        const userId = path.split('/').pop();
+        return handleAdminDeleteUser(request, env, userId);
+      }
+      
+      // Admin - Bloquear CPF/CNPJ/IE/Email
+      if (path === '/api/admin/block' && method === 'POST') {
+        return handleAdminBlock(request, env);
+      }
+      
+      // Admin - Listar bloqueios
+      if (path === '/api/admin/blocks' && method === 'GET') {
+        return handleAdminListBlocks(request, env);
+      }
+      
+      // Admin - Remover bloqueio
+      if (path.startsWith('/api/admin/blocks/') && method === 'DELETE') {
+        const blockId = path.split('/').pop();
+        return handleAdminUnblock(request, env, blockId);
+      }
+      
+      // Admin - Stats
+      if (path === '/api/admin/stats' && method === 'GET') {
+        return handleAdminStats(request, env);
+      }
     }
     
     // Protected - Products
