@@ -111,11 +111,8 @@ const AgroisyncLogin = () => {
           updateUserState(user, token);
           
           // Redirecionar baseado no papel do usuário
-          const isAdminEmail = user.email === 'luispaulo-de-oliveira@hotmail.com';
-          
-          if (user.role === 'super-admin' || user.role === 'admin' || isAdminEmail) {
-            window.location.href = '/admin';
-          } else if (user.isAdmin) {
+          // SEGURANÇA: Não verificar email no frontend! Deixar o backend decidir
+          if (user.role === 'super-admin' || user.role === 'admin' || user.isAdmin) {
             window.location.href = '/admin';
           } else {
             // Usuário normal - verificar status do plano e perfil

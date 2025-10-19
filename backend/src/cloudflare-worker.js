@@ -1105,9 +1105,18 @@ async function handleLogin(request, env) {
     return jsonResponse({ success: false, error: 'Credenciais inválidas' }, 401);
   }
     
+    // Verificar se é admin (SEM EXPOR NO FRONTEND)
+    const isAdmin = user.email === 'luispaulodeoliveira@agrotm.com.br' || user.role === 'admin';
+    
     // Generate JWT
     const token = await generateJWT(
-      { userId: user.id, email: user.email, name: user.name, role: user.role },
+      { 
+        userId: user.id, 
+        email: user.email, 
+        name: user.name, 
+        role: user.role,
+        isAdmin: isAdmin  // Adiciona flag isAdmin no token
+      },
     env.JWT_SECRET
   );
     
@@ -3952,7 +3961,7 @@ async function handleRequest(request, env) {
     }
     
     // ADMIN ROUTES - Verificar se é admin (MÁXIMA SEGURANÇA)
-    const isAdmin = user?.email === 'luispaulo-de-oliveira@hotmail.com' || user?.role === 'admin';
+    const isAdmin = user?.email === 'luispaulodeoliveira@agrotm.com.br' || user?.role === 'admin';
     
     if (path.startsWith('/api/admin/')) {
       if (!isAdmin) {
