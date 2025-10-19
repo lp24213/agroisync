@@ -111,7 +111,7 @@ const AgroisyncLogin = () => {
           updateUserState(user, token);
           
           // Redirecionar baseado no papel do usuário
-          const isAdminEmail = user.email === 'luispaulodeoliveira@agrotm.com.br' || user.email === 'luispaulo-de-oliveira@hotmail.com';
+          const isAdminEmail = user.email === 'luispaulo-de-oliveira@hotmail.com';
           
           if (user.role === 'super-admin' || user.role === 'admin' || isAdminEmail) {
             window.location.href = '/admin';

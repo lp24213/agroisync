@@ -3952,7 +3952,7 @@ async function handleRequest(request, env) {
     }
     
     // ADMIN ROUTES - Verificar se é admin (MÁXIMA SEGURANÇA)
-    const isAdmin = user?.email === 'luispaulodeoliveira@agrotm.com.br' || user?.email === 'luispaulo-de-oliveira@hotmail.com' || user?.role === 'admin';
+    const isAdmin = user?.email === 'luispaulo-de-oliveira@hotmail.com' || user?.role === 'admin';
     
     if (path.startsWith('/api/admin/')) {
       if (!isAdmin) {
