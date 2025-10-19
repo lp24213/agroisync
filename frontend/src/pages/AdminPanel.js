@@ -45,6 +45,8 @@ const AdminPanel = () => {
       const response = await axios.get(getApiUrl(`/admin/users?search=${searchTerm}`), {
         headers: { Authorization: `Bearer ${token}` }
       });
+      console.log('👥 Admin users response:', response.data);
+      console.log('👥 Users array:', response.data.users);
       setUsers(response.data.users || []);
     } catch (error) {
       toast.error('Erro ao carregar usuários');
