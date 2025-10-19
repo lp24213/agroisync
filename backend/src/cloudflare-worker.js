@@ -2086,11 +2086,50 @@ async function handleConversations(request, env, user) {
     const status = url.searchParams.get('status') || 'all';
     const db = getDb(env);
     
-    // Por enquanto, retornar array vazio (não há sistema de conversas implementado)
+    // Buscar conversas do usuário (mensagens agrupadas por remetente/destinatário)
+    const conversations = await db.prepare(`
+      SELECT 
+        CASE 
+          WHEN sender_id = ? THEN receiver_id 
+          ELSE sender_id 
+        END as contact_id,
+        MAX(created_at) as last_message_at,
+        COUNT(*) as message_count,
+        SUM(CASE WHEN receiver_id = ? AND is_read = 0 THEN 1 ELSE 0 END) as unread_count
+      FROM messages 
+      WHERE sender_id = ? OR receiver_id = ?
+      GROUP BY contact_id
+      ORDER BY last_message_at DESC
+      LIMIT 50
+    `).bind(user.userId, user.userId, user.userId, user.userId).all();
+    
+    // Buscar informações dos contatos
+    const conversationsWithDetails = await Promise.all(
+      (conversations.results || []).map(async (conv) => {
+        const contact = await db.prepare('SELECT id, name, email FROM users WHERE id = ?')
+          .bind(conv.contact_id)
+          .first();
+        
+        return {
+          id: conv.contact_id,
+          contact: contact || { id: conv.contact_id, name: 'Usuário desconhecido', email: '' },
+          lastMessageAt: conv.last_message_at,
+          messageCount: conv.message_count,
+          unreadCount: conv.unread_count,
+          status: conv.unread_count > 0 ? 'active' : 'read'
+        };
+      })
+    );
+    
+    // Filtrar por status se necessário
+    const filteredConversations = status === 'active' 
+      ? conversationsWithDetails.filter(c => c.unreadCount > 0)
+      : conversationsWithDetails;
+    
     return jsonResponse({
       success: true,
-      data: [],
-      count: 0
+      data: { conversations: filteredConversations },
+      count: filteredConversations.length
     });
   } catch (error) {
     console.error('Conversations error:', error);
