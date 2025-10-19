@@ -74,8 +74,8 @@ export default function LanguageSelectorPro({ className = '' }) {
                 onClick={() => changeLanguage(lang.code)}
                 className={`flex w-full items-center justify-between gap-3 px-4 py-3 text-sm font-medium transition-all duration-200 ${
                   i18n.language === lang.code
-                    ? 'bg-gradient-to-r from-green-50 to-emerald-50 text-green-800'
-                    : 'text-gray-900 hover:bg-gray-50'
+                    ? 'bg-gradient-to-r from-green-50 to-emerald-50 text-green-900 font-bold'
+                    : 'text-gray-950 hover:bg-gray-100 font-semibold'
                 }`}
               >
                 <div className='flex items-center gap-3'>
@@ -83,8 +83,8 @@ export default function LanguageSelectorPro({ className = '' }) {
                     {lang.flag}
                   </span>
                   <div className='flex flex-col items-start'>
-                    <span className='font-semibold'>{lang.native}</span>
-                    <span className='text-xs text-gray-500'>{lang.label}</span>
+                    <span className='font-bold text-gray-950'>{lang.native}</span>
+                    <span className='text-xs text-gray-700 font-medium'>{lang.label}</span>
                   </div>
                 </div>
                 {i18n.language === lang.code && (
