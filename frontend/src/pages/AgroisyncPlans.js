@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { 
   Check, Star, Zap, Shield, Users, CreditCard, Gift, 
   Brain, Globe, MessageCircle, Award, Target, BarChart3,
@@ -11,6 +12,7 @@ import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 const AgroisyncPlans = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [billingCycle, setBillingCycle] = useState('monthly'); // monthly, semiannual, annual
   const [paymentMethod, setPaymentMethod] = useState('card'); // card ou pix
