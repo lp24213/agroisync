@@ -1955,6 +1955,18 @@ async function handleUserProfile(request, env, user) {
       const values = [];
       
       // Campos que podem ser atualizados
+      if (updateData.name !== undefined) {
+        fields.push('name = ?');
+        values.push(updateData.name);
+      }
+      if (updateData.email !== undefined) {
+        fields.push('email = ?');
+        values.push(updateData.email.toLowerCase());
+      }
+      if (updateData.avatar !== undefined) {
+        fields.push('avatar = ?');
+        values.push(updateData.avatar);
+      }
       if (updateData.phone !== undefined) {
         fields.push('phone = ?');
         values.push(updateData.phone);

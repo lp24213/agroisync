@@ -167,6 +167,45 @@ const UserDashboard = () => {
     loadUserData();
   }, [loadUserData]);
 
+  // Carregar dados do perfil para configurações
+  useEffect(() => {
+    if (activeTab === 'settings') {
+      const loadProfileData = async () => {
+        try {
+          const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+          if (!token) return;
+
+          const response = await fetch(`${process.env.REACT_APP_API_URL || '/api'}/user/profile`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            const userData = data?.data || data?.user || data;
+            
+            setProfileData({
+              name: userData.name || '',
+              email: userData.email || '',
+              phone: userData.phone || '',
+              company: userData.company || ''
+            });
+            
+            if (userData.avatar) {
+              setProfileImage(userData.avatar);
+            }
+          }
+        } catch (error) {
+          console.error('❌ Erro ao carregar perfil:', error);
+        }
+      };
+
+      loadProfileData();
+    }
+  }, [activeTab]);
+
   const handleAddItem = async () => {
     try {
       console.log('🔄 Cadastrando item:', newItem);
@@ -225,17 +264,28 @@ const UserDashboard = () => {
       const token = localStorage.getItem('token') || localStorage.getItem('authToken');
       if (!token) return;
 
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/user/profile`, {
+      const updatePayload = {
+        ...profileData,
+        avatar: profileImage || null
+      };
+
+      const response = await fetch(`${process.env.REACT_APP_API_URL || '/api'}/user/profile`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(profileData)
+        body: JSON.stringify(updatePayload)
       });
 
       if (response.ok) {
         toast.success('✅ Perfil atualizado com sucesso!');
+        
+        // Atualizar contexto de autenticação se necessário
+        const updatedUser = await response.json();
+        if (updatedUser?.data) {
+          // Pode atualizar o AuthContext aqui se necessário
+        }
       } else {
         throw new Error('Erro ao atualizar perfil');
       }
