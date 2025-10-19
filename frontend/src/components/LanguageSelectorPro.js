@@ -41,6 +41,7 @@ export default function LanguageSelectorPro({ className = '' }) {
       <button
         onClick={() => setOpen(!open)}
         className='group relative flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 active:scale-95'
+        style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
         aria-haspopup='menu'
         aria-expanded={open}
         aria-label='Selecionar idioma'
@@ -48,10 +49,10 @@ export default function LanguageSelectorPro({ className = '' }) {
         {/* Efeito de brilho */}
         <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500' />
         
-        <Globe className='h-4 w-4 relative z-10' />
-        <span className='text-xl relative z-10'>{currentLang.flag}</span>
-        <span className='font-bold relative z-10'>{currentLang.code.toUpperCase()}</span>
-        <ChevronDown className={`h-4 w-4 relative z-10 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+        <Globe className='h-4 w-4 relative z-10 drop-shadow-sm' />
+        <span className='text-xl relative z-10 drop-shadow-sm'>{currentLang.flag}</span>
+        <span className='font-bold relative z-10 drop-shadow-sm tracking-wide'>{currentLang.code.toUpperCase()}</span>
+        <ChevronDown className={`h-4 w-4 relative z-10 drop-shadow-sm transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {/* Dropdown - Animado e Elegante */}
