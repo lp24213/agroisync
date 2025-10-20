@@ -34,7 +34,7 @@ const NFTManager = ({ userId }) => {
 
   const mintNFT = useCallback(async metadata => {
     try {
-      const response = await fetch('/api/blockchain/nfts', {
+      const response = await fetch(getApiUrl('blockchain/nfts'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

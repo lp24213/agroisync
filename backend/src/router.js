@@ -3,6 +3,16 @@ import { Router } from 'itty-router';
 import { json } from './utils/respond.js';
 // handlers are local JS modules without TypeScript definitions
 import { createUser, loginUser, recoverPassword, resetPassword } from './handlers/auth.js';
+import { 
+  getDashboard, 
+  getUsers, 
+  getProducts, 
+  getPayments, 
+  getRegistrations, 
+  getActivity,
+  updateUserStatus,
+  deleteProduct
+} from './handlers/admin.js';
 import { verifyToken } from './middleware/auth.js';
 import { validateRequest } from './middleware/validation.js';
 import { errorHandler } from './middleware/error.js';
@@ -35,6 +45,16 @@ router.get('/api/profile', verifyToken, async (req, env) => {
     return json({ error: 'Erro ao buscar perfil' }, { status: 500 });
   }
 });
+
+// Rotas Admin (protegidas)
+router.get('/api/admin/dashboard', verifyToken, getDashboard);
+router.get('/api/admin/users', verifyToken, getUsers);
+router.get('/api/admin/products', verifyToken, getProducts);
+router.get('/api/admin/payments', verifyToken, getPayments);
+router.get('/api/admin/registrations', verifyToken, getRegistrations);
+router.get('/api/admin/activity', verifyToken, getActivity);
+router.put('/api/admin/users/:id/status', verifyToken, updateUserStatus);
+router.delete('/api/admin/products/:id', verifyToken, deleteProduct);
 
 // Rota de healthcheck
 router.get('/api/health', async (req, env) => {

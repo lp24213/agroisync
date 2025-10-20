@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { 
@@ -17,6 +17,15 @@ const AgroisyncPlans = () => {
   const [billingCycle, setBillingCycle] = useState('monthly'); // monthly, semiannual, annual
   const [paymentMethod, setPaymentMethod] = useState('card'); // card ou pix
   const [loading, setLoading] = useState(null); // ID do plano sendo processado
+  const [accountType, setAccountType] = useState('anunciante'); // comprador, freteiro, anunciante
+  
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get('type');
+    if (type && ['comprador', 'freteiro', 'anunciante'].includes(type)) {
+      setAccountType(type);
+    }
+  }, []);
   
   const handleSubscribe = async (plan, paymentMethod = 'pix') => {
     try {
@@ -104,7 +113,202 @@ const AgroisyncPlans = () => {
     }
   }
 
-  const plans = [
+  // Planos organizados por tipo de conta
+  const plansByType = useMemo(() => ({
+    comprador: [
+      {
+        name: 'Gratuito',
+        slug: 'comprador-free',
+        price: 0,
+        description: 'Perfeito para começar a comprar no agro',
+        features: [
+          '✅ Compras ilimitadas',
+          '✅ Até 10 alertas de preço',
+          '✅ 50 favoritos',
+          '✅ Cotações em tempo real',
+          '✅ Chat com vendedores',
+          '✅ Histórico de pedidos',
+          '✅ Sistema de avaliações',
+          '✅ Suporte por email',
+          '💰 Comissão: 5% apenas em vendas concluídas'
+        ],
+        limits: { produtos: -1, fretes: 0, alertas: 10, favoritos: 50 },
+        popular: true,
+        comissao: '5%'
+      },
+      {
+        name: 'Pro',
+        slug: 'comprador-pro',
+        price: 49.90,
+        description: 'Para compradores profissionais',
+        features: [
+          '✅ Tudo do Gratuito',
+          '✅ Alertas ilimitados',
+          '✅ Favoritos ilimitados',
+          '✅ Insights de mercado por IA',
+          '✅ Recomendações personalizadas',
+          '✅ Análise de oportunidades',
+          '✅ Dashboard executivo',
+          '✅ Histórico de preços (1 ano)',
+          '✅ Suporte prioritário (WhatsApp)',
+          '💰 Comissão reduzida: 3%',
+          '🎁 2% cashback em AgroToken'
+        ],
+        limits: { produtos: -1, fretes: 0, alertas: -1, favoritos: -1 },
+        comissao: '3%',
+        destaque: true
+      },
+      {
+        name: 'Enterprise',
+        slug: 'comprador-enterprise',
+        price: 299.00,
+        description: 'Para grandes compradores e cooperativas',
+        features: [
+          '✅ Tudo do Pro',
+          '✅ API dedicada',
+          '✅ Até 10 usuários na conta',
+          '✅ Gerente de conta',
+          '✅ Integração ERP',
+          '✅ Relatórios personalizados',
+          '✅ SLA 99,9%',
+          '✅ Suporte 24/7',
+          '💰 Comissão: 2%',
+          '🎁 5% cashback em AgroToken'
+        ],
+        limits: { produtos: -1, fretes: 0, alertas: -1, favoritos: -1, usuarios: 10 },
+        comissao: '2%'
+      }
+    ],
+    freteiro: [
+      {
+        name: 'Gratuito',
+        slug: 'freteiro-free',
+        price: 0,
+        description: 'Comece a oferecer fretes sem custo',
+        features: [
+          '✅ Até 20 fretes por mês',
+          '✅ Rastreamento GPS básico',
+          '✅ Chat com vendedores',
+          '✅ Sistema de avaliações',
+          '✅ Dashboard de rotas',
+          '✅ Suporte por email',
+          '💰 Comissão: 5% por frete concluído'
+        ],
+        limits: { fretes: 20, produtos: 0 },
+        popular: true,
+        comissao: '5%'
+      },
+      {
+        name: 'Profissional',
+        slug: 'freteiro-pro',
+        price: 79.90,
+        description: 'Para freteiros profissionais',
+        features: [
+          '✅ Fretes ilimitados',
+          '✅ Otimização de rotas por IA',
+          '✅ Matching automático de cargas',
+          '✅ Rastreamento GPS avançado',
+          '✅ Prioridade em oportunidades',
+          '✅ Analytics de rentabilidade',
+          '✅ Gestão de múltiplos veículos',
+          '✅ Suporte prioritário',
+          '💰 Comissão reduzida: 3%'
+        ],
+        limits: { fretes: -1, produtos: 0 },
+        destaque: true,
+        comissao: '3%'
+      },
+    ],
+    anunciante: [
+      {
+        name: 'Gratuito',
+        slug: 'anunciante-free',
+        price: 0,
+        description: 'Venda seus produtos sem custo inicial',
+        features: [
+          '✅ Até 10 produtos ativos',
+          '✅ 5 fotos por produto',
+          '✅ Anúncios válidos por 60 dias',
+          '✅ Chat com compradores',
+          '✅ Dashboard de vendas',
+          '✅ Sistema de avaliações',
+          '✅ Cotações em tempo real',
+          '✅ Suporte por email',
+          '💰 Comissão: 5% apenas em vendas',
+          '⚠️ Transporte é sua responsabilidade'
+        ],
+        limits: { produtos: 10, fretes: 0, fotos: 5 },
+        popular: true,
+        comissao: '5%'
+      },
+      {
+        name: 'Profissional',
+        slug: 'anunciante-pro',
+        price: 99.90,
+        description: 'Para produtores e revendas estabelecidos',
+        features: [
+          '✅ Até 100 produtos ativos',
+          '✅ 15 fotos por produto',
+          '✅ Anúncios ilimitados (tempo)',
+          '✅ Até 10 produtos em DESTAQUE',
+          '✅ Selo "Vendedor Profissional"',
+          '✅ Precificação sugerida por IA',
+          '✅ Analytics avançado',
+          '✅ Notificações de interesse',
+          '✅ Prioridade nos resultados',
+          '✅ Suporte prioritário',
+          '💰 Comissão reduzida: 3%',
+          '🎁 1% cashback em AGT'
+        ],
+        limits: { produtos: 100, fretes: 0, fotos: 15, destaque: 10 },
+        destaque: true,
+        comissao: '3%'
+      },
+      {
+        name: 'Loja Virtual',
+        slug: 'anunciante-loja',
+        price: 249.90,
+        description: 'Para lojas, cooperativas e grandes produtores',
+        features: [
+          '✅ Produtos ilimitados',
+          '✅ Fotos e vídeos ilimitados',
+          '✅ Página de loja personalizada',
+          '✅ URL própria (agroisync.com/loja/sua-marca)',
+          '✅ Até 30 produtos em DESTAQUE',
+          '✅ Selo "Loja Oficial ✓"',
+          '✅ Banner rotativo na home',
+          '✅ API para integração ERP',
+          '✅ Gestão de estoque automatizada',
+          '✅ Até 5 usuários na conta',
+          '✅ Gerente de conta dedicado',
+          '✅ Suporte 24/7',
+          '💰 Comissão: 2%',
+          '🎁 3% cashback em AgroToken'
+        ],
+        limits: { produtos: -1, fretes: 0, fotos: -1, destaque: 30, usuarios: 5 },
+        comissao: '2%'
+      },
+      {
+        name: 'Enterprise',
+        slug: 'anunciante-enterprise',
+        price: 499.90,
+        description: 'Para cooperativas e agroindústrias',
+        features: [
+          '✅ Produtos ilimitados',
+          '🏪 Loja personalizada',
+          '🌐 Domínio próprio',
+          '🔗 Integração ERP',
+          '👥 Equipe ilimitada'
+        ],
+        limits: { produtos: -1, fretes: 0 }
+      }
+    ]
+  }), []);
+
+  const plans = plansByType[accountType] || plansByType.anunciante;
+  
+  // Manter alguns planos originais como fallback
+  const originalPlans = [
     {
       name: 'Inicial',
       price: 9.90,
@@ -343,6 +547,27 @@ const AgroisyncPlans = () => {
 
   return (
     <div className='agro-plans-container' data-page='planos'>
+      
+      {/* AVISO: PLATAFORMA INTERMEDIADORA */}
+      <div style={{
+        background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+        borderBottom: '3px solid #f59e0b',
+        padding: '20px',
+        textAlign: 'center'
+      }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+          <p style={{ fontSize: '15px', fontWeight: '600', color: '#92400e', marginBottom: '8px' }}>
+            ℹ️ Agroisync é uma plataforma intermediadora
+          </p>
+          <p style={{ fontSize: '13px', color: '#78350f' }}>
+            Conectamos compradores e vendedores. Transporte e qualidade são responsabilidade do vendedor. 
+            <a href="/termos-responsabilidade" style={{ color: '#2F5233', fontWeight: '700', marginLeft: '6px' }}>
+              Leia os termos →
+            </a>
+          </p>
+        </div>
+      </div>
+      
       {/* HERO COM IMAGEM DE CRESCIMENTO DE NEGÓCIOS */}
       <section
         className='relative flex min-h-screen items-center justify-center'
@@ -391,6 +616,45 @@ const AgroisyncPlans = () => {
       {/* Controles de Billing e Pagamento */}
       <section className='bg-gray-50 py-12'>
         <div className='mx-auto max-w-6xl px-4'>
+          {/* Seletor de Tipo de Conta */}
+          <div className='mb-8 flex justify-center'>
+            <div className='inline-flex rounded-lg bg-white p-1 shadow-md'>
+              <button
+                onClick={() => setAccountType('comprador')}
+                className={`flex items-center gap-2 rounded-md px-6 py-3 text-sm font-semibold transition-all ${
+                  accountType === 'comprador'
+                    ? 'bg-blue-600 text-white shadow-lg'
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                <span>🛒</span>
+                Comprador
+              </button>
+              <button
+                onClick={() => setAccountType('freteiro')}
+                className={`flex items-center gap-2 rounded-md px-6 py-3 text-sm font-semibold transition-all ${
+                  accountType === 'freteiro'
+                    ? 'bg-green-600 text-white shadow-lg'
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                <span>🚛</span>
+                Freteiro
+              </button>
+              <button
+                onClick={() => setAccountType('anunciante')}
+                className={`flex items-center gap-2 rounded-md px-6 py-3 text-sm font-semibold transition-all ${
+                  accountType === 'anunciante'
+                    ? 'bg-purple-600 text-white shadow-lg'
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                <span>📦</span>
+                Anunciante
+              </button>
+            </div>
+          </div>
+
           <div className='mb-8 flex flex-col items-center justify-center gap-6 md:flex-row'>
             {/* Toggle Billing Cycle */}
             <div className='flex items-center gap-4'>

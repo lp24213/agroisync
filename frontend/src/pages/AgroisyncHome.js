@@ -80,7 +80,7 @@ const AgroisyncHome = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               style={{ textAlign: 'center', margin: '0 auto' }}
             >
-              Junte-se à AGROISYNC e faça parte da revolução do agronegócio brasileiro
+              A plataforma mais completa do agronegócio: IA avançada, marketplace, fretes inteligentes, corretora de cripto e nossa própria criptomoeda!
             </motion.p>
 
             <motion.div
@@ -90,8 +90,8 @@ const AgroisyncHome = () => {
               transition={{ duration: 0.8, delay: 0.4 }}
               style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}
             >
-              <Link to='/' className='agro-btn-primary agro-btn-animated'>
-                Explorar Plataforma
+              <Link to='/marketplace' className='agro-btn-primary agro-btn-animated'>
+                Explorar Marketplace
               </Link>
               <Link to='/register' className='agro-btn-secondary agro-btn-animated'>
                 Começar Agora
@@ -115,30 +115,89 @@ const AgroisyncHome = () => {
               viewport={{ once: true }}
             >
               <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants}>
-                <h3 className='agro-feature-title'>Tecnologia que Impressiona</h3>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🤖</div>
+                <h3 className='agro-feature-title'>IA Avançada</h3>
                 <p className='agro-feature-description'>
-                  Recursos avançados que colocam o AgroSync anos à frente da concorrência
+                  Precificação dinâmica com 15+ variáveis, matching automático em menos de 3 minutos, análise de mercado em tempo real e detecção de fraudes
                 </p>
               </motion.div>
 
               <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants}>
-                <h3 className='agro-feature-title'>Segurança Avançada</h3>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🗺️</div>
+                <h3 className='agro-feature-title'>OpenStreetMap Gratuito</h3>
                 <p className='agro-feature-description'>
-                  Proteção de dados com criptografia de nível bancário e autenticação 2FA
+                  Rotas inteligentes, cálculo de distâncias reais, geocoding e navegação 100% gratuitos. Sem limites de requisições!
+                </p>
+              </motion.div>
+
+
+              <Link to='/marketplace' style={{ textDecoration: 'none', color: 'inherit' }}>
+                <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants} style={{ cursor: 'pointer' }}>
+                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📦</div>
+                  <h3 className='agro-feature-title'>Marketplace Completo</h3>
+                  <p className='agro-feature-description'>
+                    Compre e venda produtos agrícolas: grãos, insumos, maquinários, animais. Sistema de loja própria para produtores e anunciantes!
+                  </p>
+                </motion.div>
+              </Link>
+
+              <Link to='/freights' style={{ textDecoration: 'none', color: 'inherit' }}>
+                <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants} style={{ cursor: 'pointer' }}>
+                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🚛</div>
+                  <h3 className='agro-feature-title'>Fretes Inteligentes</h3>
+                  <p className='agro-feature-description'>
+                    Sistema de fretes com rastreamento GPS em tempo real, emails automáticos, cálculo inteligente de rotas e matching de motoristas
+                  </p>
+                </motion.div>
+              </Link>
+
+              <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants}>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⭐</div>
+                <h3 className='agro-feature-title'>Avaliações 5 Estrelas</h3>
+                <p className='agro-feature-description'>
+                  Sistema completo de avaliações com 4 critérios detalhados, badges automáticas (Top Performer, Premium, Verificado) e estatísticas em tempo real
+                </p>
+              </motion.div>
+
+              <Link to='/dashboard' style={{ textDecoration: 'none', color: 'inherit' }}>
+                <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants} style={{ cursor: 'pointer' }}>
+                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💬</div>
+                  <h3 className='agro-feature-title'>Chat com IA</h3>
+                  <p className='agro-feature-description'>
+                    Chatbot inteligente que responde sobre preços, fretes, mercado, produtos e muito mais. Reconhecimento de voz e imagens integrados!
+                  </p>
+                </motion.div>
+              </Link>
+
+              <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants}>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🤝</div>
+                <h3 className='agro-feature-title'>Parcerias</h3>
+                <p className='agro-feature-description'>
+                  Conecte-se com outros produtores, freteiros e compradores. Sistema de mensagens privadas, busca de parceiros e networking profissional
                 </p>
               </motion.div>
 
               <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants}>
-                <h3 className='agro-feature-title'>Performance Extrema</h3>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💳</div>
+                <h3 className='agro-feature-title'>Pagamentos Modernos</h3>
                 <p className='agro-feature-description'>
-                  Tecnologia de ponta para transações instantâneas e processamento em tempo real
+                  PIX instantâneo, cartão em até 12x, boleto bancário, criptomoedas (BTC, USDT, ETH) e integração com MetaMask. Transações 100% seguras!
                 </p>
               </motion.div>
 
               <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants}>
-                <h3 className='agro-feature-title'>Global & Local</h3>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📊</div>
+                <h3 className='agro-feature-title'>Análises em Tempo Real</h3>
                 <p className='agro-feature-description'>
-                  Conectividade mundial com foco no agronegócio brasileiro e internacional
+                  Acompanhe cotações de grãos, tendências de mercado, previsão do tempo, notícias do agronegócio e análises de IA para tomar melhores decisões
+                </p>
+              </motion.div>
+
+              <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants}>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>♿</div>
+                <h3 className='agro-feature-title'>Acessibilidade Total</h3>
+                <p className='agro-feature-description'>
+                  VLibras integrado para Língua Brasileira de Sinais, suporte a leitores de tela, alto contraste e navegação por teclado. Inclusão para todos!
                 </p>
               </motion.div>
             </motion.div>
@@ -151,6 +210,7 @@ const AgroisyncHome = () => {
         {/* Sidebar - Direita */}
         <div className='agro-sidebar'>
           {/* Ultra Gráfico de Cotações */}
+          {/* Cotações em Tempo Real (melhorado com API) */}
           <GrainsChart />
           
           {/* Notícias do Agronegócio */}

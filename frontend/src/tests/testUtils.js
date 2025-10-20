@@ -168,7 +168,8 @@ describe('Functionality Tests', () => {
           setLoading(true);
           try {
             // Mock login
-            const response = await fetch('/api/auth/login', {
+            const apiUrl = process.env.REACT_APP_API_URL || 'https://backend.contato-00d.workers.dev';
+            const response = await fetch(`${apiUrl}/api/auth/login`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ email, password })
@@ -355,7 +356,8 @@ describe('Functionality Tests', () => {
         const fetchProducts = async () => {
           setLoading(true);
           try {
-            const response = await fetch('/api/v1/products');
+            const apiUrl = process.env.REACT_APP_API_URL || 'https://backend.contato-00d.workers.dev';
+            const response = await fetch(`${apiUrl}/api/v1/products`);
             const data = await response.json();
             setProducts(data.data || []);
           } catch (error) {
@@ -559,7 +561,8 @@ describe('Integration Tests', () => {
           setStep('processing');
 
           try {
-            const response = await fetch('/api/v1/payments/process', {
+            const apiUrl = process.env.REACT_APP_API_URL || 'https://backend.contato-00d.workers.dev';
+            const response = await fetch(`${apiUrl}/api/v1/payments/process`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(data)
@@ -631,7 +634,8 @@ describe('Integration Tests', () => {
           setNewMessage('');
 
           // Simular envio para API
-          await fetch('/api/v1/messages', {
+          const apiUrl = process.env.REACT_APP_API_URL || 'https://backend.contato-00d.workers.dev';
+          await fetch(`${apiUrl}/api/v1/messages`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(message)

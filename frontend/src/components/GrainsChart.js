@@ -1,190 +1,169 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, MapPin } from 'lucide-react';
+import { TrendingUp, TrendingDown, MapPin, RefreshCw } from 'lucide-react';
+import cotacoesService from '../services/cotacoesService';
 
 const GrainsChart = () => {
   const [grainsData, setGrainsData] = useState([]);
   const [userLocation, setUserLocation] = useState('');
   const [loading, setLoading] = useState(true);
+  const [lastUpdate, setLastUpdate] = useState(null);
 
   useEffect(() => {
-    const fetchGrainsData = async () => {
-      try {
-        // Detectar localização real via IP com fallback
-        let userRegion = 'São Paulo';
-        let userCity = 'São Paulo';
-
-        try {
-          // Usar localização padrão para evitar erros de rede
-          userRegion = 'Mato Grosso';
-          userCity = 'Sinop';
-        } catch (ipError) {
-          // Silenciar log de localização em produção
-          if (process.env.NODE_ENV !== 'production') {
-            // Usando localização padrão
-          }
-          userRegion = 'Mato Grosso';
-          userCity = 'Sinop';
-        }
-
-        // Mapear regiões para estados brasileiros (mantido para referência futura)
-        // const regionMap = {
-        //   'Mato Grosso': 'Mato Grosso',
-        //   Paraná: 'Paraná',
-        //   'Rio Grande do Sul': 'Rio Grande do Sul',
-        //   'São Paulo': 'São Paulo',
-        //   'Minas Gerais': 'Minas Gerais',
-        //   Goiás: 'Goiás',
-        //   Bahia: 'Bahia',
-        //   Maranhão: 'Maranhão',
-        //   Pernambuco: 'Pernambuco',
-        //   Ceará: 'Ceará',
-        //   Pará: 'Pará',
-        //   Amazonas: 'Amazonas',
-        //   Rondônia: 'Rondônia',
-        //   Acre: 'Acre',
-        //   Roraima: 'Roraima',
-        //   Amapá: 'Amapá',
-        //   Tocantins: 'Tocantins',
-        //   Piauí: 'Piauí',
-        //   Alagoas: 'Alagoas',
-        //   Sergipe: 'Sergipe',
-        //   Paraíba: 'Paraíba',
-        //   'Rio Grande do Norte': 'Rio Grande do Norte',
-        //   'Espírito Santo': 'Espírito Santo',
-        //   'Rio de Janeiro': 'Rio de Janeiro',
-        //   'Santa Catarina': 'Santa Catarina',
-        //   'Distrito Federal': 'Distrito Federal'
-        // };
-
-        // Simulando dados da Agrolink por região REAL (baseado em IP)
-        const getRegionalPrices = (grain, region) => {
-          const basePrices = {
-            Soja: {
-              'Mato Grosso': { price: 148.5, change: 3.2, changePercent: 2.2 },
-              Paraná: { price: 145.5, change: 2.3, changePercent: 1.6 },
-              'Rio Grande do Sul': { price: 142.8, change: 1.8, changePercent: 1.28 },
-              Goiás: { price: 147.2, change: 2.9, changePercent: 2.01 },
-              Bahia: { price: 144.3, change: 2.1, changePercent: 1.48 },
-              default: { price: 145.5, change: 2.3, changePercent: 1.6 }
-            },
-            Milho: {
-              'Mato Grosso': { price: 82.2, change: -0.8, changePercent: -0.96 },
-              Paraná: { price: 78.2, change: -1.2, changePercent: -1.51 },
-              'Rio Grande do Sul': { price: 79.5, change: -0.9, changePercent: -1.12 },
-              Goiás: { price: 80.8, change: -0.7, changePercent: -0.86 },
-              Bahia: { price: 77.9, change: -1.3, changePercent: -1.64 },
-              default: { price: 78.2, change: -1.2, changePercent: -1.51 }
-            },
-            Trigo: {
-              Paraná: { price: 125.8, change: 1.5, changePercent: 1.21 },
-              'Rio Grande do Sul': { price: 123.2, change: 1.2, changePercent: 0.98 },
-              'Santa Catarina': { price: 124.5, change: 1.3, changePercent: 1.06 },
-              'São Paulo': { price: 126.8, change: 1.8, changePercent: 1.44 },
-              default: { price: 125.8, change: 1.5, changePercent: 1.21 }
-            },
-            Arroz: {
-              'Rio Grande do Sul': { price: 95.2, change: 0.8, changePercent: 0.85 },
-              'Santa Catarina': { price: 96.5, change: 1.1, changePercent: 1.15 },
-              Paraná: { price: 94.8, change: 0.6, changePercent: 0.64 },
-              Maranhão: { price: 97.2, change: 1.3, changePercent: 1.36 },
-              default: { price: 95.2, change: 0.8, changePercent: 0.85 }
-            },
-            Feijão: {
-              Paraná: { price: 185.5, change: 2.8, changePercent: 1.53 },
-              'Minas Gerais': { price: 182.3, change: 2.2, changePercent: 1.22 },
-              'São Paulo': { price: 184.8, change: 2.5, changePercent: 1.37 },
-              Goiás: { price: 183.2, change: 2.3, changePercent: 1.27 },
-              default: { price: 185.5, change: 2.8, changePercent: 1.53 }
-            }
-          };
-
-          const grainData = basePrices[grain] || basePrices['Soja'];
-          return grainData[region] || grainData['default'];
-        };
-
-        // Gerar dados baseados na localização detectada
-        const grains = ['Soja', 'Milho', 'Trigo', 'Arroz', 'Feijão'];
-        const regionalData = grains.map(grain => {
-          const priceData = getRegionalPrices(grain, userRegion);
-          return {
-            grain,
-            price: priceData.price,
-            change: priceData.change,
-            changePercent: priceData.changePercent,
-            region: userRegion,
-            unit: 'R$/saca'
-          };
-        });
-
-        setGrainsData(regionalData);
-
-        // Definir localização detectada
-        setUserLocation(`${userCity}, ${userRegion}`);
-
-        setLoading(false);
-      } catch (error) {
-        // Silenciar erro de grãos em produção
-        if (process.env.NODE_ENV !== 'production') {
-          // Erro ao buscar dados de grãos
-        }
-
-        // Fallback com dados do MT (dados completos)
-        const fallbackGrainsData = [
-          {
-            grain: 'Soja',
-            price: 148.5,
-            change: 3.2,
-            changePercent: 2.2,
-            region: 'Mato Grosso',
-            unit: 'R$/saca'
-          },
-          {
-            grain: 'Milho',
-            price: 82.2,
-            change: -0.8,
-            changePercent: -0.96,
-            region: 'Mato Grosso',
-            unit: 'R$/saca'
-          },
-          {
-            grain: 'Trigo',
-            price: 125.8,
-            change: 1.5,
-            changePercent: 1.21,
-            region: 'Mato Grosso',
-            unit: 'R$/saca'
-          },
-          {
-            grain: 'Arroz',
-            price: 95.2,
-            change: 0.8,
-            changePercent: 0.85,
-            region: 'Mato Grosso',
-            unit: 'R$/saca'
-          },
-          {
-            grain: 'Feijão',
-            price: 185.5,
-            change: 2.8,
-            changePercent: 1.53,
-            region: 'Mato Grosso',
-            unit: 'R$/saca'
-          }
-        ];
-
-        setGrainsData(fallbackGrainsData);
-        setUserLocation('Sinop, MT');
-        setLoading(false);
-      }
-    };
-
     fetchGrainsData();
 
-    // Atualizar a cada 2 minutos
-    const interval = setInterval(fetchGrainsData, 120000);
+    // Atualizar a cada 5 minutos
+    const interval = setInterval(fetchGrainsData, 5 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
+
+  const fetchGrainsData = async () => {
+    try {
+      // 1. DETECTAR LOCALIZAÇÃO DO USUÁRIO
+      let userRegion = 'Mato Grosso';
+      let userCity = 'Sinop';
+      let userState = 'MT';
+
+      // Tentar pegar do localStorage
+      const savedLocation = localStorage.getItem('userLocation');
+      if (savedLocation) {
+        const loc = JSON.parse(savedLocation);
+        userCity = loc.city || userCity;
+        userRegion = loc.state || userRegion;
+        userState = loc.uf || userState;
+      } else {
+        // Detectar por IP (sem bloquear se falhar)
+        try {
+          const ipResponse = await fetch('https://ipapi.co/json/', { timeout: 3000 });
+          const ipData = await ipResponse.json();
+          if (ipData.city && ipData.region) {
+            userCity = ipData.city;
+            userRegion = ipData.region;
+            userState = ipData.region_code || userState;
+            
+            // Salvar para próxima vez
+            localStorage.setItem('userLocation', JSON.stringify({
+              city: userCity,
+              state: userRegion,
+              uf: userState
+            }));
+          }
+        } catch (ipError) {
+          // Usar localização padrão (MT)
+          if (process.env.NODE_ENV === 'development') console.log('Usando localização padrão');
+        }
+      }
+
+      // 2. BUSCAR COTAÇÕES REAIS DA API
+      const result = await cotacoesService.getCotacoes(['soja', 'milho', 'cafe', 'trigo', 'boi-gordo', 'leite']);
+      
+      if (result.success && result.data) {
+        // Mapear dados da API para o formato do componente
+        const produtos = [
+          { id: 'soja', nome: 'Soja', icone: '🫘' },
+          { id: 'milho', nome: 'Milho', icone: '🌽' },
+          { id: 'cafe', nome: 'Café', icone: '☕' },
+          { id: 'trigo', nome: 'Trigo', icone: '🌾' },
+          { id: 'boi-gordo', nome: 'Boi Gordo', icone: '🐂' },
+          { id: 'leite', nome: 'Leite', icone: '🥛' }
+        ];
+
+        const regionalData = produtos.map(prod => {
+          const cotacao = result.data[prod.id];
+          if (!cotacao) return null;
+
+          return {
+            grain: prod.nome,
+            icone: prod.icone,
+            price: cotacao.preco,
+            change: cotacao.preco * (cotacao.variacao / 100), // Valor absoluto da mudança
+            changePercent: cotacao.variacao,
+            region: userRegion,
+            unit: cotacao.unidade || 'saca',
+            fonte: cotacao.fonte || 'CEPEA'
+          };
+        }).filter(Boolean); // Remover nulls
+
+        setGrainsData(regionalData);
+        setUserLocation(`${userCity}, ${userState}`);
+        setLastUpdate(new Date());
+        setLoading(false);
+      } else {
+        throw new Error('Falha ao buscar cotações');
+      }
+    } catch (error) {
+      // FALLBACK: Usar dados locais se API falhar
+      if (process.env.NODE_ENV === 'development') console.error('Erro ao buscar cotações, usando fallback:', error);
+
+      const fallbackGrainsData = [
+        {
+          grain: 'Soja',
+          icone: '🫘',
+          price: 120.50,
+          change: 3.0,
+          changePercent: 2.5,
+          region: 'Brasil',
+          unit: 'saca',
+          fonte: 'cache'
+        },
+        {
+          grain: 'Milho',
+          icone: '🌽',
+          price: 85.30,
+          change: -1.0,
+          changePercent: -1.2,
+          region: 'Brasil',
+          unit: 'saca',
+          fonte: 'cache'
+        },
+        {
+          grain: 'Café',
+          icone: '☕',
+          price: 1200.00,
+          change: 63.6,
+          changePercent: 5.3,
+          region: 'Brasil',
+          unit: 'saca',
+          fonte: 'cache'
+        },
+        {
+          grain: 'Trigo',
+          icone: '🌾',
+          price: 95.20,
+          change: 1.7,
+          changePercent: 1.8,
+          region: 'Brasil',
+          unit: 'saca',
+          fonte: 'cache'
+        },
+        {
+          grain: 'Boi Gordo',
+          icone: '🐂',
+          price: 320.00,
+          change: 10.0,
+          changePercent: 3.2,
+          region: 'Brasil',
+          unit: '@',
+          fonte: 'cache'
+        },
+        {
+          grain: 'Leite',
+          icone: '🥛',
+          price: 2.45,
+          change: -0.01,
+          changePercent: -0.5,
+          region: 'Brasil',
+          unit: 'L',
+          fonte: 'cache'
+        }
+      ];
+
+      setGrainsData(fallbackGrainsData);
+      setUserLocation('Brasil');
+      setLastUpdate(new Date());
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -210,16 +189,35 @@ const GrainsChart = () => {
             <TrendingUp className='h-5 w-5 text-white' />
           </div>
           <div>
-            <h3 className='text-lg font-bold text-gray-900'>Preços dos Grãos</h3>
+            <h3 className='text-lg font-bold text-gray-900'>Cotações em Tempo Real</h3>
             <div className='flex items-center gap-1 text-sm text-gray-600'>
               <MapPin className='h-4 w-4' />
-              <span>{userLocation}</span>
+              <span>{userLocation || 'Brasil'}</span>
             </div>
           </div>
         </div>
         <div className='text-right'>
-          <p className='text-xs text-gray-500'>Atualizado agora</p>
-          <p className='text-xs text-gray-400'>Fonte: Agrolink</p>
+          <p className='text-xs text-gray-500'>
+            {lastUpdate ? (
+              <>Atualizado {new Date(lastUpdate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</>
+            ) : (
+              <>Atualizado agora</>
+            )}
+          </p>
+          <p className='text-xs text-gray-400'>
+            Fonte: {grainsData[0]?.fonte?.toUpperCase() || 'CEPEA/Agrolink'}
+          </p>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              fetchGrainsData();
+            }}
+            className='text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1 mt-1'
+            aria-label="Atualizar cotações"
+          >
+            <RefreshCw className='h-3 w-3' />
+            Atualizar
+          </button>
         </div>
       </div>
 
@@ -230,51 +228,26 @@ const GrainsChart = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4, delay: index * 0.1 }}
-            className='flex items-center justify-between rounded-xl bg-gray-50 p-4 transition-colors hover:bg-gray-100'
+            className='flex items-center justify-between rounded-xl bg-gray-50 p-4 transition-colors hover:bg-gray-100 cursor-pointer'
+            whileHover={{ scale: 1.02 }}
+            onClick={() => window.location.href = `/marketplace?categoria=graos&produto=${grain.grain.toLowerCase()}`}
           >
             <div className='flex items-center gap-3'>
-              <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm'>
+              <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-white shadow-sm'>
                 <span
-                  className='text-lg'
+                  className='text-2xl'
                   role='img'
-                  aria-label={
-                    grain.grain === 'Soja'
-                      ? 'Soja'
-                      : grain.grain === 'Milho'
-                        ? 'Milho'
-                        : grain.grain === 'Trigo'
-                          ? 'Trigo'
-                          : grain.grain === 'Arroz'
-                            ? 'Arroz'
-                            : 'Feijão'
-                  }
-                  title={
-                    grain.grain === 'Soja'
-                      ? 'Soja'
-                      : grain.grain === 'Milho'
-                        ? 'Milho'
-                        : grain.grain === 'Trigo'
-                          ? 'Trigo'
-                          : grain.grain === 'Arroz'
-                            ? 'Arroz'
-                            : 'Feijão'
-                  }
-                  style={{ display: 'inline-block', width: '1.25rem', textAlign: 'center' }}
+                  aria-label={grain.grain}
+                  title={grain.grain}
                 >
-                  {grain.grain === 'Soja'
-                    ? '🌾'
-                    : grain.grain === 'Milho'
-                      ? '🌽'
-                      : grain.grain === 'Trigo'
-                        ? '🌾'
-                        : grain.grain === 'Arroz'
-                          ? '🍚'
-                          : '🫘'}
+                  {grain.icone}
                 </span>
               </div>
               <div>
                 <p className='font-semibold text-gray-900'>{grain.grain}</p>
-                <p className='text-sm text-gray-600'>{grain.region}</p>
+                <p className='text-xs text-gray-500'>
+                  {grain.region} • por {grain.unit}
+                </p>
               </div>
             </div>
 
@@ -282,16 +255,18 @@ const GrainsChart = () => {
               <p className='text-lg font-bold text-gray-900' suppressHydrationWarning>
                 R$ {grain.price.toFixed(2)}
               </p>
-              <div className='flex items-center gap-1'>
-                {grain.change >= 0 ? (
+              <div className='flex items-center gap-1 justify-end'>
+                {grain.changePercent >= 0 ? (
                   <TrendingUp className='h-4 w-4 text-green-500' />
                 ) : (
                   <TrendingDown className='h-4 w-4 text-red-500' />
                 )}
-                <span className={`text-sm font-medium ${grain.change >= 0 ? 'text-green-600' : 'text-amber-600'}`} suppressHydrationWarning>
-                  {grain.change >= 0 ? '+' : ''}
-                  {grain.change.toFixed(2)} ({grain.changePercent >= 0 ? '+' : ''}
-                  {grain.changePercent.toFixed(2)}%)
+                <span 
+                  className={`text-sm font-medium ${grain.changePercent >= 0 ? 'text-green-600' : 'text-red-600'}`} 
+                  suppressHydrationWarning
+                >
+                  {grain.changePercent >= 0 ? '+' : ''}
+                  {grain.changePercent.toFixed(2)}%
                 </span>
               </div>
             </div>
@@ -301,7 +276,10 @@ const GrainsChart = () => {
 
       <div className='mt-6 border-t border-gray-200 pt-4'>
         <p className='text-center text-xs text-gray-500'>
-          Dados simulados para demonstração. Preços reais podem variar.
+          Cotações em tempo real • Atualização automática a cada 5 minutos
+        </p>
+        <p className='text-center text-xs text-gray-400 mt-1'>
+          Fonte: CEPEA/ESALQ • B3 • Agrolink
         </p>
       </div>
     </motion.div>

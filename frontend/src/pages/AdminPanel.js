@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Users, BarChart3, Settings, Activity, Shield, Search, Edit, Trash2, Ban, X, Check, AlertCircle } from 'lucide-react';
 import axios from 'axios';
@@ -24,21 +24,26 @@ const AdminPanel = () => {
   };
 
   // Carregar estatísticas
-  const loadStats = async () => {
+  const loadStats = useCallback(async () => {
     try {
       const token = getToken();
-      const response = await axios.get(getApiUrl('/admin/stats'), {
+      const response = await axios.get(getApiUrl('/admin/dashboard'), {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setStats(response.data.stats);
+      
+      if (response.data.success && response.data.data) {
+        setStats(response.data.data.stats);
+      } else {
+        console.warn('⚠️ Unexpected stats response format:', response.data);
+      }
     } catch (error) {
       toast.error('Erro ao carregar estatísticas');
-      console.error(error);
+      console.error('❌ Error loading stats:', error.response?.data || error.message);
     }
-  };
+  }, []);
 
   // Carregar usuários
-  const loadUsers = async () => {
+  const loadUsers = useCallback(async () => {
     try {
       setLoading(true);
       const token = getToken();
@@ -46,18 +51,25 @@ const AdminPanel = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       console.log('👥 Admin users response:', response.data);
-      console.log('👥 Users array:', response.data.users);
-      setUsers(response.data.users || []);
+      
+      // Backend returns { success: true, data: { users, pagination } }
+      if (response.data.success && response.data.data) {
+        console.log('👥 Users array:', response.data.data.users);
+        setUsers(response.data.data.users || []);
+      } else {
+        console.warn('⚠️ Unexpected response format:', response.data);
+        setUsers([]);
+      }
     } catch (error) {
       toast.error('Erro ao carregar usuários');
-      console.error(error);
+      console.error('❌ Error loading users:', error.response?.data || error.message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchTerm]);
 
   // Carregar bloqueios
-  const loadBlocks = async () => {
+  const loadBlocks = useCallback(async () => {
     try {
       const token = getToken();
       const response = await axios.get(getApiUrl('/admin/blocks'), {
@@ -68,35 +80,47 @@ const AdminPanel = () => {
       toast.error('Erro ao carregar bloqueios');
       console.error(error);
     }
-  };
+  }, []);
 
   // Carregar produtos
-  const loadProducts = async () => {
+  const loadProducts = useCallback(async () => {
     try {
       const token = getToken();
       const response = await axios.get(getApiUrl('/admin/products'), {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setProducts(response.data.products || []);
+      
+      if (response.data.success && response.data.data) {
+        setProducts(response.data.data.products || []);
+      } else {
+        console.warn('⚠️ Unexpected products response format:', response.data);
+        setProducts([]);
+      }
     } catch (error) {
       toast.error('Erro ao carregar produtos');
-      console.error(error);
+      console.error('❌ Error loading products:', error.response?.data || error.message);
     }
-  };
+  }, []);
 
   // Carregar fretes
-  const loadFreights = async () => {
+  const loadFreights = useCallback(async () => {
     try {
       const token = getToken();
       const response = await axios.get(getApiUrl('/admin/freights'), {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setFreights(response.data.freights || []);
+      
+      if (response.data.success && response.data.data) {
+        setFreights(response.data.data.freights || []);
+      } else {
+        console.warn('⚠️ Unexpected freights response format:', response.data);
+        setFreights([]);
+      }
     } catch (error) {
       toast.error('Erro ao carregar fretes');
-      console.error(error);
+      console.error('❌ Error loading freights:', error.response?.data || error.message);
     }
-  };
+  }, []);
 
   // Deletar produto
   const deleteProduct = async (productId) => {
@@ -191,7 +215,7 @@ const AdminPanel = () => {
     loadBlocks();
     loadProducts();
     loadFreights();
-  }, []);
+  }, [loadStats, loadUsers, loadBlocks, loadProducts, loadFreights]);
 
   useEffect(() => {
     if (searchTerm) {
@@ -200,7 +224,7 @@ const AdminPanel = () => {
     } else {
       loadUsers();
     }
-  }, [searchTerm]);
+  }, [searchTerm, loadUsers]);
 
   return (
     <div className='min-h-screen bg-gray-50 p-8'>

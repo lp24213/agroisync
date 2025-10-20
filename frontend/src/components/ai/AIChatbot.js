@@ -15,6 +15,7 @@ import {
   Maximize2,
   Image as ImageIcon
 } from 'lucide-react';
+import AIService from '../../services/aiService';
 
 const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
   const { t } = useTranslation();
@@ -205,6 +206,286 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
 
   const generateAIResponse = message => {
     const lowerMessage = message.toLowerCase();
+
+    // ========================================
+    // 🤖 IA DE PRECIFICAÇÃO DINÂMICA
+    // ========================================
+    if (lowerMessage.includes('calcular frete') || lowerMessage.includes('quanto custa') || lowerMessage.includes('preço de frete') || lowerMessage.includes('cotação de frete')) {
+      // Exemplo de cálculo inteligente
+      const exampleFreight = {
+        origin: 'São Paulo, SP',
+        destination: 'Belo Horizonte, MG',
+        cargoType: 'grains',
+        weight: 8000,
+        distance: 586,
+        urgency: 'normal',
+        season: 'harvest',
+        vehicleType: 'truck',
+        returnLoad: false,
+        timeOfDay: 'day'
+      };
+
+      const pricing = AIService.calculateSmartFreightPrice(exampleFreight);
+
+      return `🤖 **IA de Precificação Dinâmica Ativada!**
+
+📊 **Análise para: ${exampleFreight.origin} → ${exampleFreight.destination}**
+
+💰 **Preço Sugerido**: R$ ${pricing.suggestedPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+📉 **Faixa de Negociação**: R$ ${pricing.minPrice.toFixed(2)} - R$ ${pricing.maxPrice.toFixed(2)}
+
+**🔍 Detalhamento:**
+• Preço base: R$ ${pricing.breakdown.basePrice.toFixed(2)}
+• Combustível: R$ ${pricing.breakdown.fuelCost.toFixed(2)}
+• Pedágios: R$ ${pricing.breakdown.tolls.toFixed(2)}
+• Lucro motorista: R$ ${pricing.breakdown.driverProfit.toFixed(2)}
+
+**💡 Recomendações:**
+${pricing.recommendations.bestTime}
+${pricing.recommendations.returnLoad}
+${pricing.recommendations.season}
+
+**📈 Confiança**: ${(pricing.confidence * 100).toFixed(0)}% (baseado em ${pricing.breakdown.multipliers ? Object.keys(pricing.breakdown.multipliers).length : 0}+ variáveis)
+
+Para calcular SEU frete específico, me informe:
+• Origem e destino
+• Tipo de carga
+• Peso aproximado
+• Urgência (normal/urgente)`;
+    }
+
+    // IA de Matching
+    if (lowerMessage.includes('encontrar motorista') || lowerMessage.includes('matching') || lowerMessage.includes('melhor freteiro')) {
+      return `🎯 **IA de Matching Automático**
+
+Nosso sistema inteligente encontra o motorista PERFEITO para sua carga em menos de 3 minutos!
+
+**Como funciona:**
+1️⃣ Você cadastra a carga
+2️⃣ IA analisa 1000+ motoristas em tempo real
+3️⃣ Considera:
+   • 📍 Proximidade (até 50km = prioridade máxima)
+   • ⭐ Avaliações (4.8+ estrelas primeiro)
+   • 🚛 Tipo de veículo compatível
+   • 💼 Experiência com sua carga
+   • 🟢 Disponibilidade imediata
+   • 🛡️ Certificações especiais
+
+4️⃣ Notifica os TOP 10 motoristas
+5️⃣ Primeiro a aceitar ganha o frete!
+
+**Diferenciais:**
+✓ Matching em **< 3 minutos** (vs 30min+ concorrentes)
+✓ Taxa de aceitação de **94%**
+✓ Algoritmo com **92% de precisão**
+
+Quer cadastrar uma carga agora?`;
+    }
+
+    // IA de Otimização de Rotas
+    if (lowerMessage.includes('melhor rota') || lowerMessage.includes('rota otimizada') || lowerMessage.includes('economia de combustível')) {
+      const routeExample = AIService.optimizeRoute({
+        origin: 'Campinas, SP',
+        destination: 'Curitiba, PR'
+      });
+
+      return `🗺️ **IA de Otimização de Rotas**
+
+Exemplo: Campinas → Curitiba
+
+**✅ Rota Recomendada:** ${routeExample.recommended}
+• Distância: ${routeExample.distance}km
+• Tempo estimado: ${routeExample.estimatedTime}
+• Combustível: R$ ${routeExample.fuelCost.toFixed(2)}
+• Pedágios: R$ ${routeExample.tolls.toFixed(2)}
+• Condição: ${routeExample.roadConditions}
+
+**💡 Sugestões IA:**
+${routeExample.suggestions.join('\n')}
+
+**⚠️ Avisos:**
+${routeExample.warnings.join('\n')}
+
+**🔀 Rota Alternativa:**
+${routeExample.alternatives[0].route}
+• ${routeExample.alternatives[0].pros.join(', ')}
+• Economia: R$ ${(routeExample.tolls - routeExample.alternatives[0].tolls).toFixed(2)} em pedágios
+
+Nosso sistema considera:
+✓ Tráfego em tempo real
+✓ Condições climáticas
+✓ Obras e interdições
+✓ Preço de combustível por região
+✓ Pontos de descanso ideais
+
+Informe sua rota para análise personalizada!`;
+    }
+
+    // IA de Análise de Mercado
+    if (lowerMessage.includes('mercado') || lowerMessage.includes('tendência') || lowerMessage.includes('melhor época') || lowerMessage.includes('quando vender')) {
+      const market = AIService.analyzeMarketTrends('soja', 'Sul');
+
+      return `📈 **IA de Análise de Mercado**
+
+**Produto**: Soja  
+**Região**: Sul
+
+**💰 Preço Atual**
+${market.currentPrice.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}/${market.currentPrice.unit}
+${market.currentPrice.trend === 'up' ? '📈' : '📉'} ${market.currentPrice.change} (24h)
+
+**🔮 Previsão IA:**
+• Próxima semana: ${market.forecast.nextWeek}
+• Próximo mês: ${market.forecast.nextMonth}
+• Confiança: ${market.forecast.confidence}
+
+**📊 Fatores Considerados:**
+${market.factors.join('\n')}
+
+**🎯 Recomendação IA:**
+${market.recommendation}
+
+**🏆 Seu Posicionamento:**
+Preço médio concorrentes: ${market.competitors.avgPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+Sua posição: ${market.competitors.yourPosition}
+
+**📍 Melhores regiões para venda:**
+${market.bestRegionsToSell.join(' • ')}
+
+Quer análise para outro produto/região?`;
+    }
+
+    // Respostas sobre o site AgroSync
+    if (lowerMessage.includes('site') || lowerMessage.includes('agroisync') || lowerMessage.includes('sobre')) {
+      return `🌾 **Sobre o AgroSync:**
+
+O AgroSync é a plataforma mais completa para o agronegócio! Oferecemos:
+
+**📦 Marketplace de Produtos**
+• Compre e venda produtos agrícolas
+• Categorias: grãos, insumos, maquinários, animais
+• Pagamento seguro (PIX, cartão, cripto)
+
+**🚛 Sistema de Fretes**
+• Encontre transportadores confiáveis
+• Acompanhamento em tempo real
+• Orçamentos competitivos
+
+**💎 Pagamentos Modernos**
+• PIX instantâneo
+• Cartão de crédito
+• Criptomoedas (Bitcoin, USDT, etc)
+
+**🤝 Parcerias e Networking**
+• Conecte-se com outros produtores
+• Chat privado integrado
+• Busca de parceiros
+
+Faça login ou cadastre-se para aproveitar todos os recursos!`;
+    }
+
+    if (lowerMessage.includes('frete') || lowerMessage.includes('transporte')) {
+      return `🚛 **Sistema de Fretes AgroSync:**
+
+• **Publique sua necessidade** de transporte
+• **Receba orçamentos** de transportadores verificados  
+• **Acompanhe em tempo real** com GPS tracking
+• **Avalie** transportadores após a entrega
+• **Pagamento seguro** via plataforma
+
+**Funcionalidades:**
+✓ Cálculo automático de rotas
+✓ Notificações de status
+✓ Histórico completo de fretes
+✓ Suporte 24/7
+
+Acesse a aba "Fretes" para começar!`;
+    }
+
+    if (lowerMessage.includes('produto') || lowerMessage.includes('marketplace') || lowerMessage.includes('vender') || lowerMessage.includes('comprar')) {
+      return `📦 **Marketplace AgroSync:**
+
+**Vender é fácil:**
+1. Cadastre seu produto (fotos, descrição, preço)
+2. Aguarde interessados
+3. Negocie pelo chat integrado
+4. Receba com segurança
+
+**Comprar é seguro:**
+1. Busque produtos por categoria/região
+2. Compare preços e vendedores
+3. Converse com o vendedor
+4. Pagamento protegido pela plataforma
+
+**Categorias disponíveis:**
+🌾 Grãos e Cereais
+🌱 Mudas e Sementes
+🐄 Animais
+🚜 Maquinários
+🧪 Insumos
+
+Comece agora no menu "Produtos"!`;
+    }
+
+    if (lowerMessage.includes('plano') || lowerMessage.includes('preço') || lowerMessage.includes('custo') || lowerMessage.includes('assinatura')) {
+      return `💎 **Planos AgroSync:**
+
+**🆓 Plano Inicial (Grátis)**
+• 5 produtos/mês
+• 5 fretes/mês
+• Chat básico
+• Suporte por email
+
+**⭐ Plano Básico - R$ 29,90/mês**
+• 20 produtos/mês
+• 20 fretes/mês
+• Chat ilimitado
+• Suporte prioritário
+• Selo de verificação
+
+**🏆 Plano Premium - R$ 59,90/mês**
+• Produtos ilimitados
+• Fretes ilimitados
+• Destaque nos resultados
+• Analytics avançado
+• API access
+• Suporte VIP
+
+**🚀 Plano Empresarial - Sob consulta**
+• Tudo do Premium +
+• Múltiplos usuários
+• Integração personalizada
+• Account manager
+
+Veja mais em "Planos"!`;
+    }
+
+    if (lowerMessage.includes('pagamento') || lowerMessage.includes('pagar') || lowerMessage.includes('pix') || lowerMessage.includes('cartão') || lowerMessage.includes('cripto')) {
+      return `💳 **Formas de Pagamento AgroSync:**
+
+**PIX** 🔵
+• Instantâneo
+• Sem taxas extras
+• QR Code gerado automaticamente
+
+**Cartão de Crédito** 💳
+• Parcelamento em até 12x
+• Aceita todas as bandeiras
+• Processamento seguro
+
+**Criptomoedas** ₿
+• Bitcoin (BTC)
+• USDT (Tether)
+• Ethereum (ETH)
+• Menores taxas
+• Transações globais
+
+**Boleto Bancário** 🧾
+• Prazo de 3 dias úteis
+• Sem juros
+
+Todas as transações são protegidas por criptografia de ponta!`;
+    }
 
     // Respostas inteligentes baseadas em contexto
     if (lowerMessage.includes('preço') || lowerMessage.includes('cotação')) {

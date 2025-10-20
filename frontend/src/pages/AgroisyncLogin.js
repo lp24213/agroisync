@@ -406,6 +406,10 @@ const AgroisyncLogin = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       placeholder='seu@email.com'
+                      required
+                      pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
+                      title="Digite um email válido"
+                      autoComplete="email"
                       style={{
                         width: '100%',
                         padding: '12px 12px 12px 44px',

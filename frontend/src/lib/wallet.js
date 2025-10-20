@@ -42,7 +42,7 @@ export async function buyWithMetaMask(amount, recipientAddress) {
   try {
     // Simular transação de compra
     const transactionParameters = {
-      to: recipientAddress || '0x742d35Cc6634C0532925a3b8D0C0C1C2C3C4C5C6', // Endereço do contrato
+      to: recipientAddress || '', // Endereço do contrato (REMOVIDO POR SEGURANÇA)
       from: window.ethereum.selectedAddress,
       value: '0x' + (amount * Math.pow(10, 18)).toString(16), // Converter para wei
       data: '0x' // Dados da transação

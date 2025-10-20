@@ -15,8 +15,10 @@ export function verifyToken(request, env) {
       return json({ error: 'Token expirado' }, { status: 401 });
     }
 
-    // Adiciona o userId no request para uso posterior
-    request.userId = decodedPayload.sub;
+    // Adiciona o userId e isAdmin no request para uso posterior
+    request.userId = decodedPayload.sub || decodedPayload.userId;
+    request.isAdmin = decodedPayload.isAdmin || false;
+    request.user = decodedPayload;
     return null; // continua para o próximo handler
 
   } catch (error) {

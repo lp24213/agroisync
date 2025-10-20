@@ -618,9 +618,13 @@ const UserDashboard = () => {
                 <User className='h-6 w-6 text-green-600' />
               </div>
               <div>
-                <h1 className='text-xl font-semibold text-gray-900'>Painel do Usuário</h1>
+                <h1 className='text-xl font-semibold text-gray-900'>
+                  {profileData.name ? `Olá, ${profileData.name.split(' ')[0]}!` : 'Painel do Usuário'}
+                </h1>
                 <p className='text-sm text-gray-600'>
                   {userType === 'producer' ? 'Produtor' : userType === 'buyer' ? 'Comprador' : 'Transportador'}
+                  {userPlan && ` • Plano: ${userPlan}`}
+                  {daysRemaining > 0 && daysRemaining <= 30 && ` • ${daysRemaining} dias restantes`}
                 </p>
               </div>
             </div>

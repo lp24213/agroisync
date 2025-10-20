@@ -59,6 +59,10 @@ const SignupGeneral = React.lazy(() => import('./pages/SignupGeneral'));
 const ResetPassword = React.lazy(() => import('./pages/ResetPassword'));
 const Payment = React.lazy(() => import('./pages/Payment'));
 const ProductDetail = React.lazy(() => import('./pages/ProductDetail'));
+const ProductDetailNew = React.lazy(() => import('./pages/ProductDetailNew'));
+const PriceAlerts = React.lazy(() => import('./pages/PriceAlerts'));
+const Favorites = React.lazy(() => import('./pages/Favorites'));
+const TermosResponsabilidade = React.lazy(() => import('./pages/TermosResponsabilidade'));
 const CryptoDetail = React.lazy(() => import('./pages/CryptoDetail'));
 const AdminPanel = React.lazy(() => import('./pages/AdminPanel'));
 const UserAdmin = React.lazy(() => import('./pages/UserAdmin'));
@@ -232,7 +236,11 @@ function App() {
 
                         {/* Detail Pages */}
                         <Route path='/produto/:id' element={<ProductDetail />} />
+                        <Route path='/product/:id' element={<ProductDetailNew />} />
                         <Route path='/produto/:id/:cryptoHash' element={<CryptoRouteHandler><ProductDetail /></CryptoRouteHandler>} />
+                        <Route path='/price-alerts' element={<PriceAlerts />} />
+                        <Route path='/favorites' element={<Favorites />} />
+                        <Route path='/termos-responsabilidade' element={<TermosResponsabilidade />} />
                         <Route path='/crypto/:id' element={<CryptoDetail />} />
                         <Route path='/crypto/:id/:cryptoHash' element={<CryptoRouteHandler><CryptoDetail /></CryptoRouteHandler>} />
 

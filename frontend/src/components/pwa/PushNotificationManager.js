@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, BellOff, Settings, X } from 'lucide-react';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { getApiUrl } from '../../utils/apiHelper';
 
 const PushNotificationManager = () => {
   const { t } = useTranslation();
@@ -60,7 +61,7 @@ const PushNotificationManager = () => {
       });
 
       // Enviar subscription para o servidor
-      const response = await fetch('/api/notifications/subscribe', {
+      const response = await fetch(getApiUrl('notifications/subscribe'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -125,7 +126,7 @@ const PushNotificationManager = () => {
         await subscription.unsubscribe();
 
         // Notificar servidor sobre cancelamento
-        await fetch('/api/notifications/unsubscribe', {
+        await fetch(getApiUrl('notifications/unsubscribe'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Wallet, Send, Receive, Copy, ExternalLink, TrendingUp, TrendingDown } from 'lucide-react';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { getApiUrl } from '../../utils/apiHelper';
 
 const CryptoWallet = () => {
   const { t } = useTranslation();
@@ -28,7 +29,7 @@ const CryptoWallet = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/blockchain/wallet', {
+      const response = await fetch(getApiUrl('blockchain/wallet'), {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`
@@ -56,7 +57,7 @@ const CryptoWallet = () => {
   // Carregar preços das criptomoedas
   const loadCryptoPrices = useCallback(async () => {
     try {
-      const response = await fetch('/api/blockchain/prices');
+      const response = await fetch(getApiUrl('blockchain/prices'));
       const data = await response.json();
 
       if (data.success) {
@@ -70,7 +71,7 @@ const CryptoWallet = () => {
   // Carregar transações
   const loadTransactions = useCallback(async () => {
     try {
-      const response = await fetch('/api/blockchain/transactions', {
+      const response = await fetch(getApiUrl('blockchain/transactions'), {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`
         }
@@ -94,7 +95,7 @@ const CryptoWallet = () => {
         const publicKey = response.publicKey.toString();
 
         // Registrar carteira no backend
-        const backendResponse = await fetch('/api/blockchain/connect', {
+        const backendResponse = await fetch(getApiUrl('blockchain/connect'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -129,7 +130,7 @@ const CryptoWallet = () => {
   // Desconectar carteira
   const disconnectWallet = useCallback(async () => {
     try {
-      await fetch('/api/blockchain/disconnect', {
+      await fetch(getApiUrl('blockchain/disconnect'), {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`
@@ -149,7 +150,7 @@ const CryptoWallet = () => {
   const switchNetwork = useCallback(
     async newNetwork => {
       try {
-        const response = await fetch('/api/blockchain/switch-network', {
+        const response = await fetch(getApiUrl('blockchain/switch-network'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

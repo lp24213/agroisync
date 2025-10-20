@@ -46,7 +46,7 @@ const HybridPayment = ({
   // Carregar taxas de câmbio
   const loadExchangeRates = useCallback(async () => {
     try {
-      const response = await fetch('/api/blockchain/exchange-rates');
+      const response = await fetch(getApiUrl('blockchain/exchange-rates'));
       const data = await response.json();
 
       if (data.success) {
@@ -97,7 +97,7 @@ const HybridPayment = ({
         totalAmount: amount
       };
 
-      const response = await fetch('/api/payments/hybrid', {
+      const response = await fetch(getApiUrl('payments/hybrid'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

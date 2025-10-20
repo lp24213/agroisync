@@ -1,0 +1,160 @@
+/* FORÇAR VLibras VISÍVEL E MENOR - TAMANHO DO CHATBOT */
+
+/* Botão principal do VLibras */
+div[vw] .access-button,
+div[vw-access-button],
+.access-button,
+[vw-access-button] {
+  width: 50px !important;
+  height: 50px !important;
+  min-width: 50px !important;
+  min-height: 50px !important;
+  max-width: 50px !important;
+  max-height: 50px !important;
+  transform: scale(1) !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  z-index: 999999 !important;
+}
+
+/* Container do VLibras - PERMITIR QUE SEJA VISÍVEL */
+div[vw],
+[vw] {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  width: auto !important;
+  height: auto !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Quando o VLibras está ativo/enabled */
+.enabled[vw],
+div.enabled[vw] {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.enabled[vw] .access-button {
+  width: 50px !important;
+  height: 50px !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Painel do VLibras quando aberto - IGUAL CHATBOT */
+div[vw-plugin-wrapper],
+[vw-plugin-wrapper] {
+  max-width: 350px !important;
+  max-height: 500px !important;
+  width: 350px !important;
+  height: 500px !important;
+  right: 20px !important;
+  bottom: 80px !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  overflow: hidden !important;
+}
+
+.vw-plugin-top-wrapper {
+  max-width: 350px !important;
+  width: 350px !important;
+  max-height: 500px !important;
+  height: 500px !important;
+  overflow: auto !important;
+}
+
+/* Conteúdo interno do VLibras */
+.vw-plugin-top-wrapper > div,
+.vw-plugin-top-wrapper iframe {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* SVG e ícone dentro do botão */
+div[vw] .access-button svg,
+div[vw-access-button] svg {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+/* Mobile - tamanho do chatbot */
+@media (max-width: 768px) {
+  div[vw] .access-button,
+  div[vw-access-button],
+  .access-button {
+    width: 45px !important;
+    height: 45px !important;
+    transform: scale(1) !important;
+  }
+  
+  div[vw-plugin-wrapper],
+  [vw-plugin-wrapper] {
+    max-width: 90vw !important;
+    width: 90vw !important;
+    max-height: 70vh !important;
+    height: 70vh !important;
+    right: 5vw !important;
+    bottom: 70px !important;
+  }
+  
+  .vw-plugin-top-wrapper {
+    max-width: 90vw !important;
+    width: 90vw !important;
+    max-height: 70vh !important;
+    height: 70vh !important;
+  }
+}
+
+/* Garantir que não sobreponha o chatbot */
+div[vw] {
+  z-index: 999 !important;
+}
+
+/* Forçar visibilidade do painel quando ativo */
+div[vw].active [vw-plugin-wrapper],
+div[vw][active] [vw-plugin-wrapper],
+.active[vw] [vw-plugin-wrapper] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Garantir que o botão seja clicável */
+div[vw-access-button] {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+/* Garantir que o iframe do VLibras seja visível */
+div[vw-plugin-wrapper] iframe,
+[vw-plugin-wrapper] iframe {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  border: none !important;
+}
+
+/* Animação de abertura */
+div[vw-plugin-wrapper] {
+  transition: all 0.3s ease-in-out !important;
+}
+
+/* Quando o VLibras está fechado */
+div[vw]:not(.active) [vw-plugin-wrapper],
+div[vw]:not([active]) [vw-plugin-wrapper] {
+  display: none !important;
+}

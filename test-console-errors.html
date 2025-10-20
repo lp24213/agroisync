@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Console - AgroSync</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff00;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #00ff00;
+            border-bottom: 2px solid #00ff00;
+            padding-bottom: 10px;
+        }
+        .page-test {
+            background: #1a1a1a;
+            border: 1px solid #00ff00;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .page-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00ffff;
+            margin-bottom: 10px;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .status.ok {
+            background: #004400;
+            color: #00ff00;
+        }
+        .status.error {
+            background: #440000;
+            color: #ff0000;
+        }
+        .status.testing {
+            background: #444400;
+            color: #ffff00;
+        }
+        .errors {
+            background: #220000;
+            border-left: 3px solid #ff0000;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        .error-item {
+            color: #ff6666;
+            margin: 5px 0;
+        }
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+        button:hover {
+            background: #00cc00;
+        }
+        .log {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 10px;
+            margin: 10px 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .log-item {
+            margin: 3px 0;
+            font-size: 12px;
+        }
+        .log-item.info { color: #00ffff; }
+        .log-item.warn { color: #ffff00; }
+        .log-item.error { color: #ff0000; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 TESTE COMPLETO DE CONSOLE - AGROISYNC</h1>
+        <p>Este script vai testar TODAS as páginas e capturar TODOS os erros de console</p>
+        
+        <button onclick="startTests()">🚀 INICIAR TESTES COMPLETOS</button>
+        
+        <div id="results"></div>
+        <div id="logs" class="log"></div>
+    </div>
+
+    <script>
+        const PAGES_TO_TEST = [
+            // Páginas Públicas
+            { url: 'https://5c552879.agroisync.pages.dev/', name: 'Home', type: 'public' },
+            { url: 'https://5c552879.agroisync.pages.dev/about', name: 'Sobre', type: 'public' },
+            { url: 'https://5c552879.agroisync.pages.dev/marketplace', name: 'Marketplace', type: 'public' },
+            { url: 'https://5c552879.agroisync.pages.dev/loja', name: 'Loja', type: 'public' },
+            { url: 'https://5c552879.agroisync.pages.dev/plans', name: 'Planos', type: 'public' },
+            { url: 'https://5c552879.agroisync.pages.dev/contact', name: 'Contato', type: 'public' },
+            { url: 'https://5c552879.agroisync.pages.dev/partnerships', name: 'Parcerias', type: 'public' },
+            { url: 'https://5c552879.agroisync.pages.dev/login', name: 'Login', type: 'public' },
+            { url: 'https://5c552879.agroisync.pages.dev/register', name: 'Registro', type: 'public' },
+            { url: 'https://5c552879.agroisync.pages.dev/forgot-password', name: 'Esqueci Senha', type: 'public' },
+            { url: 'https://5c552879.agroisync.pages.dev/crypto', name: 'Cripto', type: 'public' },
+            { url: 'https://5c552879.agroisync.pages.dev/help', name: 'Ajuda', type: 'public' },
+            { url: 'https://5c552879.agroisync.pages.dev/faq', name: 'FAQ', type: 'public' },
+            { url: 'https://5c552879.agroisync.pages.dev/terms', name: 'Termos', type: 'public' },
+            { url: 'https://5c552879.agroisync.pages.dev/privacy', name: 'Privacidade', type: 'public' },
+            
+            // Páginas de Cadastro
+            { url: 'https://5c552879.agroisync.pages.dev/signup/type', name: 'Signup - Tipo', type: 'signup' },
+            { url: 'https://5c552879.agroisync.pages.dev/signup/product', name: 'Signup - Produto', type: 'signup' },
+            { url: 'https://5c552879.agroisync.pages.dev/signup/freight', name: 'Signup - Frete', type: 'signup' },
+            { url: 'https://5c552879.agroisync.pages.dev/signup/store', name: 'Signup - Loja', type: 'signup' },
+            
+            // Páginas Autenticadas (vão dar 401 mas é esperado)
+            { url: 'https://5c552879.agroisync.pages.dev/user-dashboard', name: 'Dashboard', type: 'auth' },
+            { url: 'https://5c552879.agroisync.pages.dev/admin', name: 'Admin', type: 'auth' },
+            { url: 'https://5c552879.agroisync.pages.dev/crypto-dashboard', name: 'Cripto Dashboard', type: 'auth' },
+            { url: 'https://5c552879.agroisync.pages.dev/messaging', name: 'Mensagens', type: 'auth' },
+            
+            // Páginas de Pagamento
+            { url: 'https://5c552879.agroisync.pages.dev/payment/pix', name: 'Pagamento PIX', type: 'payment' },
+            { url: 'https://5c552879.agroisync.pages.dev/payment/credit-card', name: 'Pagamento Cartão', type: 'payment' },
+            { url: 'https://5c552879.agroisync.pages.dev/payment/boleto', name: 'Pagamento Boleto', type: 'payment' },
+            { url: 'https://5c552879.agroisync.pages.dev/payment/success', name: 'Pagamento Sucesso', type: 'payment' },
+            { url: 'https://5c552879.agroisync.pages.dev/payment/cancel', name: 'Pagamento Cancelado', type: 'payment' }
+        ];
+
+        let totalErrors = 0;
+        let totalWarnings = 0;
+        let pagesWithErrors = [];
+
+        function log(message, type = 'info') {
+            const logsDiv = document.getElementById('logs');
+            const logItem = document.createElement('div');
+            logItem.className = `log-item ${type}`;
+            logItem.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logsDiv.appendChild(logItem);
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+
+        async function testPage(pageInfo) {
+            const resultsDiv = document.getElementById('results');
+            const pageDiv = document.createElement('div');
+            pageDiv.className = 'page-test';
+            pageDiv.id = `test-${pageInfo.name.replace(/\s/g, '-')}`;
+            
+            pageDiv.innerHTML = `
+                <div class="page-name">${pageInfo.name} (${pageInfo.type})</div>
+                <div class="status testing">⏳ Testando...</div>
+                <div class="url">${pageInfo.url}</div>
+            `;
+            
+            resultsDiv.appendChild(pageDiv);
+            log(`Testando: ${pageInfo.name}`, 'info');
+
+            return new Promise((resolve) => {
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = pageInfo.url;
+                
+                const errors = [];
+                const warnings = [];
+                
+                // Capturar erros de console
+                const originalError = console.error;
+                const originalWarn = console.warn;
+                
+                console.error = function(...args) {
+                    errors.push(args.join(' '));
+                    originalError.apply(console, args);
+                };
+                
+                console.warn = function(...args) {
+                    warnings.push(args.join(' '));
+                    originalWarn.apply(console, args);
+                };
+
+                iframe.onload = () => {
+                    setTimeout(() => {
+                        // Restaurar console
+                        console.error = originalError;
+                        console.warn = originalWarn;
+                        
+                        totalErrors += errors.length;
+                        totalWarnings += warnings.length;
+                        
+                        let statusHTML = '';
+                        if (errors.length === 0 && warnings.length === 0) {
+                            statusHTML = '<div class="status ok">✅ SEM ERROS</div>';
+                            log(`✅ ${pageInfo.name}: OK`, 'info');
+                        } else {
+                            statusHTML = `<div class="status error">❌ ${errors.length} erros, ${warnings.length} warnings</div>`;
+                            pagesWithErrors.push(pageInfo.name);
+                            log(`❌ ${pageInfo.name}: ${errors.length} erros`, 'error');
+                            
+                            if (errors.length > 0) {
+                                statusHTML += '<div class="errors">';
+                                statusHTML += '<strong>Erros:</strong><br>';
+                                errors.forEach(err => {
+                                    statusHTML += `<div class="error-item">• ${err}</div>`;
+                                });
+                                statusHTML += '</div>';
+                            }
+                            
+                            if (warnings.length > 0) {
+                                statusHTML += '<div class="errors">';
+                                statusHTML += '<strong>Warnings:</strong><br>';
+                                warnings.forEach(warn => {
+                                    statusHTML += `<div class="error-item">⚠️ ${warn}</div>`;
+                                });
+                                statusHTML += '</div>';
+                            }
+                        }
+                        
+                        pageDiv.innerHTML = `
+                            <div class="page-name">${pageInfo.name} (${pageInfo.type})</div>
+                            ${statusHTML}
+                            <div class="url">${pageInfo.url}</div>
+                        `;
+                        
+                        document.body.removeChild(iframe);
+                        resolve({ errors, warnings });
+                    }, 2000); // Esperar 2s para página carregar
+                };
+
+                iframe.onerror = () => {
+                    pageDiv.innerHTML = `
+                        <div class="page-name">${pageInfo.name}</div>
+                        <div class="status error">❌ ERRO AO CARREGAR</div>
+                    `;
+                    log(`❌ ${pageInfo.name}: Falha ao carregar`, 'error');
+                    console.error = originalError;
+                    console.warn = originalWarn;
+                    document.body.removeChild(iframe);
+                    resolve({ errors: ['Falha ao carregar página'], warnings: [] });
+                };
+
+                document.body.appendChild(iframe);
+            });
+        }
+
+        async function startTests() {
+            log('🚀 Iniciando testes completos...', 'info');
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h2>📊 Testando páginas...</h2>';
+            
+            totalErrors = 0;
+            totalWarnings = 0;
+            pagesWithErrors = [];
+
+            for (const page of PAGES_TO_TEST) {
+                await testPage(page);
+                await new Promise(resolve => setTimeout(resolve, 500)); // Pausa entre testes
+            }
+
+            // Resultado final
+            const summaryDiv = document.createElement('div');
+            summaryDiv.className = 'page-test';
+            summaryDiv.style.background = totalErrors === 0 ? '#004400' : '#440000';
+            summaryDiv.style.borderColor = totalErrors === 0 ? '#00ff00' : '#ff0000';
+            summaryDiv.innerHTML = `
+                <div class="page-name">📊 RESUMO FINAL</div>
+                <div style="margin: 15px 0;">
+                    <div>✅ Páginas testadas: ${PAGES_TO_TEST.length}</div>
+                    <div>❌ Total de erros: ${totalErrors}</div>
+                    <div>⚠️ Total de warnings: ${totalWarnings}</div>
+                    <div>📄 Páginas com problemas: ${pagesWithErrors.length}</div>
+                </div>
+                ${pagesWithErrors.length > 0 ? `
+                    <div class="errors">
+                        <strong>Páginas com erros:</strong><br>
+                        ${pagesWithErrors.map(p => `<div class="error-item">• ${p}</div>`).join('')}
+                    </div>
+                ` : '<div style="color: #00ff00; font-weight: bold;">🎉 NENHUM ERRO ENCONTRADO!</div>'}
+            `;
+            
+            resultsDiv.insertBefore(summaryDiv, resultsDiv.firstChild);
+            log(`✅ Testes concluídos! Total de erros: ${totalErrors}`, totalErrors === 0 ? 'info' : 'error');
+        }
+    </script>
+</body>
+</html>
+

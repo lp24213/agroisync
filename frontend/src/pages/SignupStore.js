@@ -58,7 +58,8 @@ const SignupStore = () => {
     // Buscar dados do usuário logado
     const fetchUserData = async () => {
       try {
-        const response = await fetch('/api/user/profile', {
+        const apiUrl = process.env.REACT_APP_API_URL || 'https://backend.contato-00d.workers.dev';
+        const response = await fetch(`${apiUrl}/api/user/profile`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -205,7 +206,8 @@ const SignupStore = () => {
       }
 
       // Atualizar perfil do usuário logado
-      const response = await fetch('/api/user/profile', {
+      const apiUrl = process.env.REACT_APP_API_URL || 'https://backend.contato-00d.workers.dev';
+      const response = await fetch(`${apiUrl}/api/user/profile`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

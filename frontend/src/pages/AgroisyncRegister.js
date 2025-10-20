@@ -47,6 +47,8 @@ const AgroisyncRegister = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [registrationComplete, setRegistrationComplete] = useState(false);
+  const [selectedType, setSelectedType] = useState('');
   // const [validations, setValidations] = useState({});
 
   // Estados para validação Email
@@ -165,9 +167,9 @@ const AgroisyncRegister = () => {
       );
 
       if (result.success) {
-        toast.success('Cadastro realizado com sucesso! Agora escolha seu perfil.');
-        // Redirecionar para escolher o tipo de perfil
-        navigate('/signup/type');
+        toast.success('Conta criada! Agora escolha seu tipo de perfil.');
+        // Mostrar seletor de tipo após cadastro
+        setRegistrationComplete(true);
       } else {
         setErrors({ general: result.error || 'Erro ao criar conta' });
       }
@@ -307,7 +309,124 @@ const AgroisyncRegister = () => {
                 </motion.div>
               )}
 
-              <form onSubmit={handleSubmit} className='space-y-6'>
+              {/* SELETOR DE TIPO - Aparece APÓS cadastro */}
+              {registrationComplete ? (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }} 
+                  animate={{ opacity: 1, scale: 1 }}
+                  className='space-y-6'
+                >
+                  <div className='text-center mb-6'>
+                    <CheckCircle className='mx-auto h-16 w-16 text-green-500 mb-4' />
+                    <h3 className='text-2xl font-bold text-gray-900 mb-2'>Conta criada com sucesso!</h3>
+                    <p className='text-gray-600'>Agora escolha o tipo do seu perfil:</p>
+                  </div>
+                  
+                  <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+                    <button
+                      type='button'
+                      onClick={async () => {
+                        setSelectedType('comprador');
+                        setIsLoading(true);
+                        try {
+                          // Atualizar business_type via API
+                          const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+                          await fetch(`${process.env.REACT_APP_API_URL}/user/profile`, {
+                            method: 'PUT',
+                            headers: {
+                              'Authorization': `Bearer ${token}`,
+                              'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ business_type: 'comprador' })
+                          });
+                          toast.success('Perfil de comprador selecionado!');
+                          setTimeout(() => navigate('/plans?type=comprador'), 1500);
+                        } catch (error) {
+                          toast.error('Erro ao atualizar perfil');
+                          setIsLoading(false);
+                        }
+                      }}
+                      disabled={isLoading}
+                      className='group relative overflow-hidden rounded-2xl border-2 border-blue-200 bg-blue-50 p-6 text-center transition-all duration-300 hover:border-blue-500 hover:bg-blue-100 hover:shadow-xl hover:scale-105'
+                    >
+                      <div className='text-5xl mb-3'>🛒</div>
+                      <div className='text-lg font-bold text-blue-900 mb-2'>Comprador</div>
+                      <div className='text-sm text-blue-600'>Comprar produtos agrícolas</div>
+                      <div className='mt-3 text-xs text-blue-500 font-semibold'>Compras ilimitadas</div>
+                    </button>
+                    
+                    <button
+                      type='button'
+                      onClick={async () => {
+                        setSelectedType('freteiro');
+                        setIsLoading(true);
+                        try {
+                          const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+                          await fetch(`${process.env.REACT_APP_API_URL}/user/profile`, {
+                            method: 'PUT',
+                            headers: {
+                              'Authorization': `Bearer ${token}`,
+                              'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ business_type: 'freteiro' })
+                          });
+                          toast.success('Perfil de freteiro selecionado!');
+                          setTimeout(() => navigate('/plans?type=freteiro'), 1500);
+                        } catch (error) {
+                          toast.error('Erro ao atualizar perfil');
+                          setIsLoading(false);
+                        }
+                      }}
+                      disabled={isLoading}
+                      className='group relative overflow-hidden rounded-2xl border-2 border-green-200 bg-green-50 p-6 text-center transition-all duration-300 hover:border-green-500 hover:bg-green-100 hover:shadow-xl hover:scale-105'
+                    >
+                      <div className='text-5xl mb-3'>🚛</div>
+                      <div className='text-lg font-bold text-green-900 mb-2'>Freteiro</div>
+                      <div className='text-sm text-green-600'>Oferecer serviços de transporte</div>
+                      <div className='mt-3 text-xs text-green-500 font-semibold'>A partir de 10 fretes/mês</div>
+                    </button>
+                    
+                    <button
+                      type='button'
+                      onClick={async () => {
+                        setSelectedType('anunciante');
+                        setIsLoading(true);
+                        try {
+                          const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+                          await fetch(`${process.env.REACT_APP_API_URL}/user/profile`, {
+                            method: 'PUT',
+                            headers: {
+                              'Authorization': `Bearer ${token}`,
+                              'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ business_type: 'anunciante' })
+                          });
+                          toast.success('Perfil de anunciante selecionado!');
+                          setTimeout(() => navigate('/plans?type=anunciante'), 1500);
+                        } catch (error) {
+                          toast.error('Erro ao atualizar perfil');
+                          setIsLoading(false);
+                        }
+                      }}
+                      disabled={isLoading}
+                      className='group relative overflow-hidden rounded-2xl border-2 border-purple-200 bg-purple-50 p-6 text-center transition-all duration-300 hover:border-purple-500 hover:bg-purple-100 hover:shadow-xl hover:scale-105'
+                    >
+                      <div className='text-5xl mb-3'>📦</div>
+                      <div className='text-lg font-bold text-purple-900 mb-2'>Anunciante</div>
+                      <div className='text-sm text-purple-600'>Vender produtos agrícolas</div>
+                      <div className='mt-3 text-xs text-purple-500 font-semibold'>A partir de 5 produtos</div>
+                    </button>
+                  </div>
+                  
+                  {isLoading && (
+                    <div className='text-center'>
+                      <Loader2 className='mx-auto h-8 w-8 animate-spin text-emerald-600' />
+                      <p className='text-sm text-gray-600 mt-2'>Configurando seu perfil...</p>
+                    </div>
+                  )}
+                </motion.div>
+              ) : (
+                <form onSubmit={handleSubmit} className='space-y-6'>
                 {/* Nome */}
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
                   <label className='mb-2 block text-sm font-bold text-gray-700'>{t('register.fullName', 'Nome Completo')}</label>
@@ -584,6 +703,7 @@ const AgroisyncRegister = () => {
                   )}
                 </motion.button>
               </form>
+              )}
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}

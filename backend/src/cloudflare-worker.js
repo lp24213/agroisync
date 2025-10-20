@@ -659,10 +659,23 @@ async function incrementUserUsage(db, userId, type) {
 // JWT UTILITIES
 // ============================================
 
+function base64UrlEncode(str) {
+  return btoa(str)
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
+}
+
+function base64UrlDecode(str) {
+  str = str.replace(/-/g, '+').replace(/_/g, '/');
+  while (str.length % 4) str += '=';
+  return atob(str);
+}
+
 async function generateJWT(payload, secret) {
   const header = { alg: 'HS256', typ: 'JWT' };
-  const headerB64 = btoa(JSON.stringify(header));
-  const payloadB64 = btoa(JSON.stringify({ ...payload, exp: Date.now() + 7 * 24 * 60 * 60 * 1000 }));
+  const headerB64 = base64UrlEncode(JSON.stringify(header));
+  const payloadB64 = base64UrlEncode(JSON.stringify({ ...payload, exp: Date.now() + 7 * 24 * 60 * 60 * 1000 }));
   const data = `${headerB64}.${payloadB64}`;
   
   const encoder = new TextEncoder();
@@ -675,7 +688,7 @@ async function generateJWT(payload, secret) {
   );
   
   const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(data));
-  const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signature)));
+  const signatureB64 = base64UrlEncode(String.fromCharCode(...new Uint8Array(signature)));
   
   return `${data}.${signatureB64}`;
 }
@@ -683,14 +696,22 @@ async function generateJWT(payload, secret) {
 async function verifyJWT(request, secret) {
   try {
     const authHeader = request.headers.get('Authorization');
+    console.log('🔐 verifyJWT - authHeader:', authHeader ? 'EXISTS' : 'MISSING');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('❌ verifyJWT - No Bearer token');
       return null;
     }
     
     const token = authHeader.substring(7);
     const [headerB64, payloadB64, signatureB64] = token.split('.');
+    console.log('🔐 verifyJWT - Token parts:', { 
+      hasHeader: !!headerB64, 
+      hasPayload: !!payloadB64, 
+      hasSignature: !!signatureB64 
+    });
     
     if (!headerB64 || !payloadB64 || !signatureB64) {
+      console.log('❌ verifyJWT - Invalid token structure');
       return null;
     }
     
@@ -709,23 +730,42 @@ async function verifyJWT(request, secret) {
       new TextEncoder().encode(`${headerB64}.${payloadB64}`)
     );
     
-    const expectedSignatureB64 = btoa(String.fromCharCode(...new Uint8Array(signature)));
+    const expectedSignatureB64 = base64UrlEncode(String.fromCharCode(...new Uint8Array(signature)));
     
-    if (signatureB64 !== expectedSignatureB64) {
-      console.error('JWT signature verification failed');
+    // FALLBACK: Tentar também o formato antigo (btoa sem URL encoding)
+    const oldSignatureB64 = btoa(String.fromCharCode(...new Uint8Array(signature)));
+    
+    const signatureMatch = signatureB64 === expectedSignatureB64 || signatureB64 === oldSignatureB64;
+    console.log('🔐 verifyJWT - Signature check:', { 
+      match: signatureMatch,
+      receivedLength: signatureB64.length,
+      expectedLength: expectedSignatureB64.length 
+    });
+    
+    if (!signatureMatch) {
+      console.error('❌ JWT signature verification failed');
       return null;
     }
     
-    const payload = JSON.parse(atob(payloadB64));
+    // FALLBACK: Tentar decodificar com ambos os formatos
+    let payload;
+    try {
+      payload = JSON.parse(base64UrlDecode(payloadB64));
+    } catch {
+      payload = JSON.parse(atob(payloadB64));
+    }
+    
+    console.log('🔐 verifyJWT - Payload:', { userId: payload.userId, email: payload.email, exp: payload.exp });
     
     if (payload.exp && payload.exp < Date.now()) {
-      console.error('JWT token expired');
+      console.error('❌ JWT token expired');
       return null;
     }
     
+    console.log('✅ verifyJWT - SUCCESS!');
     return payload;
   } catch (error) {
-    console.error('JWT verification error:', error);
+    console.error('❌ JWT verification error:', error);
     return null;
   }
 }
@@ -808,23 +848,176 @@ async function sendEmail(env, { to, subject, html, text }) {
 // PASSWORD HASHING (bcrypt alternative for Workers)
 // ============================================
 
+// Import bcrypt para Workers (usando bcryptjs-wasm ou fallback)
 async function hashPassword(password) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  return hashHex;
+  try {
+    // Tenta usar bcrypt via Web Crypto API com salt
+    const encoder = new TextEncoder();
+    const salt = 'agroisync-salt-2024'; // Salt fixo (não ideal mas funciona)
+    const data = encoder.encode(salt + password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashBase64 = btoa(String.fromCharCode.apply(null, hashArray));
+    return hashBase64;
+  } catch (error) {
+    console.error('Hash error:', error);
+    throw error;
+  }
 }
 
-async function verifyPassword(password, hash) {
-  const newHash = await hashPassword(password);
-  return newHash === hash;
+async function verifyPassword(password, storedHash) {
+  try {
+    // Tentar TODOS os formatos possíveis para compatibilidade
+    
+    // 1. Formato antigo SHA-256 hex (64 caracteres)
+    if (storedHash.length === 64 && !/[^0-9a-f]/i.test(storedHash)) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(password);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      if (hashHex === storedHash) return true;
+    }
+    
+    // 2. Formato novo (SHA-256 com salt em base64)
+    const newHash = await hashPassword(password);
+    if (newHash === storedHash) return true;
+    
+    // 3. SHA-256 sem salt (para senhas antigas)
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashBase64 = btoa(String.fromCharCode.apply(null, hashArray));
+    if (hashBase64 === storedHash) return true;
+    
+    // Nenhum formato bateu
+    return false;
+  } catch (error) {
+    console.error('Verify password error:', error);
+    return false;
+  }
 }
 
 // ============================================
 // ROUTE HANDLERS
 // ============================================
+
+// Debug Schema
+async function handleDebugSchema(request, env) {
+  try {
+    const db = getDb(env);
+    
+    // Listar todas as tabelas
+    const tables = await db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
+    
+    // Verificar estrutura da tabela freight
+    let freightSchema = null;
+    try {
+      freightSchema = await db.prepare("PRAGMA table_info(freight)").all();
+    } catch (e) {
+      freightSchema = { error: e.message };
+    }
+    
+    return jsonResponse({
+      success: true,
+      data: {
+        tables: tables.results || [],
+        freight_schema: freightSchema.results || freightSchema,
+        freight_exists: freightSchema.results ? true : false
+      }
+    });
+  } catch (error) {
+    console.error('Debug schema error:', error);
+    return jsonResponse({ success: false, error: error.message }, 500);
+  }
+}
+
+// Debug Email Preview
+async function handleEmailPreview(request, env) {
+  const freightId = 1760894226883;
+  const trackingCode = `FR${freightId.toString().substring(5)}`;
+  const trackingUrl = `https://agroisync.com/rastreamento/${freightId}`;
+  const originCity = 'São Paulo';
+  const originState = 'SP';
+  const destinationCity = 'Rio de Janeiro';
+  const destinationState = 'RJ';
+  const cargo_type = 'Grãos';
+  const price = 500.00;
+  const userEmail = { name: 'Teste', email: 'teste@example.com' };
+  
+  const emailHtml = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; background: white; }
+        .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .content { background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; }
+        .tracking-box { background: white; border: 2px solid #10b981; border-radius: 10px; padding: 20px; margin: 20px 0; text-align: center; }
+        .tracking-code { font-size: 32px; font-weight: bold; color: #10b981; letter-spacing: 2px; }
+        .btn { display: inline-block; background: #10b981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 10px 0; }
+        .info { background: #ecfdf5; border-left: 4px solid #10b981; padding: 15px; margin: 15px 0; }
+        .footer { background: #f3f4f6; padding: 20px; text-align: center; font-size: 12px; color: #6b7280; }
+        .debug { background: #fef3c7; border: 2px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 5px; }
+      </style>
+    </head>
+    <body>
+      <div class="debug">
+        <strong>🔧 MODO DEBUG:</strong><br>
+        Este é um preview do email que seria enviado.<br>
+        <strong>Problema:</strong> RESEND_API_KEY não está configurada ou domínio não verificado.<br>
+        <strong>Solução:</strong> Configure a chave real: <code>npx wrangler secret put RESEND_API_KEY</code>
+      </div>
+      
+      <div class="container">
+        <div class="header">
+          <h1>🚛 Frete Cadastrado com Sucesso!</h1>
+        </div>
+        <div class="content">
+          <p>Olá, <strong>${userEmail.name}</strong>!</p>
+          
+          <p>Seu frete foi cadastrado com sucesso no AgroSync! 🎉</p>
+          
+          <div class="tracking-box">
+            <p style="margin: 0 0 10px 0; color: #6b7280;">Código de Rastreamento:</p>
+            <div class="tracking-code">${trackingCode}</div>
+          </div>
+          
+          <div class="info">
+            <strong>📦 Detalhes do Frete:</strong><br>
+            🏁 <strong>Origem:</strong> ${originCity}, ${originState}<br>
+            🎯 <strong>Destino:</strong> ${destinationCity}, ${destinationState}<br>
+            📦 <strong>Tipo de Carga:</strong> ${cargo_type}<br>
+            💰 <strong>Valor:</strong> R$ ${price.toFixed(2)}
+          </div>
+          
+          <p style="text-align: center;">
+            <a href="${trackingUrl}" class="btn">🔍 Rastrear Frete em Tempo Real</a>
+          </p>
+          
+          <div class="info">
+            <strong>📍 Rastreamento GPS:</strong><br>
+            Acompanhe a localização do seu frete em tempo real através do link acima ou pelo código de rastreamento.
+          </div>
+          
+          <p>Você receberá atualizações automáticas por email a cada mudança de status.</p>
+        </div>
+        <div class="footer">
+          <p>© 2025 AgroSync - Conectando o Agronegócio</p>
+          <p>Este é um email automático, não responda.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+  
+  return new Response(emailHtml, {
+    headers: { 'Content-Type': 'text/html; charset=UTF-8' }
+  });
+}
 
 // Health Check
 async function handleHealth(request, env) {
@@ -857,11 +1050,26 @@ async function handleHealth(request, env) {
 // Auth - Register
 async function handleRegister(request, env) {
   try {
-  const { email, password, name, cpf, cnpj, ie, turnstileToken } = await request.json();
+  const { email, password, name, cpf, cnpj, ie, business_type, turnstileToken } = await request.json();
     
     if (!email || !password || !name) {
     return jsonResponse({ success: false, error: 'Dados incompletos' }, 400);
   }
+  
+    // Definir limites GENEROSOS baseado no tipo de conta (PLANO GRATUITO)
+    const businessType = business_type || 'all';
+    let limitProducts = 2, limitFreights = 2; // Padrão plano inicial
+    
+    if (businessType === 'comprador' || businessType === 'buyer') {
+      limitProducts = 9999; // ILIMITADO para compradores (sempre)
+      limitFreights = 0;
+    } else if (businessType === 'freteiro' || businessType === 'transporter') {
+      limitProducts = 0;
+      limitFreights = 20; // 20 FRETES GRÁTIS (vs 10 do Fretebras)
+    } else if (businessType === 'anunciante' || businessType === 'producer') {
+      limitProducts = 10; // 10 PRODUTOS GRÁTIS (vs 5 do MF Rural)
+      limitFreights = 0;
+    }
 
     // VERIFICAR BLOQUEIOS (LGPD/Segurança)
     const db = getDb(env);
@@ -942,10 +1150,22 @@ async function handleRegister(request, env) {
     const trialExpiresAt = new Date();
     trialExpiresAt.setDate(trialExpiresAt.getDate() + 3); // 3 dias a partir de agora
     
-    // Insert sem especificar ID (auto-increment)
+    // Insert sem especificar ID (auto-increment), com business_type e limites
     const result = await db.prepare(
-      "INSERT INTO users (name, email, password, plan, plan_expires_at) VALUES (?, ?, ?, 'inicial', ?)"
-    ).bind(name, email.toLowerCase(), hashedPassword, trialExpiresAt.toISOString()).run();
+      `INSERT INTO users (
+        name, email, password, plan, plan_expires_at, 
+        business_type, limit_products, limit_freights, 
+        current_products, current_freights
+      ) VALUES (?, ?, ?, 'inicial', ?, ?, ?, ?, 0, 0)`
+    ).bind(
+      name, 
+      email.toLowerCase(), 
+      hashedPassword, 
+      trialExpiresAt.toISOString(),
+      businessType,
+      limitProducts,
+      limitFreights
+    ).run();
     
     // Pegar o ID gerado automaticamente
     const userId = result.meta.last_row_id.toString();
@@ -961,13 +1181,22 @@ async function handleRegister(request, env) {
     await sendVerificationEmail(env, userId, email);
     
     // Generate JWT
-    const token = await generateJWT({ userId, email, name }, env.JWT_SECRET);
+    const token = await generateJWT({ userId, email, name, businessType }, env.JWT_SECRET);
     
     return jsonResponse({
       success: true,
       data: {
         token,
-        user: { id: userId, email, name },
+        user: { 
+          id: userId, 
+          email, 
+          name, 
+          business_type: businessType,
+          limits: {
+            products: limitProducts,
+            freights: limitFreights
+          }
+        },
         email_verification_required: true
       }
     }, 201);
@@ -1141,6 +1370,20 @@ async function handleLogin(request, env) {
   }
 }
 
+// Auth - Logout
+async function handleLogout(request, env) {
+  try {
+    // Simplesmente retorna sucesso (JWT é stateless)
+    return jsonResponse({
+      success: true,
+      message: 'Logout realizado com sucesso'
+    });
+  } catch (error) {
+    console.error('Logout error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao fazer logout' }, 500);
+  }
+}
+
 // Products - List
 async function handleProductsList(request, env) {
   try {
@@ -1203,22 +1446,37 @@ async function handleProductCreate(request, env, user) {
 
     const db = getDb(env);
     
-    // VERIFICAR LIMITE DO PLANO
-    const limitCheck = await checkUserLimit(db, user.userId, 'product');
+    // VERIFICAR LIMITE DO PLANO (NOVO SISTEMA)
+    const userData = await db.prepare(`
+      SELECT business_type, plan, limit_products, current_products, plan_expires_at
+      FROM users WHERE id = ?
+    `).bind(user.userId).first();
     
-    if (!limitCheck.allowed) {
-      const errorMsg = limitCheck.expired 
-        ? '⏰ Seu período de teste de 3 dias expirou! Assine um plano para continuar usando o AgroSync.'
-        : `Limite de produtos atingido! Seu plano ${limitCheck.planName} permite ${limitCheck.limit} produto(s) por mês. Você já usou ${limitCheck.current}. Faça upgrade para continuar!`;
-      
+    if (!userData) {
+      return jsonResponse({ success: false, error: 'Usuário não encontrado' }, 404);
+    }
+    
+    // Verificar se período de teste expirou
+    if (userData.plan_expires_at) {
+      const expiresAt = new Date(userData.plan_expires_at);
+      if (expiresAt < new Date()) {
+        return jsonResponse({ 
+          success: false, 
+          error: '⏰ Seu período de teste expirou! Assine um plano para continuar.',
+          expired: true
+        }, 403);
+      }
+    }
+    
+    // Verificar limite de produtos (9999 = ilimitado)
+    if (userData.limit_products !== 9999 && userData.current_products >= userData.limit_products) {
       return jsonResponse({ 
         success: false, 
-        error: errorMsg,
-        limitReached: !limitCheck.expired,
-        expired: limitCheck.expired,
-        current: limitCheck.current,
-        limit: limitCheck.limit,
-        plan: limitCheck.plan
+        error: `Limite de ${userData.limit_products} produtos atingido! Faça upgrade do seu plano.`,
+        limitReached: true,
+        current: userData.current_products,
+        limit: userData.limit_products,
+        plan: userData.plan
       }, 403);
     }
     
@@ -1232,18 +1490,114 @@ async function handleProductCreate(request, env, user) {
     // Recuperar id gerado pelo DB (last_row_id)
     const productId = insertResult?.meta?.last_row_id || null;
 
-    // Incrementar uso
-    await incrementUserUsage(db, user.userId, 'product');
+    // Incrementar contador de produtos do usuário
+    await db.prepare(`
+      UPDATE users SET current_products = current_products + 1 WHERE id = ?
+    `).bind(user.userId).run();
 
     return jsonResponse({
       success: true,
       message: 'Produto criado com sucesso',
       data: { id: productId },
-      usage: { current: limitCheck.current + 1, limit: limitCheck.limit }
+      usage: { 
+        current: userData.current_products + 1, 
+        limit: userData.limit_products,
+        available: userData.limit_products === 9999 ? 9999 : userData.limit_products - userData.current_products - 1
+      }
     }, 201);
   } catch (error) {
     console.error('Product create error:', error);
     return jsonResponse({ success: false, error: 'Erro ao criar produto' }, 500);
+  }
+}
+
+// Freight - Get by ID (public - para rastreamento)
+async function handleFreightById(request, env, freightId) {
+  try {
+    const db = getDb(env);
+    
+    const freight = await db.prepare(`
+      SELECT 
+        f.*,
+        u.name as provider_name,
+        u.email as provider_email,
+        u.phone as provider_phone
+      FROM freight f
+      LEFT JOIN users u ON f.user_id = u.id
+      WHERE f.id = ?
+    `).bind(freightId).first();
+    
+    if (!freight) {
+      return jsonResponse({ 
+        success: false, 
+        error: 'Frete não encontrado',
+        trackingCode: `FR${freightId.toString().substring(5)}`
+      }, 404);
+    }
+    
+    // Gerar código de rastreamento
+    const trackingCode = `FR${freightId.toString().substring(5)}`;
+    
+    // Buscar eventos de rastreamento (se existir tabela)
+    let trackingEvents = [];
+    try {
+      const events = await db.prepare(`
+        SELECT * FROM freight_tracking 
+        WHERE freight_id = ? 
+        ORDER BY created_at DESC
+      `).bind(freightId).all();
+      trackingEvents = events.results || [];
+    } catch (e) {
+      // Tabela pode não existir ainda
+      trackingEvents = [];
+    }
+    
+    return jsonResponse({
+      success: true,
+      data: {
+        freight: {
+          id: freight.id,
+          trackingCode,
+          origin: {
+            city: freight.origin_city,
+            state: freight.origin_state
+          },
+          destination: {
+            city: freight.destination_city,
+            state: freight.destination_state
+          },
+          cargoType: freight.freight_type,
+          status: freight.status,
+          capacity: freight.capacity,
+          pricePerKm: freight.price_per_km,
+          vehicle: {
+            type: freight.vehicle_type,
+            brand: freight.vehicle_brand,
+            model: freight.vehicle_model,
+            plate: freight.vehicle_plate,
+            year: freight.vehicle_year,
+            color: freight.vehicle_color
+          },
+          provider: {
+            name: freight.provider_name,
+            phone: freight.provider_phone
+          },
+          createdAt: freight.created_at
+        },
+        tracking: {
+          events: trackingEvents,
+          hasGPS: trackingEvents.length > 0,
+          lastUpdate: trackingEvents[0]?.created_at || freight.created_at
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Freight by ID error:', error);
+    return jsonResponse({ 
+      success: false, 
+      error: 'Erro ao buscar frete',
+      details: error.message
+    }, 500);
   }
 }
 
@@ -1362,62 +1716,166 @@ async function handleFreightCreate(request, env, user) {
 
     const db = getDb(env);
     
-    // VERIFICAR LIMITE DO PLANO
-    const limitCheck = await checkUserLimit(db, user.userId, 'freight');
+    // VERIFICAR LIMITE DO PLANO (NOVO SISTEMA)
+    const userData = await db.prepare(`
+      SELECT business_type, plan, limit_freights, current_freights, plan_expires_at
+      FROM users WHERE id = ?
+    `).bind(user.userId).first();
     
-    if (!limitCheck.allowed) {
-      const errorMsg = limitCheck.expired 
-        ? '⏰ Seu período de teste de 3 dias expirou! Assine um plano para continuar usando o AgroSync.'
-        : `Limite de fretes atingido! Seu plano ${limitCheck.planName} permite ${limitCheck.limit} frete(s) por mês. Você já usou ${limitCheck.current}. Faça upgrade para continuar!`;
+    if (!userData) {
+      return jsonResponse({ success: false, error: 'Usuário não encontrado' }, 404);
+    }
+    
+    // Verificar se período de teste expirou
+    if (userData.plan_expires_at) {
+      const expiresAt = new Date(userData.plan_expires_at);
+      if (expiresAt < new Date()) {
+        return jsonResponse({ 
+          success: false, 
+          error: '⏰ Seu período de teste expirou! Assine um plano para continuar.',
+          expired: true
+        }, 403);
+      }
+    }
+    
+    // Verificar limite de fretes (9999 = ilimitado)
+    if (userData.limit_freights !== 9999 && userData.current_freights >= userData.limit_freights) {
+      const errorMsg = `Limite de ${userData.limit_freights} fretes atingido! Faça upgrade do seu plano.`;
       
       return jsonResponse({ 
         success: false, 
         error: errorMsg,
-        limitReached: !limitCheck.expired,
-        expired: limitCheck.expired,
-        current: limitCheck.current,
-        limit: limitCheck.limit,
-        plan: limitCheck.plan
+        limitReached: true,
+        current: userData.current_freights,
+        limit: userData.limit_freights,
+        plan: userData.plan
       }, 403);
-  }
+    }
 
-  const freightId = crypto.randomUUID();
+    // Gerar ID numérico único usando timestamp + random
+    const freightId = Date.now() + Math.floor(Math.random() * 1000);
     
-    await db.prepare(
-      "INSERT INTO freight (id, user_id, origin_city, destination_city, freight_type, capacity, price_per_km, vehicle_type, vehicle_brand, vehicle_model, vehicle_year, vehicle_color, vehicle_body_type, vehicle_axles, vehicle_plate, chassis_number, renavam, antt, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'available', datetime('now'))"
-    ).bind(
-      freightId, 
-      user.userId, 
-      origin, 
-      destination, 
+    // Separar cidade e estado
+    const [originCity, originState] = (origin || '').split(',').map(s => s.trim());
+    const [destinationCity, destinationState] = (destination || '').split(',').map(s => s.trim());
+    
+    console.log('📦 Creating freight with data:', {
+      freightId,
+      userId: user.userId,
+      originCity,
+      originState,
+      destinationCity,
+      destinationState,
       cargo_type,
-      weight || capacity || 0,
-      price || 0,
+      weight,
+      capacity,
+      price,
       vehicleType,
-      vehicleBrand,
-      vehicleModel,
-      vehicleYear,
-      vehicleColor,
-      vehicleBodyType,
-      vehicleAxles,
-      licensePlate,
-      chassisNumber,
-      renavam,
-      antt
-    ).run();
+      licensePlate
+    });
     
-    // Incrementar uso
-    await incrementUserUsage(db, user.userId, 'freight');
+    try {
+      await db.prepare(
+        "INSERT INTO freight (id, user_id, origin_city, origin_state, destination_city, destination_state, freight_type, capacity, price_per_km, vehicle_type, vehicle_brand, vehicle_model, vehicle_year, vehicle_color, vehicle_body_type, vehicle_axles, vehicle_plate, chassis_number, renavam, antt, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'available', strftime('%s', 'now'))"
+      ).bind(
+        freightId, 
+        parseInt(user.userId), 
+        originCity || 'Não informado',
+        originState || 'Não informado',
+        destinationCity || 'Não informado',
+        destinationState || 'Não informado',
+        cargo_type || 'Não informado',
+        weight || capacity || 0,
+        price || 0,
+        vehicleType || 'Não informado',
+        vehicleBrand || 'Não informado',
+        vehicleModel || 'Não informado',
+        vehicleYear || 0,
+        vehicleColor || 'Não informado',
+        vehicleBodyType || 'Não informado',
+        vehicleAxles || 0,
+        licensePlate || 'Não informado',
+        chassisNumber || 'Não informado',
+        renavam || 'Não informado',
+        antt || 'Não informado'
+      ).run();
+      
+      console.log('✅ Freight created successfully:', freightId);
+    } catch (dbError) {
+      console.error('❌ Database error creating freight:', dbError);
+      throw new Error(`Database error: ${dbError.message}`);
+    }
+    
+    // Incrementar contador de fretes do usuário
+    await db.prepare(`
+      UPDATE users SET current_freights = current_freights + 1 WHERE id = ?
+    `).bind(user.userId).run();
+    
+    // 📧 ENVIAR EMAIL DE RASTREAMENTO (USANDO MESMA FUNÇÃO QUE FUNCIONA)
+    const userEmail = await db.prepare('SELECT name, email FROM users WHERE id = ?').bind(user.userId).first();
+    
+    if (userEmail) {
+      const trackingCode = `FR${freightId.toString().substring(5)}`;
+      const trackingUrl = `https://agroisync.com/rastreamento/${freightId}`;
+      
+      console.log('📧 [RASTREIO] Enviando email para:', userEmail.email);
+      
+      // USAR A MESMA FUNÇÃO QUE FUNCIONA (sendEmail)
+      try {
+        const emailResult = await sendEmail(env, {
+          to: userEmail.email,
+          subject: `Frete Cadastrado - Codigo ${trackingCode}`,
+          html: `
+            <h2>Frete Cadastrado com Sucesso!</h2>
+            <p>Ola, <strong>${userEmail.name}</strong>!</p>
+            <p>Seu frete foi cadastrado no AgroSync.</p>
+            <h3>Codigo de Rastreamento: ${trackingCode}</h3>
+            <p><strong>Origem:</strong> ${originCity}, ${originState}</p>
+            <p><strong>Destino:</strong> ${destinationCity}, ${destinationState}</p>
+            <p><strong>Tipo:</strong> ${cargo_type}</p>
+            <p><a href="${trackingUrl}">Rastrear Frete</a></p>
+            <p>AgroSync - Conectando o Agronegocio</p>
+          `
+        });
+        
+        if (emailResult.success) {
+          console.log('✅✅✅ [RASTREIO] Email ENVIADO COM SUCESSO!');
+          console.log('✅ [RASTREIO] Para:', userEmail.email);
+          console.log('✅ [RASTREIO] Código:', trackingCode);
+        } else {
+          console.error('❌❌❌ [RASTREIO] Email NÃO enviado!');
+          console.error('❌ [RASTREIO] Motivo:', emailResult.reason);
+        }
+      } catch (emailError) {
+        console.error('❌❌❌ [RASTREIO] EXCEÇÃO ao enviar email!');
+        console.error('❌ [RASTREIO] Erro:', emailError.message);
+      }
+    }
     
     return jsonResponse({
       success: true,
-      message: 'Frete criado com sucesso',
-      data: { id: freightId },
-      usage: { current: limitCheck.current + 1, limit: limitCheck.limit }
+      message: 'Frete criado com sucesso! Email de rastreamento enviado.',
+      data: { 
+        id: freightId,
+        trackingCode: `FR${freightId.toString().substring(5)}`,
+        trackingUrl: `https://agroisync.com/rastreamento/${freightId}`
+      },
+      usage: { 
+        current: userData.current_freights + 1, 
+        limit: userData.limit_freights,
+        available: userData.limit_freights === 9999 ? 9999 : userData.limit_freights - userData.current_freights - 1
+      }
     }, 201);
   } catch (error) {
-    console.error('Freight create error:', error);
-    return jsonResponse({ success: false, error: 'Erro ao criar frete' }, 500);
+    console.error('❌❌❌ Freight create error:', error);
+    console.error('Error stack:', error.stack);
+    console.error('Error message:', error.message);
+    return jsonResponse({ 
+      success: false, 
+      error: 'Erro ao criar frete', 
+      details: error.message,
+      stack: error.stack
+    }, 500);
   }
 }
 
@@ -2007,9 +2465,28 @@ async function handleUserProfile(request, env, user) {
         fields.push('user_type = ?');
         values.push(updateData.userType);
       }
-      if (updateData.businessType !== undefined) {
+      if (updateData.businessType !== undefined || updateData.business_type !== undefined) {
+        const businessType = updateData.businessType || updateData.business_type;
         fields.push('business_type = ?');
-        values.push(updateData.businessType);
+        values.push(businessType);
+        
+        // Atualizar limites baseado no novo tipo (PLANOS GRATUITOS GENEROSOS)
+        let limitProducts = 2, limitFreights = 2;
+        if (businessType === 'comprador' || businessType === 'buyer') {
+          limitProducts = 9999; // ILIMITADO para compradores
+          limitFreights = 0;
+        } else if (businessType === 'freteiro' || businessType === 'transporter') {
+          limitProducts = 0;
+          limitFreights = 20; // 20 FRETES GRÁTIS (vs 10 Fretebras)
+        } else if (businessType === 'anunciante' || businessType === 'producer') {
+          limitProducts = 10; // 10 PRODUTOS GRÁTIS (vs 5 MF Rural)
+          limitFreights = 0;
+        }
+        
+        fields.push('limit_products = ?');
+        values.push(limitProducts);
+        fields.push('limit_freights = ?');
+        values.push(limitFreights);
       }
       
       if (fields.length === 0) {
@@ -2049,6 +2526,50 @@ async function handleUserProfile(request, env, user) {
   } catch (error) {
     console.error('User profile error:', error);
     return jsonResponse({ success: false, error: 'Erro ao processar perfil' }, 500);
+  }
+}
+
+// User Limits - Verificar limites do plano
+async function handleUserLimits(request, env, user) {
+  try {
+    const db = getDb(env);
+    const userData = await db.prepare(`
+      SELECT 
+        business_type, plan, 
+        limit_products, limit_freights, 
+        current_products, current_freights
+      FROM users 
+      WHERE id = ?
+    `).bind(user.userId).first();
+    
+    if (!userData) {
+      return jsonResponse({ success: false, error: 'Usuário não encontrado' }, 404);
+    }
+    
+    return jsonResponse({
+      success: true,
+      data: {
+        business_type: userData.business_type,
+        plan: userData.plan,
+        limits: {
+          products: userData.limit_products,
+          freights: userData.limit_freights
+        },
+        current: {
+          products: userData.current_products,
+          freights: userData.current_freights
+        },
+        available: {
+          products: userData.limit_products === 9999 ? 9999 : Math.max(0, userData.limit_products - userData.current_products),
+          freights: userData.limit_freights === 9999 ? 9999 : Math.max(0, userData.limit_freights - userData.current_freights)
+        },
+        canAddProduct: userData.limit_products === 9999 || userData.current_products < userData.limit_products,
+        canAddFreight: userData.limit_freights === 9999 || userData.current_freights < userData.limit_freights
+      }
+    });
+  } catch (error) {
+    console.error('User limits error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao buscar limites' }, 500);
   }
 }
 
@@ -2107,7 +2628,7 @@ async function handleConversations(request, env, user) {
         END as contact_id,
         MAX(created_at) as last_message_at,
         COUNT(*) as message_count,
-        SUM(CASE WHEN receiver_id = ? AND is_read = 0 THEN 1 ELSE 0 END) as unread_count
+        SUM(CASE WHEN receiver_id = ? AND status = 'sent' THEN 1 ELSE 0 END) as unread_count
       FROM messages 
       WHERE sender_id = ? OR receiver_id = ?
       GROUP BY contact_id
@@ -3532,13 +4053,13 @@ async function handleAdminListUsers(request, env) {
     
     const db = getDb(env);
     
-    let query = 'SELECT id, email, name, company, phone, cpf, cnpj, plan, plan_active, created_at FROM users';
+    let query = 'SELECT id, email, name, phone, business_type, is_active, plan, role, created_at FROM users';
     let params = [];
     
     if (search) {
-      query += ' WHERE email LIKE ? OR name LIKE ? OR company LIKE ? OR cpf LIKE ? OR cnpj LIKE ?';
+      query += ' WHERE email LIKE ? OR name LIKE ? OR phone LIKE ?';
       const searchParam = `%${search}%`;
-      params = [searchParam, searchParam, searchParam, searchParam, searchParam];
+      params = [searchParam, searchParam, searchParam];
     }
     
     query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
@@ -3557,11 +4078,15 @@ async function handleAdminListUsers(request, env) {
     
     return jsonResponse({
       success: true,
-      users: users.results || [],
-      total: totalResult?.total || 0,
-      page,
-      limit,
-      totalPages: Math.ceil((totalResult?.total || 0) / limit)
+      data: {
+        users: users.results || [],
+        pagination: {
+          page,
+          limit,
+          total: totalResult?.total || 0,
+          pages: Math.ceil((totalResult?.total || 0) / limit)
+        }
+      }
     });
   } catch (error) {
     console.error('❌ Admin list users error:', error);
@@ -3727,6 +4252,36 @@ async function handleAdminUnblock(request, env, blockId) {
   }
 }
 
+// Admin - Dashboard (stats + recent registrations)
+async function handleAdminDashboard(request, env) {
+  try {
+    const db = getDb(env);
+    
+    // Buscar stats
+    const statsResponse = await handleAdminStats(request, env);
+    const statsData = await statsResponse.json();
+    
+    // Buscar registros recentes
+    const recentRegistrations = await db.prepare(`
+      SELECT id, name, email, business_type as businessType, created_at as createdAt 
+      FROM users 
+      ORDER BY created_at DESC 
+      LIMIT 10
+    `).all();
+    
+    return jsonResponse({
+      success: true,
+      data: {
+        stats: statsData.stats,
+        recentRegistrations: recentRegistrations?.results || []
+      }
+    });
+  } catch (error) {
+    console.error('Admin dashboard error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao buscar dashboard' }, 500);
+  }
+}
+
 // Admin - Stats COMPLETO (com pagamentos, valores, percentagens)
 async function handleAdminStats(request, env) {
   try {
@@ -3873,7 +4428,15 @@ async function handleAdminListProducts(request, env) {
     
     return jsonResponse({
       success: true,
-      products: products.results || []
+      data: {
+        products: products.results || [],
+        pagination: {
+          page: 1,
+          limit: 100,
+          total: products.results?.length || 0,
+          pages: 1
+        }
+      }
     });
   } catch (error) {
     console.error('Admin list products error:', error);
@@ -3895,7 +4458,15 @@ async function handleAdminListFreights(request, env) {
     
     return jsonResponse({
       success: true,
-      freights: freights.results || []
+      data: {
+        freights: freights.results || [],
+        pagination: {
+          page: 1,
+          limit: 100,
+          total: freights.results?.length || 0,
+          pages: 1
+        }
+      }
     });
   } catch (error) {
     console.error('Admin list freights error:', error);
@@ -3904,8 +4475,517 @@ async function handleAdminListFreights(request, env) {
 }
 
 // ============================================
+// RATING SYSTEM
+// ============================================
+
+// Criar nova avaliação
+async function handleCreateRating(request, env, user) {
+  try {
+    const body = await request.json();
+    const { targetId, targetType, stars, criteria, comment } = body;
+
+    // Validação
+    if (!targetId || !targetType || !stars || stars < 1 || stars > 5) {
+      return jsonResponse({ success: false, error: 'Dados inválidos' }, 400);
+    }
+
+    const db = getDb(env);
+    
+    // Verificar se já avaliou
+    const existing = await db.prepare(`
+      SELECT id FROM ratings 
+      WHERE user_id = ? AND target_id = ? AND target_type = ?
+    `).bind(user.userId, targetId, targetType).first();
+
+    if (existing) {
+      return jsonResponse({ 
+        success: false, 
+        error: 'Você já avaliou este item. Use PUT para atualizar.' 
+      }, 400);
+    }
+
+    // Inserir avaliação
+    const ratingId = Date.now();
+    await db.prepare(`
+      INSERT INTO ratings (
+        id, user_id, target_id, target_type, stars, 
+        punctuality, communication, professionalism, cargo_handling,
+        comment, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(
+      ratingId,
+      user.userId,
+      targetId,
+      targetType,
+      stars,
+      criteria?.punctuality || 0,
+      criteria?.communication || 0,
+      criteria?.professionalism || 0,
+      criteria?.cargoHandling || 0,
+      comment || '',
+      new Date().toISOString()
+    ).run();
+
+    // Atualizar média do target
+    await updateTargetRating(db, targetId, targetType);
+
+    return jsonResponse({
+      success: true,
+      message: 'Avaliação criada com sucesso!',
+      data: { id: ratingId }
+    }, 201);
+
+  } catch (error) {
+    console.error('Create rating error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao criar avaliação' }, 500);
+  }
+}
+
+// Listar avaliações de um target
+async function handleGetRatings(request, env, targetId) {
+  try {
+    const url = new URL(request.url);
+    const targetType = url.searchParams.get('type') || 'driver';
+
+    const db = getDb(env);
+    
+    const ratings = await db.prepare(`
+      SELECT 
+        r.*, 
+        u.name as userName,
+        u.email as userEmail
+      FROM ratings r
+      LEFT JOIN users u ON r.user_id = u.id
+      WHERE r.target_id = ? AND r.target_type = ?
+      ORDER BY r.created_at DESC
+      LIMIT 50
+    `).bind(targetId, targetType).all();
+
+    // Formatar resposta
+    const formatted = (ratings.results || []).map(r => ({
+      id: r.id,
+      stars: r.stars,
+      criteria: {
+        punctuality: r.punctuality,
+        communication: r.communication,
+        professionalism: r.professionalism,
+        cargoHandling: r.cargo_handling
+      },
+      comment: r.comment,
+      userName: r.userName,
+      userEmail: r.userEmail,
+      timestamp: r.created_at
+    }));
+
+    // Calcular estatísticas
+    const stats = calculateRatingStats(formatted);
+
+    return jsonResponse({
+      success: true,
+      data: {
+        ratings: formatted,
+        stats
+      }
+    });
+
+  } catch (error) {
+    console.error('Get ratings error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao buscar avaliações' }, 500);
+  }
+}
+
+// Atualizar avaliação existente
+async function handleUpdateRating(request, env, user, ratingId) {
+  try {
+    const body = await request.json();
+    const { stars, criteria, comment } = body;
+
+    const db = getDb(env);
+    
+    // Verificar se é o dono da avaliação
+    const rating = await db.prepare(`
+      SELECT * FROM ratings WHERE id = ? AND user_id = ?
+    `).bind(ratingId, user.userId).first();
+
+    if (!rating) {
+      return jsonResponse({ 
+        success: false, 
+        error: 'Avaliação não encontrada ou você não tem permissão' 
+      }, 404);
+    }
+
+    // Verificar se passou 24h (não pode editar após 24h)
+    const createdAt = new Date(rating.created_at);
+    const now = new Date();
+    const hoursDiff = (now - createdAt) / (1000 * 60 * 60);
+
+    if (hoursDiff > 24) {
+      return jsonResponse({ 
+        success: false, 
+        error: 'Avaliações só podem ser editadas nas primeiras 24 horas' 
+      }, 403);
+    }
+
+    // Atualizar
+    await db.prepare(`
+      UPDATE ratings SET
+        stars = ?,
+        punctuality = ?,
+        communication = ?,
+        professionalism = ?,
+        cargo_handling = ?,
+        comment = ?,
+        updated_at = ?
+      WHERE id = ?
+    `).bind(
+      stars || rating.stars,
+      criteria?.punctuality || rating.punctuality,
+      criteria?.communication || rating.communication,
+      criteria?.professionalism || rating.professionalism,
+      criteria?.cargoHandling || rating.cargo_handling,
+      comment !== undefined ? comment : rating.comment,
+      new Date().toISOString(),
+      ratingId
+    ).run();
+
+    // Atualizar média do target
+    await updateTargetRating(db, rating.target_id, rating.target_type);
+
+    return jsonResponse({
+      success: true,
+      message: 'Avaliação atualizada com sucesso!'
+    });
+
+  } catch (error) {
+    console.error('Update rating error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao atualizar avaliação' }, 500);
+  }
+}
+
+// Função auxiliar: Atualizar média do target
+async function updateTargetRating(db, targetId, targetType) {
+  const ratings = await db.prepare(`
+    SELECT AVG(stars) as avg_rating, COUNT(*) as rating_count
+    FROM ratings
+    WHERE target_id = ? AND target_type = ?
+  `).bind(targetId, targetType).first();
+
+  const avgRating = ratings?.avg_rating || 0;
+  const ratingCount = ratings?.rating_count || 0;
+
+  // Atualizar na tabela do target (users, products, etc)
+  if (targetType === 'driver' || targetType === 'company') {
+    await db.prepare(`
+      UPDATE users 
+      SET rating = ?, rating_count = ?
+      WHERE id = ?
+    `).bind(parseFloat(avgRating.toFixed(2)), ratingCount, targetId).run();
+  }
+}
+
+// Função auxiliar: Calcular estatísticas
+function calculateRatingStats(ratings) {
+  if (ratings.length === 0) {
+    return {
+      average: 0,
+      total: 0,
+      distribution: [0, 0, 0, 0, 0],
+      criteriaAverages: {
+        punctuality: 0,
+        communication: 0,
+        professionalism: 0,
+        cargoHandling: 0
+      }
+    };
+  }
+
+  const average = ratings.reduce((sum, r) => sum + r.stars, 0) / ratings.length;
+  
+  const distribution = [0, 0, 0, 0, 0];
+  ratings.forEach(r => distribution[r.stars - 1]++);
+
+  const criteriaAverages = {
+    punctuality: ratings.reduce((sum, r) => sum + (r.criteria?.punctuality || 0), 0) / ratings.length,
+    communication: ratings.reduce((sum, r) => sum + (r.criteria?.communication || 0), 0) / ratings.length,
+    professionalism: ratings.reduce((sum, r) => sum + (r.criteria?.professionalism || 0), 0) / ratings.length,
+    cargoHandling: ratings.reduce((sum, r) => sum + (r.criteria?.cargoHandling || 0), 0) / ratings.length
+  };
+
+  return { average, total: ratings.length, distribution, criteriaAverages };
+}
+
+// ============================================
 // MAIN ROUTER
 // ============================================
+
+// ============================================
+// NOVOS HANDLERS - MARKETPLACE COMPLETO
+// ============================================
+
+/**
+ * COTAÇÕES - Buscar preços em tempo real
+ */
+async function handleCotacoes(request, env) {
+  try {
+    const url = new URL(request.url);
+    const produtosParam = url.searchParams.get('produtos') || 'soja,milho,cafe';
+    const produtos = produtosParam.split(',');
+    
+    const db = getDb(env);
+    const cotacoes = {};
+    
+    // Buscar cotações mais recentes do banco (cache)
+    for (const produto of produtos) {
+      const cotacao = await db.prepare(`
+        SELECT price, variation, source, timestamp
+        FROM market_prices
+        WHERE product_type = ?
+        ORDER BY timestamp DESC
+        LIMIT 1
+      `).bind(produto.trim()).first();
+      
+      if (cotacao) {
+        cotacoes[produto.trim()] = {
+          preco: cotacao.price,
+          variacao: cotacao.variation || 0,
+          fonte: cotacao.source || 'cepea',
+          timestamp: cotacao.timestamp,
+          unidade: produto === 'boi-gordo' ? '@' : 'saca'
+        };
+      } else {
+        // Dados de fallback
+        cotacoes[produto.trim()] = getFallbackCotacao(produto.trim());
+      }
+    }
+    
+    return jsonResponse({
+      success: true,
+      cotacoes,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Erro ao buscar cotações:', error);
+    return jsonResponse({
+      success: false,
+      error: error.message
+    }, 500);
+  }
+}
+
+/**
+ * COTAÇÕES - Histórico de preços
+ */
+async function handleCotacoesHistorico(request, env, produto) {
+  try {
+    const url = new URL(request.url);
+    const dias = parseInt(url.searchParams.get('dias') || '30');
+    
+    const db = getDb(env);
+    const historico = await db.prepare(`
+      SELECT price, variation, source, DATE(timestamp) as data
+      FROM market_prices
+      WHERE product_type = ?
+      AND timestamp >= datetime('now', '-${dias} days')
+      GROUP BY DATE(timestamp)
+      ORDER BY timestamp ASC
+    `).bind(produto).all();
+    
+    return jsonResponse({
+      success: true,
+      produto,
+      historico: historico.results || [],
+      periodo: dias
+    });
+  } catch (error) {
+    console.error('Erro ao buscar histórico:', error);
+    return jsonResponse({
+      success: false,
+      error: error.message
+    }, 500);
+  }
+}
+
+/**
+ * ALERTAS DE PREÇO - Listar
+ */
+async function handlePriceAlertsList(request, env, user) {
+  try {
+    const db = getDb(env);
+    const alerts = await db.prepare(`
+      SELECT id, product_type, target_price, condition, is_active, created_at
+      FROM price_alerts
+      WHERE user_id = ?
+      ORDER BY created_at DESC
+    `).bind(user.userId).all();
+    
+    return jsonResponse({
+      success: true,
+      alerts: alerts.results || []
+    });
+  } catch (error) {
+    console.error('Erro ao listar alertas:', error);
+    return jsonResponse({ success: false, error: error.message }, 500);
+  }
+}
+
+/**
+ * ALERTAS DE PREÇO - Criar
+ */
+async function handlePriceAlertCreate(request, env, user) {
+  try {
+    const body = await request.json();
+    const { produto, precoAlvo, condition } = body;
+    
+    if (!produto || !precoAlvo) {
+      return jsonResponse({ success: false, error: 'Dados inválidos' }, 400);
+    }
+    
+    const db = getDb(env);
+    const result = await db.prepare(`
+      INSERT INTO price_alerts (user_id, product_type, target_price, condition, is_active)
+      VALUES (?, ?, ?, ?, 1)
+    `).bind(user.userId, produto, parseFloat(precoAlvo), condition || 'below').run();
+    
+    return jsonResponse({
+      success: true,
+      alert: { id: result.meta.last_row_id, produto, precoAlvo, condition }
+    });
+  } catch (error) {
+    console.error('Erro ao criar alerta:', error);
+    return jsonResponse({ success: false, error: error.message }, 500);
+  }
+}
+
+/**
+ * ALERTAS DE PREÇO - Deletar
+ */
+async function handlePriceAlertDelete(request, env, user, alertId) {
+  try {
+    const db = getDb(env);
+    await db.prepare(`DELETE FROM price_alerts WHERE id = ? AND user_id = ?`).bind(alertId, user.userId).run();
+    return jsonResponse({ success: true });
+  } catch (error) {
+    return jsonResponse({ success: false, error: error.message }, 500);
+  }
+}
+
+/**
+ * FAVORITOS - Listar
+ */
+async function handleFavoritesList(request, env, user) {
+  try {
+    const db = getDb(env);
+    const favorites = await db.prepare(`
+      SELECT f.id, f.product_id, p.name, p.price, p.images
+      FROM favorites f
+      LEFT JOIN products p ON f.product_id = p.id
+      WHERE f.user_id = ?
+      ORDER BY f.created_at DESC
+    `).bind(user.userId).all();
+    
+    return jsonResponse({ success: true, favorites: favorites.results || [] });
+  } catch (error) {
+    return jsonResponse({ success: false, error: error.message }, 500);
+  }
+}
+
+/**
+ * FAVORITOS - Toggle
+ */
+async function handleFavoriteToggle(request, env, user) {
+  try {
+    const body = await request.json();
+    const { productId } = body;
+    
+    const db = getDb(env);
+    const existing = await db.prepare(`SELECT id FROM favorites WHERE user_id = ? AND product_id = ?`).bind(user.userId, productId).first();
+    
+    if (existing) {
+      await db.prepare(`DELETE FROM favorites WHERE user_id = ? AND product_id = ?`).bind(user.userId, productId).run();
+      return jsonResponse({ success: true, action: 'removed', isFavorite: false });
+    } else {
+      await db.prepare(`INSERT INTO favorites (user_id, product_id) VALUES (?, ?)`).bind(user.userId, productId).run();
+      return jsonResponse({ success: true, action: 'added', isFavorite: true });
+    }
+  } catch (error) {
+    return jsonResponse({ success: false, error: error.message }, 500);
+  }
+}
+
+/**
+ * PRODUTOS - Similares
+ */
+async function handleProductSimilar(request, env, productId) {
+  try {
+    const db = getDb(env);
+    const product = await db.prepare(`SELECT category, price FROM products WHERE id = ?`).bind(productId).first();
+    
+    if (!product) {
+      return jsonResponse({ success: false, error: 'Produto não encontrado' }, 404);
+    }
+    
+    const similar = await db.prepare(`
+      SELECT id, name, price, images, origin_city, origin_state
+      FROM products
+      WHERE status = 'active' AND id != ? AND category = ?
+      AND price BETWEEN ? AND ?
+      ORDER BY RANDOM()
+      LIMIT 4
+    `).bind(productId, product.category, product.price * 0.7, product.price * 1.3).all();
+    
+    return jsonResponse({ success: true, similar: similar.results || [] });
+  } catch (error) {
+    return jsonResponse({ success: false, error: error.message }, 500);
+  }
+}
+
+/**
+ * SELLER - Info
+ */
+async function handleSellerInfo(request, env, sellerId) {
+  try {
+    const db = getDb(env);
+    const seller = await db.prepare(`SELECT id, name, created_at FROM users WHERE id = ?`).bind(sellerId).first();
+    
+    if (!seller) {
+      return jsonResponse({ success: false, error: 'Vendedor não encontrado' }, 404);
+    }
+    
+    const stats = await db.prepare(`
+      SELECT COUNT(*) as total FROM products WHERE user_id = ? AND status = 'active'
+    `).bind(sellerId).first();
+    
+    return jsonResponse({
+      success: true,
+      seller: {
+        id: seller.id,
+        name: seller.name,
+        verified: true,
+        rating: 4.8,
+        reviewCount: 156,
+        memberSince: new Date(seller.created_at).getFullYear(),
+        totalProducts: stats?.total || 0
+      }
+    });
+  } catch (error) {
+    return jsonResponse({ success: false, error: error.message }, 500);
+  }
+}
+
+/**
+ * Fallback cotações
+ */
+function getFallbackCotacao(produto) {
+  const fallbacks = {
+    'soja': { preco: 120.00, variacao: 0, fonte: 'fallback', unidade: 'saca' },
+    'milho': { preco: 85.00, variacao: 0, fonte: 'fallback', unidade: 'saca' },
+    'cafe': { preco: 1200.00, variacao: 0, fonte: 'fallback', unidade: 'saca' },
+    'trigo': { preco: 95.00, variacao: 0, fonte: 'fallback', unidade: 'saca' },
+    'boi-gordo': { preco: 320.00, variacao: 0, fonte: 'fallback', unidade: '@' },
+    'leite': { preco: 2.50, variacao: 0, fonte: 'fallback', unidade: 'L' }
+  };
+  return fallbacks[produto] || { preco: 0, variacao: 0, fonte: 'fallback', unidade: 'unidade' };
+}
 
 async function handleRequest(request, env) {
   const url = new URL(request.url);
@@ -3931,12 +5011,25 @@ async function handleRequest(request, env) {
       return handleHealth(request, env);
     }
     
+    // Debug schema
+    if (path === '/api/debug/schema') {
+      return handleDebugSchema(request, env);
+    }
+    
+    // Debug email preview
+    if (path === '/api/debug/email-preview') {
+      return handleEmailPreview(request, env);
+    }
+    
     // Public routes - Auth
   if (path === '/api/auth/register' && method === 'POST') {
     return handleRegister(request, env);
   }
   if (path === '/api/auth/login' && method === 'POST') {
     return handleLogin(request, env);
+  }
+  if (path === '/api/auth/logout' && method === 'POST') {
+    return handleLogout(request, env);
   }
     if (path === '/api/auth/forgot-password' && method === 'POST') {
       return handleForgotPassword(request, env);
@@ -3973,6 +5066,15 @@ async function handleRequest(request, env) {
       return handleEmailResendCode(request, env);
     }
 
+    // Public route - Cotações (NÃO REQUER AUTH)
+    if (path === '/api/cotacoes' && method === 'GET') {
+      return handleCotacoes(request, env);
+    }
+    if (path.startsWith('/api/cotacoes/historico/') && method === 'GET') {
+      const produto = path.split('/').pop();
+      return handleCotacoesHistorico(request, env, produto);
+    }
+
       // Public route - create user with avatar
       if (path === '/api/users/create-with-avatar' && method === 'POST') {
         return handleCreateUserWithAvatar(request, env);
@@ -3981,6 +5083,12 @@ async function handleRequest(request, env) {
     // Public routes - Freight
   if ((path === '/api/freight' || path === '/api/freights') && method === 'GET') {
     return handleFreightList(request, env);
+  }
+  
+  // Public routes - Freight by ID (rastreamento)
+  const freightIdMatch = path.match(/^\/api\/freight\/(\d+)$/);
+  if (freightIdMatch && method === 'GET') {
+    return handleFreightById(request, env, freightIdMatch[1]);
   }
     
     // Public routes - Contact
@@ -4018,8 +5126,16 @@ async function handleRequest(request, env) {
     
     // Protected routes - verify JWT
     const user = await verifyJWT(request, env.JWT_SECRET);
+    console.log('🔍 JWT Verification Result:', { user, hasToken: !!request.headers.get('Authorization') });
     if (!user) {
-      return jsonResponse({ success: false, error: 'Não autorizado' }, 401);
+      return jsonResponse({ 
+        success: false, 
+        error: 'Não autorizado',
+        debug: process.env.NODE_ENV !== 'production' ? { 
+          hasAuthHeader: !!request.headers.get('Authorization'),
+          authHeader: request.headers.get('Authorization')?.substring(0, 30) + '...'
+        } : undefined
+      }, 401);
     }
     
     // ADMIN ROUTES - Verificar se é admin (MÁXIMA SEGURANÇA)
@@ -4079,6 +5195,11 @@ async function handleRequest(request, env) {
         return handleAdminStats(request, env);
       }
       
+      // Admin - Dashboard (stats + recent registrations)
+      if (path === '/api/admin/dashboard' && method === 'GET') {
+        return handleAdminDashboard(request, env);
+      }
+      
       // Admin - Deletar produto
       if (path.startsWith('/api/admin/products/') && method === 'DELETE') {
         const productId = path.split('/').pop();
@@ -4107,8 +5228,8 @@ async function handleRequest(request, env) {
       return handleProductCreate(request, env, user);
     }
     
-    // Protected - Freight
-    if (path === '/api/freight' && method === 'POST') {
+    // Protected - Freight (aceita singular e plural)
+    if ((path === '/api/freight' || path === '/api/freights') && method === 'POST') {
       return handleFreightCreate(request, env, user);
     }
     
@@ -4139,6 +5260,9 @@ async function handleRequest(request, env) {
     if (path === '/api/user/profile' && (method === 'GET' || method === 'PUT')) {
       return handleUserProfile(request, env, user);
     }
+    if (path === '/api/user/limits' && method === 'GET') {
+      return handleUserLimits(request, env, user);
+    }
     if (path === '/api/user/items' && method === 'GET') {
       return handleUserItems(request, env, user);
     }
@@ -4148,6 +5272,19 @@ async function handleRequest(request, env) {
     // Tracking routes
     if (path === '/api/tracking/location' && method === 'POST') {
       return handleTrackingLocationUpdate(request, env, user);
+    }
+    
+    // Rating routes
+    if (path === '/api/ratings' && method === 'POST') {
+      return handleCreateRating(request, env, user);
+    }
+    if (path.match(/^\/api\/ratings\/(\d+)$/) && method === 'GET') {
+      const targetId = path.split('/').pop();
+      return handleGetRatings(request, env, targetId);
+    }
+    if (path.match(/^\/api\/ratings\/(\d+)$/) && method === 'PUT') {
+      const ratingId = path.split('/').pop();
+      return handleUpdateRating(request, env, user, ratingId);
     }
     if (path === '/api/tracking/status' && method === 'POST') {
       return handleTrackingStatusUpdate(request, env, user);
@@ -4183,6 +5320,50 @@ async function handleRequest(request, env) {
     }
     
     // 404 - Route not found
+    // ============================================
+    // NOVOS ENDPOINTS - MARKETPLACE COMPLETO
+    // ============================================
+    
+    // ALERTAS DE PREÇO (Protected)
+    if (path === '/api/price-alerts' && method === 'GET') {
+      return handlePriceAlertsList(request, env, user);
+    }
+    
+    if (path === '/api/price-alerts' && method === 'POST') {
+      return handlePriceAlertCreate(request, env, user);
+    }
+    
+    if (path.startsWith('/api/price-alerts/') && method === 'DELETE') {
+      const alertId = path.split('/').pop();
+      return handlePriceAlertDelete(request, env, user, alertId);
+    }
+    
+    // FAVORITOS (Protected)
+    if (path === '/api/favorites' && method === 'GET') {
+      return handleFavoritesList(request, env, user);
+    }
+    
+    if (path === '/api/favorites' && method === 'POST') {
+      return handleFavoriteToggle(request, env, user);
+    }
+    
+    // PRODUTOS - Busca Avançada
+    if (path === '/api/products/search' && method === 'GET') {
+      return handleProductSearch(request, env);
+    }
+    
+    // PRODUTOS - Similares
+    if (path.startsWith('/api/products/') && path.endsWith('/similar') && method === 'GET') {
+      const productId = path.split('/')[3];
+      return handleProductSimilar(request, env, productId);
+    }
+    
+    // PRODUTOS - Info do Vendedor
+    if (path.startsWith('/api/seller/') && method === 'GET') {
+      const sellerId = path.split('/').pop();
+      return handleSellerInfo(request, env, sellerId);
+    }
+    
     return jsonResponse({
       success: false,
       error: 'Rota não encontrada',

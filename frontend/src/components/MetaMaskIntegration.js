@@ -10,8 +10,8 @@ const MetaMaskIntegration = () => {
   const [copied, setCopied] = useState(false);
   const [transactions, setTransactions] = useState([]);
 
-  // Endereço da carteira central
-  const CENTRAL_WALLET = '0x5Ea5C5970e8AE23A5336d631707CF31C5916E8b1';
+  // Endereço da carteira central (REMOVIDO POR SEGURANÇA)
+  const CENTRAL_WALLET = '';
 
   const checkConnection = useCallback(async () => {
     try {

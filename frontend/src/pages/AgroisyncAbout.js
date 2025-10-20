@@ -84,7 +84,7 @@ const AgroisyncAbout = () => {
       title: t('about.milestones.fullImplementation', 'Implementação Completa'),
       description: t(
         'about.milestones.implementationDesc',
-        'Lançamento da plataforma completa com blockchain, IA, e todas as funcionalidades para transformar o agronegócio brasileiro.'
+        'Plataforma 100% operacional com IA avançada (7 funcionalidades), OpenStreetMap gratuito, sistema de avaliações 5 estrelas, corretora de criptomoedas, nossa própria AgroToken (AGT) e marketplace completo. A revolução do agronegócio está aqui!'
       )
     }
   ];
@@ -95,7 +95,7 @@ const AgroisyncAbout = () => {
       title: t('about.features.sustainableTech', 'Tecnologia Sustentável'),
       description: t(
         'about.features.sustainableDesc',
-        'Implementamos soluções que promovem a agricultura sustentável e o uso eficiente de recursos naturais.'
+        'OpenStreetMap 100% gratuito, sem limites de requisições. Rotas inteligentes que economizam combustível e reduzem emissões de CO2.'
       )
     },
     {
@@ -103,7 +103,7 @@ const AgroisyncAbout = () => {
       title: t('about.features.democratization', 'Democratização do Agronegócio'),
       description: t(
         'about.features.democratizationDesc',
-        'Conectamos pequenos produtores familiares aos grandes compradores, criando oportunidades iguais para todos.'
+        'IA de precificação justa para todos, matching automático de motoristas, sistema de avaliações transparente e planos acessíveis desde R$ 29,90/mês.'
       )
     },
     {
@@ -111,7 +111,7 @@ const AgroisyncAbout = () => {
       title: t('about.features.globalInnovation', 'Inovação Global'),
       description: t(
         'about.features.globalDesc',
-        'Utilizamos as mais avançadas tecnologias internacionais adaptadas para a realidade brasileira.'
+        'Corretora de criptomoedas integrada (BTC, ETH, USDT), MetaMask, nossa própria AgroToken (AGT) e suporte a pagamentos em cripto. O futuro é agora!'
       )
     },
     {
@@ -119,7 +119,7 @@ const AgroisyncAbout = () => {
       title: t('about.features.guaranteedQuality', 'Qualidade Garantida'),
       description: t(
         'about.features.qualityDesc',
-        'Sistema de verificação e certificação que garante a qualidade dos produtos comercializados.'
+        'Sistema de avaliações 5 estrelas com 4 critérios detalhados, badges automáticas (Top Performer, Premium, Verificado) e detecção de fraudes por IA.'
       )
     }
   ];

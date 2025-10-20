@@ -12,8 +12,9 @@ class AdvancedAgroService {
     if (this.location) return this.location;
 
     try {
+      const apiUrl = (typeof window !== 'undefined' && window.__ENV__ && window.__ENV__.REACT_APP_API_URL) || process.env.REACT_APP_API_URL || 'https://backend.contato-00d.workers.dev';
       // Tentar via nosso backend primeiro (proxy)
-      const response = await fetch('/api/geolocation');
+      const response = await fetch(`${apiUrl}/api/geolocation`);
       if (response.ok) {
         const data = await response.json();
         this.location = {
