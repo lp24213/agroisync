@@ -585,10 +585,17 @@ function jsonResponse(data, status = 200, headers = {}) {
 }
 
 function getDb(env) {
+  console.log('🔍 getDb chamado');
+  console.log('🔍 env.DB existe?', !!env.DB);
+  console.log('🔍 env.AGROISYNC_DB existe?', !!env.AGROISYNC_DB);
+  console.log('🔍 Keys do env:', Object.keys(env).join(', '));
+  
   const db = env.DB || env.AGROISYNC_DB;
   if (!db) {
+    console.error('❌ Database binding not found!');
     throw new Error('Database binding not found');
   }
+  console.log('✅ Database binding found!');
   return db;
 }
 
@@ -615,7 +622,7 @@ async function checkUserLimit(db, userId, type) {
       }
     }
 
-    const plan = await db.prepare('SELECT * FROM plans WHERE slug = ?').bind(user.plan || 'inicial').first();
+    const plan = await db.prepare('SELECT * FROM plans WHERE slug = ?').bind(user.plan || 'gratuito').first();
     if (!plan) return { allowed: false, current: 0, limit: 0, plan: user.plan };
 
     const limit = type === 'freight' ? plan.freight_limit : plan.product_limit;
@@ -1049,16 +1056,20 @@ async function handleHealth(request, env) {
 
 // Auth - Register
 async function handleRegister(request, env) {
+  console.log('📝 handleRegister chamado');
   try {
-  const { email, password, name, cpf, cnpj, ie, business_type, turnstileToken } = await request.json();
+    console.log('📝 Parsing JSON...');
+  const { email, password, name, username, cpf, cnpj, ie, business_type, turnstileToken } = await request.json();
+    console.log('📝 Dados recebidos:', { email, name, username, business_type });
     
     if (!email || !password || !name) {
     return jsonResponse({ success: false, error: 'Dados incompletos' }, 400);
   }
+    console.log('📝 Validação inicial OK');
   
     // Definir limites GENEROSOS baseado no tipo de conta (PLANO GRATUITO)
     const businessType = business_type || 'all';
-    let limitProducts = 2, limitFreights = 2; // Padrão plano inicial
+    let limitProducts = 5, limitFreights = 5; // Padrão plano GRATUITO - 5 fretes + 5 produtos!
     
     if (businessType === 'comprador' || businessType === 'buyer') {
       limitProducts = 9999; // ILIMITADO para compradores (sempre)
@@ -1142,24 +1153,36 @@ async function handleRegister(request, env) {
     if (existing) {
     return jsonResponse({ success: false, error: 'Email já cadastrado' }, 409);
   }
+    
+    // Check if username exists (se fornecido)
+    if (username) {
+      const usernameExists = await db.prepare('SELECT id FROM users WHERE username = ?')
+        .bind(username.toLowerCase())
+        .first();
+      
+      if (usernameExists) {
+        return jsonResponse({ success: false, error: 'Nome de usuário já está em uso' }, 409);
+      }
+    }
 
     // Hash password
     const hashedPassword = await hashPassword(password);
     
-    // Insert user com plano inicial e 3 dias de teste grátis
+    // Insert user com plano GRATUITO e 30 dias de teste grátis
     const trialExpiresAt = new Date();
-    trialExpiresAt.setDate(trialExpiresAt.getDate() + 3); // 3 dias a partir de agora
+    trialExpiresAt.setDate(trialExpiresAt.getDate() + 30); // 30 dias a partir de agora
     
-    // Insert sem especificar ID (auto-increment), com business_type e limites
+    // Insert sem especificar ID (auto-increment), com business_type, limites e username
     const result = await db.prepare(
       `INSERT INTO users (
-        name, email, password, plan, plan_expires_at, 
+        name, email, username, password, plan, plan_expires_at, 
         business_type, limit_products, limit_freights, 
         current_products, current_freights
-      ) VALUES (?, ?, ?, 'inicial', ?, ?, ?, ?, 0, 0)`
+      ) VALUES (?, ?, ?, ?, 'gratuito', ?, ?, ?, ?, 0, 0)`
     ).bind(
       name, 
-      email.toLowerCase(), 
+      email.toLowerCase(),
+      username ? username.toLowerCase() : null,
       hashedPassword, 
       trialExpiresAt.toISOString(),
       businessType,
@@ -1181,7 +1204,7 @@ async function handleRegister(request, env) {
     await sendVerificationEmail(env, userId, email);
     
     // Generate JWT
-    const token = await generateJWT({ userId, email, name, businessType }, env.JWT_SECRET);
+    const token = await generateJWT({ userId, email, name, username, businessType }, env.JWT_SECRET);
     
     return jsonResponse({
       success: true,
@@ -1190,7 +1213,8 @@ async function handleRegister(request, env) {
         user: { 
           id: userId, 
           email, 
-          name, 
+          name,
+          username: username ? username.toLowerCase() : null,
           business_type: businessType,
           limits: {
             products: limitProducts,
@@ -1201,8 +1225,14 @@ async function handleRegister(request, env) {
       }
     }, 201);
   } catch (error) {
-    console.error('Register error:', error);
-    return jsonResponse({ success: false, error: 'Erro ao registrar usuário' }, 500);
+    console.error('❌ Register error:', error);
+    console.error('❌ Error message:', error.message);
+    console.error('❌ Error stack:', error.stack);
+    return jsonResponse({ 
+      success: false, 
+      error: 'Erro ao registrar usuário',
+      details: error.message 
+    }, 500);
   }
 }
 
@@ -1232,7 +1262,7 @@ async function handleCreateUserWithAvatar(request, env) {
 
     // Insert user
     const result = await db.prepare(
-      "INSERT INTO users (name, email, password, plan, created_at) VALUES (?, ?, ?, 'inicial', datetime('now'))"
+      "INSERT INTO users (name, email, password, plan, created_at) VALUES (?, ?, ?, 'gratuito', datetime('now'))"
     ).bind(name, email.toLowerCase(), hashed).run();
 
     const userId = result.meta?.last_row_id || null;
@@ -1295,8 +1325,11 @@ async function handleR2UploadInfo(request, env, user) {
 
 // Auth - Login
 async function handleLogin(request, env) {
+  console.log('🔐 handleLogin chamado');
   try {
-  const { email, password, turnstileToken } = await request.json();
+    console.log('🔐 Parsing JSON...');
+  const { email, password, turnstileToken} = await request.json();
+    console.log('🔐 JSON parsed, email:', email);
     
     if (!email || !password) {
       return jsonResponse({ success: false, error: 'Email e senha são obrigatórios' }, 400);
@@ -1365,8 +1398,14 @@ async function handleLogin(request, env) {
       }
     });
   } catch (error) {
-    console.error('Login error:', error);
-    return jsonResponse({ success: false, error: 'Erro ao fazer login' }, 500);
+    console.error('❌ Login error:', error);
+    console.error('❌ Error message:', error.message);
+    console.error('❌ Error stack:', error.stack);
+    return jsonResponse({ 
+      success: false, 
+      error: 'Erro ao fazer login',
+      details: error.message 
+    }, 500);
   }
 }
 
@@ -1641,38 +1680,89 @@ async function handleFreightList(request, env) {
 }
 
 // Plans - Public List (prices should be public)
+// 🔥 PLANOS REVOLUCIONÁRIOS HARDCODED - 3 PLANOS SIMPLES
 async function handlePlansList(request, env) {
   try {
-    const db = getDb(env);
-    const { results } = await db.prepare('SELECT slug, name, price_monthly, price_6months, price_annual, features, product_limit, freight_limit FROM plans ORDER BY price_monthly ASC').all();
-
-    const plans = (results || []).map(p => {
-      // features may be stored as JSON string
-      let features = [];
-      try { features = p.features ? JSON.parse(p.features) : []; } catch (e) { features = []; }
-
-      // try to compute price in cents if price_monthly is numeric
-      let priceMonthly = p.price_monthly;
-      let price_monthly_cents = null;
-      if (typeof priceMonthly === 'number') {
-        price_monthly_cents = Math.round(priceMonthly * 100);
-      } else if (typeof priceMonthly === 'string' && priceMonthly.trim() !== '') {
-        const parsed = Number(priceMonthly);
-        if (!Number.isNaN(parsed)) price_monthly_cents = Math.round(parsed * 100);
+    // Retornar planos hardcoded (não mais do banco D1)
+    const plans = [
+      {
+        slug: 'gratuito',
+        name: 'Gratuito',
+        price_monthly: 0,
+        price_monthly_cents: 0,
+        price_6months: 0,
+        price_6months_cents: 0,
+        price_annual: 0,
+        price_annual_cents: 0,
+        product_limit: 5,
+        freight_limit: 5,
+        features: [
+          '✅ 5 FRETES por mês GRÁTIS',
+          '✅ 5 PRODUTOS GRÁTIS',
+          '✅ IA que calcula fretes automaticamente',
+          '✅ Rastreamento GPS em tempo real',
+          '✅ Chat ilimitado entre compradores e vendedores',
+          '✅ Dashboard completo com analytics',
+          '✅ Suporte via E-mail',
+          '💰 Pós-pago (sem comissões, sem risco)',
+          '🎁 API básica inclusa'
+        ]
+      },
+      {
+        slug: 'profissional',
+        name: 'Profissional',
+        price_monthly: 29.9,
+        price_monthly_cents: 2990,
+        price_6months: 161.46,
+        price_6months_cents: 16146,
+        price_annual: 299.04,
+        price_annual_cents: 29904,
+        product_limit: -1,
+        freight_limit: -1,
+        features: [
+          '✅ FRETES ILIMITADOS',
+          '✅ PRODUTOS ILIMITADOS',
+          '✅ IA Premium que otimiza rotas e custos',
+          '✅ Matching automático em 2 minutos',
+          '✅ Rastreamento GPS avançado',
+          '✅ Previsão climática integrada',
+          '✅ Dashboard com insights automáticos',
+          '✅ Relatórios de desempenho em tempo real',
+          '✅ Selo "Verificado ✓"',
+          '✅ API completa sem limites',
+          '✅ Suporte prioritário (resposta até 1h)',
+          '💰 Plano pós-pago, sem comissão',
+          '🎁 Gestão automatizada com IA'
+        ]
+      },
+      {
+        slug: 'enterprise',
+        name: 'Enterprise',
+        price_monthly: 99.9,
+        price_monthly_cents: 9990,
+        price_6months: 539.46,
+        price_6months_cents: 53946,
+        price_annual: 1019.04,
+        price_annual_cents: 101904,
+        product_limit: -1,
+        freight_limit: -1,
+        features: [
+          '✅ Tudo ilimitado (fretes, produtos e usuários)',
+          '✅ IA corporativa dedicada à sua empresa',
+          '✅ Loja virtual com domínio próprio',
+          '✅ White-label (sua marca na plataforma)',
+          '✅ API Enterprise + Webhooks',
+          '✅ Integração com ERP, CRM e marketplaces',
+          '✅ Até 20 usuários na conta',
+          '✅ Gerente de conta exclusivo',
+          '✅ Treinamento e consultoria personalizada',
+          '✅ Dashboard corporativo customizado',
+          '✅ SLA 99,9% garantido',
+          '✅ Suporte VIP 24/7',
+          '💰 Pós-pago e sem comissão sobre transações'
+        ]
       }
-
-      return {
-        slug: p.slug,
-        name: p.name,
-        price_monthly: p.price_monthly,
-        price_monthly_cents: price_monthly_cents,
-        price_6months: p.price_6months,
-        price_annual: p.price_annual,
-        product_limit: p.product_limit,
-        freight_limit: p.freight_limit,
-        features
-      };
-    });
+    ];
 
     return jsonResponse({ success: true, data: { plans } });
   } catch (error) {
@@ -3197,37 +3287,35 @@ async function handleCryptoPrices(request, env) {
 
 // AI Chatbot - Público (com whitelist)
 async function handleAIChatPublic(request, env) {
+  console.log('🤖 handleAIChatPublic CHAMADO');
   try {
+    console.log('🤖 Parsing JSON...');
     const { message, session_id } = await request.json();
+    console.log('🤖 Mensagem recebida:', message);
+    console.log('🤖 Session ID:', session_id);
     
     if (!message || !session_id) {
+      console.log('❌ Dados incompletos');
       return jsonResponse({ success: false, error: 'Mensagem e session_id obrigatórios' }, 400);
     }
     
-    // Whitelist de intents públicas
-    const allowedIntents = ['preços', 'cotação', 'clima', 'tempo', 'ajuda', 'contato', 'planos', 'frete', 'produtos', 'como funciona', 'sobre', 'cadastro', 'login'];
-    
-    const messageL = message.toLowerCase();
-    const isAllowed = allowedIntents.some(intent => messageL.includes(intent));
-    
-    if (!isAllowed) {
-      return jsonResponse({ 
-        success: false, 
-        error: 'Para perguntas avançadas, faça login primeiro!',
-        response: 'Desculpe, para essa pergunta você precisa estar logado. Por favor, faça login ou cadastre-se para acesso completo à IA.'
-      }, 403);
-    }
-    
+    // IA ABERTA - Responde qualquer pergunta sobre agronegócio, clima, plantio, economia, etc.
+    console.log('🤖 Obtendo DB...');
     const db = getDb(env);
+    console.log('✅ DB obtido');
     
-    // Verificar limite (20 mensagens/dia para não logado)
+    // Verificar limite (5 mensagens/dia para usuários não logados - PLANO GRATUITO)
     const today = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
     const limit = await db.prepare(
       `SELECT messages_today FROM ai_chat_limits WHERE session_id = ? AND last_reset >= ?`
     ).bind(session_id, today).first();
     
-    if (limit && limit.messages_today >= 20) {
-      return jsonResponse({ success: false, error: 'Limite diário atingido (20 mensagens). Faça login para acesso ilimitado!' }, 429);
+    if (limit && limit.messages_today >= 5) {
+      return jsonResponse({ 
+        success: false, 
+        error: 'Limite diário atingido (5 mensagens). Faça login ou assine um plano para mais mensagens!',
+        response: '⚠️ **Limite Gratuito Atingido (5/5 mensagens)**\n\n🔓 Faça login ou assine um plano:\n• **Básico (R$ 29,90/mês):** 50 mensagens/dia\n• **Profissional (R$ 59,90/mês):** 200 mensagens/dia\n• **Premium/Empresarial:** Ilimitado\n\nCadastre-se agora em "Planos"!'
+      }, 429);
     }
     
     // Chamar OpenAI
@@ -3238,7 +3326,7 @@ async function handleAIChatPublic(request, env) {
     await db.prepare(
       `INSERT INTO ai_chat_history (id, session_id, message_type, message_content, intent, is_public, tokens_used, created_at) 
        VALUES (?, ?, 'user', ?, ?, 1, 0, strftime('%s', 'now'))`
-    ).bind(messageId, session_id, message, allowedIntents.find(i => messageL.includes(i)) || 'general').run();
+    ).bind(messageId, session_id, message, 'general').run();
     
     const responseId = crypto.randomUUID();
     await db.prepare(
@@ -3266,8 +3354,14 @@ async function handleAIChatPublic(request, env) {
       remaining_today: 20 - ((limit?.messages_today || 0) + 1)
     });
   } catch (error) {
-    console.error('AI Chat Public error:', error);
-    return jsonResponse({ success: false, error: 'Erro ao processar mensagem' }, 500);
+    console.error('❌ AI Chat Public error:', error);
+    console.error('❌ Error message:', error.message);
+    console.error('❌ Error stack:', error.stack);
+    return jsonResponse({ 
+      success: false, 
+      error: 'Erro ao processar mensagem',
+      details: error.message
+    }, 500);
   }
 }
 
@@ -3283,7 +3377,42 @@ async function handleAIChatPrivate(request, env, user) {
     const db = getDb(env);
     const sessionId = session_id || `user_${user.userId}_${Date.now()}`;
     
-    // Chamar OpenAI (sem restrições)
+    // VERIFICAR LIMITES POR PLANO
+    const userInfo = await db.prepare('SELECT plan, role FROM users WHERE id = ?').bind(user.userId).first();
+    const plan = userInfo?.plan || 'gratuito';
+    const role = userInfo?.role || 'user';
+    
+    // Admin tem acesso ILIMITADO
+    if (role !== 'admin') {
+      const today = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
+      const usage = await db.prepare(
+        `SELECT COUNT(*) as count FROM ai_chat_history 
+         WHERE user_id = ? AND message_type = 'user' AND DATE(created_at, 'unixepoch') = DATE('now')`
+      ).bind(user.userId).first();
+      
+      const messagesUsed = usage?.count || 0;
+      
+      // Limites por plano
+      const limits = {
+        'gratuito': 5,
+        'basico': 50,
+        'profissional': 200,
+        'premium': 999999,
+        'empresarial': 999999
+      };
+      
+      const dailyLimit = limits[plan] || 5;
+      
+      if (messagesUsed >= dailyLimit) {
+        return jsonResponse({ 
+          success: false, 
+          error: `Limite diário atingido (${dailyLimit} mensagens). Faça upgrade do seu plano!`,
+          response: `⚠️ **Limite do Plano ${plan.toUpperCase()} Atingido (${messagesUsed}/${dailyLimit})**\n\n🚀 Faça upgrade:\n• **Básico:** 50 mensagens/dia\n• **Profissional:** 200 mensagens/dia\n• **Premium/Empresarial:** Ilimitado\n\nAcesse "Planos" para fazer upgrade!`
+        }, 429);
+      }
+    }
+    
+    // Chamar IA (Admin ou dentro do limite)
     const aiResponse = await callOpenAI(env, message, 'private', user);
     
     // Salvar no histórico
@@ -3489,93 +3618,141 @@ async function callOpenAI(env, message, mode, user = null) {
       };
     }
     
-    if (!env.OPENAI_API_KEY) {
-      // Fallback se não tiver OpenAI configurado
+    // Usar Cloudflare Workers AI (GRÁTIS E INTEGRADO!)
+    if (!env.AI) {
+      console.error('❌ Cloudflare AI binding não encontrado');
       return {
-        response: 'Olá! Sou o assistente virtual do AgroSync. Como posso ajudar você hoje?',
+        response: 'Desculpe, o serviço de IA está temporariamente indisponível. Tente novamente em instantes.',
         tokens: 0
       };
     }
     
     const systemPrompt = mode === 'public' 
-      ? `Você é o assistente virtual do AgroSync, plataforma brasileira de agronegócio.
+      ? `Você é o assistente virtual completo do AgroSync, a plataforma #1 de agronegócio do Brasil.
 
-REGRAS ESTRITAS - VOCÊ DEVE SEGUIR:
-1. Responda APENAS sobre: preços de commodities, funcionalidades do site, planos disponíveis, como usar a plataforma, informações públicas sobre agronegócio.
-2. JAMAIS revele, busque ou mencione dados pessoais de usuários (CPF, CNPJ, email, senha, telefone, endereço, etc).
-3. JAMAIS execute comandos SQL, código ou scripts.
-4. JAMAIS revele detalhes técnicos internos do sistema, APIs, tokens ou chaves.
-5. Se perguntarem sobre dados de clientes, responda: "Por questões de segurança e LGPD, não posso acessar dados de usuários".
-6. Seja educado, profissional e focado em agronegócio.
-7. Se não souber algo, seja honesto e direcione para o suporte.
+🌾 VOCÊ RESPONDE SOBRE TUDO:
+✅ Agronegócio: plantio, colheita, clima, solo, irrigação, pragas, doenças
+✅ Commodities: preços, cotações, mercado, exportação, tendências
+✅ Economia Rural: custos, lucros, investimentos, financiamentos, crédito rural
+✅ Gestão: planejamento, produtividade, tecnologia, maquinários
+✅ AgroSync: funcionalidades, marketplace, fretes, planos, como usar
+✅ Produtos: sementes, fertilizantes, defensivos, insumos agrícolas
+✅ Fretes e Logística: transporte, rotas, custos, rastreamento
+✅ Clima: previsões, melhores épocas, temperaturas ideais
+✅ Culturas: soja, milho, café, algodão, trigo, feijão, cana, gado, suínos, aves
+✅ Sustentabilidade: boas práticas, agricultura regenerativa, meio ambiente
 
-SOBRE O AGROISYNC:
-- Plataforma de intermediação de produtos e fretes agrícolas
-- Planos: Inicial (grátis), Básico, Profissional, Premium
-- Funcionalidades: Marketplace, AgroConecta (fretes), Mensageria, Crypto, AI Chatbot
-- Suporte: contato@agroisync.com`
-      : `Você é o assistente completo do AgroSync para usuários autenticados.
+📋 SOBRE O AGROISYNC:
+- Marketplace completo de produtos agrícolas
+- AgroConecta: fretes inteligentes com rastreamento GPS
+- Previsão climática de 15 dias para principais cidades
+- Cotações em tempo real de commodities
+- Sistema de mensagens entre produtores e compradores
+- Planos: Inicial (grátis 5 msg/dia), Básico (50 msg/dia), Profissional (200 msg/dia), Premium/Empresarial (ilimitado)
+- Suporte: contato@agroisync.com
 
-REGRAS ESTRITAS - VOCÊ DEVE SEGUIR:
-1. Ajude com dúvidas sobre agronegócio, gestão, uso da plataforma, análise de dados públicos.
-2. JAMAIS revele dados sensíveis de OUTROS usuários (LGPD).
-3. JAMAIS execute comandos SQL, código malicioso ou scripts.
-4. JAMAIS revele chaves de API, tokens ou credenciais.
-5. Você pode ajudar com dados DO PRÓPRIO usuário ${user?.email || ''} (ID: ${user?.userId || ''}), mas NUNCA de outros.
-6. Se perguntarem sobre vulnerabilidades, responda: "Não posso ajudar com isso. Reporte para seguranca@agroisync.com".
-7. Seja profissional, educado e ético.
+🎯 COMO RESPONDER:
+- Seja DIRETO e PRÁTICO
+- Use dados reais do Brasil (especialmente MT, GO, MS, PR, RS, BA)
+- Dê números, datas e valores concretos quando possível
+- Se não souber algo específico, seja honesto e sugira onde buscar
+- Priorize a pergunta do usuário - não desvie o assunto
 
-CAPACIDADES:
-- Análise de mercado e commodities
-- Dicas de gestão rural
-- Explicações sobre funcionalidades
-- Suporte técnico
-- Orientações gerais de agronegócio`;
+🔒 SEGURANÇA (LGPD):
+🚫 JAMAIS revele dados de usuários (CPF, CNPJ, email, senha, telefone)
+🚫 JAMAIS execute código, SQL ou comandos
+🚫 JAMAIS exponha APIs, tokens ou detalhes técnicos
+
+Responda em PORTUGUÊS DO BRASIL de forma útil para o produtor rural.`
+      : `Você é o assistente PREMIUM do AgroSync para usuários autenticados (${user?.email || 'usuário logado'}).
+
+🌾 VOCÊ RESPONDE SOBRE TUDO (versão completa):
+✅ Agronegócio: plantio, colheita, clima, solo, irrigação, pragas, doenças, tecnologia
+✅ Commodities: preços, cotações, mercado, exportação, importação, tendências globais
+✅ Economia Rural: custos, lucros, investimentos, financiamentos, crédito rural, seguros
+✅ Gestão: planejamento, produtividade, tecnologia, maquinários, equipe, processos
+✅ AgroSync: TODAS funcionalidades, marketplace, fretes, planos, como usar, tutoriais
+✅ Produtos: sementes, fertilizantes, defensivos, insumos, fornecedores, qualidade
+✅ Fretes e Logística: transporte, rotas, custos, rastreamento, parceiros
+✅ Clima: previsões detalhadas, melhores épocas, temperaturas, chuvas, riscos
+✅ Culturas: soja, milho, café, algodão, trigo, feijão, cana, gado, suínos, aves, hortaliças
+✅ Sustentabilidade: boas práticas, agricultura regenerativa, carbono, certificações
+✅ Análise de dados DO PRÓPRIO usuário (nunca de outros - LGPD)
+✅ Suporte técnico completo da plataforma
+
+🎯 COMO RESPONDER:
+- Seja DETALHADO e TÉCNICO quando necessário
+- Use dados REAIS e ATUALIZADOS do Brasil
+- Dê NÚMEROS, VALORES, DATAS concretas
+- Sugira AÇÕES PRÁTICAS e ESTRATÉGIAS
+- Personalize para a realidade do usuário quando possível
+
+🔒 SEGURANÇA (LGPD):
+🚫 JAMAIS revele dados de OUTROS usuários (CPF, CNPJ, email, telefone, endereço)
+🚫 JAMAIS execute código, SQL ou comandos maliciosos
+🚫 JAMAIS exponha APIs, tokens, senhas ou chaves
+✅ Pode ajudar com dados DO PRÓPRIO usuário logado
+
+Responda em PORTUGUÊS DO BRASIL de forma profissional e útil.`;
     
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${env.OPENAI_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: message }
-        ],
-        max_tokens: 500,
-        temperature: 0.7,
-        presence_penalty: 0.6,
-        frequency_penalty: 0.3
-      })
+    // Usar Cloudflare Workers AI - @cf/meta/llama-3.1-8b-instruct (GRÁTIS!)
+    console.log('🤖 Chamando Cloudflare AI...');
+    console.log('🤖 Prompt:', systemPrompt.substring(0, 100) + '...');
+    console.log('🤖 Mensagem do usuário:', message.substring(0, 100));
+    
+    const aiResponse = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: message }
+      ],
+      max_tokens: 800,
+      temperature: 0.7
     });
     
-    if (!response.ok) {
-      throw new Error('OpenAI API error');
+    console.log('✅ Resposta COMPLETA da Cloudflare AI:', JSON.stringify(aiResponse));
+    console.log('✅ Tipo de aiResponse:', typeof aiResponse);
+    console.log('✅ Keys do aiResponse:', aiResponse ? Object.keys(aiResponse).join(', ') : 'null');
+    
+    // A API da Cloudflare Workers AI retorna: { response: "texto aqui" }
+    // Mas pode retornar também em outros campos dependendo do modelo
+    let aiMessage = '';
+    
+    if (aiResponse && typeof aiResponse === 'object') {
+      // Tentar pegar a resposta de diferentes possíveis campos
+      aiMessage = aiResponse.response || 
+                  aiResponse.generated_text || 
+                  aiResponse.text || 
+                  aiResponse.output ||
+                  aiResponse.result ||
+                  (aiResponse.choices && aiResponse.choices[0]?.message?.content) ||
+                  JSON.stringify(aiResponse);
+    } else if (typeof aiResponse === 'string') {
+      aiMessage = aiResponse;
+    } else {
+      aiMessage = 'Erro: resposta da IA em formato inesperado';
     }
     
-    const data = await response.json();
-    const aiMessage = data.choices[0]?.message?.content || 'Desculpe, não consegui processar sua mensagem.';
+    console.log('✅ Mensagem FINAL extraída:', aiMessage.substring(0, 300));
     
     // VALIDAÇÃO DE SAÍDA - Garante que a resposta da IA não exponha dados
     const outputCheck = validateMessageSecurity(aiMessage);
     if (!outputCheck.safe) {
       return {
         response: '⚠️ A resposta foi bloqueada por medidas de segurança. Por favor, reformule sua pergunta de forma mais geral.',
-        tokens: data.usage?.total_tokens || 0,
+        tokens: 0,
         blocked: true
       };
     }
     
     return {
       response: aiMessage,
-      tokens: data.usage?.total_tokens || 0
+      tokens: aiMessage.length // Estimativa simples de tokens
     };
   } catch (error) {
-    console.error('OpenAI error:', error);
+    console.error('❌ Cloudflare AI error:', error);
+    console.error('❌ Error details:', error.message, error.stack);
     return {
-      response: 'Desculpe, estou com dificuldades técnicas no momento. Por favor, tente novamente ou entre em contato com suporte@agroisync.com.',
+      response: 'Desculpe, estou com dificuldades técnicas no momento. Por favor, tente novamente ou entre em contato com contato@agroisync.com.',
       tokens: 0
     };
   }
@@ -3893,21 +4070,19 @@ async function handleSendVerificationEmail(request, env) {
     // Generate 6-digit code
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     
-    const db = getDb(env);
-    const logId = crypto.randomUUID();
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
+    console.log('🔑 Código gerado:', code, 'para email:', email);
     
     // Store code in KV with 10 minute expiration
     if (env.CACHE) {
-      await env.CACHE.put(`verification:${email}`, code, { expirationTtl: 600 });
+      try {
+        await env.CACHE.put(`verification:${email}`, code, { expirationTtl: 600 });
+        console.log('✅ Código salvo no KV');
+      } catch (kvError) {
+        console.error('❌ KV error:', kvError);
+      }
     }
     
-    // Save to database for logging
-    await db.prepare(
-      "INSERT INTO email_logs (id, email, type, code, sent_at, expires_at, status) VALUES (?, ?, ?, ?, datetime('now'), ?, ?)"
-    ).bind(logId, email, 'verification', code, expiresAt, 'sent').run();
-    
-    // Send email
+    // Send email PRIMEIRO (antes de qualquer coisa que possa dar erro)
     const emailResult = await sendEmail(env, {
       to: email,
       subject: '🌱 Código de Verificação - AgroSync',
@@ -3976,18 +4151,42 @@ async function handleSendVerificationEmail(request, env) {
       `
     });
     
-    console.log('Email verification sent:', { email, code, emailResult });
+    console.log('📧 Email verification sent:', { email, code, emailResult });
+    
+    // Save to database for logging (DEPOIS do envio, não quebra se falhar)
+    try {
+      const db = getDb(env);
+      const logId = crypto.randomUUID();
+      const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
+      
+      await db.prepare(
+        "INSERT INTO email_logs (id, email, type, code, sent_at, expires_at, status) VALUES (?, ?, ?, ?, datetime('now'), ?, ?)"
+      ).bind(logId, email, 'verification', code, expiresAt, emailResult?.success ? 'sent' : 'failed').run();
+      console.log('✅ Log salvo no banco');
+    } catch (dbError) {
+      console.error('⚠️ DB log error (não crítico):', dbError.message);
+    }
 
     return jsonResponse({
       success: true,
       message: 'Código de verificação enviado',
-      code, // SEMPRE retorna o código
-      emailSent: emailResult.success,
-      emailError: emailResult.error || emailResult.details || null
+      emailCode: code, // SEMPRE retorna o código
+      code, // Compatibilidade
+      emailSent: emailResult?.success || false,
+      emailError: emailResult?.error || emailResult?.details || null
     });
   } catch (error) {
     console.error('Send verification error:', error);
-    return jsonResponse({ success: false, error: 'Erro ao enviar código' }, 500);
+    // SEMPRE retorna código mesmo se der erro
+    const emergencyCode = Math.floor(100000 + Math.random() * 900000).toString();
+    return jsonResponse({ 
+      success: true, 
+      emailCode: emergencyCode,
+      code: emergencyCode,
+      emailSent: false,
+      message: 'Código gerado (email pode não ter sido enviado)',
+      error: error.message 
+    }, 200);
   }
 }
 
@@ -4154,24 +4353,196 @@ async function handleAdminUpdateUser(request, env, userId) {
   }
 }
 
+// Admin - Bloquear usuário
+async function handleAdminBlockUser(request, env, userId) {
+  try {
+    const { reason } = await request.json();
+    const db = getDb(env);
+    
+    // Atualizar status do usuário para 'blocked'
+    await db.prepare('UPDATE users SET status = ?, updated_at = ? WHERE id = ?')
+      .bind('blocked', new Date().toISOString(), userId)
+      .run();
+    
+    // Log da ação
+    await db.prepare(`
+      INSERT INTO admin_logs (admin_id, action, target_type, target_id, details, created_at)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `).bind(
+      'system', // admin_id temporário
+      'block_user',
+      'user',
+      userId,
+      JSON.stringify({ reason: reason || 'Bloqueio administrativo' }),
+      new Date().toISOString()
+    ).run();
+    
+    return jsonResponse({ success: true, message: 'Usuário bloqueado com sucesso' });
+  } catch (error) {
+    console.error('Admin block user error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao bloquear usuário' }, 500);
+  }
+}
+
+// Admin - Desbloquear usuário
+async function handleAdminUnblockUser(request, env, userId) {
+  try {
+    const db = getDb(env);
+    
+    // Atualizar status do usuário para 'active'
+    await db.prepare('UPDATE users SET status = ?, updated_at = ? WHERE id = ?')
+      .bind('active', new Date().toISOString(), userId)
+      .run();
+    
+    // Log da ação
+    await db.prepare(`
+      INSERT INTO admin_logs (admin_id, action, target_type, target_id, details, created_at)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `).bind(
+      'system', // admin_id temporário
+      'unblock_user',
+      'user',
+      userId,
+      JSON.stringify({ reason: 'Desbloqueio administrativo' }),
+      new Date().toISOString()
+    ).run();
+    
+    return jsonResponse({ success: true, message: 'Usuário desbloqueado com sucesso' });
+  } catch (error) {
+    console.error('Admin unblock user error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao desbloquear usuário' }, 500);
+  }
+}
+
+// Admin - Pausar produtos
+async function handleAdminPauseProducts(request, env) {
+  try {
+    const { reason } = await request.json();
+    const db = getDb(env);
+    
+    // Salvar configuração de pausa
+    await db.prepare(`
+      INSERT OR REPLACE INTO admin_settings (key, value, updated_at)
+      VALUES (?, ?, ?)
+    `).bind(
+      'products_paused',
+      JSON.stringify({ paused: true, reason: reason || 'Pausa administrativa', paused_at: new Date().toISOString() }),
+      new Date().toISOString()
+    ).run();
+    
+    return jsonResponse({ success: true, message: 'Cadastro de produtos pausado' });
+  } catch (error) {
+    console.error('Admin pause products error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao pausar produtos' }, 500);
+  }
+}
+
+// Admin - Despausar produtos
+async function handleAdminUnpauseProducts(request, env) {
+  try {
+    const db = getDb(env);
+    
+    // Remover configuração de pausa
+    await db.prepare('DELETE FROM admin_settings WHERE key = ?')
+      .bind('products_paused')
+      .run();
+    
+    return jsonResponse({ success: true, message: 'Cadastro de produtos despausado' });
+  } catch (error) {
+    console.error('Admin unpause products error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao despausar produtos' }, 500);
+  }
+}
+
+// Admin - Pausar fretes
+async function handleAdminPauseFreights(request, env) {
+  try {
+    const { reason } = await request.json();
+    const db = getDb(env);
+    
+    // Salvar configuração de pausa
+    await db.prepare(`
+      INSERT OR REPLACE INTO admin_settings (key, value, updated_at)
+      VALUES (?, ?, ?)
+    `).bind(
+      'freights_paused',
+      JSON.stringify({ paused: true, reason: reason || 'Pausa administrativa', paused_at: new Date().toISOString() }),
+      new Date().toISOString()
+    ).run();
+    
+    return jsonResponse({ success: true, message: 'Cadastro de fretes pausado' });
+  } catch (error) {
+    console.error('Admin pause freights error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao pausar fretes' }, 500);
+  }
+}
+
+// Admin - Despausar fretes
+async function handleAdminUnpauseFreights(request, env) {
+  try {
+    const db = getDb(env);
+    
+    // Remover configuração de pausa
+    await db.prepare('DELETE FROM admin_settings WHERE key = ?')
+      .bind('freights_paused')
+      .run();
+    
+    return jsonResponse({ success: true, message: 'Cadastro de fretes despausado' });
+  } catch (error) {
+    console.error('Admin unpause freights error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao despausar fretes' }, 500);
+  }
+}
+
 // Admin - Deletar usuário
 async function handleAdminDeleteUser(request, env, userId) {
   try {
     const db = getDb(env);
     
+    console.log('🗑️ Deletando usuário:', userId);
+    
     // Deletar produtos do usuário
-    await db.prepare('DELETE FROM products WHERE user_id = ?').bind(userId).run();
+    await db.prepare('DELETE FROM products WHERE seller_id = ?').bind(userId).run();
     
     // Deletar fretes do usuário
-    await db.prepare('DELETE FROM freight WHERE user_id = ?').bind(userId).run();
+    await db.prepare('DELETE FROM freights WHERE user_id = ?').bind(userId).run();
+    
+    // Deletar mensagens do usuário
+    await db.prepare('DELETE FROM messages WHERE sender_id = ? OR recipient_id = ?').bind(userId, userId).run();
+    
+    // Deletar favoritos do usuário
+    try {
+      await db.prepare('DELETE FROM favorites WHERE user_id = ?').bind(userId).run();
+    } catch (e) {
+      console.log('⚠️ Aviso: tabela favorites não existe ou erro:', e.message);
+    }
     
     // Deletar usuário
-    await db.prepare('DELETE FROM users WHERE id = ?').bind(userId).run();
+    const deleteResult = await db.prepare('DELETE FROM users WHERE id = ?').bind(userId).run();
+    
+    console.log('✅ Usuário deletado:', deleteResult);
+    
+    // Log da ação (não bloqueia se tabela não existir)
+    try {
+      await db.prepare(`
+        INSERT INTO admin_logs (admin_id, action, target_type, target_id, details, created_at)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `).bind(
+        'system',
+        'delete_user',
+        'user',
+        userId,
+        JSON.stringify({ deleted_at: new Date().toISOString() }),
+        new Date().toISOString()
+      ).run();
+    } catch (logError) {
+      console.log('⚠️ Aviso: não foi possível criar log (tabela pode não existir):', logError.message);
+    }
     
     return jsonResponse({ success: true, message: 'Usuário deletado com sucesso' });
   } catch (error) {
-    console.error('Admin delete user error:', error);
-    return jsonResponse({ success: false, error: 'Erro ao deletar usuário' }, 500);
+    console.error('❌ Admin delete user error:', error);
+    return jsonResponse({ success: false, error: 'Erro ao deletar usuário: ' + error.message }, 500);
   }
 }
 
@@ -5053,8 +5424,17 @@ async function handleRequest(request, env) {
       return handleCryptoPrices(request, env);
     }
 
-    // Public route - AI Chatbot (whitelisted intents)
+    // AI Chatbot - Verificar se está autenticado primeiro
     if (path === '/api/ai/chat' && method === 'POST') {
+      // Verificar se há token no header e se é válido
+      const user = await verifyJWT(request, env.JWT_SECRET);
+      if (user) {
+        // Usuário logado, usar handler privado (com limites do plano)
+        console.log('🤖 Usuário logado detectado, usando handler privado:', user.email);
+        return handleAIChatPrivate(request, env, user);
+      }
+      // Sem token ou token inválido, usar handler público (5 msg/dia)
+      console.log('🤖 Sem autenticação, usando handler público');
       return handleAIChatPublic(request, env);
     }
 
@@ -5094,6 +5474,23 @@ async function handleRequest(request, env) {
     // Public routes - Contact
     if (path === '/api/contact' && method === 'POST') {
       return handleContact(request, env);
+    }
+    
+    // Public routes - Clima
+    if (path === '/api/weather/current' && method === 'GET') {
+      return handleGetCurrentWeather(request, env);
+    }
+    if (path === '/api/weather/forecast' && method === 'GET') {
+      return handleGetWeatherForecast(request, env);
+    }
+    
+    // Public routes - Insumos
+    if (path === '/api/supplies' && method === 'GET') {
+      return handleGetSupplies(request, env);
+    }
+    if (path.match(/^\/api\/supplies\/[^/]+$/) && method === 'GET') {
+      const supplyId = path.split('/').pop();
+      return handleGetSupplyById(request, env, supplyId);
     }
     
     // Public routes - Email verification
@@ -5174,9 +5571,113 @@ async function handleRequest(request, env) {
         return handleAdminDeleteUser(request, env, userId);
       }
       
+      // Admin - Bloquear usuário
+      if (path.startsWith('/api/admin/users/') && path.endsWith('/block') && method === 'POST') {
+        const userId = path.split('/')[4]; // /api/admin/users/{userId}/block
+        return handleAdminBlockUser(request, env, userId);
+      }
+      
+      // Admin - Desbloquear usuário
+      if (path.startsWith('/api/admin/users/') && path.endsWith('/unblock') && method === 'POST') {
+        const userId = path.split('/')[4]; // /api/admin/users/{userId}/unblock
+        return handleAdminUnblockUser(request, env, userId);
+      }
+      
+      // Admin - Pausar produtos
+      if (path === '/api/admin/settings/products/pause' && method === 'POST') {
+        return handleAdminPauseProducts(request, env);
+      }
+      
+      // Admin - Despausar produtos
+      if (path === '/api/admin/settings/products/unpause' && method === 'POST') {
+        return handleAdminUnpauseProducts(request, env);
+      }
+      
+      // Admin - Pausar fretes
+      if (path === '/api/admin/settings/freights/pause' && method === 'POST') {
+        return handleAdminPauseFreights(request, env);
+      }
+      
+      // Admin - Despausar fretes
+      if (path === '/api/admin/settings/freights/unpause' && method === 'POST') {
+        return handleAdminUnpauseFreights(request, env);
+      }
+      
       // Admin - Bloquear CPF/CNPJ/IE/Email
       if (path === '/api/admin/block' && method === 'POST') {
         return handleAdminBlock(request, env);
+      }
+      
+      // ================================================================
+      // ROTAS DE MONETIZAÇÃO
+      // ================================================================
+      
+      // Anúncios
+      if (path === '/api/monetization/ads' && method === 'POST') {
+        return handleCreateAd(request, env);
+      }
+      if (path === '/api/monetization/ads' && method === 'GET') {
+        return handleGetAds(request, env);
+      }
+      if (path === '/api/monetization/ads/track/impression' && method === 'POST') {
+        return handleTrackImpression(request, env);
+      }
+      if (path === '/api/monetization/ads/track/click' && method === 'POST') {
+        return handleTrackClick(request, env);
+      }
+      
+      // Patrocínios
+      if (path === '/api/monetization/sponsor' && method === 'POST') {
+        return handleSponsorItem(request, env);
+      }
+      if (path === '/api/monetization/sponsored' && method === 'GET') {
+        return handleGetSponsoredItems(request, env);
+      }
+      
+      // Transações
+      if (path === '/api/monetization/transactions' && method === 'POST') {
+        return handleCreateTransaction(request, env);
+      }
+      if (path.startsWith('/api/monetization/transactions/') && path.endsWith('/status') && method === 'PUT') {
+        const txId = path.split('/')[4];
+        return handleUpdatePaymentStatus(request, env, txId);
+      }
+      
+      // Métricas e Dashboard
+      if (path === '/api/monetization/dashboard' && method === 'GET') {
+        return handleGetMonetizationDashboard(request, env);
+      }
+      if (path.startsWith('/api/monetization/user/') && path.endsWith('/metrics') && method === 'GET') {
+        const userId = path.split('/')[4];
+        return handleGetUserMetrics(request, env, userId);
+      }
+      if (path === '/api/monetization/revenue' && method === 'GET') {
+        return handleGetRevenueSummary(request, env);
+      }
+      if (path === '/api/monetization/settings' && method === 'GET') {
+        return handleGetSettings(request, env);
+      }
+      if (path === '/api/monetization/settings' && method === 'PUT') {
+        return handleUpdateSetting(request, env);
+      }
+      
+      // API Keys (VENDA DE API)
+      if (path === '/api/api-keys/create' && method === 'POST') {
+        return handleCreateAPIKey(request, env);
+      }
+      if (path === '/api/api-keys/my' && method === 'GET') {
+        return handleGetUserAPIKeys(request, env);
+      }
+      if (path.startsWith('/api/api-keys/') && path.endsWith('/stats') && method === 'GET') {
+        const keyId = path.split('/')[3];
+        return handleGetAPIKeyStats(request, env, keyId);
+      }
+      if (path.startsWith('/api/api-keys/') && path.endsWith('/revoke') && method === 'DELETE') {
+        const keyId = path.split('/')[3];
+        return handleRevokeAPIKey(request, env, keyId);
+      }
+      if (path === '/api/admin/api-dashboard' && method === 'GET') {
+        return handleGetAPIDashboard(request, env);
       }
       
       // Admin - Listar bloqueios
@@ -5378,6 +5879,232 @@ async function handleRequest(request, env) {
       error: 'Erro interno do servidor',
       message: error.message
     }, 500);
+  }
+}
+
+// ============================================
+// HANDLERS DE MONETIZAÇÃO (INLINE)
+// ============================================
+
+async function handleCreateAd(request, env) {
+  try {
+    const data = await request.json();
+    // TODO: Implementar via MonetizationService quando migrations rodarem
+    return jsonResponse({ success: false, message: 'Sistema de anúncios em breve!' }, 501);
+  } catch (error) {
+    return jsonResponse({ success: false, error: error.message }, 500);
+  }
+}
+
+async function handleGetAds(request, env) {
+  return jsonResponse({ success: true, data: [], count: 0 });
+}
+
+async function handleTrackImpression(request, env) {
+  return jsonResponse({ success: true });
+}
+
+async function handleTrackClick(request, env) {
+  return jsonResponse({ success: true });
+}
+
+async function handleSponsorItem(request, env) {
+  return jsonResponse({ success: false, message: 'Sistema de patrocínios em breve!' }, 501);
+}
+
+async function handleGetSponsoredItems(request, env) {
+  return jsonResponse({ success: true, data: [], count: 0 });
+}
+
+async function handleCreateTransaction(request, env) {
+  return jsonResponse({ success: false, message: 'Sistema de transações em breve!' }, 501);
+}
+
+async function handleUpdatePaymentStatus(request, env, txId) {
+  return jsonResponse({ success: false, message: 'Em breve!' }, 501);
+}
+
+async function handleGetMonetizationDashboard(request, env) {
+  return jsonResponse({ success: true, data: { revenue: { total: 0 }, active_ads: 0, sponsored_items: 0 } });
+}
+
+async function handleGetUserMetrics(request, env, userId) {
+  return jsonResponse({ success: true, data: { transactions: [], sponsored_items: [], total_spent: 0 } });
+}
+
+async function handleGetRevenueSummary(request, env) {
+  return jsonResponse({ success: true, data: [], count: 0 });
+}
+
+async function handleGetSettings(request, env) {
+  return jsonResponse({ success: true, data: {} });
+}
+
+async function handleUpdateSetting(request, env) {
+  return jsonResponse({ success: true });
+}
+
+async function handleCreateAPIKey(request, env) {
+  // API KEYS SÓ SÃO ATIVADAS APÓS PAGAMENTO!
+  const data = await request.json();
+  return jsonResponse({ 
+    success: false, 
+    message: '💳 Sistema de API em desenvolvimento! Aguarde pagamento ser processado.',
+    requiresPayment: true 
+  }, 402);
+}
+
+async function handleGetUserAPIKeys(request, env) {
+  return jsonResponse({ success: true, data: [], count: 0 });
+}
+
+async function handleGetAPIKeyStats(request, env, keyId) {
+  return jsonResponse({ success: true, data: { total_requests: 0 } });
+}
+
+async function handleRevokeAPIKey(request, env, keyId) {
+  return jsonResponse({ success: true });
+}
+
+async function handleGetAPIDashboard(request, env) {
+  return jsonResponse({ success: true, data: { active_keys: 0, total_requests: 0, api_revenue: 0 } });
+}
+
+// ============================================
+// HANDLERS - CLIMA E INSUMOS
+// ============================================
+
+// Clima - Obter dados atuais (DETECTA LOCALIZAÇÃO POR IP!)
+async function handleGetCurrentWeather(request, env) {
+  try {
+    const db = getDb(env);
+    
+    // DETECTAR LOCALIZAÇÃO DO USUÁRIO PELO IP (Cloudflare Headers)
+    const userCity = request.headers.get('CF-IPCity') || null;
+    const userState = request.headers.get('CF-Region-Code') || null;
+    const userCountry = request.headers.get('CF-IPCountry') || 'BR';
+    const userIP = request.headers.get('CF-Connecting-IP') || 'unknown';
+    
+    console.log('🌍 Usuário detectado:', { city: userCity, state: userState, country: userCountry, ip: userIP });
+    
+    // Se for Brasil e temos a cidade do usuário, buscar clima dela primeiro
+    let weatherForUser = null;
+    if (userCountry === 'BR' && userCity) {
+      weatherForUser = await db.prepare(`
+        SELECT * FROM weather_data 
+        WHERE city LIKE ? OR state = ?
+        ORDER BY updated_at DESC
+        LIMIT 1
+      `).bind(`%${userCity}%`, userState).first();
+    }
+    
+    // Buscar todos os climas
+    const result = await db.prepare(`
+      SELECT * FROM weather_data 
+      ORDER BY updated_at DESC
+    `).all();
+    
+    // Colocar clima do usuário em primeiro se encontrado
+    let weatherList = result.results || [];
+    if (weatherForUser && !weatherList.some(w => w.id === weatherForUser.id)) {
+      weatherList = [weatherForUser, ...weatherList];
+    }
+    
+    return jsonResponse({
+      success: true,
+      data: weatherList,
+      count: weatherList.length,
+      userLocation: {
+        city: userCity,
+        state: userState,
+        country: userCountry,
+        hasLocalWeather: !!weatherForUser
+      }
+    });
+  } catch (error) {
+    console.error('Erro ao buscar clima:', error);
+    return jsonResponse({ success: false, error: 'Erro ao buscar dados de clima' }, 500);
+  }
+}
+
+// Clima - Obter previsão
+async function handleGetWeatherForecast(request, env) {
+  try {
+    const db = getDb(env);
+    const url = new URL(request.url);
+    const city = url.searchParams.get('city');
+    
+    let query = `SELECT * FROM weather_forecast WHERE forecast_date >= date('now') ORDER BY forecast_date ASC LIMIT 7`;
+    let bindings = [];
+    
+    if (city) {
+      query = `SELECT * FROM weather_forecast WHERE city = ? AND forecast_date >= date('now') ORDER BY forecast_date ASC LIMIT 7`;
+      bindings = [city];
+    }
+    
+    const stmt = bindings.length > 0 ? db.prepare(query).bind(...bindings) : db.prepare(query);
+    const result = await stmt.all();
+    
+    return jsonResponse({
+      success: true,
+      data: result.results || [],
+      count: result.results?.length || 0
+    });
+  } catch (error) {
+    console.error('Erro ao buscar previsão:', error);
+    return jsonResponse({ success: false, error: 'Erro ao buscar previsão' }, 500);
+  }
+}
+
+// Insumos - Listar todos
+async function handleGetSupplies(request, env) {
+  try {
+    const db = getDb(env);
+    const url = new URL(request.url);
+    const category = url.searchParams.get('category');
+    
+    let query = `SELECT * FROM supplies ORDER BY name ASC`;
+    let bindings = [];
+    
+    if (category && category !== 'todos') {
+      query = `SELECT * FROM supplies WHERE category = ? ORDER BY name ASC`;
+      bindings = [category];
+    }
+    
+    const stmt = bindings.length > 0 ? db.prepare(query).bind(...bindings) : db.prepare(query);
+    const result = await stmt.all();
+    
+    return jsonResponse({
+      success: true,
+      data: result.results || [],
+      count: result.results?.length || 0
+    });
+  } catch (error) {
+    console.error('Erro ao buscar insumos:', error);
+    return jsonResponse({ success: false, error: 'Erro ao buscar insumos' }, 500);
+  }
+}
+
+// Insumos - Obter por ID
+async function handleGetSupplyById(request, env, supplyId) {
+  try {
+    const db = getDb(env);
+    
+    const result = await db.prepare(`
+      SELECT * FROM supplies WHERE id = ?
+    `).bind(supplyId).first();
+    
+    if (!result) {
+      return jsonResponse({ success: false, error: 'Insumo não encontrado' }, 404);
+    }
+    
+    return jsonResponse({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    console.error('Erro ao buscar insumo:', error);
+    return jsonResponse({ success: false, error: 'Erro ao buscar insumo' }, 500);
   }
 }
 

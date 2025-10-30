@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { getAuthToken } from '../config/constants';
 // import RegistrationSystem from '../components/RegistrationSystem'; // Componente removido
@@ -29,11 +30,13 @@ import {
 } from 'lucide-react';
 import CryptoHash from '../components/CryptoHash';
 import CloudflareTurnstile from '../components/CloudflareTurnstile';
+import FreightCard from '../components/FreightCard'; // NOVO: Card com limitações
 // import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt'; // Componente removido
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
 const AgroisyncAgroConecta = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('buscar');
   const [freteForm, setFreteForm] = useState({
@@ -56,6 +59,7 @@ const AgroisyncAgroConecta = () => {
 
   // Ofertas de frete - buscar da API
   const [ofertasFrete, setOfertasFrete] = useState([]);
+  const [loadingFreights, setLoadingFreights] = useState(true);
 
   // Dados mockados para pedidos do usuário
   const mockOrders = [
@@ -296,64 +300,85 @@ const AgroisyncAgroConecta = () => {
     // fetchPublicRegistrations();
 
     loadMyOrders();
+    
+    // Buscar fretes públicos disponíveis
+    const fetchPublicFreights = async () => {
+      try {
+        setLoadingFreights(true);
+        const apiUrl = process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
+        const response = await axios.get(`${apiUrl}/freights`);
+        
+        if (response.data.success && response.data.data) {
+          const freights = response.data.data.freights || response.data.data || [];
+          setOfertasFrete(Array.isArray(freights) ? freights : []);
+        }
+      } catch (error) {
+        // Silenciar erro - usar mock data
+        setOfertasFrete([]);
+      } finally {
+        setLoadingFreights(false);
+      }
+    };
+    
+    fetchPublicFreights();
   }, [user?.token]);
 
   const features = [
     {
-      icon: <Truck size={32} />,
-      title: 'Frete Inteligente',
-      description: 'Conecte-se com transportadores confiáveis e otimize seus custos de frete',
-      color: 'var(--agro-green)'
+      icon: <MapPin size={48} />,
+      title: t('agroconecta.gpsTracking'),
+      description: t('agroconecta.gpsTrackingDesc'),
+      color: '#3b82f6',
+      gradient: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(0, 0, 0, 0.05))',
+      border: '2px solid rgba(59, 130, 246, 0.2)',
+      emoji: '📍'
     },
     {
-      icon: <MapPin size={32} />,
-      title: 'Rastreamento em Tempo Real',
-      description: 'Acompanhe sua carga em tempo real com tecnologia GPS avançada',
-      color: 'var(--agro-green)'
+      icon: <DollarSign size={48} />,
+      title: t('agroconecta.savingsFeature'),
+      description: t('agroconecta.savingsFeatureDesc'),
+      color: '#22c55e',
+      gradient: 'linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(0, 0, 0, 0.05))',
+      border: '2px solid rgba(34, 197, 94, 0.2)',
+      emoji: '💰'
     },
     {
-      icon: <Users size={32} />,
-      title: 'Rede de Parceiros',
-      description: 'Conecte-se com uma rede confiável de transportadores e produtores',
-      color: 'var(--agro-green)'
+      icon: <Zap size={48} />,
+      title: t('agroconecta.instantQuote'),
+      description: t('agroconecta.instantQuoteDesc'),
+      color: '#a855f7',
+      gradient: 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(0, 0, 0, 0.05))',
+      border: '2px solid rgba(168, 85, 247, 0.2)',
+      emoji: '⚡'
     },
     {
-      icon: <Zap size={32} />,
-      title: 'IA para Logística',
-      description: 'Algoritmos inteligentes para otimizar rotas e reduzir custos',
-      color: 'var(--agro-green)'
-    },
-    {
-      icon: <Shield size={32} />,
-      title: 'Segurança Total',
-      description: 'Proteção completa para sua carga com seguro e monitoramento',
-      color: 'var(--agro-green)'
-    },
-    {
-      icon: <Clock size={32} />,
-      title: 'Entrega Rápida',
-      description: 'Entregas mais rápidas com otimização de rotas e gestão eficiente',
-      color: 'var(--agro-green)'
+      icon: <Shield size={48} />,
+      title: t('agroconecta.freeInsurance'),
+      description: t('agroconecta.freeInsuranceDesc'),
+      color: '#ef4444',
+      gradient: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(0, 0, 0, 0.05))',
+      border: '2px solid rgba(239, 68, 68, 0.2)',
+      emoji: '🔒'
     }
   ];
 
   const steps = [
     {
       number: '01',
-      title: 'Cadastre sua Carga',
-      description: 'Informe os detalhes da sua carga e destino',
+      title: t('agroconecta.step1'),
+      description: t('agroconecta.step1Desc'),
       icon: <Truck size={24} />
     },
     {
       number: '02',
-      title: 'Encontre Transportadores',
-      description: 'Receba propostas de transportadores qualificados',
+      title: t('agroconecta.step2'),
+      description: t('agroconecta.step2Desc'),
       icon: <MapPin size={24} />
     },
     {
       number: '03',
-      title: 'Acompanhe a Entrega',
-      description: 'Monitore sua carga em tempo real até o destino',
+      title: t('agroconecta.step3'),
+      description: t('agroconecta.step3Desc'),
       icon: <CheckCircle size={24} />
     }
   ];
@@ -393,41 +418,129 @@ const AgroisyncAgroConecta = () => {
           backgroundAttachment: 'scroll'
         }}
       >
-        <div className='absolute inset-0 bg-black/50'></div>
-        <div className='relative z-10 mx-auto max-w-4xl px-4 text-center'>
+        <div className='absolute inset-0 bg-gradient-to-br from-blue-900/50 via-black/70 to-cyan-900/30'></div>
+        <div className='relative z-10 mx-auto max-w-5xl px-4 text-center'>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            style={{ 
+              background: 'rgba(59, 130, 246, 0.15)',
+              padding: '8px 20px',
+              borderRadius: '30px',
+              border: '2px solid rgba(59, 130, 246, 0.3)',
+              marginBottom: '20px',
+              display: 'inline-block'
+            }}
+          >
+            <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#3b82f6' }}>
+              🚚 Logística Inteligente do Agronegócio
+            </span>
+          </motion.div>
+
           <motion.h1
-            className='mb-6 text-6xl font-bold text-white'
+            className='mb-6'
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
+            style={{
+              fontSize: 'clamp(2rem, 6vw, 3.5rem)',
+              fontWeight: '800',
+              lineHeight: '1.2',
+              background: 'linear-gradient(135deg, #ffffff 0%, #3b82f6 50%, #06b6d4 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
           >
-            FRETE
+            🚛 {t('agroconecta.heroTitle')}
           </motion.h1>
           <motion.p
-            className='mb-8 text-2xl text-white/90'
+            className='mb-8 text-white/90'
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
+            style={{ 
+              maxWidth: '700px', 
+              margin: '0 auto 2rem', 
+              lineHeight: '1.6',
+              fontSize: 'clamp(1.1rem, 2vw, 1.25rem)'
+            }}
           >
-            Conectando produtores e transportadores do agronegócio
+            {t('agroconecta.heroSubtitle')}
           </motion.p>
+          
           <motion.div
-            className='flex justify-center gap-4'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            style={{ marginBottom: '2rem', display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ fontSize: '20px' }}>📍</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>{t('agroconecta.realTimeTracking').replace('📍 ', '')}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ fontSize: '20px' }}>💰</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>{t('agroconecta.savingsUpTo').replace('💰 ', '')}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ fontSize: '20px' }}>⚡</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>{t('agroconecta.quoteInMinute').replace('⚡ ', '')}</span>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className='flex justify-center gap-4 flex-wrap'
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
           >
             <button
               onClick={() => {
                 const token = localStorage.getItem('token');
                 window.location.href = token ? '/user-dashboard' : '/signup/freight';
               }}
-              className='rounded-lg bg-green-600 px-8 py-4 font-semibold text-white transition-colors hover:bg-green-700'
+              style={{
+                background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                padding: '16px 36px',
+                fontSize: '1.1rem',
+                fontWeight: 'bold',
+                borderRadius: '12px',
+                boxShadow: '0 10px 30px rgba(59, 130, 246, 0.4)',
+                border: 'none',
+                color: '#fff',
+                cursor: 'pointer',
+                transition: 'transform 0.2s'
+              }}
+              onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+              onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
             >
-              Oferecer Frete
+              {t('agroconecta.quoteFreightNow')}
             </button>
-            <button className='rounded-lg bg-white px-8 py-4 font-semibold text-green-600 transition-colors hover:bg-gray-100'>
-              Buscar Frete
+            <button 
+              style={{
+                padding: '16px 36px',
+                fontSize: '1.1rem',
+                fontWeight: 'bold',
+                borderRadius: '12px',
+                background: 'rgba(255, 255, 255, 0.15)',
+                border: '2px solid rgba(255, 255, 255, 0.3)',
+                backdropFilter: 'blur(10px)',
+                color: '#fff',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = 'rgba(255, 255, 255, 0.25)';
+                e.target.style.transform = 'scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+                e.target.style.transform = 'scale(1)';
+              }}
+            >
+              {t('agroconecta.searchCarriers')}
             </button>
           </motion.div>
         </div>
@@ -444,10 +557,10 @@ const AgroisyncAgroConecta = () => {
             className='agro-text-center'
           >
             <motion.h2 className='agro-section-title' variants={itemVariants}>
-              Recursos Principais
+              {t('agroconecta.mainFeatures')}
             </motion.h2>
             <motion.p className='agro-section-subtitle' variants={itemVariants}>
-              Tecnologia avançada para revolucionar a logística agro
+              {t('agroconecta.mainFeaturesDesc')}
             </motion.p>
           </motion.div>
 
@@ -460,26 +573,29 @@ const AgroisyncAgroConecta = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: index * 0.1 }}
-                whileHover={{ y: -12, scale: 1.02 }}
-                style={{ position: 'relative', textAlign: 'center' }}
+                whileHover={{ y: -12, scale: 1.05 }}
+                style={{ 
+                  position: 'relative', 
+                  textAlign: 'center',
+                  background: feature.gradient,
+                  border: feature.border,
+                  borderRadius: '20px',
+                  padding: '30px',
+                  boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)'
+                }}
               >
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: '4px',
-                    background: 'var(--agro-green-accent)',
-                    borderRadius: 'var(--agro-radius-xl) var(--agro-radius-xl) 0 0'
-                  }}
-                />
-
-                <div className='agro-card-icon' style={{ color: feature.color, display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0 auto' }}>
+                <div style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>
+                  {feature.emoji}
+                </div>
+                <div className='agro-card-icon' style={{ color: feature.color, display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0 auto 1rem' }}>
                   {feature.icon}
                 </div>
-                <h3 className='agro-card-title'>{feature.title}</h3>
-                <p className='agro-card-description'>{feature.description}</p>
+                <h3 className='agro-card-title' style={{ fontSize: '1.4rem', fontWeight: 'bold', color: feature.color, marginBottom: '1rem' }}>
+                  {feature.title}
+                </h3>
+                <p className='agro-card-description' style={{ fontSize: '1rem', lineHeight: '1.6', color: '#666' }}>
+                  {feature.description}
+                </p>
               </motion.div>
             ))}
           </div>
@@ -497,7 +613,7 @@ const AgroisyncAgroConecta = () => {
             className='agro-text-center'
             style={{ marginBottom: '2rem' }}
           >
-            <h2 className='agro-section-title'>Fretes em Ação</h2>
+            <h2 className='agro-section-title'>{t('agroconecta.freightsInAction')}</h2>
             <p className='agro-section-subtitle'>Busque fretes ou ofereça seus serviços de transporte</p>
           </motion.div>
 
@@ -770,7 +886,7 @@ const AgroisyncAgroConecta = () => {
                     }}
                   >
                     <Search size={20} style={{ marginRight: '0.5rem', display: 'inline' }} />
-                    Buscar Transportadores
+                    {t('agroconecta.searchCarriers').replace('🔍 ', '')}
                   </button>
                 </div>
               </form>
@@ -783,93 +899,151 @@ const AgroisyncAgroConecta = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
               style={{
-                maxWidth: '1000px',
+                maxWidth: '1400px',
                 margin: '0 auto'
               }}
             >
-              <h3 style={{ marginBottom: '1.5rem', textAlign: 'center', color: 'var(--accent)' }}>
-                Ofertas de Frete Disponíveis
-              </h3>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                  gap: '1.5rem'
-                }}
-              >
-                {ofertasFrete.map((oferta, index) => (
-                  <motion.div
-                    key={oferta.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className='card agro-card-animated'
+              <div style={{ 
+                background: 'linear-gradient(135deg, rgba(42, 127, 79, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%)',
+                padding: 'clamp(1rem, 3vw, 1.5rem)',
+                borderRadius: '16px',
+                marginBottom: '2rem',
+                textAlign: 'center',
+                border: '2px solid rgba(42, 127, 79, 0.1)'
+              }}>
+                <h3 style={{ 
+                  marginBottom: '0.5rem', 
+                  color: 'var(--accent)', 
+                  fontSize: 'clamp(1.3rem, 3vw, 1.8rem)',
+                  fontWeight: '700'
+                }}>
+                  🚛 {ofertasFrete.length} Fretes Disponíveis Agora!
+                </h3>
+                <p style={{ color: 'var(--muted)', fontSize: 'clamp(0.9rem, 2vw, 1rem)' }}>
+                  Encontre o melhor frete para sua carga
+                </p>
+              </div>
+
+              {loadingFreights ? (
+                <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--muted)' }}>
+                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
+                  <p>Carregando fretes disponíveis...</p>
+                </div>
+              ) : ofertasFrete.length === 0 ? (
+                <div style={{ 
+                  textAlign: 'center', 
+                  padding: '3rem',
+                  background: 'var(--card-bg)',
+                  borderRadius: '16px',
+                  border: '2px dashed rgba(42, 127, 79, 0.2)'
+                }}>
+                  <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📦</div>
+                  <h4 style={{ color: 'var(--accent)', marginBottom: '0.5rem' }}>Nenhum frete disponível no momento</h4>
+                  <p style={{ color: 'var(--muted)', marginBottom: '1.5rem' }}>Seja o primeiro a cadastrar!</p>
+                  <button
+                    onClick={() => {
+                      const token = localStorage.getItem('token');
+                      window.location.href = token ? '/user-dashboard' : '/signup/freight';
+                    }}
+                    className='agro-btn-animated'
                     style={{
-                      padding: '1.5rem',
-                      background: 'var(--card-bg)',
+                      padding: '1rem 2rem',
+                      background: 'linear-gradient(135deg, var(--accent) 0%, #2e7d32 100%)',
+                      color: 'white',
+                      border: 'none',
                       borderRadius: '12px',
-                      boxShadow: '0 6px 20px rgba(15, 15, 15, 0.05)',
-                      border: '1px solid rgba(42, 127, 79, 0.1)'
+                      fontWeight: '600',
+                      cursor: 'pointer'
                     }}
                   >
-                    <div style={{ marginBottom: '1rem' }}>
-                      <h4 style={{ color: 'var(--accent)', marginBottom: '0.5rem' }}>{oferta.transportador}</h4>
-                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
-                        <Star size={16} style={{ color: '#FFD700', marginRight: '0.25rem' }} />
-                        <span style={{ fontSize: '0.9rem', color: 'var(--muted)' }}>{oferta.avaliacao}/5.0</span>
+                    <UserPlus size={18} style={{ marginRight: '0.5rem', display: 'inline' }} />
+                    Cadastrar Frete
+                  </button>
+                </div>
+              ) : (
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))',
+                  gap: 'clamp(1rem, 2vw, 1.5rem)',
+                  width: '100%'
+                }}>
+                  {/* LIMITAÇÃO: Usuários gratuitos veem até 10 fretes (5 completos + 5 com blur) */}
+                  {ofertasFrete.slice(0, user?.plan === 'profissional' || user?.plan === 'enterprise' ? undefined : 10).map((oferta, index) => (
+                    <FreightCard key={oferta.id} freight={oferta} index={index} />
+                  ))}
+                  
+                  {/* Mensagem de upgrade após o limite */}
+                  {(!user || (user.plan === 'gratuito' && ofertasFrete.length > 10)) && (
+                    <div style={{
+                      gridColumn: '1 / -1',
+                      padding: '2rem',
+                      background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%)',
+                      border: '3px solid rgba(245, 158, 11, 0.4)',
+                      borderRadius: '16px',
+                      textAlign: 'center',
+                      marginTop: '1rem'
+                    }}>
+                      <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔒</div>
+                      <h3 style={{ 
+                        color: '#d97706', 
+                        fontSize: '1.5rem', 
+                        fontWeight: '700',
+                        marginBottom: '0.5rem'
+                      }}>
+                        Desbloqueie TODOS os Fretes!
+                      </h3>
+                      <p style={{ 
+                        color: 'var(--muted)', 
+                        marginBottom: '1.5rem',
+                        fontSize: '1rem'
+                      }}>
+                        Você está vendo apenas {user ? '10' : '5'} fretes. Faça upgrade para ter acesso ilimitado!
+                      </p>
+                      <div style={{ 
+                        display: 'flex', 
+                        gap: '1rem', 
+                        justifyContent: 'center',
+                        flexWrap: 'wrap'
+                      }}>
+                        {!user && (
+                          <button
+                            onClick={() => window.location.href = '/register'}
+                            style={{
+                              padding: '1rem 2rem',
+                              background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '12px',
+                              fontSize: '1rem',
+                              fontWeight: '700',
+                              cursor: 'pointer',
+                              boxShadow: '0 4px 15px rgba(59, 130, 246, 0.4)'
+                            }}
+                          >
+                            📝 Criar Conta Grátis
+                          </button>
+                        )}
+                        <button
+                          onClick={() => window.location.href = '/plans'}
+                          style={{
+                            padding: '1rem 2rem',
+                            background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '12px',
+                            fontSize: '1rem',
+                            fontWeight: '700',
+                            cursor: 'pointer',
+                            boxShadow: '0 4px 15px rgba(245, 158, 11, 0.4)'
+                          }}
+                        >
+                          🚀 Ver Planos Premium
+                        </button>
                       </div>
                     </div>
-
-                    <div style={{ marginBottom: '1rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
-                        <MapPin size={16} style={{ color: 'var(--accent)', marginRight: '0.5rem' }} />
-                        <span style={{ fontSize: '0.9rem' }}>
-                          {oferta.origem} → {oferta.destino}
-                        </span>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
-                        <Package size={16} style={{ color: 'var(--accent)', marginRight: '0.5rem' }} />
-                        <span style={{ fontSize: '0.9rem' }}>{oferta.volume}</span>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
-                        <Calendar size={16} style={{ color: 'var(--accent)', marginRight: '0.5rem' }} />
-                        <span style={{ fontSize: '0.9rem' }}>{oferta.data}</span>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
-                        <Truck size={16} style={{ color: 'var(--accent)', marginRight: '0.5rem' }} />
-                        <span style={{ fontSize: '0.9rem' }}>{oferta.veiculo}</span>
-                      </div>
-                    </div>
-
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        paddingTop: '1rem',
-                        borderTop: '1px solid rgba(42, 127, 79, 0.1)'
-                      }}
-                    >
-                      <div>
-                        <DollarSign
-                          size={20}
-                          style={{ color: 'var(--accent)', display: 'inline', marginRight: '0.25rem' }}
-                        />
-                        <strong style={{ color: 'var(--accent)', fontSize: '1.2rem' }}>{oferta.preco}</strong>
-                      </div>
-                      <button
-                        className='btn small'
-                        style={{
-                          padding: '0.5rem 1rem',
-                          fontSize: '0.9rem'
-                        }}
-                      >
-                        Contratar
-                      </button>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+                  )}
+                </div>
+              )}
             </motion.div>
           )}
 
@@ -1090,8 +1264,8 @@ const AgroisyncAgroConecta = () => {
             >
               <Star size={32} />
             </div>
-            <h2 className='agro-section-title'>Como Funciona</h2>
-            <p className='agro-section-subtitle'>Processo simples e eficiente em apenas 3 passos</p>
+            <h2 className='agro-section-title'>{t('agroconecta.howItWorks')}</h2>
+            <p className='agro-section-subtitle'>{t('agroconecta.howItWorksDesc')}</p>
           </motion.div>
 
           <div
@@ -1194,10 +1368,10 @@ const AgroisyncAgroConecta = () => {
               <Globe size={32} />
             </div>
             <h2 className='agro-section-title' style={{ marginBottom: 'var(--agro-space-lg)' }}>
-              Pronto para Conectar?
+              {t('agroconecta.readyToConnect')}
             </h2>
             <p className='agro-section-subtitle' style={{ marginBottom: 'var(--agro-space-xl)' }}>
-              Junte-se à maior rede de logística do agronegócio brasileiro
+              {t('agroconecta.readyToConnectDesc')}
             </p>
             <div
               style={{
@@ -1209,11 +1383,11 @@ const AgroisyncAgroConecta = () => {
               }}
             >
               <Link to='/register' className='agro-btn agro-btn-primary' style={{ textAlign: 'center' }}>
-                Tenho Carga
+                {t('agroconecta.haveLoad')}
                 <ArrowRight size={20} />
               </Link>
               <Link to='/register' className='agro-btn agro-btn-secondary' style={{ textAlign: 'center' }}>
-                Sou Transportador
+                {t('agroconecta.amCarrier')}
               </Link>
             </div>
           </motion.div>
@@ -1529,7 +1703,7 @@ const AgroisyncAgroConecta = () => {
           <div className='max-h-[90vh] w-full max-w-6xl overflow-y-auto rounded-lg bg-white'>
             <div className='p-6'>
               <div className='mb-6 flex items-center justify-between'>
-                <h2 className='text-2xl font-bold text-gray-800'>Planos Premium - Fretes</h2>
+                <h2 className='text-2xl font-bold text-gray-800'>{t('agroconecta.premiumPlans')}</h2>
                 <button onClick={() => setShowPlansModal(false)} className='text-gray-500 hover:text-gray-700'>
                   <X size={24} />
                 </button>

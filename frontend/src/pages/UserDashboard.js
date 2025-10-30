@@ -45,11 +45,14 @@ const UserDashboard = () => {
   const [planExpiresAt, setPlanExpiresAt] = useState(null);
   const [daysRemaining, setDaysRemaining] = useState(0);
   const [conversationsCount, setConversationsCount] = useState(0);
+  const [userFreights, setUserFreights] = useState([]);
+  const [userProducts, setUserProducts] = useState([]);
   
   // Estados para configurações
   const [profileImage, setProfileImage] = useState(null);
   const [profileData, setProfileData] = useState({
     name: '',
+    username: '',
     email: '',
     phone: '',
     company: ''
@@ -83,6 +86,7 @@ const UserDashboard = () => {
             setPlanExpiresAt(user.plan_expires_at);
             setProfileData({
               name: user.name || '',
+              username: user.username || '',
               email: user.email || '',
               phone: user.phone || '',
               company: user.company || ''
@@ -113,27 +117,33 @@ const UserDashboard = () => {
         return;
       }
 
-      // Buscar produtos ou fretes do usuário
-      if (userType === 'producer' || userType === 'buyer') {
-        try {
-          const productsData = await productService.getMyProducts();
-          const productsArray = productsData?.products || productsData?.data?.products || [];
+      // Buscar produtos e fretes do usuário (SEMPRE buscar ambos para mostrar limites)
+      try {
+        const productsData = await productService.getMyProducts();
+        const productsArray = productsData?.products || productsData?.data?.products || [];
+        setUserProducts(Array.isArray(productsArray) ? productsArray : []);
+        console.log('✅ Produtos carregados:', productsArray.length);
+        
+        if (userType === 'producer' || userType === 'buyer') {
           setItems(Array.isArray(productsArray) ? productsArray : []);
-          console.log('✅ Produtos carregados:', productsArray.length);
-        } catch (error) {
-          console.error('❌ Erro ao carregar produtos:', error);
-          setItems([]);
         }
-      } else if (userType === 'carrier') {
-        try {
-          const freightsData = await freightService.getMyFreights();
-          const freightsArray = freightsData?.freights || freightsData?.data?.freights || [];
+      } catch (error) {
+        console.error('❌ Erro ao carregar produtos:', error);
+        setUserProducts([]);
+      }
+      
+      try {
+        const freightsData = await freightService.getMyFreights();
+        const freightsArray = freightsData?.freights || freightsData?.data?.freights || [];
+        setUserFreights(Array.isArray(freightsArray) ? freightsArray : []);
+        console.log('✅ Fretes carregados:', freightsArray.length);
+        
+        if (userType === 'carrier') {
           setItems(Array.isArray(freightsArray) ? freightsArray : []);
-          console.log('✅ Fretes carregados:', freightsArray.length);
-        } catch (error) {
-          console.error('❌ Erro ao carregar fretes:', error);
-          setItems([]);
         }
+      } catch (error) {
+        console.error('❌ Erro ao carregar fretes:', error);
+        setUserFreights([]);
       }
 
       // Buscar número real de conversas ativas
@@ -188,6 +198,7 @@ const UserDashboard = () => {
             
             setProfileData({
               name: userData.name || '',
+              username: userData.username || '',
               email: userData.email || '',
               phone: userData.phone || '',
               company: userData.company || ''
@@ -493,6 +504,25 @@ const UserDashboard = () => {
           </div>
 
           <div>
+            <label className='mb-1 block text-sm font-medium text-gray-700'>
+              Nome de Usuário <span className='text-xs text-gray-400'>(opcional)</span>
+            </label>
+            <div className='relative'>
+              <span className='absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400'>@</span>
+              <input
+                type='text'
+                value={profileData.username}
+                onChange={e => setProfileData({ ...profileData, username: e.target.value })}
+                className='w-full rounded-lg border border-gray-300 px-3 py-2 pl-8 focus:border-transparent focus:ring-2 focus:ring-green-500'
+                placeholder='seunome'
+              />
+            </div>
+            <p className='mt-1 text-xs text-gray-500'>
+              Seu perfil público: agroisync.com/@{profileData.username || 'seunome'}
+            </p>
+          </div>
+
+          <div>
             <label className='mb-1 block text-sm font-medium text-gray-700'>Email</label>
             <input
               type='email'
@@ -535,21 +565,47 @@ const UserDashboard = () => {
       </div>
 
       <div className='rounded-lg border border-gray-200 bg-white p-6 shadow-sm'>
-        <h3 className='mb-4 text-lg font-semibold text-gray-900'>Plano Atual</h3>
-        <div className='space-y-2'>
-          <p className='text-sm text-gray-600'>
-            <span className='font-medium'>Plano:</span> {userPlan || 'Nenhum'}
-          </p>
+        <h3 className='mb-4 text-lg font-semibold text-gray-900'>💎 Plano e Limites</h3>
+        <div className='space-y-3'>
+          <div className='rounded-lg bg-gradient-to-r from-green-50 to-blue-50 p-3'>
+            <p className='text-sm font-semibold text-gray-800'>
+              Plano: <span className='text-green-600'>{userPlan?.toUpperCase() || 'GRATUITO'}</span>
+            </p>
+          </div>
+          
+          {/* Limites de Fretes */}
+          <div className='rounded-lg bg-blue-50 p-3'>
+            <p className='mb-1 text-xs font-medium text-gray-600'>🚚 Fretes Cadastrados:</p>
+            <p className='text-lg font-bold text-blue-600'>
+              {userFreights?.length || 0} / {userPlan === 'gratuito' ? '5' : '∞'}
+            </p>
+            {userPlan === 'gratuito' && userFreights?.length >= 5 && (
+              <p className='mt-1 text-xs font-semibold text-orange-600'>⚠️ Limite atingido! Faça upgrade.</p>
+            )}
+          </div>
+          
+          {/* Limites de Produtos */}
+          <div className='rounded-lg bg-green-50 p-3'>
+            <p className='mb-1 text-xs font-medium text-gray-600'>📦 Produtos Cadastrados:</p>
+            <p className='text-lg font-bold text-green-600'>
+              {userProducts?.length || 0} / {userPlan === 'gratuito' ? '5' : '∞'}
+            </p>
+            {userPlan === 'gratuito' && userProducts?.length >= 5 && (
+              <p className='mt-1 text-xs font-semibold text-orange-600'>⚠️ Limite atingido! Faça upgrade.</p>
+            )}
+          </div>
+          
           {planExpiresAt && (
-            <p className='text-sm text-gray-600'>
-              <span className='font-medium'>Expira em:</span> {new Date(planExpiresAt).toLocaleDateString('pt-BR')}
+            <p className='text-xs text-gray-500'>
+              Expira em: {new Date(planExpiresAt).toLocaleDateString('pt-BR')}
             </p>
           )}
+          
           <button
-            onClick={() => navigate('/plans')}
-            className='mt-4 rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700'
+            onClick={() => navigate('/planos')}
+            className='mt-4 w-full rounded-lg bg-gradient-to-r from-green-600 to-blue-600 px-4 py-2.5 font-semibold text-white transition-all hover:from-green-700 hover:to-blue-700 hover:shadow-lg'
           >
-            Gerenciar Plano
+            ⬆️ Fazer Upgrade
           </button>
         </div>
       </div>

@@ -36,6 +36,7 @@ const AgroisyncRegister = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
+    username: '',
     email: '',
     company: '',
     phone: '',
@@ -160,6 +161,7 @@ const AgroisyncRegister = () => {
         formData.password,
         {
           name: formData.name,
+          username: formData.username || null,
           company: formData.company,
           phone: formData.phone
         },
@@ -451,6 +453,33 @@ const AgroisyncRegister = () => {
                   )}
                 </motion.div>
 
+                {/* Nome de Usuário */}
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}>
+                  <label className='mb-2 block text-sm font-bold text-gray-700'>
+                    Nome de Usuário <span className='text-gray-400 text-xs font-normal'>(opcional)</span>
+                  </label>
+                  <div className='relative'>
+                    <span className='absolute left-4 top-1/2 -translate-y-1/2 transform text-gray-400'>@</span>
+                    <input
+                      type='text'
+                      name='username'
+                      value={formData.username}
+                      onChange={handleInputChange}
+                      placeholder='seunome'
+                      className={`w-full rounded-xl border-2 bg-gray-50 py-3 pl-12 pr-4 transition-all duration-300 focus:bg-white focus:outline-none focus:ring-4 focus:ring-emerald-500/20 sm:py-4 ${
+                        errors.username ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-emerald-500'
+                      }`}
+                    />
+                  </div>
+                  {errors.username && (
+                    <p className='mt-2 flex items-center gap-1 text-sm text-red-500'>
+                      <AlertCircle className='h-4 w-4' />
+                      {errors.username}
+                    </p>
+                  )}
+                  <p className='mt-1 text-xs text-gray-500'>Será usado em sua URL pública: agroisync.com/@seunome</p>
+                </motion.div>
+
                 {/* Email */}
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
                   <label className='mb-2 block text-sm font-bold text-gray-700'>{t('register.email', 'Email')}</label>
@@ -663,7 +692,7 @@ const AgroisyncRegister = () => {
                       setErrors(prev => ({ ...prev, turnstile: '' }));
                     }}
                     onError={error => {
-                      console.error('Turnstile error:', error);
+                      // Silenciar erro do Turnstile
                       setErrors(prev => ({ ...prev, turnstile: 'Erro na verificação. Tente novamente.' }));
                       setTurnstileToken('');
                     }}
@@ -712,12 +741,12 @@ const AgroisyncRegister = () => {
                 className='mt-8 border-t border-gray-200 pt-6 text-center'
               >
                 <p className='mb-2 text-gray-600'>
-                  Já tem uma conta?{' '}
+                  {t('register.haveAccount')}{' '}
                   <Link
                     to='/login'
                     className='font-semibold text-emerald-600 transition-colors duration-200 hover:text-emerald-700 hover:underline'
                   >
-                    Fazer Login
+                    {t('register.login')}
                   </Link>
                 </p>
                 <p className='flex items-center justify-center gap-1 text-xs text-gray-500'>
