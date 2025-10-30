@@ -1,0 +1,98 @@
+name: 🤖 Build Android App
+
+on:
+  workflow_dispatch:  # Manual trigger
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/android-build.yml'
+
+jobs:
+  build-android:
+    name: 📱 Build Android APK/AAB
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: ☕ Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'microsoft'
+          java-version: '17'
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      
+      - name: 📚 Install dependencies
+        working-directory: frontend
+        run: npm ci
+      
+      - name: 🏗️ Build React app
+        working-directory: frontend
+        env:
+          NODE_ENV: production
+          REACT_APP_API_URL: https://agroisync.com/api
+          REACT_APP_TURNSTILE_SITE_KEY: 0x4AAAAAAB3pdjs4jRKvAtaA
+          GENERATE_SOURCEMAP: false
+        run: npm run build
+      
+      - name: 📱 Sync Capacitor
+        working-directory: frontend
+        run: |
+          npx cap sync android
+      
+      - name: 🔑 Override path check (for CI)
+        working-directory: frontend/android
+        run: |
+          echo "android.overridePathCheck=true" >> gradle.properties
+          echo "android.overridePathCheck=true" >> app/gradle.properties
+      
+      - name: 🔨 Build Debug APK
+        working-directory: frontend/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
+      
+      - name: 🔨 Build Release AAB (unsigned)
+        working-directory: frontend/android
+        run: |
+          ./gradlew bundleRelease --no-daemon --stacktrace
+      
+      - name: 📤 Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: agroisync-debug.apk
+          path: frontend/android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
+      
+      - name: 📤 Upload Release AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: agroisync-release.aab
+          path: frontend/android/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 30
+      
+      - name: 📊 Create Release Summary
+        run: |
+          echo "## 🎉 Build Android Completo!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📱 Arquivos Gerados:" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ APK Debug: app-debug.apk (para testar)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ AAB Release: app-release.aab (para Play Store)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📥 Download:" >> $GITHUB_STEP_SUMMARY
+          echo "Vá em: Actions → Esta run → Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🚀 Próximo Passo:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Download do AAB" >> $GITHUB_STEP_SUMMARY
+          echo "2. Criar conta Play Console (R$ 25)" >> $GITHUB_STEP_SUMMARY
+          echo "3. Upload na Play Store" >> $GITHUB_STEP_SUMMARY
+          echo "4. Aguardar aprovação (1-7 dias)" >> $GITHUB_STEP_SUMMARY
+
