@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { TrendingUp, TrendingDown, MapPin, RefreshCw } from 'lucide-react';
 import cotacoesService from '../services/cotacoesService';
 
 const GrainsChart = () => {
+  const { t } = useTranslation();
   const [grainsData, setGrainsData] = useState([]);
   const [userLocation, setUserLocation] = useState('');
   const [loading, setLoading] = useState(true);
@@ -49,8 +51,7 @@ const GrainsChart = () => {
             }));
           }
         } catch (ipError) {
-          // Usar localização padrão (MT)
-          if (process.env.NODE_ENV === 'development') console.log('Usando localização padrão');
+          // Usar localização padrão (MT) - silenciar erro
         }
       }
 
@@ -92,9 +93,7 @@ const GrainsChart = () => {
         throw new Error('Falha ao buscar cotações');
       }
     } catch (error) {
-      // FALLBACK: Usar dados locais se API falhar
-      if (process.env.NODE_ENV === 'development') console.error('Erro ao buscar cotações, usando fallback:', error);
-
+      // FALLBACK: Usar dados locais se API falhar - silenciar erro
       const fallbackGrainsData = [
         {
           grain: 'Soja',
@@ -189,7 +188,7 @@ const GrainsChart = () => {
             <TrendingUp className='h-5 w-5 text-white' />
           </div>
           <div>
-            <h3 className='text-lg font-bold text-gray-900'>Cotações em Tempo Real</h3>
+            <h3 className='text-lg font-bold text-gray-900'>{t('grains.realTimeQuotes')}</h3>
             <div className='flex items-center gap-1 text-sm text-gray-600'>
               <MapPin className='h-4 w-4' />
               <span>{userLocation || 'Brasil'}</span>
@@ -199,13 +198,13 @@ const GrainsChart = () => {
         <div className='text-right'>
           <p className='text-xs text-gray-500'>
             {lastUpdate ? (
-              <>Atualizado {new Date(lastUpdate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</>
+              <>{t('grains.updated')} {new Date(lastUpdate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</>
             ) : (
-              <>Atualizado agora</>
+              <>{t('grains.updatedNow')}</>
             )}
           </p>
           <p className='text-xs text-gray-400'>
-            Fonte: {grainsData[0]?.fonte?.toUpperCase() || 'CEPEA/Agrolink'}
+            {t('grains.source')}: {grainsData[0]?.fonte?.toUpperCase() || 'CEPEA/Agrolink'}
           </p>
           <button
             onClick={(e) => {
@@ -213,10 +212,10 @@ const GrainsChart = () => {
               fetchGrainsData();
             }}
             className='text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1 mt-1'
-            aria-label="Atualizar cotações"
+            aria-label={t('grains.refreshQuotes')}
           >
             <RefreshCw className='h-3 w-3' />
-            Atualizar
+            {t('grains.refresh')}
           </button>
         </div>
       </div>
@@ -276,10 +275,10 @@ const GrainsChart = () => {
 
       <div className='mt-6 border-t border-gray-200 pt-4'>
         <p className='text-center text-xs text-gray-500'>
-          Cotações em tempo real • Atualização automática a cada 5 minutos
+          {t('grains.realTimeUpdate')}
         </p>
         <p className='text-center text-xs text-gray-400 mt-1'>
-          Fonte: CEPEA/ESALQ • B3 • Agrolink
+          {t('grains.source')}: CEPEA/ESALQ • B3 • Agrolink
         </p>
       </div>
     </motion.div>

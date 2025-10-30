@@ -8,23 +8,23 @@
  * Prioriza variável de ambiente, fallback para produção
  */
 export const getApiUrl = (endpoint = '') => {
-  const baseUrl = process.env.REACT_APP_API_URL || 'https://backend.contato-00d.workers.dev';
+  const baseUrl = process.env.REACT_APP_API_URL || '/api';
   
   // Remover barras iniciais e finais
   const cleanEndpoint = endpoint.replace(/^\/+|\/+$/g, '');
   
   // Se endpoint JÁ começa com 'api/', usar direto
   if (cleanEndpoint.startsWith('api/')) {
-    return `${baseUrl}/${cleanEndpoint}`;
+    return `${baseUrl.replace('/api', '')}/${cleanEndpoint}`;
   }
   
   // Se endpoint está vazio ou é só 'api', retornar base
   if (!cleanEndpoint || cleanEndpoint === 'api') {
-    return `${baseUrl}/api`;
+    return baseUrl;
   }
   
-  // Caso padrão: adicionar /api/
-  return `${baseUrl}/api/${cleanEndpoint}`;
+  // Caso padrão: adicionar endpoint ao base
+  return `${baseUrl}/${cleanEndpoint}`;
 };
 
 /**

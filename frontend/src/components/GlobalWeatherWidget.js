@@ -204,7 +204,7 @@ const GlobalWeatherWidget = () => {
   const { location, current, forecast } = weatherData;
 
   return (
-    <div className='space-y-4'>
+    <div className='space-y-3 max-w-sm mx-auto'>
       {/* Header com localização e busca */}
       <div className='flex items-center justify-between'>
         <div className='flex items-center space-x-2'>
@@ -284,20 +284,19 @@ const GlobalWeatherWidget = () => {
       )}
 
       {/* Clima atual */}
-      <div className='py-4 text-center'>
-        <div className='mb-2 flex items-center justify-center'>
+      <div className='py-2 text-center'>
+        <div className='mb-1 flex items-center justify-center'>
           <img
             src={current?.iconUrl || 'https://openweathermap.org/img/wn/01d@2x.png'}
             alt={current?.description || 'Clima'}
-            className='h-16 w-16'
+            className='h-12 w-12'
             onError={e => {
               e.target.src = 'https://openweathermap.org/img/wn/01d@2x.png';
             }}
           />
         </div>
-        <div className='mb-1 text-3xl font-bold text-gray-900'>{current?.temperature || '--'}°C</div>
-        <p className='mb-2 text-sm capitalize text-gray-600'>{current?.description || 'Carregando...'}</p>
-        <p className='text-xs text-gray-500'>Sensação térmica: {current?.feelsLike || '--'}°C</p>
+        <div className='mb-1 text-2xl font-bold text-gray-900'>{current?.temperature || '--'}°C</div>
+        <p className='text-xs capitalize text-gray-600'>{current?.description || 'Carregando...'}</p>
       </div>
 
       {/* Detalhes do clima */}
@@ -335,12 +334,12 @@ const GlobalWeatherWidget = () => {
         </div>
       </div>
 
-      {/* Previsão para 5 dias */}
+      {/* Previsão para 3 dias */}
       {forecast && forecast.length > 0 && (
-        <div className='space-y-2'>
-          <h4 className='text-sm font-semibold text-gray-900'>Previsão 5 dias</h4>
-          <div className='space-y-2'>
-            {forecast.map((day, index) => (
+        <div className='hidden space-y-1'>
+          <h4 className='text-xs font-semibold text-gray-900'>Previsão 3 dias</h4>
+          <div className='space-y-1'>
+            {forecast.slice(0, 3).map((day, index) => (
               <div key={index} className='flex items-center justify-between rounded-lg bg-gray-50 p-2'>
                 <div className='flex items-center space-x-3'>
                   <span className='w-16 text-sm font-medium text-gray-900'>{day.dayName}</span>

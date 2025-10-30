@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 // import RegistrationSystem from '../components/RegistrationSystem'; // Componente removido
 import {
   ArrowRight,
@@ -21,6 +22,7 @@ import logger from '../services/logger';
 import { toast } from 'react-hot-toast';
 
 const AgroisyncMarketplace = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('todos');
@@ -61,10 +63,13 @@ const AgroisyncMarketplace = () => {
 
   const categories = [
     { value: 'todos', label: 'Todos' },
-    { value: 'insumos', label: 'Insumos' },
-    { value: 'maquinas', label: 'Máquinas' },
-    { value: 'pecuaria', label: 'Pecuária' },
-    { value: 'servicos', label: 'Serviços' }
+    { value: 'graos', label: '🌾 Grãos e Cereais' },
+    { value: 'maquinas', label: '🚜 Máquinas e Equipamentos' },
+    { value: 'insumos', label: '🌱 Insumos Agrícolas' },
+    { value: 'terras', label: '🏞️ Terras e Propriedades' },
+    { value: 'madeira', label: '🪵 Madeira e Derivados' },
+    { value: 'pecuaria', label: '🐄 Pecuária' },
+    { value: 'servicos', label: '⚙️ Serviços Agrícolas' }
   ];
 
   const states = [
@@ -96,49 +101,58 @@ const AgroisyncMarketplace = () => {
 
   const features = [
     {
-      icon: <TrendingUp size={32} />,
-      title: 'Commodities em Tempo Real',
-      description: 'Acompanhe cotações de soja, milho, café e outras commodities em tempo real',
-      color: 'var(--agro-green)'
+      icon: <TrendingUp size={48} />,
+      title: t('marketplace.featureCommodities'),
+      description: t('marketplace.featureCommoditiesDesc'),
+      color: '#22c55e',
+      gradient: 'linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(0, 0, 0, 0.05))',
+      border: '2px solid rgba(34, 197, 94, 0.2)',
+      emoji: '📈'
     },
     {
-      icon: <Users size={32} />,
-      title: 'Rede de Produtores',
-      description: 'Conecte-se com milhares de produtores e compradores confiáveis',
-      color: 'var(--agro-green)'
+      icon: <Users size={48} />,
+      title: t('marketplace.featureNetwork'),
+      description: t('marketplace.featureNetworkDesc'),
+      color: '#3b82f6',
+      gradient: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(0, 0, 0, 0.05))',
+      border: '2px solid rgba(59, 130, 246, 0.2)',
+      emoji: '👥'
     },
     {
-      icon: <Shield size={32} />,
-      title: 'Transações Seguras',
-      description: 'Blockchain e criptografia para garantir a segurança de todas as transações',
-      color: 'var(--agro-green)'
+      icon: <Shield size={48} />,
+      title: t('marketplace.featureSecurity'),
+      description: t('marketplace.featureSecurityDesc'),
+      color: '#a855f7',
+      gradient: 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(0, 0, 0, 0.05))',
+      border: '2px solid rgba(168, 85, 247, 0.2)',
+      emoji: '🔒'
     }
   ];
 
   const benefits = [
     {
       icon: <CheckCircle size={24} />,
-      text: 'Preços competitivos (variam conforme oferta e demanda)'
+      text: t('marketplace.benefit1')
     },
     {
       icon: <CheckCircle size={24} />,
-      text: 'Transações planejadas com segurança (em desenvolvimento)'
+      text: t('marketplace.benefit2')
     },
     {
       icon: <CheckCircle size={24} />,
-      text: 'Atendimento e suporte evoluindo conforme as fases do projeto'
+      text: t('marketplace.benefit3')
     },
     {
       icon: <CheckCircle size={24} />,
-      text: 'Relatórios informativos (roadmap)'
+      text: t('marketplace.benefit4')
     },
     {
       icon: <CheckCircle size={24} />,
-      text: 'Integrações técnicas planejadas (roadmap)'
+      text: t('marketplace.benefit5')
     },
     {
       icon: <CheckCircle size={24} />,
-      text: 'Certificação e verificação progressivas'
+      text: t('marketplace.benefit6')
     }
   ];
 
@@ -182,41 +196,129 @@ const AgroisyncMarketplace = () => {
           backgroundAttachment: 'scroll'
         }}
       >
-        <div className='absolute inset-0 bg-black/50'></div>
-        <div className='relative z-10 mx-auto max-w-4xl px-4 text-center'>
+        <div className='absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-green-900/30'></div>
+        <div className='relative z-10 mx-auto max-w-5xl px-4 text-center'>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            style={{ 
+              background: 'rgba(34, 197, 94, 0.15)',
+              padding: '8px 20px',
+              borderRadius: '30px',
+              border: '2px solid rgba(34, 197, 94, 0.3)',
+              marginBottom: '20px',
+              display: 'inline-block'
+            }}
+          >
+            <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#22c55e' }}>
+              🛒 {t('marketplace.heroTitle')}
+            </span>
+          </motion.div>
+
           <motion.h1
-            className='mb-6 text-6xl font-bold text-white'
+            className='mb-6 text-7xl font-bold'
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
+            style={{
+              background: 'linear-gradient(135deg, #ffffff 0%, #22c55e 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              lineHeight: '1.2'
+            }}
           >
-            PRODUTOS
+            🌾 {t('marketplace.title')}
           </motion.h1>
           <motion.p
-            className='mb-8 text-2xl text-white/90'
+            className='mb-8 text-white/90'
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
+            style={{ 
+              maxWidth: '800px', 
+              margin: '0 auto 2rem', 
+              lineHeight: '1.8',
+              fontSize: 'clamp(1.1rem, 2vw, 1.3rem)'
+            }}
           >
-            Conectando produtores e compradores do agronegócio
+            <strong>{t('marketplace.categories')}</strong>
+            <br/><br/>
+            {t('marketplace.heroSubtitle')}
           </motion.p>
+          
           <motion.div
-            className='flex justify-center gap-4'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            style={{ marginBottom: '2rem', display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ fontSize: '20px' }}>✅</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>{t('marketplace.verifiedSellers')}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ fontSize: '20px' }}>💰</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>{t('marketplace.competitivePrices')}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ fontSize: '20px' }}>🔒</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>{t('marketplace.secureTransactions')}</span>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className='flex justify-center gap-4 flex-wrap'
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
           >
             <button
               onClick={() => {
                 const token = localStorage.getItem('token');
                 window.location.href = token ? '/user-dashboard' : '/signup/product';
               }}
-              className='rounded-lg bg-green-600 px-8 py-4 font-semibold text-white transition-colors hover:bg-green-700'
+              style={{
+                background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                padding: '16px 36px',
+                fontSize: '1.1rem',
+                fontWeight: 'bold',
+                borderRadius: '12px',
+                boxShadow: '0 10px 30px rgba(34, 197, 94, 0.4)',
+                border: 'none',
+                color: '#fff',
+                cursor: 'pointer',
+                transition: 'transform 0.2s'
+              }}
+              onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+              onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
             >
-              Cadastrar Produto
+              {t('marketplace.registerProductFree')}
             </button>
-            <button className='rounded-lg bg-white px-8 py-4 font-semibold text-green-600 transition-colors hover:bg-gray-100'>
-              Explorar Categorias
+            <button 
+              style={{
+                padding: '16px 36px',
+                fontSize: '1.1rem',
+                fontWeight: 'bold',
+                borderRadius: '12px',
+                background: 'rgba(255, 255, 255, 0.15)',
+                border: '2px solid rgba(255, 255, 255, 0.3)',
+                backdropFilter: 'blur(10px)',
+                color: '#fff',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = 'rgba(255, 255, 255, 0.25)';
+                e.target.style.transform = 'scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+                e.target.style.transform = 'scale(1)';
+              }}
+            >
+              {t('marketplace.exploreCategories')}
             </button>
           </motion.div>
         </div>
@@ -233,8 +335,8 @@ const AgroisyncMarketplace = () => {
             className='agro-text-center'
             style={{ marginBottom: '2rem' }}
           >
-            <h2 className='agro-section-title'>Produtos Disponíveis</h2>
-            <p className='agro-section-subtitle'>Encontre os melhores produtos e serviços para seu agronegócio</p>
+            <h2 className='agro-section-title'>{t('marketplace.productsServicesTitle')}</h2>
+            <p className='agro-section-subtitle'>{t('marketplace.productsServicesSubtitle')}</p>
           </motion.div>
 
           {/* Filtros */}
@@ -246,17 +348,18 @@ const AgroisyncMarketplace = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             style={{
               background: 'var(--card-bg)',
-              padding: '1.5rem',
-              borderRadius: '12px',
+              padding: 'clamp(1rem, 3vw, 1.5rem)',
+              borderRadius: '16px',
               boxShadow: '0 6px 20px rgba(15, 15, 15, 0.05)',
-              marginBottom: '2rem'
+              marginBottom: '2rem',
+              border: '2px solid rgba(42, 127, 79, 0.08)'
             }}
           >
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: '1rem',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))',
+                gap: 'clamp(0.75rem, 2vw, 1rem)',
                 alignItems: 'end'
               }}
             >
@@ -384,8 +487,9 @@ const AgroisyncMarketplace = () => {
             transition={{ duration: 0.8, delay: 0.4 }}
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: '1.5rem'
+              gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))',
+              gap: 'clamp(1rem, 2.5vw, 1.5rem)',
+              width: '100%'
             }}
           >
             {filteredProducts.map((product, index) => (
@@ -395,7 +499,11 @@ const AgroisyncMarketplace = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ duration: 0.5, delay: Math.min(index * 0.05, 0.4) }}
+                style={{
+                  height: '100%',
+                  display: 'flex'
+                }}
               >
                 <ProductCard product={product} />
               </motion.div>
@@ -407,10 +515,17 @@ const AgroisyncMarketplace = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className='agro-text-center'
-              style={{ padding: '3rem', color: 'var(--muted)' }}
+              style={{ 
+                padding: '3rem', 
+                color: 'var(--muted)',
+                background: 'var(--card-bg)',
+                borderRadius: '16px',
+                border: '2px dashed rgba(42, 127, 79, 0.2)'
+              }}
             >
-              <h3>Nenhum produto encontrado</h3>
-              <p>Tente ajustar os filtros para encontrar o que você procura.</p>
+              <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🔍</div>
+              <h3 style={{ color: 'var(--accent)', marginBottom: '0.5rem' }}>Nenhum produto encontrado</h3>
+              <p>Tente ajustar os filtros ou cadastrar um novo produto!</p>
             </motion.div>
           )}
         </div>
@@ -442,8 +557,8 @@ const AgroisyncMarketplace = () => {
             >
               <Clock size={32} />
             </div>
-            <h2 className='agro-section-title'>Status dos Produtos</h2>
-            <p className='agro-section-subtitle'>Plataforma em desenvolvimento com tecnologia de ponta</p>
+            <h2 className='agro-section-title'>{t('marketplace.statusTitle')}</h2>
+            <p className='agro-section-subtitle'>{t('marketplace.statusSubtitle')}</p>
           </motion.div>
 
           <div className='agro-cards-grid'>
@@ -455,26 +570,28 @@ const AgroisyncMarketplace = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: index * 0.1 }}
-                whileHover={{ y: -12, scale: 1.02 }}
-                style={{ position: 'relative' }}
+                whileHover={{ y: -12, scale: 1.05 }}
+                style={{ 
+                  position: 'relative',
+                  background: feature.gradient,
+                  border: feature.border,
+                  borderRadius: '20px',
+                  padding: '30px',
+                  boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)'
+                }}
               >
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: '4px',
-                    background: 'var(--agro-green-accent)',
-                    borderRadius: 'var(--agro-radius-xl) var(--agro-radius-xl) 0 0'
-                  }}
-                />
-
-                <div className='agro-card-icon' style={{ color: feature.color }}>
+                <div style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>
+                  {feature.emoji}
+                </div>
+                <div className='agro-card-icon' style={{ color: feature.color, marginBottom: '1rem' }}>
                   {feature.icon}
                 </div>
-                <h3 className='agro-card-title'>{feature.title}</h3>
-                <p className='agro-card-description'>{feature.description}</p>
+                <h3 className='agro-card-title' style={{ fontSize: '1.4rem', fontWeight: 'bold', color: feature.color, marginBottom: '1rem' }}>
+                  {feature.title}
+                </h3>
+                <p className='agro-card-description' style={{ fontSize: '1rem', lineHeight: '1.6', color: '#666' }}>
+                  {feature.description}
+                </p>
               </motion.div>
             ))}
           </div>
@@ -491,7 +608,7 @@ const AgroisyncMarketplace = () => {
             transition={{ duration: 1 }}
             className='agro-text-center'
           >
-            <h2 className='agro-section-title'>Benefícios dos Produtos</h2>
+            <h2 className='agro-section-title'>{t('marketplace.featuresTitle')}</h2>
           </motion.div>
 
           <div
@@ -569,10 +686,10 @@ const AgroisyncMarketplace = () => {
               <Star size={32} />
             </div>
             <h2 className='agro-section-title' style={{ marginBottom: 'var(--agro-space-lg)' }}>
-              Fique por Dentro
+              {t('marketplace.stayTuned')}
             </h2>
             <p className='agro-section-subtitle' style={{ marginBottom: 'var(--agro-space-xl)' }}>
-              Receba atualizações sobre o lançamento do marketplace
+              {t('marketplace.stayTunedDesc')}
             </p>
 
             <form
@@ -583,7 +700,7 @@ const AgroisyncMarketplace = () => {
                 type='email'
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                placeholder='Seu melhor email'
+                placeholder={t('marketplace.emailPlaceholder')}
                 style={{
                   flex: 1,
                   padding: 'var(--agro-space-md)',
@@ -604,7 +721,7 @@ const AgroisyncMarketplace = () => {
                 whileTap={{ scale: 0.95 }}
                 style={{ padding: 'var(--agro-space-md) var(--agro-space-lg)' }}
               >
-                Inscrever
+                {t('marketplace.subscribe')}
                 <ArrowRight size={18} />
               </motion.button>
             </form>

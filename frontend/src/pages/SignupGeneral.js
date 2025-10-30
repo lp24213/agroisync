@@ -190,8 +190,9 @@ const SignupGeneral = () => {
         localStorage.setItem('authToken', data.data.token);
         localStorage.setItem('user', JSON.stringify(data.data.user));
       }
-      // Redirecionar para painel de escolhas
-      navigate('/onboarding', { replace: true });
+      // USUÁRIO GERAL → Dashboard direto (tem 5 fretes + 5 produtos GRÁTIS)
+      toast.success('🎉 Conta criada com sucesso! Bem-vindo ao Agroisync!');
+      navigate('/user-dashboard', { replace: true });
     } catch (error) {
       setErrors({ general: 'Erro ao criar conta. Tente novamente.' });
     } finally {

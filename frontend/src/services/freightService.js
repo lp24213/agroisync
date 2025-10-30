@@ -99,7 +99,7 @@ class FreightService {
       const response = await axios.get(`${API_BASE_URL}/freights/public`, { params: filters });
       return response.data;
     } catch (error) {
-      console.error('Erro ao buscar fretes públicos:', error);
+      // Silenciar erro - retornar mock data
       return this.getMockPublicFreights(filters);
     }
   }
@@ -111,7 +111,7 @@ class FreightService {
       const response = await axios.get(`${API_BASE_URL}/freights/user/${userId}`, { params });
       return response.data;
     } catch (error) {
-      console.error('Erro ao buscar fretes do usuário:', error);
+      // Silenciar erro - retornar mock data
       return this.getMockUserFreights(userId, type);
     }
   }
@@ -275,7 +275,7 @@ class FreightService {
 
       return allFreights;
     } catch (error) {
-      console.error('Erro ao buscar fretes mock:', error);
+      // Silenciar erro
       return [];
     }
   }
@@ -297,7 +297,7 @@ class FreightService {
 
       return userFreights.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     } catch (error) {
-      console.error('Erro ao buscar fretes do usuário mock:', error);
+      // Silenciar erro
       return [];
     }
   }

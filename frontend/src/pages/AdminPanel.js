@@ -156,21 +156,43 @@ const AdminPanel = () => {
 
   // Deletar usuário
   const deleteUser = async (userId) => {
-    if (!window.confirm('Tem certeza que deseja deletar este usuário? Esta ação não pode ser desfeita.')) {
+    if (!window.confirm('⚠️ TEM CERTEZA que deseja DELETAR este usuário?\n\n Esta ação é IRREVERSÍVEL e irá:\n- Deletar todos os produtos do usuário\n- Deletar todos os fretes do usuário\n- Remover permanentemente a conta\n\nDigite SIM para confirmar.')) {
+      return;
+    }
+    
+    const confirmacao = window.prompt('Digite "SIM" em letras MAIÚSCULAS para confirmar:');
+    if (confirmacao !== 'SIM') {
+      toast.error('Operação cancelada');
       return;
     }
     
     try {
       const token = getToken();
-      await axios.delete(getApiUrl(`/admin/users/${userId}`), {
-        headers: { Authorization: `Bearer ${token}` }
+      const url = `${getApiUrl('')}/admin/users/${userId}`;
+      
+      console.log('🗑️ Deletando usuário:', userId, 'URL:', url);
+      
+      const response = await axios.delete(url, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        timeout: 15000
       });
-      toast.success('Usuário deletado com sucesso');
-      loadUsers();
-      loadStats();
+      
+      console.log('✅ Resposta delete:', response.data);
+      
+      if (response.data.success) {
+        toast.success('✅ Usuário deletado com sucesso!');
+        await loadUsers();
+        await loadStats();
+      } else {
+        toast.error('Erro: ' + (response.data.error || 'Falha ao deletar'));
+      }
     } catch (error) {
-      toast.error('Erro ao deletar usuário');
-      console.error(error);
+      console.error('❌ Erro ao deletar usuário:', error);
+      const errorMsg = error.response?.data?.error || error.message || 'Erro desconhecido';
+      toast.error(`Erro ao deletar: ${errorMsg}`);
     }
   };
 
@@ -206,6 +228,195 @@ const AdminPanel = () => {
     } catch (error) {
       toast.error('Erro ao remover bloqueio');
       console.error(error);
+    }
+  };
+
+  // Bloquear usuário
+  const blockUser = async (userId, reason = 'Bloqueio administrativo') => {
+    if (!window.confirm('⚠️ TEM CERTEZA que deseja BLOQUEAR este usuário?\n\nO usuário não conseguirá:\n- Fazer login\n- Cadastrar produtos\n- Cadastrar fretes\n- Usar qualquer funcionalidade\n\nDigite SIM para confirmar.')) {
+      return;
+    }
+    
+    const confirmacao = window.prompt('Digite "SIM" em letras MAIÚSCULAS para confirmar:');
+    if (confirmacao !== 'SIM') {
+      toast.error('Operação cancelada');
+      return;
+    }
+    
+    try {
+      const token = getToken();
+      const url = `${getApiUrl('')}/admin/users/${userId}/block`;
+      
+      console.log('🚫 Bloqueando usuário:', userId, 'URL:', url);
+      
+      const response = await axios.post(url, {
+        reason: reason,
+        action: 'block'
+      }, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        timeout: 15000
+      });
+      
+      console.log('✅ Resposta block:', response.data);
+      
+      if (response.data.success) {
+        toast.success('🚫 Usuário bloqueado com sucesso!');
+        await loadUsers();
+        await loadStats();
+      } else {
+        toast.error('Erro: ' + (response.data.error || 'Falha ao bloquear'));
+      }
+    } catch (error) {
+      console.error('❌ Erro ao bloquear usuário:', error);
+      const errorMsg = error.response?.data?.error || error.message || 'Erro desconhecido';
+      toast.error(`Erro ao bloquear: ${errorMsg}`);
+    }
+  };
+
+  // Desbloquear usuário
+  const unblockUser = async (userId) => {
+    try {
+      const token = getToken();
+      const url = `${getApiUrl('')}/admin/users/${userId}/unblock`;
+      
+      console.log('✅ Desbloqueando usuário:', userId, 'URL:', url);
+      
+      const response = await axios.post(url, {
+        action: 'unblock'
+      }, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        timeout: 15000
+      });
+      
+      console.log('✅ Resposta unblock:', response.data);
+      
+      if (response.data.success) {
+        toast.success('✅ Usuário desbloqueado com sucesso!');
+        await loadUsers();
+        await loadStats();
+      } else {
+        toast.error('Erro: ' + (response.data.error || 'Falha ao desbloquear'));
+      }
+    } catch (error) {
+      console.error('❌ Erro ao desbloquear usuário:', error);
+      const errorMsg = error.response?.data?.error || error.message || 'Erro desconhecido';
+      toast.error(`Erro ao desbloquear: ${errorMsg}`);
+    }
+  };
+
+  // Pausar cadastro de produtos
+  const pauseProducts = async () => {
+    try {
+      const token = getToken();
+      const url = `${getApiUrl('')}/admin/settings/products/pause`;
+      
+      const response = await axios.post(url, {
+        action: 'pause',
+        reason: 'Pausa administrativa'
+      }, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.data.success) {
+        toast.success('⏸️ Cadastro de produtos pausado!');
+        await loadStats();
+      } else {
+        toast.error('Erro ao pausar produtos');
+      }
+    } catch (error) {
+      console.error('❌ Erro ao pausar produtos:', error);
+      toast.error('Erro ao pausar cadastro de produtos');
+    }
+  };
+
+  // Despausar cadastro de produtos
+  const unpauseProducts = async () => {
+    try {
+      const token = getToken();
+      const url = `${getApiUrl('')}/admin/settings/products/unpause`;
+      
+      const response = await axios.post(url, {
+        action: 'unpause'
+      }, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.data.success) {
+        toast.success('▶️ Cadastro de produtos despausado!');
+        await loadStats();
+      } else {
+        toast.error('Erro ao despausar produtos');
+      }
+    } catch (error) {
+      console.error('❌ Erro ao despausar produtos:', error);
+      toast.error('Erro ao despausar cadastro de produtos');
+    }
+  };
+
+  // Pausar cadastro de fretes
+  const pauseFreights = async () => {
+    try {
+      const token = getToken();
+      const url = `${getApiUrl('')}/admin/settings/freights/pause`;
+      
+      const response = await axios.post(url, {
+        action: 'pause',
+        reason: 'Pausa administrativa'
+      }, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.data.success) {
+        toast.success('⏸️ Cadastro de fretes pausado!');
+        await loadStats();
+      } else {
+        toast.error('Erro ao pausar fretes');
+      }
+    } catch (error) {
+      console.error('❌ Erro ao pausar fretes:', error);
+      toast.error('Erro ao pausar cadastro de fretes');
+    }
+  };
+
+  // Despausar cadastro de fretes
+  const unpauseFreights = async () => {
+    try {
+      const token = getToken();
+      const url = `${getApiUrl('')}/admin/settings/freights/unpause`;
+      
+      const response = await axios.post(url, {
+        action: 'unpause'
+      }, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.data.success) {
+        toast.success('▶️ Cadastro de fretes despausado!');
+        await loadStats();
+      } else {
+        toast.error('Erro ao despausar fretes');
+      }
+    } catch (error) {
+      console.error('❌ Erro ao despausar fretes:', error);
+      toast.error('Erro ao despausar cadastro de fretes');
     }
   };
 
@@ -273,6 +484,43 @@ const AdminPanel = () => {
         {/* STATS TAB COMPLETO */}
         {activeTab === 'stats' && stats && (
           <div className='space-y-6'>
+            {/* MÍDIA KIT - CARD ESPECIAL */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              whileHover={{ scale: 1.02 }}
+              onClick={() => window.open('/media-kit', '_blank')}
+              style={{
+                background: 'linear-gradient(135deg, #2F5233 0%, #22c55e 100%)',
+                borderRadius: '20px',
+                padding: '2rem',
+                cursor: 'pointer',
+                boxShadow: '0 10px 40px rgba(47, 82, 51, 0.3)',
+                textAlign: 'center',
+                border: '3px solid rgba(255, 255, 255, 0.2)'
+              }}
+            >
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📸</div>
+              <h3 style={{ fontSize: '1.8rem', fontWeight: '900', color: '#fff', marginBottom: '0.5rem' }}>
+                🎨 MÍDIA KIT OFICIAL
+              </h3>
+              <p style={{ fontSize: '1.1rem', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '1rem' }}>
+                Material para divulgação no Instagram, Facebook e outras redes sociais
+              </p>
+              <div style={{ 
+                display: 'inline-block',
+                background: 'rgba(255, 255, 255, 0.2)',
+                backdropFilter: 'blur(10px)',
+                padding: '12px 24px',
+                borderRadius: '30px',
+                color: '#fff',
+                fontWeight: '700',
+                fontSize: '1.1rem'
+              }}>
+                👉 Clique para Abrir
+              </div>
+            </motion.div>
+
             {/* Cards principais */}
             <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
               <div className='bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-600'>
@@ -412,6 +660,23 @@ const AdminPanel = () => {
                             >
                               <Edit className='h-4 w-4' />
                             </button>
+                            {user.status === 'active' ? (
+                              <button
+                                onClick={() => blockUser(user.id)}
+                                className='text-orange-600 hover:text-orange-800'
+                                title='Bloquear Usuário'
+                              >
+                                <Ban className='h-4 w-4' />
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => unblockUser(user.id)}
+                                className='text-green-600 hover:text-green-800'
+                                title='Desbloquear Usuário'
+                              >
+                                <Check className='h-4 w-4' />
+                              </button>
+                            )}
                             <button
                               onClick={() => deleteUser(user.id)}
                               className='text-red-600 hover:text-red-800'
@@ -439,7 +704,25 @@ const AdminPanel = () => {
         {/* PRODUCTS TAB */}
         {activeTab === 'products' && (
           <div className='bg-white rounded-xl shadow-lg p-6'>
-            <h3 className='text-xl font-bold text-gray-900 mb-4'>Todos os Produtos ({products.length})</h3>
+            <div className='flex items-center justify-between mb-4'>
+              <h3 className='text-xl font-bold text-gray-900'>Todos os Produtos ({products.length})</h3>
+              <div className='flex gap-2'>
+                <button
+                  onClick={pauseProducts}
+                  className='bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors'
+                  title='Pausar cadastro de produtos'
+                >
+                  ⏸️ Pausar Produtos
+                </button>
+                <button
+                  onClick={unpauseProducts}
+                  className='bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors'
+                  title='Despausar cadastro de produtos'
+                >
+                  ▶️ Despausar Produtos
+                </button>
+              </div>
+            </div>
             <div className='overflow-x-auto'>
               <table className='w-full'>
                 <thead>
@@ -480,7 +763,25 @@ const AdminPanel = () => {
         {/* FREIGHTS TAB */}
         {activeTab === 'freights' && (
           <div className='bg-white rounded-xl shadow-lg p-6'>
-            <h3 className='text-xl font-bold text-gray-900 mb-4'>Todos os Fretes ({freights.length})</h3>
+            <div className='flex items-center justify-between mb-4'>
+              <h3 className='text-xl font-bold text-gray-900'>Todos os Fretes ({freights.length})</h3>
+              <div className='flex gap-2'>
+                <button
+                  onClick={pauseFreights}
+                  className='bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors'
+                  title='Pausar cadastro de fretes'
+                >
+                  ⏸️ Pausar Fretes
+                </button>
+                <button
+                  onClick={unpauseFreights}
+                  className='bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors'
+                  title='Despausar cadastro de fretes'
+                >
+                  ▶️ Despausar Fretes
+                </button>
+              </div>
+            </div>
             <div className='overflow-x-auto'>
               <table className='w-full'>
                 <thead>

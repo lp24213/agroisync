@@ -238,8 +238,9 @@ const SignupStore = () => {
         // Por enquanto, apenas redirecionamos para o dashboard
       }
 
-      toast.success('Perfil de loja criado com sucesso!');
-      navigate('/user-dashboard');
+      toast.success('🎉 Perfil de loja criado! Escolha seu plano para começar a vender.');
+      // LOJA REDIRECIONA PARA PAGAMENTO (escolher plano)
+      navigate('/planos?from=signup-store');
     } catch (error) {
       console.error('Erro ao completar perfil:', error);
       toast.error(error.message || 'Erro ao completar perfil');

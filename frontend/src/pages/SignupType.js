@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Truck, Store, Package, User, ArrowRight } from 'lucide-react';
+import { Store, User, ArrowRight, Bitcoin } from 'lucide-react';
 
 const SignupType = () => {
   const containerVariants = {
@@ -47,7 +47,7 @@ const SignupType = () => {
             <motion.div variants={itemVariants} style={{ marginBottom: '3rem' }}>
               <h1
                 style={{
-                  fontSize: '2.5rem',
+                  fontSize: 'clamp(2rem, 4vw, 2.5rem)',
                   fontWeight: '700',
                   color: 'var(--text-primary)',
                   marginBottom: '1rem',
@@ -56,45 +56,43 @@ const SignupType = () => {
                   WebkitTextFillColor: 'transparent'
                 }}
               >
-                Seja um Pequeno Produtor ou Comerciante
+                🚀 Cadastre-se na Agroisync
               </h1>
               <p
                 style={{
-                  fontSize: '1.2rem',
+                  fontSize: 'clamp(1rem, 2.5vw, 1.2rem)',
                   color: 'var(--text-secondary)',
-                  maxWidth: '600px',
+                  maxWidth: '700px',
                   margin: '0 auto',
                   textAlign: 'center',
                   lineHeight: '1.6'
                 }}
               >
-                Conecte-se com compradores e expanda seu negócio no agronegócio brasileiro
+                Escolha o tipo de conta ideal para você e comece a vender, comprar e negociar no maior marketplace do agronegócio!
               </p>
             </motion.div>
 
-            {/* Cards de Opções */}
+            {/* Cards de Opções - APENAS 3 TIPOS */}
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                gap: '2rem',
-                marginBottom: '3rem'
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
+                gap: 'clamp(1.5rem, 3vw, 2rem)',
+                marginBottom: '3rem',
+                maxWidth: '1000px',
+                margin: '0 auto 3rem'
               }}
             >
-              {/* Frete */}
-              <motion.div variants={itemVariants} whileHover='hover'>
-                <Link to='/signup/freight' style={{ textDecoration: 'none' }}>
+              {/* Usuário Geral - PODE LANÇAR FRETE E PRODUTO */}
+              <motion.div variants={itemVariants} whileHover={{ scale: 1.05, y: -10 }}>
+                <Link to='/signup/general' style={{ textDecoration: 'none' }}>
                   <div
                     style={{
                       background: 'var(--card-bg)',
                       borderRadius: '20px',
-                      padding: '3rem 2rem',
-                      boxShadow: 'var(--shadow-lg)',
-                      border: '2px solid transparent',
-                      backgroundImage:
-                        'linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(135deg, var(--primary), var(--secondary))',
-                      backgroundOrigin: 'border-box',
-                      backgroundClip: 'content-box, border-box',
+                      padding: 'clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2rem)',
+                      boxShadow: '0 10px 30px rgba(42, 127, 79, 0.15)',
+                      border: '3px solid rgba(42, 127, 79, 0.3)',
                       cursor: 'pointer',
                       transition: 'all 0.3s ease',
                       height: '100%',
@@ -106,71 +104,71 @@ const SignupType = () => {
                   >
                     <div
                       style={{
-                        width: '80px',
-                        height: '80px',
+                        width: '90px',
+                        height: '90px',
                         borderRadius: '50%',
-                        background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+                        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        marginBottom: '1.5rem'
+                        marginBottom: '1.5rem',
+                        boxShadow: '0 8px 20px rgba(16, 185, 129, 0.4)'
                       }}
                     >
-                      <Truck size={40} color='white' />
+                      <User size={45} color='white' strokeWidth={2.5} />
                     </div>
 
                     <h3
                       style={{
-                        fontSize: '1.5rem',
-                        fontWeight: '600',
-                        color: 'var(--text-primary)',
+                        fontSize: 'clamp(1.3rem, 3vw, 1.6rem)',
+                        fontWeight: '700',
+                        color: 'var(--accent)',
                         marginBottom: '1rem'
                       }}
                     >
-                      Transportador/Frete
+                      👤 Usuário Geral
                     </h3>
 
                     <p
                       style={{
-                        color: 'var(--text-secondary)',
+                        color: 'var(--muted)',
                         lineHeight: '1.6',
-                        marginBottom: '2rem',
-                        flex: 1
+                        marginBottom: '1.5rem',
+                        flex: 1,
+                        fontSize: 'clamp(0.95rem, 2vw, 1.05rem)'
                       }}
                     >
-                      Para empresas e profissionais que oferecem serviços de transporte de cargas e mercadorias.
+                      <strong style={{ color: 'var(--accent)' }}>✅ Pode lançar FRETES e PRODUTOS!</strong><br/><br/>
+                      Ideal para produtores, transportadores e usuários que querem usar todas as funcionalidades da plataforma.
                     </p>
 
                     <div
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        color: 'var(--primary)',
-                        fontWeight: '600',
-                        fontSize: '1.1rem'
+                        color: 'var(--accent)',
+                        fontWeight: '700',
+                        fontSize: 'clamp(1rem, 2.5vw, 1.15rem)',
+                        gap: '0.5rem'
                       }}
                     >
                       Cadastrar-se
-                      <ArrowRight size={20} style={{ marginLeft: '0.5rem' }} />
+                      <ArrowRight size={22} />
                     </div>
                   </div>
                 </Link>
               </motion.div>
 
               {/* Loja */}
-              <motion.div variants={itemVariants} whileHover='hover'>
-                <Link to='/store-plans' style={{ textDecoration: 'none' }}>
+              <motion.div variants={itemVariants} whileHover={{ scale: 1.05, y: -10 }}>
+                <Link to='/signup/store' style={{ textDecoration: 'none' }}>
                   <div
                     style={{
                       background: 'var(--card-bg)',
                       borderRadius: '20px',
-                      padding: '3rem 2rem',
-                      boxShadow: 'var(--shadow-lg)',
-                      border: '2px solid transparent',
-                      backgroundImage:
-                        'linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(135deg, var(--primary), var(--secondary))',
-                      backgroundOrigin: 'border-box',
-                      backgroundClip: 'content-box, border-box',
+                      padding: 'clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2rem)',
+                      boxShadow: '0 10px 30px rgba(147, 51, 234, 0.15)',
+                      border: '3px solid rgba(147, 51, 234, 0.3)',
                       cursor: 'pointer',
                       transition: 'all 0.3s ease',
                       height: '100%',
@@ -182,204 +180,56 @@ const SignupType = () => {
                   >
                     <div
                       style={{
-                        width: '80px',
-                        height: '80px',
+                        width: '90px',
+                        height: '90px',
                         borderRadius: '50%',
-                        background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+                        background: 'linear-gradient(135deg, #9333ea 0%, #7e22ce 100%)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        marginBottom: '1.5rem'
+                        marginBottom: '1.5rem',
+                        boxShadow: '0 8px 20px rgba(147, 51, 234, 0.4)'
                       }}
                     >
-                      <Store size={40} color='white' />
+                      <Store size={45} color='white' strokeWidth={2.5} />
                     </div>
 
                     <h3
                       style={{
-                        fontSize: '1.5rem',
-                        fontWeight: '600',
-                        color: 'var(--text-primary)',
+                        fontSize: 'clamp(1.3rem, 3vw, 1.6rem)',
+                        fontWeight: '700',
+                        color: '#9333ea',
                         marginBottom: '1rem'
                       }}
                     >
-                      Loja/Produtor
+                      🏪 Loja Virtual
                     </h3>
 
                     <p
                       style={{
-                        color: 'var(--text-secondary)',
+                        color: 'var(--muted)',
                         lineHeight: '1.6',
-                        marginBottom: '2rem',
-                        flex: 1
+                        marginBottom: '1.5rem',
+                        flex: 1,
+                        fontSize: 'clamp(0.95rem, 2vw, 1.05rem)'
                       }}
                     >
-                      Para produtores, lojas e empresas que vendem produtos agrícolas e mercadorias.
+                      <strong style={{ color: '#9333ea' }}>🛒 Loja Completa!</strong><br/><br/>
+                      Para lojas, cooperativas e grandes produtores que querem uma loja virtual profissional com gestão completa.
                     </p>
 
                     <div
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        color: 'var(--primary)',
-                        fontWeight: '600',
-                        fontSize: '1.1rem'
+                        color: '#9333ea',
+                        fontWeight: '700',
+                        fontSize: 'clamp(1rem, 2.5vw, 1.15rem)',
+                        gap: '0.5rem'
                       }}
                     >
                       Cadastrar-se
-                      <ArrowRight size={20} style={{ marginLeft: '0.5rem' }} />
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-
-              {/* Produto */}
-              <motion.div variants={itemVariants} whileHover='hover'>
-                <Link to='/signup/product' style={{ textDecoration: 'none' }}>
-                  <div
-                    style={{
-                      background: 'var(--card-bg)',
-                      borderRadius: '20px',
-                      padding: '3rem 2rem',
-                      boxShadow: 'var(--shadow-lg)',
-                      border: '2px solid transparent',
-                      backgroundImage:
-                        'linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(135deg, var(--primary), var(--secondary))',
-                      backgroundOrigin: 'border-box',
-                      backgroundClip: 'content-box, border-box',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s ease',
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      textAlign: 'center'
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: '80px',
-                        height: '80px',
-                        borderRadius: '50%',
-                        background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginBottom: '1.5rem'
-                      }}
-                    >
-                      <Package size={40} color='white' />
-                    </div>
-
-                    <h3
-                      style={{
-                        fontSize: '1.5rem',
-                        fontWeight: '600',
-                        color: 'var(--text-primary)',
-                        marginBottom: '1rem'
-                      }}
-                    >
-                      Produto
-                    </h3>
-
-                    <p
-                      style={{
-                        color: 'var(--text-secondary)',
-                        lineHeight: '1.6',
-                        marginBottom: '2rem',
-                        flex: 1
-                      }}
-                    >
-                      Para produtores que querem cadastrar e vender produtos agrícolas específicos.
-                    </p>
-
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        color: 'var(--primary)',
-                        fontWeight: '600',
-                        fontSize: '1.1rem'
-                      }}
-                    >
-                      Cadastrar-se
-                      <ArrowRight size={20} style={{ marginLeft: '0.5rem' }} />
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-
-              {/* Usuário Geral */}
-              <motion.div variants={itemVariants} whileHover='hover'>
-                <Link to='/signup/general' style={{ textDecoration: 'none' }}>
-                  <div
-                    style={{
-                      background: 'var(--card-bg)',
-                      borderRadius: '20px',
-                      padding: '3rem 2rem',
-                      boxShadow: 'var(--shadow-lg)',
-                      border: '2px solid transparent',
-                      backgroundImage:
-                        'linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(135deg, var(--primary), var(--secondary))',
-                      backgroundOrigin: 'border-box',
-                      backgroundClip: 'content-box, border-box',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s ease',
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      textAlign: 'center'
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: '80px',
-                        height: '80px',
-                        borderRadius: '50%',
-                        background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginBottom: '1.5rem'
-                      }}
-                    >
-                      <User size={40} color='white' />
-                    </div>
-
-                    <h3
-                      style={{
-                        fontSize: '1.5rem',
-                        fontWeight: '600',
-                        color: 'var(--text-primary)',
-                        marginBottom: '1rem'
-                      }}
-                    >
-                      Usuário Geral
-                    </h3>
-
-                    <p
-                      style={{
-                        color: 'var(--text-secondary)',
-                        lineHeight: '1.6',
-                        marginBottom: '2rem',
-                        flex: 1
-                      }}
-                    >
-                      Para usuários que querem apenas navegar e usar funcionalidades básicas da plataforma.
-                    </p>
-
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        color: 'var(--primary)',
-                        fontWeight: '600',
-                        fontSize: '1.1rem'
-                      }}
-                    >
-                      Cadastrar-se
-                      <ArrowRight size={20} style={{ marginLeft: '0.5rem' }} />
+                      <ArrowRight size={22} />
                     </div>
                   </div>
                 </Link>

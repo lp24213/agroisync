@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import productService from '../services/productService';
 import {
   Star,
@@ -22,6 +23,7 @@ import CryptoHash from '../components/CryptoHash';
 import logger from '../services/logger';
 
 const AgroisyncLoja = () => {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('todos');
   const [sortBy, setSortBy] = useState('relevancia');
@@ -82,24 +84,40 @@ const AgroisyncLoja = () => {
 
   const features = [
     {
-      icon: <Shield size={32} />,
-      title: 'Seleção Verificada',
-      description: 'Produtos e fornecedores passam por verificação antes da listagem'
+      icon: <Shield size={48} />,
+      title: 'Pagamento 100% Seguro',
+      description: 'Receba seu dinheiro garantido com proteção contra fraudes e chargebacks. Integração com PIX, boleto e cartões',
+      color: '#22c55e',
+      gradient: 'linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(0, 0, 0, 0.05))',
+      border: '2px solid rgba(34, 197, 94, 0.2)',
+      emoji: '💳'
     },
     {
-      icon: <Truck size={32} />,
-      title: 'Logística em Expansão',
-      description: 'Parcerias logísticas em evolução para ampliar cobertura'
+      icon: <Truck size={48} />,
+      title: 'Frete Automático Integrado',
+      description: 'Calcule frete automaticamente com nossa rede de transportadoras. Rastreio em tempo real para seu cliente',
+      color: '#3b82f6',
+      gradient: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(0, 0, 0, 0.05))',
+      border: '2px solid rgba(59, 130, 246, 0.2)',
+      emoji: '🚚'
     },
     {
-      icon: <CheckCircle size={32} />,
-      title: 'Transparência',
-      description: 'Informações claras sobre procedência e especificações'
+      icon: <Package size={48} />,
+      title: 'Gestão Completa de Estoque',
+      description: 'Controle total de produtos, variações, estoque e vendas. Dashboard com relatórios e análises em tempo real',
+      color: '#a855f7',
+      gradient: 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(0, 0, 0, 0.05))',
+      border: '2px solid rgba(168, 85, 247, 0.2)',
+      emoji: '📦'
     },
     {
-      icon: <Clock size={32} />,
-      title: 'Atendimento',
-      description: 'Suporte em horário comercial; canais adicionais em breve'
+      icon: <Star size={48} />,
+      title: 'Loja Personalizada',
+      description: 'Escolha cores, logo e layout. Domínio próprio disponível. Sua marca, seu jeito!',
+      color: '#f97316',
+      gradient: 'linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(0, 0, 0, 0.05))',
+      border: '2px solid rgba(249, 115, 22, 0.2)',
+      emoji: '🎨'
     }
   ];
 
@@ -134,81 +152,141 @@ const AgroisyncLoja = () => {
           backgroundAttachment: 'scroll'
         }}
       >
-        <div className='absolute inset-0 bg-black/50'></div>
-        <div className='relative z-10 mx-auto max-w-4xl px-4 text-center'>
+        <div className='absolute inset-0 bg-gradient-to-br from-orange-900/50 via-black/70 to-yellow-900/30'></div>
+        <div className='relative z-10 mx-auto max-w-5xl px-4 text-center'>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            style={{ 
+              background: 'rgba(249, 115, 22, 0.15)',
+              padding: '8px 20px',
+              borderRadius: '30px',
+              border: '2px solid rgba(249, 115, 22, 0.3)',
+              marginBottom: '20px',
+              display: 'inline-block'
+            }}
+          >
+            <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#f97316' }}>
+              🛍️ E-commerce Premium do Agronegócio
+            </span>
+          </motion.div>
+
           <motion.h1
-            className='mb-6 text-6xl font-bold text-white'
+            className='mb-6'
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
+            style={{
+              fontSize: 'clamp(2rem, 6vw, 3.5rem)',
+              fontWeight: '800',
+              lineHeight: '1.2',
+              background: 'linear-gradient(135deg, #ffffff 0%, #f97316 50%, #eab308 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
           >
-            AGROISYNC LOJA
+            🏪 {t('store.heroTitle')}
           </motion.h1>
           <motion.p
-            className='mb-8 text-2xl text-white/90'
+            className='mb-8 text-white/90'
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
+            style={{ 
+              maxWidth: '700px', 
+              margin: '0 auto 2rem', 
+              lineHeight: '1.6',
+              fontSize: 'clamp(1.1rem, 2vw, 1.25rem)'
+            }}
           >
-            Loja do agronegócio em evolução — funcionalidades em desenvolvimento
+            {t('store.heroSubtitle')}
           </motion.p>
+          
           <motion.div
-            className='flex justify-center gap-4'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            style={{ marginBottom: '2rem', display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ fontSize: '20px' }}>🎁</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>0% Comissão</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ fontSize: '20px' }}>💳</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>Pagamento Garantido</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ fontSize: '20px' }}>🚚</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>Frete Integrado</span>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className='flex justify-center gap-4 flex-wrap'
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
           >
             <Link
               to='/register'
-              className='rounded-lg bg-green-600 px-8 py-4 font-semibold text-white transition-colors hover:bg-green-700'
+              style={{
+                background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                padding: '16px 36px',
+                fontSize: '1.1rem',
+                fontWeight: 'bold',
+                borderRadius: '12px',
+                boxShadow: '0 10px 30px rgba(249, 115, 22, 0.4)',
+                border: 'none',
+                color: '#fff',
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                cursor: 'pointer',
+                transition: 'transform 0.2s'
+              }}
+              onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+              onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
             >
-              Começar a Vender
+              🚀 Abrir Minha Loja Grátis
             </Link>
             <Link
               to='/marketplace'
-              className='rounded-lg bg-white px-8 py-4 font-semibold text-green-600 transition-colors hover:bg-gray-100'
+              style={{
+                padding: '16px 36px',
+                fontSize: '1.1rem',
+                fontWeight: 'bold',
+                borderRadius: '12px',
+                background: 'rgba(255, 255, 255, 0.15)',
+                border: '2px solid rgba(255, 255, 255, 0.3)',
+                backdropFilter: 'blur(10px)',
+                color: '#fff',
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = 'rgba(255, 255, 255, 0.25)';
+                e.target.style.transform = 'scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+                e.target.style.transform = 'scale(1)';
+              }}
             >
-              Explorar Produtos
+              🛒 Ver Produtos
             </Link>
           </motion.div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className='agro-features-section'>
-        <div className='agro-container'>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className='agro-text-center'
-            style={{ marginBottom: '3rem' }}
-          >
-            <h2 className='agro-section-title'>Por que Comprar na Agroisync?</h2>
-            <p className='agro-section-subtitle'>Garantia de qualidade, preços competitivos e tecnologia de ponta</p>
-          </motion.div>
-
-          <div className='agro-features-grid'>
-            {features.map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                className='agro-feature-card agro-card-animated'
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-              >
-                <div className='agro-feature-icon'>{feature.icon}</div>
-                <h3 className='agro-feature-title'>{feature.title}</h3>
-                <p className='agro-feature-description'>{feature.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Products Section */}
+      {/* Products Section - AGORA PRIMEIRO! */}
       <section className='agro-products-section' style={{ background: 'var(--bg-gradient)' }}>
         <div className='agro-container'>
           <motion.div
@@ -219,8 +297,8 @@ const AgroisyncLoja = () => {
             className='agro-text-center'
             style={{ marginBottom: '2rem' }}
           >
-            <h2 className='agro-section-title'>Produtos em Destaque</h2>
-            <p className='agro-section-subtitle'>Encontre os melhores produtos para seu agronegócio</p>
+            <h2 className='agro-section-title'>{t('store.successStores')}</h2>
+            <p className='agro-section-subtitle'>{t('store.successStoresSubtitle')}</p>
           </motion.div>
 
           {/* Filtros */}
@@ -236,13 +314,13 @@ const AgroisyncLoja = () => {
               <div className='agro-filter-group'>
                 <label className='agro-filter-label'>
                   <Search size={16} />
-                  Buscar Produtos
+                  Buscar Lojas
                 </label>
                 <input
                   type='text'
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
-                  placeholder='Digite o produto...'
+                  placeholder='Digite o nome da loja ou vendedor...'
                   className='agro-btn-animated'
                 />
               </div>
@@ -437,10 +515,61 @@ const AgroisyncLoja = () => {
               className='agro-text-center'
               style={{ padding: '3rem', color: 'var(--muted)' }}
             >
-              <h3>Nenhum produto encontrado</h3>
-              <p>Tente ajustar os filtros para encontrar o que você procura.</p>
+              <h3>Nenhuma loja encontrada</h3>
+              <p>Tente ajustar os filtros ou seja o primeiro a criar sua loja na Agroisync!</p>
             </motion.div>
           )}
+        </div>
+      </section>
+
+      {/* Features Section - AGORA DEPOIS DA LISTAGEM! */}
+      <section className='agro-features-section'>
+        <div className='agro-container'>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className='agro-text-center'
+            style={{ marginBottom: '3rem' }}
+          >
+            <h2 className='agro-section-title'>{t('store.whyCreateStore')}</h2>
+            <p className='agro-section-subtitle'>{t('store.whyCreateStoreSubtitle')}</p>
+          </motion.div>
+
+          <div className='agro-features-grid'>
+            {features.map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                className='agro-feature-card agro-card-animated'
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                whileHover={{ y: -12, scale: 1.05 }}
+                style={{ 
+                  background: feature.gradient,
+                  border: feature.border,
+                  borderRadius: '20px',
+                  padding: '30px',
+                  boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)'
+                }}
+              >
+                <div style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>
+                  {feature.emoji}
+                </div>
+                <div className='agro-feature-icon' style={{ color: feature.color, marginBottom: '1rem' }}>
+                  {feature.icon}
+                </div>
+                <h3 className='agro-feature-title' style={{ fontSize: '1.4rem', fontWeight: 'bold', color: feature.color, marginBottom: '1rem' }}>
+                  {feature.title}
+                </h3>
+                <p className='agro-feature-description' style={{ fontSize: '1rem', lineHeight: '1.6', color: '#666' }}>
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -454,19 +583,31 @@ const AgroisyncLoja = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2>Precisa de Ajuda para Escolher?</h2>
+            <h2>{t('store.needHelp')}</h2>
             <p>
-              Nossa equipe de especialistas está pronta para ajudar você a encontrar os melhores produtos para seu
-              agronegócio.
+              Nossa equipe está pronta para ajudar você a criar e gerenciar sua loja online de forma simples e rápida.
             </p>
             <div className='agro-cta-buttons'>
-              <Link to='/contact' className='agro-btn-primary agro-btn-animated'>
+              <button
+                onClick={() => {
+                  // Primeiro tenta abrir o chatbot IA
+                  const chatbotButton = document.querySelector('[data-chatbot], .chatbot-trigger, #chatbot-button');
+                  if (chatbotButton) {
+                    chatbotButton.click();
+                  } else {
+                    // Se não encontrar IA, vai direto para WhatsApp
+                    window.open('https://wa.me/5566992362830?text=Olá! Preciso de ajuda para criar minha loja na Agroisync.', '_blank');
+                  }
+                }}
+                className='agro-btn-primary agro-btn-animated'
+                style={{ cursor: 'pointer', border: 'none', outline: 'none' }}
+              >
                 <Shield size={20} />
-                Falar com Especialista
-              </Link>
-              <Link to='/marketplace' className='agro-btn-secondary agro-btn-animated'>
+                💬 Falar com IA ou Agente
+              </button>
+              <Link to='/produtos' className='agro-btn-secondary agro-btn-animated'>
                 <Package size={20} />
-                Ver Produtos
+                Ver Produtos e Serviços
               </Link>
             </div>
           </motion.div>

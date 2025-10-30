@@ -20,6 +20,13 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   transition: all 0.3s ease;
+  padding-top: 56px; /* h-12 no mobile mantém, só logo menor */
+}
+
+@media (min-width: 768px) {
+  body {
+    padding-top: 80px; /* h-16 no desktop = 4rem = 64px + margem extra */
+  }
 }
 
 /* Accessibility Styles */

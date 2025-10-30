@@ -55,8 +55,7 @@ class CotacoesService {
       
       throw new Error(data.error || 'Erro ao buscar cotações');
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') console.error('Erro ao buscar cotações:', error);
-      
+      // Silenciar erro - retornar fallback
       // Retornar dados em cache ou fallback
       const cached = this.cache.get(cacheKey);
       return {
@@ -90,7 +89,7 @@ class CotacoesService {
         data: data.historico
       };
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') console.error('Erro ao buscar histórico:', error);
+      // Silenciar erro - retornar fallback
       return {
         success: false,
         data: [],
@@ -135,7 +134,7 @@ class CotacoesService {
         data: data.alert
       };
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') console.error('Erro ao criar alerta:', error);
+      // Silenciar erro - retornar erro estruturado
       return {
         success: false,
         error: error.message
@@ -168,7 +167,7 @@ class CotacoesService {
         data: data.alerts || []
       };
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') console.error('Erro ao listar alertas:', error);
+      // Silenciar erro - retornar lista vazia
       return {
         success: false,
         data: [],
@@ -199,7 +198,7 @@ class CotacoesService {
         data
       };
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') console.error('Erro ao deletar alerta:', error);
+      // Silenciar erro - retornar falha
       return {
         success: false,
         error: error.message

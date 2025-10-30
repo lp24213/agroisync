@@ -69,6 +69,10 @@ XSS_PROTECTION = "true"
 # CORS
 CORS_ALLOWED_ORIGINS = "https://agroisync.com,https://www.agroisync.com"
 
+# Cloudflare AI Workers (GRÁTIS!)
+[ai]
+binding = "AI"
+
 # Observability configuration
 [observability]
 enabled = true

@@ -56,6 +56,42 @@ router.get('/api/admin/activity', verifyToken, getActivity);
 router.put('/api/admin/users/:id/status', verifyToken, updateUserStatus);
 router.delete('/api/admin/products/:id', verifyToken, deleteProduct);
 
+// Rotas de produtos do usuário
+router.get('/api/products/my', verifyToken, async (req, env) => {
+  try {
+    const userId = req.userId;
+    const sql = `SELECT * FROM products WHERE seller_id = ? ORDER BY created_at DESC LIMIT 100`;
+    const result = await env.DB.prepare(sql).bind(userId).all();
+    
+    return json({
+      success: true,
+      products: result.results || [],
+      count: (result.results || []).length
+    });
+  } catch (error) {
+    console.error('Error fetching user products:', error);
+    return json({ success: false, error: error.message }, { status: 500 });
+  }
+});
+
+// Rotas de fretes do usuário
+router.get('/api/freights/my', verifyToken, async (req, env) => {
+  try {
+    const userId = req.userId;
+    const sql = `SELECT * FROM freights WHERE user_id = ? ORDER BY created_at DESC LIMIT 100`;
+    const result = await env.DB.prepare(sql).bind(userId).all();
+    
+    return json({
+      success: true,
+      data: result.results || [],
+      count: (result.results || []).length
+    });
+  } catch (error) {
+    console.error('Error fetching user freights:', error);
+    return json({ success: false, error: error.message }, { status: 500 });
+  }
+});
+
 // Rota de healthcheck
 router.get('/api/health', async (req, env) => {
   try {

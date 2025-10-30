@@ -4,9 +4,9 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.svg" type="image/svg+xml" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-    <meta name="theme-color" content="#2F4F2F" />
+    <meta name="theme-color" content="#22c55e" />
     <meta name="description" content="Agroisync â€” soluÃ§Ãµes para o agronegÃ³cio" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://*.cloudflare.com https://static.cloudflareinsights.com https://vlibras.gov.br https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https: data:; connect-src 'self' https: ws: wss:; frame-src 'self' https://challenges.cloudflare.com https://*.cloudflare.com; child-src 'self' https://challenges.cloudflare.com https://*.cloudflare.com blob:; worker-src 'self' blob: https://challenges.cloudflare.com https://*.cloudflare.com;" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://challenges.cloudflare.com https://*.cloudflare.com https://static.cloudflareinsights.com https://vlibras.gov.br https://www.vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https: data:; connect-src 'self' https: ws: wss:; frame-src 'self' https://challenges.cloudflare.com https://*.cloudflare.com https://vlibras.gov.br https://www.vlibras.gov.br; child-src 'self' https://challenges.cloudflare.com https://*.cloudflare.com https://vlibras.gov.br https://www.vlibras.gov.br blob:; worker-src 'self' blob: https://challenges.cloudflare.com https://*.cloudflare.com;" />
     <link rel="canonical" href="https://agroisync.com/" />
     <meta name="keywords" content="agronegÃ³cio, marketplace, fretes, cripto, blockchain, IA, agricultura, produtos agrÃ­colas" />
     <meta name="author" content="Agroisync Team" />
@@ -35,14 +35,34 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     
     <!-- Favicon -->
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="icon" href="%PUBLIC_URL%/icon-192.png" sizes="192x192" type="image/png" />
+    <link rel="icon" href="%PUBLIC_URL%/icon-512.png" sizes="512x512" type="image/png" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/app-icons/ios/icon-180.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     
-    <!-- PWA -->
+    <!-- PWA - Android -->
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Agroisync">
+    <meta name="theme-color" content="#22c55e">
+    
+    <!-- PWA - iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Agroisync">
+    <meta name="apple-touch-fullscreen" content="yes">
+    
+    <!-- iOS Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/app-icons/ios/icon-180.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="%PUBLIC_URL%/app-icons/ios/icon-152.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="%PUBLIC_URL%/app-icons/ios/icon-120.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="%PUBLIC_URL%/app-icons/ios/icon-76.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="%PUBLIC_URL%/app-icons/ios/icon-60.png" />
+    
+    <!-- iOS Splash Screens -->
+    <link rel="apple-touch-startup-image" href="%PUBLIC_URL%/app-icons/ios/splash/iphone-6.5.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="%PUBLIC_URL%/app-icons/ios/splash/iphone-6.1.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" />
+    <link rel="apple-touch-startup-image" href="%PUBLIC_URL%/app-icons/ios/splash/iphone-5.5.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="%PUBLIC_URL%/app-icons/ios/splash/iphone-4.7.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" />
     
     <!-- SeguranÃ§a -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
@@ -74,25 +94,49 @@
       }
       
       .loading-logo {
-        width: 80px;
-        height: 80px;
-        background: linear-gradient(45deg, #00D4FF, #8B5CF6, #00FF88);
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #00D4FF, #8B5CF6, #00FF88);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         animation: pulse 2s ease-in-out infinite;
+        position: relative;
+        box-shadow: 0 10px 40px rgba(0, 212, 255, 0.4);
       }
       
       .loading-logo::before {
-        content: "âš¡";
-        font-size: 40px;
-        color: white;
+        content: "🚀";
+        font-size: 50px;
+        animation: float 2s ease-in-out infinite;
+        display: block;
       }
       
       @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.1); }
+        0%, 100% { 
+          transform: scale(1);
+          box-shadow: 0 10px 40px rgba(0, 212, 255, 0.4);
+        }
+        50% { 
+          transform: scale(1.05);
+          box-shadow: 0 15px 50px rgba(0, 212, 255, 0.6);
+        }
+      }
+      
+      @keyframes float {
+        0%, 100% { 
+          transform: translateY(0) rotate(0deg); 
+        }
+        25% {
+          transform: translateY(-8px) rotate(-5deg);
+        }
+        50% { 
+          transform: translateY(-12px) rotate(0deg); 
+        }
+        75% {
+          transform: translateY(-8px) rotate(5deg);
+        }
       }
       
       .loading-text {
@@ -231,157 +275,34 @@
     <!-- Cloudflare Turnstile -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
     
-    <!-- VLibras - Acessibilidade em Libras (Widget do Governo) -->
+    <!-- VLibras - Acessibilidade (Libras Oficial do Governo) -->
     <style>
-      /* VLibras - BOTÃƒO SEMPRE VISÃVEL */
+      /* Ajustes LEVES no VLibras - SEM QUEBRAR */
       div[vw] .access-button,
-      div[vw-access-button],
-      .access-button,
-      [vw-access-button],
-      div[vw] > div:first-child {
-        width: 60px !important;
-        height: 60px !important;
-        min-width: 60px !important;
-        min-height: 60px !important;
-        max-width: 60px !important;
-        max-height: 60px !important;
+      div[vw-access-button] {
         position: fixed !important;
-        bottom: 80px !important;
+        bottom: 110px !important;
         right: 20px !important;
-        display: none !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-        z-index: 999998 !important;
-        cursor: pointer !important;
-        background: #1351B4 !important;
-        border-radius: 50% !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+        z-index: 99999 !important;
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.5) !important;
+        transition: all 0.3s ease !important;
       }
       
-      div[vw], [vw] {
-        max-width: 100% !important;
-        max-height: 100% !important;
-        width: auto !important;
-        height: auto !important;
-        display: none !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        z-index: 999 !important;
+      div[vw] .access-button:hover,
+      div[vw-access-button]:hover {
+        transform: scale(1.1) !important;
+        box-shadow: 0 6px 30px rgba(59, 130, 246, 0.7) !important;
       }
       
-      .enabled[vw], div.enabled[vw] {
-        max-width: 100% !important;
-        max-height: 100% !important;
-        display: none !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-      }
-      
-      .enabled[vw] .access-button {
-        width: 60px !important;
-        height: 60px !important;
-        display: none !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-      }
-      
-      /* Painel VLibras - IGUAL CHATBOT (380x550px) */
-      div[vw-plugin-wrapper],
-      [vw-plugin-wrapper] {
-        max-width: 400px !important;
-        max-height: 600px !important;
-        width: 400px !important;
-        height: 600px !important;
-        right: 20px !important;
-        bottom: 140px !important;
-        display: none !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        overflow: visible !important;
+      /* Painel VLibras - Ajuste de posição apenas */
+      div[vw-plugin-wrapper] {
         position: fixed !important;
-        z-index: 999997 !important;
-        border-radius: 16px !important;
-        background: white !important;
-        border: 2px solid #1351B4 !important;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4) !important;
-      }
-      
-      .vw-plugin-top-wrapper {
-        max-width: 400px !important;
-        width: 400px !important;
-        max-height: 600px !important;
-        height: 600px !important;
-        overflow: auto !important;
-        border-radius: 14px !important;
-      }
-      
-      .vw-plugin-top-wrapper > div,
-      .vw-plugin-top-wrapper iframe {
-        max-width: 100% !important;
-        max-height: 100% !important;
-        width: 100% !important;
-        height: 100% !important;
-        border-radius: 14px !important;
-      }
-      
-      div[vw] .access-button svg,
-      div[vw-access-button] svg {
-        width: 24px !important;
-        height: 24px !important;
-      }
-      
-      /* Mobile */
-      @media (max-width: 768px) {
-        div[vw] .access-button,
-        div[vw-access-button],
-        .access-button {
-          width: 45px !important;
-          height: 45px !important;
-        }
-        
-        div[vw-plugin-wrapper],
-        [vw-plugin-wrapper] {
-          max-width: 90vw !important;
-          width: 90vw !important;
-          max-height: 70vh !important;
-          height: 70vh !important;
-          right: 5vw !important;
-          bottom: 70px !important;
-        }
-        
-        .vw-plugin-top-wrapper {
-          max-width: 90vw !important;
-          width: 90vw !important;
-          max-height: 70vh !important;
-          height: 70vh !important;
-        }
-      }
-      
-      /* Quando ativo */
-      div[vw].active [vw-plugin-wrapper],
-      div[vw][active] [vw-plugin-wrapper],
-      .active[vw] [vw-plugin-wrapper] {
-        display: none !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-      }
-      
-      /* Quando fechado */
-      div[vw]:not(.active) [vw-plugin-wrapper],
-      div[vw]:not([active]) [vw-plugin-wrapper] {
-        display: none !important;
-      }
-      
-      div[vw-plugin-wrapper] iframe,
-      [vw-plugin-wrapper] iframe {
-        display: none !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        border: none !important;
+        bottom: 200px !important;
+        right: 20px !important;
+        z-index: 99998 !important;
       }
     </style>
+    
     <div vw class="enabled">
       <div vw-access-button class="active"></div>
       <div vw-plugin-wrapper>
@@ -390,54 +311,10 @@
     </div>
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
     <script>
-      // Aguardar carregamento completo
-      window.addEventListener('load', function() {
-        setTimeout(function() {
-          try {
-            if (window.VLibras && window.VLibras.Widget) {
-              new window.VLibras.Widget('https://vlibras.gov.br/app');
-              
-              // ADICIONAR BOTÃƒO FECHAR APÃ“S VLIBRAS CARREGAR
-              setTimeout(function() {
-                const wrapper = document.querySelector('[vw-plugin-wrapper]');
-                if (wrapper && !document.getElementById('vlibras-close-btn')) {
-                  const closeBtn = document.createElement('button');
-                  closeBtn.id = 'vlibras-close-btn';
-                  closeBtn.innerHTML = 'âœ•';
-                  closeBtn.style.cssText = 'position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; background: #dc2626; color: white; border: none; border-radius: 50%; cursor: pointer; z-index: 999999; font-size: 18px; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);';
-                  closeBtn.onclick = function() {
-                    wrapper.style.display = 'none';
-                  };
-                  wrapper.style.position = 'relative';
-                  wrapper.appendChild(closeBtn);
-                }
-              }, 1000);
-            } else {
-              // Tentar novamente apÃ³s 2 segundos
-              setTimeout(function() {
-                if (window.VLibras && window.VLibras.Widget) {
-                  new window.VLibras.Widget('https://vlibras.gov.br/app');
-                }
-              }, 2000);
-            }
-          } catch (error) {
-            // Erro silencioso
-          }
-        }, 500);
-      });
-      
-      // REABRIR VLIBRAS AO CLICAR NO BOTÃƒO
-      document.addEventListener('click', function(e) {
-        if (e.target.closest('[vw-access-button]')) {
-          setTimeout(function() {
-            const wrapper = document.querySelector('[vw-plugin-wrapper]');
-            if (wrapper) {
-              wrapper.style.display = 'block';
-            }
-          }, 100);
-        }
-      });
+      // Inicializar VLibras - MÉTODO OFICIAL
+      new window.VLibras.Widget('https://vlibras.gov.br/app');
     </script>
   </body>
 </html>
+
 

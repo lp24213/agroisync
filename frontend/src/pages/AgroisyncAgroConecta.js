@@ -546,63 +546,7 @@ const AgroisyncAgroConecta = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className='agro-section'>
-        <div className='agro-container'>
-          <motion.div
-            variants={sectionVariants}
-            initial='hidden'
-            whileInView='visible'
-            viewport={{ once: true }}
-            className='agro-text-center'
-          >
-            <motion.h2 className='agro-section-title' variants={itemVariants}>
-              {t('agroconecta.mainFeatures')}
-            </motion.h2>
-            <motion.p className='agro-section-subtitle' variants={itemVariants}>
-              {t('agroconecta.mainFeaturesDesc')}
-            </motion.p>
-          </motion.div>
-
-          <div className='agro-cards-grid' style={{ textAlign: 'center' }}>
-            {features.map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                className='agro-card agro-fade-in agro-card-animated'
-                initial={{ opacity: 0, y: 60 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                whileHover={{ y: -12, scale: 1.05 }}
-                style={{ 
-                  position: 'relative', 
-                  textAlign: 'center',
-                  background: feature.gradient,
-                  border: feature.border,
-                  borderRadius: '20px',
-                  padding: '30px',
-                  boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)'
-                }}
-              >
-                <div style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>
-                  {feature.emoji}
-                </div>
-                <div className='agro-card-icon' style={{ color: feature.color, display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0 auto 1rem' }}>
-                  {feature.icon}
-                </div>
-                <h3 className='agro-card-title' style={{ fontSize: '1.4rem', fontWeight: 'bold', color: feature.color, marginBottom: '1rem' }}>
-                  {feature.title}
-                </h3>
-                <p className='agro-card-description' style={{ fontSize: '1rem', lineHeight: '1.6', color: '#666' }}>
-                  {feature.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Formulários Funcionais */}
+      {/* Formulários Funcionais - AGORA PRIMEIRO! */}
       <section className='agro-section' style={{ background: 'var(--bg-gradient)' }}>
         <div className='agro-container'>
           <motion.div
@@ -1235,6 +1179,62 @@ const AgroisyncAgroConecta = () => {
               </div>
             </motion.div>
           )}
+        </div>
+      </section>
+
+      {/* Features Section - AGORA DEPOIS DO PAINEL FUNCIONAL! */}
+      <section className='agro-section'>
+        <div className='agro-container'>
+          <motion.div
+            variants={sectionVariants}
+            initial='hidden'
+            whileInView='visible'
+            viewport={{ once: true }}
+            className='agro-text-center'
+          >
+            <motion.h2 className='agro-section-title' variants={itemVariants}>
+              {t('agroconecta.mainFeatures')}
+            </motion.h2>
+            <motion.p className='agro-section-subtitle' variants={itemVariants}>
+              {t('agroconecta.mainFeaturesDesc')}
+            </motion.p>
+          </motion.div>
+
+          <div className='agro-cards-grid' style={{ textAlign: 'center' }}>
+            {features.map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                className='agro-card agro-fade-in agro-card-animated'
+                initial={{ opacity: 0, y: 60 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+                whileHover={{ y: -12, scale: 1.05 }}
+                style={{ 
+                  position: 'relative', 
+                  textAlign: 'center',
+                  background: feature.gradient,
+                  border: feature.border,
+                  borderRadius: '20px',
+                  padding: '30px',
+                  boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)'
+                }}
+              >
+                <div style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>
+                  {feature.emoji}
+                </div>
+                <div className='agro-card-icon' style={{ color: feature.color, display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0 auto 1rem' }}>
+                  {feature.icon}
+                </div>
+                <h3 className='agro-card-title' style={{ fontSize: '1.4rem', fontWeight: 'bold', color: feature.color, marginBottom: '1rem' }}>
+                  {feature.title}
+                </h3>
+                <p className='agro-card-description' style={{ fontSize: '1rem', lineHeight: '1.6', color: '#666' }}>
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 

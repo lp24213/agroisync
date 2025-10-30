@@ -5,8 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { ArrowRight, Shield, Zap, Globe, Users } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import CryptoHash from '../components/CryptoHash';
-// import Noticias from '../components/Noticias'; // Componente removido
-// import Ticker from '../components/Ticker'; // Componente removido
 import {
   PremiumScrollReveal,
   PremiumFloatingCard,

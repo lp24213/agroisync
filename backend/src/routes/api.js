@@ -68,6 +68,34 @@ router.use('/email', emailRoutes);
 router.use('/users', userRoutes);
 router.use('/admin', adminRoutes);
 router.use('/payments', paymentRoutes);
+// Endpoint /products/my ANTES de /products para evitar conflito de rota
+router.get('/products/my', auth, async (req, res) => {
+  try {
+    const userId = req.user?.userId || req.user?.id;
+    if (!userId) return res.status(401).json({ success: false, error: 'Não autenticado' });
+    
+    const sql = `SELECT * FROM products WHERE seller_id = ? ORDER BY created_at DESC LIMIT 100`;
+    const result = await req.env.DB.prepare(sql).bind(userId).all();
+    res.json({ success: true, products: result.results || [], count: (result.results || []).length });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Endpoint /freights/my ANTES de /freights
+router.get('/freights/my', auth, async (req, res) => {
+  try {
+    const userId = req.user?.userId || req.user?.id;
+    if (!userId) return res.status(401).json({ success: false, error: 'Não autenticado' });
+    
+    const sql = `SELECT * FROM freights WHERE user_id = ? ORDER BY created_at DESC LIMIT 100`;
+    const result = await req.env.DB.prepare(sql).bind(userId).all();
+    res.json({ success: true, data: result.results || [], count: (result.results || []).length });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 router.use('/products', productRoutes);
 router.use('/freights', freightRoutes);
 router.use('/dashboard', dashboardRoutes);

@@ -1,30 +1,88 @@
 {
   "short_name": "AGROISYNC",
   "name": "AGROISYNC - Futuro do Agronegócio",
-  "description": "A plataforma de agronegócio mais futurista do mundo",
+  "description": "A plataforma de agronegócio mais futurista do mundo. Marketplace, fretes inteligentes, IA e muito mais.",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "favicon.svg",
-      "type": "image/svg+xml",
-      "sizes": "192x192"
-    },
-    {
-      "src": "favicon.svg",
-      "type": "image/svg+xml",
-      "sizes": "512x512"
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#2F4F2F",
-  "background_color": "#F5F5DC",
+  "theme_color": "#22c55e",
+  "background_color": "#ffffff",
   "orientation": "portrait-primary",
-  "categories": ["business", "productivity", "utilities"],
+  "categories": ["business", "productivity", "food", "finance"],
   "lang": "pt-BR",
-  "dir": "ltr"
+  "dir": "ltr",
+  "scope": "/",
+  "screenshots": [
+    {
+      "src": "screenshot-mobile-1.png",
+      "sizes": "393x851",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Home - AgroSync"
+    },
+    {
+      "src": "screenshot-mobile-2.png",
+      "sizes": "393x851",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Marketplace de Produtos"
+    },
+    {
+      "src": "screenshot-mobile-3.png",
+      "sizes": "393x851",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "AgroConecta - Fretes"
+    },
+    {
+      "src": "screenshot-mobile-4.png",
+      "sizes": "393x851",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Clima e Insumos"
+    },
+    {
+      "src": "screenshot-mobile-5.png",
+      "sizes": "393x851",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Planos e Preços"
+    },
+    {
+      "src": "screenshot-mobile-6.png",
+      "sizes": "393x851",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Sobre a Plataforma"
+    },
+    {
+      "src": "screenshot-desktop-1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Home - Desktop"
+    },
+    {
+      "src": "screenshot-desktop-2.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Marketplace - Desktop"
+    }
+  ],
+  "privacy_policy_url": "https://agroisync.com/politica-privacidade.html",
+  "terms_of_service_url": "https://agroisync.com/termos-uso.html"
 }

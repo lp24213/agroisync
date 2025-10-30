@@ -155,12 +155,12 @@ const Onboarding = () => {
 
       if (res.ok) {
         alert('✅ Dados salvos com sucesso!');
-        // Redirecionar para área de pagamento ou dashboard baseado no plano
-        const userData = JSON.parse(localStorage.getItem('user') || '{}');
-        if (userData.isPaid) {
-          navigate('/user-dashboard', { replace: true });
+        // LOJA → Planos (precisa escolher plano)
+        // FRETE → Dashboard (gratuito até limite)
+        if (type === 'store') {
+          navigate('/planos?from=onboarding-store', { replace: true });
         } else {
-          navigate('/payment', { replace: true });
+          navigate('/user-dashboard', { replace: true });
         }
       } else {
         const errorData = await res.json();

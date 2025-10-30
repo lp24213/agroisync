@@ -1,24 +1,23 @@
-﻿import { Router } from '@agroisync/router';
+﻿import express from 'express';
 import * as Product from '../models/Product.d1.js';
 import { validateProduct } from '../middleware/validation.js';
-import { authenticateToken, requirePaidPlan } from '../middleware/auth.js';
+import { default as auth } from '../middleware/auth.js';
 
-const router = new Router();
+const router = express.Router();
 
 // Listar produtos com filtros e paginação
-router.get('/products', async (request, env) => {
+router.get('/', async (req, res) => {
   try {
-    const url = new URL(request.url);
-    const page = parseInt(url.searchParams.get('page') || '1', 10);
-    const limit = parseInt(url.searchParams.get('limit') || '20', 10);
+    const page = parseInt(req.query.page || '1', 10);
+    const limit = parseInt(req.query.limit || '20', 10);
     
     // Construir filtros da query string
     const filters = {
-      category: url.searchParams.get('category'),
-      minPrice: url.searchParams.get('minPrice'), 
-      maxPrice: url.searchParams.get('maxPrice'),
-      city: url.searchParams.get('city'),
-      state: url.searchParams.get('state')
+      category: req.query.category,
+      minPrice: req.query.minPrice, 
+      maxPrice: req.query.maxPrice,
+      city: req.query.city,
+      state: req.query.state
     };
 
     // Remove undefined filters
@@ -26,39 +25,61 @@ router.get('/products', async (request, env) => {
       if (!filters[key]) delete filters[key];
     });
 
-    const products = await Product.listProducts(env.DB, filters, page, limit);
+    const products = await Product.listProducts(req.env.DB, filters, page, limit);
     
-    return new Response(JSON.stringify({
+    res.json({
       success: true,
       products: products.map(p => p.getPublicData())
-    }), {
-      headers: { 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
-    return new Response(JSON.stringify({
+    res.status(500).json({
       success: false, 
       error: error.message
-    }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+});
+
+// Buscar meus produtos (autenticado)
+router.get('/my', auth, async (req, res) => {
+  try {
+    const userId = req.user?.userId || req.user?.id;
+    
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        error: 'Usuário não autenticado'
+      });
+    }
+
+    // Buscar produtos do usuário
+    const filters = { sellerId: userId };
+    const products = await Product.listProducts(req.env.DB, filters, 1, 100);
+    
+    res.json({
+      success: true,
+      products: products.map(p => p.getPublicData()),
+      count: products.length
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false, 
+      error: error.message
     });
   }
 });
 
 // Buscar produto por ID
-router.get('/products/:id', async (request, env) => {
+router.get('/:id', async (req, res) => {
   try {
-    const id = request.params.id;
-    const product = await Product.getProduct(env.DB, id);
+    const id = req.params.id;
+    const product = await Product.getProduct(req.env.DB, id);
     
     if (!product) {
-      return new Response(JSON.stringify({
+      return res.status(404).json({
         success: false,
         error: 'Produto não encontrado'
-      }), {
-        status: 404,
-        headers: { 'Content-Type': 'application/json' }
       });
     }
 

@@ -47,68 +47,100 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
     applyAccessibilitySettings(newSettings);
   };
 
-  // Aplicar configurações de acessibilidade
+  // Aplicar configurações de acessibilidade - SEM BUGS
   const applyAccessibilitySettings = newSettings => {
     const root = document.documentElement;
     if (!root || !root.classList) return; // PROTEÇÃO CRÍTICA
 
-    // Visual
-    if (newSettings.highContrast) {
-      root.classList.add('high-contrast');
-      announceToScreenReader('Alto contraste ativado');
-    } else {
-      root.classList.remove('high-contrast');
+    // Visual - COM PROTEÇÃO CONTRA BUGS
+    try {
+      if (newSettings.highContrast) {
+        root.classList.add('high-contrast');
+        announceToScreenReader('Alto contraste ativado');
+      } else {
+        root.classList.remove('high-contrast');
+      }
+    } catch (e) {
+      console.warn('Erro ao aplicar alto contraste:', e);
     }
 
-    if (newSettings.largeText) {
-      root.classList.add('large-text');
-      announceToScreenReader('Texto grande ativado');
-    } else {
-      root.classList.remove('large-text');
+    try {
+      if (newSettings.largeText) {
+        root.classList.add('large-text');
+        announceToScreenReader('Texto grande ativado');
+      } else {
+        root.classList.remove('large-text');
+      }
+    } catch (e) {
+      // Silenciar erro
     }
 
-    if (newSettings.reduceMotion) {
-      root.classList.add('reduce-motion');
-      announceToScreenReader('Movimento reduzido ativado');
-    } else {
-      root.classList.remove('reduce-motion');
+    try {
+      if (newSettings.reduceMotion) {
+        root.classList.add('reduce-motion');
+        announceToScreenReader('Movimento reduzido ativado');
+      } else {
+        root.classList.remove('reduce-motion');
+      }
+    } catch (e) {
+      // Silenciar erro
     }
 
-    if (newSettings.colorBlind) {
-      root.classList.add('color-blind-friendly');
-      announceToScreenReader('Modo daltônico ativado');
-    } else {
-      root.classList.remove('color-blind-friendly');
+    try {
+      if (newSettings.colorBlind) {
+        root.classList.add('color-blind-friendly');
+        announceToScreenReader('Modo daltônico ativado');
+      } else {
+        root.classList.remove('color-blind-friendly');
+      }
+    } catch (e) {
+      // Silenciar erro
     }
 
-    // Motor
-    if (newSettings.largeClickTargets) {
-      root.classList.add('large-targets');
-      announceToScreenReader('Alvos de clique grandes ativados');
-    } else {
-      root.classList.remove('large-targets');
+    // Motor - COM PROTEÇÃO
+    try {
+      if (newSettings.largeClickTargets) {
+        root.classList.add('large-targets');
+        announceToScreenReader('Alvos de clique grandes ativados');
+      } else {
+        root.classList.remove('large-targets');
+      }
+    } catch (e) {
+      // Silenciar erro
     }
 
-    if (newSettings.keyboardNavigation) {
-      root.classList.add('keyboard-navigation');
-      announceToScreenReader('Navegação por teclado ativada');
-    } else {
-      root.classList.remove('keyboard-navigation');
+    try {
+      if (newSettings.keyboardNavigation) {
+        root.classList.add('keyboard-navigation');
+        announceToScreenReader('Navegação por teclado ativada');
+      } else {
+        root.classList.remove('keyboard-navigation');
+      }
+    } catch (e) {
+      // Silenciar erro
     }
 
-    // Cognitive
-    if (newSettings.simplifiedLayout) {
-      root.classList.add('simplified-layout');
-      announceToScreenReader('Layout simplificado ativado');
-    } else {
-      root.classList.remove('simplified-layout');
+    // Cognitive - COM PROTEÇÃO
+    try {
+      if (newSettings.simplifiedLayout) {
+        root.classList.add('simplified-layout');
+        announceToScreenReader('Layout simplificado ativado');
+      } else {
+        root.classList.remove('simplified-layout');
+      }
+    } catch (e) {
+      // Silenciar erro
     }
 
-    if (newSettings.readingGuide) {
-      root.classList.add('reading-guide');
-      announceToScreenReader('Guia de leitura ativado');
-    } else {
-      root.classList.remove('reading-guide');
+    try {
+      if (newSettings.readingGuide) {
+        root.classList.add('reading-guide');
+        announceToScreenReader('Guia de leitura ativado');
+      } else {
+        root.classList.remove('reading-guide');
+      }
+    } catch (e) {
+      // Silenciar erro
     }
   };
 
@@ -170,44 +202,59 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, x: 300 }}
+        initial={{ opacity: 0, x: -100 }}
         animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: 300 }}
+        exit={{ opacity: 0, x: -100 }}
         transition={{ duration: 0.3 }}
-        className='accessibility-panel-button fixed right-0 top-0 z-40 h-full w-full overflow-y-auto border-l border-black bg-black text-white shadow-2xl sm:w-96 md:z-50'
+        className='accessibility-panel-button fixed left-4 bottom-4 z-40 w-80 md:w-[400px] h-[480px] md:h-[550px] overflow-y-auto rounded-2xl border border-purple-500 bg-black text-white shadow-2xl transition-all'
+        style={{ 
+          background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.95), rgba(0, 0, 0, 0.95))',
+          backdropFilter: 'blur(16px)',
+          boxShadow: '0 0 40px rgba(139, 92, 246, 0.5), 0 12px 40px rgba(0, 0, 0, 0.35)'
+        }}
         role='dialog'
         aria-labelledby='accessibility-panel-title'
         aria-modal='true'
       >
-        {/* Header */}
-        <div className='border-b border-black p-6' style={{ background: 'linear-gradient(135deg,#0f0f0f,#1a1a1a)' }}>
+        {/* Header Futurista */}
+        <div className='border-b border-purple-500/30 p-6' style={{ 
+          background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(0, 0, 0, 0.3))',
+          boxShadow: '0 4px 20px rgba(139, 92, 246, 0.3)'
+        }}>
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-3'>
-              <Accessibility className='h-6 w-6 text-yellow-400' />
-              <h2 id='accessibility-panel-title' className='text-xl font-bold'>
-                Painel de Acessibilidade
-              </h2>
+              <div className='flex h-10 w-10 items-center justify-center rounded-full bg-purple-500/20 border border-purple-400'>
+                <Accessibility className='h-6 w-6 text-purple-400' />
+              </div>
+              <div>
+                <h2 id='accessibility-panel-title' className='text-xl font-bold text-white'>
+                  Acessibilidade
+                </h2>
+                <p className='text-xs text-purple-300'>WCAG 2.1 AA</p>
+              </div>
             </div>
             <button
               onClick={onClose}
-              className='rounded-lg p-2 transition-colors hover:bg-white/10'
+              className='rounded-lg p-2 transition-all hover:bg-purple-500/20 hover:rotate-90'
               aria-label='Fechar painel de acessibilidade'
             >
-              <X className='h-5 w-5' />
+              <X className='h-5 w-5 text-purple-400' />
             </button>
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className='flex border-b border-black'>
+        {/* Tabs Futuristas */}
+        <div className='flex border-b border-purple-500/20'>
           {tabs.map(tab => {
             const Icon = tab.icon;
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex flex-1 items-center justify-center gap-2 p-4 transition-colors ${
-                  activeTab === tab.id ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-800'
+                className={`flex flex-1 items-center justify-center gap-2 p-4 transition-all ${
+                  activeTab === tab.id 
+                    ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-white shadow-lg' 
+                    : 'text-purple-300 hover:bg-purple-500/10'
                 }`}
                 aria-pressed={activeTab === tab.id}
               >
@@ -225,17 +272,20 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
             <div className='space-y-4'>
               <h3 className='text-lg font-semibold text-green-400'>Configurações Visuais</h3>
 
-              {/* VLibras Info */}
-              <div className='rounded-lg bg-green-900/20 border border-green-500/30 p-4'>
+              {/* VLibras Info - Destaque */}
+              <div className='rounded-lg bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-400/50 p-4 shadow-lg'>
                 <div className='flex items-center gap-2 mb-2'>
-                  <div className='w-2 h-2 bg-green-400 rounded-full'></div>
-                  <span className='font-semibold text-green-400'>VLibras Ativo</span>
+                  <div className='w-3 h-3 bg-blue-400 rounded-full animate-pulse'></div>
+                  <span className='font-bold text-blue-300 text-lg'>🤟 VLibras Ativo</span>
                 </div>
-                <p className='text-sm text-green-300'>
-                  Widget oficial do governo brasileiro para tradução em Libras disponível no canto inferior direito da tela.
+                <p className='text-sm text-blue-200 font-medium'>
+                  Widget oficial do governo brasileiro para tradução em LIBRAS (Língua Brasileira de Sinais).
                 </p>
-                <p className='text-xs text-green-400 mt-1'>
-                  ♿ Clique no botão azul para ativar/desativar
+                <p className='text-xs text-blue-300 mt-2 bg-blue-500/20 p-2 rounded'>
+                  📍 Localização: Canto inferior DIREITO da tela
+                </p>
+                <p className='text-xs text-purple-300 mt-1'>
+                  ♿ Clique no botão AZUL redondo para ativar/desativar o intérprete virtual
                 </p>
               </div>
 

@@ -1,38 +1,48 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { MapPin, Phone, Mail, Instagram, MessageCircle } from 'lucide-react';
 
 const AgroisyncFooter = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const currentSearch = location && location.search ? location.search : '';
   const currentYear = new Date().getFullYear();
 
   const footerSections = [
     {
-      title: 'Produtos',
+      title: t('nav.products'),
       links: [
-        { label: 'Produtos', path: '/produtos' },
-        { label: 'Categorias', path: '/produtos/categories' },
-        { label: 'Vendedores', path: '/produtos/sellers' },
-        { label: 'Como Vender', path: '/produtos/sell' }
+        { label: t('nav.products'), path: '/produtos' },
+        { label: t('nav.categories'), path: '/produtos/categories' },
+        { label: t('nav.sellers'), path: '/produtos/sellers' },
+        { label: t('nav.howToSell'), path: '/produtos/sell' }
       ]
     },
     {
-      title: 'Frete',
+      title: t('footer.freight'),
       links: [
-        { label: 'Buscar Frete', path: '/frete' },
-        { label: 'Oferecer Frete', path: '/frete/offer' },
-        { label: 'Transportadores', path: '/frete/carriers' },
-        { label: 'Rastreamento', path: '/frete/tracking' }
+        { label: t('nav.searchFreight'), path: '/frete' },
+        { label: t('nav.offerFreight'), path: '/frete/offer' },
+        { label: t('nav.carriers'), path: '/frete/carriers' },
+        { label: t('nav.tracking'), path: '/frete/tracking' }
       ]
     },
     {
-      title: 'Parcerias',
+      title: t('footer.resources'),
       links: [
-        { label: 'Seja Parceiro', path: '/partnerships' },
-        { label: 'Parceiros Atuais', path: '/partnerships/current' },
-        { label: 'Benefícios', path: '/partnerships/benefits' },
-        { label: 'Contato Comercial', path: '/partnerships/contact' }
+        { label: t('footer.weatherSupplies'), path: '/clima' },
+        { label: '🔑 API', path: '/api' },
+        { label: t('footer.store'), path: '/loja' }
+      ]
+    },
+    {
+      title: t('nav.partnerships'),
+      links: [
+        { label: t('nav.bePartner'), path: '/partnerships' },
+        { label: t('nav.currentPartners'), path: '/partnerships/current' },
+        { label: t('nav.benefits'), path: '/partnerships/benefits' },
+        { label: t('nav.businessContact'), path: '/partnerships/contact' }
       ]
     }
   ];
@@ -45,11 +55,10 @@ const AgroisyncFooter = () => {
           {/* Company Info */}
           <div className='md:col-span-1'>
             <div className='mb-2 flex items-center gap-3'>
-              <img src='/agroisync-logo.svg' alt='Agroisync' className='h-8 w-auto' loading='eager' />
+              <img src='/LOGO_AGROISYNC_TRANSPARENTE.png' alt='Agroisync' className='h-16 w-auto md:h-20' loading='eager' />
             </div>
             <p className='mb-2 text-sm text-gray-600'>
-              A plataforma mais futurista e sofisticada do mundo para conectar produtores, compradores e
-              transportadores.
+              {t('footer.description')}
             </p>
             <div className='space-y-1'>
               <div className='flex items-center gap-2 text-sm text-gray-600'>
@@ -84,18 +93,35 @@ const AgroisyncFooter = () => {
           ))}
         </div>
 
+        {/* Payment Methods */}
+        <div className='border-t border-gray-200 pt-4 pb-3'>
+          <div className='flex flex-col items-center justify-center gap-3'>
+            <h4 className='text-sm font-semibold text-gray-700'>💳 {t('footer.paymentMethods')}</h4>
+            <div className='flex flex-wrap items-center justify-center gap-3'>
+              <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/200px-Mastercard_2019_logo.svg.png' alt='Mastercard' className='h-6 opacity-70 hover:opacity-100 transition-opacity' />
+              <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/200px-Visa_Inc._logo.svg.png' alt='Visa' className='h-6 opacity-70 hover:opacity-100 transition-opacity' />
+              <span className='bg-gradient-to-r from-teal-500 to-cyan-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md'>PIX 💸</span>
+              <span className='bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1 rounded-lg text-xs font-bold'>Boleto 📄</span>
+            </div>
+            <p className='text-xs text-gray-500'>{t('footer.secureTransactions')}</p>
+          </div>
+        </div>
+
         {/* Bottom Footer */}
-        <div className='flex flex-col items-center justify-between pt-1 md:flex-row'>
+        <div className='flex flex-col items-center justify-between pt-3 md:flex-row'>
           <div className='mb-1 text-xs text-gray-600 md:mb-0'>
-            © {currentYear} AGROISYNC - Sinop - MT - Todos os direitos reservados.
+            © {currentYear} AGROISYNC - Sinop - MT - {t('footer.allRightsReserved')}
           </div>
           <div className='flex items-center gap-4'>
-            <Link to={{ pathname: '/terms', search: currentSearch }} className='text-sm text-gray-600 transition-colors hover:text-green-600'>
-              Termos de Uso
+            <Link to={{ pathname: '/api', search: currentSearch }} className='text-sm text-gray-600 transition-colors hover:text-green-600 font-semibold'>
+              🔑 API
             </Link>
-            <Link to={{ pathname: '/privacy', search: currentSearch }} className='text-sm text-gray-600 transition-colors hover:text-green-600'>
-              Privacidade
-            </Link>
+            <a href='/termos-uso.html' target='_blank' rel='noopener noreferrer' className='text-sm text-gray-600 transition-colors hover:text-green-600'>
+              {t('footer.terms')}
+            </a>
+            <a href='/politica-privacidade.html' target='_blank' rel='noopener noreferrer' className='text-sm text-gray-600 transition-colors hover:text-green-600'>
+              {t('footer.privacy')}
+            </a>
             <a
               href='https://instagram.com/agroisync'
               target='_blank'

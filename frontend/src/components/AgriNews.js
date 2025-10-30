@@ -1,7 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 const AgriNews = () => {
+  const { t } = useTranslation();
   const news = [
     {
       id: 1,
@@ -42,7 +44,7 @@ const AgriNews = () => {
 
   return (
     <section className="agro-news-section">
-      <h3 className="agro-section-title" style={{ textAlign: 'center' }}>Notícias do Agronegócio</h3>
+      <h3 className="agro-section-title" style={{ textAlign: 'center' }}>{t('home.news.title')}</h3>
       <div className="agro-news-grid">
         {news.map((item, index) => (
           <motion.div

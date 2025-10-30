@@ -32,6 +32,7 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
   const [, setDailyCount] = useState(0);
   const [plan] = useState('free'); // free | pro
   const [limits] = useState({ free: 20, pro: 200 });
+  const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`);
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
   const inputRef = useRef(null);
@@ -179,21 +180,61 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
       setIsTyping(true);
 
       try {
-        // Simular resposta da IA com efeito de digitação
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        // Chamar API real de IA com session_id
+        const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+        const apiUrl = (window.__ENV__ && window.__ENV__.REACT_APP_API_URL) || process.env.REACT_APP_API_URL || '/api';
+        
+        const response = await fetch(`${apiUrl}/ai/chat`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({
+            message: message,
+            mode: aiMode,
+            session_id: sessionId,
+            conversationId: sessionId
+          })
+        });
+
+        const data = await response.json();
+        
+        console.log('🤖 Resposta da API:', data);
+        console.log('🤖 Status:', response.status);
+
+        let aiContent;
+        if (response.ok && data.response) {
+          aiContent = data.response;
+        } else if (response.ok && data.message) {
+          aiContent = data.message;
+        } else if (data.error) {
+          // Mostrar erro real da API
+          aiContent = `❌ Erro: ${data.error}\n\n${data.response || ''}`;
+        } else {
+          // Erro desconhecido
+          aiContent = `❌ Erro ao processar resposta da IA. Status: ${response.status}\n\nResposta: ${JSON.stringify(data)}`;
+        }
 
         const aiResponse = {
           id: Date.now() + 1,
           type: 'ai',
-          content: generateAIResponse(message),
+          content: aiContent,
           timestamp: new Date()
         };
 
         setMessages(prev => [...prev, aiResponse]);
       } catch (error) {
-        if (process.env.NODE_ENV !== 'production') {
-          // Erro ao enviar mensagem
-        }
+        console.error('❌ Erro ao chamar API de IA:', error);
+        
+        // Mostrar erro real em vez de fallback
+        const aiResponse = {
+          id: Date.now() + 1,
+          type: 'ai',
+          content: `❌ **Erro ao conectar com a IA**\n\nDetalhes técnicos: ${error.message}\n\nPor favor, tente novamente ou entre em contato com o suporte.`,
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, aiResponse]);
       } finally {
         setIsLoading(false);
         setIsTyping(false);
@@ -614,33 +655,36 @@ Como posso ajudá-lo melhor?`;
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.8, y: 20 }}
         transition={{ duration: 0.3 }}
-        className={`chatbot-modal fixed bottom-4 right-4 w-80 md:w-96 ${isMinimized ? 'h-16' : 'h-[500px] md:h-[600px]'} z-40 flex flex-col rounded-2xl border border-black bg-black text-white shadow-2xl transition-all duration-300 md:z-50`}
+        className={`chatbot-modal fixed bottom-2 right-2 left-2 sm:left-auto w-auto sm:w-80 md:w-[400px] max-w-[calc(100vw-16px)] sm:max-w-[350px] ${isMinimized ? 'h-14' : 'h-[50vh] max-h-[400px] sm:h-[480px] md:h-[550px]'} z-[9999] flex flex-col rounded-2xl border border-green-500 text-white shadow-2xl transition-all duration-300`}
         style={{
-          background: 'rgba(0, 0, 0, 0.92)',
-          backdropFilter: 'blur(16px)',
-          boxShadow: '0 12px 40px rgba(0, 0, 0, 0.35)'
+          background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(0, 0, 0, 0.95))',
+          backdropFilter: 'blur(20px)',
+          boxShadow: '0 0 40px rgba(34, 197, 94, 0.3), 0 12px 40px rgba(0, 0, 0, 0.5)'
         }}
       >
-        {/* Header Clean Agronegócio */}
+        {/* Header Futurista Verde */}
         <div
-          className='flex items-center justify-between rounded-t-2xl border-b border-black p-4'
+          className='flex items-center justify-between rounded-t-2xl border-b border-green-500/30 p-2 sm:p-4'
           style={{
-            background: 'linear-gradient(135deg, #0f0f0f, #1a1a1a)',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.5)'
+            background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(0, 0, 0, 0.3))',
+            boxShadow: '0 4px 20px rgba(34, 197, 94, 0.3)'
           }}
         >
-          <div className='flex items-center gap-3'>
+          <div className='flex items-center gap-2 sm:gap-3'>
             <div
-              className='flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black'
+              className='flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-gradient-to-br from-green-400 to-emerald-600 border-2 border-green-300 animate-pulse'
               style={{
-                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+                boxShadow: '0 0 20px rgba(34, 197, 94, 0.6)'
               }}
             >
-              <Sparkles className='h-6 w-6 text-white' />
+              <Sparkles className='h-5 w-5 sm:h-6 sm:w-6 text-white' />
             </div>
             <div>
-              <h3 className='text-sm font-semibold text-white'>AGROISYNC AI</h3>
-              <p className='text-xs text-white/60'>Assistente Inteligente</p>
+              <h3 className='text-sm sm:text-base font-bold text-white flex items-center gap-1 sm:gap-2'>
+                🤖 AGROISYNC AI
+                <span className='text-xs bg-green-500 px-1.5 sm:px-2 py-0.5 rounded-full'>ON</span>
+              </h3>
+              <p className='text-xs text-green-300 font-medium hidden sm:block'>Especialista em Fretes & Agro</p>
             </div>
           </div>
           <div className='flex items-center gap-2'>
@@ -656,16 +700,24 @@ Como posso ajudá-lo melhor?`;
             >
               {isMinimized ? <Maximize2 className='h-4 w-4' /> : <Minimize2 className='h-4 w-4' />}
             </button>
-            <button onClick={onClose} className='rounded-lg p-2 text-white transition-colors hover:bg-white/10'>
-              <X className='h-4 w-4' />
+            <button 
+              onClick={onClose} 
+              className='rounded-lg p-3 sm:p-2 text-white transition-all hover:bg-red-500/30 active:bg-red-500/50 hover:scale-110 active:scale-95 border-2 border-red-500 hover:border-red-400 bg-red-500/20'
+              aria-label='Fechar chatbot'
+              style={{ minWidth: '44px', minHeight: '44px' }}
+            >
+              <X className='h-7 w-7 sm:h-5 sm:w-5 text-red-400 font-bold' strokeWidth={3} />
             </button>
           </div>
         </div>
 
-        {/* Settings Panel Futurista */}
+        {/* Settings Panel Futurista Verde */}
         {showSettings && !isMinimized && (
-          <div className='border-b border-gray-700 bg-gray-800 p-4'>
-            <h4 className='mb-3 font-medium text-white'>Configurações</h4>
+          <div className='border-b border-green-500/20 bg-gradient-to-r from-green-900/20 to-black/50 p-4'>
+            <h4 className='mb-3 font-semibold text-green-300 flex items-center gap-2'>
+              <Brain className='h-4 w-4' />
+              Configurações da IA
+            </h4>
             <div className='space-y-3'>
               <div>
                 <label className='mb-1 block text-sm font-medium text-gray-300'>Modo da IA</label>
@@ -682,9 +734,9 @@ Como posso ajudá-lo melhor?`;
               </div>
               <button
                 onClick={clearChat}
-                className='w-full rounded-lg px-3 py-2 text-sm text-red-400 transition-colors hover:bg-red-900/20 hover:text-red-300'
+                className='w-full rounded-lg px-3 py-2 text-sm font-medium text-red-400 transition-all hover:bg-red-900/30 hover:text-red-300 border border-red-500/30 hover:border-red-400'
               >
-                Limpar Conversa
+                🗑️ Limpar Conversa
               </button>
             </div>
           </div>
@@ -692,7 +744,7 @@ Como posso ajudá-lo melhor?`;
 
         {/* Messages Futuristas */}
         {!isMinimized && (
-          <div className='chatbot-messages flex-1 space-y-4 overflow-y-auto p-4'>
+          <div className='chatbot-messages flex-1 space-y-3 overflow-y-auto p-2 sm:p-4'>
             {messages.map(message => (
               <motion.div
                 key={message.id}
@@ -801,12 +853,12 @@ Como posso ajudá-lo melhor?`;
               <button
                 onClick={() => handleSendMessage()}
                 disabled={(!inputMessage.trim() && !uploadFile) || isLoading}
-                className='transform rounded-lg bg-gradient-to-r from-green-500 to-blue-600 p-3 text-white transition-all duration-300 hover:scale-105 hover:from-green-600 hover:to-blue-700 disabled:cursor-not-allowed disabled:opacity-50'
+                className='transform rounded-lg bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 p-3 text-white transition-all duration-300 hover:scale-110 hover:from-green-600 hover:to-emerald-700 disabled:cursor-not-allowed disabled:opacity-50 hover:rotate-12'
                 style={{
-                  boxShadow: '0 4px 20px rgba(0, 255, 136, 0.3)'
+                  boxShadow: '0 0 30px rgba(34, 197, 94, 0.6), 0 4px 20px rgba(0, 255, 136, 0.4)'
                 }}
               >
-                <Send className='h-4 w-4' />
+                <Send className='h-5 w-5' />
               </button>
             </div>
             {uploadPreview && (

@@ -18,9 +18,8 @@ export default function LanguageSelectorPro({ className = '' }) {
   const currentLang = languages.find(l => l.code === i18n.language) || languages[0];
 
   const changeLanguage = code => {
+    localStorage.setItem('i18nextLng', code);
     i18n.changeLanguage(code);
-    localStorage.setItem('agroisync-language', code);
-    document.documentElement.lang = code;
     setOpen(false);
   };
 

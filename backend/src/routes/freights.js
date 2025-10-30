@@ -37,6 +37,34 @@ router.get('/freights', async (req, res) => {
   }
 });
 
+// GET /api/freights/my - Buscar meus fretes (autenticado)
+router.get('/freights/my', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user?.userId || req.user?.id;
+    
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        error: 'Usuário não autenticado'
+      });
+    }
+
+    // Buscar fretes do usuário
+    const sql = `SELECT id, title, origin_city, origin_state, dest_city, dest_state, price, weight, status, created_at
+      FROM freights WHERE user_id = ? ORDER BY created_at DESC LIMIT 100`;
+    const freights = await req.env.DB.prepare(sql).bind(userId).all();
+
+    res.json({
+      success: true,
+      data: freights.results || freights,
+      count: (freights.results || freights).length
+    });
+  } catch (error) {
+    console.error('Error fetching user freights:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+  }
+});
+
 // GET /api/freights/route/:originCity/:originState/:destCity/:destState - Search by route
 router.get('/route/:originCity/:originState/:destCity/:destState', async (req, res) => {
   try {

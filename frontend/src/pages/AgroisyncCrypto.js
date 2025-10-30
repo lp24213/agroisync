@@ -200,59 +200,106 @@ const AgroisyncCrypto = () => {
     <div data-page='crypto'>
       {/* Hero Section Clean */}
       <section
-        className='agro-hero-section'
+        className='relative flex min-h-screen items-center justify-center'
         style={{
           background:
-            'linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("https://images.unsplash.com/photo-1639825752750-5061ded5503b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8R1JBRklDTyUyMENSSVBUT01PRURBfGVufDB8fDB8fHww")',
+            'linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(0, 0, 0, 0.8) 50%, rgba(59, 130, 246, 0.2) 100%), url("https://images.unsplash.com/photo-1639825752750-5061ded5503b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8R1JBRklDTyUyMENSSVBUT01PRURBfGVufDB8fDB8fHww")',
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          padding: '4rem 0'
+          backgroundPosition: 'center'
         }}
       >
-        <div className='agro-hero-content'>
+        <div className='absolute inset-0 bg-gradient-to-br from-yellow-900/50 via-black/70 to-blue-900/50'></div>
+        <div className='relative z-10 mx-auto max-w-5xl px-4 text-center'>
           <motion.div variants={heroVariants} initial='hidden' animate='visible'>
-            <motion.div variants={itemVariants} style={{ marginBottom: 'var(--agro-space-xl)' }}>
+            <motion.div
+              variants={itemVariants}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6 }}
+              style={{ 
+                background: 'rgba(251, 191, 36, 0.15)',
+                padding: '8px 20px',
+                borderRadius: '30px',
+                border: '2px solid rgba(251, 191, 36, 0.3)',
+                marginBottom: '20px',
+                display: 'inline-block'
+              }}
+            >
+              <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#fbbf24' }}>
+                ₿ Primeira Corretora Crypto do Agronegócio
+              </span>
+            </motion.div>
+
+            <motion.div variants={itemVariants} style={{ marginBottom: '2rem' }}>
               <div
                 style={{
-                  width: '120px',
-                  height: '120px',
+                  width: '140px',
+                  height: '140px',
                   margin: '0 auto',
-                  background: 'var(--agro-gradient-accent)',
-                  borderRadius: 'var(--agro-radius-3xl)',
+                  background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
+                  borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: 'var(--agro-dark-green)',
-                  boxShadow: 'var(--agro-shadow-lg)'
+                  color: '#000',
+                  boxShadow: '0 20px 60px rgba(251, 191, 36, 0.5)',
+                  animation: 'pulse 2s ease-in-out infinite'
                 }}
               >
-                <Coins size={48} />
+                <Coins size={70} />
               </div>
             </motion.div>
 
             <motion.h1
-              className='agro-hero-title'
+              className='mb-6 text-7xl font-bold'
               variants={itemVariants}
-              style={{ color: '#FFFFFF', textAlign: 'center' }}
+              style={{
+                background: 'linear-gradient(135deg, #fbbf24 0%, #ffffff 50%, #3b82f6 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                lineHeight: '1.2',
+                textAlign: 'center'
+              }}
             >
-              CRYPTO AGRO
+              💎 Crypto Agro<br/>Negocie Criptos no Agronegócio
             </motion.h1>
 
             <motion.p
-              className='agro-hero-subtitle'
+              className='mb-8 text-xl text-white/90'
               variants={itemVariants}
-              style={{ color: '#FFFFFF', textAlign: 'center' }}
+              style={{ color: '#FFFFFF', textAlign: 'center', maxWidth: '750px', margin: '0 auto 2rem', lineHeight: '1.6' }}
             >
-              Em construção: A primeira criptomoeda do agronegócio do planeta
+              <strong style={{ color: '#fbbf24' }}>Bitcoin, Ethereum, Cardano</strong> e mais! Compre e venda com <strong>taxas reduzidas</strong>, cashback em AgroToken e <strong>suporte especializado</strong> para o agro! 
             </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              style={{ marginBottom: '2rem', display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+                <span style={{ fontSize: '20px' }}>🔒</span>
+                <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>100% Seguro</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+                <span style={{ fontSize: '20px' }}>💰</span>
+                <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>Taxas Baixas</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+                <span style={{ fontSize: '20px' }}>⚡</span>
+                <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>Saque Rápido</span>
+              </div>
+            </motion.div>
 
             <motion.div
               style={{
                 display: 'flex',
-                gap: 'var(--agro-space-lg)',
+                gap: '1rem',
                 justifyContent: 'center',
                 flexWrap: 'wrap',
-                marginTop: 'var(--agro-space-xl)'
+                marginTop: '2rem'
               }}
               variants={itemVariants}
             >
@@ -260,39 +307,54 @@ const AgroisyncCrypto = () => {
                 to='/register'
                 className='agro-btn-primary'
                 style={{
-                  background: '#4CAF50',
-                  color: '#FFFFFF',
-                  padding: '1rem 2rem',
-                  borderRadius: '8px',
+                  background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
+                  color: '#000',
+                  padding: '16px 36px',
+                  fontSize: '1.1rem',
+                  fontWeight: 'bold',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 30px rgba(251, 191, 36, 0.4)',
                   textDecoration: 'none',
-                  fontWeight: '600',
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.5rem',
-                  transition: 'all 0.3s ease'
+                  transition: 'transform 0.2s',
+                  border: 'none'
                 }}
+                onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+                onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
               >
-                Começar Agora
+                🚀 Começar a Negociar
                 <ArrowRight size={20} />
               </Link>
               <Link
                 to='/marketplace'
                 className='agro-btn-secondary'
                 style={{
-                  background: 'transparent',
-                  color: '#4CAF50',
-                  border: '2px solid #4CAF50',
-                  padding: '1rem 2rem',
-                  borderRadius: '8px',
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  color: '#fff',
+                  border: '2px solid rgba(255, 255, 255, 0.3)',
+                  padding: '16px 36px',
+                  fontSize: '1.1rem',
+                  fontWeight: 'bold',
+                  borderRadius: '12px',
+                  backdropFilter: 'blur(10px)',
                   textDecoration: 'none',
-                  fontWeight: '600',
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.5rem',
-                  transition: 'all 0.3s ease'
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.25)';
+                  e.target.style.transform = 'scale(1.05)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+                  e.target.style.transform = 'scale(1)';
                 }}
               >
-                Explorar
+                📊 Ver Cotações
               </Link>
             </motion.div>
           </motion.div>

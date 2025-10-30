@@ -32,24 +32,40 @@ const Partnerships = () => {
 
   const benefits = [
     {
-      icon: <TrendingUp size={32} />,
-      title: 'Crescimento Acelerado',
-      description: 'Expanda seu negócio com nossa plataforma de agronegócio'
+      icon: <TrendingUp size={48} />,
+      title: 'Plataforma em Crescimento',
+      description: 'Faça parte de uma plataforma inovadora em expansão. Acesso a clientes qualificados do agronegócio',
+      color: '#10b981',
+      gradient: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(0, 0, 0, 0.05))',
+      border: '2px solid rgba(16, 185, 129, 0.2)',
+      emoji: '📈'
     },
     {
-      icon: <Globe size={32} />,
-      title: 'Alcance Nacional',
-      description: 'Conecte-se com produtores de todo o Brasil'
+      icon: <Globe size={48} />,
+      title: 'Alcance Global',
+      description: 'Plataforma com funcionalidade mundial. Conecte-se com produtores e empresas do agronegócio',
+      color: '#3b82f6',
+      gradient: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(0, 0, 0, 0.05))',
+      border: '2px solid rgba(59, 130, 246, 0.2)',
+      emoji: '🌎'
     },
     {
-      icon: <Users size={32} />,
-      title: 'Rede de Contatos',
-      description: 'Acesse nossa rede de produtores e compradores'
+      icon: <Users size={48} />,
+      title: 'Rede em Expansão',
+      description: 'Acesse nossa base crescente de produtores, compradores e transportadores verificados e qualificados',
+      color: '#a855f7',
+      gradient: 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(0, 0, 0, 0.05))',
+      border: '2px solid rgba(168, 85, 247, 0.2)',
+      emoji: '👥'
     },
     {
-      icon: <Award size={32} />,
-      title: 'Suporte Especializado',
-      description: 'Equipe dedicada para seu sucesso'
+      icon: <Award size={48} />,
+      title: 'Suporte Premium 24/7',
+      description: 'Equipe técnica e comercial dedicada ao seu sucesso. Treinamento completo e materiais de marketing inclusos',
+      color: '#f59e0b',
+      gradient: 'linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(0, 0, 0, 0.05))',
+      border: '2px solid rgba(245, 158, 11, 0.2)',
+      emoji: '🏆'
     }
   ];
 
@@ -242,29 +258,76 @@ const Partnerships = () => {
             backgroundAttachment: 'scroll'
           }}
         >
-          <div className='absolute inset-0 bg-black/50'></div>
-          <div className='relative z-10 mx-auto max-w-4xl px-4 text-center'>
+          <div className='absolute inset-0 bg-gradient-to-br from-green-900/50 via-black/70 to-emerald-900/30'></div>
+          <div className='relative z-10 mx-auto max-w-5xl px-4 text-center'>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6 }}
+              style={{ 
+                background: 'rgba(16, 185, 129, 0.15)',
+                padding: '8px 20px',
+                borderRadius: '30px',
+                border: '2px solid rgba(16, 185, 129, 0.3)',
+                marginBottom: '20px',
+                display: 'inline-block'
+              }}
+            >
+              <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#10b981' }}>
+                🤝 Parcerias Estratégicas do Agronegócio
+              </span>
+            </motion.div>
+
             <motion.h1
-              className='mb-6 text-6xl font-bold text-white'
+              className='mb-6 text-7xl font-bold'
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
+              style={{
+                background: 'linear-gradient(135deg, #ffffff 0%, #10b981 50%, #22c55e 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                lineHeight: '1.2'
+              }}
             >
-              PARCERIAS
+              🤝 Cresça Conosco<br/>Parceria Win-Win
             </motion.h1>
             <motion.p
-              className='mb-8 text-2xl text-white/90'
+              className='mb-8 text-xl text-white/90'
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
+              style={{ maxWidth: '750px', margin: '0 auto 2rem', lineHeight: '1.6' }}
             >
-              Conectando empresas do agronegócio brasileiro
+              Junte-se à <strong style={{ color: '#10b981' }}>maior plataforma do agro</strong>! Oferecemos <strong>alcance nacional</strong>, tecnologia de ponta e <strong>suporte dedicado</strong> para crescermos juntos!
             </motion.p>
+            
             <motion.div
-              className='flex justify-center gap-4'
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              style={{ marginBottom: '2rem', display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+                <span style={{ fontSize: '20px' }}>🌎</span>
+                <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>Alcance Nacional</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+                <span style={{ fontSize: '20px' }}>📈</span>
+                <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>Crescimento Garantido</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+                <span style={{ fontSize: '20px' }}>🎯</span>
+                <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>Suporte Dedicado</span>
+              </div>
+            </motion.div>
+
+            <motion.div
+              className='flex justify-center gap-4 flex-wrap'
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
             >
               <button
                 onClick={() => {
@@ -273,12 +336,46 @@ const Partnerships = () => {
                     formElement.scrollIntoView({ behavior: 'smooth' });
                   }
                 }}
-                className='rounded-lg bg-green-600 px-8 py-4 font-semibold text-white transition-colors hover:bg-green-700'
+                style={{
+                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                  padding: '16px 36px',
+                  fontSize: '1.1rem',
+                  fontWeight: 'bold',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 30px rgba(16, 185, 129, 0.4)',
+                  border: 'none',
+                  color: '#fff',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s'
+                }}
+                onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+                onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
               >
-                Seja Nosso Parceiro
+                🚀 Quero Ser Parceiro
               </button>
-              <button className='rounded-lg bg-white px-8 py-4 font-semibold text-green-600 transition-colors hover:bg-gray-100'>
-                Ver Parceiros
+              <button 
+                style={{
+                  padding: '16px 36px',
+                  fontSize: '1.1rem',
+                  fontWeight: 'bold',
+                  borderRadius: '12px',
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  border: '2px solid rgba(255, 255, 255, 0.3)',
+                  backdropFilter: 'blur(10px)',
+                  color: '#fff',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.25)';
+                  e.target.style.transform = 'scale(1.05)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+                  e.target.style.transform = 'scale(1)';
+                }}
+              >
+                👥 Nossos Parceiros
               </button>
             </motion.div>
           </div>
@@ -297,10 +394,28 @@ const Partnerships = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
+                  whileHover={{ y: -12, scale: 1.05 }}
+                  style={{
+                    background: benefit.gradient,
+                    border: benefit.border,
+                    borderRadius: '20px',
+                    padding: '30px',
+                    boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)',
+                    textAlign: 'center'
+                  }}
                 >
-                  <div className='benefit-icon'>{benefit.icon}</div>
-                  <h3>{benefit.title}</h3>
-                  <p>{benefit.description}</p>
+                  <div style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>
+                    {benefit.emoji}
+                  </div>
+                  <div className='benefit-icon' style={{ color: benefit.color, marginBottom: '1rem' }}>
+                    {benefit.icon}
+                  </div>
+                  <h3 style={{ fontSize: '1.4rem', fontWeight: 'bold', color: benefit.color, marginBottom: '1rem' }}>
+                    {benefit.title}
+                  </h3>
+                  <p style={{ fontSize: '1rem', lineHeight: '1.6', color: '#666' }}>
+                    {benefit.description}
+                  </p>
                 </motion.div>
               ))}
             </div>

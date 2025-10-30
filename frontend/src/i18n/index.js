@@ -35,10 +35,14 @@ i18n
     debug: process.env.NODE_ENV === 'development',
 
     detection: {
-      order: ['localStorage', 'navigator', 'htmlTag'],
+      order: ['localStorage', 'htmlTag', 'navigator'],
       caches: ['localStorage'],
-      lookupLocalStorage: 'agroisync-language'
+      lookupLocalStorage: 'agroisync-language',
+      checkWhitelist: true
     },
+    
+    supportedLngs: ['pt', 'en', 'es', 'zh'],
+    nonExplicitSupportedLngs: false,
 
     interpolation: {
       escapeValue: false,

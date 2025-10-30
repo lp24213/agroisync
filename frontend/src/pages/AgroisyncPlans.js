@@ -12,7 +12,7 @@ import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 const AgroisyncPlans = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [billingCycle, setBillingCycle] = useState('monthly'); // monthly, semiannual, annual
   const [paymentMethod, setPaymentMethod] = useState('card'); // card ou pix
@@ -113,314 +113,103 @@ const AgroisyncPlans = () => {
     }
   }
 
-  // Planos organizados por tipo de conta
-  const plansByType = useMemo(() => ({
-    comprador: [
-      {
-        name: 'Gratuito',
-        slug: 'comprador-free',
-        price: 0,
-        description: 'Perfeito para começar a comprar no agro',
-        features: [
-          '✅ Compras ilimitadas',
-          '✅ Até 10 alertas de preço',
-          '✅ 50 favoritos',
-          '✅ Cotações em tempo real',
-          '✅ Chat com vendedores',
-          '✅ Histórico de pedidos',
-          '✅ Sistema de avaliações',
-          '✅ Suporte por email',
-          '💰 Comissão: 5% apenas em vendas concluídas'
-        ],
-        limits: { produtos: -1, fretes: 0, alertas: 10, favoritos: 50 },
-        popular: true,
-        comissao: '5%'
-      },
-      {
-        name: 'Pro',
-        slug: 'comprador-pro',
-        price: 49.90,
-        description: 'Para compradores profissionais',
-        features: [
-          '✅ Tudo do Gratuito',
-          '✅ Alertas ilimitados',
-          '✅ Favoritos ilimitados',
-          '✅ Insights de mercado por IA',
-          '✅ Recomendações personalizadas',
-          '✅ Análise de oportunidades',
-          '✅ Dashboard executivo',
-          '✅ Histórico de preços (1 ano)',
-          '✅ Suporte prioritário (WhatsApp)',
-          '💰 Comissão reduzida: 3%',
-          '🎁 2% cashback em AgroToken'
-        ],
-        limits: { produtos: -1, fretes: 0, alertas: -1, favoritos: -1 },
-        comissao: '3%',
-        destaque: true
-      },
-      {
-        name: 'Enterprise',
-        slug: 'comprador-enterprise',
-        price: 299.00,
-        description: 'Para grandes compradores e cooperativas',
-        features: [
-          '✅ Tudo do Pro',
-          '✅ API dedicada',
-          '✅ Até 10 usuários na conta',
-          '✅ Gerente de conta',
-          '✅ Integração ERP',
-          '✅ Relatórios personalizados',
-          '✅ SLA 99,9%',
-          '✅ Suporte 24/7',
-          '💰 Comissão: 2%',
-          '🎁 5% cashback em AgroToken'
-        ],
-        limits: { produtos: -1, fretes: 0, alertas: -1, favoritos: -1, usuarios: 10 },
-        comissao: '2%'
-      }
-    ],
-    freteiro: [
-      {
-        name: 'Gratuito',
-        slug: 'freteiro-free',
-        price: 0,
-        description: 'Comece a oferecer fretes sem custo',
-        features: [
-          '✅ Até 20 fretes por mês',
-          '✅ Rastreamento GPS básico',
-          '✅ Chat com vendedores',
-          '✅ Sistema de avaliações',
-          '✅ Dashboard de rotas',
-          '✅ Suporte por email',
-          '💰 Comissão: 5% por frete concluído'
-        ],
-        limits: { fretes: 20, produtos: 0 },
-        popular: true,
-        comissao: '5%'
-      },
-      {
-        name: 'Profissional',
-        slug: 'freteiro-pro',
-        price: 79.90,
-        description: 'Para freteiros profissionais',
-        features: [
-          '✅ Fretes ilimitados',
-          '✅ Otimização de rotas por IA',
-          '✅ Matching automático de cargas',
-          '✅ Rastreamento GPS avançado',
-          '✅ Prioridade em oportunidades',
-          '✅ Analytics de rentabilidade',
-          '✅ Gestão de múltiplos veículos',
-          '✅ Suporte prioritário',
-          '💰 Comissão reduzida: 3%'
-        ],
-        limits: { fretes: -1, produtos: 0 },
-        destaque: true,
-        comissao: '3%'
-      },
-    ],
-    anunciante: [
-      {
-        name: 'Gratuito',
-        slug: 'anunciante-free',
-        price: 0,
-        description: 'Venda seus produtos sem custo inicial',
-        features: [
-          '✅ Até 10 produtos ativos',
-          '✅ 5 fotos por produto',
-          '✅ Anúncios válidos por 60 dias',
-          '✅ Chat com compradores',
-          '✅ Dashboard de vendas',
-          '✅ Sistema de avaliações',
-          '✅ Cotações em tempo real',
-          '✅ Suporte por email',
-          '💰 Comissão: 5% apenas em vendas',
-          '⚠️ Transporte é sua responsabilidade'
-        ],
-        limits: { produtos: 10, fretes: 0, fotos: 5 },
-        popular: true,
-        comissao: '5%'
-      },
-      {
-        name: 'Profissional',
-        slug: 'anunciante-pro',
-        price: 99.90,
-        description: 'Para produtores e revendas estabelecidos',
-        features: [
-          '✅ Até 100 produtos ativos',
-          '✅ 15 fotos por produto',
-          '✅ Anúncios ilimitados (tempo)',
-          '✅ Até 10 produtos em DESTAQUE',
-          '✅ Selo "Vendedor Profissional"',
-          '✅ Precificação sugerida por IA',
-          '✅ Analytics avançado',
-          '✅ Notificações de interesse',
-          '✅ Prioridade nos resultados',
-          '✅ Suporte prioritário',
-          '💰 Comissão reduzida: 3%',
-          '🎁 1% cashback em AGT'
-        ],
-        limits: { produtos: 100, fretes: 0, fotos: 15, destaque: 10 },
-        destaque: true,
-        comissao: '3%'
-      },
-      {
-        name: 'Loja Virtual',
-        slug: 'anunciante-loja',
-        price: 249.90,
-        description: 'Para lojas, cooperativas e grandes produtores',
-        features: [
-          '✅ Produtos ilimitados',
-          '✅ Fotos e vídeos ilimitados',
-          '✅ Página de loja personalizada',
-          '✅ URL própria (agroisync.com/loja/sua-marca)',
-          '✅ Até 30 produtos em DESTAQUE',
-          '✅ Selo "Loja Oficial ✓"',
-          '✅ Banner rotativo na home',
-          '✅ API para integração ERP',
-          '✅ Gestão de estoque automatizada',
-          '✅ Até 5 usuários na conta',
-          '✅ Gerente de conta dedicado',
-          '✅ Suporte 24/7',
-          '💰 Comissão: 2%',
-          '🎁 3% cashback em AgroToken'
-        ],
-        limits: { produtos: -1, fretes: 0, fotos: -1, destaque: 30, usuarios: 5 },
-        comissao: '2%'
-      },
-      {
-        name: 'Enterprise',
-        slug: 'anunciante-enterprise',
-        price: 499.90,
-        description: 'Para cooperativas e agroindústrias',
-        features: [
-          '✅ Produtos ilimitados',
-          '🏪 Loja personalizada',
-          '🌐 Domínio próprio',
-          '🔗 Integração ERP',
-          '👥 Equipe ilimitada'
-        ],
-        limits: { produtos: -1, fretes: 0 }
-      }
-    ]
-  }), []);
+  // ❌ REMOVIDO - Planos antigos por tipo de conta
+  // Agora usamos apenas os 3 planos universais simples
 
-  const plans = plansByType[accountType] || plansByType.anunciante;
-  
-  // Manter alguns planos originais como fallback
-  const originalPlans = [
+  // 🔥 PLANOS REVOLUCIONÁRIOS - MATANDO A CONCORRÊNCIA!
+  // Planos com features traduzidas
+  const originalPlans = useMemo(() => [
     {
-      name: 'Inicial',
-      price: 9.90,
-      semiannualPrice: 59.40, // 9.90 x 6 meses (sem desconto)
-      annualPrice: 118.80, // 9.90 x 12 meses (sem desconto)
-      annualPixPrice: 118.80, // Sem desconto no PIX para o inicial
-      description: 'Ideal para quem está começando no agronegócio digital',
+      name: 'Gratuito',
+      slug: 'gratuito',
+      price: 0,
+      semiannualPrice: 0,
+      annualPrice: 0,
+      annualPixPrice: 0,
+      description: t('plans.freeDescription') || 'O melhor plano FREE do mercado!',
       features: [
-        '🎁 3 DIAS DE TESTE GRÁTIS',
-        '2 fretes por mês',
-        '2 anúncios de produtos',
-        'Suporte por e-mail',
-        'Dashboard básico com relatórios simples',
-        'Visibilidade padrão nas buscas'
+        t('plans.free.feature1') || '✅ 5 FRETES por mês grátis',
+        t('plans.free.feature2') || '✅ 5 PRODUTOS grátis',
+        t('plans.free.feature3') || '✅ IA que calcula fretes automaticamente',
+        t('plans.free.feature4') || '✅ Rastreamento GPS em tempo real',
+        t('plans.free.feature5') || '✅ Chat ilimitado',
+        t('plans.free.feature6') || '✅ Dashboard completo com analytics',
+        t('plans.free.feature7') || '✅ Suporte via E-mail',
+        t('plans.free.feature8') || '💰 Pós-pago (sem comissões, sem risco)',
+        t('plans.free.feature9') || '🎁 API básica inclusa'
       ],
       noDiscount: true,
       popular: false,
-      trial: true,
-      trialDays: 3,
+      trial: false,
+      trialDays: 0,
       color: 'green',
       icon: '🌱',
-      target: 'Pequenos produtores testarem a plataforma'
+      target: t('plans.free.target') || 'Comece GRÁTIS e venda HOJE!'
     },
     {
       name: 'Profissional',
-      price: 19.90,
-      semiannualPrice: 113.43, // 19.90 x 6 meses - 5% = 119.40 - 5.97 = 113.43
-      annualPrice: 214.92, // 19.90 x 12 meses - 10% = 238.80 - 23.88 = 214.92
-      annualPixPrice: 191.04, // 19.90 x 12 meses - 20% = 238.80 - 47.76 = 191.04
-      description: 'Para produtores e caminhoneiros em crescimento',
+      slug: 'profissional',
+      price: 29.90,
+      semiannualPrice: 161.46,
+      annualPrice: 299.04,
+      annualPixPrice: 239.23,
+      description: t('plans.professionalDescription') || 'Plano PRO completo por menos que um almoço!',
       features: [
-        '10 fretes por mês',
-        '10 anúncios de produtos',
-        'Suporte prioritário (resposta em até 2h úteis)',
-        'Dashboard avançado com gráficos e métricas',
-        'Relatórios detalhados de desempenho',
-        'Prioridade nas buscas e nos resultados regionais',
-        'Acesso ao painel de cotação instantânea'
+        t('plans.professional.feature1') || '✅ FRETES ILIMITADOS',
+        t('plans.professional.feature2') || '✅ PRODUTOS ILIMITADOS',
+        t('plans.professional.feature3') || '✅ IA Premium que otimiza rotas e custos',
+        t('plans.professional.feature4') || '✅ Matching automático em 2 minutos',
+        t('plans.professional.feature5') || '✅ Rastreamento GPS avançado',
+        t('plans.professional.feature6') || '✅ Previsão climática integrada',
+        t('plans.professional.feature7') || '✅ Dashboard com insights automáticos',
+        t('plans.professional.feature8') || '✅ Relatórios de desempenho em tempo real',
+        t('plans.professional.feature9') || '✅ Selo "Verificado ✓"',
+        t('plans.professional.feature10') || '✅ API completa sem limites',
+        t('plans.professional.feature11') || '✅ Suporte prioritário (resposta até 1h)',
+        t('plans.professional.feature12') || '💰 Plano pós-pago, sem comissão',
+        t('plans.professional.feature13') || '🎁 Gestão automatizada com IA'
       ],
       popular: true,
       color: 'blue',
-      icon: '🚜',
-      target: 'Quem quer profissionalizar seus negócios'
+      icon: '💼',
+      trial: false,
+      trialDays: 0,
+      target: t('plans.professional.target') || 'Profissionalize-se gastando MENOS!'
     },
     {
-      name: 'Empresarial',
-      price: 79.90,
-      semiannualPrice: 455.43, // 79.90 x 6 meses - 5% = 479.40 - 23.97 = 455.43
-      annualPrice: 863.52, // 79.90 x 12 meses - 10% = 958.80 - 95.28 = 863.52
-      annualPixPrice: 767.04, // 79.90 x 12 meses - 20% = 958.80 - 191.76 = 767.04
-      description: 'Para transportadoras, cooperativas e empresas do agro',
+      name: 'Enterprise',
+      slug: 'enterprise',
+      price: 99.90,
+      semiannualPrice: 539.46,
+      annualPrice: 1019.04,
+      annualPixPrice: 815.23,
+      description: t('plans.enterpriseDescription') || 'Plano corporativo completo!',
       features: [
-        '50 fretes por mês',
-        '50 anúncios de produtos',
-        'Suporte 24h (WhatsApp e e-mail)',
-        'Dashboard e relatórios personalizados',
-        'API de integração com ERPs e planilhas',
-        'Notificações automáticas via WhatsApp e e-mail',
-        'Destaque Premium nas buscas',
-        'Acesso ao painel de parceiros e distribuidores'
+        t('plans.enterprise.feature1') || '✅ Tudo ilimitado (fretes, produtos e usuários)',
+        t('plans.enterprise.feature2') || '✅ IA corporativa dedicada à sua empresa',
+        t('plans.enterprise.feature3') || '✅ Loja virtual com domínio próprio',
+        t('plans.enterprise.feature4') || '✅ White-label (sua marca na plataforma)',
+        t('plans.enterprise.feature5') || '✅ API Enterprise + Webhooks',
+        t('plans.enterprise.feature6') || '✅ Integração com ERP, CRM e marketplaces',
+        t('plans.enterprise.feature7') || '✅ Até 20 usuários na conta',
+        t('plans.enterprise.feature8') || '✅ Gerente de conta exclusivo',
+        t('plans.enterprise.feature9') || '✅ Treinamento e consultoria personalizada',
+        t('plans.enterprise.feature10') || '✅ Dashboard corporativo customizado',
+        t('plans.enterprise.feature11') || '✅ SLA 99,9% garantido',
+        t('plans.enterprise.feature12') || '✅ Suporte VIP 24/7',
+        t('plans.enterprise.feature13') || '💰 Pós-pago e sem comissão sobre transações'
       ],
       popular: false,
       color: 'purple',
-      icon: '🏗️',
-      target: 'Performance, automação e alcance nacional'
-    },
-    {
-      name: 'Premium',
-      price: 249.90,
-      semiannualPrice: 1424.43, // 249.90 x 6 meses - 5% = 1499.40 - 74.97 = 1424.43
-      annualPrice: 2699.52, // 249.90 x 12 meses - 10% = 2998.80 - 299.28 = 2699.52
-      annualPixPrice: 2399.04, // 249.90 x 12 meses - 20% = 2998.80 - 599.76 = 2399.04
-      description: 'Para grandes operações com foco em automação e escala',
-      features: [
-        'Fretes e anúncios ilimitados',
-        'Loja personalizada com até 20 produtos',
-        'Dashboard e relatórios avançados com IA',
-        'API completa e integração com marketplaces externos',
-        'Suporte 24/7 dedicado',
-        'Gerente de conta exclusivo',
-        'Notificações inteligentes com IA',
-        'Treinamento personalizado e onboarding',
-        'Selo de verificação "Empresa Ouro"'
-      ],
-      popular: false,
-      color: 'gold',
-      icon: '💎',
-      target: 'Dominar o mercado agro digital com IA'
-    },
-    {
-      name: 'Loja Ilimitada',
-      price: 499.90,
-      semiannualPrice: 2849.43, // 499.90 x 6 meses - 5% = 2999.40 - 149.97 = 2849.43
-      annualPrice: 5399.52, // 499.90 x 12 meses - 10% = 5998.80 - 599.28 = 5399.52
-      annualPixPrice: 4799.04, // 499.90 x 12 meses - 20% = 5998.80 - 1199.76 = 4799.04
-      description: 'Operação completa com recursos empresariais e loja virtual expandida',
-      features: [
-        'Loja virtual com produtos ilimitados',
-        'API e integrações corporativas completas',
-        'Dashboard avançado + relatórios financeiros',
-        'Integração com sistemas de pagamento e logística',
-        'Equipe de suporte Premium 24/7',
-        'Treinamento para equipes',
-        'Consultoria estratégica de vendas no agro',
-        'Selo "AGROiSYNC PRO"'
-      ],
-      popular: false,
-      color: 'black',
-      icon: '🏬',
-      target: 'Grandes redes, cooperativas e empresas'
+      icon: '🏢',
+      trial: false,
+      trialDays: 0,
+      target: t('plans.enterprise.target') || 'Domine o mercado com tecnologia de ponta!'
     }
-  ];
+  ], [t]);
+
+  // Usar os planos originais unificados (ignora seletor de tipo de conta)
+  const plans = originalPlans;
 
   // plans carregados do backend (fonte canônica)
   const [remotePlans, setRemotePlans] = useState(null);
@@ -557,13 +346,11 @@ const AgroisyncPlans = () => {
       }}>
         <div style={{ maxWidth: '900px', margin: '0 auto' }}>
           <p style={{ fontSize: '15px', fontWeight: '600', color: '#92400e', marginBottom: '8px' }}>
-            ℹ️ Agroisync é uma plataforma intermediadora
+            💎 PLANOS COM IA AVANÇADA
           </p>
           <p style={{ fontSize: '13px', color: '#78350f' }}>
-            Conectamos compradores e vendedores. Transporte e qualidade são responsabilidade do vendedor. 
-            <a href="/termos-responsabilidade" style={{ color: '#2F5233', fontWeight: '700', marginLeft: '6px' }}>
-              Leia os termos →
-            </a>
+            Escolha o plano ideal para o seu negócio e aproveite todos os recursos da plataforma.<br/>
+            Planos pós-pagos, com segurança total e IA em todos os níveis.
           </p>
         </div>
       </div>
@@ -579,35 +366,120 @@ const AgroisyncPlans = () => {
           backgroundAttachment: 'scroll'
         }}
       >
-        <div className='absolute inset-0 bg-black/50'></div>
-        <div className='relative z-10 mx-auto max-w-4xl px-4 text-center'>
+        <div className='absolute inset-0 bg-gradient-to-br from-purple-900/70 via-black/60 to-blue-900/30'></div>
+        <div className='relative z-10 mx-auto max-w-5xl px-4 text-center'>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            style={{ 
+              background: 'rgba(168, 85, 247, 0.15)',
+              padding: '8px 20px',
+              borderRadius: '30px',
+              border: '2px solid rgba(168, 85, 247, 0.3)',
+              marginBottom: '20px',
+              display: 'inline-block'
+            }}
+          >
+            <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#a855f7' }}>
+              💎 PLANOS COM IA AVANÇADA
+            </span>
+          </motion.div>
+
           <motion.h1
-            className='mb-6 text-6xl font-bold text-white'
+            className='mb-6 text-7xl font-bold'
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
+            style={{
+              background: 'linear-gradient(135deg, #ffffff 0%, #a855f7 50%, #3b82f6 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              lineHeight: '1.2'
+            }}
           >
-            PLANOS AGROISYNC
+            💼 {t('plans.heroTitle')}
           </motion.h1>
           <motion.p
-            className='mb-8 text-2xl text-white/90'
+            className='mb-8 text-xl text-white/90'
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
+            style={{ maxWidth: '750px', margin: '0 auto 2rem', lineHeight: '1.6' }}
           >
-            Escolha o plano ideal para acelerar seu crescimento no agronegócio
+            {t('plans.heroSubtitle')}
           </motion.p>
+          
           <motion.div
-            className='flex justify-center gap-4'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            style={{ marginBottom: '2rem', display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ fontSize: '20px' }}>🎁</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>{t('plans.freePlanAvailable')}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ fontSize: '20px' }}>🤖</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>{t('plans.aiIncludedAll')}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ fontSize: '20px' }}>💰</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>0% Comissão</span>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className='flex justify-center gap-4 flex-wrap'
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
           >
-            <button className='rounded-lg bg-green-600 px-8 py-4 font-semibold text-white transition-colors hover:bg-green-700'>
-              Escolher Plano
+            <button 
+              onClick={() => window.scrollTo({ top: 900, behavior: 'smooth' })}
+              style={{
+                background: 'linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%)',
+                padding: '16px 36px',
+                fontSize: '1.1rem',
+                fontWeight: 'bold',
+                borderRadius: '12px',
+                boxShadow: '0 10px 30px rgba(168, 85, 247, 0.4)',
+                border: 'none',
+                color: '#fff',
+                cursor: 'pointer',
+                transition: 'transform 0.2s'
+              }}
+              onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+              onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+            >
+              🚀 {t('plans.viewPlansBelow')}
             </button>
-            <button className='rounded-lg bg-white px-8 py-4 font-semibold text-green-600 transition-colors hover:bg-gray-100'>
-              Falar com Vendas
+            <button 
+              onClick={() => window.location.href = 'https://wa.me/5565999999999'}
+              style={{
+                padding: '16px 36px',
+                fontSize: '1.1rem',
+                fontWeight: 'bold',
+                borderRadius: '12px',
+                background: 'rgba(255, 255, 255, 0.15)',
+                border: '2px solid rgba(255, 255, 255, 0.3)',
+                backdropFilter: 'blur(10px)',
+                color: '#fff',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = 'rgba(255, 255, 255, 0.25)';
+                e.target.style.transform = 'scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+                e.target.style.transform = 'scale(1)';
+              }}
+            >
+              📞 {t('plans.talkToSales')}
             </button>
           </motion.div>
         </div>
@@ -616,8 +488,8 @@ const AgroisyncPlans = () => {
       {/* Controles de Billing e Pagamento */}
       <section className='bg-gray-50 py-12'>
         <div className='mx-auto max-w-6xl px-4'>
-          {/* Seletor de Tipo de Conta */}
-          <div className='mb-8 flex justify-center'>
+          {/* Seletor de Tipo de Conta - OCULTO (usando planos unificados) */}
+          <div className='mb-8 hidden justify-center'>
             <div className='inline-flex rounded-lg bg-white p-1 shadow-md'>
               <button
                 onClick={() => setAccountType('comprador')}
@@ -866,7 +738,7 @@ const AgroisyncPlans = () => {
               { icon: Globe, title: 'Suporte multilíngue', desc: 'Português, Inglês, Espanhol, Mandarim' },
               { icon: Award, title: 'Ranqueamento transparente', desc: 'Sistema justo e transparente' },
               { icon: Sparkles, title: 'Recomendações inteligentes', desc: 'De anúncios e rotas com IA' },
-              { icon: Gift, title: 'Zero comissão', desc: 'Sobre transações internas' }
+              { icon: Gift, title: 'Pós-pago com total controle', desc: 'Total controle financeiro' }
             ].map((benefit, index) => (
               <motion.div
                 key={index}
@@ -889,43 +761,180 @@ const AgroisyncPlans = () => {
         </div>
       </section>
 
-      {/* Seção Comparativa com Concorrentes */}
-      <section className='bg-white py-16'>
+      {/* LEADS & IMPULSIONAMENTO */}
+      <section className='bg-gradient-to-br from-orange-50 via-yellow-50 to-amber-50 py-16'>
         <div className='mx-auto max-w-6xl px-4'>
           <div className='mb-12 text-center'>
-            <h2 className='mb-4 text-3xl font-bold text-gray-900'>💰 Preços Acessíveis</h2>
-            <p className='text-lg text-gray-600'>Planos pensados para democratizar o agronegócio digital</p>
+            <motion.h2 
+              className='mb-4 text-4xl font-bold text-gray-900'
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              🎯 LEADS & IMPULSIONAMENTO DE ANÚNCIOS
+            </motion.h2>
+            <motion.p 
+              className='text-xl text-gray-700'
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
+              💡 Serviço adicional separado dos planos principais.<br/>
+              Ideal para produtores, transportadores e empresas que desejam impulsionar visibilidade e vendas dentro da plataforma.
+            </motion.p>
           </div>
 
-          <div className='grid grid-cols-1 gap-8 md:grid-cols-3'>
-            <div className='rounded-xl bg-green-50 p-8 text-center'>
-              <div className='mb-4 text-4xl'>🌱</div>
-              <h3 className='mb-2 text-xl font-bold text-green-800'>Plano Inicial</h3>
-              <div className='mb-4 text-3xl font-bold text-green-600'>R$ 9,90</div>
-              <p className='text-green-700'>Ideal para começar no agronegócio digital</p>
-            </div>
-            
-            <div className='rounded-xl bg-blue-50 p-8 text-center'>
-              <div className='mb-4 text-4xl'>🚜</div>
-              <h3 className='mb-2 text-xl font-bold text-blue-800'>Plano Profissional</h3>
-              <div className='mb-4 text-3xl font-bold text-blue-600'>R$ 19,90</div>
-              <p className='text-blue-700'>Para produtores em crescimento</p>
-            </div>
-            
-            <div className='rounded-xl bg-purple-50 p-8 text-center'>
-              <div className='mb-4 text-4xl'>🏗️</div>
-              <h3 className='mb-2 text-xl font-bold text-purple-800'>Plano Empresarial</h3>
-              <div className='mb-4 text-3xl font-bold text-purple-600'>R$ 79,90</div>
-              <p className='text-purple-700'>Para empresas e cooperativas</p>
-            </div>
+          <div className='grid grid-cols-1 gap-8 lg:grid-cols-2 mb-12'>
+            {/* Planos de Leads */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className='rounded-2xl bg-white p-8 shadow-xl'
+            >
+              <h3 className='mb-6 text-2xl font-bold text-gray-900'>
+                📈 Planos de Leads (Captação Direta)
+              </h3>
+              <div className='mb-6 overflow-x-auto'>
+                <table className='w-full border-collapse'>
+                  <thead>
+                    <tr className='bg-gray-100'>
+                      <th className='border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-900'>Pacote</th>
+                      <th className='border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-900'>Leads/Mês</th>
+                      <th className='border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-900'>Valor</th>
+                      <th className='border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-900'>Tipo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className='border border-gray-300 px-4 py-3 text-sm font-medium'>Básico</td>
+                      <td className='border border-gray-300 px-4 py-3 text-sm'>até 50 qualificados</td>
+                      <td className='border border-gray-300 px-4 py-3 text-sm font-bold text-green-600'>R$ 49,90</td>
+                      <td className='border border-gray-300 px-4 py-3 text-sm text-gray-600'>Pós-pago</td>
+                    </tr>
+                    <tr className='bg-blue-50'>
+                      <td className='border border-gray-300 px-4 py-3 text-sm font-medium'>Avançado</td>
+                      <td className='border border-gray-300 px-4 py-3 text-sm'>até 200</td>
+                      <td className='border border-gray-300 px-4 py-3 text-sm font-bold text-green-600'>R$ 149,90</td>
+                      <td className='border border-gray-300 px-4 py-3 text-sm text-gray-600'>Pós-pago</td>
+                    </tr>
+                    <tr>
+                      <td className='border border-gray-300 px-4 py-3 text-sm font-medium'>Profissional</td>
+                      <td className='border border-gray-300 px-4 py-3 text-sm'>até 500</td>
+                      <td className='border border-gray-300 px-4 py-3 text-sm font-bold text-green-600'>R$ 299,90</td>
+                      <td className='border border-gray-300 px-4 py-3 text-sm text-gray-600'>Pós-pago</td>
+                    </tr>
+                    <tr className='bg-purple-50'>
+                      <td className='border border-gray-300 px-4 py-3 text-sm font-medium'>Corporativo</td>
+                      <td className='border border-gray-300 px-4 py-3 text-sm'>ilimitado</td>
+                      <td className='border border-gray-300 px-4 py-3 text-sm font-bold text-purple-600'>Sob consulta</td>
+                      <td className='border border-gray-300 px-4 py-3 text-sm text-gray-600'>Pós-pago</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <ul className='space-y-2 text-sm text-gray-700'>
+                <li className='flex items-start gap-2'>
+                  <Check className='h-5 w-5 flex-shrink-0 text-green-500 mt-0.5' />
+                  <span>Leads filtrados por região, categoria e tipo de produto</span>
+                </li>
+                <li className='flex items-start gap-2'>
+                  <Check className='h-5 w-5 flex-shrink-0 text-green-500 mt-0.5' />
+                  <span>Envio automático via dashboard</span>
+                </li>
+                <li className='flex items-start gap-2'>
+                  <Check className='h-5 w-5 flex-shrink-0 text-green-500 mt-0.5' />
+                  <span>Atualização em tempo real</span>
+                </li>
+                <li className='flex items-start gap-2'>
+                  <Check className='h-5 w-5 flex-shrink-0 text-green-500 mt-0.5' />
+                  <span>Garantia de qualidade e verificação automática</span>
+                </li>
+                <li className='flex items-start gap-2'>
+                  <Check className='h-5 w-5 flex-shrink-0 text-green-500 mt-0.5' />
+                  <span>Pagamento apenas após confirmação de entrega</span>
+                </li>
+              </ul>
+            </motion.div>
+
+            {/* Planos de Impulsionamento */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className='rounded-2xl bg-white p-8 shadow-xl'
+            >
+              <h3 className='mb-6 text-2xl font-bold text-gray-900'>
+                📢 Planos de Impulsionamento de Anúncios
+              </h3>
+              <div className='mb-6 space-y-4'>
+                {[
+                  { name: 'Start', duration: '7 dias', price: 39.90, color: 'blue' },
+                  { name: 'Turbo', duration: '15 dias', price: 89.90, color: 'green', popular: true },
+                  { name: 'Pro+', duration: '30 dias', price: 149.90, color: 'purple' },
+                  { name: 'Enterprise Boost', duration: 'Contínuo + destaque', price: 'Sob consulta', color: 'orange' }
+                ].map((plan, idx) => (
+                  <div key={idx} className={`rounded-lg border-2 p-4 ${plan.popular ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-gray-50'}`}>
+                    <div className='flex items-center justify-between'>
+                      <div>
+                        <h4 className='font-bold text-gray-900'>{plan.name}</h4>
+                        <p className='text-sm text-gray-600'>{plan.duration}</p>
+                      </div>
+                      <div className='text-right'>
+                        <div className={`text-lg font-bold ${plan.price === 'Sob consulta' ? 'text-orange-600' : 'text-green-600'}`}>
+                          {typeof plan.price === 'number' ? `R$ ${plan.price.toFixed(2).replace('.', ',')}` : plan.price}
+                        </div>
+                        <p className='text-xs text-gray-500'>Pós-pago</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className='rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 p-4 text-white'>
+                <h4 className='mb-2 font-bold'>💡 Seus anúncios ganham destaque automático:</h4>
+                <ul className='space-y-1 text-sm'>
+                  <li>✓ Posição premium nos resultados de busca</li>
+                  <li>✓ Destaque no topo das categorias</li>
+                  <li>✓ Aumento direto de visualizações e cliques</li>
+                  <li>✓ Relatórios de alcance e performance</li>
+                </ul>
+              </div>
+            </motion.div>
           </div>
 
-          <div className='mt-8 text-center'>
-            <div className='inline-flex items-center gap-2 rounded-full bg-green-100 px-6 py-3 text-green-800'>
-              <Sparkles className='h-5 w-5' />
-              <span className='font-semibold'>Preços justos e transparentes!</span>
-            </div>
-          </div>
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 text-center'
+          >
+            <button
+              onClick={() => navigate('/contato?service=leads')}
+              className='rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl'
+            >
+              🚀 Impulsione seus anúncios e receba leads qualificados agora!
+            </button>
+            <button
+              onClick={() => navigate('/contato?service=leads')}
+              className='rounded-xl bg-gradient-to-r from-green-600 to-green-700 px-6 py-4 font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl'
+            >
+              📈 Capte novos clientes todos os dias com o Agroisync Leads.
+            </button>
+            <button
+              onClick={() => navigate('/contato?service=boost')}
+              className='rounded-xl bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-4 font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl'
+            >
+              💼 Seus anúncios no topo — mais visibilidade, mais vendas.
+            </button>
+            <button
+              onClick={() => navigate('/contato?service=all')}
+              className='rounded-xl bg-gradient-to-r from-orange-600 to-red-600 px-6 py-4 font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl'
+            >
+              🌾 IA, automação e leads em tempo real — ative agora!
+            </button>
+          </motion.div>
         </div>
       </section>
 

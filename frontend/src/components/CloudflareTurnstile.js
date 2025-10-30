@@ -19,7 +19,7 @@ const CloudflareTurnstile = ({ onVerify, onError, onExpire, siteKey, theme = 'li
   }, [onVerify]);
 
   const handleError = useCallback((error) => {
-    console.error('❌ Turnstile error:', error);
+    // Silenciar erro do Turnstile
     if (onError) onError(error);
   }, [onError]);
 

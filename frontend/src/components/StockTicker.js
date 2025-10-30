@@ -37,26 +37,27 @@ const StockTicker = () => {
   if (loading) {
     return (
       <div
-        style={{
-          background: '#000000',
-          color: '#ffffff',
-          padding: '8px 0',
-          textAlign: 'center',
-          position: 'relative',
-          zIndex: 1000
-        }}
+      style={{
+        background: '#000000',
+        color: '#ffffff',
+        padding: '4px 0',
+        textAlign: 'center',
+        position: 'relative',
+        zIndex: 1000,
+        maxHeight: '32px'
+      }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
           <div
             style={{
-              width: '8px',
-              height: '8px',
+              width: '6px',
+              height: '6px',
               background: '#ffffff',
               borderRadius: '50%',
               animation: 'pulse 1s infinite'
             }}
           ></div>
-          <span style={{ fontSize: '14px' }}>Carregando dados da bolsa...</span>
+          <span style={{ fontSize: '11px' }}>Carregando...</span>
         </div>
       </div>
     );
@@ -67,43 +68,45 @@ const StockTicker = () => {
       style={{
         background: '#000000',
         color: '#ffffff',
-        padding: '8px 0',
+        padding: '4px 0',
         overflow: 'hidden',
         position: 'relative',
         zIndex: 1000,
-        borderBottom: '1px solid #333'
+        borderBottom: '1px solid #333',
+        maxHeight: '32px'
       }}
     >
       <div
+        className='ticker-scroll'
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '60px',
-          animation: 'scroll 120s linear infinite',
+          gap: '40px',
           whiteSpace: 'nowrap',
           width: 'max-content',
-          padding: '0 20px'
+          padding: '0 20px',
+          willChange: 'transform'
         }}
       >
-        {stocks.map((stock, index) => (
+        {[...stocks, ...stocks].map((stock, index) => (
           <div
-            key={stock.symbol}
+            key={`${stock.symbol}-${index}`}
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '16px',
-              minWidth: '280px',
+              gap: '10px',
+              minWidth: '220px',
               flexShrink: 0,
-              padding: '0 16px',
-              height: '40px',
+              padding: '0 10px',
+              height: '24px',
               borderRight: '1px solid #333'
             }}
           >
             <span
               style={{
                 fontWeight: 'bold',
-                fontSize: '14px',
-                minWidth: '70px',
+                fontSize: '11px',
+                minWidth: '50px',
                 textAlign: 'left',
                 color: '#ffffff'
               }}
@@ -112,22 +115,24 @@ const StockTicker = () => {
             </span>
             <span
               style={{
-                fontSize: '12px',
-                color: '#ccc',
-                minWidth: '100px',
+                fontSize: '10px',
+                color: '#999',
+                minWidth: '60px',
                 textAlign: 'left',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap'
+                whiteSpace: 'nowrap',
+                display: 'none'
               }}
+              className='hidden md:inline'
             >
               {stock.name}
             </span>
             <span
               style={{
                 fontFamily: 'monospace',
-                fontSize: '14px',
-                minWidth: '80px',
+                fontSize: '11px',
+                minWidth: '55px',
                 textAlign: 'right',
                 color: '#ffffff'
               }}
@@ -136,10 +141,10 @@ const StockTicker = () => {
             </span>
             <span
               style={{
-                fontSize: '12px',
+                fontSize: '10px',
                 fontWeight: 'bold',
                 color: stock.change >= 0 ? '#4ade80' : '#ef4444',
-                minWidth: '90px',
+                minWidth: '65px',
                 textAlign: 'right',
                 backgroundColor: 'transparent',
                 border: 'none',
@@ -147,29 +152,33 @@ const StockTicker = () => {
                 margin: '0'
               }}
             >
-              {stock.change >= 0 ? '+' : ''}
-              {stock.change.toFixed(2)} ({stock.changePercent >= 0 ? '+' : ''}
-              {stock.changePercent.toFixed(2)}%)
+              {stock.changePercent >= 0 ? '+' : ''}
+              {stock.changePercent.toFixed(2)}%
             </span>
           </div>
         ))}
       </div>
 
       <style>{`
-        @keyframes scroll {
-          0% { transform: translateX(100%); }
-          100% { transform: translateX(-100%); }
+        @keyframes tickerScroll {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
         @keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.5; }
         }
-        /* Reduzir ou desativar rolagem no mobile/landscape e em preferências de movimento reduzido */
+        .ticker-scroll {
+          animation: tickerScroll 60s linear infinite;
+        }
+        .ticker-scroll:hover {
+          animation-play-state: paused;
+        }
         @media (max-width: 768px) {
-          div[style*="animation: scroll"] { animation-duration: 180s !important; }
+          .ticker-scroll { animation-duration: 90s !important; }
         }
         @media (prefers-reduced-motion: reduce) {
-          div[style*="animation: scroll"] { animation: none !important; }
+          .ticker-scroll { animation: none !important; }
         }
       `}</style>
     </div>

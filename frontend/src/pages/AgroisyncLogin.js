@@ -267,7 +267,7 @@ const AgroisyncLogin = () => {
                 }}
                 variants={itemVariants}
               >
-                Bem-vindo de volta!
+                {t('login.welcomeBack')}
               </motion.h1>
 
               <motion.p
@@ -279,7 +279,7 @@ const AgroisyncLogin = () => {
                 }}
                 variants={itemVariants}
               >
-                Acesse sua conta e continue sua jornada no agronegócio digital.
+                {t('login.subtitle')}
               </motion.p>
 
               <motion.div
@@ -301,7 +301,7 @@ const AgroisyncLogin = () => {
                     fontWeight: '600'
                   }}
                 >
-                  ✓ Seguro
+                  {t('login.secure')}
                 </div>
                 <div
                   style={{
@@ -313,7 +313,7 @@ const AgroisyncLogin = () => {
                     fontWeight: '600'
                   }}
                 >
-                  ✓ Rápido
+                  {t('login.fast')}
                 </div>
                 <div
                   style={{
@@ -325,7 +325,7 @@ const AgroisyncLogin = () => {
                     fontWeight: '600'
                   }}
                 >
-                  ✓ Confiável
+                  {t('login.reliable')}
                 </div>
               </motion.div>
             </motion.div>
@@ -405,7 +405,7 @@ const AgroisyncLogin = () => {
                       name='email'
                       value={formData.email}
                       onChange={handleInputChange}
-                      placeholder='seu@email.com'
+                      placeholder={t('login.emailPlaceholder')}
                       required
                       pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
                       title="Digite um email válido"
@@ -460,7 +460,7 @@ const AgroisyncLogin = () => {
                       name='password'
                       value={formData.password}
                       onChange={handleInputChange}
-                      placeholder='Sua senha'
+                      placeholder={t('login.passwordPlaceholder')}
                       style={{
                         width: '100%',
                         padding: '12px 44px 12px 44px',
@@ -521,7 +521,7 @@ const AgroisyncLogin = () => {
                     }}
                   >
                     <input type='checkbox' style={{ margin: 0 }} />
-                    Lembrar de mim
+                    {t('login.rememberMe')}
                   </label>
                   <Link
                     to='/forgot-password'
@@ -532,7 +532,7 @@ const AgroisyncLogin = () => {
                       fontWeight: '600'
                     }}
                   >
-                    Esqueceu a senha?
+                    {t('login.forgotPassword')}
                   </Link>
                 </motion.div>
 

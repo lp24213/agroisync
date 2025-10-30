@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import StockTicker from '../components/StockTicker';
 import GrainsChart from '../components/GrainsChart';
 import CompactWeatherWidget from '../components/CompactWeatherWidget';
@@ -9,6 +10,7 @@ import GrainInfo from '../components/GrainInfo';
 import AgriNews from '../components/AgriNews';
 
 const AgroisyncHome = () => {
+  const { t } = useTranslation();
   // Imagem de campo de soja e trigo com cache buster - usando imagem de alta resolução
   const inicioImageUrl = `https://media.istockphoto.com/id/2228728040/pt/foto/soybean-and-wheat-fields-at-summer-season.webp?a=1&b=1&s=612x612&w=0&k=20&c=N6HRSCwp0KbkAMuNBlSM7YbBq74KOBQvKvnRSB3Ws-A=`;
 
@@ -63,14 +65,40 @@ const AgroisyncHome = () => {
       >
         <div className='agro-hero-overlay' style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className='agro-hero-content-centered agro-stagger-children' style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6 }}
+              style={{ 
+                background: 'rgba(34, 197, 94, 0.15)',
+                padding: '10px 24px',
+                borderRadius: '30px',
+                border: '2px solid rgba(34, 197, 94, 0.4)',
+                marginBottom: '24px',
+                display: 'inline-block',
+                boxShadow: '0 4px 15px rgba(34, 197, 94, 0.2)'
+              }}
+            >
+              <span style={{ fontSize: '14px', fontWeight: '700', color: '#22c55e', letterSpacing: '0.5px' }}>
+                🚀 {t('home.title')}
+              </span>
+            </motion.div>
+
             <motion.h1
               className='agro-hero-title'
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              style={{ textAlign: 'center', margin: '0 auto' }}
+              style={{ 
+                textAlign: 'center', 
+                margin: '0 auto 24px', 
+                fontSize: 'clamp(2rem, 6vw, 3.5rem)', 
+                lineHeight: '1.2',
+                padding: '0 1rem',
+                fontWeight: '800'
+              }}
             >
-              Seja Nosso Parceiro
+              {t('home.heroTitle')} <span style={{ color: '#22c55e' }}>{t('home.heroHighlight')}</span> {t('home.heroTitle2')}
             </motion.h1>
 
             <motion.p
@@ -78,9 +106,16 @@ const AgroisyncHome = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              style={{ textAlign: 'center', margin: '0 auto' }}
+              style={{ 
+                textAlign: 'center', 
+                margin: '0 auto 32px', 
+                fontSize: 'clamp(1.1rem, 2vw, 1.25rem)', 
+                maxWidth: '700px',
+                lineHeight: '1.6',
+                color: 'rgba(255, 255, 255, 0.95)'
+              }}
             >
-              A plataforma mais completa do agronegócio: IA avançada, marketplace, fretes inteligentes, corretora de cripto e nossa própria criptomoeda!
+              {t('home.heroSubtitle')}
             </motion.p>
 
             <motion.div
@@ -88,14 +123,93 @@ const AgroisyncHome = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}
+              style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginTop: '30px' }}
             >
-              <Link to='/marketplace' className='agro-btn-primary agro-btn-animated'>
-                Explorar Marketplace
+              <Link 
+                to='/register' 
+                className='agro-btn-primary agro-btn-animated'
+                style={{
+                  background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                  padding: '18px 40px',
+                  fontSize: '1.1rem',
+                  fontWeight: 'bold',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 30px rgba(34, 197, 94, 0.4)',
+                  border: 'none'
+                }}
+              >
+                🚀 {t('home.startNow')}
               </Link>
-              <Link to='/register' className='agro-btn-secondary agro-btn-animated'>
-                Começar Agora
+              <Link 
+                to='/planos' 
+                className='agro-btn-secondary agro-btn-animated'
+                style={{
+                  padding: '18px 40px',
+                  fontSize: '1.1rem',
+                  fontWeight: 'bold',
+                  borderRadius: '12px',
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  border: '2px solid rgba(255, 255, 255, 0.3)',
+                  backdropFilter: 'blur(10px)'
+                }}
+              >
+                📊 {t('home.viewPlans')}
               </Link>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              style={{ 
+                marginTop: '32px', 
+                display: 'flex', 
+                gap: 'clamp(12px, 2vw, 20px)', 
+                justifyContent: 'center', 
+                flexWrap: 'wrap',
+                maxWidth: '900px',
+                margin: '32px auto 0'
+              }}
+            >
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '8px', 
+                background: 'rgba(255, 255, 255, 0.12)', 
+                padding: 'clamp(10px, 2vw, 12px) clamp(16px, 3vw, 20px)', 
+                borderRadius: '12px', 
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(255, 255, 255, 0.15)'
+              }}>
+                <span style={{ fontSize: 'clamp(18px, 3vw, 20px)' }}>✅</span>
+                <span style={{ color: '#fff', fontWeight: '600', fontSize: 'clamp(0.85rem, 1.5vw, 0.95rem)' }}>{t('home.benefits.freeTrial')}</span>
+              </div>
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '8px', 
+                background: 'rgba(255, 255, 255, 0.12)', 
+                padding: 'clamp(10px, 2vw, 12px) clamp(16px, 3vw, 20px)', 
+                borderRadius: '12px', 
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(255, 255, 255, 0.15)'
+              }}>
+                <span style={{ fontSize: 'clamp(18px, 3vw, 20px)' }}>💰</span>
+                <span style={{ color: '#fff', fontWeight: '600', fontSize: 'clamp(0.85rem, 1.5vw, 0.95rem)' }}>{t('home.benefits.noCommission')}</span>
+              </div>
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '8px', 
+                background: 'rgba(255, 255, 255, 0.12)', 
+                padding: 'clamp(10px, 2vw, 12px) clamp(16px, 3vw, 20px)', 
+                borderRadius: '12px', 
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(255, 255, 255, 0.15)'
+              }}>
+                <span style={{ fontSize: 'clamp(18px, 3vw, 20px)' }}>⚡</span>
+                <span style={{ color: '#fff', fontWeight: '600', fontSize: 'clamp(0.85rem, 1.5vw, 0.95rem)' }}>{t('home.benefits.aiIncluded')}</span>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -114,29 +228,84 @@ const AgroisyncHome = () => {
               whileInView='visible'
               viewport={{ once: true }}
             >
-              <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants}>
-                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🤖</div>
-                <h3 className='agro-feature-title'>IA Avançada</h3>
-                <p className='agro-feature-description'>
-                  Precificação dinâmica com 15+ variáveis, matching automático em menos de 3 minutos, análise de mercado em tempo real e detecção de fraudes
+              <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants}
+                style={{
+                  background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(0, 0, 0, 0.05))',
+                  border: '2px solid rgba(34, 197, 94, 0.2)',
+                  borderRadius: '20px',
+                  padding: '30px',
+                  boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)'
+                }}
+              >
+                <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>💰</div>
+                <h3 className='agro-feature-title' style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#22c55e' }}>
+                  {t('home.features.costReduction')}
+                </h3>
+                <p className='agro-feature-description' style={{ fontSize: '1rem', lineHeight: '1.6' }}>
+                  {t('home.features.costReductionDesc')}
                 </p>
+                <ul style={{ textAlign: 'left', marginTop: '15px', color: '#666' }}>
+                  <li>{t('home.features.fertilizers')}</li>
+                  <li>{t('home.features.pesticides')}</li>
+                  <li>{t('home.features.fuel')}</li>
+                  <li>{t('home.features.irrigation')}</li>
+                </ul>
               </motion.div>
 
-              <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants}>
-                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🗺️</div>
-                <h3 className='agro-feature-title'>OpenStreetMap Gratuito</h3>
-                <p className='agro-feature-description'>
-                  Rotas inteligentes, cálculo de distâncias reais, geocoding e navegação 100% gratuitos. Sem limites de requisições!
+              <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants}
+                style={{
+                  background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(0, 0, 0, 0.05))',
+                  border: '2px solid rgba(59, 130, 246, 0.2)',
+                  borderRadius: '20px',
+                  padding: '30px',
+                  boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)'
+                }}
+              >
+                <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🌤️</div>
+                <h3 className='agro-feature-title' style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#3b82f6' }}>
+                  {t('home.features.weatherForecast')}
+                </h3>
+                <p className='agro-feature-description' style={{ fontSize: '1rem', lineHeight: '1.6' }}>
+                  {t('home.features.weatherForecastDesc')}
                 </p>
+                <div style={{ marginTop: '15px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                  <span style={{ background: 'rgba(59, 130, 246, 0.2)', padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold' }}>{t('home.features.realTimeAlerts')}</span>
+                  <span style={{ background: 'rgba(59, 130, 246, 0.2)', padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold' }}>{t('home.features.plantingWindow')}</span>
+                  <span style={{ background: 'rgba(59, 130, 246, 0.2)', padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold' }}>{t('home.features.soilMoisture')}</span>
+                </div>
+              </motion.div>
+
+              <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants}
+                style={{
+                  background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(0, 0, 0, 0.05))',
+                  border: '2px solid rgba(168, 85, 247, 0.2)',
+                  borderRadius: '20px',
+                  padding: '30px',
+                  boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)'
+                }}
+              >
+                <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📊</div>
+                <h3 className='agro-feature-title' style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#a855f7' }}>
+                  {t('home.features.profitSimulator')}
+                </h3>
+                <p className='agro-feature-description' style={{ fontSize: '1rem', lineHeight: '1.6' }}>
+                  {t('home.features.profitSimulatorDesc')}
+                </p>
+                <div style={{ marginTop: '15px', background: 'rgba(168, 85, 247, 0.15)', padding: '15px', borderRadius: '12px', textAlign: 'left' }}>
+                  <div style={{ fontSize: '13px', color: '#a855f7', fontWeight: 'bold', marginBottom: '8px' }}>{t('home.features.example')}</div>
+                  <div style={{ fontSize: '12px', color: '#666' }}>{t('home.features.cost')}</div>
+                  <div style={{ fontSize: '12px', color: '#666' }}>{t('home.features.revenue')}</div>
+                  <div style={{ fontSize: '14px', color: '#22c55e', fontWeight: 'bold', marginTop: '5px' }}>{t('home.features.profit')}</div>
+                </div>
               </motion.div>
 
 
               <Link to='/marketplace' style={{ textDecoration: 'none', color: 'inherit' }}>
                 <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants} style={{ cursor: 'pointer' }}>
                   <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📦</div>
-                  <h3 className='agro-feature-title'>Marketplace Completo</h3>
+                  <h3 className='agro-feature-title'>{t('home.features.marketplace')}</h3>
                   <p className='agro-feature-description'>
-                    Compre e venda produtos agrícolas: grãos, insumos, maquinários, animais. Sistema de loja própria para produtores e anunciantes!
+                    {t('home.features.marketplaceDesc')}
                   </p>
                 </motion.div>
               </Link>
@@ -144,60 +313,60 @@ const AgroisyncHome = () => {
               <Link to='/freights' style={{ textDecoration: 'none', color: 'inherit' }}>
                 <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants} style={{ cursor: 'pointer' }}>
                   <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🚛</div>
-                  <h3 className='agro-feature-title'>Fretes Inteligentes</h3>
+                  <h3 className='agro-feature-title'>{t('home.features.smartFreight')}</h3>
                   <p className='agro-feature-description'>
-                    Sistema de fretes com rastreamento GPS em tempo real, emails automáticos, cálculo inteligente de rotas e matching de motoristas
+                    {t('home.features.smartFreightDesc')}
                   </p>
                 </motion.div>
               </Link>
 
               <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants}>
                 <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⭐</div>
-                <h3 className='agro-feature-title'>Avaliações 5 Estrelas</h3>
+                <h3 className='agro-feature-title'>{t('home.features.ratings')}</h3>
                 <p className='agro-feature-description'>
-                  Sistema completo de avaliações com 4 critérios detalhados, badges automáticas (Top Performer, Premium, Verificado) e estatísticas em tempo real
+                  {t('home.features.ratingsDesc')}
                 </p>
               </motion.div>
 
               <Link to='/dashboard' style={{ textDecoration: 'none', color: 'inherit' }}>
                 <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants} style={{ cursor: 'pointer' }}>
                   <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💬</div>
-                  <h3 className='agro-feature-title'>Chat com IA</h3>
+                  <h3 className='agro-feature-title'>{t('home.features.aiChat')}</h3>
                   <p className='agro-feature-description'>
-                    Chatbot inteligente que responde sobre preços, fretes, mercado, produtos e muito mais. Reconhecimento de voz e imagens integrados!
+                    {t('home.features.aiChatDesc')}
                   </p>
                 </motion.div>
               </Link>
 
               <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants}>
                 <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🤝</div>
-                <h3 className='agro-feature-title'>Parcerias</h3>
+                <h3 className='agro-feature-title'>{t('home.features.partnerships')}</h3>
                 <p className='agro-feature-description'>
-                  Conecte-se com outros produtores, freteiros e compradores. Sistema de mensagens privadas, busca de parceiros e networking profissional
+                  {t('home.features.partnershipsDesc')}
                 </p>
               </motion.div>
 
               <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants}>
                 <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💳</div>
-                <h3 className='agro-feature-title'>Pagamentos Modernos</h3>
+                <h3 className='agro-feature-title'>{t('home.features.modernPayments')}</h3>
                 <p className='agro-feature-description'>
-                  PIX instantâneo, cartão em até 12x, boleto bancário, criptomoedas (BTC, USDT, ETH) e integração com MetaMask. Transações 100% seguras!
+                  {t('home.features.modernPaymentsDesc')}
                 </p>
               </motion.div>
 
               <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants}>
                 <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📊</div>
-                <h3 className='agro-feature-title'>Análises em Tempo Real</h3>
+                <h3 className='agro-feature-title'>{t('home.features.realTimeAnalysis')}</h3>
                 <p className='agro-feature-description'>
-                  Acompanhe cotações de grãos, tendências de mercado, previsão do tempo, notícias do agronegócio e análises de IA para tomar melhores decisões
+                  {t('home.features.realTimeAnalysisDesc')}
                 </p>
               </motion.div>
 
               <motion.div className='agro-feature-card agro-card-animated' variants={itemVariants}>
                 <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>♿</div>
-                <h3 className='agro-feature-title'>Acessibilidade Total</h3>
+                <h3 className='agro-feature-title'>{t('home.features.accessibility')}</h3>
                 <p className='agro-feature-description'>
-                  VLibras integrado para Língua Brasileira de Sinais, suporte a leitores de tela, alto contraste e navegação por teclado. Inclusão para todos!
+                  {t('home.features.accessibilityDesc')}
                 </p>
               </motion.div>
             </motion.div>

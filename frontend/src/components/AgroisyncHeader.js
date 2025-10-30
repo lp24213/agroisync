@@ -1,18 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import LanguageSelectorPro from './LanguageSelectorPro';
 import AgroisyncLogo from './AgroisyncLogo';
-import { Menu, X, Home, ShoppingCart, Truck, LogIn, LogOut, User, Users, Info, Coins, Crown, LayoutDashboard, MessageSquare, Settings, ChevronDown } from 'lucide-react';
+import { Menu, X, Home, ShoppingCart, Truck, LogIn, LogOut, User, Users, Info, Coins, Crown, LayoutDashboard, MessageSquare, Settings, ChevronDown, Store, Cloud } from 'lucide-react';
 
 const AgroisyncHeader = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [, forceUpdate] = useState({});
   const { user, logout } = useAuth();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
+
+  // Forçar re-render quando idioma mudar
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      forceUpdate({});
+    };
+    i18n.on('languageChanged', handleLanguageChange);
+    return () => {
+      i18n.off('languageChanged', handleLanguageChange);
+    };
+  }, [i18n]);
 
   // Gera/garante os parâmetros criptográficos e retorna string de busca
   const getCryptoSearch = () => {
@@ -68,51 +80,52 @@ const AgroisyncHeader = () => {
     }
   };
 
-  const navigationItems = [
-    { path: '/', label: 'Início', icon: Home, i18nKey: 'inicio' },
-    { path: '/loja', label: 'Loja', icon: ShoppingCart, i18nKey: 'loja' },
-    { path: '/frete', label: 'Frete', icon: Truck, i18nKey: 'agroconecta' },
-    { path: '/produtos', label: 'Produtos', icon: ShoppingCart, i18nKey: 'marketplace' },
-    { path: '/tecnologia', label: 'Crypto', icon: Coins, i18nKey: 'tecnologia' },
-    { path: '/partnerships', label: 'Parcerias', icon: Users, i18nKey: 'parcerias' },
-    { path: '/sobre', label: 'Sobre', icon: Info, i18nKey: 'about' },
-    { path: '/planos', label: 'Planos', icon: Crown, i18nKey: 'plans' }
-  ];
+  const navigationItems = useMemo(() => [
+    { path: '/', icon: Home, i18nKey: 'home' },
+    { path: '/produtos', icon: ShoppingCart, i18nKey: 'marketplace' },
+    { path: '/frete', icon: Truck, i18nKey: 'agroconecta' },
+    { path: '/clima', icon: Cloud, i18nKey: 'weather' },
+    { path: '/loja', icon: Store, i18nKey: 'store' },
+    // { path: '/tecnologia', icon: Coins, i18nKey: 'tecnologia' }, // Temporariamente oculto
+    { path: '/sobre', icon: Info, i18nKey: 'about' },
+    { path: '/planos', icon: Crown, i18nKey: 'plans' }
+  ], []);
 
-  // Submenus (desktop)
-  const submenuItems = {
+  // Submenus (desktop) - Recria quando idioma muda
+  const submenuItems = useMemo(() => ({
     '/produtos': [
-      { path: '/produtos', label: 'Produtos' },
-      { path: '/produtos/categories', label: 'Categorias' },
-      { path: '/produtos/sellers', label: 'Vendedores' },
-      { path: '/produtos/sell', label: 'Como Vender' }
+      { path: '/produtos', label: t('nav.products') },
+      { path: '/produtos/categories', label: t('nav.categories') },
+      { path: '/produtos/sellers', label: t('nav.sellers') },
+      { path: '/produtos/sell', label: t('nav.howToSell') }
     ],
     '/frete': [
-      { path: '/frete', label: 'Buscar Frete' },
-      { path: '/frete/offer', label: 'Oferecer Frete' },
-      { path: '/frete/carriers', label: 'Transportadores' },
-      { path: '/frete/tracking', label: 'Rastreamento' }
+      { path: '/frete', label: t('nav.searchFreight') },
+      { path: '/frete/offer', label: t('nav.offerFreight') },
+      { path: '/frete/carriers', label: t('nav.carriers') },
+      { path: '/frete/tracking', label: t('nav.tracking') }
     ],
     '/partnerships': [
-      { path: '/partnerships', label: 'Seja Parceiro' },
-      { path: '/partnerships/current', label: 'Parceiros Atuais' },
-      { path: '/partnerships/benefits', label: 'Benefícios' },
-      { path: '/partnerships/contact', label: 'Contato Comercial' }
+      { path: '/partnerships', label: t('nav.bePartner') },
+      { path: '/partnerships/current', label: t('nav.currentPartners') },
+      { path: '/partnerships/benefits', label: t('nav.benefits') },
+      { path: '/partnerships/contact', label: t('nav.businessContact') }
     ]
-  };
+  }), [t]);
 
-  const mobileNavigationItems = [
-    { path: '/', label: 'Início', icon: Home, i18nKey: 'inicio' },
-    { path: '/loja', label: 'Loja', icon: ShoppingCart, i18nKey: 'loja' },
-    { path: '/frete', label: 'Frete', icon: Truck, i18nKey: 'agroconecta' },
-    { path: '/produtos', label: 'Produtos', icon: ShoppingCart, i18nKey: 'marketplace' },
-    { path: '/tecnologia', label: 'Crypto', icon: Coins, i18nKey: 'tecnologia' },
-    { path: '/partnerships', label: 'Parcerias', icon: Users, i18nKey: 'parcerias' },
-    { path: '/sobre', label: 'Sobre', icon: Info, i18nKey: 'about' },
-    { path: '/planos', label: 'Planos', icon: Crown, i18nKey: 'plans' },
-    { path: '/login', label: 'Entrar', icon: LogIn, i18nKey: 'login' },
-    { path: '/signup', label: 'Cadastrar', icon: User, i18nKey: 'register' }
-  ];
+  const mobileNavigationItems = useMemo(() => [
+    { path: '/', icon: Home, i18nKey: 'home' },
+    { path: '/produtos', icon: ShoppingCart, i18nKey: 'marketplace' },
+    { path: '/frete', icon: Truck, i18nKey: 'agroconecta' },
+    { path: '/clima', icon: Cloud, i18nKey: 'weather' },
+    { path: '/loja', icon: Store, i18nKey: 'store' },
+    // { path: '/tecnologia', icon: Coins, i18nKey: 'tecnologia' }, // Temporariamente oculto
+    { path: '/partnerships', icon: Users, i18nKey: 'partnerships' },
+    { path: '/sobre', icon: Info, i18nKey: 'about' },
+    { path: '/planos', icon: Crown, i18nKey: 'plans' },
+    { path: '/login', icon: LogIn, i18nKey: 'login' },
+    { path: '/signup', icon: User, i18nKey: 'register' }
+  ], []);
 
   const buildPath = (path) => {
     const search = getCryptoSearch();
@@ -128,14 +141,14 @@ const AgroisyncHeader = () => {
         }`}
       >
         <div className='mx-auto max-w-7xl px-4'>
-          <div className='flex h-16 flex-wrap items-center justify-between md:flex-nowrap'>
+          <div className='flex h-12 md:h-16 flex-wrap items-center justify-between md:flex-nowrap'>
             {/* Logo */}
             <Link to={buildPath('/')} className='flex items-center'>
               <AgroisyncLogo />
             </Link>
 
             {/* Desktop Navigation */}
-            <nav id='main-nav' className='hidden items-center space-x-1 md:flex'>
+            <nav key={i18n.language} id='main-nav' className='hidden items-center space-x-0.5 md:flex'>
               {navigationItems.map(item => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.path;
@@ -144,14 +157,14 @@ const AgroisyncHeader = () => {
                   <div key={item.path} className='group relative'>
                     <Link
                       to={buildPath(item.path)}
-                      className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${
+                      className={`flex items-center gap-1.5 rounded-lg px-2 py-2 text-sm font-medium transition-all duration-200 ${
                         isActive
                           ? 'bg-green-500 text-white shadow-md'
                           : 'text-gray-700 hover:bg-green-50 hover:text-green-600 hover:shadow-sm'
                       }`}
                     >
                       <Icon className='h-4 w-4' />
-                      {t ? t(`nav.${item.i18nKey}`, item.label) : item.label}
+                      {t(`nav.${item.i18nKey}`)}
                     </Link>
                     {children && children.length > 0 && (
                       <div className='absolute left-0 z-50 mt-1 hidden min-w-[220px] rounded-lg border border-gray-200 bg-white shadow-lg transition-all duration-200 group-hover:block'>
@@ -248,14 +261,14 @@ const AgroisyncHeader = () => {
                     className='flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 transition-all duration-200 hover:bg-green-50 hover:text-green-600'
                   >
                     <LogIn className='h-4 w-4' />
-                    Entrar
+                    {t('nav.login')}
                   </Link>
                   <Link
                     to={buildPath('/signup')}
                     className='flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm font-medium text-white transition-all duration-200 hover:bg-green-600 hover:shadow-md'
                   >
                     <User className='h-4 w-4' />
-                    Cadastrar
+                    {t('nav.register')}
                   </Link>
                 </div>
               )}
@@ -350,7 +363,7 @@ const AgroisyncHeader = () => {
                       }`}
                     >
                       <Icon className='h-4 w-4' />
-                      {t ? t(`nav.${item.i18nKey}`, item.label) : item.label}
+                      {t(`nav.${item.i18nKey}`)}
                     </Link>
                   );
                 })}

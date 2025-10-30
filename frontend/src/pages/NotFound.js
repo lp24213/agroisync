@@ -1,9 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Home, ArrowLeft, Search, AlertCircle } from 'lucide-react';
 
 const NotFound = () => {
+  const { t } = useTranslation();
   return (
     <div className='flex min-h-screen items-center justify-center p-8'>
       <div className='mx-auto max-w-2xl text-center'>
@@ -25,10 +27,9 @@ const NotFound = () => {
 
           {/* Error Message */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-            <h1 className='text-primary mb-4 text-4xl font-bold md:text-5xl'>Página não encontrada</h1>
+            <h1 className='text-primary mb-4 text-4xl font-bold md:text-5xl'>{t('notFound.title')}</h1>
             <p className='text-secondary mx-auto max-w-lg text-lg leading-relaxed'>
-              A página que você está procurando não existe ou foi movida. Não se preocupe, vamos te ajudar a encontrar o
-              que precisa.
+              {t('notFound.description')}
             </p>
           </motion.div>
 
@@ -41,7 +42,7 @@ const NotFound = () => {
           >
             <Link to='/' className='btn-futuristic btn-primary flex items-center justify-center gap-2 px-8 py-4'>
               <Home size={20} />
-              <span>Voltar ao Início</span>
+              <span>{t('notFound.backHome')}</span>
             </Link>
 
             <button
@@ -49,7 +50,7 @@ const NotFound = () => {
               className='btn-futuristic btn-secondary flex items-center justify-center gap-2 px-8 py-4'
             >
               <ArrowLeft size={20} />
-              <span>Voltar</span>
+              <span>{t('notFound.goBack')}</span>
             </button>
           </motion.div>
 
@@ -63,16 +64,16 @@ const NotFound = () => {
             <div className='bg-primary mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl'>
               <Search size={32} className='text-white' />
             </div>
-            <h2 className='text-primary mb-4 text-2xl font-bold'>Precisa de ajuda?</h2>
+            <h2 className='text-primary mb-4 text-2xl font-bold'>{t('notFound.needHelp')}</h2>
             <p className='text-secondary mb-6'>
-              Nossa equipe está sempre pronta para ajudar você a encontrar o que precisa.
+              {t('notFound.needHelpDesc')}
             </p>
             <div className='flex flex-col justify-center gap-4 sm:flex-row'>
               <Link to='/contact' className='btn-futuristic btn-primary'>
-                Falar com Suporte
+                {t('notFound.talkSupport')}
               </Link>
               <Link to='/about' className='btn-futuristic btn-secondary'>
-                Conhecer o AgroSync
+                {t('notFound.knowAgroSync')}
               </Link>
             </div>
           </motion.div>
@@ -84,7 +85,7 @@ const NotFound = () => {
             transition={{ delay: 1.0 }}
             className='mt-8'
           >
-            <h3 className='text-primary mb-4 text-lg font-semibold'>Links Úteis</h3>
+            <h3 className='text-primary mb-4 text-lg font-semibold'>{t('notFound.usefulLinks')}</h3>
             <div className='flex flex-wrap justify-center gap-4'>
               <Link to='/marketplace' className='text-secondary hover:text-primary transition-colors'>
                 Marketplace

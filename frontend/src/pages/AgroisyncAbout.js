@@ -150,59 +150,141 @@ const AgroisyncAbout = () => {
     <div>
       {/* Hero Section TXC */}
       <section
-        className='agro-hero-section'
+        className='relative flex min-h-screen items-center justify-center'
         style={{
           background:
-            'linear-gradient(rgba(31, 46, 31, 0.4), rgba(31, 46, 31, 0.4)), url("https://media.istockphoto.com/id/1364083240/pt/foto/technology-in-the-field-laptop.webp?a=1&b=1&s=612x612&w=0&k=20&c=BtnjQ7Ndc3CWQE1fi0h-80owrTk2vZb9wGQtycK-52M=")',
+            'linear-gradient(135deg, rgba(22, 163, 74, 0.3) 0%, rgba(0, 0, 0, 0.7) 50%, rgba(34, 197, 94, 0.2) 100%), url("https://media.istockphoto.com/id/1364083240/pt/foto/technology-in-the-field-laptop.webp?a=1&b=1&s=612x612&w=0&k=20&c=BtnjQ7Ndc3CWQE1fi0h-80owrTk2vZb9wGQtycK-52M=")',
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
       >
-        <div className='agro-hero-content'>
+        <div className='absolute inset-0 bg-gradient-to-br from-green-900/50 via-black/70 to-green-800/30'></div>
+        <div className='relative z-10 mx-auto max-w-5xl px-4 text-center'>
           <motion.div variants={heroVariants} initial='hidden' animate='visible'>
-            <motion.div variants={itemVariants} style={{ marginBottom: 'var(--agro-space-xl)' }}>
+            <motion.div
+              variants={itemVariants}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6 }}
+              style={{ 
+                background: 'rgba(34, 197, 94, 0.15)',
+                padding: '8px 20px',
+                borderRadius: '30px',
+                border: '2px solid rgba(34, 197, 94, 0.3)',
+                marginBottom: '20px',
+                display: 'inline-block'
+              }}
+            >
+              <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#22c55e' }}>
+                {t('about.badge')}
+              </span>
+            </motion.div>
+
+            <motion.div variants={itemVariants} style={{ marginBottom: '2rem' }}>
               <div
                 style={{
-                  width: '120px',
-                  height: '120px',
+                  width: '140px',
+                  height: '140px',
                   margin: '0 auto',
-                  background: 'var(--agro-gradient-accent)',
-                  borderRadius: 'var(--agro-radius-3xl)',
+                  background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                  borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: 'var(--agro-dark-green)',
-                  boxShadow: 'var(--agro-shadow-lg)'
+                  color: '#fff',
+                  boxShadow: '0 20px 60px rgba(34, 197, 94, 0.5)',
+                  animation: 'pulse 2s ease-in-out infinite'
                 }}
               >
-                <Globe size={48} />
+                <Globe size={70} />
               </div>
             </motion.div>
 
-            <motion.h1 className='agro-hero-title' variants={itemVariants} style={{ textAlign: 'center' }}>
-              {t('about.hero.title', 'SOBRE A AGROISYNC')}
+            <motion.h1 
+              className='mb-6 text-7xl font-bold' 
+              variants={itemVariants} 
+              style={{
+                background: 'linear-gradient(135deg, #ffffff 0%, #22c55e 50%, #3b82f6 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                lineHeight: '1.2',
+                textAlign: 'center'
+              }}
+            >
+              {t('about.heroTitle')}
             </motion.h1>
 
-            <motion.p className='agro-hero-subtitle' variants={itemVariants}>
-              {t('about.hero.subtitle', 'Revolucionando o agronegócio brasileiro com tecnologia e inovação')}
+            <motion.p 
+              className='mb-8 text-xl text-white/90' 
+              variants={itemVariants}
+              style={{ textAlign: 'center', maxWidth: '750px', margin: '0 auto 2rem', lineHeight: '1.6' }}
+            >
+              {t('about.heroDesc')}
             </motion.p>
 
             <motion.div
               style={{
                 display: 'flex',
-                gap: 'var(--agro-space-lg)',
+                gap: '1rem',
                 justifyContent: 'center',
                 flexWrap: 'wrap',
-                marginTop: 'var(--agro-space-xl)'
+                marginTop: '2rem'
               }}
               variants={itemVariants}
             >
-              <Link to='/contact' className='agro-btn-outline'>
-                Fale Conosco
+              <Link 
+                to='/contact' 
+                className='agro-btn-outline'
+                style={{
+                  background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                  color: '#fff',
+                  padding: '16px 36px',
+                  fontSize: '1.1rem',
+                  fontWeight: 'bold',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 30px rgba(34, 197, 94, 0.4)',
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  transition: 'transform 0.2s',
+                  border: 'none'
+                }}
+                onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+                onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+              >
+                {t('about.contactUs')}
                 <ArrowRight size={20} />
               </Link>
-              <Link to='/plans' className='agro-btn-outline'>
-                Nossos Planos
+              <Link 
+                to='/planos' 
+                className='agro-btn-outline'
+                style={{
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  color: '#fff',
+                  border: '2px solid rgba(255, 255, 255, 0.3)',
+                  padding: '16px 36px',
+                  fontSize: '1.1rem',
+                  fontWeight: 'bold',
+                  borderRadius: '12px',
+                  backdropFilter: 'blur(10px)',
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.25)';
+                  e.target.style.transform = 'scale(1.05)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+                  e.target.style.transform = 'scale(1)';
+                }}
+              >
+                {t('about.ourPlans')}
               </Link>
             </motion.div>
           </motion.div>
@@ -569,7 +651,7 @@ const AgroisyncAbout = () => {
                   fontWeight: '600'
                 }}
               >
-                Começar Agora
+                {t('about.startNow')}
                 <ArrowRight size={20} />
               </Link>
               <Link
@@ -581,7 +663,7 @@ const AgroisyncAbout = () => {
                   fontWeight: '600'
                 }}
               >
-                Fale Conosco
+                {t('about.contactUs')}
               </Link>
             </div>
             <div className='mt-8 flex justify-center'>

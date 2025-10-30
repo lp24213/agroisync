@@ -16,7 +16,7 @@ import AccessibilityPanel from './components/AccessibilityPanel';
 import ErrorBoundary from './components/ErrorBoundary';
 import LoadingFallback from './components/LoadingFallback';
 import DynamicCryptoURL from './components/DynamicCryptoURL';
-import { Accessibility } from 'lucide-react';
+import { Accessibility, Brain } from 'lucide-react';
 
 // CSS unificado (5 arquivos)
 import './styles/base.css';
@@ -56,6 +56,7 @@ const SignupFreight = React.lazy(() => import('./pages/SignupFreight'));
 const SignupStore = React.lazy(() => import('./pages/SignupStore'));
 const SignupProduct = React.lazy(() => import('./pages/SignupProduct'));
 const SignupGeneral = React.lazy(() => import('./pages/SignupGeneral'));
+const SignupUnified = React.lazy(() => import('./pages/SignupUnified'));
 const ResetPassword = React.lazy(() => import('./pages/ResetPassword'));
 const Payment = React.lazy(() => import('./pages/Payment'));
 const ProductDetail = React.lazy(() => import('./pages/ProductDetail'));
@@ -66,6 +67,7 @@ const TermosResponsabilidade = React.lazy(() => import('./pages/TermosResponsabi
 const CryptoDetail = React.lazy(() => import('./pages/CryptoDetail'));
 const AdminPanel = React.lazy(() => import('./pages/AdminPanel'));
 const UserAdmin = React.lazy(() => import('./pages/UserAdmin'));
+const MediaKit = React.lazy(() => import('./pages/MediaKit'));
 const CryptoRoutesStatus = React.lazy(() => import('./components/CryptoRoutesStatus'));
 const UserDashboard = React.lazy(() => import('./pages/UserDashboard'));
 const CryptoDashboard = React.lazy(() => import('./pages/CryptoDashboard'));
@@ -82,7 +84,8 @@ const LoginRedirect = React.lazy(() => import('./pages/LoginRedirect'));
 const Unauthorized = React.lazy(() => import('./pages/Unauthorized'));
 const NotFound = React.lazy(() => import('./pages/NotFound'));
 const Home = React.lazy(() => import('./pages/Home'));
-const Insumos = React.lazy(() => import('./pages/Insumos'));
+const ClimaInsumos = React.lazy(() => import('./pages/ClimaInsumos'));
+const APIPage = React.lazy(() => import('./pages/APIPage'));
 const Store = React.lazy(() => import('./pages/Store'));
 const StorePlans = React.lazy(() => import('./pages/StorePlans'));
 const AgroconectaTracking = React.lazy(() => import('./pages/AgroconectaTracking'));
@@ -210,6 +213,13 @@ function App() {
                         <Route path='/about' element={<AgroisyncAbout />} />
                         <Route path='/planos' element={<AgroisyncPlans />} />
                         <Route path='/plans' element={<AgroisyncPlans />} />
+                        <Route path='/clima' element={<ClimaInsumos />} />
+                        <Route path='/weather' element={<ClimaInsumos />} />
+                        <Route path='/insumos' element={<ClimaInsumos />} />
+                        <Route path='/supplies' element={<ClimaInsumos />} />
+                        <Route path='/clima-insumos' element={<ClimaInsumos />} />
+                        <Route path='/api' element={<APIPage />} />
+                        <Route path='/api-key' element={<APIPage />} />
                         <Route path='/payment/pix' element={<PaymentPix />} />
                         <Route path='/payment/boleto' element={<PaymentBoleto />} />
                         <Route path='/payment/credit-card' element={<PaymentCreditCard />} />
@@ -220,7 +230,6 @@ function App() {
                         <Route path='/usuario-geral' element={<UsuarioGeral />} />
                         <Route path='/tecnologia' element={<AgroisyncCrypto />} />
                         <Route path='/crypto' element={<AgroisyncCrypto />} />
-                        <Route path='/insumos' element={<Insumos />} />
                         
                         {/* Partnerships Routes */}
                         <Route path='/partnerships' element={<Partnerships />} />
@@ -245,11 +254,13 @@ function App() {
                         <Route path='/crypto/:id/:cryptoHash' element={<CryptoRouteHandler><CryptoDetail /></CryptoRouteHandler>} />
 
                         {/* Auth Routes */}
-                        <Route path='/register' element={<AgroisyncRegister />} />
+                        <Route path='/register' element={<SignupUnified />} />
                         <Route path='/login' element={<AgroisyncLogin />} />
-                        <Route path='/signup' element={<AgroisyncRegister />} />
+                        <Route path='/signup' element={<SignupUnified />} />
                         <Route path='/signup/type' element={<SignupType />} />
-                        <Route path='/signup/general' element={<SignupGeneral />} />
+                        <Route path='/signup/general' element={<SignupUnified />} />
+                        <Route path='/signup/unified' element={<SignupUnified />} />
+                        <Route path='/signup/old' element={<AgroisyncRegister />} />
                         <Route path='/signup/freight' element={<SignupFreight />} />
                         <Route path='/signup/store' element={<SignupStore />} />
                         <Route path='/signup/product' element={<SignupProduct />} />
@@ -368,6 +379,22 @@ function App() {
                           }
                         />
                         <Route
+                          path='/media-kit'
+                          element={
+                            <ProtectedRoute>
+                              <MediaKit />
+                            </ProtectedRoute>
+                          }
+                        />
+                        <Route
+                          path='/admin/media-kit'
+                          element={
+                            <ProtectedRoute>
+                              <MediaKit />
+                            </ProtectedRoute>
+                          }
+                        />
+                        <Route
                           path='/useradmin/:cryptoHash'
                           element={
                             <ProtectedRoute>
@@ -442,26 +469,20 @@ function App() {
                 {/* AI Chatbot Futurista */}
                 <AIChatbot isOpen={isChatbotOpen} onClose={() => setIsChatbotOpen(false)} />
 
-                {/* Botão do Chatbot Preto */}
+                {/* Botão do Chatbot VERDE Futurista */}
                 <button
                   onClick={() => setIsChatbotOpen(true)}
-                  className='fixed bottom-6 right-6 z-50 transform rounded-full border border-black shadow-2xl transition-all duration-300 hover:scale-110'
-                  aria-label='Abrir chatbot AI'
+                  className='fixed bottom-6 right-6 z-50 transform rounded-full border-2 border-green-400 shadow-2xl transition-all duration-300 hover:scale-125 hover:rotate-12 animate-pulse'
+                  aria-label='Abrir chatbot AI AGROISYNC'
                   style={{
-                    background: 'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)',
-                    padding: '14px'
+                    background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.9) 0%, rgba(16, 185, 129, 0.9) 100%)',
+                    padding: '16px',
+                    boxShadow: '0 0 40px rgba(34, 197, 94, 0.8), 0 8px 30px rgba(0, 0, 0, 0.4)'
                   }}
                 >
                   <div className='relative flex items-center justify-center'>
-                    <svg className='h-6 w-6 text-white' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        strokeWidth={2}
-                        d='M12 14c3.866 0 7-2.015 7-4.5S15.866 5 12 5 5 7.015 5 9.5c0 1.264.79 2.402 2.084 3.213-.031 1.02-.337 1.982-.938 2.787 1.31-.172 2.52-.557 3.449-1.078.761.108 1.558.178 2.405.178z'
-                      />
-                    </svg>
-                    <div className='absolute -right-1 -top-1 h-3 w-3 animate-pulse rounded-full bg-white'></div>
+                    <Brain className='h-7 w-7 text-white' />
+                    <div className='absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] font-bold text-green-600'>AI</div>
                   </div>
                 </button>
 
@@ -473,13 +494,16 @@ function App() {
                 {/* Painel de Acessibilidade Futurista */}
                 <AccessibilityPanel isOpen={isAccessibilityOpen} onClose={() => setIsAccessibilityOpen(false)} />
 
-                {/* Botão de Acessibilidade Azul */}
+                {/* Botão de Acessibilidade ROXO Futurista */}
                 <button
                   onClick={() => setIsAccessibilityOpen(true)}
-                  className='fixed bottom-4 left-4 z-30 transform rounded-full bg-blue-600 p-3 text-white shadow-xl transition-all duration-300 hover:scale-110 md:bottom-6 md:left-6 md:p-4 md:shadow-2xl'
+                  className='fixed bottom-4 left-4 z-30 transform rounded-full bg-gradient-to-br from-purple-600 to-purple-500 p-3 text-white shadow-xl transition-all duration-300 hover:scale-125 hover:rotate-12 md:bottom-6 md:left-6 md:p-4 md:shadow-2xl border-2 border-purple-400'
                   aria-label='Abrir painel de acessibilidade'
+                  style={{
+                    boxShadow: '0 0 30px rgba(139, 92, 246, 0.6), 0 8px 30px rgba(0, 0, 0, 0.4)'
+                  }}
                 >
-                  <Accessibility className='h-5 w-5 text-white md:h-6 md:w-6' />
+                  <Accessibility className='h-6 w-6 text-white md:h-7 md:w-7' />
                 </button>
 
                 {/* Toast Notifications */}

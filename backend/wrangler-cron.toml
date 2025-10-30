@@ -1,0 +1,36 @@
+# AgroSync Cron Worker - Atualização Automática
+name = "agroisync-cron"
+main = "cron-worker.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Worker configuration
+workers_dev = false
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "agroisync-db"
+database_id = "a3eb1069-9c36-4689-9ee9-971245cb2d12"
+
+# KV Namespaces
+[[kv_namespaces]]
+binding = "CACHE"
+id = "8a07f2664b154e84a26ca3f95836378d"
+
+# Cloudflare AI
+[ai]
+binding = "AI"
+
+# Environment Variables
+[vars]
+NODE_ENV = "production"
+CRON_SECRET = "change-this-secret-token"
+
+# Cron Triggers - Executa a cada 6 horas
+[triggers]
+crons = ["0 */6 * * *"]  # A cada 6 horas (00:00, 06:00, 12:00, 18:00)
+
+# Secrets (configure via wrangler secret put)
+# - RESEND_API_KEY (para notificações)
+
