@@ -4,7 +4,7 @@ import { Mail, Phone, MapPin, Send, User, MessageSquare, CheckCircle } from 'luc
 import AgroisyncHeader from '../components/AgroisyncHeader';
 import AgroisyncFooter from '../components/AgroisyncFooter';
 
-const Contact = () => {
+const AgroisyncContact = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -287,5 +287,5 @@ const Contact = () => {
   );
 };
 
-export default Contact;
+export default AgroisyncContact;
 
