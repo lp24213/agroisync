@@ -33,7 +33,8 @@ const AgroisyncFooter = () => {
       links: [
         { label: t('footer.weatherSupplies'), path: '/clima' },
         { label: '🔑 API', path: '/api' },
-        { label: t('footer.store'), path: '/loja' }
+        { label: t('footer.store'), path: '/loja' },
+        { label: '📧 Contato', path: '/contact' }
       ]
     },
     {

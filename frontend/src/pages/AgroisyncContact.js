@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, User, MessageSquare, CheckCircle } from 'lucide-react';
-import AgroisyncHeader from '../components/AgroisyncHeader';
-import AgroisyncFooter from '../components/AgroisyncFooter';
 
 const AgroisyncContact = () => {
   const [formData, setFormData] = useState({
@@ -77,8 +75,6 @@ const AgroisyncContact = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50">
-      <AgroisyncHeader />
-
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4">
         <div className="max-w-7xl mx-auto">
@@ -281,8 +277,6 @@ const AgroisyncContact = () => {
           </div>
         </div>
       </section>
-
-      <AgroisyncFooter />
     </div>
   );
 };
