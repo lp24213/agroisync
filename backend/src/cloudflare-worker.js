@@ -1163,7 +1163,7 @@ async function handleRegister(request, env) {
       if (usernameExists) {
         return jsonResponse({ success: false, error: 'Nome de usuário já está em uso' }, 409);
       }
-    }
+  }
 
     // Hash password
     const hashedPassword = await hashPassword(password);
@@ -1181,7 +1181,7 @@ async function handleRegister(request, env) {
       ) VALUES (?, ?, ?, ?, 'gratuito', ?, ?, ?, ?, 0, 0)`
     ).bind(
       name, 
-      email.toLowerCase(),
+      email.toLowerCase(), 
       username ? username.toLowerCase() : null,
       hashedPassword, 
       trialExpiresAt.toISOString(),
@@ -1213,7 +1213,7 @@ async function handleRegister(request, env) {
         user: { 
           id: userId, 
           email, 
-          name,
+          name, 
           username: username ? username.toLowerCase() : null,
           business_type: businessType,
           limits: {

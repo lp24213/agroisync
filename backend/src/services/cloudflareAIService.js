@@ -266,7 +266,8 @@ Responda SEMPRE em português brasileiro, exceto quando o usuário perguntar exp
     // Cotação de frete com cálculo automático
     if (intent === 'calculate_freight') {
       // Tentar extrair cidades da mensagem
-      const match = lowerMessage.match(/de\s+(\w+)[,\/]?(\w{2})\s+para\s+(\w+)[,\/]?(\w{2})/i);
+      const re = new RegExp('de\\s+(\\w+)[,/]?(\\w{2})\\s+para\\s+(\\w+)[,/]?(\\w{2})', 'i');
+      const match = lowerMessage.match(re);
       if (match) {
         const [_, originCity, originState, destCity, destState] = match;
         const weightMatch = lowerMessage.match(/(\d+)\s*(ton|toneladas|t)/i);

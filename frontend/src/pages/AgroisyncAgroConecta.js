@@ -918,7 +918,7 @@ const AgroisyncAgroConecta = () => {
                   
                   {/* Mensagem de upgrade após o limite */}
                   {(!user || (user.plan === 'gratuito' && ofertasFrete.length > 10)) && (
-                    <div style={{
+                      <div style={{ 
                       gridColumn: '1 / -1',
                       padding: '2rem',
                       background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%)',
@@ -932,8 +932,8 @@ const AgroisyncAgroConecta = () => {
                         color: '#d97706', 
                         fontSize: '1.5rem', 
                         fontWeight: '700',
-                        marginBottom: '0.5rem'
-                      }}>
+                          marginBottom: '0.5rem'
+                        }}>
                         Desbloqueie TODOS os Fretes!
                       </h3>
                       <p style={{ 
@@ -943,23 +943,23 @@ const AgroisyncAgroConecta = () => {
                       }}>
                         Você está vendo apenas {user ? '10' : '5'} fretes. Faça upgrade para ter acesso ilimitado!
                       </p>
-                      <div style={{ 
-                        display: 'flex', 
-                        gap: '1rem', 
+                        <div style={{ 
+                          display: 'flex', 
+                        gap: '1rem',
                         justifyContent: 'center',
                         flexWrap: 'wrap'
                       }}>
                         {!user && (
-                          <button
+                        <button
                             onClick={() => window.location.href = '/register'}
-                            style={{
+                          style={{
                               padding: '1rem 2rem',
                               background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
                               color: 'white',
                               border: 'none',
                               borderRadius: '12px',
                               fontSize: '1rem',
-                              fontWeight: '700',
+                            fontWeight: '700',
                               cursor: 'pointer',
                               boxShadow: '0 4px 15px rgba(59, 130, 246, 0.4)'
                             }}

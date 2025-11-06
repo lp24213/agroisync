@@ -24,6 +24,12 @@ allprojects {
     }
 }
 
+// NOTE: Removed custom JavaCompile toolchain config because it caused toolchain
+// resolution errors in local builds. The project will use the system
+// JAVA_HOME for compilation. If you require different toolchains, configure
+// Gradle toolchain repositories per Gradle docs instead of forcing
+// installationPath here.
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

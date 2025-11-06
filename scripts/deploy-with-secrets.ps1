@@ -24,9 +24,8 @@ $secrets = @(
 foreach ($name in $secrets) {
     $val = Read-Secret "Digite o valor para $name (pressione Enter)"
     if (![string]::IsNullOrWhiteSpace($val)) {
-        $pinfo = Start-Process -FilePath npx -ArgumentList "wrangler secret put $name --config .\wrangler.toml" -NoNewWindow -PassThru -Wait -RedirectStandardInput input.txt
-        # Não há redirecionamento seguro fácil via Start-Process, então usamos um workaround
-        cmd /c "echo $val | npx wrangler secret put $name --config .\wrangler.toml"
+    # Não há redirecionamento seguro fácil via Start-Process, então usamos um workaround
+    cmd /c "echo $val | npx wrangler secret put $name --config .\wrangler.toml"
     }
 }
 

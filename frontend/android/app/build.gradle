@@ -1,5 +1,12 @@
 apply plugin: 'com.android.application'
 
+// Load keystore properties if present (keystore.properties should be created locally and NOT committed)
+def keystorePropertiesFile = rootProject.file('keystore.properties')
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     namespace "com.agroisync.app"
     compileSdk rootProject.ext.compileSdkVersion
@@ -16,13 +23,30 @@ android {
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            if (keystoreProperties['storeFile']) {
+                storeFile file(keystoreProperties['storeFile'])
+            }
+            keyAlias keystoreProperties['keyAlias'] ?: ''
+            storePassword keystoreProperties['storePassword'] ?: ''
+            keyPassword keystoreProperties['keyPassword'] ?: ''
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // Use signing config from keystore.properties (not checked into repo)
+            if (keystorePropertiesFile.exists()) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 }
+
+// signingConfigs moved above inside the main android block
 
 repositories {
     flatDir{
