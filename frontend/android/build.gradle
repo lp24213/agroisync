@@ -7,7 +7,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.7.2'
+        classpath 'com.android.tools.build:gradle:8.1.2'
         classpath 'com.google.gms:google-services:4.4.2'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -22,13 +22,13 @@ allprojects {
         google()
         mavenCentral()
     }
-}
 
-// NOTE: Removed custom JavaCompile toolchain config because it caused toolchain
-// resolution errors in local builds. The project will use the system
-// JAVA_HOME for compilation. If you require different toolchains, configure
-// Gradle toolchain repositories per Gradle docs instead of forcing
-// installationPath here.
+    // Configuração do Java 17 para todos os projetos
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+}
 
 task clean(type: Delete) {
     delete rootProject.buildDir

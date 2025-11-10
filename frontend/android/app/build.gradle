@@ -1,22 +1,23 @@
 apply plugin: 'com.android.application'
 
-// Load keystore properties if present (keystore.properties should be created locally and NOT committed)
-def keystorePropertiesFile = rootProject.file('keystore.properties')
-def keystoreProperties = new Properties()
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-}
-
 android {
-    namespace "com.agroisync.app"
+    namespace "com.agroisync.mobile"
     compileSdk rootProject.ext.compileSdkVersion
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
     defaultConfig {
-        applicationId "com.agroisync.app"
+        applicationId "com.agroisync.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 1000000008
+        versionName "2.0.8"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+        }
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
              // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
@@ -25,28 +26,32 @@ android {
     }
     signingConfigs {
         release {
-            if (keystoreProperties['storeFile']) {
-                storeFile file(keystoreProperties['storeFile'])
-            }
-            keyAlias keystoreProperties['keyAlias'] ?: ''
-            storePassword keystoreProperties['storePassword'] ?: ''
-            keyPassword keystoreProperties['keyPassword'] ?: ''
+            storeFile file("C:/Users/luisp/OneDrive/Área de Trabalho/KEY PORRA/keystore.jks")
+            storePassword "agroisync123"
+            keyAlias "upload"
+            keyPassword "agroisync123"
         }
     }
 
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            // Use signing config from keystore.properties (not checked into repo)
-            if (keystorePropertiesFile.exists()) {
-                signingConfig signingConfigs.release
-            }
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            debuggable false
+            jniDebuggable false
+            renderscriptDebuggable false
+            crunchPngs true
         }
     }
+    
+    dexOptions {
+        jumboMode true
+        javaMaxHeapSize "4g"
+        preDexLibraries true
+    }
 }
-
-// signingConfigs moved above inside the main android block
 
 repositories {
     flatDir{
@@ -58,7 +63,14 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
     implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
-    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation "androidx.core:core-splashscreen:1.0.1"
+    implementation "androidx.core:core-ktx:1.12.0"
+    implementation 'com.google.android.play:integrity:1.5.0'
+    implementation 'com.android.volley:volley:1.2.1'
+    implementation 'androidx.security:security-crypto:1.1.0-alpha06'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
     implementation project(':capacitor-android')
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Cores principais -->
+    <color name="colorPrimary">#22c55e</color>
+    <color name="colorPrimaryDark">#16a34a</color>
+    <color name="colorPrimaryLight">#4ade80</color>
+    <color name="colorAccent">#22c55e</color>
+
+    <!-- Cores secundárias -->
+    <color name="colorSecondary">#0ea5e9</color>
+    <color name="colorSecondaryDark">#0284c7</color>
+    <color name="colorSecondaryLight">#38bdf8</color>
+
+    <!-- Tons de cinza -->
+    <color name="gray50">#f8fafc</color>
+    <color name="gray100">#f1f5f9</color>
+    <color name="gray200">#e2e8f0</color>
+    <color name="gray300">#cbd5e1</color>
+    <color name="gray400">#94a3b8</color>
+    <color name="gray500">#64748b</color>
+    <color name="gray600">#475569</color>
+    <color name="gray700">#334155</color>
+    <color name="gray800">#1e293b</color>
+    <color name="gray900">#0f172a</color>
+
+    <!-- Cores de status -->
+    <color name="success">#22c55e</color>
+    <color name="warning">#eab308</color>
+    <color name="error">#ef4444</color>
+    <color name="info">#3b82f6</color>
+
+    <!-- Cores de background -->
+    <color name="background_light">#ffffff</color>
+    <color name="background_dark">#1e293b</color>
+    <color name="surface_light">#f8fafc</color>
+    <color name="surface_dark">#334155</color>
+
+    <!-- Cores de texto -->
+    <color name="text_primary_light">#0f172a</color>
+    <color name="text_secondary_light">#475569</color>
+    <color name="text_primary_dark">#f8fafc</color>
+    <color name="text_secondary_dark">#cbd5e1</color>
+
+    <!-- Cores base -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+
+    <!-- Cores específicas do AgroiSync -->
+    <color name="agroisync_green">#22c55e</color>
+    <color name="agroisync_blue">#0ea5e9</color>
+    <color name="agroisync_yellow">#eab308</color>
+    <color name="agroisync_orange">#f97316</color>
+</resources>

@@ -1,12 +1,15 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.agroisync.app',
+  appId: 'com.agroisync.mobile',
   appName: 'AgroSync',
   webDir: 'build',
-  // IMPORTANTE: NÃO configurar 'server' - isso faz usar arquivos LOCAIS do build
-  // O app vai ser EXATAMENTE igual ao web, usando os mesmos arquivos estáticos
-  // server: undefined, // Remove configuração de servidor remoto
+  server: {
+    url: 'https://agroisync.com',
+    cleartext: true,
+    androidScheme: 'https'
+  },
+  loggingBehavior: 'debug',
   plugins: {
     SplashScreen: {
       launchShowDuration: 2000,
@@ -31,7 +34,7 @@ const config: CapacitorConfig = {
       keystorePath: undefined,
       keystoreAlias: undefined
     },
-    allowMixedContent: false
+    allowMixedContent: true
   },
   ios: {
     scheme: 'AgroSync',
