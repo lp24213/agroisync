@@ -11,8 +11,8 @@ android {
         applicationId "com.agroisync.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1000000008
-        versionName "2.0.8"
+        versionCode 1000000009
+        versionName "2.0.9"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
