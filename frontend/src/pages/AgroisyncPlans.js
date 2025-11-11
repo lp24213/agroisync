@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { 
   Check, Star, Zap, Shield, Users, CreditCard, Gift, 
   Brain, Globe, MessageCircle, Award, Target, BarChart3,
-  Phone, ArrowRight, Sparkles, Rocket, DollarSign, Clock
+  Phone, ArrowRight, Sparkles, DollarSign, Clock
 } from 'lucide-react';
 import CryptoHash from '../components/CryptoHash';
 import paymentService from '../services/paymentService';
@@ -1020,7 +1020,7 @@ const AgroisyncPlans = () => {
                 whileHover={{ scale: 1.05 }}
                 className='rounded-xl bg-white/20 p-6 backdrop-blur-sm'
               >
-                <Rocket className='mx-auto mb-3 h-8 w-8 text-white' />
+                <Gift className='mx-auto mb-3 h-8 w-8 text-white' />
                 <h3 className='mb-2 text-lg font-semibold text-white'>Onboarding Gratuito</h3>
                 <p className='text-green-100'>Treinamento completo incluído</p>
               </motion.div>

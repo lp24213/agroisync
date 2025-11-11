@@ -1,3 +1,29 @@
 # Redirects for SPA - All routes including crypto hashes
 /*    /index.html 200
 https://www.agroisync.com/* https://agroisync.com/:splat 301
+
+# Redirect freights e offers para signup
+/freights    /signup 302
+/offers      /signup 302
+
+# Redirecionamentos principais
+/home        /          301
+/home-prompt /          301
+/product/*   /produto/:splat   301
+/home/*      /          301
+
+# Redirecionamentos de rotas antigas
+/about              /sobre              301
+/plans              /planos             301
+/contact            /contato            301
+/store              /loja               301
+/weather            /clima              301
+/supplies           /insumos            301
+/marketplace/*      /produtos/:splat     301
+/agroconecta/*      /frete/:splat       301
+/api-key            /api                301
+/clima-insumos      /clima              301
+/tecnologia         /crypto             301
+/signup/type        /signup/unified      301
+/signup/general     /signup/unified      301
+/signup/old         /signup             301

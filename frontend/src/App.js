@@ -159,8 +159,8 @@ function App() {
                       <Routes>
                         {/* Public Routes - OTIMIZADAS */}
                         <Route path='/' element={<AgroisyncHome />} />
-                        <Route path='/home' element={<Home />} />
-                        <Route path='/home-prompt' element={<AgroisyncHomePrompt />} />
+                        <Route path='/home' element={<Navigate to="/" replace />} />
+                        <Route path='/home-prompt' element={<Navigate to="/" replace />} />
                         
                         {/* Produtos Routes (novo nome) */}
                         <Route path='/produtos' element={<AgroisyncMarketplace />} />
@@ -210,32 +210,15 @@ function App() {
                         
                         {/* Main Pages Routes */}
                         <Route path='/sobre' element={<AgroisyncAbout />} />
-                        <Route path='/about' element={<AgroisyncAbout />} />
                         <Route path='/planos' element={<AgroisyncPlans />} />
-                        <Route path='/plans' element={<AgroisyncPlans />} />
                         <Route path='/clima' element={<ClimaInsumos />} />
-                        <Route path='/weather' element={<ClimaInsumos />} />
                         <Route path='/insumos' element={<ClimaInsumos />} />
-                        <Route path='/supplies' element={<ClimaInsumos />} />
-                        <Route path='/clima-insumos' element={<ClimaInsumos />} />
                         <Route path='/api' element={<APIPage />} />
-                        <Route path='/api-key' element={<APIPage />} />
                         <Route path='/payment/pix' element={<PaymentPix />} />
                         <Route path='/payment/boleto' element={<PaymentBoleto />} />
                         <Route path='/payment/credit-card' element={<PaymentCreditCard />} />
                         <Route path='/contato' element={<AgroisyncContact />} />
-                        <Route path='/contact' element={<AgroisyncContact />} />
-                        
-                        {/* User Routes */}
-                        <Route path='/usuario-geral' element={<UsuarioGeral />} />
-                        <Route path='/tecnologia' element={<AgroisyncCrypto />} />
                         <Route path='/crypto' element={<AgroisyncCrypto />} />
-                        
-                        {/* Partnerships Routes */}
-                        <Route path='/partnerships' element={<Partnerships />} />
-                        <Route path='/partnerships/current' element={<PartnershipsCurrent />} />
-                        <Route path='/partnerships/benefits' element={<PartnershipsBenefits />} />
-                        <Route path='/partnerships/contact' element={<PartnershipsContact />} />
                         
                         {/* Legal Routes */}
                         <Route path='/faq' element={<FAQ />} />
@@ -245,7 +228,7 @@ function App() {
 
                         {/* Detail Pages */}
                         <Route path='/produto/:id' element={<ProductDetail />} />
-                        <Route path='/product/:id' element={<ProductDetailNew />} />
+                        <Route path='/product/:id' element={<Navigate to="/produto/:id" replace />} />
                         <Route path='/produto/:id/:cryptoHash' element={<CryptoRouteHandler><ProductDetail /></CryptoRouteHandler>} />
                         <Route path='/price-alerts' element={<PriceAlerts />} />
                         <Route path='/favorites' element={<Favorites />} />
@@ -257,10 +240,7 @@ function App() {
                         <Route path='/register' element={<SignupUnified />} />
                         <Route path='/login' element={<AgroisyncLogin />} />
                         <Route path='/signup' element={<SignupUnified />} />
-                        <Route path='/signup/type' element={<SignupType />} />
-                        <Route path='/signup/general' element={<SignupUnified />} />
                         <Route path='/signup/unified' element={<SignupUnified />} />
-                        <Route path='/signup/old' element={<AgroisyncRegister />} />
                         <Route path='/signup/freight' element={<SignupFreight />} />
                         <Route path='/signup/store' element={<SignupStore />} />
                         <Route path='/signup/product' element={<SignupProduct />} />

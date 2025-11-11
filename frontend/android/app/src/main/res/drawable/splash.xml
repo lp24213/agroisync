@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Fundo branco para o splash - mostra apenas o logo Agroisync central -->
     <item>
-        <color android:color="@color/colorPrimary"/>
+        <color android:color="@color/background_light"/>
     </item>
     <item
-        android:width="200dp"
-        android:height="200dp"
+        android:width="256dp"
+        android:height="256dp"
         android:drawable="@drawable/agroisync_logo"
         android:gravity="center"/>
 </layer-list>

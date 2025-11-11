@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import StockTicker from '../components/StockTicker';
@@ -11,8 +11,18 @@ import AgriNews from '../components/AgriNews';
 
 const AgroisyncHome = () => {
   const { t } = useTranslation();
+  const [showLogoAnimation, setShowLogoAnimation] = React.useState(true);
+  
   // Imagem de campo de soja e trigo com cache buster - usando imagem de alta resolução
   const inicioImageUrl = `https://media.istockphoto.com/id/2228728040/pt/foto/soybean-and-wheat-fields-at-summer-season.webp?a=1&b=1&s=612x612&w=0&k=20&c=N6HRSCwp0KbkAMuNBlSM7YbBq74KOBQvKvnRSB3Ws-A=`;
+
+  // Animação de entrada do logo
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowLogoAnimation(false);
+    }, 2000); // Mostra o logo por 2 segundos
+    return () => clearTimeout(timer);
+  }, []);
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 60 },
@@ -38,8 +48,72 @@ const AgroisyncHome = () => {
 
   return (
     <div className='agro-home-container'>
-      {/* Ticker da Bolsa */}
-      <StockTicker />
+      {/* Animação de entrada do Logo Agroisync */}
+      <AnimatePresence>
+        {showLogoAnimation && (
+          <motion.div
+            key="logo-animation"
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.2 }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: '#FFFFFF',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 9999,
+              pointerEvents: 'none'
+            }}
+          >
+            <motion.div
+              animate={{ 
+                scale: [1, 1.1, 1],
+                opacity: [1, 1, 1]
+              }}
+              transition={{ 
+                duration: 1.5, 
+                repeat: Infinity, 
+                ease: 'easeInOut' 
+              }}
+              style={{
+                width: '300px',
+                height: '300px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <img 
+                src="/agroisync-main-logo.png" 
+                alt="Agroisync Logo" 
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain'
+                }}
+                onError={(e) => {
+                  e.target.src = '/agroisync-logo.svg';
+                  e.target.onerror = () => {
+                    e.target.style.display = 'none';
+                  };
+                }}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
+      {/* Conteúdo principal - aparece após animação */}
+      {!showLogoAnimation && (
+        <>
+          {/* Ticker da Bolsa */}
+          <StockTicker />
 
       {/* Hero Section */}
       <section
@@ -80,7 +154,7 @@ const AgroisyncHome = () => {
               }}
             >
               <span style={{ fontSize: '14px', fontWeight: '700', color: '#22c55e', letterSpacing: '0.5px' }}>
-                🚀 {t('home.title')}
+                {t('home.title')}
               </span>
             </motion.div>
 
@@ -138,7 +212,7 @@ const AgroisyncHome = () => {
                   border: 'none'
                 }}
               >
-                🚀 {t('home.startNow')}
+                {t('home.startNow')}
               </Link>
               <Link 
                 to='/planos' 
@@ -823,9 +897,11 @@ const AgroisyncHome = () => {
           }
         }
       `}</style>
-      <div className='mt-8 flex justify-center' aria-hidden>
-        <CryptoHash pageName='agroisync-home' visible={false} />
-      </div>
+          <div className='mt-8 flex justify-center' aria-hidden>
+            <CryptoHash pageName='agroisync-home' visible={false} />
+          </div>
+        </>
+      )}
     </div>
   );
 };

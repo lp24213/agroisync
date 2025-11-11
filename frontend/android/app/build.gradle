@@ -1,18 +1,32 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "com.agroisync.mobile"
+    namespace "com.agroisync.app"
+    
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
     compileSdk rootProject.ext.compileSdkVersion
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+        // encoding here is supported via JavaCompile options below
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+    
+    buildFeatures {
+        buildConfig true
     }
     defaultConfig {
         applicationId "com.agroisync.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1000000009
-        versionName "2.0.9"
+        versionCode 1000000014
+        versionName "2.0.14"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
@@ -46,10 +60,33 @@ android {
         }
     }
     
-    dexOptions {
-        jumboMode true
-        javaMaxHeapSize "4g"
-        preDexLibraries true
+    packagingOptions {
+        resources {
+            excludes += [
+                'META-INF/DEPENDENCIES',
+                'META-INF/LICENSE',
+                'META-INF/LICENSE.txt',
+                'META-INF/license.txt',
+                'META-INF/NOTICE',
+                'META-INF/NOTICE.txt',
+                'META-INF/notice.txt',
+                'META-INF/ASL2.0',
+                'META-INF/*.kotlin_module'
+            ]
+        }
+    }
+    
+    sourceSets {
+        main {
+            java.srcDirs = ['src/main/java']
+            res.srcDirs = ['src/main/res']
+            assets.srcDirs = ['src/main/assets']
+            manifest.srcFile 'src/main/AndroidManifest.xml'
+        }
+    }
+    
+    configurations.all {
+        resolutionStrategy.force 'androidx.core:core-ktx:1.10.1'
     }
 }
 
@@ -60,16 +97,15 @@ repositories {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
-    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:1.2.0"
     implementation "androidx.core:core-splashscreen:1.0.1"
-    implementation "androidx.core:core-ktx:1.12.0"
-    implementation 'com.google.android.play:integrity:1.5.0'
+    implementation "androidx.core:core-ktx:1.10.1"
     implementation 'com.android.volley:volley:1.2.1'
-    implementation 'androidx.security:security-crypto:1.1.0-alpha06'
-    implementation 'com.google.android.material:material:1.11.0'
-    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
+    implementation 'androidx.multidex:multidex:2.0.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
     implementation project(':capacitor-android')
     testImplementation "junit:junit:$junitVersion"

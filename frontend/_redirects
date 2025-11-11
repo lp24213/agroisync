@@ -2,6 +2,16 @@
 # Redirecionar www para não-www
 https://www.agroisync.com/* https://agroisync.com/:splat 301!
 
+# Redirecionar fretes e ofertas para signup
+/fretes /signup 301!
+/fretes/* /signup 301!
+/ofertas /signup 301!
+/ofertas/* /signup 301!
+/cadastrar-frete /signup 301!
+/cadastrar-frete/* /signup 301!
+/cadastrar-oferta /signup 301!
+/cadastrar-oferta/* /signup 301!
+
 # Redirecionar todas as rotas para index.html para SPA
 /* /index.html 200
 

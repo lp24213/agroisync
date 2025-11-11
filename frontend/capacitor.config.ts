@@ -12,10 +12,10 @@ const config: CapacitorConfig = {
   loggingBehavior: 'debug',
   plugins: {
     SplashScreen: {
-      launchShowDuration: 2000,
-      backgroundColor: '#22c55e',
+      launchShowDuration: 1500,
+      backgroundColor: '#1a1a1a',
       androidSplashResourceName: 'splash',
-      androidScaleType: 'CENTER_CROP',
+      androidScaleType: 'CENTER',
       showSpinner: false,
       iosSpinnerStyle: 'small'
     },

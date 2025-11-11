@@ -5284,6 +5284,111 @@ async function handleFavoriteToggle(request, env, user) {
 }
 
 /**
+ * PRODUTOS - Busca Avançada
+ */
+async function handleProductSearch(request, env) {
+  try {
+    const url = new URL(request.url);
+    const query = url.searchParams.get('q') || '';
+    const category = url.searchParams.get('category') || '';
+    const minPrice = url.searchParams.get('minPrice');
+    const maxPrice = url.searchParams.get('maxPrice');
+    const originState = url.searchParams.get('state') || '';
+    const originCity = url.searchParams.get('city') || '';
+    const page = parseInt(url.searchParams.get('page') || '1');
+    const limit = parseInt(url.searchParams.get('limit') || '20');
+    const offset = (page - 1) * limit;
+    
+    const db = getDb(env);
+    let sql = 'SELECT * FROM products WHERE status = ?';
+    const params = ['active'];
+    
+    if (query) {
+      sql += ' AND (name LIKE ? OR description LIKE ?)';
+      const searchTerm = `%${query}%`;
+      params.push(searchTerm, searchTerm);
+    }
+    
+    if (category) {
+      sql += ' AND category = ?';
+      params.push(category);
+    }
+    
+    if (minPrice) {
+      sql += ' AND price >= ?';
+      params.push(parseFloat(minPrice));
+    }
+    
+    if (maxPrice) {
+      sql += ' AND price <= ?';
+      params.push(parseFloat(maxPrice));
+    }
+    
+    if (originState) {
+      sql += ' AND origin_state = ?';
+      params.push(originState);
+    }
+    
+    if (originCity) {
+      sql += ' AND origin_city LIKE ?';
+      params.push(`%${originCity}%`);
+    }
+    
+    sql += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
+    params.push(limit, offset);
+    
+    const products = await db.prepare(sql).bind(...params).all();
+    
+    // Contar total para paginação
+    let countSql = 'SELECT COUNT(*) as total FROM products WHERE status = ?';
+    const countParams = ['active'];
+    
+    if (query) {
+      countSql += ' AND (name LIKE ? OR description LIKE ?)';
+      const searchTerm = `%${query}%`;
+      countParams.push(searchTerm, searchTerm);
+    }
+    if (category) {
+      countSql += ' AND category = ?';
+      countParams.push(category);
+    }
+    if (minPrice) {
+      countSql += ' AND price >= ?';
+      countParams.push(parseFloat(minPrice));
+    }
+    if (maxPrice) {
+      countSql += ' AND price <= ?';
+      countParams.push(parseFloat(maxPrice));
+    }
+    if (originState) {
+      countSql += ' AND origin_state = ?';
+      countParams.push(originState);
+    }
+    if (originCity) {
+      countSql += ' AND origin_city LIKE ?';
+      countParams.push(`%${originCity}%`);
+    }
+    
+    const countResult = await db.prepare(countSql).bind(...countParams).first();
+    const total = countResult?.total || 0;
+    
+    return jsonResponse({
+      success: true,
+      data: products.results || [],
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+      }
+    });
+  } catch (error) {
+    console.error('Product search error:', error);
+    return jsonResponse({ success: false, error: error.message }, 500);
+  }
+}
+
+/**
  * PRODUTOS - Similares
  */
 async function handleProductSimilar(request, env, productId) {
