@@ -248,3 +248,15 @@ jspm_packages/
 !frontend-next/public/
 !frontend-next/public/locales/
 !frontend-next/public/locales/**
+
+# Local build artifacts and sensitive files (do not commit)
+*.aab
+*.apks
+bundletool*.jar
+platform-tools/
+frontend/android/app/keystore*.jks
+frontend/android/app/upload-keystore*
+frontend/android/app/keystore.properties*
+agroisync.apks
+agroisync-*.aab
+
