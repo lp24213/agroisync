@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 const LoadingFallback = ({ message = 'Carregando...' }) => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-white">
+    <div className="splash flex min-h-screen items-center justify-center bg-white">
       <div className="text-center space-y-6">
         {/* Logo do Agroisync */}
         <motion.div
@@ -22,12 +22,12 @@ const LoadingFallback = ({ message = 'Carregando...' }) => {
               repeat: Infinity, 
               ease: 'easeInOut' 
             }}
-            className="w-48 h-48 flex items-center justify-center"
+            className="splash-root w-48 h-48 flex items-center justify-center"
           >
             <img 
               src="/agroisync-main-logo.png" 
               alt="Agroisync Logo" 
-              className="w-full h-full object-contain"
+              className="logo w-full h-full object-contain"
               onError={(e) => {
                 // Fallback para logo SVG se PNG não carregar
                 e.target.src = '/agroisync-logo.svg';

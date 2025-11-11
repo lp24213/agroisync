@@ -17,7 +17,7 @@ const LoadingSpinner = ({ size = 'large', message = 'Carregando...' }) => {
   };
 
   return (
-    <div className='flex min-h-screen items-center justify-center bg-white'>
+    <div className='splash flex min-h-screen items-center justify-center bg-white'>
       <div className='space-y-6 text-center'>
         {/* Logo animado do Agroisync */}
         <motion.div
@@ -36,12 +36,12 @@ const LoadingSpinner = ({ size = 'large', message = 'Carregando...' }) => {
               repeat: Infinity, 
               ease: 'easeInOut' 
             }}
-            className={`${sizeClasses[size]} flex items-center justify-center`}
+            className={`${sizeClasses[size]} splash-root flex items-center justify-center`}
           >
             <img 
               src="/agroisync-main-logo.png" 
               alt="Agroisync Logo" 
-              className="w-full h-full object-contain"
+              className="logo w-full h-full object-contain"
               onError={(e) => {
                 // Fallback para logo SVG se PNG não carregar
                 e.target.src = '/agroisync-logo.svg';

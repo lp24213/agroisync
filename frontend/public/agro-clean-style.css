@@ -1,0 +1,516 @@
+/* ===== SITE CLEAN COM PALETA DO AGRONEGÓCIO (SEGURO) ===== */
+
+:root {
+  --agro-green: #2D6A4F;
+  --agro-green-2: #4A7C59;
+  --agro-leaf: #95D5B2;
+  --agro-sage: #E9F5EF;
+  --agro-earth: #B08968;
+  --agro-brown: #7F5539;
+  --agro-text: #22303C;
+  --agro-muted: #5B6B79;
+  --agro-border: #E4E7EB;
+  --agro-white: #FFFFFF;
+  --agro-gray-50: #F8FAFC;
+  --agro-gray-100: #F3F4F6;
+  --agro-gray-200: #E5E7EB;
+}
+
+/* Corpo: branco com leve gradiente cinza muito claro */
+body {
+  background: linear-gradient(180deg, var(--agro-white) 0%, #F7F9FB 60%, var(--agro-gray-50) 100%) !important;
+  color: var(--agro-text) !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+.agro-hero-fullscreen,
+.agro-stats-section,
+.agro-features-section,
+.agro-partner-card,
+.agro-news-card {
+  background: var(--agro-white) !important;
+  border: 1px solid var(--agro-border) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
+}
+
+.agro-hero-title,
+.agro-hero-description,
+.agro-stat-number,
+.agro-stat-label,
+.agro-feature-title,
+.agro-feature-description,
+.agro-partner-title,
+.agro-news-title,
+.agro-news-text,
+.agro-news-time,
+.agro-news-category {
+  color: var(--agro-text) !important;
+}
+
+/* Forçar cores legíveis no hero */
+.agro-hero-title { color: var(--agro-green) !important; }
+.agro-hero-description { color: var(--agro-muted) !important; }
+
+/* Remover fundos pretos residuais e gradientes escuros */
+.from-gray-900, .to-black, .bg-black, .bg-gray-900, .bg-gray-800,
+.bg-gradient-to-b, .bg-gradient-to-r, .bg-gradient-to-t, .bg-gradient-to-l {
+  background: var(--agro-white) !important;
+  background-image: none !important;
+}
+.text-white { color: var(--agro-text) !important; }
+.border-white\/20 { border-color: var(--agro-border) !important; }
+.backdrop-blur-2xl, .backdrop-blur-xl { backdrop-filter: none !important; }
+
+/* Conteúdo dos cards de chat/news para tema claro */
+.user-message { background: #F7F9FB !important; color: var(--agro-text) !important; border: 1px solid var(--agro-border) !important; }
+.ai-message { background: var(--agro-white) !important; color: var(--agro-text) !important; border: 1px solid var(--agro-border) !important; }
+
+/* Ticker (bar) e textos internos com contraste adequado */
+.global-ticker, .ticker, .ticker-container { color: var(--agro-text) !important; }
+.ticker * { color: var(--agro-text) !important; }
+
+/* Footer: garantir contraste em todos os itens */
+footer *, .footer *, .site-footer * { color: var(--agro-text) !important; }
+.footer a, .site-footer a { color: var(--agro-green-2) !important; }
+.footer a:hover, .site-footer a:hover { color: var(--agro-green) !important; }
+
+/* Links do menu header */
+.site-header *, header * { color: var(--agro-text) !important; }
+.site-header a, header a { color: var(--agro-green-2) !important; }
+.site-header a:hover, header a:hover { color: var(--agro-green) !important; }
+
+/* Remover faixa preta abaixo de imagens */
+img { background: transparent !important; }
+
+/* Seções listadas pelo usuário: reforçar branco/cinza */
+.agro-footer-new,
+.agro-footer-container,
+.agro-footer-main,
+.agro-footer-brand,
+.agro-footer-sections,
+.agro-footer-section,
+.agro-footer-bottom {
+  background: var(--agro-white) !important;
+}
+
+/* Botões primários/secundários do hero/partner */
+.agro-btn-primary { background: var(--agro-green-2) !important; color: var(--agro-white) !important; border: 1px solid var(--agro-green-2) !important; }
+.agro-btn-primary:hover { background: var(--agro-green) !important; }
+.agro-btn-secondary { background: var(--agro-white) !important; color: var(--agro-green-2) !important; border: 2px solid var(--agro-green-2) !important; }
+.agro-btn-secondary:hover { background: var(--agro-green-2) !important; color: var(--agro-white) !important; }
+
+/* Garantir que qualquer elemento invisível fique visível e escuro legível */
+*, *::before, *::after { visibility: visible !important; opacity: 1 !important; }
+
+/* HEADER - BRANCO COM VERDE AGRONEGÓCIO */
+header, .navbar, .nav, .header, .site-header {
+  background: var(--agro-white) !important;
+  border-bottom: 1px solid var(--agro-border) !important;
+  padding: 1rem 2rem !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 1000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: 70px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+  width: 100% !important;
+}
+
+/* LOGO */
+.logo, .navbar-brand {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: 40px !important;
+  width: auto !important;
+}
+
+.logo img, .navbar-brand img {
+  height: 40px !important;
+  width: auto !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* MENU - VERDE AGRONEGÓCIO */
+.nav-links, .navbar-nav, .nav-menu {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  gap: 2rem !important;
+  align-items: center !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.nav-links a, .navbar-nav a, .nav-menu a, .menu a {
+  color: var(--agro-green-2) !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 4px !important;
+  transition: all 0.3s ease !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.nav-links a:hover, .navbar-nav a:hover, .nav-menu a:hover, .menu a:hover {
+  background: var(--agro-sage) !important;
+  color: var(--agro-green) !important;
+}
+
+/* BOTÕES - VERDE AGRONEGÓCIO */
+button, .btn, .button {
+  background: var(--agro-green-2) !important;
+  color: var(--agro-white) !important;
+  border: 1px solid var(--agro-green-2) !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 4px !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  text-decoration: none !important;
+}
+
+button:hover, .btn:hover, .button:hover {
+  background: var(--agro-green) !important;
+  color: var(--agro-white) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(45, 80, 22, 0.2) !important;
+}
+
+/* CARDS - BRANCO COM BORDA VERDE */
+.card, .section, .container, section, .txc-card, .premium-card {
+  background: var(--agro-white) !important;
+  border: 1px solid var(--agro-border) !important;
+  border-radius: 8px !important;
+  padding: 2rem !important;
+  margin: 1rem 0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* TÍTULOS - VERDE AGRONEGÓCIO */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--agro-green) !important;
+  font-family: 'Arial', sans-serif !important;
+  font-weight: 700 !important;
+  margin-bottom: 1rem !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  line-height: 1.2 !important;
+}
+
+h1 { font-size: 2.5rem !important; }
+h2 { font-size: 2rem !important; }
+h3 { font-size: 1.5rem !important; }
+h4 { font-size: 1.25rem !important; }
+h5 { font-size: 1.1rem !important; }
+h6 { font-size: 1rem !important; }
+
+/* PARÁGRAFOS - VERDE ESCURO */
+p, li, span, small, label {
+  color: var(--agro-muted) !important;
+  font-size: 1rem !important;
+  margin-bottom: 1rem !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  line-height: 1.6 !important;
+}
+
+/* LINKS - VERDE AGRONEGÓCIO */
+a {
+  color: var(--agro-green-2) !important;
+  text-decoration: none !important;
+  transition: color 0.3s ease !important;
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+a:hover {
+  color: var(--agro-green) !important;
+  text-decoration: underline !important;
+}
+
+/* CHATBOT - PRETO COM ÍCONE BRANCO */
+.chatbot-widget, .chatbot-container, .chatbot-button {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: fixed !important;
+  bottom: 2rem !important;
+  right: 2rem !important;
+  z-index: 9999 !important;
+}
+
+.chatbot-button {
+  width: 60px !important;
+  height: 60px !important;
+  background: #000000 !important; /* bola preta */
+  border: 2px solid #000000 !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  color: #FFFFFF !important; /* ícone branco */
+}
+
+.chatbot-button:hover {
+  background: #333333 !important;
+  border-color: #333333 !important;
+  transform: scale(1.05) !important;
+  color: #FFFFFF !important;
+}
+
+.chatbot-button svg {
+  color: #FFFFFF !important;
+  width: 24px !important;
+  height: 24px !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  fill: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+/* BOLSA DE VALORES - ABAIXO DO MENU */
+.txc-card, .stock-widget, .market-widget {
+  background: #FFFFFF !important;
+  border: 1px solid var(--agro-border) !important;
+  border-radius: 8px !important;
+  padding: 1.5rem !important;
+  margin: 1rem 0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 10 !important;
+  margin-top: 90px !important;
+}
+
+.txc-card h3, .stock-widget h3, .market-widget h3 {
+  color: var(--agro-green) !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 1rem !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* IMAGEM ABAIXO DA BOLSA - COLADA */
+.agro-partner-image, .hero-image, [class*="image"] {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.agro-partner-image img, .hero-image img, [class*="image"] img {
+  width: 100% !important;
+  height: auto !important;
+  border-radius: 8px !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  margin-top: 0 !important;
+}
+
+/* FOOTER - BRANCO COM VERDE */
+footer, .footer, .site-footer {
+  background: var(--agro-white) !important;
+  border-top: 1px solid var(--agro-border) !important;
+  padding: 3rem 0 2rem !important;
+  margin-top: 3rem !important;
+  color: var(--agro-text) !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+}
+
+.footer-container, .footer-inner {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 0 2rem !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.footer-links, .footer-nav {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  gap: 2rem !important;
+  margin: 1rem 0 !important;
+  flex-wrap: wrap !important;
+  list-style: none !important;
+}
+
+.footer-links a, .footer-nav a {
+  color: var(--agro-green-2) !important;
+  text-decoration: none !important;
+  font-size: 0.9rem !important;
+  transition: color 0.3s ease !important;
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  padding: 0.25rem 0 !important;
+}
+
+.footer-links a:hover, .footer-nav a:hover {
+  color: var(--agro-green) !important;
+}
+
+.footer-copyright {
+  text-align: center !important;
+  margin-top: 2rem !important;
+  padding-top: 1rem !important;
+  border-top: 1px solid #B8D4B8 !important;
+  color: #4A7C59 !important;
+  font-size: 0.9rem !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* TICKER - VERDE CLARO */
+.ticker, .ticker-container, .global-ticker {
+  background: var(--agro-gray-100) !important;
+  border-bottom: 1px solid var(--agro-border) !important;
+  padding: 0.75rem 0 !important;
+  color: var(--agro-text) !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 999 !important;
+  font-weight: 500 !important;
+}
+
+/* CONTEÚDO PRINCIPAL */
+main, .main-content, .content {
+  margin-top: 80px !important;
+  padding: 2rem 0 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  min-height: 100vh !important;
+}
+
+/* HERO SECTION - IMAGEM PRÓXIMA DO MENU */
+/* Herói/imagens: remover fundos pretos/overlays escuros */
+.agro-hero-fullscreen, .hero-section { background: var(--agro-white) !important; }
+.agro-hero-overlay { background: rgba(255,255,255,0.15) !important; }
+.from-gray-900, .to-black, .bg-black, .bg-gradient-to-b, .bg-gradient-to-r { 
+  background: var(--agro-white) !important;
+  background-image: none !important;
+}
+.text-white { color: var(--agro-text) !important; }
+.border-white\/20 { border-color: var(--agro-border) !important; }
+.backdrop-blur-2xl, .backdrop-blur-xl { backdrop-filter: none !important; }
+
+/* Imagens: evitar faixa preta abaixo */
+img { display: block !important; background: transparent !important; }
+.agro-partner-image, .hero-image { margin-top: 0 !important; padding-top: 0 !important; }
+
+/* FORÇAR VISIBILIDADE EM TUDO */
+* {
+  display: revert !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.hidden, .invisible, .d-none {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* GARANTIR QUE NADA FIQUE ESCONDIDO */
+body > * {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+body > * > * {
+  display: revert !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 768px) {
+  .nav-links, .navbar-nav, .nav-menu {
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+  
+  .footer-links, .footer-nav {
+    flex-direction: column !important;
+    gap: 1rem !important;
+    text-align: center !important;
+  }
+  
+  .chatbot-button {
+    width: 50px !important;
+    height: 50px !important;
+    bottom: 1rem !important;
+    right: 1rem !important;
+  }
+  
+  .chatbot-button svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+  
+  h1 { font-size: 2rem !important; }
+  h2 { font-size: 1.75rem !important; }
+  h3 { font-size: 1.5rem !important; }
+}
+
+/* ===== SPLASH FIX: fundo branco e logo central ===== */
+.splash, .splash-root, #splash {
+  background-color: #ffffff !important;
+  color: inherit !important;
+  width: 100% !important;
+  height: 100% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:hidden !important;
+}
+.splash img.logo, .splash .logo, #splash img.logo {
+  max-width: 60% !important;
+  height: auto !important;
+  display:block !important;
+}
+
