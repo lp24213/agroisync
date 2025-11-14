@@ -136,7 +136,7 @@ const AgroisyncHeader = () => {
     <>
       <header
         id='main-header'
-        className={`fixed left-0 right-0 top-0 z-50 border-b backdrop-blur-md transition-all duration-200 ${
+        className={`sticky top-0 z-50 w-full border-b backdrop-blur-md transition-all duration-200 ${
           isScrolled ? 'border-gray-200/70 bg-white/95 shadow-md' : 'border-gray-200/50 bg-white/90 shadow-sm'
         }`}
       >

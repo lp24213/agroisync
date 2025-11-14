@@ -132,6 +132,26 @@
     "recentActivity": "Atividade Recente",
     "viewAll": "Ver Todos"
   },
+  "nav": {
+    "home": "Início",
+    "marketplace": "Produtos",
+    "products": "Produtos",
+    "categories": "Categorias",
+    "sellers": "Vendedores",
+    "howToSell": "Como Vender",
+    "agroconecta": "Frete",
+    "weather": "Clima",
+    "store": "Loja",
+    "tecnologia": "Tecnologia",
+    "about": "Sobre",
+    "plans": "Planos",
+    "contact": "Contato",
+    "support": "Suporte",
+    "login": "Entrar",
+    "register": "Cadastrar",
+    "profile": "Perfil",
+    "logout": "Sair"
+  },
   "errors": {
     "404": "Página não encontrada",
     "500": "Erro interno do servidor",

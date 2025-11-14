@@ -339,8 +339,8 @@
   "chatbot": {
     "title": "AI Assistant",
     "status": "Online",
-    "placeholder": "Type your message or use microphone...",
-    "welcome": "Hello! I'm Agroisync's AI assistant. How can I help you today?",
+    "placeholder": "Type your question or tap the microphone...",
+    "welcome": "🌿 Hi! I'm the Agroisync AI. Ask me about freights, marketplace, weather insights, plans or new features.",
     "thinking": "Thinking...",
     "typing": "AGROISYNC AI is typing...",
     "recording": "Recording... Speak now",

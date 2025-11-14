@@ -1,0 +1,65 @@
+/* ========================================
+   🚀 AGROISYNC MOBILE - MÍNIMO ESSENCIAL
+   SÓ O QUE FUNCIONA!
+   ======================================== */
+
+@media (max-width: 768px) {
+  
+  /* Body */
+  body {
+    padding-top: env(safe-area-inset-top, 0px) !important;
+  }
+
+  /* Esconder links de acessibilidade */
+  a[href="#main-content"],
+  a[href="#footer"],
+  [class*="skip-link"],
+  [class*="skipLink"] {
+    display: none !important;
+  }
+
+  /* Header com safe-area para notch (z-index abaixo do StockTicker) */
+  header {
+    padding-top: calc(12px + env(safe-area-inset-top, 0px)) !important;
+    z-index: 30 !important;
+    position: sticky !important;
+    top: 0 !important;
+  }
+
+  /* Menu mobile DEVE ter scroll COMPLETO */
+  header > div[class*="md:hidden"] {
+    max-height: calc(100vh - 100px) !important;
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 80px !important;
+  }
+
+  /* Logo GIGANTE no header */
+  header > div > div > a img,
+  header > div > div > a svg,
+  header img[alt*="Agroisync"] {
+    height: 64px !important;
+    width: auto !important;
+  }
+
+  /* Menu mobile SUPER COMPACTO */
+  header div[class*="md:hidden"] a,
+  header div[class*="md:hidden"] button {
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+  }
+  
+  header div[class*="space-y-2"] {
+    gap: 2px !important;
+  }
+  
+  /* Ícones MENORES no menu mobile */
+  header div[class*="md:hidden"] svg,
+  header div[class*="space-y-2"] svg {
+    height: 14px !important;
+    width: 14px !important;
+  }
+
+}

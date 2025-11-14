@@ -79,82 +79,7 @@
     
     <!-- Estilos crÃ­ticos inline -->
     <style>
-      /* Loading screen */
-      .loading-screen {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, #0F0F23 0%, #1A1A2E 50%, #16213E 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-      }
-      
-      .loading-logo {
-        width: 100px;
-        height: 100px;
-        background: linear-gradient(135deg, #00D4FF, #8B5CF6, #00FF88);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        animation: pulse 2s ease-in-out infinite;
-        position: relative;
-        box-shadow: 0 10px 40px rgba(0, 212, 255, 0.4);
-      }
-      
-      .loading-logo::before {
-        content: "🚀";
-        font-size: 50px;
-        animation: float 2s ease-in-out infinite;
-        display: block;
-      }
-      
-      @keyframes pulse {
-        0%, 100% { 
-          transform: scale(1);
-          box-shadow: 0 10px 40px rgba(0, 212, 255, 0.4);
-        }
-        50% { 
-          transform: scale(1.05);
-          box-shadow: 0 15px 50px rgba(0, 212, 255, 0.6);
-        }
-      }
-      
-      @keyframes float {
-        0%, 100% { 
-          transform: translateY(0) rotate(0deg); 
-        }
-        25% {
-          transform: translateY(-8px) rotate(-5deg);
-        }
-        50% { 
-          transform: translateY(-12px) rotate(0deg); 
-        }
-        75% {
-          transform: translateY(-8px) rotate(5deg);
-        }
-      }
-      
-      .loading-text {
-        position: absolute;
-        bottom: 30%;
-        color: white;
-        font-family: 'Inter', sans-serif;
-        font-size: 24px;
-        font-weight: 600;
-        text-align: center;
-      }
-      
-      /* Hide loading screen when app loads */
-      .app-loaded .loading-screen {
-        display: none;
-      }
-      
-      /* Mobile responsive styles for fallback */
+      /* Mobile responsive styles para header */
       @media (max-width: 880px) {
         #main-header { 
           flex-wrap: wrap; 
@@ -177,57 +102,6 @@
     </style>
   </head>
   <body>
-    <!-- Fallback HTML para usuÃ¡rios sem JavaScript -->
-    <div id="fallback-content" style="display: none;">
-      <header id="main-header" style="position: relative; z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #000; color: white;">
-        <div id="logo" style="font-size: 24px; font-weight: bold; color: #10b981;">AGROISYNC</div>
-        <nav id="main-nav" style="display: flex; gap: 16px;">
-          <a href="/" style="color: white; text-decoration: none;">Home</a>
-          <a href="/marketplace" style="color: white; text-decoration: none;">Marketplace</a>
-          <a href="/fretes" style="color: white; text-decoration: none;">Fretes</a>
-          <a href="/sobre" style="color: white; text-decoration: none;">Sobre</a>
-          <a href="/contato" style="color: white; text-decoration: none;">Contato</a>
-        </nav>
-        <div class="lang-selector" style="margin-left: 12px; z-index: 1010;">
-          <select style="background: #333; color: white; border: 1px solid #555; padding: 4px 8px; border-radius: 4px;">
-            <option value="pt-BR">ðŸ‡§ðŸ‡· PortuguÃªs</option>
-            <option value="en-US">ðŸ‡ºðŸ‡¸ English</option>
-            <option value="es-ES">ðŸ‡ªðŸ‡¸ EspaÃ±ol</option>
-            <option value="zh-CN">ðŸ‡¨ðŸ‡³ ä¸­æ–‡</option>
-          </select>
-        </div>
-      </header>
-      
-      <main style="min-height: 80vh; padding: 40px 20px; background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);">
-        <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
-          <h1 style="font-size: 3rem; font-weight: bold; color: #065f46; margin-bottom: 1rem;">AGROISYNC</h1>
-          <p style="font-size: 1.25rem; color: #047857; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-            A plataforma de agronegÃ³cio mais avanÃ§ada do Brasil. Conectamos produtores, compradores e transportadores em uma rede inteligente e segura.
-          </p>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 3rem;">
-            <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-              <h2 style="color: #065f46; margin-bottom: 1rem;">ðŸŒ¾ Marketplace</h2>
-              <p style="color: #666;">Compre e venda produtos agrÃ­colas com seguranÃ§a e transparÃªncia.</p>
-            </div>
-            <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-              <h2 style="color: #065f46; margin-bottom: 1rem;">ðŸš› Fretes</h2>
-              <p style="color: #666;">Encontre transportadores confiÃ¡veis para seus produtos.</p>
-            </div>
-            <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-              <h2 style="color: #065f46; margin-bottom: 1rem;">ðŸ’Ž Cripto</h2>
-              <p style="color: #666;">Pagamentos seguros com tecnologia blockchain.</p>
-            </div>
-          </div>
-        </div>
-      </main>
-      
-      <footer style="background: #1f2937; color: white; padding: 2rem; text-align: center;">
-        <p>&copy; 2024 Agroisync. Todos os direitos reservados.</p>
-        <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #9ca3af;">
-          Conectando o agronegÃ³cio brasileiro com tecnologia de ponta.
-        </p>
-      </footer>
-    </div>
 
     <noscript>
       <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif; background: #f3f4f6; min-height: 100vh;">
@@ -247,59 +121,124 @@
       </div>
     </noscript>
     
-    <!-- Loading screen -->
-    <div class="loading-screen">
-      <div class="loading-logo"></div>
-      <div class="loading-text">Agroisync</div>
-    </div>
-    
     <div id="root"></div>
-    
-    <!-- Script para remover loading screen e mostrar fallback se JS falhar -->
-    <script defer>
-      window.addEventListener('load', function() {
-        setTimeout(function() {
-          document.body.classList.add('app-loaded');
-        }, 1000);
-      });
-      
-      // Se o React nÃ£o carregar em 5 segundos, mostrar fallback
-      setTimeout(function() {
-        if (!document.getElementById('root').hasChildNodes()) {
-          document.getElementById('fallback-content').style.display = 'block';
-          document.querySelector('.loading-screen').style.display = 'none';
-        }
-      }, 5000);
-    </script>
     
     <!-- Cloudflare Turnstile -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
     
-    <!-- VLibras - Acessibilidade (Libras Oficial do Governo) -->
+    <!-- VLibras ULTRA MODERNO - Acessibilidade -->
     <style>
-      /* Ajustes LEVES no VLibras - SEM QUEBRAR */
+      /* Botão VLibras ULTRA MODERNO */
       div[vw] .access-button,
       div[vw-access-button] {
         position: fixed !important;
         bottom: 110px !important;
-        right: 20px !important;
-        z-index: 99999 !important;
-        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.5) !important;
-        transition: all 0.3s ease !important;
+        left: 20px !important;
+        right: auto !important;
+        width: 60px !important;
+        height: 60px !important;
+        border-radius: 50% !important;
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%) !important;
+        border: none !important;
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        backdrop-filter: blur(8px) !important;
+        z-index: 9998 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        pointer-events: auto !important;
+      }
+      div[vw] .access-button::after,
+      div[vw-access-button]::after {
+        content: 'Oi! Sou seu assistente em Libras 👋';
+        position: absolute;
+        left: 70px;
+        right: auto;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.95);
+        color: #1e3a8a;
+        border-radius: 999px;
+        padding: 8px 16px;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: 0 10px 25px rgba(30, 64, 175, 0.25);
+        white-space: nowrap;
+        pointer-events: none;
+      }
+      div[vw] .access-button::before,
+      div[vw-access-button]::before {
+        content: '';
+        position: absolute;
+        left: 60px;
+        right: auto;
+        top: 50%;
+        transform: translateY(-50%);
+        border-width: 8px;
+        border-style: solid;
+        border-color: transparent rgba(255, 255, 255, 0.95) transparent transparent;
+        pointer-events: none;
       }
       
       div[vw] .access-button:hover,
       div[vw-access-button]:hover {
-        transform: scale(1.1) !important;
-        box-shadow: 0 6px 30px rgba(59, 130, 246, 0.7) !important;
+        transform: scale(1.15) translateY(-3px) !important;
+        box-shadow: 0 12px 40px rgba(59, 130, 246, 0.6), 0 6px 16px rgba(0, 0, 0, 0.3) !important;
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
       }
       
-      /* Painel VLibras - Ajuste de posição apenas */
+      div[vw] .access-button:active {
+        transform: scale(1.05) !important;
+      }
+      
+      /* Painel VLibras MODERNO */
       div[vw-plugin-wrapper] {
         position: fixed !important;
-        bottom: 200px !important;
-        right: 20px !important;
-        z-index: 99998 !important;
+        top: auto !important;
+        bottom: 160px !important;
+        left: 20px !important;
+        right: auto !important;
+        max-width: 90vw !important;
+        max-height: 65vh !important;
+        border-radius: 20px !important;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+        overflow: hidden !important;
+        backdrop-filter: blur(10px) !important;
+        z-index: 9995 !important;
+      }
+      
+      /* Mobile: VLibras responsivo */
+      @media (max-width: 768px) {
+        div[vw] .access-button,
+        div[vw-access-button] {
+          width: 56px !important;
+          height: 56px !important;
+        }
+        
+        div[vw] .access-button::before,
+        div[vw-access-button]::before {
+          left: 50px;
+          border-width: 7px;
+        }
+        
+        div[vw] .access-button::after,
+        div[vw-access-button]::after {
+          content: 'Assistente em Libras 👋';
+          left: 50px;
+          right: auto;
+          font-size: 11px;
+          padding: 6px 12px;
+        }
+        
+        div[vw-plugin-wrapper] {
+          width: 90vw !important;
+          max-width: 90vw !important;
+          left: 5vw !important;
+          right: auto !important;
+          bottom: 150px !important;
+          max-height: 60vh !important;
+        }
       }
     </style>
     
@@ -313,6 +252,94 @@
     <script>
       // Inicializar VLibras - MÉTODO OFICIAL
       new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+    <script>
+      window.addEventListener('load', () => {
+        const START_TIME = Date.now();
+        const MAX_WAIT = 10000;
+
+        const makeDraggable = (element, handle = element) => {
+          if (!element || !handle) return;
+          handle.style.cursor = 'move';
+          handle.style.touchAction = 'none';
+
+          let isDragging = false;
+          let startX = 0;
+          let startY = 0;
+          let startLeft = 0;
+          let startTop = 0;
+
+          const onPointerDown = event => {
+            const pointer = event.touches ? event.touches[0] : event;
+            isDragging = true;
+            const rect = element.getBoundingClientRect();
+            startX = pointer.clientX;
+            startY = pointer.clientY;
+            startLeft = rect.left;
+            startTop = rect.top;
+            element.style.position = 'fixed';
+            element.style.left = `${startLeft}px`;
+            element.style.top = `${startTop}px`;
+            element.style.right = 'auto';
+            element.style.bottom = 'auto';
+
+            document.addEventListener('mousemove', onPointerMove, { passive: false });
+            document.addEventListener('touchmove', onPointerMove, { passive: false });
+            document.addEventListener('mouseup', onPointerUp);
+            document.addEventListener('touchend', onPointerUp);
+          };
+
+          const onPointerMove = event => {
+            if (!isDragging) return;
+            const pointer = event.touches ? event.touches[0] : event;
+            const dx = pointer.clientX - startX;
+            const dy = pointer.clientY - startY;
+            const rect = element.getBoundingClientRect();
+
+            let newLeft = startLeft + dx;
+            let newTop = startTop + dy;
+
+            newLeft = Math.max(10, Math.min(window.innerWidth - rect.width - 10, newLeft));
+            newTop = Math.max(10, Math.min(window.innerHeight - rect.height - 10, newTop));
+
+            element.style.left = `${newLeft}px`;
+            element.style.top = `${newTop}px`;
+            event.preventDefault();
+          };
+
+          const onPointerUp = () => {
+            if (!isDragging) return;
+            isDragging = false;
+            document.removeEventListener('mousemove', onPointerMove);
+            document.removeEventListener('touchmove', onPointerMove);
+            document.removeEventListener('mouseup', onPointerUp);
+            document.removeEventListener('touchend', onPointerUp);
+          };
+
+          handle.addEventListener('mousedown', onPointerDown);
+          handle.addEventListener('touchstart', onPointerDown, { passive: false });
+        };
+
+        const interval = setInterval(() => {
+          const accessButton = document.querySelector('div[vw-access-button]');
+          const pluginWrapper = document.querySelector('div[vw-plugin-wrapper]');
+          const pluginHandle = document.querySelector('div[vw-plugin-wrapper] .vw-plugin-top-wrapper');
+
+          if (accessButton) {
+            makeDraggable(accessButton);
+          }
+
+          if (pluginWrapper) {
+            makeDraggable(pluginWrapper, pluginHandle || pluginWrapper);
+          }
+
+          if (accessButton && pluginWrapper) {
+            clearInterval(interval);
+          } else if (Date.now() - START_TIME > MAX_WAIT) {
+            clearInterval(interval);
+          }
+        }, 500);
+      });
     </script>
   </body>
 </html>

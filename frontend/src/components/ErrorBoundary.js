@@ -73,17 +73,17 @@ class ErrorBoundary extends React.Component {
               Nossa equipe foi notificada automaticamente.
             </p>
 
-            {/* Informações do Erro (apenas em desenvolvimento) */}
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {/* Informações do Erro */}
+            {this.state.error && (
               <div className="mb-6 rounded-lg bg-red-50 p-4">
-                <h3 className="mb-2 font-semibold text-red-900">Detalhes do Erro (Dev Only):</h3>
-                <pre className="overflow-auto text-xs text-red-800">
+                <h3 className="mb-2 font-semibold text-red-900">Detalhes técnicos:</h3>
+                <pre className="overflow-auto whitespace-pre-wrap text-xs text-red-800">
                   {this.state.error.toString()}
                 </pre>
-                {this.state.errorInfo && (
+                {this.state.errorInfo?.componentStack && (
                   <details className="mt-2">
                     <summary className="cursor-pointer text-sm font-medium text-red-900">
-                      Stack Trace
+                      Ver componentes afetados
                     </summary>
                     <pre className="mt-2 overflow-auto text-xs text-red-700">
                       {this.state.errorInfo.componentStack}

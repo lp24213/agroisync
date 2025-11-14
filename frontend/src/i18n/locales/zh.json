@@ -321,8 +321,8 @@
   "chatbot": {
     "title": "AI助手",
     "status": "在线",
-    "placeholder": "输入您的消息或使用麦克风...",
-    "welcome": "您好！我是Agroisync的AI助手。今天我能为您做些什么？",
+    "placeholder": "输入问题或点击麦克风...",
+    "welcome": "🌿 您好！我是Agroisync智能助手，可协助您了解运费、交易市场、天气洞察、方案与最新资讯。",
     "thinking": "思考中...",
     "typing": "AGROISYNC AI正在输入...",
     "recording": "录音中... 现在说话",

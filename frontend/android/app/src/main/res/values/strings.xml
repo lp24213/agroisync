@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">MOBILE</string>
-    <string name="title_activity_main">MOBILE</string>
+    <string name="app_name">Agroisync</string>
+    <string name="title_activity_main">Agroisync</string>
     <string name="package_name">com.agroisync.mobile</string>
     <string name="custom_url_scheme">com.agroisync.mobile</string>
 </resources>

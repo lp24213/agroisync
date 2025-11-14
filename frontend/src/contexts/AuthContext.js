@@ -3,8 +3,8 @@ import useStore from '../store/useStore';
 import axios from 'axios';
 import { API_CONFIG, AUTH_CONFIG, getAuthToken, setAuthToken, removeAuthToken } from '../config/constants.js';
 
-// Usar configuração centralizada com fallback
-const API_BASE_URL = API_CONFIG?.baseURL || process.env.REACT_APP_API_URL || 'https://agroisync.com/api';
+// Usar configuração centralizada (já tem fallback inteligente)
+const API_BASE_URL = API_CONFIG?.baseURL || '/api';
 
 const AuthContext = createContext();
 

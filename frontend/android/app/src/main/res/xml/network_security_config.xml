@@ -14,6 +14,8 @@
         <domain includeSubdomains="true">*.cloudflaressl.com</domain>
         <domain includeSubdomains="true">agroisync.pages.dev</domain>
         <domain includeSubdomains="true">*.workers.dev</domain>
+        <domain includeSubdomains="true">fonts.googleapis.com</domain>
+        <domain includeSubdomains="true">fonts.gstatic.com</domain>
         <trust-anchors>
             <certificates src="system" />
             <certificates src="user" />

@@ -206,45 +206,45 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -100 }}
         transition={{ duration: 0.3 }}
-        className='accessibility-panel-button fixed left-4 bottom-4 z-40 w-80 md:w-[400px] h-[480px] md:h-[550px] overflow-y-auto rounded-2xl border border-purple-500 bg-black text-white shadow-2xl transition-all'
+        className='accessibility-panel-button fixed left-4 bottom-4 z-40 w-80 md:w-[400px] h-[480px] md:h-[550px] overflow-y-auto rounded-2xl border border-blue-500 bg-black text-white shadow-2xl transition-all'
         style={{ 
-          background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.95), rgba(0, 0, 0, 0.95))',
+          background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.94), rgba(8, 47, 73, 0.92))',
           backdropFilter: 'blur(16px)',
-          boxShadow: '0 0 40px rgba(139, 92, 246, 0.5), 0 12px 40px rgba(0, 0, 0, 0.35)'
+          boxShadow: '0 0 40px rgba(59, 130, 246, 0.45), 0 12px 40px rgba(0, 0, 0, 0.35)'
         }}
         role='dialog'
         aria-labelledby='accessibility-panel-title'
         aria-modal='true'
       >
         {/* Header Futurista */}
-        <div className='border-b border-purple-500/30 p-6' style={{ 
-          background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(0, 0, 0, 0.3))',
-          boxShadow: '0 4px 20px rgba(139, 92, 246, 0.3)'
+        <div className='border-b border-blue-500/25 p-6' style={{ 
+          background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(0, 0, 0, 0.3))',
+          boxShadow: '0 4px 20px rgba(59, 130, 246, 0.28)'
         }}>
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-3'>
-              <div className='flex h-10 w-10 items-center justify-center rounded-full bg-purple-500/20 border border-purple-400'>
-                <Accessibility className='h-6 w-6 text-purple-400' />
+              <div className='flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/15 border border-blue-400'>
+                <Accessibility className='h-6 w-6 text-blue-300' />
               </div>
               <div>
                 <h2 id='accessibility-panel-title' className='text-xl font-bold text-white'>
                   Acessibilidade
                 </h2>
-                <p className='text-xs text-purple-300'>WCAG 2.1 AA</p>
+                <p className='text-xs text-blue-200'>WCAG 2.1 AA</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className='rounded-lg p-2 transition-all hover:bg-purple-500/20 hover:rotate-90'
+              className='rounded-lg p-2 transition-all hover:bg-blue-500/20 hover:rotate-90'
               aria-label='Fechar painel de acessibilidade'
             >
-              <X className='h-5 w-5 text-purple-400' />
+              <X className='h-5 w-5 text-blue-300' />
             </button>
           </div>
         </div>
 
         {/* Tabs Futuristas */}
-        <div className='flex border-b border-purple-500/20'>
+        <div className='flex border-b border-blue-500/20'>
           {tabs.map(tab => {
             const Icon = tab.icon;
             return (
@@ -253,8 +253,8 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex flex-1 items-center justify-center gap-2 p-4 transition-all ${
                   activeTab === tab.id 
-                    ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-white shadow-lg' 
-                    : 'text-purple-300 hover:bg-purple-500/10'
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg' 
+                    : 'text-blue-200 hover:bg-blue-500/10'
                 }`}
                 aria-pressed={activeTab === tab.id}
               >
@@ -273,7 +273,7 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
               <h3 className='text-lg font-semibold text-green-400'>Configurações Visuais</h3>
 
               {/* VLibras Info - Destaque */}
-              <div className='rounded-lg bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-400/50 p-4 shadow-lg'>
+              <div className='rounded-lg bg-gradient-to-r from-blue-900/35 to-cyan-900/25 border border-blue-400/50 p-4 shadow-lg'>
                 <div className='flex items-center gap-2 mb-2'>
                   <div className='w-3 h-3 bg-blue-400 rounded-full animate-pulse'></div>
                   <span className='font-bold text-blue-300 text-lg'>🤟 VLibras Ativo</span>
@@ -284,7 +284,7 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
                 <p className='text-xs text-blue-300 mt-2 bg-blue-500/20 p-2 rounded'>
                   📍 Localização: Canto inferior DIREITO da tela
                 </p>
-                <p className='text-xs text-purple-300 mt-1'>
+                <p className='text-xs text-blue-200 mt-1'>
                   ♿ Clique no botão AZUL redondo para ativar/desativar o intérprete virtual
                 </p>
               </div>

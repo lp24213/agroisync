@@ -16,7 +16,7 @@ import AccessibilityPanel from './components/AccessibilityPanel';
 import ErrorBoundary from './components/ErrorBoundary';
 import LoadingFallback from './components/LoadingFallback';
 import DynamicCryptoURL from './components/DynamicCryptoURL';
-import { Accessibility, Brain } from 'lucide-react';
+import { Accessibility } from 'lucide-react';
 
 // CSS unificado (5 arquivos)
 import './styles/base.css';
@@ -159,8 +159,8 @@ function App() {
                       <Routes>
                         {/* Public Routes - OTIMIZADAS */}
                         <Route path='/' element={<AgroisyncHome />} />
-                        <Route path='/home' element={<Navigate to="/" replace />} />
-                        <Route path='/home-prompt' element={<Navigate to="/" replace />} />
+                        <Route path='/home' element={<Home />} />
+                        <Route path='/home-prompt' element={<AgroisyncHomePrompt />} />
                         
                         {/* Produtos Routes (novo nome) */}
                         <Route path='/produtos' element={<AgroisyncMarketplace />} />
@@ -210,15 +210,32 @@ function App() {
                         
                         {/* Main Pages Routes */}
                         <Route path='/sobre' element={<AgroisyncAbout />} />
+                        <Route path='/about' element={<AgroisyncAbout />} />
                         <Route path='/planos' element={<AgroisyncPlans />} />
+                        <Route path='/plans' element={<AgroisyncPlans />} />
                         <Route path='/clima' element={<ClimaInsumos />} />
+                        <Route path='/weather' element={<ClimaInsumos />} />
                         <Route path='/insumos' element={<ClimaInsumos />} />
+                        <Route path='/supplies' element={<ClimaInsumos />} />
+                        <Route path='/clima-insumos' element={<ClimaInsumos />} />
                         <Route path='/api' element={<APIPage />} />
+                        <Route path='/api-key' element={<APIPage />} />
                         <Route path='/payment/pix' element={<PaymentPix />} />
                         <Route path='/payment/boleto' element={<PaymentBoleto />} />
                         <Route path='/payment/credit-card' element={<PaymentCreditCard />} />
                         <Route path='/contato' element={<AgroisyncContact />} />
+                        <Route path='/contact' element={<AgroisyncContact />} />
+                        
+                        {/* User Routes */}
+                        <Route path='/usuario-geral' element={<UsuarioGeral />} />
+                        <Route path='/tecnologia' element={<AgroisyncCrypto />} />
                         <Route path='/crypto' element={<AgroisyncCrypto />} />
+                        
+                        {/* Partnerships Routes */}
+                        <Route path='/partnerships' element={<Partnerships />} />
+                        <Route path='/partnerships/current' element={<PartnershipsCurrent />} />
+                        <Route path='/partnerships/benefits' element={<PartnershipsBenefits />} />
+                        <Route path='/partnerships/contact' element={<PartnershipsContact />} />
                         
                         {/* Legal Routes */}
                         <Route path='/faq' element={<FAQ />} />
@@ -228,7 +245,7 @@ function App() {
 
                         {/* Detail Pages */}
                         <Route path='/produto/:id' element={<ProductDetail />} />
-                        <Route path='/product/:id' element={<Navigate to="/produto/:id" replace />} />
+                        <Route path='/product/:id' element={<ProductDetailNew />} />
                         <Route path='/produto/:id/:cryptoHash' element={<CryptoRouteHandler><ProductDetail /></CryptoRouteHandler>} />
                         <Route path='/price-alerts' element={<PriceAlerts />} />
                         <Route path='/favorites' element={<Favorites />} />
@@ -240,7 +257,10 @@ function App() {
                         <Route path='/register' element={<SignupUnified />} />
                         <Route path='/login' element={<AgroisyncLogin />} />
                         <Route path='/signup' element={<SignupUnified />} />
+                        <Route path='/signup/type' element={<SignupType />} />
+                        <Route path='/signup/general' element={<SignupUnified />} />
                         <Route path='/signup/unified' element={<SignupUnified />} />
+                        <Route path='/signup/old' element={<AgroisyncRegister />} />
                         <Route path='/signup/freight' element={<SignupFreight />} />
                         <Route path='/signup/store' element={<SignupStore />} />
                         <Route path='/signup/product' element={<SignupProduct />} />
@@ -452,17 +472,23 @@ function App() {
                 {/* Botão do Chatbot VERDE Futurista */}
                 <button
                   onClick={() => setIsChatbotOpen(true)}
-                  className='fixed bottom-6 right-6 z-50 transform rounded-full border-2 border-green-400 shadow-2xl transition-all duration-300 hover:scale-125 hover:rotate-12 animate-pulse'
-                  aria-label='Abrir chatbot AI AGROISYNC'
+                  className='fixed bottom-6 right-6 z-50 transform rounded-full border-2 border-green-300 shadow-2xl transition-all duration-300 hover:scale-115 hover:rotate-6'
+                  aria-label='Abrir chatbot IA Agroisync'
                   style={{
-                    background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.9) 0%, rgba(16, 185, 129, 0.9) 100%)',
-                    padding: '16px',
-                    boxShadow: '0 0 40px rgba(34, 197, 94, 0.8), 0 8px 30px rgba(0, 0, 0, 0.4)'
+                    background: 'linear-gradient(140deg, rgba(34, 197, 94, 0.92) 0%, rgba(21, 128, 61, 0.9) 100%)',
+                    padding: '14px',
+                    boxShadow: '0 0 32px rgba(34, 197, 94, 0.65), 0 8px 24px rgba(0, 0, 0, 0.35)'
                   }}
                 >
                   <div className='relative flex items-center justify-center'>
-                    <Brain className='h-7 w-7 text-white' />
-                    <div className='absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] font-bold text-green-600'>AI</div>
+                    <img
+                      src='/logo-agroconecta-folhas.svg'
+                      alt='Abrir IA Agroisync'
+                      className='h-7 w-7 object-contain drop-shadow-md'
+                    />
+                    <div className='absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] font-bold text-green-600 shadow-sm'>
+                      IA
+                    </div>
                   </div>
                 </button>
 
@@ -477,10 +503,10 @@ function App() {
                 {/* Botão de Acessibilidade ROXO Futurista */}
                 <button
                   onClick={() => setIsAccessibilityOpen(true)}
-                  className='fixed bottom-4 left-4 z-30 transform rounded-full bg-gradient-to-br from-purple-600 to-purple-500 p-3 text-white shadow-xl transition-all duration-300 hover:scale-125 hover:rotate-12 md:bottom-6 md:left-6 md:p-4 md:shadow-2xl border-2 border-purple-400'
+                  className='fixed bottom-4 left-4 z-30 transform rounded-full bg-gradient-to-br from-blue-600 to-sky-500 p-3 text-white shadow-xl transition-all duration-300 hover:scale-120 hover:rotate-6 md:bottom-6 md:left-6 md:p-4 md:shadow-2xl border-2 border-blue-300'
                   aria-label='Abrir painel de acessibilidade'
                   style={{
-                    boxShadow: '0 0 30px rgba(139, 92, 246, 0.6), 0 8px 30px rgba(0, 0, 0, 0.4)'
+                    boxShadow: '0 0 30px rgba(59, 130, 246, 0.55), 0 8px 28px rgba(0, 0, 0, 0.35)'
                   }}
                 >
                   <Accessibility className='h-6 w-6 text-white md:h-7 md:w-7' />

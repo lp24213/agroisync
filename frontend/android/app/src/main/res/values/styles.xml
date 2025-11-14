@@ -54,22 +54,26 @@
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.AgroiSync.LargeComponent</item>
     </style>
 
-    <!-- Tema sem barra de ação -->
+    <!-- Tema sem barra de ação - Moderno e Acessível -->
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:background">@null</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
-    </style>
 
-    <!-- Tema do splash screen com fundo branco e logo Agroisync -->
-    <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@drawable/launch_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/agroisync_logo</item>
-        <item name="windowSplashScreenAnimationDuration">0</item>
-        <item name="postSplashScreenTheme">@style/AppTheme</item>
-        <item name="android:windowSplashScreenIconBackgroundColor">@color/background_light</item>
+        <!-- Acessibilidade -->
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/text_primary_light</item>
+
+        <!-- Remove qualquer splash screen nativa -->
+        <item name="android:windowDisablePreview">true</item>
+
+        <!-- Bordas arredondadas para melhor aparência (removido por compatibilidade) -->
+        <!-- <item name="android:windowCornerRadius">12dp</item> -->
+
+        <!-- Tema escuro automático baseado no sistema -->
+        <item name="android:forceDarkAllowed">true</item>
     </style>
 
     <!-- Estilos de texto -->

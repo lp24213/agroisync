@@ -2,26 +2,33 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.agroisync.mobile',
-  appName: 'AgroSync',
+  appName: 'Agroisync',
   webDir: 'build',
+  loggingBehavior: 'production',
+  bundledWebRuntime: false,
   server: {
     url: 'https://agroisync.com',
-    cleartext: true,
-    androidScheme: 'https'
+    cleartext: false,
+    androidScheme: 'https',
+    allowNavigation: ['agroisync.com', '*.agroisync.com', 'fonts.googleapis.com', 'fonts.gstatic.com'],
+    hostname: 'agroisync.com'
   },
-  loggingBehavior: 'debug',
   plugins: {
     SplashScreen: {
-      launchShowDuration: 1500,
-      backgroundColor: '#1a1a1a',
+      launchShowDuration: 0,
+      launchAutoHide: true,
+      backgroundColor: '#ffffff',
       androidSplashResourceName: 'splash',
-      androidScaleType: 'CENTER',
+      androidScaleType: 'CENTER_CROP',
       showSpinner: false,
-      iosSpinnerStyle: 'small'
+      splashFullScreen: false,
+      splashImmersive: false
     },
     StatusBar: {
       style: 'light',
-      backgroundColor: '#22c55e'
+      backgroundColor: '#22c55e',
+      overlaysWebView: false,
+      animated: true
     },
     Keyboard: {
       resize: 'body',
@@ -33,8 +40,7 @@ const config: CapacitorConfig = {
     buildOptions: {
       keystorePath: undefined,
       keystoreAlias: undefined
-    },
-    allowMixedContent: true
+    }
   },
   ios: {
     scheme: 'AgroSync',

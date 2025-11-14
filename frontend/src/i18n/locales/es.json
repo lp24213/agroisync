@@ -400,8 +400,8 @@
   "chatbot": {
     "title": "Asistente IA",
     "status": "En Línea",
-    "placeholder": "Escribe tu mensaje o usa el micrófono...",
-    "welcome": "¡Hola! Soy el asistente IA de Agroisync. ¿Cómo puedo ayudarte hoy?",
+    "placeholder": "Escribe tu pregunta o usa el micrófono...",
+    "welcome": "🌿 ¡Hola! Soy la IA de Agroisync. Pregunta sobre fletes, marketplace, clima, planes o novedades.",
     "thinking": "Pensando...",
     "typing": "AGROISYNC AI está escribiendo...",
     "recording": "Grabando... Habla ahora",

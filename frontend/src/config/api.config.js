@@ -9,14 +9,29 @@ export const REFRESH_TOKEN_KEY = 'refreshToken';
 
 // ===== URLs BASE =====
 export const API_URLS = {
-  // Backend Principal
-  base: 'https://agroisync.com/api',
+  // Backend Principal - usar rota relativa para funcionar offline no mobile
+  base: process.env.REACT_APP_API_URL || '/api',
   
-  // WebSocket
-  ws: 'wss://agroisync.com',
+  // WebSocket - detectar origem atual
+  ws: (() => {
+    try {
+      if (typeof window !== 'undefined' && window.location) {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        return `${protocol}//${window.location.host}`;
+      }
+    } catch (e) { /* ignore */ }
+    return process.env.REACT_APP_WS_URL || '';
+  })(),
   
-  // Frontend
-  frontend: 'https://agroisync.com',
+  // Frontend - detectar origem atual
+  frontend: (() => {
+    try {
+      if (typeof window !== 'undefined' && window.location && window.location.origin) {
+        return window.location.origin;
+      }
+    } catch (e) { /* ignore */ }
+    return process.env.REACT_APP_PUBLIC_URL || '';
+  })(),
   
   // CDN (se usar)
   cdn: process.env.REACT_APP_CDN_URL || '',

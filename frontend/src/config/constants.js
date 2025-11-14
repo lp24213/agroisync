@@ -31,8 +31,8 @@ export const API_CONFIG = {
           } catch (e) {
             // ignore
           }
-          // Fallback seguro em produção quando a origem não estiver disponível
-          return 'https://agroisync.com';
+          // Fallback para rota relativa em produção
+          return '';
         }
         return 'http://localhost:3001';
       })(),

@@ -1,11 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import './styles/mobile-fixes.css'; // Importar correções para mobile
-import './styles/header-fixes.css'; // Importar correções para header
-import './styles/debug-fix.css'; // FORÇA REMOÇÃO DE BORDAS VERMELHAS
-import './styles/accessibility-fixes.css'; // Ajustes de tamanho VLibras e Chatbot
-import './styles/vlibras-fix.css'; // FORÇAR VLibras ainda menor
+import './styles/mobile-ultra-modern.css'; // CSS Mobile - ÚNICO E FUNCIONAL
 import './i18n/index'; // Importar configuração do i18n
 import './utils/disableConsoleInProd'; // Silencia console em produção
 import App from './App';

@@ -16,6 +16,18 @@ const AgroisyncHome = () => {
   // Imagem de campo de soja e trigo com cache buster - usando imagem de alta resolução
   const inicioImageUrl = `https://media.istockphoto.com/id/2228728040/pt/foto/soybean-and-wheat-fields-at-summer-season.webp?a=1&b=1&s=612x612&w=0&k=20&c=N6HRSCwp0KbkAMuNBlSM7YbBq74KOBQvKvnRSB3Ws-A=`;
 
+  React.useEffect(() => {
+    if (showLogoAnimation) {
+      document.body.classList.add('agro-logo-animation-active');
+    } else {
+      document.body.classList.remove('agro-logo-animation-active');
+    }
+
+    return () => {
+      document.body.classList.remove('agro-logo-animation-active');
+    };
+  }, [showLogoAnimation]);
+
   // Animação de entrada do logo
   React.useEffect(() => {
     const timer = setTimeout(() => {
@@ -73,25 +85,25 @@ const AgroisyncHome = () => {
           >
             <motion.div
               animate={{ 
-                scale: [1, 1.1, 1],
+                scale: [1, 1.08, 1],
                 opacity: [1, 1, 1]
               }}
               transition={{ 
-                duration: 1.5, 
+                duration: 1.8, 
                 repeat: Infinity, 
                 ease: 'easeInOut' 
               }}
               style={{
-                width: '300px',
-                height: '300px',
+                width: '320px',
+                height: '320px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
               }}
             >
               <img 
-                src="/agroisync-main-logo.png" 
-                alt="Agroisync Logo" 
+                src="/LOGO_AGROISYNC_TRANSPARENTE.png" 
+                alt="Agroisync logo principal" 
                 style={{
                   width: '100%',
                   height: '100%',
@@ -123,7 +135,7 @@ const AgroisyncHome = () => {
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed',
+          backgroundAttachment: 'scroll',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

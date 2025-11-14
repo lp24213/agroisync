@@ -23,6 +23,15 @@ body {
   padding-top: 56px; /* h-12 no mobile mantém, só logo menor */
 }
 
+body.agro-logo-animation-active {
+  padding-top: 0 !important;
+}
+
+body.agro-logo-animation-active #main-header {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 @media (min-width: 768px) {
   body {
     padding-top: 80px; /* h-16 no desktop = 4rem = 64px + margem extra */
