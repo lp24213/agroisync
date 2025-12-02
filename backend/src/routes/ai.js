@@ -43,35 +43,55 @@ router.post('/chat', auth, async (req, res) => {
     const userPlan = req.user?.plan || 'free';
     const isAdmin = req.user?.role === 'admin' || req.user?.isAdmin;
 
-    // 🔒 LIMITAÇÕES POR PLANO
+    // 🔒 LIMITAÇÕES POR PLANO (CORRETO CONFORME SOLICITADO)
     const planLimits = {
       free: {
-        maxMessagesPerDay: 10,
+        maxMessagesPerDay: 20, // Logado sem plano: 20 mensagens
         features: ['basic_chat', 'freight_calc', 'product_price'],
         restricted: ['advanced_analytics', 'api_access', 'priority_support']
       },
-      inicial: {
-        maxMessagesPerDay: 50,
+      gratuito: {
+        maxMessagesPerDay: 20, // Logado sem plano: 20 mensagens
+        features: ['basic_chat', 'freight_calc', 'product_price'],
+        restricted: ['advanced_analytics', 'api_access', 'priority_support']
+      },
+      basic: {
+        maxMessagesPerDay: 50, // Básico: 50 mensagens
         features: ['basic_chat', 'freight_calc', 'product_price', 'notifications'],
         restricted: ['advanced_analytics', 'api_access']
       },
-      profissional: {
-        maxMessagesPerDay: 200,
+      basico: {
+        maxMessagesPerDay: 50, // Básico: 50 mensagens
+        features: ['basic_chat', 'freight_calc', 'product_price', 'notifications'],
+        restricted: ['advanced_analytics', 'api_access']
+      },
+      pro: {
+        maxMessagesPerDay: 150, // Pro: 150 mensagens
         features: ['all'],
         restricted: []
       },
-      empresarial: {
-        maxMessagesPerDay: 1000,
+      profissional: {
+        maxMessagesPerDay: 150, // Pro: 150 mensagens
         features: ['all'],
         restricted: []
       },
       premium: {
-        maxMessagesPerDay: -1, // ilimitado
+        maxMessagesPerDay: -1, // Premium: ilimitado
+        features: ['all'],
+        restricted: []
+      },
+      empresarial: {
+        maxMessagesPerDay: -1, // Empresarial: ilimitado
+        features: ['all'],
+        restricted: []
+      },
+      unlimited: {
+        maxMessagesPerDay: -1, // Unlimited: ilimitado
         features: ['all'],
         restricted: []
       },
       admin: {
-        maxMessagesPerDay: -1, // ilimitado
+        maxMessagesPerDay: -1, // Admin: ilimitado
         features: ['all', 'admin_analytics', 'system_monitoring'],
         restricted: []
       }

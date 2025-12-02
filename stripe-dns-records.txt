@@ -1,8 +1,0 @@
-7pyruihpuyd4potxc3y45y2pxzfnfkao._domainkey	3600	IN	CNAME	7pyruihpuyd4potxc3y45y2pxzfnfkao.dkim.custom-email-domain.stripe.com.
-uvmqgykhk5cq667bbm4z6kxawxkgw3ce._domainkey	3600	IN	CNAME	uvmqgykhk5cq667bbm4z6kxawxkgw3ce.dkim.custom-email-domain.stripe.com.
-esi2mfty34z2c6lfdzu3ghcbtp3e56vs._domainkey	3600	IN	CNAME	esi2mfty34z2c6lfdzu3ghcbtp3e56vs.dkim.custom-email-domain.stripe.com.
-c43levwozizlp3ku4ieb3a5jop7mylc7._domainkey	3600	IN	CNAME	c43levwozizlp3ku4ieb3a5jop7mylc7.dkim.custom-email-domain.stripe.com.
-htzib7mrsejcwwvmtqn75er5z3xfwmkv._domainkey	3600	IN	CNAME	htzib7mrsejcwwvmtqn75er5z3xfwmkv.dkim.custom-email-domain.stripe.com.
-bngqlw7z44mkl3vwdtl5vx3nq2wsw23v._domainkey	3600	IN	CNAME	bngqlw7z44mkl3vwdtl5vx3nq2wsw23v.dkim.custom-email-domain.stripe.com.
-bounce	3600	IN	CNAME	custom-email-domain.stripe.com.
-

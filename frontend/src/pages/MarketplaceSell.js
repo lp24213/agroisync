@@ -105,29 +105,8 @@ const MarketplaceSell = () => {
     }
   ];
 
-  const testimonials = [
-    {
-      name: 'João Silva',
-      business: 'Sementes Silva Ltda',
-      rating: 5,
-      text: 'Em 6 meses vendi mais do que em 2 anos trabalhando sozinho. A plataforma é incrível!',
-      location: 'Rio Grande do Sul'
-    },
-    {
-      name: 'Maria Santos',
-      business: 'AgroFert Distribuidora',
-      rating: 5,
-      text: 'O suporte é excepcional e as vendas aumentaram 300%. Recomendo para todos!',
-      location: 'São Paulo'
-    },
-    {
-      name: 'Carlos Oliveira',
-      business: 'Máquinas Oliveira',
-      rating: 5,
-      text: 'Interface intuitiva e clientes qualificados. Melhor investimento que fiz.',
-      location: 'Minas Gerais'
-    }
-  ];
+  // Testimonials virão do backend - sem dados falsos
+  const testimonials = [];
 
   const faqs = [
     {

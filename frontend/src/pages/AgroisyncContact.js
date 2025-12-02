@@ -52,24 +52,9 @@ const AgroisyncContact = () => {
     },
     {
       icon: Mail,
-      title: 'Contato Comercial',
-      info: 'luispaulo@agroisync.com',
-      link: 'mailto:luispaulo@agroisync.com',
-      subtitle: 'Luis Paulo de Oliveira'
-    },
-    {
-      icon: Mail,
-      title: 'Suporte Técnico',
-      info: 'franco@agroisync.com',
-      link: 'mailto:franco@agroisync.com',
-      subtitle: 'Franco Piccoli'
-    },
-    {
-      icon: Mail,
-      title: 'Suporte Geral',
-      info: 'taiza@agroisync.com',
-      link: 'mailto:taiza@agroisync.com',
-      subtitle: 'Taiza Dellazzari'
+      title: 'Suporte',
+      info: 'suporte@agroisync.com',
+      link: 'mailto:suporte@agroisync.com'
     }
   ];
 

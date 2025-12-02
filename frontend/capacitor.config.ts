@@ -44,7 +44,10 @@ const config: CapacitorConfig = {
   },
   ios: {
     scheme: 'AgroSync',
-    contentInset: 'automatic'
+    contentInset: 'automatic',
+    scrollEnabled: true,
+    allowsLinkPreview: false,
+    cordovaLinkerFlags: ['-ObjC']
   }
 };
 

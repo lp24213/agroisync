@@ -3392,16 +3392,20 @@ async function handleAIChatPrivate(request, env, user) {
       
       const messagesUsed = usage?.count || 0;
       
-      // Limites por plano
+      // Limites por plano (CORRETO CONFORME SOLICITADO)
       const limits = {
-        'gratuito': 5,
-        'basico': 50,
-        'profissional': 200,
-        'premium': 999999,
-        'empresarial': 999999
+        'free': 20,       // Logado sem plano: 20 mensagens
+        'gratuito': 20,   // Logado sem plano: 20 mensagens
+        'basico': 50,     // Básico: 50 mensagens
+        'basic': 50,      // Básico (inglês): 50 mensagens
+        'pro': 150,       // Pro: 150 mensagens
+        'profissional': 150, // Pro: 150 mensagens
+        'premium': 999999,   // Premium: ilimitado
+        'empresarial': 999999, // Empresarial: ilimitado
+        'unlimited': 999999  // Unlimited: ilimitado
       };
       
-      const dailyLimit = limits[plan] || 5;
+      const dailyLimit = limits[plan] || 20; // Default para logado sem plano: 20 mensagens
       
       if (messagesUsed >= dailyLimit) {
         return jsonResponse({ 

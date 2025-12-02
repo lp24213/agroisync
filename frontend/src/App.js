@@ -49,7 +49,6 @@ const PaymentBoleto = React.lazy(() => import('./pages/PaymentBoleto'));
 const PaymentCreditCard = React.lazy(() => import('./pages/PaymentCreditCard'));
 const AgroisyncAbout = React.lazy(() => import('./pages/AgroisyncAbout'));
 const AgroisyncContact = React.lazy(() => import('./pages/AgroisyncContact'));
-const Partnerships = React.lazy(() => import('./pages/Partnerships'));
 const AgroisyncForgotPassword = React.lazy(() => import('./pages/AgroisyncForgotPassword'));
 const SignupType = React.lazy(() => import('./pages/SignupType'));
 const SignupFreight = React.lazy(() => import('./pages/SignupFreight'));
@@ -88,15 +87,18 @@ const ClimaInsumos = React.lazy(() => import('./pages/ClimaInsumos'));
 const APIPage = React.lazy(() => import('./pages/APIPage'));
 const Store = React.lazy(() => import('./pages/Store'));
 const StorePlans = React.lazy(() => import('./pages/StorePlans'));
-const AgroconectaTracking = React.lazy(() => import('./pages/AgroconectaTracking'));
-const MarketplaceCategories = React.lazy(() => import('./pages/MarketplaceCategories'));
-const MarketplaceSellers = React.lazy(() => import('./pages/MarketplaceSellers'));
-const MarketplaceSell = React.lazy(() => import('./pages/MarketplaceSell'));
-const AgroconectaOffer = React.lazy(() => import('./pages/AgroconectaOffer'));
-const AgroconectaCarriers = React.lazy(() => import('./pages/AgroconectaCarriers'));
-const PartnershipsCurrent = React.lazy(() => import('./pages/PartnershipsCurrent'));
-const PartnershipsBenefits = React.lazy(() => import('./pages/PartnershipsBenefits'));
-const PartnershipsContact = React.lazy(() => import('./pages/PartnershipsContact'));
+// Importações diretas para evitar problemas de lazy loading
+import MarketplaceCategories from './pages/MarketplaceCategories';
+import MarketplaceSellers from './pages/MarketplaceSellers';
+import MarketplaceSell from './pages/MarketplaceSell';
+import AgroconectaOffer from './pages/AgroconectaOffer';
+import AgroconectaCarriers from './pages/AgroconectaCarriers';
+import AgroconectaTracking from './pages/AgroconectaTracking';
+// Importações diretas para parcerias também
+import Partnerships from './pages/Partnerships';
+import PartnershipsCurrent from './pages/PartnershipsCurrent';
+import PartnershipsBenefits from './pages/PartnershipsBenefits';
+import PartnershipsContact from './pages/PartnershipsContact';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -230,12 +232,6 @@ function App() {
                         <Route path='/usuario-geral' element={<UsuarioGeral />} />
                         <Route path='/tecnologia' element={<AgroisyncCrypto />} />
                         <Route path='/crypto' element={<AgroisyncCrypto />} />
-                        
-                        {/* Partnerships Routes */}
-                        <Route path='/partnerships' element={<Partnerships />} />
-                        <Route path='/partnerships/current' element={<PartnershipsCurrent />} />
-                        <Route path='/partnerships/benefits' element={<PartnershipsBenefits />} />
-                        <Route path='/partnerships/contact' element={<PartnershipsContact />} />
                         
                         {/* Legal Routes */}
                         <Route path='/faq' element={<FAQ />} />

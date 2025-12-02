@@ -20,7 +20,7 @@ const MarketplaceCategories = () => {
       name: 'Insumos Agrícolas',
       description: 'Fertilizantes, defensivos agrícolas, sementes, substratos e insumos para cultivo',
       icon: Sprout,
-      count: 1247,
+      count: 0, // Dados reais virão do backend
       subcategories: ['Fertilizantes', 'Defensivos', 'Sementes', 'Substratos', 'Nutrientes'],
       featured: true,
       color: 'green'
@@ -30,7 +30,7 @@ const MarketplaceCategories = () => {
       name: 'Máquinas e Equipamentos',
       description: 'Tratores, colheitadeiras, implementos agrícolas, irrigação e automação',
       icon: Tractor,
-      count: 856,
+      count: 0, // Dados reais virão do backend
       subcategories: ['Tratores', 'Colheitadeiras', 'Implementos', 'Irrigação', 'Peças'],
       featured: true,
       color: 'blue'
@@ -40,7 +40,7 @@ const MarketplaceCategories = () => {
       name: 'Pecuária e Genética',
       description: 'Rações, medicamentos veterinários, genética animal e equipamentos pecuários',
       icon: Beef,
-      count: 673,
+      count: 0, // Dados reais virão do backend
       subcategories: ['Rações', 'Medicamentos', 'Genética', 'Equipamentos', 'Suplementos'],
       featured: true,
       color: 'orange'
@@ -50,7 +50,7 @@ const MarketplaceCategories = () => {
       name: 'Serviços Agrícolas',
       description: 'Consultoria, manutenção, assistência técnica e serviços especializados',
       icon: Wrench,
-      count: 428,
+      count: 0, // Dados reais virão do backend
       subcategories: ['Consultoria', 'Manutenção', 'Análises', 'Capacitação', 'Assessoria'],
       featured: false,
       color: 'purple'
@@ -85,18 +85,18 @@ const MarketplaceCategories = () => {
             </p>
           </div>
 
-          {/* Stats */}
+          {/* Stats - Dados reais virão do backend */}
           <div className='mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4'>
             <div className='text-center'>
-              <div className='text-2xl font-bold text-green-600'>3,204</div>
+              <div className='text-2xl font-bold text-green-600'>—</div>
               <div className='text-sm text-gray-600'>Produtos Ativos</div>
             </div>
             <div className='text-center'>
-              <div className='text-2xl font-bold text-blue-600'>847</div>
+              <div className='text-2xl font-bold text-blue-600'>—</div>
               <div className='text-sm text-gray-600'>Vendedores</div>
             </div>
             <div className='text-center'>
-              <div className='text-2xl font-bold text-orange-600'>156</div>
+              <div className='text-2xl font-bold text-orange-600'>—</div>
               <div className='text-sm text-gray-600'>Estados</div>
             </div>
             <div className='text-center'>
@@ -216,7 +216,7 @@ const MarketplaceCategories = () => {
             Por que escolher nosso Marketplace?
           </h2>
 
-          <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
+      <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
             <div className='text-center'>
               <div className='mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100'>
                 <Shield className='h-6 w-6 text-green-600' />

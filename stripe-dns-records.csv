@@ -1,9 +1,0 @@
-Type,Name,Content,Proxy,TTL
-CNAME,7pyruihpuyd4potxc3y45y2pxzfnfkao._domainkey,7pyruihpuyd4potxc3y45y2pxzfnfkao.dkim.custom-email-domain.stripe.com,false,Auto
-CNAME,uvmqgykhk5cq667bbm4z6kxawxkgw3ce._domainkey,uvmqgykhk5cq667bbm4z6kxawxkgw3ce.dkim.custom-email-domain.stripe.com,false,Auto
-CNAME,esi2mfty34z2c6lfdzu3ghcbtp3e56vs._domainkey,esi2mfty34z2c6lfdzu3ghcbtp3e56vs.dkim.custom-email-domain.stripe.com,false,Auto
-CNAME,c43levwozizlp3ku4ieb3a5jop7mylc7._domainkey,c43levwozizlp3ku4ieb3a5jop7mylc7.dkim.custom-email-domain.stripe.com,false,Auto
-CNAME,htzib7mrsejcwwvmtqn75er5z3xfwmkv._domainkey,htzib7mrsejcwwvmtqn75er5z3xfwmkv.dkim.custom-email-domain.stripe.com,false,Auto
-CNAME,bngqlw7z44mkl3vwdtl5vx3nq2wsw23v._domainkey,bngqlw7z44mkl3vwdtl5vx3nq2wsw23v.dkim.custom-email-domain.stripe.com,false,Auto
-CNAME,bounce,custom-email-domain.stripe.com,false,Auto
-

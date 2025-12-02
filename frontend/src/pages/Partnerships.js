@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Users, TrendingUp, Globe, Mail, Phone, MapPin, Send, CheckCircle, Award } from 'lucide-react';
+import { Users, TrendingUp, Globe, Mail, MapPin, Send, CheckCircle, Award } from 'lucide-react';
 // import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt'; // Componente removido
 import CloudflareTurnstile from '../components/CloudflareTurnstile';
 import CryptoHash from '../components/CryptoHash';
@@ -603,7 +603,7 @@ const Partnerships = () => {
                   )}
                 </button>
                 <p className='form-note'>
-                  * Campos obrigatórios. Sua solicitação será enviada diretamente para contato@agroisync.com
+                  * Campos obrigatórios. Sua solicitação será enviada diretamente para parcerias@agroisync.com
                 </p>
               </div>
             </form>
@@ -619,14 +619,7 @@ const Partnerships = () => {
                 <Mail size={24} />
                 <div>
                   <h3>Email</h3>
-                  <p>contato@agroisync.com</p>
-                </div>
-              </div>
-              <div className='contact-item'>
-                <Phone size={24} />
-                <div>
-                  <h3>Telefone</h3>
-                  <p>(66) 99236-2830</p>
+                  <p>parcerias@agroisync.com</p>
                 </div>
               </div>
               <div className='contact-item'>

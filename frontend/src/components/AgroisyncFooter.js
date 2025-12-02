@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { MapPin, Phone, Mail, Instagram, MessageCircle } from 'lucide-react';
+import { MapPin, Mail, Instagram, MessageCircle } from 'lucide-react';
 
 const AgroisyncFooter = () => {
   const { t } = useTranslation();
@@ -65,10 +65,6 @@ const AgroisyncFooter = () => {
               <div className='flex items-center gap-2 text-sm text-gray-600'>
                 <MapPin className='h-4 w-4 text-green-600' />
                 <span>Sinop - MT, Brasil</span>
-              </div>
-              <div className='flex items-center gap-2 text-sm text-gray-600'>
-                <Phone className='h-4 w-4 text-green-600' />
-                <span>(66) 99236-2830</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-gray-600'>
                 <Mail className='h-4 w-4 text-green-600' />

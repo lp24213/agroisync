@@ -22,13 +22,13 @@ public class MainActivity extends BridgeActivity {
 				if (this.bridge != null && this.bridge.getWebView() != null) {
 					android.webkit.WebView webView = this.bridge.getWebView();
 					android.webkit.WebSettings settings = webView.getSettings();
-
+					
 					// Configurações essenciais
 					settings.setJavaScriptEnabled(true);
 					settings.setDomStorageEnabled(true);
 					settings.setDatabaseEnabled(true);
 					settings.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-
+					
 					// Configurações de acessibilidade e performance
 					settings.setSupportZoom(true);
 					settings.setBuiltInZoomControls(true);
