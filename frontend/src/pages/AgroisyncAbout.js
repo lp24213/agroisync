@@ -9,7 +9,7 @@ const AgroisyncAbout = () => {
   const { t } = useTranslation();
   const values = [
     {
-      icon: <Target size={32} />,
+      icon: <Target size={16} />,
       title: t('about.values.innovation', 'Inovação'),
       description: t(
         'about.values.innovationDesc',
@@ -17,7 +17,7 @@ const AgroisyncAbout = () => {
       )
     },
     {
-      icon: <Heart size={32} />,
+      icon: <Heart size={16} />,
       title: t('about.values.passion', 'Paixão'),
       description: t(
         'about.values.passionDesc',
@@ -25,7 +25,7 @@ const AgroisyncAbout = () => {
       )
     },
     {
-      icon: <Users size={32} />,
+      icon: <Users size={16} />,
       title: t('about.values.collaboration', 'Colaboração'),
       description: t(
         'about.values.collaborationDesc',
@@ -33,7 +33,7 @@ const AgroisyncAbout = () => {
       )
     },
     {
-      icon: <Shield size={32} />,
+      icon: <Shield size={16} />,
       title: t('about.values.transparency', 'Transparência'),
       description: t('about.values.transparencyDesc', 'Mantemos sempre a transparência em todas as nossas operações')
     }
@@ -91,7 +91,7 @@ const AgroisyncAbout = () => {
 
   const features = [
     {
-      icon: <Target size={32} />,
+      icon: <Target size={16} />,
       title: t('about.features.sustainableTech', 'Tecnologia Sustentável'),
       description: t(
         'about.features.sustainableDesc',
@@ -99,7 +99,7 @@ const AgroisyncAbout = () => {
       )
     },
     {
-      icon: <Users size={32} />,
+      icon: <Users size={16} />,
       title: t('about.features.democratization', 'Democratização do Agronegócio'),
       description: t(
         'about.features.democratizationDesc',
@@ -107,7 +107,7 @@ const AgroisyncAbout = () => {
       )
     },
     {
-      icon: <Globe size={32} />,
+      icon: <Globe size={16} />,
       title: t('about.features.globalInnovation', 'Inovação Global'),
       description: t(
         'about.features.globalDesc',
@@ -115,7 +115,7 @@ const AgroisyncAbout = () => {
       )
     },
     {
-      icon: <Award size={32} />,
+      icon: <Award size={16} />,
       title: t('about.features.guaranteedQuality', 'Qualidade Garantida'),
       description: t(
         'about.features.qualityDesc',
@@ -148,142 +148,42 @@ const AgroisyncAbout = () => {
 
   return (
     <div>
-      {/* Hero Section TXC */}
+      {/* Hero Section - BloomFi Style */}
       <section
-        className='relative flex min-h-screen items-center justify-center'
+        className='bloomfi-hero'
         style={{
-          background:
-            'linear-gradient(135deg, rgba(22, 163, 74, 0.3) 0%, rgba(0, 0, 0, 0.7) 50%, rgba(34, 197, 94, 0.2) 100%), url("https://media.istockphoto.com/id/1364083240/pt/foto/technology-in-the-field-laptop.webp?a=1&b=1&s=612x612&w=0&k=20&c=BtnjQ7Ndc3CWQE1fi0h-80owrTk2vZb9wGQtycK-52M=")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
+          backgroundImage: "url('/images/bela-natureza-retro-com-campo.jpg')",
         }}
       >
-        <div className='absolute inset-0 bg-gradient-to-br from-green-900/50 via-black/70 to-green-800/30'></div>
-        <div className='relative z-10 mx-auto max-w-5xl px-4 text-center'>
-          <motion.div variants={heroVariants} initial='hidden' animate='visible'>
-            <motion.div
-              variants={itemVariants}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6 }}
-              style={{ 
-                background: 'rgba(34, 197, 94, 0.15)',
-                padding: '8px 20px',
-                borderRadius: '30px',
-                border: '2px solid rgba(34, 197, 94, 0.3)',
-                marginBottom: '20px',
-                display: 'inline-block'
-              }}
-            >
-              <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#22c55e' }}>
-                {t('about.badge')}
-              </span>
-            </motion.div>
-
-            <motion.div variants={itemVariants} style={{ marginBottom: '2rem' }}>
-              <div
-                style={{
-                  width: '140px',
-                  height: '140px',
-                  margin: '0 auto',
-                  background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#fff',
-                  boxShadow: '0 20px 60px rgba(34, 197, 94, 0.5)',
-                  animation: 'pulse 2s ease-in-out infinite'
-                }}
-              >
-                <Globe size={70} />
-              </div>
-            </motion.div>
-
+        <div className='bloomfi-overlay'></div>
+        <div className='bloomfi-hero-content'>
+          <motion.div variants={heroVariants} initial='hidden' animate='visible' style={{ textAlign: 'center', maxWidth: '900px' }}>
+            <div className='bloomfi-badge' style={{ marginBottom: '1.5rem', display: 'inline-block' }}>
+              {t('about.badge')}
+            </div>
             <motion.h1 
-              className='mb-6 text-7xl font-bold' 
-              variants={itemVariants} 
-              style={{
-                background: 'linear-gradient(135deg, #ffffff 0%, #22c55e 50%, #3b82f6 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                lineHeight: '1.2',
-                textAlign: 'center'
-              }}
+              className='bloomfi-hero-title' 
+              variants={itemVariants}
+              style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', marginBottom: '0.75rem' }}
             >
               {t('about.heroTitle')}
             </motion.h1>
-
             <motion.p 
-              className='mb-8 text-xl text-white/90' 
+              className='bloomfi-hero-subtitle' 
               variants={itemVariants}
-              style={{ textAlign: 'center', maxWidth: '750px', margin: '0 auto 2rem', lineHeight: '1.6' }}
+              style={{ fontSize: 'clamp(0.8rem, 1.5vw, 0.95rem)', maxWidth: '700px', margin: '0 auto 1rem', lineHeight: '1.4' }}
             >
               {t('about.heroDesc')}
             </motion.p>
-
             <motion.div
-              style={{
-                display: 'flex',
-                gap: '1rem',
-                justifyContent: 'center',
-                flexWrap: 'wrap',
-                marginTop: '2rem'
-              }}
+              style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '2rem' }}
               variants={itemVariants}
             >
-              <Link 
-                to='/contact' 
-                className='agro-btn-outline'
-                style={{
-                  background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-                  color: '#fff',
-                  padding: '16px 36px',
-                  fontSize: '1.1rem',
-                  fontWeight: 'bold',
-                  borderRadius: '12px',
-                  boxShadow: '0 10px 30px rgba(34, 197, 94, 0.4)',
-                  textDecoration: 'none',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  transition: 'transform 0.2s',
-                  border: 'none'
-                }}
-                onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
-                onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
-              >
+              <Link to='/contact' className='bloomfi-btn bloomfi-btn-black' style={{ fontSize: '0.875rem', padding: '0.5rem 1rem' }}>
                 {t('about.contactUs')}
-                <ArrowRight size={20} />
+                <ArrowRight size={12} style={{ marginLeft: '0.25rem' }} />
               </Link>
-              <Link 
-                to='/planos' 
-                className='agro-btn-outline'
-                style={{
-                  background: 'rgba(255, 255, 255, 0.15)',
-                  color: '#fff',
-                  border: '2px solid rgba(255, 255, 255, 0.3)',
-                  padding: '16px 36px',
-                  fontSize: '1.1rem',
-                  fontWeight: 'bold',
-                  borderRadius: '12px',
-                  backdropFilter: 'blur(10px)',
-                  textDecoration: 'none',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  transition: 'all 0.2s'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.25)';
-                  e.target.style.transform = 'scale(1.05)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.15)';
-                  e.target.style.transform = 'scale(1)';
-                }}
-              >
+              <Link to='/planos' className='bloomfi-btn bloomfi-btn-secondary' style={{ fontSize: '0.875rem', padding: '0.5rem 1rem' }}>
                 {t('about.ourPlans')}
               </Link>
             </motion.div>
@@ -291,385 +191,189 @@ const AgroisyncAbout = () => {
         </div>
       </section>
 
-      {/* Mission Section */}
-      <section className='agro-section'>
-        <div className='agro-container'>
-          <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-            className='agro-text-center'
-          >
-            <h2 className='agro-section-title'>{t('about.mission.title', 'Nossa Missão')}</h2>
-            <p className='agro-section-subtitle' style={{ maxWidth: '800px', margin: '0 auto' }}>
-              {t(
-                'about.mission.description',
-                'Conectar produtores, compradores e transportadores em uma plataforma única, segura e eficiente, utilizando tecnologia blockchain e inteligência artificial para revolucionar o agronegócio brasileiro.'
-              )}
-            </p>
-          </motion.div>
+      {/* Mission Section - BloomFi Style */}
+      <section className='bloomfi-container-premium' style={{ paddingTop: '2rem', paddingBottom: '2rem', background: 'var(--bloomfi-bg-primary)' }}>
+        <div className='text-center'>
+          <h2 className='bloomfi-section-title'>{t('about.mission.title', 'Nossa Missão')}</h2>
+          <p className='bloomfi-section-subtitle' style={{ maxWidth: '800px', margin: '0 auto' }}>
+            {t(
+              'about.mission.description',
+              'Conectar produtores, compradores e transportadores em uma plataforma única, segura e eficiente, utilizando tecnologia blockchain e inteligência artificial para revolucionar o agronegócio brasileiro.'
+            )}
+          </p>
         </div>
       </section>
 
-      {/* Values Section */}
-      <section className='agro-section' style={{ background: 'var(--agro-light-beige)' }}>
-        <div className='agro-container'>
-          <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-            className='agro-text-center'
-          >
-            <h2 className='agro-section-title'>{t('about.values.title', 'Nossos Valores')}</h2>
-            <p className='agro-section-subtitle'>
-              {t('about.values.subtitle', 'Os princípios que guiam nossa empresa')}
-            </p>
-          </motion.div>
-
-          <div className='agro-cards-grid'>
-            {values.map((value, index) => (
-              <motion.div
-                key={value.title}
-                className='agro-card agro-fade-in'
-                initial={{ opacity: 0, y: 60 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                whileHover={{ y: -12, scale: 1.02 }}
-                style={{ textAlign: 'center' }}
-              >
-                <div className='agro-card-icon' style={{ color: 'var(--agro-green)' }}>
-                  {value.icon}
-                </div>
-                <h3 className='agro-card-title'>{value.title}</h3>
-                <p className='agro-card-description'>{value.description}</p>
-              </motion.div>
-            ))}
-          </div>
+      {/* Values Section - BloomFi Style */}
+      <section className='bloomfi-container-premium' style={{ paddingTop: '2rem', paddingBottom: '2rem', background: 'var(--bloomfi-bg-secondary)' }}>
+        <div className='text-center' style={{ marginBottom: '3rem' }}>
+          <h2 className='bloomfi-section-title'>{t('about.values.title', 'Nossos Valores')}</h2>
+          <p className='bloomfi-section-subtitle'>
+            {t('about.values.subtitle', 'Os princípios que guiam nossa empresa')}
+          </p>
         </div>
-      </section>
-
-      {/* Features Section */}
-      <section className='agro-section'>
-        <div className='agro-container'>
-          <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-            className='agro-text-center'
-          >
-            <h2 className='agro-section-title'>{t('about.differentiation.title', 'O Que Nos Diferencia')}</h2>
-            <p className='agro-section-subtitle'>
-              {t('about.differentiation.subtitle', 'Inovações que transformam o agronegócio')}
-            </p>
-          </motion.div>
-
-          <div className='agro-cards-grid'>
-            {features.map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                className='agro-card agro-fade-in'
-                initial={{ opacity: 0, y: 60 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                whileHover={{ y: -12, scale: 1.02 }}
-                style={{ textAlign: 'center' }}
-              >
-                <div className='agro-card-icon' style={{ color: 'var(--agro-green)' }}>
-                  {feature.icon}
-                </div>
-                <h3 className='agro-card-title'>{feature.title}</h3>
-                <p className='agro-card-description'>{feature.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Team Section */}
-      <section className='agro-section' style={{ background: 'var(--agro-light-beige)' }}>
-        <div className='agro-container'>
-          <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-            className='agro-text-center'
-            style={{
-              marginBottom: '4rem',
-              padding: '0 20px'
-            }}
-          >
-            <h2
-              className='agro-section-title'
-              style={{
-                fontSize: '2.5rem',
-                fontWeight: '700',
-                marginBottom: '1rem'
-              }}
+        <div className='bloomfi-feature-grid' style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '2rem' }}>
+          {values.map((value, index) => (
+            <motion.div
+              key={value.title}
+              className='bloomfi-feature-card'
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: index * 0.1 }}
             >
-              Nossa Equipe
-            </h2>
-            <p
-              className='agro-section-subtitle'
-              style={{
-                fontSize: '1.25rem',
-                lineHeight: '1.6',
-                maxWidth: '600px',
-                margin: '0 auto'
-              }}
-            >
-              {t('about.team.title', 'Conheça as pessoas por trás da AGROISYNC')}
-            </p>
-          </motion.div>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-              gap: '3rem',
-              maxWidth: '1200px',
-              margin: '0 auto',
-              padding: '0 20px'
-            }}
-          >
-            {team.map((member, index) => (
-              <motion.div
-                key={member.name}
-                className='agro-card'
-                initial={{ opacity: 0, y: 60 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                whileHover={{ y: -8 }}
-                style={{ textAlign: 'center' }}
-              >
-                <div
-                  style={{
-                    width: '150px',
-                    height: '150px',
-                    margin: '0 auto 2rem auto',
-                    borderRadius: '50%',
-                    overflow: 'hidden',
-                    boxShadow: 'var(--agro-shadow-lg)',
-                    border: '5px solid var(--agro-green)'
-                  }}
-                >
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover'
-                    }}
-                  />
-                </div>
-
-                <h3
-                  className='agro-card-title'
-                  style={{
-                    marginBottom: '0.5rem',
-                    fontSize: '1.5rem',
-                    fontWeight: '700'
-                  }}
-                >
-                  {member.name}
-                </h3>
-
-                <div
-                  style={{
-                    color: 'var(--agro-green)',
-                    fontWeight: '600',
-                    marginBottom: '1rem',
-                    fontSize: '1.25rem'
-                  }}
-                >
-                  {member.role}
-                </div>
-
-                <p
-                  className='agro-card-description'
-                  style={{
-                    fontSize: '1rem',
-                    lineHeight: '1.6',
-                    color: '#666'
-                  }}
-                >
-                  {member.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
+              <div className='bloomfi-feature-icon' style={{ margin: '0 0 1.5rem 0' }}>
+                {value.icon}
+              </div>
+              <h3 className='bloomfi-feature-title'>{value.title}</h3>
+              <p className='bloomfi-feature-description'>{value.description}</p>
+            </motion.div>
+          ))}
         </div>
       </section>
 
-      {/* Timeline Section */}
-      <section className='agro-section' style={{ background: 'var(--agro-light-beige)' }}>
-        <div className='agro-container'>
-          <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-            className='agro-text-center'
-          >
-            <h2 className='agro-section-title'>{t('about.journey.title', 'Nossa Jornada')}</h2>
-            <p className='agro-section-subtitle'>
-              {t('about.journey.subtitle', 'Marcos importantes da nossa história')}
-            </p>
-          </motion.div>
+      {/* Features Section - BloomFi Style */}
+      <section className='bloomfi-container-premium' style={{ paddingTop: '2rem', paddingBottom: '2rem', background: 'var(--bloomfi-bg-primary)' }}>
+        <div className='text-center' style={{ marginBottom: '3rem' }}>
+          <h2 className='bloomfi-section-title'>{t('about.differentiation.title', 'O Que Nos Diferencia')}</h2>
+          <p className='bloomfi-section-subtitle'>
+            {t('about.differentiation.subtitle', 'Inovações que transformam o agronegócio')}
+          </p>
+        </div>
+        <div className='bloomfi-feature-grid' style={{ gridTemplateColumns: 'repeat(2, 1fr)', gap: '2rem' }}>
+          {features.map((feature, index) => (
+            <motion.div
+              key={feature.title}
+              className={`bloomfi-feature-card ${index % 2 === 0 ? 'bloomfi-card-purple' : 'bloomfi-card-blue'}`}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: index * 0.1 }}
+            >
+              <div className='bloomfi-feature-icon' style={{ margin: '0 0 1.5rem 0' }}>
+                {feature.icon}
+              </div>
+              <h3 className='bloomfi-feature-title'>{feature.title}</h3>
+              <p className='bloomfi-feature-description'>{feature.description}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: 'var(--agro-space-xl)',
-              marginTop: 'var(--agro-space-3xl)'
-            }}
-          >
-            {milestones.map((milestone, index) => (
-              <motion.div
-                key={milestone.year}
-                className='agro-card'
-                initial={{ opacity: 0, y: 60 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
-                whileHover={{ y: -8 }}
-                style={{ textAlign: 'center', position: 'relative' }}
+      {/* Team Section - BloomFi Style */}
+      <section className='bloomfi-container-premium' style={{ paddingTop: '2rem', paddingBottom: '2rem', background: 'var(--bloomfi-bg-secondary)' }}>
+        <div className='text-center' style={{ marginBottom: '3rem' }}>
+          <h2 className='bloomfi-section-title'>Nossa Equipe</h2>
+          <p className='bloomfi-section-subtitle' style={{ maxWidth: '600px', margin: '0 auto' }}>
+            {t('about.team.title', 'Conheça as pessoas por trás da AGROISYNC')}
+          </p>
+        </div>
+        <div className='bloomfi-feature-grid' style={{ gridTemplateColumns: 'repeat(2, 1fr)', gap: '3rem', maxWidth: '1200px', margin: '0 auto' }}>
+          {team.map((member, index) => (
+            <motion.div
+              key={member.name}
+              className='bloomfi-feature-card'
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: index * 0.1 }}
+              style={{ textAlign: 'center' }}
+            >
+              <div
+                style={{
+                  width: '150px',
+                  height: '150px',
+                  margin: '0 auto 2rem auto',
+                  borderRadius: '50%',
+                  overflow: 'hidden',
+                  boxShadow: 'var(--bloomfi-shadow-lg)',
+                  border: '4px solid var(--bloomfi-purple)'
+                }}
               >
-                <div
+                <img
+                  src={member.image}
+                  alt={member.name}
                   style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: '4px',
-                    background: 'var(--agro-green)',
-                    borderRadius: 'var(--agro-radius-xl) var(--agro-radius-xl) 0 0'
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover'
                   }}
                 />
-
-                <div
-                  style={{
-                    fontSize: '3rem',
-                    marginBottom: 'var(--agro-space-lg)',
-                    fontWeight: '900',
-                    background: 'var(--agro-gradient-accent)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    fontFamily: 'var(--agro-font-secondary)'
-                  }}
-                >
-                  {milestone.year}
-                </div>
-
-                <h3 className='agro-card-title' style={{ marginBottom: 'var(--agro-space-md)' }}>
-                  {milestone.title}
-                </h3>
-                <p className='agro-card-description'>{milestone.description}</p>
-              </motion.div>
-            ))}
-          </div>
+              </div>
+              <h3 className='bloomfi-feature-title' style={{ marginBottom: '0.5rem' }}>{member.name}</h3>
+              <div style={{ color: 'var(--bloomfi-purple)', fontWeight: '600', marginBottom: '0.5rem', fontSize: '0.75rem' }}>
+                {member.role}
+              </div>
+              <p className='bloomfi-feature-description'>{member.description}</p>
+            </motion.div>
+          ))}
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className='agro-section'>
-        <div className='agro-container'>
-          <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-            className='agro-text-center'
-            style={{
-              maxWidth: '900px',
-              margin: '0 auto',
-              padding: '0 20px'
-            }}
-          >
-            <div
-              style={{
-                width: '100px',
-                height: '100px',
-                margin: '0 auto 2rem auto',
-                background: 'var(--agro-gradient-accent)',
-                borderRadius: 'var(--agro-radius-2xl)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--agro-dark-green)',
-                boxShadow: 'var(--agro-shadow-lg)'
-              }}
+      {/* Timeline Section - BloomFi Style */}
+      <section className='bloomfi-container-premium' style={{ paddingTop: '2rem', paddingBottom: '2rem', background: 'var(--bloomfi-bg-primary)' }}>
+        <div className='text-center' style={{ marginBottom: '3rem' }}>
+          <h2 className='bloomfi-section-title'>{t('about.journey.title', 'Nossa Jornada')}</h2>
+          <p className='bloomfi-section-subtitle'>
+            {t('about.journey.subtitle', 'Marcos importantes da nossa história')}
+          </p>
+        </div>
+        <div className='bloomfi-feature-grid' style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem' }}>
+          {milestones.map((milestone, index) => (
+            <motion.div
+              key={milestone.year}
+              className='bloomfi-feature-card'
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: index * 0.2 }}
+              style={{ textAlign: 'center', position: 'relative' }}
             >
-              <Award size={40} />
-            </div>
-            <h2
-              className='agro-section-title'
-              style={{
-                marginBottom: '1.5rem',
-                fontSize: '2.5rem',
-                fontWeight: '700'
-              }}
-            >
-              Faça Parte da Revolução
-            </h2>
-            <p
-              className='agro-section-subtitle'
-              style={{
-                marginBottom: '3rem',
-                fontSize: '1.25rem',
-                lineHeight: '1.6',
-                maxWidth: '600px',
-                margin: '0 auto 3rem auto'
-              }}
-            >
-              Junte-se a nós na missão de transformar o agronegócio brasileiro
-            </p>
-            <div
-              style={{
-                display: 'flex',
-                gap: '1.5rem',
-                justifyContent: 'center',
-                flexWrap: 'wrap',
-                alignItems: 'center'
-              }}
-            >
-              <Link
-                to='/register'
-                className='agro-btn agro-btn-primary'
+              <div
                 style={{
-                  padding: '1rem 2rem',
-                  fontSize: '1.1rem',
-                  fontWeight: '600'
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '4px',
+                  background: 'var(--bloomfi-gradient-primary)',
+                  borderRadius: 'var(--bloomfi-border-radius-xl) var(--bloomfi-border-radius-xl) 0 0'
                 }}
-              >
-                {t('about.startNow')}
-                <ArrowRight size={20} />
-              </Link>
-              <Link
-                to='/contact'
-                className='agro-btn agro-btn-secondary'
-                style={{
-                  padding: '1rem 2rem',
-                  fontSize: '1.1rem',
-                  fontWeight: '600'
-                }}
-              >
-                {t('about.contactUs')}
-              </Link>
-            </div>
-            <div className='mt-8 flex justify-center'>
-              <CryptoHash pageName='about' style={{ display: 'none' }} />
-            </div>
-          </motion.div>
+              />
+              <div className='bloomfi-stat-number' style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>
+                {milestone.year}
+              </div>
+              <h3 className='bloomfi-feature-title' style={{ marginBottom: '1rem' }}>{milestone.title}</h3>
+              <p className='bloomfi-feature-description'>{milestone.description}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA Section - BloomFi Style */}
+      <section className='bloomfi-container-premium' style={{ paddingTop: '2rem', paddingBottom: '2rem', background: 'var(--bloomfi-bg-secondary)' }}>
+        <div className='text-center'>
+          <div className='bloomfi-feature-icon' style={{ width: '2rem', height: '2rem', margin: '0 auto 0.5rem', fontSize: '1rem' }}>
+            <Award size={20} style={{ color: 'white' }} />
+          </div>
+          <h2 className='bloomfi-section-title' style={{ marginBottom: '1.5rem' }}>
+            Faça Parte da <span className='bloomfi-gradient-text'>Revolução</span>
+          </h2>
+          <p className='bloomfi-section-subtitle' style={{ marginBottom: '2rem', maxWidth: '600px', margin: '0 auto 2rem' }}>
+            Junte-se a nós na missão de transformar o agronegócio brasileiro
+          </p>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link to='/register' className='bloomfi-btn bloomfi-btn-primary'>
+              {t('about.startNow')}
+              <ArrowRight size={12} style={{ marginLeft: '0.25rem' }} />
+            </Link>
+            <Link to='/contact' className='bloomfi-btn bloomfi-btn-secondary'>
+              {t('about.contactUs')}
+            </Link>
+          </div>
+          <div className='mt-8 flex justify-center'>
+            <CryptoHash pageName='about' style={{ display: 'none' }} />
+          </div>
         </div>
       </section>
     </div>

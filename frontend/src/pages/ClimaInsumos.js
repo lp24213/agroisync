@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Cloud, Droplets, Wind, Sun, MapPin, Calendar, TrendingUp, TrendingDown, AlertTriangle, Sprout, Package, DollarSign, Search, ShoppingCart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet-async';
 import WeatherWidgetComplete from '../components/WeatherWidgetComplete';
 import weatherService from '../services/weatherService';
 
@@ -23,17 +24,24 @@ const ClimaInsumos = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      console.log('🌤️ Buscando dados climáticos REAIS...');
+      console.log('🌤️ Buscando clima do backend...');
       
-      // Busca localização do usuário
-      const userLoc = await weatherService.getUserLocationByIP();
-      setUserLocation(userLoc);
-      console.log('📍 Localização do usuário:', userLoc);
+      // Busca clima de todas as cidades principais DIRETO DO BACKEND
+      const citiesWeather = await fetch('https://agroisync-backend.contato-00d.workers.dev/api/weather/current')
+        .then(async r => {
+          if (!r.ok) {
+            throw new Error(`HTTP error! status: ${r.status}`);
+          }
+          const data = await r.json();
+          console.log('📦 Resposta clima do backend:', data);
+          return Array.isArray(data.data) ? data.data : (Array.isArray(data) ? data : []);
+        })
+        .catch(err => {
+          console.error('❌ Erro clima:', err);
+          return [];
+        });
       
-      // Busca clima de todas as cidades principais
-      const citiesWeather = await weatherService.getAllCitiesWeather();
-      console.log('✅ Clima de', citiesWeather.length, 'cidades obtido com sucesso!');
-      
+      console.log('✅ Clima carregado:', citiesWeather.length, 'cidades');
       setWeatherData(citiesWeather);
       
       // Selecionar primeira cidade
@@ -41,25 +49,30 @@ const ClimaInsumos = () => {
         setSelectedCity(citiesWeather[0]);
       }
       
-      const api = process.env.REACT_APP_API_URL || '/api';
+      console.log('🛒 Buscando insumos do backend...');
       
-      // Carregar insumos
-      try {
-        const suppliesRes = await fetch(`${api}/supplies`);
-        if (suppliesRes.ok) {
-          const data = await suppliesRes.json();
-          setSupplies(data.data || []);
-        }
-      } catch {
-        // Mock de insumos se API falhar
-        setSupplies([
-          { id: 1, name: 'Ureia', category: 'fertilizante', avg_price: 2500, unit: 'ton', price_variation: 2.5 },
-          { id: 2, name: 'NPK 10-10-10', category: 'fertilizante', avg_price: 1800, unit: 'ton', price_variation: -1.2 },
-          { id: 3, name: 'Glifosato', category: 'defensivo', avg_price: 45, unit: 'L', price_variation: 0 }
-        ]);
-      }
+      // Carregar insumos da API REAL do backend
+      const suppliesRes = await fetch('https://agroisync-backend.contato-00d.workers.dev/api/supplies')
+        .then(async r => {
+          if (!r.ok) {
+            throw new Error(`HTTP error! status: ${r.status}`);
+          }
+          const data = await r.json();
+          console.log('📦 Resposta insumos do backend:', data);
+          return Array.isArray(data.data) ? data.data : (Array.isArray(data) ? data : []);
+        })
+        .catch(err => {
+          console.error('❌ Erro insumos:', err);
+          return [];
+        });
+      
+      console.log('✅ Insumos carregados:', suppliesRes.length, 'itens');
+      setSupplies(suppliesRes);
+      
     } catch (error) {
-      // Silenciar erro - mock data já foi definido
+      console.error('❌ Erro geral loadData:', error);
+      setWeatherData([]);
+      setSupplies([]);
     } finally {
       setLoading(false);
     }
@@ -97,7 +110,16 @@ const ClimaInsumos = () => {
   }
 
   return (
-    <div data-page='clima-insumos'>
+    <>
+      <Helmet>
+        <title>Clima e Insumos Agrícolas | AGROISYNC</title>
+        <meta name="description" content="Previsão climática em tempo real, alertas de geada e seca, janela ideal de plantio e análise de insumos agrícolas. Otimize suas decisões agrícolas." />
+        <meta name="keywords" content="previsão clima agrícola, alertas geada, insumos agrícolas, janela plantio, clima agronegócio" />
+        <meta property="og:title" content="Clima e Insumos Agrícolas | AGROISYNC" />
+        <meta property="og:description" content="Previsão climática inteligente e análise de insumos para otimizar sua produção." />
+        <link rel="canonical" href="https://agroisync.com/clima" />
+      </Helmet>
+      <div data-page='clima-insumos'>
       {/* HERO SECTION */}
       <section
         className='relative flex min-h-screen items-center justify-center'
@@ -124,7 +146,7 @@ const ClimaInsumos = () => {
               display: 'inline-block'
             }}
           >
-            <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#3b82f6' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#3b82f6' }}>
               🌤️ Informações Meteorológicas e Agrícolas
             </span>
           </motion.div>
@@ -135,7 +157,7 @@ const ClimaInsumos = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             style={{
-              fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
+              fontSize: 'clamp(1.5rem, 4vw, 2rem)',
               fontWeight: '900',
               lineHeight: '1.1',
               background: 'linear-gradient(135deg, #ffffff 0%, #3b82f6 50%, #22c55e 100%)',
@@ -156,7 +178,7 @@ const ClimaInsumos = () => {
               maxWidth: '800px', 
               margin: '0 auto 2rem', 
               lineHeight: '1.6',
-              fontSize: 'clamp(1.1rem, 2vw, 1.25rem)'
+              fontSize: 'clamp(0.8rem, 1.5vw, 0.95rem)'
             }}
           >
             {t('weather.subtitle')}
@@ -169,16 +191,16 @@ const ClimaInsumos = () => {
             style={{ marginBottom: '2rem', display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
-              <span style={{ fontSize: '20px' }}>🌍</span>
-              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>Clima Atualizado</span>
+              <span style={{ fontSize: '0.75rem' }}>🌍</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '0.75rem' }}>Clima Atualizado</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
-              <span style={{ fontSize: '20px' }}>💰</span>
-              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>Cotações do Mercado</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(0, 0, 0, 0.4)', padding: '6px 12px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ fontSize: '14px' }}>💰</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '0.75rem' }}>Cotações do Mercado</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
-              <span style={{ fontSize: '20px' }}>📊</span>
-              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>Dados Confiáveis</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(0, 0, 0, 0.4)', padding: '6px 12px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ fontSize: '14px' }}>📊</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '0.75rem' }}>Dados Confiáveis</span>
             </div>
           </motion.div>
         </div>
@@ -415,6 +437,7 @@ const ClimaInsumos = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

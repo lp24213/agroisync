@@ -273,7 +273,7 @@ const Partnerships = () => {
                 display: 'inline-block'
               }}
             >
-              <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#10b981' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#10b981' }}>
                 🤝 Parcerias Estratégicas do Agronegócio
               </span>
             </motion.div>
@@ -310,12 +310,12 @@ const Partnerships = () => {
               style={{ marginBottom: '2rem', display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
-                <span style={{ fontSize: '20px' }}>🌎</span>
-                <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>Alcance Nacional</span>
+                <span style={{ fontSize: '14px' }}>🌎</span>
+                <span style={{ color: '#fff', fontWeight: '600', fontSize: '0.75rem' }}>Alcance Nacional</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
-                <span style={{ fontSize: '20px' }}>📈</span>
-                <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>Crescimento Garantido</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(0, 0, 0, 0.4)', padding: '6px 12px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+                <span style={{ fontSize: '14px' }}>📈</span>
+                <span style={{ color: '#fff', fontWeight: '600', fontSize: '0.75rem' }}>Crescimento Garantido</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
                 <span style={{ fontSize: '20px' }}>🎯</span>

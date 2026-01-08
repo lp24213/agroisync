@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet-async';
 import productService from '../services/productService';
 import {
   Star,
@@ -10,9 +11,6 @@ import {
   Search,
   Truck,
   Shield,
-  Clock,
-  CheckCircle,
-  ArrowRight,
   Package,
   UserPlus,
   MapPin,
@@ -84,7 +82,7 @@ const AgroisyncLoja = () => {
 
   const features = [
     {
-      icon: <Shield size={48} />,
+      icon: <Shield size={16} />,
       title: 'Pagamento 100% Seguro',
       description: 'Receba seu dinheiro garantido com proteção contra fraudes e chargebacks. Integração com PIX, boleto e cartões',
       color: '#22c55e',
@@ -93,7 +91,7 @@ const AgroisyncLoja = () => {
       emoji: '💳'
     },
     {
-      icon: <Truck size={48} />,
+      icon: <Truck size={16} />,
       title: 'Frete Automático Integrado',
       description: 'Calcule frete automaticamente com nossa rede de transportadoras. Rastreio em tempo real para seu cliente',
       color: '#3b82f6',
@@ -102,7 +100,7 @@ const AgroisyncLoja = () => {
       emoji: '🚚'
     },
     {
-      icon: <Package size={48} />,
+      icon: <Package size={16} />,
       title: 'Gestão Completa de Estoque',
       description: 'Controle total de produtos, variações, estoque e vendas. Dashboard com relatórios e análises em tempo real',
       color: '#a855f7',
@@ -111,7 +109,7 @@ const AgroisyncLoja = () => {
       emoji: '📦'
     },
     {
-      icon: <Star size={48} />,
+      icon: <Star size={16} />,
       title: 'Loja Personalizada',
       description: 'Escolha cores, logo e layout. Domínio próprio disponível. Sua marca, seu jeito!',
       color: '#f97316',
@@ -140,7 +138,16 @@ const AgroisyncLoja = () => {
   }, []);
 
   return (
-    <div className='agro-loja-container' data-page='loja'>
+    <>
+      <Helmet>
+        <title>Loja Virtual para Agronegócio | AGROISYNC</title>
+        <meta name="description" content="Crie sua loja virtual para o agronegócio em minutos. Venda sem comissão, pagamento garantido e frete integrado. Pronta para começar a vender!" />
+        <meta name="keywords" content="loja virtual agronegócio, e-commerce agrícola, vender produtos agrícolas online" />
+        <meta property="og:title" content="Loja Virtual para Agronegócio | AGROISYNC" />
+        <meta property="og:description" content="Crie sua loja virtual em minutos. Venda sem comissão e com pagamento garantido." />
+        <link rel="canonical" href="https://agroisync.com/loja" />
+      </Helmet>
+      <div className='agro-loja-container' data-page='loja'>
       {/* Hero Section */}
       <section
         className='relative flex min-h-screen items-center justify-center'
@@ -167,7 +174,7 @@ const AgroisyncLoja = () => {
               display: 'inline-block'
             }}
           >
-            <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#f97316' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#f97316' }}>
               🛍️ E-commerce Premium do Agronegócio
             </span>
           </motion.div>
@@ -178,7 +185,7 @@ const AgroisyncLoja = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             style={{
-              fontSize: 'clamp(2rem, 6vw, 3.5rem)',
+              fontSize: 'clamp(1.5rem, 4vw, 2rem)',
               fontWeight: '800',
               lineHeight: '1.2',
               background: 'linear-gradient(135deg, #ffffff 0%, #f97316 50%, #eab308 100%)',
@@ -198,7 +205,7 @@ const AgroisyncLoja = () => {
               maxWidth: '700px', 
               margin: '0 auto 2rem', 
               lineHeight: '1.6',
-              fontSize: 'clamp(1.1rem, 2vw, 1.25rem)'
+              fontSize: 'clamp(0.8rem, 1.5vw, 0.95rem)'
             }}
           >
             {t('store.heroSubtitle')}
@@ -211,16 +218,16 @@ const AgroisyncLoja = () => {
             style={{ marginBottom: '2rem', display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
-              <span style={{ fontSize: '20px' }}>🎁</span>
-              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>0% Comissão</span>
+              <span style={{ fontSize: '0.75rem' }}>🎁</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '0.75rem' }}>0% Comissão</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
-              <span style={{ fontSize: '20px' }}>💳</span>
-              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>Pagamento Garantido</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(0, 0, 0, 0.4)', padding: '6px 12px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ fontSize: '14px' }}>💳</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '0.75rem' }}>Pagamento Garantido</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
-              <span style={{ fontSize: '20px' }}>🚚</span>
-              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>Frete Integrado</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(0, 0, 0, 0.4)', padding: '6px 12px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ fontSize: '14px' }}>🚚</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '0.75rem' }}>Frete Integrado</span>
             </div>
           </motion.div>
 
@@ -234,8 +241,8 @@ const AgroisyncLoja = () => {
               to='/register'
               style={{
                 background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
-                padding: '16px 36px',
-                fontSize: '1.1rem',
+                padding: '0.5rem 1rem',
+                fontSize: '0.875rem',
                 fontWeight: 'bold',
                 borderRadius: '12px',
                 boxShadow: '0 10px 30px rgba(249, 115, 22, 0.4)',
@@ -256,8 +263,8 @@ const AgroisyncLoja = () => {
             <Link
               to='/marketplace'
               style={{
-                padding: '16px 36px',
-                fontSize: '1.1rem',
+                padding: '0.5rem 1rem',
+                fontSize: '0.875rem',
                 fontWeight: 'bold',
                 borderRadius: '12px',
                 background: 'rgba(255, 255, 255, 0.15)',
@@ -430,77 +437,105 @@ const AgroisyncLoja = () => {
             {filteredProducts.map((product, index) => (
               <motion.div
                 key={product.id}
-                className='agro-product-card agro-card-animated'
+                className='bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100'
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ y: -5 }}
               >
                 {/* Badge de Destaque */}
                 {product.featured && (
-                  <div className='agro-product-badge'>
-                    <Star size={16} />
+                  <div className='absolute top-3 left-3 z-10 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1'>
+                    <Star size={12} fill='white' />
                     Destaque
                   </div>
                 )}
 
                 {/* Imagem do Produto */}
-                <div className='agro-product-image'>
-                  <img src={product.image} alt={product.name} loading='lazy' />
-                  <div className='agro-product-overlay'>
-                    <button className='agro-product-quick-view'>
-                      <Eye size={20} />
-                    </button>
-                    <button className='agro-product-favorite'>
-                      <Heart size={20} />
-                    </button>
+                <div className='relative h-48 bg-gray-100 overflow-hidden'>
+                  <img
+                    src={product.image || '/placeholder-product.jpg'}
+                    alt={product.name}
+                    className='w-full h-full object-cover hover:scale-105 transition-transform duration-300'
+                    loading='lazy'
+                    onError={(e) => {
+                      e.target.src = '/placeholder-product.jpg';
+                    }}
+                  />
+                  <div className='absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center'>
+                    <div className='opacity-0 hover:opacity-100 transition-opacity duration-300 flex gap-2'>
+                      <button className='bg-white p-2 rounded-full shadow-lg hover:bg-gray-50'>
+                        <Eye size={18} className='text-gray-700' />
+                      </button>
+                      <button className='bg-white p-2 rounded-full shadow-lg hover:bg-gray-50'>
+                        <Heart size={18} className='text-gray-700' />
+                      </button>
+                    </div>
                   </div>
                 </div>
 
                 {/* Informações do Produto */}
-                <div className='agro-product-info'>
-                  <div className='agro-product-category'>{product.category}</div>
-                  <h3 className='agro-product-name'>{product.name}</h3>
-                  <p className='agro-product-description'>{product.description}</p>
-
-                  {/* Avaliação */}
-                  <div className='agro-product-rating'>
-                    <div className='agro-stars'>
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          size={14}
-                          fill={i < Math.floor(product.rating) ? '#FFD700' : 'none'}
-                          color={i < Math.floor(product.rating) ? '#FFD700' : '#E5E5E5'}
-                        />
-                      ))}
-                    </div>
-                    <span className='agro-rating-text'>
-                      {product.rating} ({product.reviews} avaliações)
+                <div className='p-4'>
+                  <div className='flex items-center justify-between mb-2'>
+                    <span className='text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full'>
+                      {product.category || 'Produto'}
                     </span>
+                    <div className='flex items-center gap-1'>
+                      <Star size={14} className='text-yellow-400 fill-current' />
+                      <span className='text-sm text-gray-600'>
+                        {product.rating || 4.5} ({product.reviews || 0})
+                      </span>
+                    </div>
                   </div>
 
+                  <h3 className='text-lg font-semibold text-gray-800 mb-2 line-clamp-2 hover:text-blue-600 transition-colors'>
+                    {product.name}
+                  </h3>
+
+                  <p className='text-sm text-gray-600 mb-3 line-clamp-2'>
+                    {product.description}
+                  </p>
+
                   {/* Localização */}
-                  <div className='agro-product-location'>
+                  <div className='flex items-center gap-1 text-sm text-gray-500 mb-3'>
                     <MapPin size={14} />
-                    <span>{product.location}</span>
+                    <span>{product.location || 'Localização não informada'}</span>
                   </div>
 
                   {/* Preços */}
-                  <div className='agro-product-pricing'>
-                    <div className='agro-price-current'>{product.price}</div>
-                    {product.originalPrice && <div className='agro-price-original'>{product.originalPrice}</div>}
-                    {product.discount && <div className='agro-discount-badge'>{product.discount}</div>}
+                  <div className='flex items-center justify-between mb-4'>
+                    <div className='flex flex-col'>
+                      <span className='text-2xl font-bold text-green-600'>
+                        {product.price || 'R$ 0,00'}
+                      </span>
+                      {product.originalPrice && (
+                        <span className='text-sm text-gray-500 line-through'>
+                          {product.originalPrice}
+                        </span>
+                      )}
+                    </div>
+                    {product.discount && (
+                      <div className='bg-red-500 text-white px-2 py-1 rounded-lg text-sm font-semibold'>
+                        -{product.discount}%
+                      </div>
+                    )}
                   </div>
 
-                  {/* Ações (sem compra direta enquanto checkout não estiver disponível) */}
-                  <div className='agro-product-actions'>
+                  {/* Ações */}
+                  <div className='flex gap-2'>
                     <button
-                      className='agro-btn-secondary agro-btn-animated'
+                      className='flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2'
                       onClick={() => window.open(`/produto/${product.id}`, '_blank')}
                     >
-                      <ArrowRight size={16} />
+                      <Eye size={16} />
                       Ver Detalhes
+                    </button>
+                    <button
+                      className='bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-3 rounded-lg transition-colors duration-200'
+                      onClick={() => {/* TODO: Implementar contato */}}
+                    >
+                      <Package size={16} />
                     </button>
                   </div>
                 </div>
@@ -1053,7 +1088,24 @@ const AgroisyncLoja = () => {
       <div className='mt-8 flex justify-center'>
         <CryptoHash pageName='loja' style={{ display: 'none' }} />
       </div>
+
+      {/* Botão Flutuante para Anunciar Produto */}
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ delay: 1, type: 'spring', stiffness: 260, damping: 20 }}
+        className="fixed bottom-6 right-6 z-50"
+      >
+        <Link
+          to="/produtos/sell"
+          className="flex items-center gap-3 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+        >
+          <Package size={24} />
+          <span className="font-semibold">Anunciar Produto</span>
+        </Link>
+      </motion.div>
     </div>
+    </>
   );
 };
 

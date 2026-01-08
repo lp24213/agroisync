@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet-async';
 // import RegistrationSystem from '../components/RegistrationSystem'; // Componente removido
 import {
   ArrowRight,
@@ -101,7 +102,7 @@ const AgroisyncMarketplace = () => {
 
   const features = [
     {
-      icon: <TrendingUp size={48} />,
+      icon: <TrendingUp size={16} />,
       title: t('marketplace.featureCommodities'),
       description: t('marketplace.featureCommoditiesDesc'),
       color: '#22c55e',
@@ -110,7 +111,7 @@ const AgroisyncMarketplace = () => {
       emoji: '📈'
     },
     {
-      icon: <Users size={48} />,
+      icon: <Users size={16} />,
       title: t('marketplace.featureNetwork'),
       description: t('marketplace.featureNetworkDesc'),
       color: '#3b82f6',
@@ -119,7 +120,7 @@ const AgroisyncMarketplace = () => {
       emoji: '👥'
     },
     {
-      icon: <Shield size={48} />,
+      icon: <Shield size={16} />,
       title: t('marketplace.featureSecurity'),
       description: t('marketplace.featureSecurityDesc'),
       color: '#a855f7',
@@ -131,27 +132,27 @@ const AgroisyncMarketplace = () => {
 
   const benefits = [
     {
-      icon: <CheckCircle size={24} />,
+      icon: <CheckCircle size={12} />,
       text: t('marketplace.benefit1')
     },
     {
-      icon: <CheckCircle size={24} />,
+      icon: <CheckCircle size={12} />,
       text: t('marketplace.benefit2')
     },
     {
-      icon: <CheckCircle size={24} />,
+      icon: <CheckCircle size={12} />,
       text: t('marketplace.benefit3')
     },
     {
-      icon: <CheckCircle size={24} />,
+      icon: <CheckCircle size={12} />,
       text: t('marketplace.benefit4')
     },
     {
-      icon: <CheckCircle size={24} />,
+      icon: <CheckCircle size={12} />,
       text: t('marketplace.benefit5')
     },
     {
-      icon: <CheckCircle size={24} />,
+      icon: <CheckCircle size={12} />,
       text: t('marketplace.benefit6')
     }
   ];
@@ -174,12 +175,37 @@ const AgroisyncMarketplace = () => {
     // fetchPublicRegistrations();
   }, []);
 
-  const handleEmailSubmit = e => {
+  const handleEmailSubmit = async (e) => {
     e.preventDefault();
-    if (process.env.NODE_ENV !== 'production') {
-
-      console.log('Email submitted:', email);
-
+    if (!email || !email.includes('@')) {
+      toast.error('Por favor, insira um email válido');
+      return;
+    }
+    
+    try {
+      const response = await fetch('https://agroisync-backend.contato-00d.workers.dev/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          source: 'marketplace',
+          consent: true
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        toast.success(data.message || 'Inscrição realizada com sucesso!');
+        setEmail(''); // Limpar campo
+      } else {
+        toast.error(data.error || 'Erro ao inscrever. Tente novamente.');
+      }
+    } catch (error) {
+      console.error('Erro ao inscrever:', error);
+      toast.error('Erro ao processar inscrição. Tente novamente.');
     }
   };
 
@@ -211,7 +237,7 @@ const AgroisyncMarketplace = () => {
               display: 'inline-block'
             }}
           >
-            <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#22c55e' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#22c55e' }}>
               🛒 {t('marketplace.heroTitle')}
             </span>
           </motion.div>
@@ -226,7 +252,8 @@ const AgroisyncMarketplace = () => {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-              lineHeight: '1.2'
+              lineHeight: '1.2',
+              fontSize: 'clamp(1.5rem, 4vw, 2rem)'
             }}
           >
             🌾 {t('marketplace.title')}
@@ -238,9 +265,9 @@ const AgroisyncMarketplace = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             style={{ 
               maxWidth: '800px', 
-              margin: '0 auto 2rem', 
-              lineHeight: '1.8',
-              fontSize: 'clamp(1.1rem, 2vw, 1.3rem)'
+              margin: '0 auto 1rem', 
+              lineHeight: '1.4',
+              fontSize: 'clamp(0.8rem, 1.5vw, 0.95rem)'
             }}
           >
             <strong>{t('marketplace.categories')}</strong>
@@ -254,17 +281,17 @@ const AgroisyncMarketplace = () => {
             transition={{ delay: 0.4 }}
             style={{ marginBottom: '2rem', display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
-              <span style={{ fontSize: '20px' }}>✅</span>
-              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>{t('marketplace.verifiedSellers')}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(0, 0, 0, 0.4)', padding: '6px 12px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ fontSize: '0.75rem' }}>✅</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '0.75rem' }}>{t('marketplace.verifiedSellers')}</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
-              <span style={{ fontSize: '20px' }}>💰</span>
-              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>{t('marketplace.competitivePrices')}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(0, 0, 0, 0.4)', padding: '6px 12px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ fontSize: '14px' }}>💰</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '0.75rem' }}>{t('marketplace.competitivePrices')}</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
-              <span style={{ fontSize: '20px' }}>🔒</span>
-              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>{t('marketplace.secureTransactions')}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(0, 0, 0, 0.4)', padding: '6px 12px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ fontSize: '14px' }}>🔒</span>
+              <span style={{ color: '#fff', fontWeight: '600', fontSize: '0.75rem' }}>{t('marketplace.secureTransactions')}</span>
             </div>
           </motion.div>
 
@@ -281,11 +308,11 @@ const AgroisyncMarketplace = () => {
               }}
               style={{
                 background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-                padding: '16px 36px',
-                fontSize: '1.1rem',
+                padding: '0.5rem 1rem',
+                fontSize: '0.875rem',
                 fontWeight: 'bold',
-                borderRadius: '12px',
-                boxShadow: '0 10px 30px rgba(34, 197, 94, 0.4)',
+                borderRadius: '8px',
+                boxShadow: '0 4px 12px rgba(34, 197, 94, 0.4)',
                 border: 'none',
                 color: '#fff',
                 cursor: 'pointer',
@@ -298,10 +325,10 @@ const AgroisyncMarketplace = () => {
             </button>
             <button 
               style={{
-                padding: '16px 36px',
-                fontSize: '1.1rem',
+                padding: '0.5rem 1rem',
+                fontSize: '0.875rem',
                 fontWeight: 'bold',
-                borderRadius: '12px',
+                borderRadius: '8px',
                 background: 'rgba(255, 255, 255, 0.15)',
                 border: '2px solid rgba(255, 255, 255, 0.3)',
                 backdropFilter: 'blur(10px)',
@@ -348,10 +375,10 @@ const AgroisyncMarketplace = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             style={{
               background: 'var(--card-bg)',
-              padding: 'clamp(1rem, 3vw, 1.5rem)',
-              borderRadius: '16px',
-              boxShadow: '0 6px 20px rgba(15, 15, 15, 0.05)',
-              marginBottom: '2rem',
+              padding: '0.75rem',
+              borderRadius: '8px',
+              boxShadow: '0 4px 12px rgba(15, 15, 15, 0.05)',
+              marginBottom: '1rem',
               border: '2px solid rgba(42, 127, 79, 0.08)'
             }}
           >
@@ -365,8 +392,8 @@ const AgroisyncMarketplace = () => {
             >
               {/* Busca */}
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                  <Search size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
+                <label style={{ display: 'block', marginBottom: '0.25rem', fontWeight: '600', fontSize: '0.875rem' }}>
+                  <Search size={12} style={{ marginRight: '0.25rem', display: 'inline' }} />
                   Buscar
                 </label>
                 <input
@@ -377,10 +404,10 @@ const AgroisyncMarketplace = () => {
                   className='agro-btn-animated'
                   style={{
                     width: '100%',
-                    padding: '0.75rem',
+                    padding: '0.5rem',
                     border: '2px solid rgba(42, 127, 79, 0.2)',
-                    borderRadius: '8px',
-                    fontSize: '1rem',
+                    borderRadius: '6px',
+                    fontSize: '0.875rem',
                     background: 'rgba(42, 127, 79, 0.05)',
                     transition: 'all 0.3s ease'
                   }}
@@ -389,8 +416,8 @@ const AgroisyncMarketplace = () => {
 
               {/* Categoria */}
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                  <Filter size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
+                <label style={{ display: 'block', marginBottom: '0.25rem', fontWeight: '600', fontSize: '0.875rem' }}>
+                  <Filter size={12} style={{ marginRight: '0.25rem', display: 'inline' }} />
                   Categoria
                 </label>
                 <select
@@ -399,10 +426,10 @@ const AgroisyncMarketplace = () => {
                   className='agro-btn-animated'
                   style={{
                     width: '100%',
-                    padding: '0.75rem',
+                    padding: '0.5rem',
                     border: '2px solid rgba(42, 127, 79, 0.2)',
-                    borderRadius: '8px',
-                    fontSize: '1rem',
+                    borderRadius: '6px',
+                    fontSize: '0.875rem',
                     background: 'rgba(42, 127, 79, 0.05)',
                     cursor: 'pointer'
                   }}
@@ -417,17 +444,17 @@ const AgroisyncMarketplace = () => {
 
               {/* Estado */}
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>📍 Estado</label>
+                <label style={{ display: 'block', marginBottom: '0.25rem', fontWeight: '600', fontSize: '0.875rem' }}>📍 Estado</label>
                 <select
                   value={selectedState}
                   onChange={e => setSelectedState(e.target.value)}
                   className='agro-btn-animated'
                   style={{
                     width: '100%',
-                    padding: '0.75rem',
+                    padding: '0.5rem',
                     border: '2px solid rgba(42, 127, 79, 0.2)',
-                    borderRadius: '8px',
-                    fontSize: '1rem',
+                    borderRadius: '6px',
+                    fontSize: '0.875rem',
                     background: 'rgba(42, 127, 79, 0.05)',
                     cursor: 'pointer'
                   }}

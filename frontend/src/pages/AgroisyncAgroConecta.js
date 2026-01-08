@@ -1,37 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../contexts/AuthContext';
 import { getAuthToken } from '../config/constants';
-// import RegistrationSystem from '../components/RegistrationSystem'; // Componente removido
-// import PlansSystem from '../components/PlansSystem'; // Componente removido
 import {
-  Truck,
   MapPin,
-  Clock,
-  Users,
-  Zap,
-  UserPlus,
-  Shield,
-  ArrowRight,
-  CheckCircle,
-  Star,
-  Globe,
   Search,
   Calendar,
-  X,
   Package,
-  DollarSign,
   Eye,
   MessageSquare,
   Bot,
-  Download
+  Download,
+  UserPlus,
+  Truck,
+  X
 } from 'lucide-react';
-import CryptoHash from '../components/CryptoHash';
 import CloudflareTurnstile from '../components/CloudflareTurnstile';
-import FreightCard from '../components/FreightCard'; // NOVO: Card com limitações
-// import AgroisyncHeroPrompt from '../components/AgroisyncHeroPrompt'; // Componente removido
+import FreightCard from '../components/FreightCard';
+import CryptoHash from '../components/CryptoHash';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
@@ -323,107 +311,32 @@ const AgroisyncAgroConecta = () => {
     fetchPublicFreights();
   }, [user?.token]);
 
-  const features = [
-    {
-      icon: <MapPin size={48} />,
-      title: t('agroconecta.gpsTracking'),
-      description: t('agroconecta.gpsTrackingDesc'),
-      color: '#3b82f6',
-      gradient: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(0, 0, 0, 0.05))',
-      border: '2px solid rgba(59, 130, 246, 0.2)',
-      emoji: '📍'
-    },
-    {
-      icon: <DollarSign size={48} />,
-      title: t('agroconecta.savingsFeature'),
-      description: t('agroconecta.savingsFeatureDesc'),
-      color: '#22c55e',
-      gradient: 'linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(0, 0, 0, 0.05))',
-      border: '2px solid rgba(34, 197, 94, 0.2)',
-      emoji: '💰'
-    },
-    {
-      icon: <Zap size={48} />,
-      title: t('agroconecta.instantQuote'),
-      description: t('agroconecta.instantQuoteDesc'),
-      color: '#a855f7',
-      gradient: 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(0, 0, 0, 0.05))',
-      border: '2px solid rgba(168, 85, 247, 0.2)',
-      emoji: '⚡'
-    },
-    {
-      icon: <Shield size={48} />,
-      title: t('agroconecta.freeInsurance'),
-      description: t('agroconecta.freeInsuranceDesc'),
-      color: '#ef4444',
-      gradient: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(0, 0, 0, 0.05))',
-      border: '2px solid rgba(239, 68, 68, 0.2)',
-      emoji: '🔒'
-    }
-  ];
-
-  const steps = [
-    {
-      number: '01',
-      title: t('agroconecta.step1'),
-      description: t('agroconecta.step1Desc'),
-      icon: <Truck size={24} />
-    },
-    {
-      number: '02',
-      title: t('agroconecta.step2'),
-      description: t('agroconecta.step2Desc'),
-      icon: <MapPin size={24} />
-    },
-    {
-      number: '03',
-      title: t('agroconecta.step3'),
-      description: t('agroconecta.step3Desc'),
-      icon: <CheckCircle size={24} />
-    }
-  ];
-
-  const sectionVariants = {
-    hidden: { opacity: 0, y: 60 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 1,
-        ease: 'easeOut',
-        staggerChildren: 0.2
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 40 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, ease: 'easeOut' }
-    }
-  };
 
   return (
-    <div data-page='agroconecta'>
-      {/* HERO COM IMAGEM DE FRETE */}
+    <>
+      <Helmet>
+        <title>Fretes e Logística do Agronegócio | AGROISYNC</title>
+        <meta name="description" content="Sistema de fretes inteligente para o agronegócio. Rastreamento GPS em tempo real, economia de até 40%, cotação instantânea por IA. Conecte-se com transportadores verificados." />
+        <meta name="keywords" content="fretes agrícolas, logística agronegócio, transporte agrícola, rastreamento GPS, cotação frete, transportadores agrícolas" />
+        <meta property="og:title" content="Fretes e Logística do Agronegócio | AGROISYNC" />
+        <meta property="og:description" content="Sistema de fretes inteligente com rastreamento GPS em tempo real e economia de até 40%." />
+        <link rel="canonical" href="https://agroisync.com/frete" />
+      </Helmet>
+      <div data-page='agroconecta' style={{ minHeight: '100vh' }}>
+      {/* Hero Section com Imagem de Fundo */}
       <section
         className='relative flex min-h-screen items-center justify-center'
         style={{
-          backgroundImage: `url('https://media.istockphoto.com/id/1282700817/pt/foto/grain-auger-of-combine-pouring-soy-bean-into-tractor-trailer.jpg?s=612x612&w=0&k=20&c=VaxEcgSsi9jYW-gzMPXQDOrRgbr7FAIKV1VwcMB6qf4=')`,
+          backgroundImage: `url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1920&h=1080&fit=crop&q=80')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
           backgroundAttachment: 'scroll'
         }}
       >
-        <div className='absolute inset-0 bg-gradient-to-br from-blue-900/50 via-black/70 to-cyan-900/30'></div>
+        <div className='absolute inset-0 bg-gradient-to-br from-blue-900/70 via-black/50 to-orange-900/30'></div>
         <div className='relative z-10 mx-auto max-w-5xl px-4 text-center'>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
+          <div
             style={{ 
               background: 'rgba(59, 130, 246, 0.15)',
               padding: '8px 20px',
@@ -433,152 +346,58 @@ const AgroisyncAgroConecta = () => {
               display: 'inline-block'
             }}
           >
-            <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#3b82f6' }}>
-              🚚 Logística Inteligente do Agronegócio
+            <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#3b82f6' }}>
+              🚛 Fretes e Logística do Agronegócio
             </span>
-          </motion.div>
+          </div>
 
-          <motion.h1
-            className='mb-6'
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <h1
+            className='mb-6 text-7xl font-bold'
             style={{
-              fontSize: 'clamp(2rem, 6vw, 3.5rem)',
-              fontWeight: '800',
-              lineHeight: '1.2',
-              background: 'linear-gradient(135deg, #ffffff 0%, #3b82f6 50%, #06b6d4 100%)',
+              background: 'linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
+              backgroundClip: 'text',
+              textShadow: '0 2px 10px rgba(0,0,0,0.3)'
             }}
           >
-            🚛 {t('agroconecta.heroTitle')}
-          </motion.h1>
-          <motion.p
-            className='mb-8 text-white/90'
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            style={{ 
-              maxWidth: '700px', 
-              margin: '0 auto 2rem', 
-              lineHeight: '1.6',
-              fontSize: 'clamp(1.1rem, 2vw, 1.25rem)'
-            }}
-          >
-            {t('agroconecta.heroSubtitle')}
-          </motion.p>
-          
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            style={{ marginBottom: '2rem', display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
-              <span style={{ fontSize: '20px' }}>📍</span>
-              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>{t('agroconecta.realTimeTracking').replace('📍 ', '')}</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
-              <span style={{ fontSize: '20px' }}>💰</span>
-              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>{t('agroconecta.savingsUpTo').replace('💰 ', '')}</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
-              <span style={{ fontSize: '20px' }}>⚡</span>
-              <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>{t('agroconecta.quoteInMinute').replace('⚡ ', '')}</span>
-            </div>
-          </motion.div>
-
-          <motion.div
-            className='flex justify-center gap-4 flex-wrap'
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-          >
-            <button
-              onClick={() => {
-                const token = localStorage.getItem('token');
-                window.location.href = token ? '/user-dashboard' : '/signup/freight';
-              }}
-              style={{
-                background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-                padding: '16px 36px',
-                fontSize: '1.1rem',
-                fontWeight: 'bold',
-                borderRadius: '12px',
-                boxShadow: '0 10px 30px rgba(59, 130, 246, 0.4)',
-                border: 'none',
-                color: '#fff',
-                cursor: 'pointer',
-                transition: 'transform 0.2s'
-              }}
-              onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
-              onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
-            >
-              {t('agroconecta.quoteFreightNow')}
-            </button>
-            <button 
-              style={{
-                padding: '16px 36px',
-                fontSize: '1.1rem',
-                fontWeight: 'bold',
-                borderRadius: '12px',
-                background: 'rgba(255, 255, 255, 0.15)',
-                border: '2px solid rgba(255, 255, 255, 0.3)',
-                backdropFilter: 'blur(10px)',
-                color: '#fff',
-                cursor: 'pointer',
-                transition: 'all 0.2s'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.background = 'rgba(255, 255, 255, 0.25)';
-                e.target.style.transform = 'scale(1.05)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = 'rgba(255, 255, 255, 0.15)';
-                e.target.style.transform = 'scale(1)';
-              }}
-            >
-              {t('agroconecta.searchCarriers')}
-            </button>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Formulários Funcionais - AGORA PRIMEIRO! */}
-      <section className='agro-section' style={{ background: 'var(--bg-gradient)' }}>
-        <div className='agro-container'>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className='agro-text-center'
-            style={{ marginBottom: '2rem' }}
-          >
-            <h2 className='agro-section-title'>{t('agroconecta.freightsInAction')}</h2>
-            <p className='agro-section-subtitle'>Busque fretes ou ofereça seus serviços de transporte</p>
-          </motion.div>
-
-          {/* Tabs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            Fretes e Logística
+          </h1>
+          <p
+            className='mb-8 text-xl'
             style={{
-              display: 'flex',
-              justifyContent: 'center',
-              marginBottom: '2rem',
-              background: 'var(--card-bg)',
-              borderRadius: '12px',
-              padding: '0.5rem',
-              boxShadow: '0 6px 20px rgba(15, 15, 15, 0.05)',
+              color: '#ffffff',
+              textShadow: '0 2px 8px rgba(0,0,0,0.5)',
               maxWidth: '600px',
               margin: '0 auto 2rem auto'
             }}
           >
+            Encontre ou ofereça transporte para o agronegócio. Rastreamento GPS em tempo real e economia de até 40%.
+          </p>
+        </div>
+      </section>
+
+      {/* Formulários Funcionais */}
+      <section style={{ maxWidth: '1200px', margin: '0 auto', padding: '1rem', background: '#ffffff' }}>
+        <div>
+          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+            <h2 style={{ fontSize: 'clamp(1.25rem, 3vw, 1.5rem)', fontWeight: '600', marginBottom: '0.5rem', color: '#1a1a1a' }}>
+              Buscar Fretes ou Oferecer Transporte
+            </h2>
+          </div>
+
+          {/* Tabs */}
+          <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginBottom: '2rem',
+              background: 'white',
+              borderRadius: '12px',
+              padding: '0.5rem',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+              maxWidth: '600px',
+              margin: '0 auto 2rem auto'
+            }}>
             <button
               onClick={() => setActiveTab('buscar')}
               className='agro-btn-animated'
@@ -612,7 +431,7 @@ const AgroisyncAgroConecta = () => {
                 transition: 'all 0.3s ease'
               }}
             >
-              <Truck size={20} style={{ marginRight: '0.5rem', display: 'inline' }} />
+              <Truck size={12} style={{ marginRight: '0.25rem', display: 'inline' }} />
               Ofertas Disponíveis
             </button>
             <button
@@ -630,87 +449,52 @@ const AgroisyncAgroConecta = () => {
                 transition: 'all 0.3s ease'
               }}
             >
-              <Package size={20} style={{ marginRight: '0.5rem', display: 'inline' }} />
+              <Package size={12} style={{ marginRight: '0.25rem', display: 'inline' }} />
               Meus Pedidos
             </button>
-          </motion.div>
+          </div>
 
           {/* Botão de Cadastro */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            style={{
+          <div style={{
               display: 'flex',
               justifyContent: 'center',
               gap: '1rem',
               marginBottom: '2rem',
               flexWrap: 'wrap'
-            }}
-          >
+            }}>
             <button
               onClick={() => {
                 const token = localStorage.getItem('token');
                 window.location.href = token ? '/user-dashboard' : '/signup/freight';
               }}
-              className='agro-btn-animated'
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.5rem',
                 padding: '1rem 2rem',
-                background: 'linear-gradient(135deg, var(--accent) 0%, #2e7d32 100%)',
+                background: '#4CAF50',
                 color: 'white',
                 border: 'none',
                 borderRadius: '12px',
                 fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                boxShadow: '0 4px 15px rgba(42, 127, 79, 0.3)'
+                cursor: 'pointer'
               }}
             >
-              <UserPlus size={20} />
+              <UserPlus size={12} />
               Cadastrar como Transportador
             </button>
-
-            <button
-              onClick={() => setShowPlansModal(true)}
-              className='agro-btn-animated'
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '1rem 2rem',
-                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '12px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                boxShadow: '0 4px 15px rgba(245, 158, 11, 0.3)'
-              }}
-            >
-              <Star size={20} />
-              Ver Planos Premium
-            </button>
-          </motion.div>
+          </div>
 
           {/* Conteúdo das Tabs */}
           {activeTab === 'buscar' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              style={{
-                background: 'var(--card-bg)',
+            <div style={{
+                background: 'white',
                 padding: '2rem',
                 borderRadius: '12px',
-                boxShadow: '0 6px 20px rgba(15, 15, 15, 0.05)',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                 maxWidth: '800px',
                 margin: '0 auto'
-              }}
-            >
+              }}>
               <h3 style={{ marginBottom: '1.5rem', textAlign: 'center', color: 'var(--accent)' }}>Buscar Frete</h3>
               <form onSubmit={handleFreteSubmit}>
                 <div
@@ -723,7 +507,7 @@ const AgroisyncAgroConecta = () => {
                 >
                   <div>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                      <MapPin size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
+                      <MapPin size={10} style={{ marginRight: '0.25rem', display: 'inline' }} />
                       Origem
                     </label>
                     <input
@@ -734,10 +518,10 @@ const AgroisyncAgroConecta = () => {
                       className='agro-btn-animated'
                       style={{
                         width: '100%',
-                        padding: '0.75rem',
+                        padding: '0.5rem',
                         border: '2px solid rgba(42, 127, 79, 0.2)',
-                        borderRadius: '8px',
-                        fontSize: '1rem',
+                        borderRadius: '6px',
+                        fontSize: '0.875rem',
                         background: 'rgba(42, 127, 79, 0.05)',
                         transition: 'all 0.3s ease'
                       }}
@@ -746,7 +530,7 @@ const AgroisyncAgroConecta = () => {
                   </div>
                   <div>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                      <MapPin size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
+                      <MapPin size={10} style={{ marginRight: '0.25rem', display: 'inline' }} />
                       Destino
                     </label>
                     <input
@@ -757,10 +541,10 @@ const AgroisyncAgroConecta = () => {
                       className='agro-btn-animated'
                       style={{
                         width: '100%',
-                        padding: '0.75rem',
+                        padding: '0.5rem',
                         border: '2px solid rgba(42, 127, 79, 0.2)',
-                        borderRadius: '8px',
-                        fontSize: '1rem',
+                        borderRadius: '6px',
+                        fontSize: '0.875rem',
                         background: 'rgba(42, 127, 79, 0.05)',
                         transition: 'all 0.3s ease'
                       }}
@@ -769,7 +553,7 @@ const AgroisyncAgroConecta = () => {
                   </div>
                   <div>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                      <Package size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
+                      <Package size={10} style={{ marginRight: '0.25rem', display: 'inline' }} />
                       Volume
                     </label>
                     <input
@@ -780,10 +564,10 @@ const AgroisyncAgroConecta = () => {
                       className='agro-btn-animated'
                       style={{
                         width: '100%',
-                        padding: '0.75rem',
+                        padding: '0.5rem',
                         border: '2px solid rgba(42, 127, 79, 0.2)',
-                        borderRadius: '8px',
-                        fontSize: '1rem',
+                        borderRadius: '6px',
+                        fontSize: '0.875rem',
                         background: 'rgba(42, 127, 79, 0.05)',
                         transition: 'all 0.3s ease'
                       }}
@@ -792,7 +576,7 @@ const AgroisyncAgroConecta = () => {
                   </div>
                   <div>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                      <Calendar size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
+                      <Calendar size={10} style={{ marginRight: '0.25rem', display: 'inline' }} />
                       Data de Coleta
                     </label>
                     <input
@@ -802,10 +586,10 @@ const AgroisyncAgroConecta = () => {
                       className='agro-btn-animated'
                       style={{
                         width: '100%',
-                        padding: '0.75rem',
+                        padding: '0.5rem',
                         border: '2px solid rgba(42, 127, 79, 0.2)',
-                        borderRadius: '8px',
-                        fontSize: '1rem',
+                        borderRadius: '6px',
+                        fontSize: '0.875rem',
                         background: 'rgba(42, 127, 79, 0.05)',
                         transition: 'all 0.3s ease'
                       }}
@@ -834,19 +618,14 @@ const AgroisyncAgroConecta = () => {
                   </button>
                 </div>
               </form>
-            </motion.div>
+            </div>
           )}
 
           {activeTab === 'ofertas' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              style={{
+            <div style={{
                 maxWidth: '1400px',
                 margin: '0 auto'
-              }}
-            >
+              }}>
               <div style={{ 
                 background: 'linear-gradient(135deg, rgba(42, 127, 79, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%)',
                 padding: 'clamp(1rem, 3vw, 1.5rem)',
@@ -988,23 +767,18 @@ const AgroisyncAgroConecta = () => {
                   )}
                 </div>
               )}
-            </motion.div>
+            </div>
           )}
 
           {activeTab === 'meus-pedidos' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              style={{
-                background: 'var(--card-bg)',
+            <div style={{
+                background: 'white',
                 padding: '2rem',
                 borderRadius: '12px',
-                boxShadow: '0 6px 20px rgba(15, 15, 15, 0.05)',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                 maxWidth: '1000px',
                 margin: '0 auto'
-              }}
-            >
+              }}>
               <div style={{ marginBottom: '2rem' }}>
                 <h3
                   style={{
@@ -1177,222 +951,11 @@ const AgroisyncAgroConecta = () => {
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
           )}
         </div>
       </section>
 
-      {/* Features Section - AGORA DEPOIS DO PAINEL FUNCIONAL! */}
-      <section className='agro-section'>
-        <div className='agro-container'>
-          <motion.div
-            variants={sectionVariants}
-            initial='hidden'
-            whileInView='visible'
-            viewport={{ once: true }}
-            className='agro-text-center'
-          >
-            <motion.h2 className='agro-section-title' variants={itemVariants}>
-              {t('agroconecta.mainFeatures')}
-            </motion.h2>
-            <motion.p className='agro-section-subtitle' variants={itemVariants}>
-              {t('agroconecta.mainFeaturesDesc')}
-            </motion.p>
-          </motion.div>
-
-          <div className='agro-cards-grid' style={{ textAlign: 'center' }}>
-            {features.map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                className='agro-card agro-fade-in agro-card-animated'
-                initial={{ opacity: 0, y: 60 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                whileHover={{ y: -12, scale: 1.05 }}
-                style={{ 
-                  position: 'relative', 
-                  textAlign: 'center',
-                  background: feature.gradient,
-                  border: feature.border,
-                  borderRadius: '20px',
-                  padding: '30px',
-                  boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)'
-                }}
-              >
-                <div style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>
-                  {feature.emoji}
-                </div>
-                <div className='agro-card-icon' style={{ color: feature.color, display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0 auto 1rem' }}>
-                  {feature.icon}
-                </div>
-                <h3 className='agro-card-title' style={{ fontSize: '1.4rem', fontWeight: 'bold', color: feature.color, marginBottom: '1rem' }}>
-                  {feature.title}
-                </h3>
-                <p className='agro-card-description' style={{ fontSize: '1rem', lineHeight: '1.6', color: '#666' }}>
-                  {feature.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section className='agro-section' style={{ background: 'var(--agro-light-beige)' }}>
-        <div className='agro-container'>
-          <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-            className='agro-text-center'
-          >
-            <div
-              style={{
-                width: '80px',
-                height: '80px',
-                margin: '0 auto var(--agro-space-lg) auto',
-                background: 'var(--agro-gradient-accent)',
-                borderRadius: 'var(--agro-radius-2xl)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--agro-dark-green)',
-                boxShadow: 'var(--agro-shadow-lg)'
-              }}
-            >
-              <Star size={32} />
-            </div>
-            <h2 className='agro-section-title'>{t('agroconecta.howItWorks')}</h2>
-            <p className='agro-section-subtitle'>{t('agroconecta.howItWorksDesc')}</p>
-          </motion.div>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: 'var(--agro-space-xl)'
-            }}
-          >
-            {steps.map((step, index) => (
-              <motion.div
-                key={step.number}
-                className='agro-card'
-                initial={{ opacity: 0, y: 60 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
-                whileHover={{ y: -8, scale: 1.02 }}
-                style={{ textAlign: 'center', position: 'relative' }}
-              >
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: '4px',
-                    background: 'var(--agro-green-accent)',
-                    borderRadius: 'var(--agro-radius-xl) var(--agro-radius-xl) 0 0'
-                  }}
-                />
-
-                <div
-                  style={{
-                    fontSize: '3rem',
-                    marginBottom: 'var(--agro-space-lg)',
-                    fontWeight: '900',
-                    background: 'var(--agro-gradient-accent)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    fontFamily: 'var(--agro-font-secondary)'
-                  }}
-                >
-                  {step.number}
-                </div>
-
-                <div
-                  style={{
-                    width: '64px',
-                    height: '64px',
-                    margin: '0 auto var(--agro-space-lg) auto',
-                    background: 'var(--agro-gradient-accent)',
-                    borderRadius: 'var(--agro-radius-2xl)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'var(--agro-dark-green)',
-                    boxShadow: 'var(--agro-shadow-md)'
-                  }}
-                >
-                  {step.icon}
-                </div>
-
-                <h3 className='agro-card-title' style={{ marginBottom: 'var(--agro-space-md)' }}>
-                  {step.title}
-                </h3>
-                <p className='agro-card-description'>{step.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className='agro-section'>
-        <div className='agro-container'>
-          <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-            className='agro-text-center'
-            style={{ maxWidth: '800px', margin: '0 auto' }}
-          >
-            <div
-              style={{
-                width: '80px',
-                height: '80px',
-                margin: '0 auto var(--agro-space-lg) auto',
-                background: 'var(--agro-gradient-accent)',
-                borderRadius: 'var(--agro-radius-2xl)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--agro-dark-green)',
-                boxShadow: 'var(--agro-shadow-lg)'
-              }}
-            >
-              <Globe size={32} />
-            </div>
-            <h2 className='agro-section-title' style={{ marginBottom: 'var(--agro-space-lg)' }}>
-              {t('agroconecta.readyToConnect')}
-            </h2>
-            <p className='agro-section-subtitle' style={{ marginBottom: 'var(--agro-space-xl)' }}>
-              {t('agroconecta.readyToConnectDesc')}
-            </p>
-            <div
-              style={{
-                display: 'flex',
-                gap: 'var(--agro-space-lg)',
-                justifyContent: 'center',
-                flexWrap: 'wrap',
-                alignItems: 'center'
-              }}
-            >
-              <Link to='/register' className='agro-btn agro-btn-primary' style={{ textAlign: 'center' }}>
-                {t('agroconecta.haveLoad')}
-                <ArrowRight size={20} />
-              </Link>
-              <Link to='/register' className='agro-btn agro-btn-secondary' style={{ textAlign: 'center' }}>
-                {t('agroconecta.amCarrier')}
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </section>
 
       {/* Modal de Rastreamento */}
       {showTrackingModal && selectedOrder && (
@@ -1719,7 +1282,8 @@ const AgroisyncAgroConecta = () => {
       <div className='mt-8 flex justify-center'>
         <CryptoHash pageName='agro-conecta' style={{ display: 'none' }} />
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 
