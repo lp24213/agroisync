@@ -1,0 +1,78 @@
+/* Header fixes for Agroisync */
+
+/* Main header responsive layout */
+#main-header {
+  position: relative;
+  z-index: 1000;
+}
+
+/* Mobile responsive styles */
+@media (max-width: 880px) {
+  #main-header .flex {
+    flex-wrap: wrap;
+    padding: 12px;
+  }
+
+  #main-nav {
+    width: 100%;
+    order: 3;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  .lang-selector {
+    order: 2;
+    margin-left: 0;
+  }
+
+  #main-header .flex > a:first-child {
+    order: 1;
+  }
+
+  /* Mobile menu button positioning */
+  #main-header .md\\:hidden {
+    order: 4;
+    margin-left: auto;
+  }
+}
+
+/* Ensure proper spacing for fixed header */
+body {
+  padding-top: 64px; /* Height of header */
+}
+
+/* Fix for header content collision */
+#main-header .max-w-7xl {
+  position: relative;
+}
+
+/* Language selector positioning */
+.lang-selector {
+  z-index: 1010;
+  position: relative;
+}
+
+/* Mobile menu improvements */
+@media (max-width: 880px) {
+  #main-header .md\\:hidden {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+  }
+
+  /* Ensure mobile menu doesn't overlap */
+  #main-header .md\\:hidden + div {
+    margin-top: 60px;
+  }
+}
+
+/* Fix for header height on mobile */
+@media (max-width: 880px) {
+  #main-header {
+    min-height: 80px;
+  }
+
+  body {
+    padding-top: 80px;
+  }
+}

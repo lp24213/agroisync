@@ -1,5 +1,4 @@
-// Serviço de Clima REAL com OpenWeatherMap API
-const OPENWEATHER_API_KEY = '9e1e23c2c5b2ba3e5a6d8f1e4c7a9b2d'; // Chave de exemplo - você pode usar a sua própria
+// Serviço de Clima REAL com Open-Meteo API (sem chave)
 
 const MAIN_CITIES = [
   // MATO GROSSO - 8 Principais Cidades Produtoras
@@ -11,7 +10,7 @@ const MAIN_CITIES = [
   { name: 'Campo Verde', state: 'MT', lat: -15.5456, lon: -55.1639, importance: '🌾 Grãos e proteína animal' },
   { name: 'Cuiabá', state: 'MT', lat: -15.6014, lon: -56.0979, importance: '🏛️ Capital - Centro de distribuição' },
   { name: 'Primavera do Leste', state: 'MT', lat: -15.5561, lon: -54.2964, importance: '🌾 Soja, milho e algodão' },
-  
+
   // PRINCIPAIS POLOS AGRÍCOLAS DO BRASIL
   { name: 'Luís Eduardo Magalhães', state: 'BA', lat: -12.0964, lon: -45.7856, importance: '🌾 Maior polo do MATOPIBA' },
   { name: 'Barreiras', state: 'BA', lat: -12.1528, lon: -44.9900, importance: '🌾 Soja e algodão' },
@@ -23,63 +22,275 @@ const MAIN_CITIES = [
 ];
 
 class WeatherService {
+  constructor() {
+    // Sem cache, sempre dados reais
+  }
+
   /**
-   * Busca clima atual de uma cidade usando OpenWeatherMap
+   * Detecta localização automática do usuário
    */
-  async getCurrentWeather(lat, lon, cityName) {
+  async getUserLocation() {
+    return new Promise((resolve, reject) => {
+      // Verificar se geolocalização está disponível e permitida
+      if (!navigator.geolocation) {
+        this.getLocationByIP().then(resolve).catch(reject);
+        return;
+      }
+
+      // Tentar geolocalização com tratamento de erro robusto
+      try {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            try {
+              const { latitude, longitude } = position.coords;
+              const cityData = await this.getCityNameByCoords(latitude, longitude);
+              const locationData = {
+                lat: latitude,
+                lon: longitude,
+                city: cityData.city,
+                state: cityData.state,
+                country: cityData.country,
+                method: 'gps'
+              };
+              resolve(locationData);
+            } catch (error) {
+              // Se falhar ao obter nome da cidade, usar IP como fallback
+              this.getLocationByIP().then(resolve).catch(reject);
+            }
+          },
+          (error) => {
+            // Qualquer erro de geolocalização (permissão negada, timeout, etc) -> usar IP
+            this.getLocationByIP().then(resolve).catch(reject);
+          },
+          {
+            enableHighAccuracy: false, // Reduzir para false para evitar bloqueios
+            timeout: 5000, // Reduzir timeout
+            maximumAge: 300000
+          }
+        );
+      } catch (error) {
+        // Se houver erro ao chamar getCurrentPosition, usar IP
+        this.getLocationByIP().then(resolve).catch(reject);
+      }
+    });
+  }
+
+  /**
+   * Busca localização por IP (fallback)
+   */
+  async getLocationByIP() {
     try {
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=pt_br`
-      );
-      
+      // Tentar múltiplos serviços de geolocalização por IP
+      const services = [
+        'https://ipapi.co/json/',
+        'https://ip-api.com/json/',
+        'https://api.ipgeolocation.io/ipgeo?apiKey=free'
+      ];
+
+      for (const serviceUrl of services) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 segundos timeout
+          
+          const response = await fetch(serviceUrl, { 
+            signal: controller.signal,
+            mode: 'cors',
+            credentials: 'omit'
+          });
+          
+          clearTimeout(timeoutId);
+          
+          if (!response.ok) continue;
+          
+          const data = await response.json();
+          
+          // Formato ipapi.co
+          if (data.latitude && data.longitude) {
+            return {
+              lat: data.latitude,
+              lon: data.longitude,
+              city: data.city || 'Cidade não identificada',
+              state: data.region_code || data.region || 'Estado não identificado',
+              country: data.country_code || data.country || 'BR',
+              method: 'ip'
+            };
+          }
+          
+          // Formato ip-api.com
+          if (data.lat && data.lon) {
+            return {
+              lat: data.lat,
+              lon: data.lon,
+              city: data.city || 'Cidade não identificada',
+              state: data.regionName || data.region || 'Estado não identificado',
+              country: data.countryCode || 'BR',
+              method: 'ip'
+            };
+          }
+        } catch (err) {
+          // Silenciar erro e tentar próximo serviço
+          continue;
+        }
+      }
+    } catch (error) {
+      // Silenciar erro geral
+    }
+    
+    // Fallback - retornar localização padrão se todos os serviços falharem
+    return {
+      lat: -15.6014,
+      lon: -56.0979,
+      city: 'Cuiabá',
+      state: 'MT',
+      country: 'BR',
+      method: 'default'
+    };
+  }
+
+  /**
+   * Busca nome da cidade pelas coordenadas
+   */
+  async getCityNameByCoords(lat, lon) {
+    // Apenas retorna a cidade brasileira mais próxima (sem OpenWeatherMap)
+    return this.getNearestBrazilianCity(lat, lon);
+  }
+
+  /**
+   * Encontra a cidade brasileira mais próxima
+   */
+  getNearestBrazilianCity(lat, lon) {
+    let nearestCity = null;
+    let minDistance = Infinity;
+
+    MAIN_CITIES.forEach(city => {
+      const distance = this.calculateDistance(lat, lon, city.lat, city.lon);
+      if (distance < minDistance) {
+        minDistance = distance;
+        nearestCity = city;
+      }
+    });
+
+    return {
+      city: nearestCity.name,
+      state: nearestCity.state,
+      country: 'BR'
+    };
+  }
+
+  /**
+   * Calcula distância entre duas coordenadas (fórmula de Haversine)
+   */
+  calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Raio da Terra em km
+    const dLat = this.toRadians(lat2 - lat1);
+    const dLon = this.toRadians(lon2 - lon1);
+
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(this.toRadians(lat1)) * Math.cos(this.toRadians(lat2)) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
+
+  /**
+   * Converte graus para radianos
+   */
+  toRadians(degrees) {
+    return degrees * (Math.PI / 180);
+  }
+
+  /**
+   * Busca clima atual sempre com dados frescos da Open-Meteo
+   */
+  async getCurrentWeatherFresh(lat, lon, cityName) {
+    try {
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,precipitation,wind_speed_10m,relative_humidity_2m,pressure_msl,cloud_cover,weather_code,is_day&timezone=America/Sao_Paulo`;
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error('Erro ao buscar clima');
       }
-      
       const data = await response.json();
+      const current = data.current;
       
-      return {
+      // Mapear weather_code para descrição e ícone
+      const weatherInfo = this.getWeatherInfoFromCode(current.weather_code, current.is_day === 1);
+      
+      const weatherData = {
         city: cityName,
-        temperature: Math.round(data.main.temp),
-        description: this.translateDescription(data.weather[0].description),
-        humidity: data.main.humidity,
-        wind_speed: Math.round(data.wind.speed * 3.6), // m/s para km/h
-        icon: data.weather[0].icon,
-        feels_like: Math.round(data.main.feels_like),
-        pressure: data.main.pressure,
-        visibility: Math.round((data.visibility || 10000) / 1000), // metros para km
-        clouds: data.clouds.all
+        temperature: Math.round(current.temperature_2m),
+        description: weatherInfo.description,
+        humidity: current.relative_humidity_2m ? Math.round(current.relative_humidity_2m) : null,
+        wind_speed: Math.round(current.wind_speed_10m * 3.6), // Converter m/s para km/h
+        icon: weatherInfo.icon,
+        feels_like: Math.round(current.apparent_temperature),
+        pressure: current.pressure_msl ? Math.round(current.pressure_msl) : null,
+        visibility: null,
+        clouds: current.cloud_cover ? Math.round(current.cloud_cover) : null,
+        uv_index: null,
+        sunrise: null,
+        sunset: null
+      };
+      return {
+        ...weatherData,
+        cached: false,
+        timestamp: Date.now()
       };
     } catch (error) {
-      console.warn(`Erro ao buscar clima de ${cityName}:`, error);
-      // Retorna dados mock em caso de erro
-      return this.getMockWeather(cityName);
+      console.error('Erro ao buscar clima fresco:', error);
+      throw error;
     }
+  }
+
+  /**
+   * Mapeia weather_code da Open-Meteo para descrição e ícone
+   */
+  getWeatherInfoFromCode(weatherCode, isDay) {
+    // Códigos WMO Weather interpretation codes (WW)
+    const weatherMap = {
+      0: { description: 'Céu limpo', icon: isDay ? '01d' : '01n' },
+      1: { description: 'Principalmente limpo', icon: isDay ? '02d' : '02n' },
+      2: { description: 'Parcialmente nublado', icon: isDay ? '02d' : '02n' },
+      3: { description: 'Nublado', icon: '03d' },
+      45: { description: 'Neblina', icon: '50d' },
+      48: { description: 'Neblina com geada', icon: '50d' },
+      51: { description: 'Chuva leve', icon: isDay ? '09d' : '09n' },
+      53: { description: 'Chuva moderada', icon: isDay ? '09d' : '09n' },
+      55: { description: 'Chuva forte', icon: isDay ? '09d' : '09n' },
+      56: { description: 'Chuva congelante leve', icon: '13d' },
+      57: { description: 'Chuva congelante forte', icon: '13d' },
+      61: { description: 'Chuva leve', icon: isDay ? '10d' : '10n' },
+      63: { description: 'Chuva moderada', icon: isDay ? '10d' : '10n' },
+      65: { description: 'Chuva forte', icon: isDay ? '10d' : '10n' },
+      66: { description: 'Chuva congelante leve', icon: '13d' },
+      67: { description: 'Chuva congelante forte', icon: '13d' },
+      71: { description: 'Neve leve', icon: '13d' },
+      73: { description: 'Neve moderada', icon: '13d' },
+      75: { description: 'Neve forte', icon: '13d' },
+      77: { description: 'Grãos de neve', icon: '13d' },
+      80: { description: 'Pancadas de chuva leve', icon: isDay ? '09d' : '09n' },
+      81: { description: 'Pancadas de chuva moderada', icon: isDay ? '09d' : '09n' },
+      82: { description: 'Pancadas de chuva forte', icon: isDay ? '09d' : '09n' },
+      85: { description: 'Pancadas de neve leve', icon: '13d' },
+      86: { description: 'Pancadas de neve forte', icon: '13d' },
+      95: { description: 'Tempestade', icon: '11d' },
+      96: { description: 'Tempestade com granizo', icon: '11d' },
+      99: { description: 'Tempestade forte com granizo', icon: '11d' }
+    };
+
+    const info = weatherMap[weatherCode] || { description: 'Condições desconhecidas', icon: '01d' };
+    return {
+      description: info.description,
+      icon: `https://openweathermap.org/img/wn/${info.icon}@2x.png`
+    };
   }
 
   /**
    * Busca previsão de 5 dias (disponível no plano gratuito)
    */
   async getForecast5Days(lat, lon) {
-    try {
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=pt_br`
-      );
-      
-      if (!response.ok) {
-        throw new Error('Erro ao buscar previsão');
-      }
-      
-      const data = await response.json();
-      
-      // Agrupa por dia (a API retorna de 3 em 3 horas)
-      const dailyForecast = this.processForecastData(data.list);
-      
-      return dailyForecast;
-    } catch (error) {
-      console.warn('Erro ao buscar previsão:', error);
-      return this.getMockForecast15Days();
-    }
+    // Previsão de 5 dias desabilitada (sem OpenWeatherMap). Retorne array vazio ou implemente com Open-Meteo se necessário.
+    return [];
   }
 
   /**
@@ -125,21 +336,39 @@ class WeatherService {
   }
 
   /**
-   * Busca clima de todas as cidades principais
+   * Busca clima de todas as cidades principais - DIRETO DO BACKEND
    */
   async getAllCitiesWeather() {
-    const promises = MAIN_CITIES.map(city => 
-      this.getCurrentWeather(city.lat, city.lon, city.name).then(weather => ({
-        ...weather,
-        state: city.state,
-        importance: city.importance,
-        lat: city.lat,
-        lon: city.lon
-      }))
-    );
-    
-    const results = await Promise.all(promises);
-    return results;
+    try {
+      console.log('🌤️ Buscando clima de todas as cidades do backend...');
+      const response = await fetch('https://agroisync-backend.contato-00d.workers.dev/api/weather/current');
+      
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar clima: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('✅ Clima carregado com sucesso do backend:', data.data?.length, 'cidades');
+      
+      // O backend retorna { success: true, data: [...], timestamp: ... }
+      return data.data || [];
+    } catch (error) {
+      console.error('❌ Erro ao buscar clima do backend:', error);
+      // Fallback para Open-Meteo se backend falhar
+      console.log('⚠️ Usando fallback com Open-Meteo...');
+      const promises = MAIN_CITIES.map(city => 
+        this.getCurrentWeather(city.lat, city.lon, city.name).then(weather => ({
+          ...weather,
+          state: city.state,
+          importance: city.importance,
+          lat: city.lat,
+          lon: city.lon
+        }))
+      );
+      
+      const results = await Promise.all(promises);
+      return results;
+    }
   }
 
   /**
@@ -182,49 +411,14 @@ class WeatherService {
    * Dados mock para fallback
    */
   getMockWeather(cityName) {
-    return {
-      city: cityName,
-      temperature: 28 + Math.floor(Math.random() * 10),
-      description: 'Ensolarado',
-      humidity: 55 + Math.floor(Math.random() * 20),
-      wind_speed: 8 + Math.floor(Math.random() * 10),
-      icon: '01d',
-      feels_like: 30,
-      pressure: 1013,
-      visibility: 10,
-      clouds: 20
-    };
+    throw new Error('Mock/fallback desabilitado: apenas dados reais disponíveis.');
   }
 
   /**
    * Previsão mock de 15 dias (estendendo os 5 dias reais)
    */
   getMockForecast15Days(baseTemp = 28) {
-    const forecast = [];
-    const today = new Date();
-    
-    for (let i = 0; i < 15; i++) {
-      const date = new Date(today);
-      date.setDate(date.getDate() + i);
-      
-      const variation = Math.sin(i / 2) * 3;
-      const temp = baseTemp + variation + (Math.random() - 0.5) * 2;
-      
-      forecast.push({
-        date: date.toISOString().split('T')[0],
-        day_name: this.getDayName(date),
-        temp_max: Math.round(temp + 3),
-        temp_min: Math.round(temp - 2),
-        temp_avg: Math.round(temp),
-        humidity: 55 + Math.floor(Math.random() * 25),
-        description: i % 3 === 0 ? 'Nublado' : 'Ensolarado',
-        icon: i % 3 === 0 ? '03d' : '01d',
-        wind_speed: 8 + Math.floor(Math.random() * 10),
-        rain_probability: i % 4 === 0 ? Math.floor(Math.random() * 60) : 0
-      });
-    }
-    
-    return forecast;
+    throw new Error('Mock/fallback desabilitado: apenas dados reais disponíveis.');
   }
 
   /**

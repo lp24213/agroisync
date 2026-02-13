@@ -1,0 +1,33 @@
+{
+  "id": "agroisync",
+  "zone_id": "*",
+  "zone_name": "agroisync.com",
+  "domains": [
+    "agroisync.com",
+    "www.agroisync.com",
+    "api.agroisync.com"
+  ],
+  "dns": {
+    "@": {
+      "type": "CNAME",
+      "name": "@",
+      "content": "agroisync.pages.dev",
+      "ttl": 1,
+      "proxied": true
+    },
+    "www": {
+      "type": "CNAME",
+      "name": "www",
+      "content": "agroisync.pages.dev",
+      "ttl": 1,
+      "proxied": true
+    },
+    "api": {
+      "type": "CNAME",
+      "name": "api",
+      "content": "agroisync-api.workers.dev",
+      "ttl": 1,
+      "proxied": true
+    }
+  }
+}

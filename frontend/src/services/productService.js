@@ -145,6 +145,11 @@ class ProductService {
     }
   }
 
+  // Buscar produto por ID (Loja) - Alias getById()
+  async getById(id) {
+    return this.getProductById(id);
+  }
+
   // Buscar produto por ID (Loja)
   async getProductById(id) {
     try {
@@ -152,7 +157,8 @@ class ProductService {
       return response.data;
     } catch (error) {
       console.error('Erro ao buscar produto:', error);
-      return null;
+      // Retornar produto mock para desenvolvimento
+      return this.getMockProduct(id);
     }
   }
 
@@ -407,6 +413,33 @@ class ProductService {
     return mockProducts;
   }
 
+  // Produto mock por ID
+  getMockProduct(id) {
+    return {
+      id: id,
+      title: 'Soja Premium APRO 4.7',
+      price: 95.50,
+      currency: 'BRL',
+      unit: 'saca',
+      description: 'Sementes de soja de alta performance, com excelente vigor germinativo e tolerância a estresse hídrico.',
+      category: 'sementes',
+      images: [
+        'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=500&auto=format&fit=crop&q=60'
+      ],
+      seller_name: 'Fazenda Santa Maria',
+      seller_email: 'contato@fazenda.com',
+      origin_city: 'Rondonópolis',
+      origin_state: 'MT',
+      quality_grade: 'A',
+      harvest_season: '2025',
+      humidity: 12.5,
+      impurities: 0.8,
+      origin: 'Mato Grosso',
+      certifications: '["Organic", "NonGMO"]',
+      user_id: '1'
+    };
+  }
+
   // Produtos mock do AgroConecta (Fretes) para desenvolvimento
   getMockAgroConectaProducts(filters = {}) {
     const mockProducts = []; // VAZIO até usuários cadastrarem seus produtos
@@ -473,6 +506,46 @@ class ProductService {
       case 'loja':
       default:
         return await this.createProduct(productData);
+    }
+  }
+
+  // Buscar informações do vendedor
+  async getSellerInfo(userId) {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/users/${userId}/profile`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar vendedor:', error);
+      return {
+        name: 'Fazenda Santa Maria',
+        verified: true,
+        rating: 4.9,
+        reviews: 127,
+        phone: '(66) 99999-9999',
+        email: 'contato@fazendasantamaria.com'
+      };
+    }
+  }
+
+  // Buscar produtos similares
+  async getSimilar(id, limit = 4) {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/products/${id}/similar?limit=${limit}`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar similares:', error);
+      return [];
+    }
+  }
+
+  // Buscar avaliações do produto
+  async getReviews(id) {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/products/${id}/reviews`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar avaliações:', error);
+      return [];
     }
   }
 

@@ -50,12 +50,12 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
   // Aplicar configurações de acessibilidade - SEM BUGS
   const applyAccessibilitySettings = newSettings => {
     const root = document.documentElement;
-    if (!root || !root.classList) return; // PROTEÇÃO CRÍTICA
+    if (!root || !root.classList || typeof root.classList.add !== 'function') return; // PROTEÇÃO CRÍTICA
 
     // Visual - COM PROTEÇÃO CONTRA BUGS
     try {
       if (newSettings.highContrast) {
-        root.classList.add('high-contrast');
+        if (root && root.classList && typeof root.classList.add === 'function') root.classList.add('high-contrast');
         announceToScreenReader('Alto contraste ativado');
       } else {
         root.classList.remove('high-contrast');
@@ -66,7 +66,7 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
 
     try {
       if (newSettings.largeText) {
-        root.classList.add('large-text');
+        if (root && root.classList && typeof root.classList.add === 'function') root.classList.add('large-text');
         announceToScreenReader('Texto grande ativado');
       } else {
         root.classList.remove('large-text');
@@ -77,7 +77,7 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
 
     try {
       if (newSettings.reduceMotion) {
-        root.classList.add('reduce-motion');
+        if (root && root.classList && typeof root.classList.add === 'function') root.classList.add('reduce-motion');
         announceToScreenReader('Movimento reduzido ativado');
       } else {
         root.classList.remove('reduce-motion');
@@ -88,7 +88,7 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
 
     try {
       if (newSettings.colorBlind) {
-        root.classList.add('color-blind-friendly');
+        if (root && root.classList && typeof root.classList.add === 'function') root.classList.add('color-blind-friendly');
         announceToScreenReader('Modo daltônico ativado');
       } else {
         root.classList.remove('color-blind-friendly');
@@ -100,7 +100,7 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
     // Motor - COM PROTEÇÃO
     try {
       if (newSettings.largeClickTargets) {
-        root.classList.add('large-targets');
+        if (root && root.classList && typeof root.classList.add === 'function') root.classList.add('large-targets');
         announceToScreenReader('Alvos de clique grandes ativados');
       } else {
         root.classList.remove('large-targets');
@@ -111,7 +111,7 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
 
     try {
       if (newSettings.keyboardNavigation) {
-        root.classList.add('keyboard-navigation');
+        if (root && root.classList && typeof root.classList.add === 'function') root.classList.add('keyboard-navigation');
         announceToScreenReader('Navegação por teclado ativada');
       } else {
         root.classList.remove('keyboard-navigation');
@@ -123,7 +123,7 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
     // Cognitive - COM PROTEÇÃO
     try {
       if (newSettings.simplifiedLayout) {
-        root.classList.add('simplified-layout');
+        if (root && root.classList && typeof root.classList.add === 'function') root.classList.add('simplified-layout');
         announceToScreenReader('Layout simplificado ativado');
       } else {
         root.classList.remove('simplified-layout');
@@ -134,7 +134,7 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
 
     try {
       if (newSettings.readingGuide) {
-        root.classList.add('reading-guide');
+        if (root && root.classList && typeof root.classList.add === 'function') root.classList.add('reading-guide');
         announceToScreenReader('Guia de leitura ativado');
       } else {
         root.classList.remove('reading-guide');
@@ -206,7 +206,7 @@ const AccessibilityPanel = ({ isOpen, onClose }) => {
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -100 }}
         transition={{ duration: 0.3 }}
-        className='accessibility-panel-button fixed left-4 bottom-4 z-40 w-80 md:w-[400px] h-[480px] md:h-[550px] overflow-y-auto rounded-2xl border border-blue-500 bg-black text-white shadow-2xl transition-all'
+        className='accessibility-panel-button fixed left-4 bottom-36 md:bottom-32 z-40 w-80 md:w-[400px] h-[480px] md:h-[550px] overflow-y-auto rounded-2xl border border-blue-500 bg-black text-white shadow-2xl transition-all'
         style={{ 
           background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.94), rgba(8, 47, 73, 0.92))',
           backdropFilter: 'blur(16px)',

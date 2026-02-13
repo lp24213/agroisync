@@ -1,21 +1,25 @@
 import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
-import { Helmet } from 'react-helmet-async';
+// import { Helmet } from 'react-helmet-async';
 import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/layout/Layout';
 import AgroisyncHeader from './components/AgroisyncHeader';
 import AgroisyncFooter from './components/AgroisyncFooter';
-import AIChatbot from './components/ai/AIChatbot';
+const AIChatbot = React.lazy(() => import('./components/ai/AIChatbot'));
+const StockTicker = React.lazy(() => import('./components/StockTicker'));
 import LGPDCompliance from './components/LGPDCompliance';
-import GlobalWeatherWidget from './components/GlobalWeatherWidget';
-import AccessibilityPanel from './components/AccessibilityPanel';
+const GlobalWeatherWidget = React.lazy(() => import('./components/GlobalWeatherWidget'));
+const AccessibilityPanel = React.lazy(() => import('./components/AccessibilityPanel'));
 import ErrorBoundary from './components/ErrorBoundary';
 import LoadingFallback from './components/LoadingFallback';
 import DynamicCryptoURL from './components/DynamicCryptoURL';
+import { AnalyticsProvider } from './components/analytics/AnalyticsProvider';
+// import ChristmasAnimations from './components/ChristmasAnimations'; // Removido - animações pesadas
 import { Accessibility } from 'lucide-react';
 
 // CSS unificado (5 arquivos)
@@ -24,6 +28,8 @@ import './styles/layout.css';
 import './styles/menu.css';
 import './styles/components.css';
 import './styles/mobile.css';
+// Removido: animações de natal
+import './styles/bloomfi-theme.css';
 
 // Components que precisam carregar imediatamente
 import ProtectedRoute from './components/ProtectedRoute';
@@ -66,7 +72,88 @@ const TermosResponsabilidade = React.lazy(() => import('./pages/TermosResponsabi
 const CryptoDetail = React.lazy(() => import('./pages/CryptoDetail'));
 const AdminPanel = React.lazy(() => import('./pages/AdminPanel'));
 const UserAdmin = React.lazy(() => import('./pages/UserAdmin'));
+const AdminEmailPanel = React.lazy(() => import('./pages/AdminEmailPanel'));
+const UserEmailDashboard = React.lazy(() => import('./pages/UserEmailDashboard'));
+const EmailManager = React.lazy(() => import('./pages/EmailManager'));
 const MediaKit = React.lazy(() => import('./pages/MediaKit'));
+
+// Login de email inline para evitar problemas de lazy loading - V2024
+const SimpleEmailLogin = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = React.useState(false);
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+
+  // VERIFICAÇÃO: Se acidentalmente carregar Admin Panel, redirecionar
+  React.useEffect(() => {
+    console.log('[EMAIL LOGIN] Component mounted - Route: /email');
+  }, []);
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert('Preencha email e senha');
+      return;
+    }
+    try {
+      setLoading(true);
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://agroisync.com/api'}/email/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        alert(data?.error || 'Erro ao autenticar');
+        return;
+      }
+      localStorage.setItem('agroisyncEmailSession', JSON.stringify(data.account));
+      navigate('/email/inbox');
+    } catch (error) {
+      alert('Erro ao autenticar');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{ minHeight: '100vh', background: '#f9fafb', paddingTop: '6rem', paddingBottom: '3rem' }}>
+      <div style={{ maxWidth: '28rem', margin: '0 auto', padding: '0 1rem' }}>
+        <div style={{ background: 'white', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', padding: '1.5rem' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '0.5rem' }}>Login do Email</h2>
+          <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>Acesse sua caixa corporativa @agroisync.com</p>
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', color: '#374151', marginBottom: '0.5rem' }}>Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="seuemail@agroisync.com"
+              style={{ width: '100%', padding: '0.5rem 1rem', border: '1px solid #d1d5db', borderRadius: '0.5rem' }}
+            />
+          </div>
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', color: '#374151', marginBottom: '0.5rem' }}>Senha</label>
+            <input
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="Sua senha"
+              onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+              style={{ width: '100%', padding: '0.5rem 1rem', border: '1px solid #d1d5db', borderRadius: '0.5rem' }}
+            />
+          </div>
+          <button
+            onClick={handleLogin}
+            disabled={loading}
+            style={{ width: '100%', background: '#2563eb', color: 'white', padding: '0.5rem', borderRadius: '0.5rem', fontWeight: '600', border: 'none', cursor: 'pointer', opacity: loading ? 0.5 : 1 }}
+          >
+            {loading ? 'Entrando...' : 'Entrar'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 const CryptoRoutesStatus = React.lazy(() => import('./components/CryptoRoutesStatus'));
 const UserDashboard = React.lazy(() => import('./pages/UserDashboard'));
 const CryptoDashboard = React.lazy(() => import('./pages/CryptoDashboard'));
@@ -91,8 +178,8 @@ const StorePlans = React.lazy(() => import('./pages/StorePlans'));
 import MarketplaceCategories from './pages/MarketplaceCategories';
 import MarketplaceSellers from './pages/MarketplaceSellers';
 import MarketplaceSell from './pages/MarketplaceSell';
-import AgroconectaOffer from './pages/AgroconectaOffer';
 import AgroconectaCarriers from './pages/AgroconectaCarriers';
+import AgroconectaOffer from './pages/AgroconectaOffer';
 import AgroconectaTracking from './pages/AgroconectaTracking';
 // Importações diretas para parcerias também
 import Partnerships from './pages/Partnerships';
@@ -115,13 +202,40 @@ function App() {
   const [isChatbotOpen, setIsChatbotOpen] = React.useState(false);
   const [showLGPD, setShowLGPD] = React.useState(false);
   const [isAccessibilityOpen, setIsAccessibilityOpen] = React.useState(false);
+  const [showWeatherWidget, setShowWeatherWidget] = React.useState(true);
 
   React.useEffect(() => {
+    // Adicionar classe "loaded" ao body para animações
+    document.body.classList.add('loaded');
+    
     // Verificar se já aceitou LGPD
     const lgpdConsent = localStorage.getItem('agroisync-lgpd-consent');
     if (!lgpdConsent) {
       setShowLGPD(true);
     }
+
+    // Proteção global contra erro de classList.add/remover/toggle
+    const safeClassListMethod = (method) => {
+      return function(...args) {
+        if (this && this.classList && typeof this.classList[method] === 'function') {
+          try {
+            this.classList[method](...args);
+          } catch (e) {
+            // Ignorar erro
+          }
+        }
+      };
+    };
+    // Patch document.body/classList
+    if (typeof document !== 'undefined' && document.body && document.body.classList) {
+      ['add', 'remove', 'toggle'].forEach((m) => {
+        document.body[m + 'Safe'] = safeClassListMethod(m).bind(document.body);
+      });
+    }
+    // Patch global para elementos principais
+    window.safeClassListAdd = safeClassListMethod('add');
+    window.safeClassListRemove = safeClassListMethod('remove');
+    window.safeClassListToggle = safeClassListMethod('toggle');
   }, []);
 
   const handleLGPDAccept = () => {
@@ -133,414 +247,201 @@ function App() {
   };
 
   return (
-    <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider>
-          <AuthProvider>
-            <LanguageProvider>
-              <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-                <div className='App'>
-                {/* Skip Links para Acessibilidade */}
-                <a href='#main-content' className='skip-link'>
-                  Pular para o conteúdo principal
-                </a>
-                <a href='#navigation' className='skip-link'>
-                  Pular para a navegação
-                </a>
-                <a href='#footer' className='skip-link'>
-                  Pular para o rodapé
-                </a>
-
-                {/* AGROISYNC Header */}
-                <AgroisyncHeader />
-
-                <Layout>
-                  <main id='main-content' role='main'>
-                    <React.Suspense fallback={<LoadingFallback message="Carregando página..." />}>
-                      <DynamicCryptoURL>
-                      <Routes>
-                        {/* Public Routes - OTIMIZADAS */}
-                        <Route path='/' element={<AgroisyncHome />} />
-                        <Route path='/home' element={<Home />} />
-                        <Route path='/home-prompt' element={<AgroisyncHomePrompt />} />
-                        
-                        {/* Produtos Routes (novo nome) */}
-                        <Route path='/produtos' element={<AgroisyncMarketplace />} />
-                        <Route path='/produtos/:cryptoHash' element={<AgroisyncMarketplace />} />
-                        <Route path='/produtos/categories' element={<MarketplaceCategories />} />
-                        <Route path='/produtos/categories/:cryptoHash' element={<MarketplaceCategories />} />
-                        <Route path='/produtos/sellers' element={<MarketplaceSellers />} />
-                        <Route path='/produtos/sellers/:cryptoHash' element={<MarketplaceSellers />} />
-                        <Route path='/produtos/sell' element={<MarketplaceSell />} />
-                        <Route path='/produtos/sell/:cryptoHash' element={<MarketplaceSell />} />
-                        
-                        {/* Marketplace Routes (compatibilidade - redireciona) */}
-                        <Route path='/marketplace' element={<Navigate to="/produtos" replace />} />
-                        <Route path='/marketplace/categories' element={<Navigate to="/produtos/categories" replace />} />
-                        <Route path='/marketplace/sellers' element={<Navigate to="/produtos/sellers" replace />} />
-                        <Route path='/marketplace/sell' element={<Navigate to="/produtos/sell" replace />} />
-                        
-                        {/* Store Routes */}
-                        <Route path='/loja' element={<AgroisyncLoja />} />
-                        <Route path='/store' element={<Store />} />
-                        
-                        {/* Frete Routes (novo nome) */}
-                        <Route path='/frete' element={<AgroisyncAgroConecta />} />
-                        <Route path='/frete/:cryptoHash' element={<AgroisyncAgroConecta />} />
-                        <Route path='/frete/offer' element={<AgroconectaOffer />} />
-                        <Route path='/frete/offer/:cryptoHash' element={<AgroconectaOffer />} />
-                        <Route path='/frete/carriers' element={<AgroconectaCarriers />} />
-                        <Route path='/frete/carriers/:cryptoHash' element={<AgroconectaCarriers />} />
-                        <Route path='/frete/tracking' element={<AgroconectaTracking />} />
-                        <Route path='/frete/tracking/:cryptoHash' element={<AgroconectaTracking />} />
-                        
-                        {/* AgroConecta Routes (compatibilidade - redireciona) */}
-                        <Route path='/agroconecta' element={<Navigate to="/frete" replace />} />
-                        <Route path='/agroconecta/offer' element={<Navigate to="/frete/offer" replace />} />
-                        <Route path='/agroconecta/carriers' element={<Navigate to="/frete/carriers" replace />} />
-                        <Route path='/agroconecta/tracking' element={<Navigate to="/frete/tracking" replace />} />
-                        
-                        {/* Partnerships Routes */}
-                        <Route path='/partnerships' element={<Partnerships />} />
-                        <Route path='/partnerships/:cryptoHash' element={<Partnerships />} />
-                        <Route path='/partnerships/current' element={<PartnershipsCurrent />} />
-                        <Route path='/partnerships/current/:cryptoHash' element={<PartnershipsCurrent />} />
-                        <Route path='/partnerships/benefits' element={<PartnershipsBenefits />} />
-                        <Route path='/partnerships/benefits/:cryptoHash' element={<PartnershipsBenefits />} />
-                        <Route path='/partnerships/contact' element={<PartnershipsContact />} />
-                        <Route path='/partnerships/contact/:cryptoHash' element={<PartnershipsContact />} />
-                        
-                        {/* Main Pages Routes */}
-                        <Route path='/sobre' element={<AgroisyncAbout />} />
-                        <Route path='/about' element={<AgroisyncAbout />} />
-                        <Route path='/planos' element={<AgroisyncPlans />} />
-                        <Route path='/plans' element={<AgroisyncPlans />} />
-                        <Route path='/clima' element={<ClimaInsumos />} />
-                        <Route path='/weather' element={<ClimaInsumos />} />
-                        <Route path='/insumos' element={<ClimaInsumos />} />
-                        <Route path='/supplies' element={<ClimaInsumos />} />
-                        <Route path='/clima-insumos' element={<ClimaInsumos />} />
-                        <Route path='/api' element={<APIPage />} />
-                        <Route path='/api-key' element={<APIPage />} />
-                        <Route path='/payment/pix' element={<PaymentPix />} />
-                        <Route path='/payment/boleto' element={<PaymentBoleto />} />
-                        <Route path='/payment/credit-card' element={<PaymentCreditCard />} />
-                        <Route path='/contato' element={<AgroisyncContact />} />
-                        <Route path='/contact' element={<AgroisyncContact />} />
-                        
-                        {/* User Routes */}
-                        <Route path='/usuario-geral' element={<UsuarioGeral />} />
-                        <Route path='/tecnologia' element={<AgroisyncCrypto />} />
-                        <Route path='/crypto' element={<AgroisyncCrypto />} />
-                        
-                        {/* Legal Routes */}
-                        <Route path='/faq' element={<FAQ />} />
-                        <Route path='/terms' element={<Terms />} />
-                        <Route path='/privacy' element={<Privacy />} />
-                        <Route path='/help' element={<Help />} />
-
-                        {/* Detail Pages */}
-                        <Route path='/produto/:id' element={<ProductDetail />} />
-                        <Route path='/product/:id' element={<ProductDetailNew />} />
-                        <Route path='/produto/:id/:cryptoHash' element={<CryptoRouteHandler><ProductDetail /></CryptoRouteHandler>} />
-                        <Route path='/price-alerts' element={<PriceAlerts />} />
-                        <Route path='/favorites' element={<Favorites />} />
-                        <Route path='/termos-responsabilidade' element={<TermosResponsabilidade />} />
-                        <Route path='/crypto/:id' element={<CryptoDetail />} />
-                        <Route path='/crypto/:id/:cryptoHash' element={<CryptoRouteHandler><CryptoDetail /></CryptoRouteHandler>} />
-
-                        {/* Auth Routes */}
-                        <Route path='/register' element={<SignupUnified />} />
-                        <Route path='/login' element={<AgroisyncLogin />} />
-                        <Route path='/signup' element={<SignupUnified />} />
-                        <Route path='/signup/type' element={<SignupType />} />
-                        <Route path='/signup/general' element={<SignupUnified />} />
-                        <Route path='/signup/unified' element={<SignupUnified />} />
-                        <Route path='/signup/old' element={<AgroisyncRegister />} />
-                        <Route path='/signup/freight' element={<SignupFreight />} />
-                        <Route path='/signup/store' element={<SignupStore />} />
-                        <Route path='/signup/product' element={<SignupProduct />} />
-                        <Route path='/store-plans' element={<StorePlans />} />
-                        <Route path='/forgot-password' element={<AgroisyncForgotPassword />} />
-                        <Route path='/reset-password' element={<ResetPassword />} />
-                        <Route path='/two-factor-auth' element={<TwoFactorAuth />} />
-                        <Route path='/verify-email' element={<VerifyEmail />} />
-                        <Route path='/login-redirect' element={<LoginRedirect />} />
-
-                        {/* Payment Routes */}
-                        <Route path='/payment' element={<Payment />} />
-                        <Route path='/payment/:cryptoHash' element={<CryptoRouteHandler><Payment /></CryptoRouteHandler>} />
-                        <Route path='/payment/success' element={<PaymentSuccess />} />
-                        <Route path='/payment/success/:cryptoHash' element={<CryptoRouteHandler><PaymentSuccess /></CryptoRouteHandler>} />
-                        <Route path='/payment/cancel' element={<PaymentCancel />} />
-                        <Route path='/payment/cancel/:cryptoHash' element={<CryptoRouteHandler><PaymentCancel /></CryptoRouteHandler>} />
-
-                        {/* Protected Routes - Otimizadas */}
-                        <Route
-                          path='/dashboard'
-                          element={
-                            <ProtectedRoute>
-                              <CryptoRouteHandler>
-                                <AgroisyncDashboard />
-                              </CryptoRouteHandler>
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path='/dashboard/:cryptoHash'
-                          element={
-                            <ProtectedRoute>
-                              <CryptoRouteHandler>
-                                <AgroisyncDashboard />
-                              </CryptoRouteHandler>
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path='/crypto-dashboard'
-                          element={
-                            <ProtectedRoute>
-                              <CryptoDashboard />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path='/user-dashboard'
-                          element={
-                            <ProtectedRoute>
-                              <CryptoRouteHandler>
-                                <UserDashboard />
-                              </CryptoRouteHandler>
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path='/user-dashboard/:cryptoHash'
-                          element={
-                            <ProtectedRoute>
-                              <CryptoRouteHandler>
-                                <UserDashboard />
-                              </CryptoRouteHandler>
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path='/messaging'
-                          element={
-                            <ProtectedRoute>
-                              <CryptoRouteHandler>
-                                <Messaging />
-                              </CryptoRouteHandler>
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path='/messaging/:cryptoHash'
-                          element={
-                            <ProtectedRoute>
-                              <CryptoRouteHandler>
-                                <Messaging />
-                              </CryptoRouteHandler>
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path='/admin'
-                          element={
-                            <ProtectedRoute>
-                              <CryptoRouteHandler>
-                                <AdminPanel />
-                              </CryptoRouteHandler>
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path='/admin/:cryptoHash'
-                          element={
-                            <ProtectedRoute>
-                              <CryptoRouteHandler>
-                                <AdminPanel />
-                              </CryptoRouteHandler>
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path='/useradmin'
-                          element={
-                            <ProtectedRoute>
-                              <CryptoRouteHandler>
-                                <UserAdmin />
-                              </CryptoRouteHandler>
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path='/media-kit'
-                          element={
-                            <ProtectedRoute>
-                              <MediaKit />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path='/admin/media-kit'
-                          element={
-                            <ProtectedRoute>
-                              <MediaKit />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path='/useradmin/:cryptoHash'
-                          element={
-                            <ProtectedRoute>
-                              <CryptoRouteHandler>
-                                <UserAdmin />
-                              </CryptoRouteHandler>
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path='/crypto-routes'
-                          element={
-                            <ProtectedRoute>
-                              <CryptoRouteHandler>
-                                <CryptoRoutesStatus />
-                              </CryptoRouteHandler>
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path='/crypto-routes/:cryptoHash'
-                          element={
-                            <ProtectedRoute>
-                              <CryptoRouteHandler>
-                                <CryptoRoutesStatus />
-                              </CryptoRouteHandler>
-                            </ProtectedRoute>
-                          }
-                        />
-
-                        {/* Error Routes */}
-                        <Route path='/unauthorized' element={<Unauthorized />} />
-
-                        {/* Rotas Criptografadas - Catch All para evitar 404 */}
-                        <Route path='/:cryptoHash' element={<AgroisyncHome />} />
-                        <Route path='/:path/:cryptoHash' element={<AgroisyncHome />} />
-                        <Route path='/:path1/:path2/:cryptoHash' element={<AgroisyncHome />} />
-                        <Route path='/:path1/:path2/:path3/:cryptoHash' element={<AgroisyncHome />} />
-                        <Route path='/:path1/:path2/:path3/:path4/:cryptoHash' element={<AgroisyncHome />} />
-
-
-                        {/* Catch all para 404 */}
-                        <Route path='*' element={<NotFound />} />
+    <HelmetProvider>
+      <ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider>
+            <AuthProvider>
+              <LanguageProvider>
+                <AnalyticsProvider>
+                  <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                    <div className='App'>
+                    {/* Ticker fixo no topo */}
+                    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', zIndex: 2000 }}>
+                      <Suspense fallback={null}>
+                        <StockTicker />
+                      </Suspense>
+                    </div>
+                    <div style={{ paddingTop: 32 }} />
+                    <AgroisyncHeader />
+                    {isAccessibilityOpen && (
+                      <Suspense fallback={null}>
+                        <AccessibilityPanel isOpen={isAccessibilityOpen} setIsOpen={setIsAccessibilityOpen} />
+                      </Suspense>
+                    )}
+                    
+                    {/* Botão de Acessibilidade - Assistente para Cegos e outras funcionalidades */}
+                    <button
+                      className='fixed z-[9998] bottom-28 left-6 bg-gradient-to-br from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-full shadow-xl p-3 flex items-center justify-center transition-all duration-300 hover:scale-110'
+                      style={{ 
+                        boxShadow: '0 8px 32px rgba(139, 92, 246, 0.4), 0 4px 16px rgba(0, 0, 0, 0.2)',
+                        width: 56,
+                        height: 56
+                      }}
+                      onClick={() => setIsAccessibilityOpen(!isAccessibilityOpen)}
+                      aria-label='Abrir Painel de Acessibilidade'
+                      title='Acessibilidade: Leitor de tela, alto contraste, navegação por teclado e mais'
+                    >
+                      <Accessibility className='h-6 w-6' />
+                    </button>
+                    
+                    {/* Botão flutuante do Chatbot com Logo Agroisync */}
+                    <button
+                      className='fixed z-[9999] bottom-6 right-6 bg-transparent hover:bg-white/10 rounded-full shadow-xl p-2 flex items-center justify-center chatbot-trigger transition-all duration-300 hover:scale-110'
+                      style={{ 
+                        boxShadow: '0 8px 32px rgba(34, 197, 94, 0.3), 0 4px 16px rgba(0, 0, 0, 0.15)',
+                        width: 64,
+                        height: 64,
+                        background: 'rgba(255, 255, 255, 0.95)',
+                        backdropFilter: 'blur(10px)'
+                      }}
+                      onClick={() => setIsChatbotOpen(true)}
+                      aria-label='Abrir Chatbot Agroisync'
+                      title='Chatbot IA - Tire suas dúvidas sobre produtos, fretes e mais'
+                    >
+                      <img 
+                        src='/LOGO_AGROISYNC_TRANSPARENTE.png' 
+                        alt='Agroisync Chatbot' 
+                        className='h-12 w-12 object-contain drop-shadow-lg'
+                        onError={(e) => {
+                          e.target.src = '/agroisync-logo.svg';
+                        }}
+                      />
+                    </button>
+                    {isChatbotOpen && (
+                      <Suspense fallback={null}>
+                        <AIChatbot isOpen={isChatbotOpen} setIsOpen={open => setIsChatbotOpen(open)} onClose={() => setIsChatbotOpen(false)} />
+                      </Suspense>
+                    )}
+                    <LGPDCompliance isOpen={showLGPD} onAccept={handleLGPDAccept} onDecline={handleLGPDDecline} />
+                    {showWeatherWidget && (
+                      <Suspense fallback={null}>
+                        <div style={{ position: 'fixed', top: '80px', left: '10px', zIndex: 40, width: '280px', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', padding: '10px', maxHeight: '280px', overflowY: 'auto' }}>
+                          <div style={{ position: 'relative' }}>
+                            <button
+                              onClick={() => setShowWeatherWidget(false)}
+                              style={{
+                                position: 'absolute',
+                                top: '-5px',
+                                right: '-5px',
+                                background: '#ef4444',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '50%',
+                                width: '24px',
+                                height: '24px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                cursor: 'pointer',
+                                fontSize: '14px',
+                                fontWeight: 'bold',
+                                zIndex: 50,
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                              }}
+                              title="Fechar widget de clima"
+                            >
+                              ×
+                            </button>
+                            <GlobalWeatherWidget />
+                          </div>
+                        </div>
+                      </Suspense>
+                    )}
+                    <DynamicCryptoURL />
+                    <Toaster position='top-right' />
+                    <Layout>
+                      <Suspense fallback={<LoadingFallback />}>
+                        <Routes>
+                          <Route path='/' element={<AgroisyncHome />} />
+                          <Route path='/email' element={<SimpleEmailLogin />} />
+                          <Route path='/email/inbox' element={<EmailManager />} />
+                          <Route path='/login' element={<AgroisyncLogin />} />
+                          <Route path='/register' element={<AgroisyncRegister />} />
+                          <Route path='/marketplace' element={<AgroisyncMarketplace />} />
+                          <Route path='/loja' element={<AgroisyncLoja />} />
+                          <Route path='/agroconecta' element={<AgroisyncAgroConecta />} />
+                          <Route path='/usuario' element={<UsuarioGeral />} />
+                          <Route path='/crypto' element={<AgroisyncCrypto />} />
+                          <Route path='/dashboard' element={<AgroisyncDashboard />} />
+                          <Route path='/planos' element={<AgroisyncPlans />} />
+                          <Route path='/payment/pix' element={<PaymentPix />} />
+                          <Route path='/payment/boleto' element={<PaymentBoleto />} />
+                          <Route path='/payment/credit-card' element={<PaymentCreditCard />} />
+                          <Route path='/about' element={<AgroisyncAbout />} />
+                          <Route path='/sobre' element={<AgroisyncAbout />} />
+                          <Route path='/contact' element={<AgroisyncContact />} />
+                          <Route path='/forgot-password' element={<AgroisyncForgotPassword />} />
+                          <Route path='/signup/type' element={<SignupType />} />
+                          <Route path='/signup/freight' element={<SignupFreight />} />
+                          <Route path='/signup/store' element={<SignupStore />} />
+                          <Route path='/signup/product' element={<SignupProduct />} />
+                          <Route path='/signup/general' element={<SignupGeneral />} />
+                          <Route path='/signup/unified' element={<SignupUnified />} />
+                          <Route path='/reset-password' element={<ResetPassword />} />
+                          <Route path='/payment' element={<Payment />} />
+                          <Route path='/produtos' element={<AgroisyncMarketplace />} />
+                          <Route path='/produtos/categories' element={<MarketplaceCategories />} />
+                          <Route path='/produtos/sellers' element={<MarketplaceSellers />} />
+                          <Route path='/produtos/sell' element={<MarketplaceSell />} />
+                          <Route path='/produtos/:id' element={<ProductDetail />} />
+                          <Route path='/produtos/:id/new' element={<ProductDetailNew />} />
+                          <Route path='/frete' element={<AgroisyncAgroConecta />} />
+                          <Route path='/frete/carriers' element={<AgroconectaCarriers />} />
+                          <Route path='/frete/tracking' element={<AgroconectaTracking />} />
+                          <Route path='/frete/offer' element={<AgroconectaOffer />} />
+                          <Route path='/alerts' element={<PriceAlerts />} />
+                          <Route path='/favorites' element={<Favorites />} />
+                          <Route path='/termos' element={<TermosResponsabilidade />} />
+                          <Route path='/crypto-detail/:id' element={<CryptoDetail />} />
+                          <Route path='/admin' element={<AdminPanel />} />
+                          <Route path='/admin/email' element={<AdminEmailPanel />} />
+                          <Route path='/user-admin' element={<UserAdmin />} />
+                          <Route path='/dashboard/email' element={<UserEmailDashboard />} />
+                          <Route path='/media-kit' element={<MediaKit />} />
+                          <Route path='/crypto-routes-status' element={<CryptoRoutesStatus />} />
+                          <Route path='/user-dashboard' element={<UserDashboard />} />
+                          <Route path='/crypto-dashboard' element={<CryptoDashboard />} />
+                          <Route path='/messaging' element={<Messaging />} />
+                          <Route path='/2fa' element={<TwoFactorAuth />} />
+                          <Route path='/verify-email' element={<VerifyEmail />} />
+                          <Route path='/payment-success' element={<PaymentSuccess />} />
+                          <Route path='/payment-cancel' element={<PaymentCancel />} />
+                          <Route path='/faq' element={<FAQ />} />
+                          <Route path='/terms' element={<Terms />} />
+                          <Route path='/privacy' element={<Privacy />} />
+                          <Route path='/help' element={<Help />} />
+                          <Route path='/login-redirect' element={<LoginRedirect />} />
+                          <Route path='/unauthorized' element={<Unauthorized />} />
+                          <Route path='/clima' element={<ClimaInsumos />} />
+                          <Route path='/clima-insumos' element={<ClimaInsumos />} />
+                          <Route path='/api' element={<APIPage />} />
+                          <Route path='/store' element={<Store />} />
+                          <Route path='/store-plans' element={<StorePlans />} />
+                          <Route path='/marketplace/categories' element={<MarketplaceCategories />} />
+                          <Route path='/marketplace/sellers' element={<MarketplaceSellers />} />
+                          <Route path='/marketplace/sell' element={<MarketplaceSell />} />
+                          <Route path='/agroconecta/offer' element={<AgroconectaOffer />} />
+                          <Route path='/agroconecta/carriers' element={<AgroconectaCarriers />} />
+                          <Route path='/agroconecta/tracking' element={<AgroconectaTracking />} />
+                          <Route path='/partnerships' element={<Partnerships />} />
+                          <Route path='/partnerships/current' element={<PartnershipsCurrent />} />
+                          <Route path='/partnerships/benefits' element={<PartnershipsBenefits />} />
+                          <Route path='/partnerships/contact' element={<PartnershipsContact />} />
+                          <Route path='*' element={<NotFound />} />
                         </Routes>
-                      </DynamicCryptoURL>
-                      </React.Suspense>
-                  </main>
-                </Layout>
-
-                {/* Widget de Clima Futurista */}
-                <div className='bg-gray-50 py-8'>
-                  <div className='container mx-auto px-4'>
-                    <div className='mb-8 text-center'>
-                      <h2 className='mb-2 text-2xl font-bold text-gray-900' style={{ textAlign: 'center' }}>
-                        Informações Climáticas
-                      </h2>
-                      <p className='text-sm text-gray-600' style={{ textAlign: 'center' }}>
-                        Dados meteorológicos em tempo real para otimizar suas decisões agrícolas
-                      </p>
-                    </div>
-                    <div className='flex justify-center'>
-                      <GlobalWeatherWidget />
-                    </div>
+                      </Suspense>
+                    </Layout>
+                    <AgroisyncFooter />
                   </div>
-                </div>
-
-                {/* AGROISYNC Footer */}
-                <footer id='footer' role='contentinfo' className="mt-0">
-                  <AgroisyncFooter />
-                </footer>
-
-                {/* AI Chatbot Futurista */}
-                <AIChatbot isOpen={isChatbotOpen} onClose={() => setIsChatbotOpen(false)} />
-
-                {/* Botão do Chatbot VERDE Futurista */}
-                <button
-                  onClick={() => setIsChatbotOpen(true)}
-                  className='fixed bottom-6 right-6 z-50 transform rounded-full border-2 border-green-300 shadow-2xl transition-all duration-300 hover:scale-115 hover:rotate-6'
-                  aria-label='Abrir chatbot IA Agroisync'
-                  style={{
-                    background: 'linear-gradient(140deg, rgba(34, 197, 94, 0.92) 0%, rgba(21, 128, 61, 0.9) 100%)',
-                    padding: '14px',
-                    boxShadow: '0 0 32px rgba(34, 197, 94, 0.65), 0 8px 24px rgba(0, 0, 0, 0.35)'
-                  }}
-                >
-                  <div className='relative flex items-center justify-center'>
-                    <img
-                      src='/logo-agroconecta-folhas.svg'
-                      alt='Abrir IA Agroisync'
-                      className='h-7 w-7 object-contain drop-shadow-md'
-                    />
-                    <div className='absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] font-bold text-green-600 shadow-sm'>
-                      IA
-                    </div>
-                  </div>
-                </button>
-
-                {/* LGPD Compliance Futurista */}
-                {showLGPD && (
-                  <LGPDCompliance onAccept={handleLGPDAccept} onDecline={handleLGPDDecline} isVisible={showLGPD} />
-                )}
-
-                {/* Painel de Acessibilidade Futurista */}
-                <AccessibilityPanel isOpen={isAccessibilityOpen} onClose={() => setIsAccessibilityOpen(false)} />
-
-                {/* Botão de Acessibilidade ROXO Futurista */}
-                <button
-                  onClick={() => setIsAccessibilityOpen(true)}
-                  className='fixed bottom-4 left-4 z-30 transform rounded-full bg-gradient-to-br from-blue-600 to-sky-500 p-3 text-white shadow-xl transition-all duration-300 hover:scale-120 hover:rotate-6 md:bottom-6 md:left-6 md:p-4 md:shadow-2xl border-2 border-blue-300'
-                  aria-label='Abrir painel de acessibilidade'
-                  style={{
-                    boxShadow: '0 0 30px rgba(59, 130, 246, 0.55), 0 8px 28px rgba(0, 0, 0, 0.35)'
-                  }}
-                >
-                  <Accessibility className='h-6 w-6 text-white md:h-7 md:w-7' />
-                </button>
-
-                {/* Toast Notifications */}
-                <Toaster
-                  position='top-right'
-                  toastOptions={{
-                    duration: 4000,
-                    style: {
-                      background: 'var(--bg-glass)',
-                      color: 'var(--text-primary)',
-                      border: '1px solid var(--border-light)',
-                      backdropFilter: 'var(--blur-glass)',
-                      borderRadius: 'var(--border-radius)'
-                    },
-                    success: {
-                      iconTheme: {
-                        primary: 'var(--success)',
-                        secondary: 'var(--text-inverse)'
-                      }
-                    },
-                    error: {
-                      iconTheme: {
-                        primary: 'var(--danger)',
-                        secondary: 'var(--text-inverse)'
-                      }
-                    }
-                  }}
-                />
-                </div>
-              </Router>
+                </Router>
+              </AnalyticsProvider>
             </LanguageProvider>
           </AuthProvider>
         </ThemeProvider>
       </QueryClientProvider>
     </ErrorBoundary>
+    </HelmetProvider>
   );
 }
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -21,15 +21,73 @@ import {
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { getApiUrl } from '../../config/constants';
 
+const defaultAnalytics = {
+  trackEvent: () => {},
+  trackPageView: () => {},
+  trackConversion: () => {},
+  trackError: () => {},
+  trackPerformance: () => {},
+  trackUserInteraction: () => {},
+  trackFunnelStep: () => {}
+};
+
 const SmartRecommendations = () => {
   const { t } = useTranslation();
-  const analytics = useAnalytics();
+  const analyticsFromHook = useAnalytics();
+  const analytics = useMemo(
+    () => analyticsFromHook || defaultAnalytics,
+    [analyticsFromHook]
+  );
   const [recommendations, setRecommendations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
-  const [savedRecommendations, setSavedRecommendations] = useState(new Set());
-  const [viewedRecommendations, setViewedRecommendations] = useState(new Set());
+
+  // INICIALIZAÇÃO SEGURA: Criar Sets imediatamente com valores válidos
+  // Usar useRef para evitar problemas de serialização do React
+  const savedRecommendationsRef = useRef(new Set());
+  const viewedRecommendationsRef = useRef(new Set());
+  const isMountedRef = useRef(false);
+  const [, forceUpdate] = useState(0);
+
+  // Função helper para garantir que sempre retornamos um Set válido
+  const getSavedSet = useCallback(() => {
+    // GUARD CLAUSE: Se não existe ou não é Set, criar novo
+    if (!savedRecommendationsRef.current || !(savedRecommendationsRef.current instanceof Set)) {
+      savedRecommendationsRef.current = new Set();
+    }
+    return savedRecommendationsRef.current;
+  }, []);
+
+  const getViewedSet = useCallback(() => {
+    // GUARD CLAUSE: Se não existe ou não é Set, criar novo
+    if (!viewedRecommendationsRef.current || !(viewedRecommendationsRef.current instanceof Set)) {
+      viewedRecommendationsRef.current = new Set();
+    }
+    return viewedRecommendationsRef.current;
+  }, []);
+
+  // Função para forçar re-render quando Sets mudarem
+  const triggerUpdate = useCallback(() => {
+    if (isMountedRef.current) {
+      forceUpdate(prev => prev + 1);
+    }
+  }, []);
+
+  // Inicializar após montagem - garantir que Sets estão válidos
+  useEffect(() => {
+    isMountedRef.current = true;
+    // Garantir que os Sets estão inicializados ANTES de qualquer uso
+    if (!savedRecommendationsRef.current || !(savedRecommendationsRef.current instanceof Set)) {
+      savedRecommendationsRef.current = new Set();
+    }
+    if (!viewedRecommendationsRef.current || !(viewedRecommendationsRef.current instanceof Set)) {
+      viewedRecommendationsRef.current = new Set();
+    }
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   // Categorias de recomendações
   const categories = [
@@ -61,15 +119,18 @@ const SmartRecommendations = () => {
       const data = await response.json();
 
       if (data.success) {
-        setRecommendations(data.recommendations);
+        setRecommendations(data.recommendations || []);
 
-        analytics.trackEvent('recommendations_loaded', {
-          category: selectedCategory,
-          count: data.recommendations.length
-        });
+        if (analytics && analytics.trackEvent) {
+          analytics.trackEvent('recommendations_loaded', {
+            category: selectedCategory,
+            count: (data.recommendations || []).length
+          });
+        }
       }
     } catch (error) {
       console.error('Error loading recommendations:', error);
+      setRecommendations([]);
     } finally {
       setIsLoading(false);
     }
@@ -83,32 +144,73 @@ const SmartRecommendations = () => {
   // Salvar/remover recomendação
   const toggleSavedRecommendation = useCallback(
     recommendationId => {
-      const newSaved = new Set(savedRecommendations);
-      if (newSaved.has(recommendationId)) {
-        newSaved.delete(recommendationId);
-      } else {
-        newSaved.add(recommendationId);
+      try {
+        // Proteção máxima: nunca permitir que savedRecommendationsRef.current seja undefined ou inválido
+        if (!savedRecommendationsRef.current || typeof savedRecommendationsRef.current.add !== 'function') {
+          savedRecommendationsRef.current = new Set();
+        }
+        let safeSet = savedRecommendationsRef.current;
+        // fallback redundante
+        if (!safeSet || typeof safeSet.add !== 'function') {
+          safeSet = new Set();
+          savedRecommendationsRef.current = safeSet;
+        }
+        if (!safeSet.has || !safeSet.delete) {
+          safeSet = new Set();
+          savedRecommendationsRef.current = safeSet;
+        }
+        const wasSaved = safeSet.has(recommendationId);
+        if (wasSaved) {
+          safeSet.delete(recommendationId);
+        } else {
+          safeSet.add(recommendationId);
+        }
+        triggerUpdate();
+        if (analytics && analytics.trackEvent) {
+          analytics.trackEvent('recommendation_saved', {
+            recommendation_id: recommendationId,
+            action: safeSet.has(recommendationId) ? 'saved' : 'unsaved'
+          });
+        }
+      } catch (error) {
+        console.error('Erro ao salvar recomendação:', error);
       }
-      setSavedRecommendations(newSaved);
-
-      analytics.trackEvent('recommendation_saved', {
-        recommendation_id: recommendationId,
-        action: newSaved.has(recommendationId) ? 'saved' : 'unsaved'
-      });
     },
-    [savedRecommendations, analytics]
+    [analytics, triggerUpdate]
   );
 
   // Marcar como visualizada
   const markAsViewed = useCallback(
     recommendationId => {
-      setViewedRecommendations(prev => new Set([...prev, recommendationId]));
-
-      analytics.trackEvent('recommendation_viewed', {
-        recommendation_id: recommendationId
-      });
+      try {
+        // Proteção máxima: nunca permitir que viewedRecommendationsRef.current seja undefined ou inválido
+        if (!viewedRecommendationsRef.current || typeof viewedRecommendationsRef.current.add !== 'function') {
+          viewedRecommendationsRef.current = new Set();
+        }
+        let safeViewedSet = viewedRecommendationsRef.current;
+        // fallback redundante
+        if (!safeViewedSet || typeof safeViewedSet.add !== 'function') {
+          safeViewedSet = new Set();
+          viewedRecommendationsRef.current = safeViewedSet;
+        }
+        if (!safeViewedSet.has || !safeViewedSet.add) {
+          safeViewedSet = new Set();
+          viewedRecommendationsRef.current = safeViewedSet;
+        }
+        if (!safeViewedSet.has(recommendationId)) {
+          safeViewedSet.add(recommendationId);
+          triggerUpdate();
+        }
+        if (analytics && analytics.trackEvent) {
+          analytics.trackEvent('recommendation_viewed', {
+            recommendation_id: recommendationId
+          });
+        }
+      } catch (error) {
+        console.error('Erro ao marcar como visualizada:', error);
+      }
     },
-    [analytics]
+    [analytics, triggerUpdate]
   );
 
   // Compartilhar recomendação
@@ -123,9 +225,11 @@ const SmartRecommendations = () => {
       if (navigator.share) {
         try {
           await navigator.share(shareData);
-          analytics.trackEvent('recommendation_shared', {
-            recommendation_id: recommendation.id
-          });
+          if (analytics && analytics.trackEvent) {
+            analytics.trackEvent('recommendation_shared', {
+              recommendation_id: recommendation.id
+            });
+          }
         } catch (error) {
           console.error('Error sharing:', error);
         }
@@ -168,7 +272,7 @@ const SmartRecommendations = () => {
   };
 
   // Filtrar recomendações
-  const filteredRecommendations = recommendations.filter(
+  const filteredRecommendations = (recommendations || []).filter(
     rec => selectedCategory === 'all' || rec.category === selectedCategory
   );
 
@@ -256,8 +360,11 @@ const SmartRecommendations = () => {
         <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
           {filteredRecommendations.map(recommendation => {
             const CategoryIcon = getCategoryIcon(recommendation.category);
-            const isSaved = savedRecommendations.has(recommendation.id);
-            const isViewed = viewedRecommendations.has(recommendation.id);
+            // GUARD CLAUSE: Garantir que Sets são válidos antes de usar .has()
+            const savedSet = getSavedSet();
+            const viewedSet = getViewedSet();
+            const isSaved = savedSet && savedSet instanceof Set ? savedSet.has(recommendation.id) : false;
+            const isViewed = viewedSet && viewedSet instanceof Set ? viewedSet.has(recommendation.id) : false;
 
             return (
               <motion.div
@@ -355,11 +462,12 @@ const SmartRecommendations = () => {
                           key={index}
                           onClick={e => {
                             e.stopPropagation();
-                            // Implementar ação específica
-                            analytics.trackEvent('recommendation_action', {
-                              recommendation_id: recommendation.id,
-                              action: action.type
-                            });
+                            if (analytics && analytics.trackEvent) {
+                              analytics.trackEvent('recommendation_action', {
+                                recommendation_id: recommendation.id,
+                                action: action.type
+                              });
+                            }
                           }}
                           className='rounded-full bg-blue-100 px-3 py-1 text-xs text-blue-700 transition-colors hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800'
                         >
@@ -416,7 +524,12 @@ const SmartRecommendations = () => {
               <p className='text-sm font-medium text-gray-600 dark:text-gray-400'>
                 {t('recommendations.viewed', 'Visualizadas')}
               </p>
-              <p className='text-2xl font-bold text-gray-900 dark:text-white'>{viewedRecommendations.size}</p>
+              <p className='text-2xl font-bold text-gray-900 dark:text-white'>
+                {(() => {
+                  const set = getViewedSet();
+                  return set && set instanceof Set ? set.size : 0;
+                })()}
+              </p>
             </div>
           </div>
         </div>
@@ -430,7 +543,12 @@ const SmartRecommendations = () => {
               <p className='text-sm font-medium text-gray-600 dark:text-gray-400'>
                 {t('recommendations.saved', 'Salvas')}
               </p>
-              <p className='text-2xl font-bold text-gray-900 dark:text-white'>{savedRecommendations.size}</p>
+              <p className='text-2xl font-bold text-gray-900 dark:text-white'>
+                {(() => {
+                  const set = getSavedSet();
+                  return set && set instanceof Set ? set.size : 0;
+                })()}
+              </p>
             </div>
           </div>
         </div>

@@ -92,6 +92,54 @@ router.get('/api/freights/my', verifyToken, async (req, env) => {
   }
 });
 
+// Rotas de Email Corporativo (protegidas)
+import {
+  createEmailAccount,
+  listEmailAccounts,
+  getInbox,
+  getMessage,
+  sendEmail,
+  markAsRead,
+  deleteMessage,
+  deleteEmailAccount
+} from './handlers/emailCorporate.js';
+import {
+  createEmailAccountAdmin,
+  listAllEmailAccounts,
+  getEmailStats,
+  toggleEmailAccountStatus,
+  deleteEmailAccountAdmin,
+  getInboxAdmin
+} from './handlers/emailAdmin.js';
+import { requireAdmin } from './middleware/adminCheck.js';
+
+// Rotas de usuário (protegidas)
+router.post('/api/email/accounts', verifyToken, createEmailAccount);
+router.get('/api/email/accounts', verifyToken, listEmailAccounts);
+router.delete('/api/email/accounts/:id', verifyToken, deleteEmailAccount);
+router.get('/api/email/inbox', verifyToken, getInbox);
+router.get('/api/email/message', verifyToken, getMessage);
+router.post('/api/email/send', verifyToken, sendEmail);
+router.post('/api/email/read', verifyToken, markAsRead);
+router.delete('/api/email/message/:uid', verifyToken, deleteMessage);
+
+// Rotas Admin de Email (apenas admin)
+router.post('/api/admin/email/accounts', verifyToken, requireAdmin, createEmailAccountAdmin);
+router.get('/api/admin/email/accounts', verifyToken, requireAdmin, listAllEmailAccounts);
+router.get('/api/admin/email/stats', verifyToken, requireAdmin, getEmailStats);
+router.get('/api/admin/email/inbox', verifyToken, requireAdmin, getInboxAdmin);
+router.patch('/api/admin/email/accounts/:id/status', verifyToken, requireAdmin, toggleEmailAccountStatus);
+router.delete('/api/admin/email/accounts/:id', verifyToken, requireAdmin, deleteEmailAccountAdmin);
+
+// Rotas de Webhooks (apenas admin)
+import {
+  listWebhookEvents,
+  testWebhook
+} from './handlers/emailWebhooks.js';
+
+router.get('/api/admin/email/webhooks', verifyToken, requireAdmin, listWebhookEvents);
+router.post('/api/admin/email/webhooks/test', verifyToken, requireAdmin, testWebhook);
+
 // Rota de healthcheck
 router.get('/api/health', async (req, env) => {
   try {

@@ -1,0 +1,50 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "target": "es2017",
+    "lib": ["es2017"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": false,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": false,
+    "incremental": false,
+    "noImplicitAny": false,
+    "noImplicitReturns": false,
+    "noImplicitThis": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "checkJs": false,
+    "declaration": false,
+    "declarationMap": false,
+    "emitDeclarationOnly": false,
+    "importHelpers": false,
+    "inlineSourceMap": false,
+    "inlineSources": false,
+    "noEmitHelpers": false,
+    "noEmitOnError": false,
+    "preserveConstEnums": false,
+    "removeComments": false,
+    "sourceMap": false,
+    "stripInternal": false,
+    "suppressExcessPropertyErrors": false,
+    "suppressImplicitAnyIndexErrors": false,
+    "useDefineForClassFields": false,
+    "types": []
+  },
+  "include": ["src/**/*.js"],
+  "exclude": ["node_modules", "dist", "build", "**/*.d.ts", "**/*.ts"],
+  "typeAcquisition": {
+    "enable": false,
+    "disableFilenameBasedTypeAcquisition": true,
+    "exclude": ["*"]
+  }
+}

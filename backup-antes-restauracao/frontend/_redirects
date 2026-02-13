@@ -1,0 +1,20 @@
+# Redirect all requests to index.html for SPA routing - including crypto hashes
+# Redirecionar não-www para www
+https://agroisync.com/* https://www.agroisync.com/:splat 301!
+
+# Redirecionar fretes e ofertas para signup
+/fretes /signup 301!
+/fretes/* /signup 301!
+/ofertas /signup 301!
+/ofertas/* /signup 301!
+/cadastrar-frete /signup 301!
+/cadastrar-frete/* /signup 301!
+/cadastrar-oferta /signup 301!
+/cadastrar-oferta/* /signup 301!
+
+# Redirecionar todas as rotas para index.html para SPA
+/* /index.html 200
+
+# Forçar HTTPS
+http://agroisync.com/* https://agroisync.com/:splat 301!
+http://www.agroisync.com/* https://agroisync.com/:splat 301!

@@ -98,7 +98,10 @@ export const AuthProvider = ({ children }) => {
       );
 
       if (response.data.success) {
-        const { token, user } = response.data;
+        // Backend retorna { success: true, data: { token, user } }
+        const envelope = response.data.data || response.data;
+        const token = envelope.token;
+        const user = envelope.user;
         
         // Validar dados recebidos
         if (!token || !user) {

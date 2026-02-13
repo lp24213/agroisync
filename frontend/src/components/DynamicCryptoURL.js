@@ -120,10 +120,13 @@ const DynamicCryptoURL = ({ children }) => {
   }, [location.pathname, location.search, navigate, generateParams, hasValidParams, mergeParams, isUpdating, isInitialized]);
 
   useEffect(() => {
-    // Executar apenas uma vez na inicialização
+    // Executar apenas uma vez na inicialização com debounce
     if (!isInitialized) {
-      setIsInitialized(true);
-      updateCryptoURL();
+      const timer = setTimeout(() => {
+        setIsInitialized(true);
+        updateCryptoURL();
+      }, 100);
+      return () => clearTimeout(timer);
     }
   }, [isInitialized, updateCryptoURL]);
 

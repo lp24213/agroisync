@@ -137,18 +137,22 @@ const AgroisyncHeader = () => {
       <header
         id='main-header'
         className={`sticky top-0 z-50 w-full border-b backdrop-blur-md transition-all duration-200 ${
-          isScrolled ? 'border-gray-200/70 bg-white/95 shadow-md' : 'border-gray-200/50 bg-white/90 shadow-sm'
+          isScrolled ? 'border-gray-200/70 bg-white/95 shadow-lg' : 'border-gray-200/50 bg-white/90 shadow-sm'
         }`}
+        style={{
+          background: isScrolled ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.9)',
+          backdropFilter: 'blur(20px)'
+        }}
       >
         <div className='mx-auto max-w-7xl px-4'>
-          <div className='flex h-12 md:h-16 flex-wrap items-center justify-between md:flex-nowrap'>
-            {/* Logo */}
-            <Link to={buildPath('/')} className='flex items-center'>
+          <div className='flex h-12 md:h-16 items-center justify-between'>
+            {/* Logo - Esquerda */}
+            <Link to={buildPath('/')} className='flex items-center flex-shrink-0'>
               <AgroisyncLogo />
             </Link>
 
-            {/* Desktop Navigation */}
-            <nav key={i18n.language} id='main-nav' className='hidden items-center space-x-0.5 md:flex'>
+            {/* Desktop Navigation - Centralizado */}
+            <nav key={i18n.language} id='main-nav' className='hidden items-center justify-center space-x-1 md:flex flex-1'>
               {navigationItems.map(item => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.path;
@@ -159,8 +163,8 @@ const AgroisyncHeader = () => {
                       to={buildPath(item.path)}
                       className={`flex items-center gap-1.5 rounded-lg px-2 py-2 text-sm font-medium transition-all duration-200 ${
                         isActive
-                          ? 'bg-green-500 text-white shadow-md'
-                          : 'text-gray-700 hover:bg-green-50 hover:text-green-600 hover:shadow-sm'
+                          ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
+                          : 'text-gray-700 hover:bg-purple-50 hover:text-purple-600 hover:shadow-sm'
                       }`}
                     >
                       <Icon className='h-4 w-4' />
@@ -187,97 +191,97 @@ const AgroisyncHeader = () => {
               })}
             </nav>
 
-            {/* User Menu Dropdown - MENU HAMBURGUER DO USUÁRIO */}
-            {user && (
-              <div className='relative hidden md:block'>
-                <button
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className='flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:bg-green-600 hover:shadow-md'
-                  type='button'
-                >
-                  <User className='h-4 w-4' />
-                  <span className='max-w-[100px] truncate'>{user.name || user.email}</span>
-                  <ChevronDown className={`h-4 w-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
-                </button>
+            {/* User Menu / Login Button - Direita */}
+            <div className='flex items-center gap-3 flex-shrink-0'>
+              {user ? (
+                <div className='relative hidden md:block'>
+                  <button
+                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    className='flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:shadow-md'
+                    style={{
+                      background: '#000000'
+                    }}
+                    type='button'
+                  >
+                    <User className='h-4 w-4' />
+                    <span className='max-w-[100px] truncate'>{user.name || user.email}</span>
+                    <ChevronDown className={`h-4 w-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                  </button>
 
-                {/* Dropdown Menu */}
-                {isUserMenuOpen && (
-                  <div className='absolute right-0 z-50 mt-2 w-56 rounded-lg border border-gray-200 bg-white shadow-xl'>
-                    <div className='p-2'>
-                      <Link
-                        to={user?.isAdmin || user?.role === 'admin' ? '/admin' : '/user-dashboard'}
-                        onClick={() => setIsUserMenuOpen(false)}
-                        className='flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-green-50 hover:text-green-600'
-                      >
-                        <LayoutDashboard className='h-4 w-4' />
-                        {user?.isAdmin || user?.role === 'admin' ? 'Painel Admin' : 'Meu Painel'}
-                      </Link>
-                      <Link
-                        to='/messaging'
-                        onClick={() => setIsUserMenuOpen(false)}
-                        className='flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-green-50 hover:text-green-600'
-                      >
-                        <MessageSquare className='h-4 w-4' />
-                        Mensagens
-                      </Link>
-                      <Link
-                        to='/user-dashboard?tab=settings'
-                        onClick={() => setIsUserMenuOpen(false)}
-                        className='flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-green-50 hover:text-green-600'
-                      >
-                        <Settings className='h-4 w-4' />
-                        Configurações
-                      </Link>
-                      <div className='my-1 border-t border-gray-200' />
-                      <button
-                        onClick={() => {
-                          setIsUserMenuOpen(false);
-                          handleLogout();
-                        }}
-                        className='flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-red-600 transition-all duration-200 hover:bg-red-50'
-                        type='button'
-                      >
-                        <LogOut className='h-4 w-4' />
-                        Sair
-                      </button>
+                  {/* Dropdown Menu */}
+                  {isUserMenuOpen && (
+                    <div className='absolute right-0 z-50 mt-2 w-56 rounded-lg border border-gray-200 bg-white shadow-xl'>
+                      <div className='p-2'>
+                        <Link
+                          to={user?.isAdmin || user?.role === 'admin' ? '/admin' : '/user-dashboard'}
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className='flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-purple-50 hover:text-purple-600'
+                        >
+                          <LayoutDashboard className='h-4 w-4' />
+                          {user?.isAdmin || user?.role === 'admin' ? 'Painel Admin' : 'Meu Painel'}
+                        </Link>
+                        <Link
+                          to='/messaging'
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className='flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-purple-50 hover:text-purple-600'
+                        >
+                          <MessageSquare className='h-4 w-4' />
+                          Mensagens
+                        </Link>
+                        <Link
+                          to='/user-dashboard?tab=settings'
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className='flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-purple-50 hover:text-purple-600'
+                        >
+                          <Settings className='h-4 w-4' />
+                          Configurações
+                        </Link>
+                        <div className='my-1 border-t border-gray-200' />
+                        <button
+                          onClick={() => {
+                            setIsUserMenuOpen(false);
+                            handleLogout();
+                          }}
+                          className='flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-red-600 transition-all duration-200 hover:bg-red-50'
+                          type='button'
+                        >
+                          <LogOut className='h-4 w-4' />
+                          Sair
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Desktop Actions */}
-            <div className='hidden items-center gap-4 md:flex'>
-              {/* Language Selector */}
-              <div className='lang-selector premium-language-selector-desktop'>
-                <LanguageSelectorPro />
-              </div>
-
-              {/* Auth Buttons - Só mostra se não tiver usuário logado */}
-              {!user && (
-                <div className='flex items-center gap-2'>
+                  )}
+                </div>
+              ) : (
+                <>
                   <Link
                     to={buildPath('/login')}
-                    className='flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 transition-all duration-200 hover:bg-green-50 hover:text-green-600'
+                    className='hidden md:flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:shadow-sm'
                   >
                     <LogIn className='h-4 w-4' />
                     {t('nav.login')}
                   </Link>
                   <Link
-                    to={buildPath('/signup')}
-                    className='flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm font-medium text-white transition-all duration-200 hover:bg-green-600 hover:shadow-md'
+                    to={buildPath('/register')}
+                    className='hidden md:flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition-all duration-200 hover:shadow-md'
+                    style={{
+                      background: '#000000'
+                    }}
                   >
-                    <User className='h-4 w-4' />
                     {t('nav.register')}
                   </Link>
-                </div>
+                </>
               )}
+              {/* Language Selector */}
+              <div className='lang-selector premium-language-selector-desktop hidden md:block'>
+                <LanguageSelectorPro />
+              </div>
             </div>
 
-            {/* Mobile Menu Button + Acesso rápido (login/register só no drawer) */}
+            {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className='rounded-lg p-2.5 text-gray-700 transition-all duration-200 hover:bg-green-50 hover:text-green-600 md:hidden'
+              className='rounded-lg p-2.5 text-gray-700 transition-all duration-200 hover:bg-purple-50 hover:text-purple-600 md:hidden'
               type='button'
             >
               {isMobileMenuOpen ? <X className='h-5 w-5' /> : <Menu className='h-5 w-5' />}
@@ -358,8 +362,8 @@ const AgroisyncHeader = () => {
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={`flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200 ${
                         isActive
-                          ? 'bg-green-500 text-white shadow-md'
-                          : 'text-gray-700 hover:bg-green-50 hover:text-green-600 hover:shadow-sm'
+                          ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
+                          : 'text-gray-700 hover:bg-purple-50 hover:text-purple-600 hover:shadow-sm'
                       }`}
                     >
                       <Icon className='h-4 w-4' />
@@ -384,7 +388,7 @@ const AgroisyncHeader = () => {
                       key={sub.path}
                       to={buildPath(sub.path)}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className='block rounded px-6 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700'
+                      className='block rounded px-6 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700'
                     >
                       {sub.label}
                     </Link>

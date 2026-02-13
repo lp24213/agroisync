@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import logger from '../services/logger';
 import {
   ArrowRight,
@@ -165,12 +166,37 @@ const AgroisyncCrypto = () => {
     { number: '99.9%', label: 'Uptime', color: 'var(--agro-green-accent)' }
   ];
 
-  const handleEmailSubmit = e => {
+  const handleEmailSubmit = async (e) => {
     e.preventDefault();
-    if (process.env.NODE_ENV !== 'production') {
-
-      // Email submitted (log removido)
-
+    if (!email || !email.includes('@')) {
+      toast.error('Por favor, insira um email válido');
+      return;
+    }
+    
+    try {
+      const response = await fetch('https://agroisync-backend.contato-00d.workers.dev/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          source: 'crypto',
+          consent: true
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        toast.success(data.message || 'Inscrição realizada com sucesso!');
+        setEmail(''); // Limpar campo
+      } else {
+        toast.error(data.error || 'Erro ao inscrever. Tente novamente.');
+      }
+    } catch (error) {
+      console.error('Erro ao inscrever:', error);
+      toast.error('Erro ao processar inscrição. Tente novamente.');
     }
   };
 

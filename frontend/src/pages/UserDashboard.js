@@ -15,7 +15,8 @@ import {
   Trash2,
   CheckCircle,
   Upload,
-  Camera
+  Camera,
+  Sprout
 } from 'lucide-react';
 import VisibilityManager from '../components/VisibilityManager';
 import Messaging from './Messaging';
@@ -47,6 +48,17 @@ const UserDashboard = () => {
   const [conversationsCount, setConversationsCount] = useState(0);
   const [userFreights, setUserFreights] = useState([]);
   const [userProducts, setUserProducts] = useState([]);
+  const [userSupplies, setUserSupplies] = useState([]);
+  const [loadingSupplies, setLoadingSupplies] = useState(false);
+  const [showAddSupply, setShowAddSupply] = useState(false);
+  const [newSupply, setNewSupply] = useState({
+    name: '',
+    category: '',
+    description: '',
+    unit: 'kg',
+    avg_price: '',
+    quantity: ''
+  });
   
   // Estados para configurações
   const [profileImage, setProfileImage] = useState(null);
@@ -144,6 +156,25 @@ const UserDashboard = () => {
       } catch (error) {
         console.error('❌ Erro ao carregar fretes:', error);
         setUserFreights([]);
+      }
+
+      // Buscar insumos do usuário
+      try {
+        const suppliesRes = await fetch('https://agroisync-backend.contato-00d.workers.dev/api/supplies/my', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (suppliesRes.ok) {
+          const suppliesData = await suppliesRes.json();
+          setUserSupplies(suppliesData.data || []);
+          console.log('✅ Insumos carregados:', suppliesData.data?.length || 0);
+        }
+      } catch (error) {
+        console.error('❌ Erro ao carregar insumos:', error);
+        setUserSupplies([]);
       }
 
       // Buscar número real de conversas ativas
@@ -265,7 +296,7 @@ const UserDashboard = () => {
       
       // Se for erro de limite, mostrar botão de upgrade
       if (error.response?.data?.limitReached) {
-        toast.error('💎 Faça upgrade do seu plano para continuar!', { duration: 5000 });
+        toast.error('Faça upgrade do seu plano para continuar!', { duration: 5000 });
       }
     }
   };
@@ -313,6 +344,7 @@ const UserDashboard = () => {
       label: userType === 'producer' ? 'Meus Produtos' : 'Meus Fretes',
       icon: userType === 'producer' ? Package : Truck
     },
+    { id: 'supplies', label: 'Meus Insumos', icon: Sprout },
     { id: 'messages', label: 'Mensagens', icon: MessageCircle },
     { id: 'settings', label: 'Configurações', icon: Settings }
   ];
@@ -565,7 +597,7 @@ const UserDashboard = () => {
       </div>
 
       <div className='rounded-lg border border-gray-200 bg-white p-6 shadow-sm'>
-        <h3 className='mb-4 text-lg font-semibold text-gray-900'>💎 Plano e Limites</h3>
+        <h3 className='mb-4 text-lg font-semibold text-gray-900'>Plano e Limites</h3>
         <div className='space-y-3'>
           <div className='rounded-lg bg-gradient-to-r from-green-50 to-blue-50 p-3'>
             <p className='text-sm font-semibold text-gray-800'>
@@ -595,6 +627,17 @@ const UserDashboard = () => {
             )}
           </div>
           
+          {/* Limites de Insumos */}
+          <div className='rounded-lg bg-purple-50 p-3'>
+            <p className='mb-1 text-xs font-medium text-gray-600'>🌱 Insumos Cadastrados:</p>
+            <p className='text-lg font-bold text-purple-600'>
+              {userSupplies?.length || 0} / {userPlan === 'gratuito' ? '10' : '∞'}
+            </p>
+            {userPlan === 'gratuito' && userSupplies?.length >= 10 && (
+              <p className='mt-1 text-xs font-semibold text-orange-600'>⚠️ Limite atingido! Faça upgrade.</p>
+            )}
+          </div>
+          
           {planExpiresAt && (
             <p className='text-xs text-gray-500'>
               Expira em: {new Date(planExpiresAt).toLocaleDateString('pt-BR')}
@@ -612,12 +655,213 @@ const UserDashboard = () => {
     </div>
   );
 
+  const handleAddSupply = async () => {
+    try {
+      const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+      if (!token) {
+        toast.error('Você precisa estar logado para cadastrar insumos');
+        return;
+      }
+
+      const response = await fetch('https://agroisync-backend.contato-00d.workers.dev/api/supplies', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newSupply)
+      });
+
+      if (response.ok) {
+        toast.success('✅ Insumo cadastrado com sucesso!');
+        setShowAddSupply(false);
+        setNewSupply({ name: '', category: '', description: '', unit: 'kg', avg_price: '', quantity: '' });
+        loadUserData(); // Recarregar dados
+      } else {
+        const data = await response.json();
+        toast.error(data.error || 'Erro ao cadastrar insumo');
+      }
+    } catch (error) {
+      console.error('Erro ao cadastrar insumo:', error);
+      toast.error('Erro ao processar solicitação');
+    }
+  };
+
+  const renderSupplies = () => {
+    return (
+      <div className='space-y-6'>
+        <div className='flex items-center justify-between'>
+          <div>
+            <h2 className='text-2xl font-bold text-gray-900'>Meus Insumos Agrícolas</h2>
+            <p className='text-gray-600 mt-1'>Gerencie seus insumos e produtos para venda</p>
+          </div>
+          <button
+            onClick={() => setShowAddSupply(true)}
+            className='flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 transition-colors'
+          >
+            <Plus className='h-5 w-5' />
+            Adicionar Insumo
+          </button>
+        </div>
+
+        {showAddSupply && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className='rounded-lg border border-gray-200 bg-white p-6 shadow-sm'
+          >
+            <h3 className='text-lg font-semibold mb-4'>Cadastrar Novo Insumo</h3>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-1'>Nome do Insumo</label>
+                <input
+                  type='text'
+                  value={newSupply.name}
+                  onChange={e => setNewSupply({ ...newSupply, name: e.target.value })}
+                  className='w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500'
+                  placeholder='Ex: Ureia, Glifosato, NPK...'
+                />
+              </div>
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-1'>Categoria</label>
+                <select
+                  value={newSupply.category}
+                  onChange={e => setNewSupply({ ...newSupply, category: e.target.value })}
+                  className='w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500'
+                >
+                  <option value=''>Selecione...</option>
+                  <option value='fertilizante'>Fertilizante</option>
+                  <option value='defensivo'>Defensivo</option>
+                  <option value='semente'>Semente</option>
+                  <option value='corretivo'>Corretivo</option>
+                  <option value='outro'>Outro</option>
+                </select>
+              </div>
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-1'>Preço Médio (R$)</label>
+                <input
+                  type='number'
+                  value={newSupply.avg_price}
+                  onChange={e => setNewSupply({ ...newSupply, avg_price: e.target.value })}
+                  className='w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500'
+                  placeholder='0.00'
+                />
+              </div>
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-1'>Unidade</label>
+                <select
+                  value={newSupply.unit}
+                  onChange={e => setNewSupply({ ...newSupply, unit: e.target.value })}
+                  className='w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500'
+                >
+                  <option value='kg'>kg</option>
+                  <option value='ton'>ton</option>
+                  <option value='L'>L</option>
+                  <option value='sc'>sc (saca)</option>
+                  <option value='un'>unidade</option>
+                </select>
+              </div>
+              <div className='md:col-span-2'>
+                <label className='block text-sm font-medium text-gray-700 mb-1'>Descrição</label>
+                <textarea
+                  value={newSupply.description}
+                  onChange={e => setNewSupply({ ...newSupply, description: e.target.value })}
+                  className='w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500'
+                  rows={3}
+                  placeholder='Descreva o insumo...'
+                />
+              </div>
+            </div>
+            <div className='flex gap-3 mt-4'>
+              <button
+                onClick={handleAddSupply}
+                className='flex-1 rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 transition-colors'
+              >
+                Cadastrar
+              </button>
+              <button
+                onClick={() => setShowAddSupply(false)}
+                className='flex-1 rounded-lg border border-gray-300 px-4 py-2 font-semibold text-gray-700 hover:bg-gray-50 transition-colors'
+              >
+                Cancelar
+              </button>
+            </div>
+          </motion.div>
+        )}
+
+        {loadingSupplies ? (
+          <div className='text-center py-12'>
+            <div className='mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-green-600 border-t-transparent'></div>
+            <p className='text-gray-600'>Carregando insumos...</p>
+          </div>
+        ) : userSupplies.length === 0 ? (
+          <div className='rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center'>
+            <Sprout className='mx-auto mb-4 h-12 w-12 text-gray-400' />
+            <h3 className='text-lg font-semibold text-gray-900 mb-2'>Nenhum insumo cadastrado</h3>
+            <p className='text-gray-600 mb-4'>Comece cadastrando seus primeiros insumos agrícolas</p>
+            <button
+              onClick={() => setShowAddSupply(true)}
+              className='inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 transition-colors'
+            >
+              <Plus className='h-5 w-5' />
+              Adicionar Primeiro Insumo
+            </button>
+          </div>
+        ) : (
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+            {userSupplies.map((supply) => (
+              <motion.div
+                key={supply.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className='rounded-lg border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow'
+              >
+                <div className='flex items-start justify-between mb-4'>
+                  <div>
+                    <h3 className='text-lg font-semibold text-gray-900'>{supply.name}</h3>
+                    <p className='text-sm text-gray-500 capitalize'>{supply.category}</p>
+                  </div>
+                  <div className='flex gap-2'>
+                    <button className='p-2 text-gray-400 hover:text-blue-600 transition-colors'>
+                      <Edit className='h-4 w-4' />
+                    </button>
+                    <button className='p-2 text-gray-400 hover:text-red-600 transition-colors'>
+                      <Trash2 className='h-4 w-4' />
+                    </button>
+                  </div>
+                </div>
+                {supply.description && (
+                  <p className='text-sm text-gray-600 mb-4 line-clamp-2'>{supply.description}</p>
+                )}
+                <div className='flex items-center justify-between pt-4 border-t border-gray-100'>
+                  <div>
+                    <p className='text-xs text-gray-500'>Preço Médio</p>
+                    <p className='text-lg font-bold text-green-600'>
+                      R$ {supply.avg_price?.toFixed(2) || '0.00'} / {supply.unit || 'kg'}
+                    </p>
+                  </div>
+                  {supply.price_variation !== undefined && supply.price_variation !== 0 && (
+                    <div className={`text-sm font-semibold ${supply.price_variation > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                      {supply.price_variation > 0 ? '+' : ''}{supply.price_variation?.toFixed(2)}%
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'overview':
         return renderOverview();
       case 'items':
         return renderItems();
+      case 'supplies':
+        return renderSupplies();
       case 'messages':
         return <Messaging />;
       case 'settings':

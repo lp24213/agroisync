@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  agroisync-ia:
+    build: .
+    container_name: agroisync-ia-admin
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+      - ./ia_actions.log:/app/ia_actions.log
+    restart: unless-stopped
+    networks:
+      - agroisync-network
+
+networks:
+  agroisync-network:
+    driver: bridge
+

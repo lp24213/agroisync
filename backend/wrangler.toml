@@ -1,14 +1,14 @@
 # AgroSync Backend - Cloudflare Worker Configuration
-name = "backend"
+name = "agroisync-backend"
 main = "src/cloudflare-worker.js"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
 # Worker configuration
-workers_dev = false
+workers_dev = true
 
-# Routes - Backend API
-route = { pattern = "agroisync.com/api/*", zone_name = "agroisync.com" }
+# Routes are managed in Cloudflare Dashboard to avoid conflicts
+# Route management: https://dash.cloudflare.com/00d72b2db0c988d8de0db5442b8d6450/workers/overview
 
 # D1 Database binding
 [[d1_databases]]

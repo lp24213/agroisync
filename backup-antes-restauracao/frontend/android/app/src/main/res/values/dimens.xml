@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Margens -->
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_sm">8dp</dimen>
+    <dimen name="spacing_md">16dp</dimen>
+    <dimen name="spacing_lg">24dp</dimen>
+    <dimen name="spacing_xl">32dp</dimen>
+
+    <!-- Tamanhos de texto -->
+    <dimen name="text_xs">14sp</dimen>
+    <dimen name="text_sm">16sp</dimen>
+    <dimen name="text_md">18sp</dimen>
+    <dimen name="text_lg">22sp</dimen>
+    <dimen name="text_xl">28sp</dimen>
+    <dimen name="text_xxl">36sp</dimen>
+
+    <!-- Raios de borda -->
+    <dimen name="radius_sm">8dp</dimen>
+    <dimen name="radius_md">12dp</dimen>
+    <dimen name="radius_lg">20dp</dimen>
+    <dimen name="radius_xl">28dp</dimen>
+
+    <!-- Tamanhos de ícones -->
+    <dimen name="icon_sm">24dp</dimen>
+    <dimen name="icon_md">32dp</dimen>
+    <dimen name="icon_lg">48dp</dimen>
+    <dimen name="icon_xl">64dp</dimen>
+
+    <!-- Elevações -->
+    <dimen name="elevation_card">2dp</dimen>
+    <dimen name="elevation_fab">6dp</dimen>
+    <dimen name="elevation_dialog">8dp</dimen>
+</resources>

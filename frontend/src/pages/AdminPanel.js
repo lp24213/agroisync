@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Users, BarChart3, Settings, Activity, Shield, Search, Edit, Trash2, Ban, X, Check, AlertCircle } from 'lucide-react';
+import { Users, BarChart3, Settings, Activity, Shield, Search, Edit, Trash2, Ban, X, Check, AlertCircle, Mail } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { getApiUrl } from '../config/constants';
@@ -457,8 +458,15 @@ const AdminPanel = () => {
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className='flex gap-2 mb-6 border-b border-gray-200 overflow-x-auto'>
+        {/* Tabs + Caixa de Email */}
+        <div className='flex gap-2 mb-6 border-b border-gray-200 overflow-x-auto items-center'>
+          <Link
+            to='/admin/email'
+            className='flex items-center gap-2 px-4 py-3 font-semibold text-gray-600 hover:text-green-600 hover:border-b-2 hover:border-green-600 transition-all shrink-0'
+          >
+            <Mail className='h-4 w-4' />
+            Email Corporativo (Admin)
+          </Link>
           {[
             { id: 'stats', label: 'Estatísticas', icon: BarChart3 },
             { id: 'users', label: 'Usuários', icon: Users },

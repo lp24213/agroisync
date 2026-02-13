@@ -41,6 +41,28 @@
     background-position: center !important;
     background-repeat: no-repeat !important;
   }
+
+  /* Fix para imagem de fundo da home no mobile */
+  .soy-field-background {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    background-image: url('/images/bela-natureza-retro-com-campo.jpg') !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+    z-index: -1 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: translate3d(0, 0, 0) !important;
+    -webkit-transform: translate3d(0, 0, 0) !important;
+    will-change: transform !important;
+  }
 }
 
 /* Fix for error borders on mobile - only for form errors */

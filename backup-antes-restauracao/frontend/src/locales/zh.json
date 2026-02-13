@@ -1,0 +1,64 @@
+{
+  "nav": {
+    "inicio": "首页",
+    "loja": "商店",
+    "agroconecta": "农业连接",
+    "marketplace": "市场",
+    "tecnologia": "技术",
+    "parcerias": "合作伙伴",
+    "tagline": "农业科技解决方案",
+    "languages": "语言",
+    "selectLanguage": "选择语言",
+    "toggleTheme": "切换主题",
+    "toggleMenu": "切换菜单",
+    "login": "登录",
+    "register": "注册",
+    "logout": "退出"
+  },
+  "home": {
+    "title": "用技术连接巴西农业",
+    "subtitle": "为巴西农业提供市场、物流、加密货币和分析的完整平台。",
+    "exploreMarketplace": "探索市场",
+    "learnMore": "了解更多"
+  },
+  "features": {
+    "title": "我们的解决方案",
+    "subtitle": "先进技术革命巴西农业",
+    "marketplace": {
+      "title": "智能市场",
+      "description": "在安全高效的平台上与农产品买卖双方建立联系。"
+    },
+    "agroconecta": {
+      "title": "农业连接",
+      "description": "智能运输和物流网络优化您的供应链。"
+    },
+    "crypto": {
+      "title": "农业加密",
+      "description": "区块链技术为农业提供安全透明的交易。"
+    },
+    "analytics": {
+      "title": "高级分析",
+      "description": "基于人工智能的数据和洞察用于决策制定。"
+    }
+  },
+  "stats": {
+    "users": "活跃用户",
+    "transactions": "交易",
+    "volume": "交易量",
+    "uptime": "运行时间"
+  },
+  "news": {
+    "title": "农业新闻",
+    "subtitle": "了解行业最新动态"
+  },
+  "data": {
+    "title": "实时数据",
+    "subtitle": "关于天气、加密货币和市场的更新信息"
+  },
+  "cta": {
+    "title": "准备革命您的农业吗？",
+    "subtitle": "加入数千名已经通过我们的平台改变业务的农民。",
+    "startNow": "立即开始",
+    "talkExpert": "与专家交谈"
+  }
+}

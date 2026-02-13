@@ -14,6 +14,7 @@ const MetaMaskIntegration = () => {
   const CENTRAL_WALLET = '';
 
   const checkConnection = useCallback(async () => {
+    if (typeof window.ethereum === 'undefined') return;
     try {
       const accounts = await window.ethereum.request({ method: 'eth_accounts' });
       if (accounts.length > 0) {
@@ -23,13 +24,16 @@ const MetaMaskIntegration = () => {
         await loadTransactions();
       }
     } catch (error) {
-      console.error('Erro ao verificar conexão:', error);
+      // Silenciar erro quando MetaMask não está conectado/instalado
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('MetaMask não conectado:', error.message);
+      }
     }
   }, []);
 
   useEffect(() => {
-    // Verificar se MetaMask está instalado
-    if (typeof window.ethereum !== 'undefined') {
+    // Só verificar conexão se MetaMask estiver instalado
+    if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
       checkConnection();
     }
   }, [checkConnection]);

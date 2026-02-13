@@ -29,8 +29,8 @@ const StockTicker = () => {
 
     fetchStockData();
 
-    // Atualizar a cada 30 segundos
-    const interval = setInterval(fetchStockData, 30000);
+    // Atualizar a cada 5 minutos ao invés de 30s para reduzir carga
+    const interval = setInterval(fetchStockData, 300000);
     return () => clearInterval(interval);
   }, []);
 

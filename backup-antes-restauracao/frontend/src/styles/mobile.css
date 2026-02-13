@@ -1,0 +1,828 @@
+/* ===== AGROISYNC MOBILE STYLES - CONSOLIDADO ===== */
+/* Responsividade, mobile menu, breakpoints, acessibilidade mobile */
+
+/* ===== BREAKPOINTS ===== */
+/* Mobile: 320px - 768px */
+/* Tablet: 769px - 1024px */
+/* Desktop: 1025px+ */
+
+/* ===== MOBILE FIRST ===== */
+@media (max-width: 768px) {
+  /* Header Mobile */
+  .premium-header {
+    height: 60px;
+  }
+
+  .premium-header-container {
+    padding: 0 16px;
+    height: 60px;
+  }
+
+  .premium-header-logo-img {
+    height: 32px !important;
+    max-width: 140px !important;
+  }
+
+  .premium-header-menu {
+    display: none !important;
+  }
+
+  .premium-mobile-toggle {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .premium-header-actions {
+    gap: 12px;
+  }
+
+  /* Mobile Menu */
+  .premium-mobile-menu {
+    top: 60px !important;
+    max-height: calc(100vh - 60px) !important;
+  }
+
+  .premium-mobile-content {
+    padding: 20px !important;
+    gap: 20px !important;
+  }
+
+  .premium-mobile-link {
+    padding: 16px 20px;
+    font-size: 16px;
+  }
+
+  /* Language Selector Mobile */
+  .premium-language-selector-desktop {
+    display: none !important;
+  }
+
+  /* Layout Mobile */
+  .agro-main-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .agro-sidebar {
+    order: -1;
+  }
+
+  /* Hero Section Mobile */
+  .agro-hero-section {
+    padding: 24px;
+  }
+
+  .agro-hero-title {
+    font-size: 2rem;
+    margin-bottom: 16px;
+  }
+
+  .agro-hero-description {
+    font-size: 1rem;
+    margin-bottom: 24px;
+  }
+
+  /* Stats Mobile */
+  .agro-stats-section {
+    padding: 24px;
+  }
+
+  .agro-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .agro-stat-number {
+    font-size: 2rem;
+  }
+
+  /* Features Mobile */
+  .agro-features-section {
+    padding: 24px;
+  }
+
+  .agro-features-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .agro-feature-card {
+    padding: 20px;
+  }
+
+  /* Cards Mobile */
+  .agro-shop-card,
+  .agro-news-card {
+    padding: 20px;
+  }
+
+  /* Ajustes Mobile Gerais */
+  .premium-header {
+    min-height: 64px;
+  }
+  .premium-header-logo-img {
+    height: 28px;
+  }
+  .agro-hero-section img,
+  .agro-hero-section video {
+    max-height: 42vh;
+    object-fit: cover;
+    width: 100%;
+  }
+  .agro-hero-title {
+    font-size: 1.75rem !important;
+  }
+  .agro-hero-description {
+    font-size: 0.95rem !important;
+  }
+  /* Botões flutuantes não cobrirem conteúdo */
+  .chatbot-button,
+  .accessibility-panel-button {
+    bottom: 18px !important;
+  }
+  .chatbot-button {
+    right: 18px !important;
+  }
+  .accessibility-panel-button {
+    left: 18px !important;
+  }
+  /* Espaço extra no final para flutuantes */
+  main {
+    padding-bottom: 80px;
+  }
+  /* Footer Mobile */
+  .agro-footer-container {
+    padding: 32px 20px 24px;
+  }
+
+  .agro-footer-main {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .agro-footer-sections {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .agro-footer-bottom-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+
+  /* Fix for footer border issues */
+  footer {
+    border-top: 1px solid #e5e7eb !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  /* Fix for chatbot mobile positioning */
+  .chatbot-button {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 1000 !important;
+    width: 58px !important;
+    height: 58px !important;
+    border-radius: 50% !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  /* Chatbot modal dimensionado (mobile) */
+  .chatbot-modal {
+    position: fixed !important;
+    left: auto !important;
+    top: auto !important;
+    right: 16px !important;
+    bottom: 112px !important;
+    width: min(88vw, 380px) !important;
+    max-width: 88vw !important;
+    height: auto !important;
+    max-height: calc(100vh - 180px) !important;
+    border-radius: 24px !important;
+    margin: 0 !important;
+    z-index: 9996 !important;
+    background: rgba(0, 0, 0, 0.95) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* Fix for footer mobile issues */
+  footer {
+    position: relative !important;
+    z-index: 1 !important;
+    background: #f9fafb !important;
+    border-top: 1px solid #e5e7eb !important;
+    margin-top: auto !important;
+  }
+
+  footer .grid {
+    display: block !important;
+  }
+
+  footer .grid > div {
+    margin-bottom: 2rem !important;
+  }
+
+  /* Fix for crypto hash display on mobile */
+  .crypto-hash-display {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.5rem !important;
+    background: rgba(0, 0, 0, 0.05) !important;
+    border-radius: 4px !important;
+    font-family: 'Courier New', monospace !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 1px !important;
+  }
+
+  /* Components Mobile */
+  .btn {
+    padding: 12px 20px;
+    font-size: 16px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn.small {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  .form-input {
+    padding: 16px;
+    font-size: 16px;
+  }
+
+  .card {
+    margin-bottom: 16px;
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  .modal {
+    padding: 24px;
+    margin: 16px;
+    width: calc(100% - 32px);
+  }
+
+  .modal-title {
+    font-size: 20px;
+  }
+
+  /* Grid Mobile */
+  .grid-cols-2,
+  .grid-cols-3,
+  .grid-cols-4 {
+    grid-template-columns: 1fr;
+  }
+
+  /* Typography Mobile */
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* Spacing Mobile */
+  .container {
+    padding: 0 16px;
+  }
+
+  .section {
+    padding: 32px 0;
+  }
+
+  .mb-4 {
+    margin-bottom: 24px;
+  }
+
+  .mt-4 {
+    margin-top: 24px;
+  }
+
+  .p-4 {
+    padding: 20px;
+  }
+}
+
+/* ===== TABLET ===== */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .premium-header-container {
+    padding: 0 20px;
+  }
+
+  .premium-header-menu {
+    gap: 20px;
+    margin-left: 60px;
+  }
+
+  .premium-header-link {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+  }
+
+  .agro-main-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px;
+  }
+
+  .agro-features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .agro-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid-cols-3,
+  .grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .agro-footer-sections {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ===== MOBILE LANDSCAPE ===== */
+@media (max-width: 768px) and (orientation: landscape) {
+  .premium-mobile-menu {
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
+  }
+
+  .premium-mobile-content {
+    padding: 16px 20px;
+    gap: 16px;
+  }
+
+  .modal {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+}
+
+/* ===== SMALL MOBILE ===== */
+@media (max-width: 480px) {
+  .premium-header-container {
+    padding: 0 12px;
+  }
+
+  .premium-header-logo-img {
+    height: 28px !important;
+    max-width: 120px !important;
+  }
+
+  .agro-main-layout {
+    padding: 16px;
+  }
+
+  .agro-hero-section,
+  .agro-stats-section,
+  .agro-features-section {
+    padding: 20px;
+  }
+
+  .agro-shop-card,
+  .agro-news-card {
+    padding: 16px;
+  }
+
+  .agro-hero-title {
+    font-size: 1.75rem;
+  }
+
+  .agro-hero-description {
+    font-size: 0.95rem;
+  }
+
+  .btn {
+    padding: 14px 20px;
+    font-size: 16px;
+  }
+
+  .form-input {
+    padding: 14px;
+  }
+
+  .card-body {
+    padding: 16px;
+  }
+
+  .modal {
+    padding: 20px;
+    margin: 12px;
+    width: calc(100% - 24px);
+  }
+
+  .container {
+    padding: 0 12px;
+  }
+}
+
+/* ===== TOUCH DEVICES ===== */
+@media (hover: none) and (pointer: coarse) {
+  /* Increase touch targets */
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .premium-header-link {
+    min-height: 44px;
+    padding: 12px 16px;
+  }
+
+  .premium-mobile-link {
+    min-height: 48px;
+    padding: 16px 20px;
+  }
+
+  .form-input {
+    min-height: 44px;
+  }
+
+  .dropdown-toggle {
+    min-height: 44px;
+  }
+
+  .tab-button {
+    min-height: 44px;
+    padding: 12px 20px;
+  }
+
+  /* Remove hover effects on touch devices */
+  .card:hover,
+  .btn:hover,
+  .premium-header-link:hover {
+    transform: none;
+  }
+
+  /* Add active states for touch */
+  .btn:active {
+    transform: scale(0.98);
+  }
+
+  .card:active {
+    transform: scale(0.99);
+  }
+}
+
+/* ===== HIGH DPI DISPLAYS ===== */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .premium-header-logo-img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* ===== DARK MODE MOBILE ===== */
+@media (max-width: 768px) and (prefers-color-scheme: dark) {
+  .premium-mobile-menu {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%) !important;
+    color: #ffffff;
+  }
+
+  .premium-mobile-link {
+    color: #e0e0e0;
+  }
+
+  .premium-mobile-link:hover,
+  .premium-mobile-link.active {
+    color: #4caf50;
+    background: rgba(76, 175, 80, 0.1);
+  }
+
+  .premium-mobile-lang-btn {
+    background: rgba(42, 42, 42, 0.8);
+    border-color: rgba(76, 175, 80, 0.3);
+    color: #e0e0e0;
+  }
+
+  .premium-mobile-lang-btn:hover,
+  .premium-mobile-lang-btn.active {
+    background: rgba(76, 175, 80, 0.1);
+    border-color: #4caf50;
+    color: #4caf50;
+  }
+}
+
+/* ===== ACCESSIBILITY MOBILE ===== */
+@media (max-width: 768px) {
+  /* Focus styles for mobile */
+  *:focus {
+    outline: 3px solid #2a7f4f;
+    outline-offset: 2px;
+  }
+
+  /* Skip links */
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #2a7f4f;
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 4px;
+    z-index: 10000;
+  }
+
+  .skip-link:focus {
+    top: 6px;
+  }
+
+  /* Screen reader only */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* High contrast mode */
+  @media (prefers-contrast: high) {
+    .premium-header {
+      border-bottom: 2px solid #000000;
+    }
+
+    .premium-header-link {
+      border: 1px solid transparent;
+    }
+
+    .premium-header-link:hover,
+    .premium-header-link.active {
+      border-color: #2a7f4f;
+    }
+
+    .btn {
+      border: 2px solid currentColor;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    .premium-mobile-menu {
+      transition: none !important;
+    }
+  }
+}
+
+/* ===== DESKTOP VS MOBILE CORRECTIONS ===== */
+/* MENU HAMBÚRGUER - SÓ NO MOBILE */
+.premium-mobile-toggle {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+@media (max-width: 768px) {
+  .premium-mobile-toggle {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    width: 44px !important;
+    height: 44px !important;
+    z-index: 99999 !important;
+    background: #0055ff !important;
+    border: 2px solid #0055ff !important;
+    color: #ffffff !important;
+    cursor: pointer !important;
+    padding: 8px !important;
+    border-radius: 6px !important;
+    transition: all 0.3s ease !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    margin: 0 !important;
+    font-size: 16px !important;
+    flex: 0 0 auto !important;
+  }
+}
+
+/* MENU DESKTOP - MANTER NO DESKTOP */
+.premium-header-menu {
+  display: flex !important;
+}
+
+@media (max-width: 768px) {
+  .premium-header-menu {
+    display: none !important;
+  }
+}
+
+/* MOBILE MENU - SÓ APARECE NO MOBILE */
+.premium-mobile-menu {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .premium-mobile-menu {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    width: 300px !important;
+    max-width: 90vw !important;
+    height: 100vh !important;
+    background: #ffffff !important;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3) !important;
+    z-index: 9999 !important;
+    overflow-y: auto !important;
+    border-left: 1px solid #e5e5e5 !important;
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+  }
+}
+
+/* OVERLAY MOBILE - SÓ NO MOBILE */
+.premium-mobile-overlay {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .premium-mobile-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(0, 0, 0, 0.7) !important;
+    backdrop-filter: blur(4px) !important;
+    z-index: 9998 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+  }
+}
+
+/* GARANTIR QUE BOTÕES DESKTOP FUNCIONEM */
+@media (min-width: 769px) {
+  .premium-header-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex: 0 0 auto !important;
+  }
+
+  .premium-auth-buttons {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+  }
+
+  .premium-header-link {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+    padding: 0.5rem 1rem !important;
+    background: transparent !important;
+    border: 1px solid #e5e5e5 !important;
+    border-radius: 6px !important;
+    color: #333333 !important;
+    text-decoration: none !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .premium-header-link:hover {
+    background: #0055ff !important;
+    border-color: #0055ff !important;
+    color: #ffffff !important;
+  }
+}
+
+/* ===== MOBILE NAVIGATION ENHANCEMENTS ===== */
+@media (max-width: 768px) {
+  /* Swipe gestures for mobile menu */
+  .premium-mobile-menu {
+    touch-action: pan-y;
+  }
+
+  /* Mobile menu animations */
+  .premium-mobile-menu-enter {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  .premium-mobile-menu-enter-active {
+    transform: translateX(0);
+    opacity: 1;
+    transition:
+      transform 0.3s ease,
+      opacity 0.3s ease;
+  }
+
+  .premium-mobile-menu-exit {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  .premium-mobile-menu-exit-active {
+    transform: translateX(-100%);
+    opacity: 0;
+    transition:
+      transform 0.3s ease,
+      opacity 0.3s ease;
+  }
+
+  /* Mobile menu backdrop */
+  .premium-mobile-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .premium-mobile-backdrop.active {
+    opacity: 1;
+  }
+}
+
+/* ===== MOBILE PERFORMANCE OPTIMIZATIONS ===== */
+@media (max-width: 768px) {
+  /* Reduce animations on mobile for better performance */
+  .card,
+  .btn,
+  .premium-header-link {
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  /* Optimize shadows for mobile */
+  .card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Reduce blur effects on mobile */
+  .premium-header {
+    backdrop-filter: blur(5px);
+  }
+
+  /* Optimize gradients for mobile */
+  .btn-premium {
+    background: #2a7f4f;
+  }
+
+  .btn-premium:hover {
+    background: #1f5f3a;
+  }
+}

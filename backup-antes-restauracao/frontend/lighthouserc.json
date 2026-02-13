@@ -1,0 +1,17 @@
+{
+  "ci": {
+    "collect": {
+      "url": [
+        "http://localhost:3000/",
+        "http://localhost:3000/sobre",
+        "http://localhost:3000/contato",
+        "http://localhost:3000/produtos",
+        "http://localhost:3000/frete"
+      ],
+      "numberOfRuns": 1
+    },
+    "assert": {
+      "preset": "lighthouse:recommended"
+    }
+  }
+}

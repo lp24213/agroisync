@@ -49,23 +49,24 @@ if ($ENV -eq "production") {
 Set-Location ..
 Write-Host "Frontend deployed!" -ForegroundColor Green
 
-# 3. Deploy Frontend-Next (SSR/SSG)
-Write-Host "`n[3/3] Deploying Frontend-Next (Next.js SSR)..." -ForegroundColor Blue
-Set-Location frontend-next
-
-Write-Host "Building Next.js..." -ForegroundColor Yellow
-npm run build
-
-if ($ENV -eq "production") {
-    Write-Host "Deploying to PRODUCTION (agroisync-next)..." -ForegroundColor Yellow
-    wrangler pages deploy out --project-name=agroisync-next --branch=main
+# 3. Deploy Frontend-Next (SSR/SSG) - opcional, so executa se a pasta existir
+if (Test-Path "frontend-next") {
+    Write-Host "`n[3/3] Deploying Frontend-Next (Next.js SSR)..." -ForegroundColor Blue
+    Set-Location frontend-next
+    Write-Host "Building Next.js..." -ForegroundColor Yellow
+    npm run build
+    if ($ENV -eq "production") {
+        Write-Host "Deploying to PRODUCTION (agroisync-next)..." -ForegroundColor Yellow
+        wrangler pages deploy out --project-name=agroisync-next --branch=main
+    } else {
+        Write-Host "Deploying to STAGING (agroisync-next-staging)..." -ForegroundColor Yellow
+        wrangler pages deploy out --project-name=agroisync-next-staging --branch=staging
+    }
+    Set-Location ..
+    Write-Host "Frontend-Next deployed!" -ForegroundColor Green
 } else {
-    Write-Host "Deploying to STAGING (agroisync-next-staging)..." -ForegroundColor Yellow
-    wrangler pages deploy out --project-name=agroisync-next-staging --branch=staging
+    Write-Host "`n[3/3] Frontend-Next nao encontrado (pasta frontend-next inexistente). Pulando." -ForegroundColor Yellow
 }
-
-Set-Location ..
-Write-Host "Frontend-Next deployed!" -ForegroundColor Green
 
 Write-Host "`n----------------------------------------" -ForegroundColor Blue
 Write-Host "DEPLOY COMPLETO" -ForegroundColor Green

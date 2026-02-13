@@ -1,5 +1,5 @@
 # Redirect all requests to index.html for SPA routing - including crypto hashes
-# Redirecionar www para não-www
+# Redirecionar www para não-www (evita build antigo no www)
 https://www.agroisync.com/* https://agroisync.com/:splat 301!
 
 # Redirecionar fretes e ofertas para signup

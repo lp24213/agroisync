@@ -1,0 +1,500 @@
+﻿const { ObjectId } = require('mongodb');
+const jwt = require('jsonwebtoken');
+
+const logger = require('../../utils/logger.js');
+const d1Client = require('../../db/d1Client.js');
+let d1 = null;
+if (process.env.USE_D1 === 'true') {
+  try {
+    d1 = require('../../db/d1Adapter.js');
+  } catch (e) {
+    logger.warn('D1 adapter not available, falling back to MongoDB');
+    d1 = null;
+  }
+}
+
+// FunÃ§Ã£o auxiliar para verificar autorizaÃ§Ã£o
+const verifyAuth = event => {
+  const authHeader = event.headers.Authorization || event.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return { error: 'UNAUTHORIZED', message: 'Token de autorizaÃ§Ã£o nÃ£o fornecido' };
+  }
+
+  const token = authHeader.substring(7);
+  let decodedToken;
+
+  try {
+    decodedToken = jwt.decode(token);
+    if (!decodedToken) {
+      return { error: 'INVALID_TOKEN', message: 'Token invÃ¡lido' };
+    }
+  } catch (error) {
+    return { error: 'INVALID_TOKEN', message: 'Token invÃ¡lido' };
+  }
+
+  const cognitoSub = decodedToken.sub;
+  const { email } = decodedToken;
+
+  if (!cognitoSub || !email) {
+    return { error: 'INVALID_TOKEN_DATA', message: 'Dados do token invÃ¡lidos' };
+  }
+
+  return { cognitoSub, email };
+};
+
+// FunÃ§Ã£o para verificar limites do plano
+const checkPlanLimits = async (db, cognitoSub, operation) => {
+  const user = await db.collection('users').findOne({ cognitoSub });
+  if (!user) {
+    return { error: 'USER_NOT_FOUND', message: 'UsuÃ¡rio nÃ£o encontrado' };
+  }
+
+  const { plan } = user;
+
+  if (operation === 'create') {
+    // Verificar se pode criar mais produtos
+    if (plan.status !== 'active') {
+      return {
+        error: 'PLAN_INACTIVE',
+        message: 'Plano inativo. Ative um plano para criar produtos.'
+      };
+    }
+
+    if (plan.type === 'loja') {
+      // Plano Loja: mÃ¡ximo 3 anÃºncios
+      const currentProducts = await db.collection('products').countDocuments({
+        ownerId: cognitoSub,
+        status: 'active'
+      });
+
+      if (currentProducts >= 3) {
+        return {
+          error: 'LIMIT_EXCEEDED',
+          message: 'Limite de 3 anÃºncios atingido para o plano Loja.'
+        };
+      }
+    }
+    // Planos pagos: ilimitado
+  }
+
+  return { user, plan };
+};
+
+exports.handler = async event => {
+  try {
+    // Configurar CORS
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': process.env.AMPLIFY_DOMAIN || '*',
+      'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+      'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
+      'Access-Control-Allow-Credentials': true
+    };
+
+    // Handle preflight OPTIONS request
+    if (event.httpMethod === 'OPTIONS') {
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({ message: 'OK' })
+      };
+    }
+
+    // Conectar ao MongoDB ou D1 PoC via d1Client wrapper
+    let db;
+    await d1Client.connect();
+    db = d1Client.db();
+
+    // GET /products/public - Lista pÃºblica de produtos
+    if (event.httpMethod === 'GET' && event.path.includes('/public')) {
+      const { queryStringParameters } = event;
+      const page = parseInt(queryStringParameters?.page, 10, 10) || 1;
+      const limit = parseInt(queryStringParameters?.limit, 10, 10) || 20;
+      const search = queryStringParameters?.search || '';
+      const category = queryStringParameters?.category;
+
+      const filter = { status: 'active' };
+
+      if (search) {
+        filter.$text = { $search: search };
+      }
+
+      if (category) {
+        filter.category = category;
+      }
+
+      const skip = (page - 1) * limit;
+
+      // Support pagination for both MongoDB and the D1 PoC adapter
+      let products = await db.collection('products').find(filter).toArray();
+      // sort by createdAt desc
+      products.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const total = await db.collection('products').countDocuments(filter);
+      const paged = products.slice(skip, skip + limit);
+
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({
+          products,
+          pagination: {
+            page,
+            limit,
+            total,
+            pages: Math.ceil(total / limit)
+          }
+        })
+      };
+    }
+
+    // GET /products - Produtos do usuÃ¡rio ou por ID
+    if (event.httpMethod === 'GET') {
+      const auth = verifyAuth(event);
+      if (auth.error) {
+        return {
+          statusCode: 401,
+          headers: corsHeaders,
+          body: JSON.stringify({
+            error: { code: auth.error, message: auth.message }
+          })
+        };
+      }
+
+      const { queryStringParameters } = event;
+      const { owner, id } = queryStringParameters || {};
+
+      if (id) {
+        // Buscar produto especÃ­fico por ID
+        if (!ObjectId.isValid(id)) {
+          return {
+            statusCode: 400,
+            headers: corsHeaders,
+            body: JSON.stringify({
+              error: { code: 'INVALID_ID', message: 'ID invÃ¡lido' }
+            })
+          };
+        }
+
+        // Normalize id for D1 or MongoDB using d1Client helper
+        let query;
+        const normalizedId = d1Client.asObjectId(id);
+        query = { _id: normalizedId };
+
+        const product = await db.collection('products').findOne(query);
+        if (!product) {
+          return {
+            statusCode: 404,
+            headers: corsHeaders,
+            body: JSON.stringify({
+              error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto nÃ£o encontrado' }
+            })
+          };
+        }
+
+        return {
+          statusCode: 200,
+          headers: corsHeaders,
+          body: JSON.stringify({ product })
+        };
+      }
+
+      // Buscar produtos do usuÃ¡rio
+      const filter = owner === 'me' ? { ownerId: auth.cognitoSub } : {};
+      let products = await db.collection('products').find(filter).toArray();
+      products.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({ products })
+      };
+    }
+
+    // POST /products - Criar produto
+    if (event.httpMethod === 'POST') {
+      const auth = verifyAuth(event);
+      if (auth.error) {
+        return {
+          statusCode: 401,
+          headers: corsHeaders,
+          body: JSON.stringify({
+            error: { code: auth.error, message: auth.message }
+          })
+        };
+      }
+
+      // Verificar limites do plano
+      const planCheck = await checkPlanLimits(db, auth.cognitoSub, 'create');
+      if (planCheck.error) {
+        return {
+          statusCode: 403,
+          headers: corsHeaders,
+          body: JSON.stringify({
+            error: { code: planCheck.error, message: planCheck.message }
+          })
+        };
+      }
+
+      // Parse do body
+      let requestBody;
+      try {
+        requestBody = JSON.parse(event.body);
+      } catch (error) {
+        return {
+          statusCode: 400,
+          headers: corsHeaders,
+          body: JSON.stringify({
+            error: { code: 'INVALID_JSON', message: 'JSON invÃ¡lido' }
+          })
+        };
+      }
+
+      // Validar dados obrigatÃ³rios
+      const { name, specs, images, priceBRL } = requestBody;
+
+      if (!name || !specs || !priceBRL) {
+        return {
+          statusCode: 400,
+          headers: corsHeaders,
+          body: JSON.stringify({
+            error: {
+              code: 'MISSING_FIELDS',
+              message: 'Nome, especificaÃ§Ãµes e preÃ§o sÃ£o obrigatÃ³rios'
+            }
+          })
+        };
+      }
+
+      // Criar produto
+      const newProduct = {
+        ownerId: auth.cognitoSub,
+        name: name.trim(),
+        specs: specs.trim(),
+        images: Array.isArray(images) ? images : [],
+        priceBRL: parseFloat(priceBRL),
+        status: 'active',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+
+      const result = await db.collection('products').insertOne(newProduct);
+
+      // Criar Ã­ndices se nÃ£o existirem (noop for PoC adapter)
+      try {
+        await db.collection('products').createIndex({ ownerId: 1 });
+        await db.collection('products').createIndex({ name: 'text', specs: 'text' });
+      } catch (e) {
+        // ignore index errors on PoC
+      }
+
+      return {
+        statusCode: 201,
+        headers: corsHeaders,
+        body: JSON.stringify({
+          message: 'Produto criado com sucesso',
+          product: {
+            id: result.insertedId,
+            ...newProduct
+          }
+        })
+      };
+    }
+
+    // PUT /products/:id - Atualizar produto
+    if (event.httpMethod === 'PUT') {
+      const auth = verifyAuth(event);
+      if (auth.error) {
+        return {
+          statusCode: 401,
+          headers: corsHeaders,
+          body: JSON.stringify({
+            error: { code: auth.error, message: auth.message }
+          })
+        };
+      }
+
+      // Extrair ID da URL
+      const pathParts = event.path.split('/');
+      const id = pathParts[pathParts.length - 1];
+
+      if (!ObjectId.isValid(id)) {
+        return {
+          statusCode: 400,
+          headers: corsHeaders,
+          body: JSON.stringify({
+            error: { code: 'INVALID_ID', message: 'ID invÃ¡lido' }
+          })
+        };
+      }
+
+      // Verificar se o produto existe e pertence ao usuÃ¡rio
+      const existingProduct = await db.collection('products').findOne({
+        _id: new ObjectId(id),
+        ownerId: auth.cognitoSub
+      });
+
+      if (!existingProduct) {
+        return {
+          statusCode: 404,
+          headers: corsHeaders,
+          body: JSON.stringify({
+            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto nÃ£o encontrado' }
+          })
+        };
+      }
+
+      // Parse do body
+      let requestBody;
+      try {
+        requestBody = JSON.parse(event.body);
+      } catch (error) {
+        return {
+          statusCode: 400,
+          headers: corsHeaders,
+          body: JSON.stringify({
+            error: { code: 'INVALID_JSON', message: 'JSON invÃ¡lido' }
+          })
+        };
+      }
+
+      // Preparar dados para atualizaÃ§Ã£o
+      const updateData = {
+        updatedAt: new Date()
+      };
+
+      if (requestBody.name) {
+        updateData.name = requestBody.name.trim();
+      }
+      if (requestBody.specs) {
+        updateData.specs = requestBody.specs.trim();
+      }
+      if (requestBody.images) {
+        updateData.images = Array.isArray(requestBody.images) ? requestBody.images : [];
+      }
+      if (requestBody.priceBRL) {
+        updateData.priceBRL = parseFloat(requestBody.priceBRL);
+      }
+      if (requestBody.status) {
+        updateData.status = requestBody.status;
+      }
+
+      // Atualizar produto
+      const result = await db
+        .collection('products')
+        .updateOne({ _id: new ObjectId(id) }, { $set: updateData });
+
+      if (result.matchedCount === 0) {
+        return {
+          statusCode: 404,
+          headers: corsHeaders,
+          body: JSON.stringify({
+            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto nÃ£o encontrado' }
+          })
+        };
+      }
+
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({
+          message: 'Produto atualizado com sucesso'
+        })
+      };
+    }
+
+    // DELETE /products/:id - Deletar produto
+    if (event.httpMethod === 'DELETE') {
+      const auth = verifyAuth(event);
+      if (auth.error) {
+        return {
+          statusCode: 401,
+          headers: corsHeaders,
+          body: JSON.stringify({
+            error: { code: auth.error, message: auth.message }
+          })
+        };
+      }
+
+      // Extrair ID da URL
+      const pathParts = event.path.split('/');
+      const id = pathParts[pathParts.length - 1];
+
+      if (!ObjectId.isValid(id)) {
+        return {
+          statusCode: 400,
+          headers: corsHeaders,
+          body: JSON.stringify({
+            error: { code: 'INVALID_ID', message: 'ID invÃ¡lido' }
+          })
+        };
+      }
+
+      // Verificar se o produto existe e pertence ao usuÃ¡rio
+      const existingProduct = await db.collection('products').findOne({
+        _id: new ObjectId(id),
+        ownerId: auth.cognitoSub
+      });
+
+      if (!existingProduct) {
+        return {
+          statusCode: 404,
+          headers: corsHeaders,
+          body: JSON.stringify({
+            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto nÃ£o encontrado' }
+          })
+        };
+      }
+
+      // Deletar produto
+      const result = await db.collection('products').deleteOne({
+        _id: new ObjectId(id)
+      });
+
+      if (result.deletedCount === 0) {
+        return {
+          statusCode: 404,
+          headers: corsHeaders,
+          body: JSON.stringify({
+            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto nÃ£o encontrado' }
+          })
+        };
+      }
+
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({
+          message: 'Produto deletado com sucesso'
+        })
+      };
+    }
+
+    // MÃ©todo nÃ£o suportado
+    return {
+      statusCode: 405,
+      headers: corsHeaders,
+      body: JSON.stringify({
+        error: { code: 'METHOD_NOT_ALLOWED', message: 'MÃ©todo nÃ£o permitido' }
+      })
+    };
+  } catch (error) {
+    if (process.env.NODE_ENV !== 'production') {
+      logger.error('Erro no gerenciamento de produtos:', error);
+    }
+    return {
+      statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Origin': process.env.AMPLIFY_DOMAIN || '*',
+        'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+        'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
+        'Access-Control-Allow-Credentials': true
+      },
+      body: JSON.stringify({
+        error: { code: 'INTERNAL_ERROR', message: 'Erro interno do servidor' }
+      })
+    };
+  } finally {
+    if (mongoClient) {
+      await mongoClient.close();
+    }
+  }
+};

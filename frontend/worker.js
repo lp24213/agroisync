@@ -3,6 +3,18 @@ export default {
     try {
       const url = new URL(request.url);
       
+      // Proxy API requests to backend
+      if (url.pathname.startsWith('/api')) {
+        const backendUrl = new URL(url.pathname + url.search, 'https://agroisync-backend.contato-00d.workers.dev');
+        const backendRequest = new Request(backendUrl, {
+          method: request.method,
+          headers: request.headers,
+          body: request.method !== 'GET' ? request.body : undefined,
+          cf: { mirage: false } // Disable Cloudflare Mirage
+        });
+        return fetch(backendRequest);
+      }
+      
       // Serve static assets from build directory
       const response = await env.ASSETS.fetch(request);
       

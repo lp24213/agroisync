@@ -1,0 +1,25 @@
+{
+  "name": "agroisync",
+  "production_branch": "main",
+  "domains": [
+    "agroisync.com"
+  ],
+  "build_config": {
+    "build_command": "npm run build",
+    "build_directory": "build",
+    "root_directory": "frontend"
+  },
+  "deployment_configs": {
+    "production": {
+      "env_vars": {
+        "NODE_ENV": "production"
+      },
+      "domain_config": {
+        "agroisync.com": {
+          "zone_id": "*",
+          "custom_domain": true
+        }
+      }
+    }
+  }
+}

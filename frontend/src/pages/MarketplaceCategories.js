@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Sprout,
@@ -14,13 +14,77 @@ import {
 } from 'lucide-react';
 
 const MarketplaceCategories = () => {
+  const [stats, setStats] = useState({
+    totalProducts: 0,
+    totalSellers: 0,
+    totalStates: 0
+  });
+  const [categoryCounts, setCategoryCounts] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      // Buscar produtos do backend
+      const productsRes = await fetch('https://agroisync-backend.contato-00d.workers.dev/api/products?limit=1000')
+        .then(r => r.json())
+        .then(d => d.data?.products || [])
+        .catch(err => {
+          console.error('❌ Erro carregando produtos:', err);
+          return [];
+        });
+
+      // Contar produtos por categoria
+      const counts = {
+        insumos: 0,
+        maquinas: 0,
+        pecuaria: 0,
+        servicos: 0
+      };
+
+      productsRes.forEach(product => {
+        const cat = product.category?.toLowerCase() || '';
+        if (cat.includes('insumo') || cat.includes('fertilizante') || cat.includes('defensivo') || cat.includes('semente')) {
+          counts.insumos++;
+        } else if (cat.includes('maquina') || cat.includes('trator') || cat.includes('equipamento') || cat.includes('implemento')) {
+          counts.maquinas++;
+        } else if (cat.includes('pecuaria') || cat.includes('racao') || cat.includes('veterinario') || cat.includes('genetica')) {
+          counts.pecuaria++;
+        } else if (cat.includes('servico') || cat.includes('consultoria') || cat.includes('manutencao')) {
+          counts.servicos++;
+        }
+      });
+
+      // Contar vendedores únicos
+      const uniqueSellers = new Set(productsRes.map(p => p.seller_id || p.user_id).filter(Boolean));
+      
+      // Contar estados únicos
+      const uniqueStates = new Set(productsRes.map(p => p.origin || p.state).filter(Boolean));
+
+      setCategoryCounts(counts);
+      setStats({
+        totalProducts: productsRes.length,
+        totalSellers: uniqueSellers.size,
+        totalStates: uniqueStates.size
+      });
+    } catch (error) {
+      console.error('❌ Erro geral loadData:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const categories = [
     {
       key: 'insumos',
       name: 'Insumos Agrícolas',
       description: 'Fertilizantes, defensivos agrícolas, sementes, substratos e insumos para cultivo',
       icon: Sprout,
-      count: 0, // Dados reais virão do backend
+      count: categoryCounts.insumos || 0,
       subcategories: ['Fertilizantes', 'Defensivos', 'Sementes', 'Substratos', 'Nutrientes'],
       featured: true,
       color: 'green'
@@ -30,7 +94,7 @@ const MarketplaceCategories = () => {
       name: 'Máquinas e Equipamentos',
       description: 'Tratores, colheitadeiras, implementos agrícolas, irrigação e automação',
       icon: Tractor,
-      count: 0, // Dados reais virão do backend
+      count: categoryCounts.maquinas || 0,
       subcategories: ['Tratores', 'Colheitadeiras', 'Implementos', 'Irrigação', 'Peças'],
       featured: true,
       color: 'blue'
@@ -40,7 +104,7 @@ const MarketplaceCategories = () => {
       name: 'Pecuária e Genética',
       description: 'Rações, medicamentos veterinários, genética animal e equipamentos pecuários',
       icon: Beef,
-      count: 0, // Dados reais virão do backend
+      count: categoryCounts.pecuaria || 0,
       subcategories: ['Rações', 'Medicamentos', 'Genética', 'Equipamentos', 'Suplementos'],
       featured: true,
       color: 'orange'
@@ -50,7 +114,7 @@ const MarketplaceCategories = () => {
       name: 'Serviços Agrícolas',
       description: 'Consultoria, manutenção, assistência técnica e serviços especializados',
       icon: Wrench,
-      count: 0, // Dados reais virão do backend
+      count: categoryCounts.servicos || 0,
       subcategories: ['Consultoria', 'Manutenção', 'Análises', 'Capacitação', 'Assessoria'],
       featured: false,
       color: 'purple'
@@ -85,18 +149,24 @@ const MarketplaceCategories = () => {
             </p>
           </div>
 
-          {/* Stats - Dados reais virão do backend */}
+          {/* Stats - Dados reais do backend */}
           <div className='mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4'>
             <div className='text-center'>
-              <div className='text-2xl font-bold text-green-600'>—</div>
+              <div className='text-2xl font-bold text-green-600'>
+                {loading ? '...' : stats.totalProducts.toLocaleString()}
+              </div>
               <div className='text-sm text-gray-600'>Produtos Ativos</div>
             </div>
             <div className='text-center'>
-              <div className='text-2xl font-bold text-blue-600'>—</div>
+              <div className='text-2xl font-bold text-blue-600'>
+                {loading ? '...' : stats.totalSellers.toLocaleString()}
+              </div>
               <div className='text-sm text-gray-600'>Vendedores</div>
             </div>
             <div className='text-center'>
-              <div className='text-2xl font-bold text-orange-600'>—</div>
+              <div className='text-2xl font-bold text-orange-600'>
+                {loading ? '...' : stats.totalStates.toLocaleString()}
+              </div>
               <div className='text-sm text-gray-600'>Estados</div>
             </div>
             <div className='text-center'>

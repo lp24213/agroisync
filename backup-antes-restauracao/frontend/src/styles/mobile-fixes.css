@@ -1,0 +1,489 @@
+/* Mobile Fixes for Agroisync */
+
+/* Fix for Turnstile on mobile */
+.cf-turnstile {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  transform: scale(0.9) !important;
+  transform-origin: center !important;
+}
+
+.cf-turnstile iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 200px !important;
+  height: 65px !important;
+}
+
+/* Fix for Turnstile container */
+@media (max-width: 768px) {
+  .cf-turnstile {
+    transform: scale(0.8) !important;
+    margin: 0.5rem 0 !important;
+  }
+}
+
+/* Fix for images on mobile */
+@media (max-width: 768px) {
+  .product-image img,
+  .hero-image,
+  .background-image {
+    background-attachment: scroll !important;
+    background-size: cover !important;
+    background-position: center !important;
+  }
+
+  /* Fix for background images that don't show on mobile */
+  .hero-section {
+    background-image: url('https://images.unsplash.com/photo-1600747476236-76579658b1b1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Q0FNUE8lMjBERSUyMFNPSkF8ZW58MHx8MHx8fDA%3D') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+  }
+}
+
+/* Fix for error borders on mobile - only for form errors */
+@media (max-width: 768px) {
+  /* Only fix form error borders, keep price indicators normal */
+  .border-red-300,
+  .border-red-400,
+  .border-red-500 {
+    border-color: #fca5a5 !important;
+  }
+
+  /* Keep price change indicators red for visibility */
+  .text-red-500,
+  .text-red-600 {
+    color: #ef4444 !important;
+  }
+
+  /* Fix for footer specific red lines */
+  footer * {
+    border-color: #e5e7eb !important;
+  }
+
+  /* Fix for error states that might show red */
+  .error,
+  .invalid,
+  .danger {
+    border-color: #fca5a5 !important;
+    color: #dc2626 !important;
+    background-color: #fef2f2 !important;
+  }
+
+  /* Normalize error utilities: keep semantics but prevent layout breakage */
+  .border-red-300,
+  .border-red-400,
+  .border-red-500 {
+    border-color: #fca5a5 !important;
+  }
+
+  .text-red-500,
+  .text-red-600 {
+    color: #ef4444 !important;
+  }
+
+  .error,
+  .invalid,
+  .danger {
+    border-color: #fca5a5 !important;
+    color: #dc2626 !important;
+    background-color: #fef2f2 !important;
+  }
+
+  /* Neutralizar somente utilitários de fundo que criam blocos vermelhos que quebram o layout */
+  .bg-red-100,
+  .bg-red-200,
+  .bg-red-300,
+  .bg-red-400 {
+    background-color: transparent !important;
+  }
+
+  /* Evitar que rings do Tailwind provoquem mudanças visuais grossas */
+  [class*="ring-red"] {
+    --tw-ring-color: transparent !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Fix for form elements on mobile */
+@media (max-width: 768px) {
+  input,
+  textarea,
+  select {
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+    padding: 12px !important;
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    border-color: #10b981 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  /* Fix for iOS input zoom */
+  input[type='text'],
+  input[type='email'],
+  input[type='password'],
+  input[type='tel'],
+  input[type='number'] {
+    font-size: 16px !important;
+    transform: translateZ(0) !important;
+  }
+}
+
+/* Fix for buttons on mobile */
+@media (max-width: 768px) {
+  button,
+  .btn {
+    min-height: 44px !important; /* iOS touch target */
+    min-width: 44px !important;
+    padding: 12px 16px !important;
+    font-size: 16px !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+  }
+
+  /* Fix for button active states */
+  button:active,
+  .btn:active {
+    transform: scale(0.98) !important;
+    transition: transform 0.1s ease !important;
+  }
+}
+
+/* Fix for text on mobile */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+  }
+
+  h1 {
+    font-size: 2rem !important;
+  }
+
+  h2 {
+    font-size: 1.5rem !important;
+  }
+
+  h3 {
+    font-size: 1.25rem !important;
+  }
+}
+
+/* Fix for containers on mobile */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .px-4 {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .px-6 {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+/* Fix for grid layouts on mobile */
+@media (max-width: 768px) {
+  .grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .grid-cols-3 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Fix for flex layouts on mobile */
+@media (max-width: 768px) {
+  .flex-row {
+    flex-direction: column !important;
+  }
+
+  .space-x-4 > * + * {
+    margin-left: 0 !important;
+    margin-top: 1rem !important;
+  }
+
+  .space-x-6 > * + * {
+    margin-left: 0 !important;
+    margin-top: 1.5rem !important;
+  }
+}
+
+/* Fix for shadows and effects on mobile */
+@media (max-width: 768px) {
+  .shadow-lg,
+  .shadow-xl {
+    box-shadow:
+      0 1px 3px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+  }
+}
+
+/* Fix for animations on mobile */
+@media (max-width: 768px) {
+  .framer-motion,
+  [data-framer-name],
+  .motion-div,
+  .animate-fast {
+    animation-duration: 0.6s !important;
+    transition-duration: 0.6s !important;
+  }
+}
+
+/* Fix for overflow on mobile */
+@media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .overflow-hidden {
+    overflow: hidden !important;
+  }
+
+  /* Fix for scroll issues */
+  html {
+    -webkit-overflow-scrolling: touch !important;
+    scroll-behavior: smooth !important;
+  }
+
+  /* Fix for iOS bounce scroll */
+  body {
+    overscroll-behavior: none !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+}
+
+/* Fix for z-index issues on mobile */
+@media (max-width: 768px) {
+  .z-50 {
+    z-index: 50 !important;
+  }
+
+  .z-40 {
+    z-index: 40 !important;
+  }
+
+  .z-30 {
+    z-index: 30 !important;
+  }
+}
+
+/* Fix for touch events on mobile */
+@media (max-width: 768px) {
+  * {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+  }
+
+  /* Fix for long press issues */
+  a,
+  button,
+  input,
+  textarea,
+  select {
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+  }
+
+  /* Allow text selection in inputs */
+  input,
+  textarea {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+  }
+}
+
+/* Fix for keyboard issues on mobile */
+@media (max-width: 768px) {
+  /* Prevent zoom on input focus */
+  input[type='text'],
+  input[type='email'],
+  input[type='password'],
+  input[type='tel'],
+  input[type='number'],
+  textarea,
+  select {
+    font-size: 16px !important;
+    transform: translateZ(0) !important;
+  }
+
+  /* Fix for viewport height issues */
+  .min-h-screen {
+    min-height: 100vh !important;
+    min-height: -webkit-fill-available !important;
+  }
+
+  /* Fix for safe area insets */
+  .safe-area-inset {
+    padding-top: env(safe-area-inset-top) !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+    padding-left: env(safe-area-inset-left) !important;
+    padding-right: env(safe-area-inset-right) !important;
+  }
+}
+
+/* MOBILE SPECIFIC: Fix for animations and footer speed */
+@media (max-width: 768px) {
+  /* FOOTER: CORRIGIR velocidade das transições (não desabilitar) */
+  footer .transition-colors {
+    transition: color 0.8s ease !important;
+  }
+  
+  footer a {
+    transition: all 0.6s ease !important;
+  }
+
+  /* GRAINS: CORRIGIR bordas vermelhas mantendo funcionalidade */
+  .text-red-500,
+  .text-red-600 {
+    color: #ef4444 !important;
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  /* CHATBOT: CORRIGIR velocidade das animações Framer Motion */
+  [data-framer-name] {
+    transition: all 0.6s ease !important;
+  }
+
+  /* Force disable ALL fast animations on footer */
+  footer [style*="animation"],
+  footer [style*="transform"],
+  footer [style*="transition"] {
+    animation: none !important;
+    transform: none !important;
+    transition: all 2s ease-out !important;
+  }
+
+  /* ULTRA AGRESSIVO: Desacelerar TODAS as animações do Framer Motion no footer */
+  footer [data-framer-name],
+  footer .framer-motion,
+  footer [data-framer-appear-id],
+  footer [data-projection-id] {
+    animation: none !important;
+    transform: none !important;
+    transition: all 3s ease-out !important;
+    will-change: auto !important;
+  }
+
+  /* Disable motion completely for footer on mobile */
+  footer * {
+    animation-play-state: paused !important;
+    animation-duration: 5s !important;
+    transition-duration: 3s !important;
+  }
+
+  /* ESPECÍFICO: Corrigir transition-colors no footer */
+  footer .transition-colors,
+  footer [class*="transition"] {
+    transition: none !important;
+    transition-duration: 0s !important;
+  }
+
+  /* ESPECÍFICO: GrainsChart - remover bordas vermelhas do span de variação */
+  .grains-chart span[class*="text-red"],
+  [class*="grains"] span[class*="text-red"],
+  .recharts-wrapper span[class*="text-red"] {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* ESPECÍFICO: AIChatbot - desacelerar animações Framer Motion */
+  [class*="messaging"] .motion-div,
+  [class*="chat"] .motion-div,
+  [data-framer-appear-id] {
+    animation-duration: 2s !important;
+    transition-duration: 2s !important;
+  }
+
+  /* Force override any fast animations */
+  [style*="animation-duration"],
+  [style*="transition-duration"] {
+    animation-duration: 1s !important;
+    transition-duration: 1s !important;
+  }
+}
+
+/* MOBILE ULTRA DRÁSTICO: Aplicar EXATAMENTE as mesmas regras que funcionaram no desktop */
+@media (max-width: 768px) {
+  /* Remove QUALQUER validação de formulário que adicione bordas vermelhas */
+  input:invalid,
+  textarea:invalid,
+  select:invalid,
+  .invalid,
+  .error,
+  .is-invalid,
+  [aria-invalid="true"] {
+    border-color: #d1d5db !important;
+    outline-color: #d1d5db !important;
+    box-shadow: none !important;
+  }
+
+  /* Remove estilos de validação HTML5 */
+  input:invalid,
+  input:out-of-range,
+  input:required:invalid {
+    border-color: #d1d5db !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Handling of inline red styles: only target very common inline patterns to avoid breaking custom inline styles */
+  *[style*="border-color: red"],
+  *[style*="border-color:#ff0000"],
+  *[style*="outline-color: red"] {
+    border-color: #e5e7eb !important;
+    outline-color: #e5e7eb !important;
+  }
+
+  /* Evitar overrides universais em pseudo-elementos para não quebrar ícones/decorações */
+  /* Se necessário, adicionar regras específicas aqui */
+
+  /* Normalizar bordas em componentes conhecidos sem usar seletores universais */
+  .StockTicker,
+  .GrainsChart,
+  .Header,
+  .Footer {
+    border-color: #e5e7eb !important;
+    outline-color: #e5e7eb !important;
+    box-shadow: none !important;
+  }
+}

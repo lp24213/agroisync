@@ -79,10 +79,9 @@ const AgroisyncLogin = () => {
       return;
     }
 
-    // Permitir bypass do Turnstile em desenvolvimento
+    // Turnstile opcional: backend aceita sem token. Só avisar se não tiver.
     if (!turnstileToken && process.env.NODE_ENV === 'production') {
-      setErrors({ general: 'Por favor, complete a verificação "Não sou um robô"' });
-      return;
+      console.warn('Login sem token Turnstile (widget pode não ter carregado)');
     }
 
     setIsLoading(true);
@@ -101,9 +100,9 @@ const AgroisyncLogin = () => {
       });
 
       if (res.ok) {
-        const payload = await res.json();
-
-        const envelope = payload && payload.data ? payload.data : {};
+        const payload = await res.json().catch(() => ({}));
+        // Backend retorna { success: true, data: { token, user } }; aceitar também { token, user } na raiz
+        const envelope = (payload && payload.data) ? payload.data : payload || {};
         const token = envelope.token;
         const user = envelope.user;
 
@@ -183,11 +182,19 @@ const AgroisyncLogin = () => {
             }
           }
         } else {
-          setErrors({ general: payload.message || 'Credenciais inválidas' });
+          setErrors({
+            general:
+              (payload && (payload.error || payload.message)) || 'Credenciais inválidas'
+          });
         }
       } else {
-        const errorData = await res.json();
-        setErrors({ general: errorData.message || 'Credenciais inválidas' });
+        const errorData = await res.json().catch(() => ({}));
+        setErrors({
+          general:
+            errorData.error ||
+            errorData.message ||
+            (res.status === 401 ? 'Credenciais inválidas' : 'Erro ao fazer login')
+        });
       }
     } catch (error) {
       // Melhorar tratamento de erro com mais detalhes
@@ -575,8 +582,8 @@ const AgroisyncLogin = () => {
                     justifyContent: 'center',
                     gap: '0.5rem'
                   }}
-                  whileHover={!isLoading && turnstileToken ? { scale: 1.02 } : {}}
-                  whileTap={!isLoading && turnstileToken ? { scale: 0.98 } : {}}
+                  whileHover={!isLoading ? { scale: 1.02 } : {}}
+                  whileTap={!isLoading ? { scale: 0.98 } : {}}
                 >
                   {isLoading ? (
                     <>

@@ -343,25 +343,25 @@ const GrainInfo = () => {
       </div>
       <style jsx>{`
         .agro-grains-section {
-          padding: 2rem;
+          padding: 0.75rem;
           background: #ffffff;
-          border-radius: 12px;
+          border-radius: 10px;
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-          margin: 2rem 0;
+          margin: 0;
         }
 
         .agro-section-title {
-          font-size: 2rem;
+          font-size: 0.85rem;
           font-weight: 700;
           color: #2a7f4f;
           text-align: center;
-          margin-bottom: 2rem;
+          margin-bottom: 0.75rem;
         }
 
         .agro-grains-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 2rem;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 0.75rem;
         }
 
         .agro-grain-card {
@@ -377,7 +377,7 @@ const GrainInfo = () => {
         }
 
         .agro-grain-image {
-          height: 200px;
+          height: 100px;
           overflow: hidden;
         }
 
@@ -393,21 +393,21 @@ const GrainInfo = () => {
         }
 
         .agro-grain-title {
-          font-size: 1.5rem;
+          font-size: 0.85rem;
           font-weight: 600;
           color: #2a7f4f;
-          padding: 1rem;
+          padding: 0.5rem;
           text-align: center;
         }
 
         .agro-grain-info {
-          padding: 1rem;
+          padding: 0.5rem;
         }
 
         .agro-grain-info p {
-          margin-bottom: 0.5rem;
-          font-size: 0.9rem;
-          line-height: 1.4;
+          margin-bottom: 0.25rem;
+          font-size: 0.7rem;
+          line-height: 1.25;
         }
 
         .agro-grain-info strong {

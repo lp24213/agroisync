@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet-async';
 import { 
   Check, Star, Zap, Shield, Users, CreditCard, Gift, 
   Brain, Globe, MessageCircle, Award, Target, BarChart3,
@@ -135,8 +136,8 @@ const AgroisyncPlans = () => {
         t('plans.free.feature5') || '✅ Chat ilimitado',
         t('plans.free.feature6') || '✅ Dashboard completo com analytics',
         t('plans.free.feature7') || '✅ Suporte via E-mail',
-        t('plans.free.feature8') || '💰 Pós-pago (sem comissões, sem risco)',
-        t('plans.free.feature9') || '🎁 API básica inclusa'
+        t('plans.free.feature8') || 'Pós-pago (sem comissões, sem risco)',
+        t('plans.free.feature9') || 'API básica inclusa'
       ],
       noDiscount: true,
       popular: false,
@@ -166,8 +167,8 @@ const AgroisyncPlans = () => {
         t('plans.professional.feature9') || '✅ Selo "Verificado ✓"',
         t('plans.professional.feature10') || '✅ API completa sem limites',
         t('plans.professional.feature11') || '✅ Suporte prioritário (resposta até 1h)',
-        t('plans.professional.feature12') || '💰 Plano pós-pago, sem comissão',
-        t('plans.professional.feature13') || '🎁 Gestão automatizada com IA'
+        t('plans.professional.feature12') || 'Plano pós-pago, sem comissão',
+        t('plans.professional.feature13') || 'Gestão automatizada com IA'
       ],
       popular: true,
       color: 'blue',
@@ -197,7 +198,7 @@ const AgroisyncPlans = () => {
         t('plans.enterprise.feature10') || '✅ Dashboard corporativo customizado',
         t('plans.enterprise.feature11') || '✅ SLA 99,9% garantido',
         t('plans.enterprise.feature12') || '✅ Suporte VIP 24/7',
-        t('plans.enterprise.feature13') || '💰 Pós-pago e sem comissão sobre transações'
+        t('plans.enterprise.feature13') || 'Pós-pago e sem comissão sobre transações'
       ],
       popular: false,
       color: 'purple',
@@ -335,7 +336,16 @@ const AgroisyncPlans = () => {
   };
 
   return (
-    <div className='agro-plans-container' data-page='planos'>
+    <>
+      <Helmet>
+        <title>Planos e Preços | AGROISYNC</title>
+        <meta name="description" content="Escolha o plano ideal para seu agronegócio. Planos gratuitos e premium com recursos avançados de marketplace, fretes e IA." />
+        <meta name="keywords" content="planos agronegócio, preços marketplace, planos fretes, assinatura agronegócio" />
+        <meta property="og:title" content="Planos e Preços | AGROISYNC" />
+        <meta property="og:description" content="Planos flexíveis para produtores, transportadores e compradores. Comece grátis!" />
+        <link rel="canonical" href="https://agroisync.com/planos" />
+      </Helmet>
+      <div className='agro-plans-container' data-page='planos'>
       
       {/* AVISO: PLATAFORMA INTERMEDIADORA */}
       <div style={{
@@ -382,7 +392,7 @@ const AgroisyncPlans = () => {
             }}
           >
             <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#a855f7' }}>
-              💎 PLANOS COM IA AVANÇADA
+              PLANOS COM IA AVANÇADA
             </span>
           </motion.div>
 
@@ -418,7 +428,7 @@ const AgroisyncPlans = () => {
             style={{ marginBottom: '2rem', display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
-              <span style={{ fontSize: '20px' }}>🎁</span>
+              <span style={{ fontSize: '20px' }}></span>
               <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>{t('plans.freePlanAvailable')}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
@@ -426,7 +436,7 @@ const AgroisyncPlans = () => {
               <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>{t('plans.aiIncludedAll')}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 0, 0, 0.4)', padding: '10px 18px', borderRadius: '30px', backdropFilter: 'blur(10px)' }}>
-              <span style={{ fontSize: '20px' }}>💰</span>
+              <span style={{ fontSize: '20px' }}></span>
               <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>0% Comissão</span>
             </div>
           </motion.div>
@@ -454,7 +464,7 @@ const AgroisyncPlans = () => {
               onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
               onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
             >
-              🚀 {t('plans.viewPlansBelow')}
+              {t('plans.viewPlansBelow')}
             </button>
             <button 
               onClick={() => window.location.href = 'https://wa.me/5565999999999'}
@@ -771,7 +781,7 @@ const AgroisyncPlans = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              🎯 LEADS & IMPULSIONAMENTO DE ANÚNCIOS
+              LEADS & IMPULSIONAMENTO DE ANÚNCIOS
             </motion.h2>
             <motion.p 
               className='text-xl text-gray-700'
@@ -780,7 +790,7 @@ const AgroisyncPlans = () => {
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              💡 Serviço adicional separado dos planos principais.<br/>
+              Serviço adicional separado dos planos principais.<br/>
               Ideal para produtores, transportadores e empresas que desejam impulsionar visibilidade e vendas dentro da plataforma.
             </motion.p>
           </div>
@@ -892,7 +902,7 @@ const AgroisyncPlans = () => {
                 ))}
               </div>
               <div className='rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 p-4 text-white'>
-                <h4 className='mb-2 font-bold'>💡 Seus anúncios ganham destaque automático:</h4>
+                <h4 className='mb-2 font-bold'>Seus anúncios ganham destaque automático:</h4>
                 <ul className='space-y-1 text-sm'>
                   <li>✓ Posição premium nos resultados de busca</li>
                   <li>✓ Destaque no topo das categorias</li>
@@ -914,13 +924,13 @@ const AgroisyncPlans = () => {
               onClick={() => navigate('/contato?service=leads')}
               className='rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl'
             >
-              🚀 Impulsione seus anúncios e receba leads qualificados agora!
+              Impulsione seus anúncios e receba leads qualificados agora!
             </button>
             <button
               onClick={() => navigate('/contato?service=leads')}
               className='rounded-xl bg-gradient-to-r from-green-600 to-green-700 px-6 py-4 font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl'
             >
-              📈 Capte novos clientes todos os dias com o Agroisync Leads.
+              Capte novos clientes todos os dias com o Agroisync Leads.
             </button>
             <button
               onClick={() => navigate('/contato?service=boost')}
@@ -1047,6 +1057,7 @@ const AgroisyncPlans = () => {
         <CryptoHash pageName='plans' style={{ display: 'none' }} />
       </div>
     </div>
+    </>
   );
 };
 

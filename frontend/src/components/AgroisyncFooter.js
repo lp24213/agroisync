@@ -34,7 +34,7 @@ const AgroisyncFooter = () => {
         { label: t('footer.weatherSupplies'), path: '/clima' },
         { label: '🔑 API', path: '/api' },
         { label: t('footer.store'), path: '/loja' },
-        { label: '📧 Contato', path: '/contact' }
+        { label: 'Contato', path: '/contact' }
       ]
     },
     {
@@ -49,7 +49,7 @@ const AgroisyncFooter = () => {
   ];
 
   return (
-    <footer className='bg-gray-50'>
+    <footer style={{ background: 'var(--bloomfi-bg-secondary)' }}>
       <div className='mx-auto max-w-7xl px-4 py-1'>
         {/* Main Footer Content */}
   <div className='mb-1 grid grid-cols-1 gap-2 md:grid-cols-4'>
@@ -80,7 +80,7 @@ const AgroisyncFooter = () => {
               <ul className='space-y-1'>
                 {section.links.map((link, linkIndex) => (
                   <li key={linkIndex}>
-                    <Link to={{ pathname: link.path, search: currentSearch }} className='text-sm text-gray-600 transition-colors hover:text-green-600'>
+                    <Link to={{ pathname: link.path, search: currentSearch }} className='text-sm text-gray-600 transition-colors hover:text-purple-600'>
                       {link.label}
                     </Link>
                   </li>
@@ -110,13 +110,13 @@ const AgroisyncFooter = () => {
             © {currentYear} AGROISYNC - Sinop - MT - {t('footer.allRightsReserved')}
           </div>
           <div className='flex items-center gap-4'>
-            <Link to={{ pathname: '/api', search: currentSearch }} className='text-sm text-gray-600 transition-colors hover:text-green-600 font-semibold'>
+            <Link to={{ pathname: '/api', search: currentSearch }} className='text-sm text-gray-600 transition-colors hover:text-purple-600 font-semibold'>
               🔑 API
             </Link>
-            <a href='/termos-uso.html' target='_blank' rel='noopener noreferrer' className='text-sm text-gray-600 transition-colors hover:text-green-600'>
+            <a href='/termos-uso.html' target='_blank' rel='noopener noreferrer' className='text-sm text-gray-600 transition-colors hover:text-purple-600'>
               {t('footer.terms')}
             </a>
-            <a href='/politica-privacidade.html' target='_blank' rel='noopener noreferrer' className='text-sm text-gray-600 transition-colors hover:text-green-600'>
+            <a href='/politica-privacidade.html' target='_blank' rel='noopener noreferrer' className='text-sm text-gray-600 transition-colors hover:text-purple-600'>
               {t('footer.privacy')}
             </a>
             <a
@@ -132,7 +132,7 @@ const AgroisyncFooter = () => {
               href='https://wa.me/5566992362830'
               target='_blank'
               rel='noopener noreferrer'
-              className='text-gray-600 transition-colors hover:text-green-600'
+              className='text-gray-600 transition-colors hover:text-purple-600'
               aria-label='WhatsApp'
             >
               <MessageCircle className='h-5 w-5' />

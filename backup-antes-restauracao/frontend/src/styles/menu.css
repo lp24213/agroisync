@@ -1,0 +1,418 @@
+/* ===== AGROISYNC MENU STYLES - CONSOLIDADO ===== */
+
+/* PREMIUM HEADER CLEAN AGRONEGÓCIO */
+.premium-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.premium-header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 50px;
+  gap: 0;
+}
+
+.premium-header-logo-img {
+  height: 30px !important;
+  width: auto !important;
+  max-width: 150px !important;
+  object-fit: contain !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  margin: 0 !important;
+}
+
+.premium-header-menu {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin-left: 40px;
+  justify-content: flex-start;
+}
+
+.premium-header-link {
+  color: #2d3748;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  letter-spacing: -0.01em;
+}
+
+.premium-header-link:hover {
+  color: #38a169;
+  background: rgba(56, 161, 105, 0.1);
+}
+
+.premium-header-link.active {
+  background: rgba(56, 161, 105, 0.15);
+  color: #38a169;
+}
+
+.premium-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* LANGUAGE SELECTOR */
+.premium-language-selector {
+  position: relative;
+  z-index: 1002;
+}
+
+.premium-language-selector-desktop {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 1002 !important;
+  position: relative !important;
+}
+
+/* Language Selector Button Styles */
+.premium-language-selector-desktop button {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 6px 12px !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 6px !important;
+  background: #ffffff !important;
+  color: #333333 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  min-width: 50px !important;
+  height: 36px !important;
+}
+
+.premium-language-selector-desktop button:hover {
+  background: #f5f5f5 !important;
+  border-color: #2e7d32 !important;
+  color: #2e7d32 !important;
+}
+
+.premium-language-selector-desktop button:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2) !important;
+}
+
+.premium-language-dropdown {
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  background: white !important;
+  border: 1px solid rgba(46, 125, 50, 0.2) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  min-width: 160px !important;
+  z-index: 1002 !important;
+  margin-top: 8px !important;
+}
+
+.premium-lang-option {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  padding: 8px 16px !important;
+  border: none !important;
+  background: none !important;
+  cursor: pointer !important;
+  text-align: left !important;
+  font-size: 14px !important;
+  color: #333 !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.premium-lang-option:hover {
+  background: rgba(46, 125, 50, 0.1) !important;
+}
+
+/* MOBILE MENU */
+.premium-mobile-toggle {
+  display: none !important;
+  background: none !important;
+  border: none !important;
+  color: #2e7d32 !important;
+  cursor: pointer !important;
+  padding: 8px !important;
+  border-radius: 4px !important;
+  transition: all 0.3s ease !important;
+  z-index: 1003 !important;
+}
+
+.premium-mobile-menu {
+  position: fixed !important;
+  top: 70px !important;
+  left: 0 !important;
+  right: 0 !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+  border-bottom: 1px solid rgba(46, 125, 50, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  z-index: 1004 !important;
+  max-height: calc(100vh - 70px) !important;
+  overflow-y: auto !important;
+}
+
+.premium-mobile-content {
+  padding: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 24px !important;
+}
+
+.premium-mobile-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #333333;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 12px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.premium-mobile-link:hover,
+.premium-mobile-link.active {
+  color: #2e7d32;
+  background: rgba(46, 125, 50, 0.1);
+  transform: translateX(4px);
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 768px) {
+  .premium-header-menu {
+    display: none !important;
+  }
+
+  .premium-mobile-toggle {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .premium-header-container {
+    padding: 0 16px;
+  }
+
+  .premium-language-selector-desktop {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .premium-language-selector-desktop {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+  }
+
+  .premium-language-selector-desktop > div {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .premium-language-selector-desktop button {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    min-width: 35px !important;
+    height: 25px !important;
+    padding: 2px 6px !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-radius: 4px !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: #2d3748 !important;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    z-index: 1002 !important;
+  }
+}
+
+/* LANGUAGE SELECTOR FUTURISTA */
+.premium-language-selector-desktop,
+.premium-language-selector-desktop * {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.premium-language-selector-desktop button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 50px !important;
+  height: 36px !important;
+  padding: 6px 12px !important;
+  border: 1px solid rgba(0, 255, 136, 0.5) !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(20px) !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+  z-index: 1002 !important;
+  box-shadow: 0 4px 20px rgba(0, 255, 136, 0.2) !important;
+}
+
+.premium-language-selector-desktop button:hover {
+  background: rgba(0, 255, 136, 0.2) !important;
+  border-color: #00ff88 !important;
+  color: #00ff88 !important;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.4) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* OVERLAY FIX */
+.main-content {
+  margin-top: 70px !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.modal,
+.agro-modal {
+  z-index: 10000 !important;
+}
+
+/* ===== HEADER TRANSPARENT INTEGRATION ===== */
+/* Sistema inteligente de header que se adapta ao contexto */
+
+/* HEADER BASE - Fundo sólido padrão */
+.navbar {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  border-bottom: none !important;
+  z-index: 9999;
+  padding: 15px 40px;
+  transition: all 0.3s ease;
+}
+
+/* LOGO - Estilo padrão para fundo claro */
+.navbar-logo-text {
+  color: #222 !important;
+  text-shadow: none;
+}
+
+.navbar-logo-tagline {
+  color: #666 !important;
+  text-shadow: none;
+}
+
+.navbar-logo-icon {
+  color: #1a531b !important;
+}
+
+/* MENU CENTRAL - Estilo padrão */
+.navbar-link {
+  color: #222 !important;
+  text-shadow: none;
+  transition: all 0.3s ease;
+}
+
+.navbar-link:hover {
+  color: #00aa88 !important;
+  background: rgba(0, 170, 136, 0.1) !important;
+  transform: translateY(-2px);
+}
+
+.navbar-link.active {
+  color: #00aa88 !important;
+  background: rgba(0, 170, 136, 0.1) !important;
+}
+
+/* HEADER SOBRE IMAGEM (HERO/BANNERS) */
+.agro-hero-section .navbar,
+.agro-banner-section .navbar {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.agro-hero-section .navbar-logo-text,
+.agro-banner-section .navbar-logo-text {
+  color: #fff !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.agro-hero-section .navbar-logo-tagline,
+.agro-banner-section .navbar-logo-tagline {
+  color: #00ffcc !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.agro-hero-section .navbar-logo-icon,
+.agro-banner-section .navbar-logo-icon {
+  color: #00ffcc !important;
+}
+
+.agro-hero-section .navbar-link,
+.agro-banner-section .navbar-link {
+  color: #fff !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.agro-hero-section .navbar-link:hover,
+.agro-banner-section .navbar-link:hover {
+  color: #00ffcc !important;
+  background: rgba(0, 255, 204, 0.1) !important;
+}
+
+.agro-hero-section .navbar-link.active,
+.agro-banner-section .navbar-link.active {
+  color: #00ffcc !important;
+  background: rgba(0, 255, 204, 0.1) !important;
+}
+
+/* Estados de scroll */
+.navbar-scrolled {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1) !important;
+  border-bottom: 1px solid rgba(0, 170, 136, 0.3) !important;
+}
+
+.agro-hero-section .navbar-scrolled,
+.agro-banner-section .navbar-scrolled {
+  background: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3) !important;
+  border-bottom: 1px solid rgba(0, 255, 204, 0.3) !important;
+}

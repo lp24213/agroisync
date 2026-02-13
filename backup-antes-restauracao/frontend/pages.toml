@@ -1,0 +1,20 @@
+# Cloudflare Pages Configuration - Frontend Only
+# This file configures Cloudflare Pages for the AgroSync frontend
+
+name = "agroisync"
+compatibility_date = "2025-09-20"
+
+# Pages configuration
+[pages]
+directory = "frontend/build"
+
+# Build configuration
+[build]
+command = "npm run build"
+cwd = "frontend"
+watch_dir = "src"
+
+# Environment variables
+[vars]
+NODE_VERSION = "18.20.4"
+REACT_APP_API_URL = "https://agroisync.com/api"

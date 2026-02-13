@@ -1,0 +1,506 @@
+/* ===== BLOOMFI INSPIRED THEME ===== */
+/* Estilo moderno e elegante baseado no BloomFi */
+
+:root {
+  /* Cores BloomFi - Paleta moderna */
+  --bloomfi-purple: #8B5CF6;
+  --bloomfi-purple-light: #A78BFA;
+  --bloomfi-purple-dark: #7C3AED;
+  --bloomfi-blue: #3B82F6;
+  --bloomfi-blue-light: #60A5FA;
+  --bloomfi-blue-dark: #2563EB;
+  --bloomfi-silver: #E5E7EB;
+  --bloomfi-silver-light: #F3F4F6;
+  --bloomfi-silver-dark: #D1D5DB;
+  
+  /* Gradientes BloomFi */
+  --bloomfi-gradient-primary: linear-gradient(135deg, #8B5CF6 0%, #3B82F6 50%, #60A5FA 100%);
+  --bloomfi-gradient-purple: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+  --bloomfi-gradient-blue: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+  --bloomfi-gradient-light: linear-gradient(180deg, #FFFFFF 0%, #F9FAFB 50%, #F3F4F6 100%);
+  --bloomfi-gradient-overlay: linear-gradient(180deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+  
+  /* Backgrounds */
+  --bloomfi-bg-primary: #FFFFFF;
+  --bloomfi-bg-secondary: #F9FAFB;
+  --bloomfi-bg-tertiary: #F3F4F6;
+  --bloomfi-bg-glass: rgba(255, 255, 255, 0.95);
+  --bloomfi-bg-glass-dark: rgba(255, 255, 255, 0.85);
+  
+  /* Textos */
+  --bloomfi-text-primary: #1F2937;
+  --bloomfi-text-secondary: #6B7280;
+  --bloomfi-text-tertiary: #9CA3AF;
+  --bloomfi-text-light: #FFFFFF;
+  
+  /* Sombras BloomFi */
+  --bloomfi-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --bloomfi-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --bloomfi-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --bloomfi-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --bloomfi-shadow-purple: 0 10px 30px rgba(139, 92, 246, 0.3);
+  --bloomfi-shadow-blue: 0 10px 30px rgba(59, 130, 246, 0.3);
+  
+  /* Bordas */
+  --bloomfi-border-radius-sm: 8px;
+  --bloomfi-border-radius-md: 12px;
+  --bloomfi-border-radius-lg: 16px;
+  --bloomfi-border-radius-xl: 24px;
+  --bloomfi-border-radius-2xl: 32px;
+  --bloomfi-border-color: rgba(0, 0, 0, 0.1);
+  --bloomfi-border-color-light: rgba(0, 0, 0, 0.05);
+  
+  /* Espaçamentos */
+  --bloomfi-spacing-xs: 0.5rem;
+  --bloomfi-spacing-sm: 1rem;
+  --bloomfi-spacing-md: 1.5rem;
+  --bloomfi-spacing-lg: 2rem;
+  --bloomfi-spacing-xl: 3rem;
+  --bloomfi-spacing-2xl: 4rem;
+  --bloomfi-spacing-3xl: 6rem;
+}
+
+/* ===== COMPONENTES BLOOMFI ===== */
+
+/* Cards BloomFi - Estilo moderno com glassmorphism */
+.bloomfi-card {
+  background: var(--bloomfi-bg-glass);
+  backdrop-filter: blur(20px);
+  border-radius: var(--bloomfi-border-radius-lg);
+  border: 1px solid var(--bloomfi-border-color-light);
+  box-shadow: var(--bloomfi-shadow-lg);
+  padding: var(--bloomfi-spacing-lg);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bloomfi-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--bloomfi-shadow-xl);
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+.bloomfi-card-purple {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%);
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+.bloomfi-card-blue {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%);
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.bloomfi-card-silver {
+  background: linear-gradient(135deg, rgba(229, 231, 235, 0.5) 0%, rgba(243, 244, 246, 0.3) 100%);
+  border-color: rgba(209, 213, 219, 0.3);
+}
+
+/* Botões BloomFi */
+.bloomfi-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: var(--bloomfi-border-radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.bloomfi-btn-primary {
+  background: var(--bloomfi-gradient-primary);
+  color: var(--bloomfi-text-light);
+  box-shadow: var(--bloomfi-shadow-purple);
+}
+
+.bloomfi-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--bloomfi-shadow-xl), var(--bloomfi-shadow-purple);
+}
+
+.bloomfi-btn-secondary {
+  background: var(--bloomfi-bg-glass);
+  backdrop-filter: blur(10px);
+  color: var(--bloomfi-text-primary);
+  border: 2px solid var(--bloomfi-border-color);
+}
+
+.bloomfi-btn-secondary:hover {
+  background: var(--bloomfi-bg-primary);
+  border-color: var(--bloomfi-purple);
+  color: var(--bloomfi-purple);
+}
+
+.bloomfi-btn-outline {
+  background: transparent;
+  color: var(--bloomfi-purple);
+  border: 2px solid var(--bloomfi-purple);
+}
+
+.bloomfi-btn-outline:hover {
+  background: var(--bloomfi-purple);
+  color: var(--bloomfi-text-light);
+}
+
+.bloomfi-btn-black {
+  background: #000000;
+  color: var(--bloomfi-text-light);
+  box-shadow: var(--bloomfi-shadow-lg);
+}
+
+.bloomfi-btn-black:hover {
+  background: #1F2937;
+  transform: translateY(-2px);
+  box-shadow: var(--bloomfi-shadow-xl);
+}
+
+/* Textos com gradiente */
+.bloomfi-gradient-text {
+  background: var(--bloomfi-gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800;
+}
+
+.bloomfi-gradient-text-purple {
+  background: var(--bloomfi-gradient-purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bloomfi-gradient-text-blue {
+  background: var(--bloomfi-gradient-blue);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hero Section BloomFi - Compacto e Moderno */
+.bloomfi-hero {
+  position: relative;
+  min-height: 35vh;
+  max-height: 45vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  overflow: hidden;
+}
+
+.bloomfi-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.1) 100%);
+  z-index: 1;
+}
+
+.bloomfi-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 1;
+}
+
+.bloomfi-hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 800px;
+  padding: 1rem 1.5rem;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.bloomfi-hero-title {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--bloomfi-text-light);
+  margin-bottom: 0.75rem;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.02em;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.bloomfi-hero-subtitle {
+  font-size: clamp(0.875rem, 1.2vw, 1rem);
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 1rem;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+  max-width: 650px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Feature Cards BloomFi */
+.bloomfi-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.25rem;
+  padding: 0;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.bloomfi-feature-card {
+  background: var(--bloomfi-bg-glass);
+  backdrop-filter: blur(20px);
+  border-radius: var(--bloomfi-border-radius-lg);
+  padding: 1.5rem;
+  border: 1px solid var(--bloomfi-border-color-light);
+  box-shadow: var(--bloomfi-shadow-md);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
+}
+
+.bloomfi-feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--bloomfi-shadow-xl);
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.bloomfi-feature-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bloomfi-gradient-primary);
+  border-radius: var(--bloomfi-border-radius-md);
+  font-size: 1.5rem;
+}
+
+.bloomfi-feature-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--bloomfi-text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.bloomfi-feature-description {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--bloomfi-text-secondary);
+}
+
+/* Section Titles */
+.bloomfi-section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: var(--bloomfi-text-primary);
+}
+
+.bloomfi-section-subtitle {
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  text-align: center;
+  color: var(--bloomfi-text-secondary);
+  max-width: 600px;
+  margin: 0 auto 3rem;
+  line-height: 1.6;
+}
+
+/* Stats Section */
+.bloomfi-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  padding: 3rem 2rem;
+}
+
+.bloomfi-stat-card {
+  text-align: center;
+  padding: 2rem;
+}
+
+.bloomfi-stat-number {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  background: var(--bloomfi-gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+.bloomfi-stat-label {
+  font-size: 1rem;
+  color: var(--bloomfi-text-secondary);
+  font-weight: 600;
+}
+
+/* Partners/Backers Section */
+.bloomfi-partners {
+  padding: 4rem 2rem;
+  background: var(--bloomfi-bg-secondary);
+  text-align: center;
+}
+
+.bloomfi-partners-title {
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  color: var(--bloomfi-text-secondary);
+  margin-bottom: 2rem;
+}
+
+.bloomfi-partners-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.bloomfi-partners-grid:hover {
+  opacity: 1;
+}
+
+.bloomfi-partner-logo {
+  height: 40px;
+  width: auto;
+  filter: grayscale(100%);
+  transition: filter 0.3s;
+}
+
+.bloomfi-partner-logo:hover {
+  filter: grayscale(0%);
+}
+
+/* Use Cases Section */
+.bloomfi-usecases {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3rem;
+  padding: 4rem 2rem;
+}
+
+.bloomfi-usecase-card {
+  background: var(--bloomfi-bg-glass);
+  backdrop-filter: blur(20px);
+  border-radius: var(--bloomfi-border-radius-xl);
+  padding: 2.5rem;
+  border: 1px solid var(--bloomfi-border-color-light);
+  box-shadow: var(--bloomfi-shadow-lg);
+}
+
+.bloomfi-usecase-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--bloomfi-text-primary);
+  margin-bottom: 1rem;
+}
+
+.bloomfi-usecase-description {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--bloomfi-text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.bloomfi-usecase-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--bloomfi-purple);
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.bloomfi-usecase-link:hover {
+  gap: 0.75rem;
+  color: var(--bloomfi-purple-dark);
+}
+
+/* Badge/Pill */
+.bloomfi-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: rgba(139, 92, 246, 0.1);
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  border-radius: 30px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--bloomfi-purple);
+  letter-spacing: 0.5px;
+}
+
+/* Container */
+.bloomfi-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.bloomfi-container-premium {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .bloomfi-feature-grid,
+  .bloomfi-usecases {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 2rem 1rem;
+  }
+  
+  .bloomfi-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 2rem 1rem;
+  }
+  
+  .bloomfi-hero-content {
+    padding: 1rem;
+  }
+  
+  .bloomfi-card,
+  .bloomfi-feature-card,
+  .bloomfi-usecase-card {
+    padding: 1.5rem;
+  }
+}
+
+/* Animações suaves */
+@keyframes bloomfi-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bloomfi-fade-in {
+  animation: bloomfi-fade-in 0.6s ease-out;
+}
+
+/* Overlay sutil para melhorar legibilidade */
+.bloomfi-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+

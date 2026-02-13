@@ -1,0 +1,20 @@
+{
+  "zone_id": "*",
+  "zone_name": "agroisync.com",
+  "records": [
+    {
+      "type": "A",
+      "name": "@",
+      "content": "76.76.21.21",
+      "ttl": 1,
+      "proxied": true
+    },
+    {
+      "type": "CNAME",
+      "name": "www",
+      "content": "agroisync.pages.dev",
+      "ttl": 1,
+      "proxied": true
+    }
+  ]
+}

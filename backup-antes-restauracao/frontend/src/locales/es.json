@@ -1,0 +1,64 @@
+{
+  "nav": {
+    "inicio": "Inicio",
+    "loja": "Tienda",
+    "agroconecta": "AgroConecta",
+    "marketplace": "Mercado",
+    "tecnologia": "Tecnología",
+    "parcerias": "Asociaciones",
+    "tagline": "Soluciones AgroTech",
+    "languages": "Idiomas",
+    "selectLanguage": "Seleccionar idioma",
+    "toggleTheme": "Cambiar tema",
+    "toggleMenu": "Alternar menú",
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar Sesión"
+  },
+  "home": {
+    "title": "Conectando el Agronegocio Brasileño con Tecnología",
+    "subtitle": "Plataforma completa para marketplace, logística, criptomonedas y analytics del agronegocio brasileño.",
+    "exploreMarketplace": "Explorar Marketplace",
+    "learnMore": "Saber Más"
+  },
+  "features": {
+    "title": "Nuestras Soluciones",
+    "subtitle": "Tecnología avanzada para revolucionar el agronegocio brasileño",
+    "marketplace": {
+      "title": "Marketplace Inteligente",
+      "description": "Conéctate con compradores y vendedores de commodities agrícolas en una plataforma segura y eficiente."
+    },
+    "agroconecta": {
+      "title": "AgroConecta",
+      "description": "Red de transporte y logística inteligente para optimizar tu cadena de suministros."
+    },
+    "crypto": {
+      "title": "Crypto Agro",
+      "description": "Tecnología blockchain para transacciones seguras y transparentes en el agronegocio."
+    },
+    "analytics": {
+      "title": "Analytics Avanzado",
+      "description": "Datos e insights para toma de decisiones basada en inteligencia artificial."
+    }
+  },
+  "stats": {
+    "users": "Usuarios Activos",
+    "transactions": "Transacciones",
+    "volume": "Volumen",
+    "uptime": "Tiempo Activo"
+  },
+  "news": {
+    "title": "Noticias del Agronegocio",
+    "subtitle": "Mantente al día con las últimas novedades del sector"
+  },
+  "data": {
+    "title": "Datos en Tiempo Real",
+    "subtitle": "Información actualizada sobre clima, criptomonedas y mercado"
+  },
+  "cta": {
+    "title": "¿Listo para revolucionar tu agronegocio?",
+    "subtitle": "Únete a miles de productores que ya transformaron sus negocios con nuestra plataforma.",
+    "startNow": "Comenzar Ahora",
+    "talkExpert": "Hablar con Experto"
+  }
+}

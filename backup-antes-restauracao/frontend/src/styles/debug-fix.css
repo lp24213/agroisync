@@ -1,0 +1,133 @@
+/* ===== FIX EXTREMO PARA REMOVER QUALQUER BORDA VERMELHA ===== */
+/* Este arquivo força a remoção de TODAS as bordas, outlines e box-shadows vermelhas */
+
+/* Remove bordas vermelhas de QUALQUER elemento */
+* {
+  border-color: inherit !important;
+}
+
+/* Remove especificamente bordas e outlines vermelhas com seletores agressivos */
+[style*="border"][style*="red"],
+[style*="border"][style*="Red"],
+[style*="border"][style*="RED"],
+[style*="border"][style*="rgb(255, 0, 0)"],
+[style*="border"][style*="rgb(239, 68, 68)"],
+[style*="border"][style*="#ff0000"],
+[style*="border"][style*="#ef4444"],
+[style*="border"][style*="#dc2626"],
+[style*="border"][style*="#b91c1c"],
+[style*="outline"][style*="red"],
+[style*="outline"][style*="Red"],
+[style*="outline"][style*="RED"],
+[style*="outline"][style*="rgb(255, 0, 0)"],
+[style*="outline"][style*="rgb(239, 68, 68)"],
+[style*="outline"][style*="#ff0000"],
+[style*="outline"][style*="#ef4444"],
+[style*="box-shadow"][style*="red"],
+[style*="box-shadow"][style*="Red"],
+[style*="box-shadow"][style*="RED"],
+[style*="box-shadow"][style*="rgb(255, 0, 0)"],
+[style*="box-shadow"][style*="rgb(239, 68, 68)"] {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove bordas vermelhas de classes Tailwind */
+.border-red-50,
+.border-red-100,
+.border-red-200,
+.border-red-300,
+.border-red-400,
+.border-red-500,
+.border-red-600,
+.border-red-700,
+.border-red-800,
+.border-red-900,
+.border-red {
+  border-color: transparent !important;
+  border-width: 0 !important;
+  border: none !important;
+}
+
+/* Remove rings vermelhos do Tailwind */
+.ring-red-50,
+.ring-red-100,
+.ring-red-200,
+.ring-red-300,
+.ring-red-400,
+.ring-red-500,
+.ring-red-600,
+.ring-red-700,
+.ring-red-800,
+.ring-red-900,
+.ring-red {
+  --tw-ring-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Remove outlines vermelhos do Tailwind */
+.outline-red-50,
+.outline-red-100,
+.outline-red-200,
+.outline-red-300,
+.outline-red-400,
+.outline-red-500,
+.outline-red-600,
+.outline-red-700,
+.outline-red-800,
+.outline-red-900,
+.outline-red {
+  outline-color: transparent !important;
+  outline: none !important;
+}
+
+/* Remove divisores vermelhos do Tailwind */
+.divide-red-50 > * + *,
+.divide-red-100 > * + *,
+.divide-red-200 > * + *,
+.divide-red-300 > * + *,
+.divide-red-400 > * + *,
+.divide-red-500 > * + *,
+.divide-red-600 > * + *,
+.divide-red-700 > * + *,
+.divide-red-800 > * + *,
+.divide-red-900 > * + * {
+  border-color: transparent !important;
+}
+
+/* Remove qualquer elemento filho com borda vermelha */
+span[style*="border"],
+div[style*="border"],
+p[style*="border"],
+a[style*="border"],
+button[style*="border"] {
+  border-color: inherit !important;
+}
+
+/* Force override para elementos com bordas inline */
+.stock-ticker [style*="border"],
+.grains-chart [style*="border"],
+header [style*="border"],
+footer [style*="border"] {
+  border-color: inherit !important;
+}
+
+/* Remove estados de erro que possam adicionar bordas vermelhas */
+.error,
+.invalid,
+.has-error,
+[aria-invalid="true"] {
+  border-color: #e5e7eb !important;
+  outline: none !important;
+}
+
+/* Remove estilos de validação de formulário */
+input:invalid,
+textarea:invalid,
+select:invalid {
+  border-color: #e5e7eb !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+

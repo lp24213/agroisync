@@ -1,0 +1,64 @@
+{
+  "nav": {
+    "inicio": "Início",
+    "loja": "Loja",
+    "agroconecta": "AgroConecta",
+    "marketplace": "Marketplace",
+    "tecnologia": "Tecnologia",
+    "parcerias": "Parcerias",
+    "tagline": "AgroTech Solutions",
+    "languages": "Idiomas",
+    "selectLanguage": "Selecionar idioma",
+    "toggleTheme": "Alternar tema",
+    "toggleMenu": "Alternar menu",
+    "login": "Login",
+    "register": "Cadastro",
+    "logout": "Sair"
+  },
+  "home": {
+    "title": "Conectando o Agronegócio Brasileiro com Tecnologia",
+    "subtitle": "Plataforma completa para marketplace, logística, criptomoedas e analytics do agronegócio brasileiro.",
+    "exploreMarketplace": "Explorar Marketplace",
+    "learnMore": "Saiba Mais"
+  },
+  "features": {
+    "title": "Nossas Soluções",
+    "subtitle": "Tecnologia avançada para revolucionar o agronegócio brasileiro",
+    "marketplace": {
+      "title": "Marketplace Inteligente",
+      "description": "Conecte-se com compradores e vendedores de commodities agrícolas em uma plataforma segura e eficiente."
+    },
+    "agroconecta": {
+      "title": "AgroConecta",
+      "description": "Rede de transporte e logística inteligente para otimizar sua cadeia de suprimentos."
+    },
+    "crypto": {
+      "title": "Crypto Agro",
+      "description": "Tecnologia blockchain para transações seguras e transparentes no agronegócio."
+    },
+    "analytics": {
+      "title": "Analytics Avançado",
+      "description": "Dados e insights para tomada de decisão baseada em inteligência artificial."
+    }
+  },
+  "stats": {
+    "users": "Usuários Ativos",
+    "transactions": "Transações",
+    "volume": "Volume",
+    "uptime": "Uptime"
+  },
+  "news": {
+    "title": "Notícias do Agronegócio",
+    "subtitle": "Fique por dentro das últimas novidades do setor"
+  },
+  "data": {
+    "title": "Dados em Tempo Real",
+    "subtitle": "Informações atualizadas sobre clima, criptomoedas e mercado"
+  },
+  "cta": {
+    "title": "Pronto para revolucionar seu agronegócio?",
+    "subtitle": "Junte-se a milhares de produtores que já transformaram seus negócios com nossa plataforma.",
+    "startNow": "Começar Agora",
+    "talkExpert": "Falar com Especialista"
+  }
+}

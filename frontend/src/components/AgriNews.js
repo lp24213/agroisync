@@ -1,68 +1,107 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import newsService from '../services/newsService';
 
 const AgriNews = () => {
   const { t } = useTranslation();
-  const news = [
-    {
-      id: 1,
-      title: 'Banana ganha valor e mercado',
-      excerpt: 'Em 2020, as balas de banana de Antonina conquistaram o selo de Indicação Geográfica de Procedência – que protege o nome da região onde o produto se tornou notório',
-      date: '09/01/2025',
-      link: '#'
-    },
-    {
-      id: 2,
-      title: '\'Vamos garantir que o produtor volte a produzir\', afirma Fávaro sobre crédito para áreas incendiadas',
-      excerpt: 'O programa, parte da linha de crédito Renova Agro, oferece condições facilitadas, como 2 anos de carência e 10 anos para pagamento',
-      date: '13/09/2024',
-      link: '#'
-    },
-    {
-      id: 3,
-      title: 'Canal Rural lança "Calçando a Botina" com foco em aproximar jovens do agronegócio',
-      excerpt: 'Novo quadro vai ao ar nesta sexta-feira (6), no Rural Notícias, às 18h45',
-      date: '06/09/2024',
-      link: '#'
-    },
-    {
-      id: 4,
-      title: 'Onda de calor e fortes temporais causam prejuízo em lavouras de SP',
-      excerpt: 'Agricultores relatam queda na qualidade de hortifrútis e perdas irreversíveis, especialmente entre as hortaliças',
-      date: '17/11/2023',
-      link: '#'
-    },
-    {
-      id: 5,
-      title: 'Exportações de milho: relatório do USDA não altera liderança brasileira',
-      excerpt: 'Brasil já enviou para o mercado externo 25,22 milhões de toneladas; países asiáticos são os maiores consumidores',
-      date: '13/09/2023',
-      link: '#'
-    }
-  ];
+  const [news, setNews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const result = await newsService.getAgroNews(8);
+        if (result && result.length > 0) {
+          setNews(result);
+        } else {
+          setError('Nenhuma notícia encontrada no momento.');
+        }
+      } catch (err) {
+        console.error('Erro ao buscar notícias:', err);
+        setError('Erro ao buscar notícias do agronegócio. Tente novamente mais tarde.');
+        setNews([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNews();
+    // Atualiza a cada 6 horas (dados mais frescos)
+    const interval = setInterval(fetchNews, 6 * 60 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="agro-news-section">
+        <div className="agro-news-grid">
+          <div className="agro-news-card">Carregando notícias reais...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && news.length === 0) {
+    return (
+      <div className="agro-news-section">
+        <h3 className="agro-section-title" style={{ textAlign: 'center' }}>{t('home.news.title')}</h3>
+        <div className="agro-news-grid">
+          <div className="agro-news-card" style={{ textAlign: 'center', color: '#6c757d' }}>
+            {error}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (news.length === 0) {
+    return null;
+  }
 
   return (
     <section className="agro-news-section">
       <h3 className="agro-section-title" style={{ textAlign: 'center' }}>{t('home.news.title')}</h3>
+      {error && (
+        <div style={{ padding: '0.5rem', marginBottom: '1rem', background: '#fff3cd', borderRadius: '4px', fontSize: '0.875rem', color: '#856404' }}>
+          ⚠️ {error}
+        </div>
+      )}
       <div className="agro-news-grid">
         {news.map((item, index) => (
           <motion.div
-            key={item.id}
+            key={item.url || index}
             className="agro-news-card"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
+            {item.imageUrl && (
+              <div className="agro-news-image-wrapper">
+                <img 
+                  src={item.imageUrl} 
+                  alt={item.title}
+                  className="agro-news-image"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
+            )}
             <div className="agro-news-content">
               <h4 className="agro-news-title">
-                <a href={item.link} target="_blank" rel="noopener noreferrer">
+                <a href={item.url} target="_blank" rel="noopener noreferrer">
                   {item.title}
                 </a>
               </h4>
-              <p className="agro-news-date">{item.date}</p>
+              <p className="agro-news-date">
+                {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString('pt-BR') : ''}
+                {item.source && <span className="agro-news-source"> • {item.source}</span>}
+              </p>
               <div className="agro-news-excerpt">
-                {item.excerpt}
+                {item.description}
               </div>
             </div>
           </motion.div>
@@ -71,49 +110,70 @@ const AgriNews = () => {
 
       <style jsx>{`
         .agro-news-section {
-          padding: 2rem;
+          padding: 0.75rem;
           background: #ffffff;
-          border-radius: 12px;
+          border-radius: 10px;
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-          margin-top: 2rem;
+          margin-top: 0;
         }
 
         .agro-section-title {
-          font-size: 1.3rem;
+          font-size: 0.85rem;
           font-weight: 600;
           color: #000000;
-          margin-bottom: 1.5rem;
+          margin-bottom: 0.5rem;
           font-family: 'Roboto', sans-serif;
         }
 
         .agro-news-grid {
           display: flex;
           flex-direction: column;
-          gap: 1rem;
+          gap: 0.5rem;
         }
 
         .agro-news-card {
-          padding: 1rem;
-          background: #f8f9fa;
+          padding: 0;
+          background: #ffffff;
           border-radius: 8px;
           border: 1px solid #e9ecef;
-          transition: transform 0.3s ease;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          overflow: hidden;
         }
 
         .agro-news-card:hover {
           transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .agro-news-image-wrapper {
+          width: 100%;
+          height: 100px;
+          overflow: hidden;
+          background: #f0f0f0;
+        }
+
+        .agro-news-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.3s ease;
+        }
+
+        .agro-news-card:hover .agro-news-image {
+          transform: scale(1.05);
         }
 
         .agro-news-content {
           display: flex;
           flex-direction: column;
-          gap: 0.5rem;
+          gap: 0.25rem;
+          padding: 0.5rem;
         }
 
         .agro-news-title {
-          font-size: 1rem;
+          font-size: 0.75rem;
           font-weight: 600;
-          line-height: 1.4;
+          line-height: 1.25;
           margin: 0;
         }
 
@@ -127,24 +187,30 @@ const AgriNews = () => {
         }
 
         .agro-news-date {
-          font-size: 0.8rem;
+          font-size: 0.7rem;
           color: #6c757d;
           margin: 0;
         }
 
+        .agro-news-source {
+          color: #2a7f4f;
+          font-weight: 500;
+          font-size: 0.7rem;
+        }
+
         .agro-news-excerpt {
-          font-size: 0.9rem;
+          font-size: 0.7rem;
           color: #495057;
-          line-height: 1.4;
+          line-height: 1.25;
         }
 
         @media (max-width: 768px) {
           .agro-news-card {
-            padding: 0.75rem;
+            padding: 0.5rem;
           }
           
           .agro-section-title {
-            font-size: 1.2rem;
+            font-size: 0.9rem;
           }
         }
       `}</style>

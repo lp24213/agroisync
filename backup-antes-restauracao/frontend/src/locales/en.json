@@ -1,0 +1,64 @@
+{
+  "nav": {
+    "inicio": "Home",
+    "loja": "Store",
+    "agroconecta": "AgroConnect",
+    "marketplace": "Marketplace",
+    "tecnologia": "Technology",
+    "parcerias": "Partnerships",
+    "tagline": "AgroTech Solutions",
+    "languages": "Languages",
+    "selectLanguage": "Select language",
+    "toggleTheme": "Toggle theme",
+    "toggleMenu": "Toggle menu",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout"
+  },
+  "home": {
+    "title": "Connecting Brazilian Agribusiness with Technology",
+    "subtitle": "Complete platform for marketplace, logistics, cryptocurrencies and analytics of Brazilian agribusiness.",
+    "exploreMarketplace": "Explore Marketplace",
+    "learnMore": "Learn More"
+  },
+  "features": {
+    "title": "Our Solutions",
+    "subtitle": "Advanced technology to revolutionize Brazilian agribusiness",
+    "marketplace": {
+      "title": "Smart Marketplace",
+      "description": "Connect with buyers and sellers of agricultural commodities on a secure and efficient platform."
+    },
+    "agroconecta": {
+      "title": "AgroConnect",
+      "description": "Smart transportation and logistics network to optimize your supply chain."
+    },
+    "crypto": {
+      "title": "Crypto Agro",
+      "description": "Blockchain technology for secure and transparent transactions in agribusiness."
+    },
+    "analytics": {
+      "title": "Advanced Analytics",
+      "description": "Data and insights for decision making based on artificial intelligence."
+    }
+  },
+  "stats": {
+    "users": "Active Users",
+    "transactions": "Transactions",
+    "volume": "Volume",
+    "uptime": "Uptime"
+  },
+  "news": {
+    "title": "Agribusiness News",
+    "subtitle": "Stay up to date with the latest industry news"
+  },
+  "data": {
+    "title": "Real-time Data",
+    "subtitle": "Updated information about weather, cryptocurrencies and market"
+  },
+  "cta": {
+    "title": "Ready to revolutionize your agribusiness?",
+    "subtitle": "Join thousands of producers who have already transformed their businesses with our platform.",
+    "startNow": "Start Now",
+    "talkExpert": "Talk to Expert"
+  }
+}
