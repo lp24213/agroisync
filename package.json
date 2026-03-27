@@ -36,7 +36,7 @@
     "dompurify": "^3.3.1",
     "imapflow": "^1.2.4",
     "jsdom": "^27.4.0",
-    "nodemailer": "^7.0.12",
+    "nodemailer": "^8.0.4",
     "resend": "^6.1.0"
   },
   "devDependencies": {
